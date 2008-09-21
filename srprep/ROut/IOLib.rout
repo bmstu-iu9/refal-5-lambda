@@ -1,0 +1,37 @@
+v ROUT3 Module Refal 0.1
+r file ROut/IOLib.rout
+
+b Entry::IOLib::Write
+c $Entry::IOLib::Write$ {
+c NF = NF ; }
+
+b Entry::IOLib::Read
+c $Entry::IOLib::Read$ {
+c NF = NF ; }
+
+b Local::IOLib::Read_Aux
+c $Local::IOLib::Read_Aux$ {
+c 	1 2 3 =
+c 		4 5 6 ;
+c }
+
+b Local::IOLib::Compiled
+c $Local::IOLib::Compiled$ {
+c NF = NF ; }
+
+b Local::IOLib::Linked
+c $Local::IOLib::Linked$ {
+c NF = NF ; }
+
+b Local::IOLib::Errors
+c $Local::IOLib::Errors$ {
+c NF = NF ; }
+
+b Entry::IOLib::Success
+c $Entry::IOLib::Success$ {
+c NF = NF ; }
+
+b Entry::IOLib::Fails
+c $Entry::IOLib::Fails$ {
+c NF = NF ; }
+

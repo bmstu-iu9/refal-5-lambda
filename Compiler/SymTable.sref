@@ -1,0 +1,75 @@
+$ENUM TSymTable;
+/*
+  При препроцессировании этого файла в Модульный Рефал в качестве имени модуля
+  берётся имя файла без расширения. Для данного файла имя модуля устанавливается
+  в SymTable. Поэтому в качестве метки для типа данных пришлось выбрать имя
+  TSymTable. К сожалению, это ограничение препроцессора.
+*/
+
+$ENTRY ST-Create {
+  = (TSymTable);
+}
+
+/*
+  Внутренний формат
+  t.SymTable ::= (TSymTable e.Names)
+  e.Names ::= t.Name*
+  t.Name ::= (Declared e.Name) | (Defined e.Name)
+*/
+
+$ENUM Declared, Defined;
+
+//FROM Error
+$EXTERN EL-AddErrorAt;
+
+/**
+  <ST-AddDe****
+    t.ErrorList t.SymTable s.LnNum e.Name
+  >
+    == t.ErrorList t.SymTable
+*/
+
+$ENTRY ST-AddDefined {
+  t.ErrorList (TSymTable e.Names-B (Defined e.Name) e.Names-E)
+  s.LnNum e.Name =
+    <EL-AddErrorAt t.ErrorList s.LnNum 'Function ' e.Name ' already defined'>
+    (TSymTable e.Names-B (Defined e.Name) e.Names-E);
+
+  t.ErrorList (TSymTable e.Names-B (Declared e.Name) e.Names-E)
+  s.LnNum e.Name =
+    t.ErrorList (TSymTable e.Names-B (Defined e.Name) e.Names-E);
+
+  t.ErrorList (TSymTable e.Names) s.LnNum e.Name =
+    t.ErrorList (TSymTable e.Names (Defined e.Name));
+}
+
+/*
+  То, что параметр s.LnNum здесь не используется -- не ошибка.
+  Дело в том, что функции ST-AddDefined и ST-AddDeclared должны иметь одинако-
+  вый формат, чтобы одинаковым образом можно было обрабатывать директивы
+  $EXTERN, $ENUM и $EENUM (первая объявляет функции, вторые две определяют).
+*/
+
+$ENTRY ST-AddDeclared {
+  /*
+    Можно повторно объявить имя не зависимо от того, было ли оно до этого
+    объявлено или определено.
+  */
+  t.ErrorList (TSymTable e.Names-B (s.Been e.Name) e.Names-E)
+  s.LnNum e.Name =
+    t.ErrorList (TSymTable e.Names-B (s.Been e.Name) e.Names-E);
+
+  t.ErrorList (TSymTable e.Names) s.LnNum e.Name =
+    t.ErrorList (TSymTable e.Names (Declared e.Name));
+}
+
+$ENTRY ST-CheckDeclared {
+  t.ErrorList (TSymTable e.Names-B (s.Been e.Name) e.Names-E)
+  s.LnNum e.Name =
+    t.ErrorList (TSymTable e.Names-B (s.Been e.Name) e.Names-E);
+
+  t.ErrorList t.SymTable s.LnNum e.Name =
+    <EL-AddErrorAt t.ErrorList s.LnNum 'Function ' e.Name ' not declared'>
+    t.SymTable;
+
+}

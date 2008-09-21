@@ -1,0 +1,285 @@
+$MODULE MPreprocessor;
+
+$IMPORT InOut;
+$IMPORT MLambda;
+
+$IMPORT MError;
+$IMPORT MLexer;
+$IMPORT MLocation;
+$IMPORT MSymTable;
+$IMPORT MUnLexer;
+
+$ENTRY Program
+  e.FileName = <CommonUnit Program e.FileName>;
+
+$ENTRY Unit
+  (e.FileName) = <CommonUnit Module e.FileName>;
+
+CommonUnit
+  s.MainDirective e.FileName =
+    <InOut::WriteLine 'SCAN FILE ' e.FileName>
+    <MUnLexer::Write
+      ( <MLocation::OutName e.FileName> )
+      <Preprocess
+        ( s.MainDirective <MLocation::ModuleName e.FileName> )
+        <MLexer::Tokens
+          <MLocation::SrcName e.FileName>
+        >
+      >
+    >;
+
+Preprocess
+  (s.MainDirective e.ModuleName) e.Tokens =
+    (Directive () s.MainDirective)
+    (Name (' ') e.ModuleName)
+    (Punctuation () ';')
+    <PreprocessBody e.Tokens>
+    (Directive () End)
+    (Name (' ') e.ModuleName)
+    (Punctuation () '.');
+
+PreprocessBody
+  e.Tokens =
+    <DoPreprocessBody
+      <MSymTable::Create>
+      ( /* Imports */ )
+      e.Tokens
+    >;
+
+DoPreprocessBody {
+  t.SymTable t.Imports
+  (Unexpected t.Space e.Unexpected) e.Tokens =
+    <MError::Unexpected e.Unexpected>
+    (Nothing t.Space)
+    <DoPreprocessBody
+      t.SymTable t.Imports e.Tokens
+    >;
+
+  t.SymTable
+  (e.Imports-B (e.Import) e.Imports-E)
+  (Directive t.FromSpace From) (Name t.NameSpace e.Import)
+  (Directive t.ExternSpace Extern) e.Tokens =
+    (Nothing <ConcatSpace t.FromSpace t.NameSpace t.ExternSpace>)
+    <ExportFunctions
+      t.SymTable (e.Imports-B (e.Import) e.Imports-E) (e.Import)
+      e.Tokens
+    >;
+
+  t.SymTable (e.Imports)
+  (Directive t.FromSpace From) (Name t.NameSpace e.Import)
+  (Directive t.ExternSpace Extern) e.Tokens =
+    (Directive t.FromSpace Import)
+    (Name t.NameSpace e.Import)
+    (Punctuation () ';')
+    (Nothing t.ExternSpace)
+    <ExportFunctions
+      t.SymTable (e.Imports (e.Import)) (e.Import) e.Tokens
+    >;
+
+  t.SymTable t.Imports
+  (Directive t.ExternSpace Extern) e.Tokens =
+    (Nothing t.ExternSpace)
+    <ForwardFunctions
+      t.SymTable t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports
+  (Directive t.EnumSpace Enum) e.Tokens =
+    (Nothing t.EnumSpace)
+    <EmptyFunctions
+      Local t.SymTable t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports
+  (Directive t.EnumSpace EEnum) e.Tokens =
+    (Nothing t.EnumSpace)
+    <EmptyFunctions
+      Entry t.SymTable t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports
+  (Name t.NameSpace e.Function) (Punctuation t.BracketSpace '{') e.Tokens =
+    (Name t.NameSpace e.Function) (Punctuation t.BracketSpace '{')
+    <ScanFunctionBody
+      <AddForward t.SymTable e.Function> t.Imports
+      e.Tokens
+    >;
+
+  t.SymTable t.Imports (EOF t.EOFSpace) =
+    <MSymTable::Destroy t.SymTable>
+    (Nothing t.EOFSpace);
+
+  t.SymTable t.Imports = <MSymTable::Destroy t.SymTable>;
+
+  t.SymTable t.Imports t.OtherToken e.Tokens =
+    t.OtherToken <DoPreprocessBody t.SymTable t.Imports e.Tokens>;
+}
+
+ExportFunctions {
+  t.SymTable t.Imports (e.Import)
+  (Name t.NameSpace e.Function) (Punctuation t.CommaSpace ',') e.Tokens =
+    (Nothing <ConcatSpace t.NameSpace t.CommaSpace>)
+    <ExportFunctions
+      <AddExport t.SymTable (e.Function) e.Import>
+      t.Imports (e.Import)
+      e.Tokens
+    >;
+
+  t.SymTable t.Imports (e.Import)
+  (Name t.NameSpace e.Function) (Punctuation t.SemicolonSpace ';') e.Tokens =
+    (Nothing <ConcatSpace t.NameSpace t.SemicolonSpace>)
+    <DoPreprocessBody
+      <AddExport t.SymTable (e.Function) e.Import>
+      t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports (e.Import) e.Tokens =
+    <MError::Error 'Expected comma-separated function names'>
+    <DoPreprocessBody
+      t.SymTable t.Imports e.Tokens
+    >;
+}
+
+AddExport
+  t.SymTable (e.Name) e.Module =
+    <SwAddExport
+      <MSymTable::AddExport t.SymTable (e.Name) e.Module>
+      (e.Name) (e.Module)
+    >;
+
+SwAddExport {
+  t.SymTable Success (e.Name) (e.Module) = t.SymTable;
+
+  t.SymTable Fails IdentifierRedeclared (e.Name) (e.Module) =
+    <MError::Error
+      'Can\'t import names from ' e.Module ': identifier ' e.Name ' redeclared.'
+    >
+    t.SymTable;
+}
+
+ForwardFunctions {
+  t.SymTable t.Imports
+  (Name t.NameSpace e.Function) (Punctuation t.CommaSpace ',') e.Tokens =
+    (Nothing <ConcatSpace t.NameSpace t.CommaSpace>)
+    <ForwardFunctions
+      <AddForward t.SymTable e.Function>
+      t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports
+  (Name t.NameSpace e.Function) (Punctuation t.SemicolonSpace ';') e.Tokens =
+    (Nothing <ConcatSpace t.NameSpace t.SemicolonSpace>)
+    <DoPreprocessBody
+      <AddForward t.SymTable e.Function> t.Imports e.Tokens
+    >;
+
+  t.SymTable t.Imports e.Tokens =
+    <MError::Error 'Expected comma-separated function names'>
+    <DoPreprocessBody
+      t.SymTable t.Imports e.Tokens
+    >;
+}
+
+EmptyFunctions {
+  s.ScopeType t.SymTable t.Imports
+  (Name t.NameSpace e.Function) (Punctuation t.CommaSpace ',') e.Tokens =
+    <GenerateEmpty
+      s.ScopeType t.NameSpace e.Function
+    >
+    (Nothing t.CommaSpace)
+    <EmptyFunctions
+      s.ScopeType <AddForward t.SymTable e.Function>
+      t.Imports e.Tokens
+    >;
+
+  s.ScopeType t.SymTable t.Imports
+  (Name t.NameSpace e.Function) (Punctuation t.SemicolonSpace ';') e.Tokens =
+    <GenerateEmpty
+      s.ScopeType t.NameSpace e.Function
+    >
+    (Nothing t.SemicolonSpace)
+    <DoPreprocessBody
+      <AddForward t.SymTable e.Function> t.Imports e.Tokens
+    >;
+
+  s.ScopeType t.SymTable t.Imports e.Tokens =
+    <MError::Error 'Expected comma-separated function names'>
+    <DoPreprocessBody
+      t.SymTable t.Imports e.Tokens
+    >;
+}
+
+GenerateEmpty {
+  Entry t.NameSpace e.Function =
+    (Directive t.NameSpace Entry)
+    (Name (' ') e.Function)
+    (Punctuation (' ') '{')
+    (Punctuation (' ') '}');
+
+  Local t.NameSpace e.Function =
+    (Name t.NameSpace e.Function)
+    (Punctuation (' ') '{')
+    (Punctuation (' ') '}');
+}
+
+AddForward
+  t.SymTable e.Name =
+    <SwAddForward
+      <MSymTable::AddForward t.SymTable e.Name>
+      (e.Name)
+    >;
+
+SwAddForward {
+  t.SymTable Success (e.Name) = t.SymTable;
+
+  t.SymTable Fails IdentifierRedeclared (e.Name) =
+    <MError::Error
+      'Can\'t declare name ' e.Name ' -- identifier redeclared'
+    >
+    t.SymTable;
+}
+
+ScanFunctionBody {
+  t.SymTable t.Import (Name t.NameSpace e.Name) e.Tokens =
+    <ScanFunctionBody-SwRename
+      ( <MSymTable::ConvertName t.SymTable e.Name> )
+      t.Import (Name t.NameSpace e.Name) e.Tokens
+    >;
+
+  t.SymTable t.Import (Punctuation t.BracketSpace '}') e.Tokens =
+    (Punctuation t.BracketSpace '}')
+    <DoPreprocessBody
+      t.SymTable t.Import e.Tokens
+    >;
+
+  t.SymTable t.Import t.OtherToken e.Tokens =
+    t.OtherToken <ScanFunctionBody t.SymTable t.Import e.Tokens>;
+
+  t.SymTable t.Import = <DoPreprocessBody t.SymTable t.Import>;
+}
+
+ScanFunctionBody-SwRename {
+  ( t.SymTable Success e.NewName )
+  t.Import (Name t.NameSpace e.Name) e.Tokens =
+    (Name t.NameSpace e.NewName)
+    <ScanFunctionBody
+      t.SymTable t.Import e.Tokens
+    >;
+
+  ( t.SymTable Fails NoName )
+  t.Import (Name t.NameSpace e.Name) e.Tokens =
+    (Name t.NameSpace e.Name)
+    <MError::Error 'Undeclared name ' e.Name>
+    <ScanFunctionBody
+      t.SymTable t.Import e.Tokens
+    >;
+}
+
+ConcatSpace
+  e.Spaces =
+    <MLambda::Reduce & ConcatSpace2 () e.Spaces>;
+
+ConcatSpace2
+  (e.Space1) (e.Space2) = (e.Space1 e.Space2);
+
+$END MPreprocessor.

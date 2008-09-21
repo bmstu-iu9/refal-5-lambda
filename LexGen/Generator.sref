@@ -1,0 +1,1074 @@
+//FROM LibraryEx
+$EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
+  DelAccummulator;
+
+//FROM Library
+$EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
+  StrFromInt;
+
+//FROM Library
+$EXTERN True, False, Success, Fails;
+
+$EXTERN GenCode;
+
+$ENTRY Generate {
+  e.FileName =
+    <SaveFile
+      (e.FileName)
+      <GenCode <LoadFile e.FileName>>
+    >;
+}
+
+NextNum {
+  s.Next (e.Line) = <Inc s.Next> (e.Line);
+}
+
+Length-T {
+  e.Line = <MapReduce NextNum 0 e.Line>;
+}
+
+Error {
+  e.Text = <WriteLine e.Text> <Exit 1>;
+}
+
+ErrorAt {
+  s.Number e.Text =
+    <Error 'ERROR at ' <StrFromInt s.Number> ': ' e.Text>;
+}
+
+Warning {
+  e.Message = <WriteLine 'WARNING: ' e.Message>;
+}
+
+WarningAt {
+  s.Number e.Message =
+    <WriteLine 'WARNING at ' <StrFromInt s.Number> ' ' e.Message>;
+}
+
+$EXTERN GenCode-Aux;
+
+GenCode {
+  e.LinesBefore ('/*GEN:TOKENS') e.Description =
+    <GenCode-Aux
+      ( <Length-T e.LinesBefore ('/*GEN:TOKENS')> )
+      e.Description
+    >;
+
+  e.Other = <Error 'Lexer description not found'>;
+}
+
+$EXTERN GenerateFromDFA, Tokens, Parse;
+
+GenCode-Aux {
+  ( s.Length e.LinesBefore )
+  e.Description ('GEN:END*/') e.Deleted =
+    e.LinesBefore e.Description ('GEN:END*/')
+    <GenerateFromDFA
+      <Parse <Tokens s.Length e.Description>>
+    >;
+
+ e.Other = <Error 'End of description not found'>;
+}
+
+/*==============================================================================
+   Основные синтаксические единицы
+
+   e.LexerDefinition ::= t.Element*
+   
+   t.Element ::= t.Sentence | t.Set
+
+   t.Set ::= (Set (e.Name) t.SetContent* )
+
+   t.SetContent ::= (Set t.SrcPos e.SetName) | (Chars e.Symbols)
+
+   t.Sentence ::= (Sentence (e.Name) t.Alternative*)
+
+   t.Alternative ::= ( t.Head t.Flush t.NextState )
+
+   t.Head ::= (Set t.SrcPos e.SetName) | (Chars e.Symbols) | Empty | Any
+
+   t.Flush ::= None | Unnamed | (Flush e.FlushName) | (FlushError e.Message)
+
+   t.NextState ::= (t.SrcPos e.NextStateName) | Finitive
+
+   Разбор начинается с правила Root, множество :Any: задаёт множество всех
+   символов, системная ошибка TokenUnexpected, пользовательская ошибка
+   TokenError, неожиданный конец -- TokenUnexpectedEOF, в случае ошибки выб-
+   расывается также TokenAccum с содержимым аккумулятора на момент ошибки.
+
+   * пока множество :Any: не реализовано
+
+==============================================================================*/
+
+$ENUM Set, Sentence, Chars, Empty, None, Unnamed, FlushError, Finitive, Flush,
+  Any;
+
+//==============================================================================
+// Генератор автомата
+//==============================================================================
+
+$EXTERN GenerateAutomat, ResolvingSets, Separate;
+
+GenerateFromDFA {
+  e.Elements =
+    <GenerateAutomat
+      <ResolvingSets
+        <Separate e.Elements>
+      >
+    >;
+}
+
+SeparateOne {
+  ( (e.Sets) (e.Rules) ) (Set (e.Name) e.Content) =
+    ( (e.Sets ((e.Name) e.Content)) (e.Rules) );
+
+  ( (e.Sets) (e.Rules) ) (Sentence (e.Name) e.Content) =
+    ( (e.Sets) (e.Rules ((e.Name) e.Content)) );
+}
+
+Separate {
+  e.Elements =
+    <Reduce SeparateOne ((/* sets */) (/* rules */)) e.Elements>;
+}
+
+$EXTERN ResolvingSets-Aux;
+
+ResolvingSets {
+  ( (e.Sets) (e.Rules) ) =
+    (<ResolvingSets-Aux e.Sets>)
+    (e.Rules);
+}
+
+NormingSet {
+  e.Set-B s.Repeated e.Set-M s.Repeated e.Set-E =
+    e.Set-B <NormingSet s.Repeated e.Set-M e.Set-E>;
+
+  e.Set = e.Set;
+}
+
+$EXTERN SetPartNormalize, SetSubstitute, SetCheckRecursion;
+
+ResolvingSets-Aux {
+  e.Sets =
+    <SetSubstitute
+      <SetCheckRecursion
+        <SetPartNormalize
+          e.Sets
+        >
+      >
+    >;
+}
+
+NormalizeContent {
+  (e.Chars) (Chars e.Symbols) e.Tail =
+    <NormalizeContent
+      (<NormingSet e.Chars e.Symbols>) e.Tail
+    >;
+
+  (e.Chars) (Set s.LineNumber e.Name) e.Tail =
+    (Set s.LineNumber e.Name) <NormalizeContent (e.Chars) e.Tail>;
+
+  (e.Chars) = (Chars e.Chars);
+}
+
+SetPartNormalizeOne {
+  ((e.Name) Any) = ((e.Name) Any);
+
+  ((e.Name) e.Content) = ((e.Name) <NormalizeContent () e.Content>);
+}
+
+SetPartNormalize {
+  e.Sets = <Map SetPartNormalizeOne e.Sets>;
+}
+
+SetCheckRecursion {
+  e.Sets-B
+  ((e.Name) e.Content-B (Set s.LineNumber e.Name) e.Content-E)
+  e.Sets-E =
+    // Рекурсивная зависимость множеств -- не ошибка.
+    <WarningAt s.LineNumber 'Recursive depended set ' e.Name>
+    <SetCheckRecursion
+      e.Sets-B ((e.Name) e.Content-B e.Content-E) e.Sets-E
+    >;
+
+  e.Sets = e.Sets;
+}
+
+SetSubstitute {
+  e.Sets-B
+  ( (e.Name) e.Content-B (Set t.SrcPos 'Any') e.Content-E )
+  e.Sets-E =
+    <ResolvingSets-Aux
+      e.Sets-B ( (e.Name) Any ) e.Sets-E
+    >;
+
+  e.Sets-B
+  ( (e.Name) e.Content-B (Set t.SrcPos e.IncName) e.Content-E )
+  e.Sets-M
+  ( (e.IncName) e.IncContent )
+  e.Sets-E =
+    <ResolvingSets-Aux
+      e.Sets-B ( (e.Name) e.Content-B e.IncContent e.Content-E )
+      e.Sets-M ( (e.IncName) e.IncContent ) e.Sets-E
+    >;
+
+  e.Sets-B
+  ( (e.IncName) e.IncContent )
+  e.Sets-M
+  ( (e.Name) e.Content-B (Set t.SrcPos e.IncName) e.Content-E )
+  e.Sets-E =
+    <ResolvingSets-Aux
+      e.Sets-B ( (e.IncName) e.IncContent ) e.Sets-M
+      ( (e.Name) e.Content-B e.IncContent e.Content-E ) e.Sets-E
+    >;
+
+  e.Sets-B
+  ( (e.Name) e.Content-B (Set s.LineNumber e.IncName) e.Content-E )
+  e.Sets-E =
+    <ErrorAt s.LineNumber 'set ' e.IncName ' not defined'>;
+
+  e.Sets = e.Sets;
+}
+
+$EXTERN SubstituteSetsToRules;
+
+$ENUM Used, NotUsed;
+
+SimplifySet {
+  ((e.Name) Any) = ((e.Name) NotUsed Any);
+
+  ((e.Name) (Chars e.Content)) =
+    ((e.Name) NotUsed Chars e.Content);
+}
+
+GenerateAutomat {
+  (e.Sets) (e.Rules) =
+    <SubstituteSetsToRules
+      (<Map SimplifySet e.Sets>)
+      (e.Rules)
+    >;
+}
+
+$EXTERN GenerateSentences;
+
+SubstituteSetsToRules {
+  ( ((e.Name) s.Used Chars e.Content) e.Sets )
+  (
+    e.Rules-B
+    ((e.RuleName)
+      e.Alternatives-B
+      ( (Set t.SrcPos e.Name) t.Flush t.NextState )
+      e.Alternatives-E
+    )
+    e.Rules-E
+ ) =
+   <SubstituteSetsToRules
+     ( ((e.Name) Used Chars e.Content) e.Sets )
+     (
+       e.Rules-B
+       ((e.RuleName)
+         e.Alternatives-B
+         ( (Chars e.Content) t.Flush t.NextState )
+         e.Alternatives-E
+       )
+       e.Rules-E
+     )
+   >;
+
+ ( ((e.Name) s.Used Any) e.Sets )
+ (
+   e.Rules-B
+   ((e.RuleName)
+     e.Alternatives-B
+     ( (Set t.SrcPos e.Name) t.Flush t.NextState )
+     e.Alternatives-E
+   )
+   e.Rules-E
+ ) =
+   <SubstituteSetsToRules
+     ( ((e.Name) s.Used Any) e.Sets )
+     (
+       e.Rules-B
+       ((e.RuleName)
+         e.Alternatives-B
+         ( Any t.Flush t.NextState )
+         e.Alternatives-E
+       )
+       e.Rules-E
+     )
+   >;
+
+ ( ((e.Name) NotUsed e.Content) e.Sets ) (e.Rules) =
+   <Warning 'Set ' e.Name ' not used'>
+   <SubstituteSetsToRules (e.Sets) (e.Rules)>;
+
+ // Для первого в списке множества не найдено вхождения
+ ( ((e.Name) Used e.Content) e.Sets ) (e.Rules) =
+   <SubstituteSetsToRules (e.Sets) (e.Rules)>;
+
+ ()
+ (
+   e.Rules-B
+   ((e.RuleName)
+     e.Alternatives-B
+     ( (Set t.SrcPos 'Any') t.Flush t.NextState )
+     e.Alternatives-E
+   )
+   e.Rules-E
+ ) =
+   <SubstituteSetsToRules
+     ()
+     (
+       e.Rules-B
+       ((e.RuleName)
+         e.Alternatives-B
+         ( Any t.Flush t.NextState )
+         e.Alternatives-E
+       )
+       e.Rules-E
+     )
+   >;
+
+ ()
+ (
+   e.Rules-B
+   ((e.RuleName)
+     e.Alternatives-B
+     ( (Set s.LineNumber e.Name) t.Flush t.NextState )
+     e.Alternatives-E
+   )
+   e.Rules-E
+ ) =
+   <ErrorAt s.LineNumber 'Undeclared set ' e.Name>;
+
+ () (e.Rules) = <GenerateSentences e.Rules>;
+}
+
+$EXTERN WriteCode, NormalizeRule;
+
+GenerateSentences {
+  e.Rules =
+    <WriteCode
+      <Map NormalizeRule e.Rules>
+    >;
+}
+
+SetDiff {
+  (e.Set) (Any) = ;
+
+  (e.Set1-B s.Common e.Set1-E) (e.Set2-B s.Common e.Set2-E) =
+    <SetDiff (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>;
+
+  (e.SetDiff) (e.Set2) = e.SetDiff;
+}
+
+NormalizeAlternative {
+  (e.Diff) ((Chars e.Alternative) t.Flush t.Next) =
+    (<NormingSet e.Diff e.Alternative>)
+    ((<SetDiff (e.Alternative) (e.Diff)>) t.Flush t.Next);
+
+  (e.Diff) (Any t.Flush t.Next) =
+    (Any)
+    (Any t.Flush t.Next);
+
+  (e.Diff) ( Empty t.Flush t.Next ) =
+    (e.Diff) ( Empty t.Flush t.Next );
+}
+
+SplitAlternatives {
+  ( Empty t.Flush t.Next ) = (Empty t.Flush t.Next);
+
+  ( Any t.Flush t.Next ) = (Any t.Flush t.Next);
+
+  ( (s.Char) t.Flush t.Next ) = (s.Char t.Flush t.Next);
+
+  ( (s.Char e.Tail) t.Flush t.Next ) =
+    (s.Char t.Flush t.Next)
+    <SplitAlternatives ( (e.Tail) t.Flush t.Next )>;
+}
+
+NormalizeRule {
+  ((e.Name) e.Alternatives) =
+    ((e.Name)
+      <Map
+        SplitAlternatives
+        <DelAccummulator
+          <MapReduce
+            NormalizeAlternative
+            () e.Alternatives
+          >
+        >
+      >
+    );
+}
+
+$EXTERN WriteFunctions;
+
+WriteCode {
+  e.Rules =
+    <WriteFunctions
+      (/* written */) (/* expected */ (0 'Root'))
+      e.Rules
+    >;
+}
+
+$EXTERN WriteFunction;
+
+ExtractExpected {
+  ( t.Head t.Flush Finitive ) = ;
+
+  ( t.Head t.Flush ( s.LineNumber e.NextName ) ) =
+    ( s.LineNumber e.NextName );
+}
+
+WriteFunctions {
+  (e.Written) () = ;
+
+  (e.Written) () ((e.Name) e.Content) e.Rules =
+    <Warning 'Found unused rules ' e.Name ' ...'>;
+
+  (e.Written-B (e.Next) e.Written-E)
+  ((s.LineNumber e.Next) e.Expected) e.Rules =
+    <WriteFunctions
+      (e.Written-B (e.Next) e.Written-E)
+      ( e.Expected ) e.Rules
+    >;
+
+  (e.Written) ((s.LineNumber e.NextRule) e.Expected)
+  e.Rules-B ((e.NextRule) e.Alternatives) e.Rules-E =
+    <WriteFunction
+      (e.NextRule)
+      e.Alternatives
+    >
+    <WriteFunctions
+      (e.Written (e.NextRule))
+      ( e.Expected <Map ExtractExpected e.Alternatives> )
+      e.Rules-B e.Rules-E
+    >;
+
+  ((s.LineNumber e.NextRule) e.Expected) e.Rules =
+    <ErrorAt s.LineNumber 'Rule ' e.NextRule ' not found'>;
+}
+
+$EXTERN WriteAlternative;
+
+WriteFunction {
+  (e.NextRule) e.Alternatives =
+    ()
+    (e.NextRule ' {')
+    <Map WriteAlternative e.Alternatives>
+    ('  (e.Accum) s.Unexpected e.Text = ')
+    ('    (TokenUnexpected s.Unexpected) <Root () e.Text>;')
+    ('  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);')
+    ('}');
+}
+
+/*
+t.Head ::= Empty | s.Char
+
+t.Flush ::= None | Unnamed | (Flush e.FlushName) | (FlushError e.Message)
+
+t.NextState ::= (t.SrcPos e.NextStateName) | Finitive
+*/
+
+$EXTERN EC; //EscapeChar
+
+WriteAlternative {
+  (Empty None Finitive) =
+    ('  (e.Accum) = (TokenAccum e.Accum) ;');
+
+  (Empty None (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) e.Text = <' e.NextStateName ' (e.Accum) e.Text>;');
+
+  (Empty Unnamed Finitive) =
+    ('  (e.Accum) = ;');
+
+  (Empty Unnamed (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) e.Text = <' e.NextStateName ' () e.Text>;');
+
+  (Empty (Flush e.FlushName) Finitive) =
+    ('  (e.Accum) =  (' e.FlushName ' e.Accum);');
+
+  (Empty (Flush e.FlushName) (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) e.Text =')
+    ('    (' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;');
+  
+  (Empty (FlushError e.Message) Finitive) =
+    ('  (e.Accum) = (TokenError ' '' e.Message '' ');');
+
+  (Empty (FlushError e.Message) (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) e.Text =')
+    ('    (TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;');
+
+  (s.Char None Finitive) =
+    ('  (e.Accum) ' <EC s.Char> ' = (TokenAccum e.Accum ' <EC s.Char> ');');
+
+  (s.Char None (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
+    ('    <' e.NextStateName ' (e.Accum ' <EC s.Char> ') e.Text>;');
+
+  (s.Char Unnamed Finitive) =
+    ('  (e.Accum) ' <EC s.Char> ' = ;');
+
+  (s.Char Unnamed (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) ' <EC s.Char> ' e.Text = <' e.NextStateName ' () e.Text>;');
+
+  (s.Char (Flush e.FlushName) Finitive) =
+    ('  (e.Accum) ' <EC s.Char> ' =')
+    ('    (' e.FlushName ' e.Accum ' <EC s.Char> ');');
+
+  (s.Char (Flush e.FlushName) (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
+    ('    (' e.FlushName ' e.Accum ' <EC s.Char> ')')
+    ('    <' e.NextStateName ' () e.Text>;');
+
+  (s.Char (FlushError e.Message) Finitive) =
+    ('  (e.Accum) ' <EC s.Char> ' = (TokenError ' '' e.Message '' ');');
+
+  (s.Char (FlushError e.Message) (t.SrcPos e.NextStateName)) =
+    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
+    ('    (TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;');
+}
+
+//EscapeChar
+EC {
+  Any = 's.Any';
+
+  '\n' = '' '\\n' '';
+
+  '\t' = '' '\\t' '';
+
+  '' = '' '\\' '' '';
+
+  '\\' = '' '\\\\' '';
+
+  s.Other = '' s.Other '';
+}
+
+
+/*==============================================================================
+   Синтаксис:
+
+   Остальные строчки в свободном формате.
+   Description = Element* .
+   Element = SetDescr | Sentence .
+
+   SetDescr = SETNAME '=' Set* '.' .
+   Set = LITERAL | SETNAME .
+
+   Sentence = NAME '=' Alternative { '|' Alternative } '.' .
+   Alternative = [Set] [Flush] [NAME] .
+   Flush = '!-' | NAMEDFLUSH | ERRORFLUSH .
+
+   ERRORFLUSH = '!"' e.Name '"' .
+
+   Зарезервированные имена Root, :Any:.
+   Зарезервированные лексемы TokenError, TokenUnexpected, TokenUnexpectedEOF,
+     TokenAccum.
+
+==============================================================================*/
+
+$ENUM TSetName, TLiteral, TName, TNamedFlush,
+  TEquals, TDot, TAlternative, TFlush, TErrorFlush, TEOF;
+
+//==============================================================================
+// Синтаксический разбор
+//==============================================================================
+
+$EXTERN ParseElements;
+
+Parse {
+  e.Tokens = <ParseElements (/* Sets */ ('Any')) (/* Rules */) e.Tokens>;
+}
+
+$EXTERN ParseSetDescr, ParseSentence, UnexpectedToken;
+
+ParseElements {
+  (e.Sets-B (e.Name) e.Sets-E) (e.Rules)
+  (TSetName s.LineNumber e.Name) e.Tail =
+    <ErrorAt s.LineNumber 'Set name ' e.Name ' redeclared'>;
+
+  (e.Sets) (e.Rules)
+  (TSetName t.SrcPos e.Name) e.Tail =
+    <ParseSetDescr (e.Sets (e.Name)) (e.Rules) (e.Name) e.Tail>;
+
+  (e.Sets) (e.Rules-B (e.Name) e.Rules-E)
+  (TName s.LineNumber e.Name) e.Tail =
+    <ErrorAt s.LineNumber 'Name ' e.Name ' redeclared'>;
+
+  (e.Sets) (e.Rules)
+  (TName t.SrcPos e.Name) e.Tail =
+    <ParseSentence (e.Sets) (e.Rules (e.Name)) (e.Name) e.Tail>;
+
+  (e.Sets) (e.Rules)
+  (TEOF t.SrcPos) e.Tail =
+    /* Ничего */;
+
+  (e.Sets) (e.Rules)
+  t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'name or set name'>;
+}
+
+$EXTERN ParseSetDescr-Sets;
+
+ParseSetDescr {
+  (e.Sets) (e.Rules) (e.Name) (TEquals t.SrcPos) e.Tail =
+    <ParseSetDescr-Sets
+      (e.Sets) (e.Rules) (e.Name) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected '"="'>;
+}
+
+$EXTERN ParseSetDescr-Sets-Aux, ExtractSets;
+
+ParseSetDescr-Sets {
+  (e.Sets) (e.Rules) (e.Name) e.Tail =
+    <ParseSetDescr-Sets-Aux
+      (e.Sets) (e.Rules) (e.Name)
+      <ExtractSets () e.Tail>
+    >;
+}
+
+ExtractSets {
+  (e.Found) (TLiteral t.SrcPos e.Content) e.Tail =
+    <ExtractSets
+      (e.Found (Chars e.Content)) e.Tail
+    >;
+
+  (e.Found) (TSetName t.SrcPos e.Name) e.Tail =
+    <ExtractSets
+      (e.Found (Set t.SrcPos e.Name)) e.Tail
+    >;
+
+  (e.Found) e.OtherTail = (e.Found) e.OtherTail;
+}
+
+ParseSetDescr-Sets-Aux {
+  (e.Sets) (e.Rules) (e.Name) ()
+  (TDot s.LineNumber) e.Tail =
+    <ErrorAt s.LineNumber 'Set ' e.Name ' not have content'>;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body)
+  (TDot t.SrcPos) e.Tail =
+    (Set (e.Name) e.Body)
+    <ParseElements
+      (e.Sets) (e.Rules) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body)
+  t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'dot at end of set'>;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body) =
+    <Error 'Unexpected eof'>;
+}
+
+$EXTERN ParseSentence-Body, ExtractAlternatives;
+
+ParseSentence {
+  (e.Sets) (e.Rules) (e.Name) (TEquals t.SrcPos) e.Tail =
+    <ParseSentence-Body
+      (e.Sets) (e.Rules) (e.Name)
+      <ExtractAlternatives () e.Tail>
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected '"="'>;
+}
+
+ParseSentence-Body {
+  (e.Sets) (e.Rules) (e.Name) (e.Body) (TDot t.SrcPos) e.Tail =
+    (Sentence (e.Name) e.Body)
+    <ParseElements
+      (e.Sets) (e.Rules) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'end of sentence'>;
+}
+
+$EXTERN ExtractAlternatives-Flush;
+
+ExtractAlternatives {
+  (e.Found) (TLiteral t.SrcPos e.Content) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) (Chars e.Content) e.Tail
+    >;
+
+  (e.Found) (TSetName t.SrcPos e.Content) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) (Set t.SrcPos e.Content) e.Tail
+    >;
+
+  (e.Found) (TFlush t.SrcPos) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TFlush t.SrcPos) e.Tail
+    >;
+
+  (e.Found) (TNamedFlush t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TNamedFlush t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) (TErrorFlush t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TErrorFlush t.SrcPos e.Message) e.Tail
+    >;
+
+  (e.Found) (TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TName t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) (TAlternative t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TAlternative t.SrcPos e.Message) e.Tail
+    >;
+
+  (e.Found) (TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) Empty (TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected ' definition of state'>;
+
+  (e.Found) = (e.Found);
+}
+
+$EXTERN ExtractAlternatives-NextState;
+
+ExtractAlternatives-Flush {
+  (e.Found) t.Head (TFlush t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head Unnamed e.Tail
+    >;
+
+  (e.Found) t.Head (TNamedFlush t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head (Flush e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head (TErrorFlush t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head (FlushError e.Message) e.Tail
+    >;
+
+  (e.Found) t.Head (TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head None (TName t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head (TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head None (TAlternative t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head (TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head None (TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'flush or next state name'>;
+
+  (e.Found) t.Head = (e.Found);
+}
+
+$EXTERN ExtractAlternatives-Finish;
+
+ExtractAlternatives-NextState {
+  (e.Found) t.Head t.Flush (TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush (t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush (TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush Finitive (TAlternative t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush (TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush Finitive (TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'next state name or next alternative'>;
+
+  (e.Found) t.Head t.Flush = (e.Found);
+}
+
+ExtractAlternatives-Finish {
+  (e.Found) t.Head t.Flush t.NextState (TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives
+      (e.Found (t.Head t.Flush t.NextState)) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush t.NextState e.Tail =
+    (e.Found (t.Head t.Flush t.NextState)) e.Tail;
+}
+
+ToText {
+  TSetName e.Name = 'set name ' e.Name;
+  TLiteral e.Text = 'literal ' e.Text; // Игнорируем проблему escape-символов
+  TName e.Name = 'name ' e.Name;
+  TNamedFlush e.Name = 'named flush ' e.Name;
+  TEquals = '"="';
+  TDot = '"."';
+  TAlternative = '"|"';
+  TFlush = 'flush';
+  TErrorFlush e.Text = 'error flush "' e.Text '"';
+  TEOF = 'end of file';
+}
+
+UnexpectedToken {
+  (s.Type s.LineNum e.Unexpected) e.Message =
+    <ErrorAt
+      s.LineNum
+      'Unexpected ' <ToText s.Type e.Unexpected>
+      ' expected ' e.Message
+    >;
+}
+
+//==============================================================================
+// Лексический разбор
+//==============================================================================
+
+$ENUM TNewLine, TError;
+
+AddSrcPos {
+  s.LineNumber (TNewLine) = <Inc s.LineNumber>;
+
+  s.LineNumber (TError e.Text) =
+    <ErrorAt s.LineNumber e.Text>;
+
+  s.LineNumber (s.TokName e.Content) =
+    s.LineNumber (s.TokName s.LineNumber e.Content);
+}
+
+ToPlain {
+  (e.Line) = e.Line '\n';
+}
+
+$EXTERN LoTokens;
+
+AddEOF {
+  s.LineNumber e.Tokens =
+    e.Tokens (TEOF s.LineNumber);
+}
+
+Tokens {
+  s.LineNumber e.Lines =
+    <AddEOF
+      <MapReduce
+        AddSrcPos
+        <Inc s.LineNumber>
+        <LoTokens
+          <Map ToPlain e.Lines>
+        >
+      >
+    >;
+}
+
+$EXTERN SetName, FlushName, Literal, Name;
+
+LoTokens {
+  ' ' e.Text = <LoTokens e.Text>;
+  '\t' e.Text = <LoTokens e.Text>;
+
+  '\n' e.Text = (TNewLine) <LoTokens e.Text>;
+
+  ':' e.Text = <SetName () e.Text>;
+  '!' e.Text = <FlushName e.Text>;
+  '\'' e.Text = <Literal () e.Text>;
+
+  '=' e.Text = (TEquals) <LoTokens e.Text>;
+  '.' e.Text = (TDot) <LoTokens e.Text>;
+  '|' e.Text = (TAlternative) <LoTokens e.Text>;
+
+  s.Next e.Text = <Name s.Next e.Text>;
+
+  = ;
+}
+
+NextInSet {
+  s.SuccessHandler s.FailHandler
+  (e.Set-B s.Next e.Set-E) (e.Scanned) s.Next e.Text =
+    <s.SuccessHandler (e.Scanned s.Next) e.Text>;
+
+  s.SuccessHandler s.FailHandler (e.Set) (e.Scanned) e.Text =
+    <s.FailHandler (e.Scanned) e.Text>;
+}
+
+HiLetters { = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; }
+LoLetters { = 'abcdefghijklmnopqrstuvwxyz'; }
+Digits { = '0123456789'; }
+NameTailSet { = <HiLetters> <LoLetters> <Digits> '-_'; }
+
+$EXTERN SetNameFail;
+
+SetName {
+  (e.Scanned) ':' e.Text =
+    (TSetName e.Scanned) <LoTokens e.Text>;
+
+  (e.Scanned) e.Text =
+    <NextInSet
+      SetName SetNameFail
+      (<NameTailSet>)
+      (e.Scanned) e.Text
+    >;
+}
+
+SetNameFail {
+  (e.Scanned) = (TError 'expected end of set name, got EOF');
+
+  (e.Scanned) s.Next e.Text =
+    (TError 'expected end of set name, got ' s.Next);
+}
+
+$EXTERN FlushNameTail, FlushNameFail, ErrorFlush, ErrorFlushFail;
+
+FlushName {
+  '-' e.Text = (TFlush) <LoTokens e.Text>;
+
+  '"' e.Text =
+    <NextInSet
+      ErrorFlush ErrorFlushFail
+      (<NameTailSet> ' \t,.:;(){}[]*&')
+      () e.Text
+    >;
+
+  e.Text =
+    <NextInSet
+      FlushNameTail FlushNameFail
+      (<HiLetters>) () e.Text
+    >;
+}
+
+ErrorFlush {
+  (e.Scanned) e.Tail =
+    <NextInSet
+      ErrorFlush ErrorFlushFail
+      (<NameTailSet> ' \t,.:;(){}[]*&')
+      (e.Scanned) e.Tail
+    >;
+}
+
+ErrorFlushFail {
+  (e.Scanned) '"' e.Text =
+    (TErrorFlush e.Scanned) <LoTokens e.Text>;
+
+  (e.Scanned) s.Other e.Text =
+    (TError 'Expected error text or "') <LoTokens e.Text>;
+}
+
+FlushNameFail {
+  () e.Text = (TError 'expected flush name');
+}
+
+EndFlushName {
+  (e.Scanned) e.Text = (TNamedFlush e.Scanned) <LoTokens e.Text>;
+}
+
+FlushNameTail {
+  (e.Scanned) e.Tail =
+    <NextInSet
+      FlushNameTail EndFlushName
+      ( <NameTailSet> ) (e.Scanned) e.Tail
+    >;
+}
+
+$EXTERN Escape;
+
+Literal {
+  (e.Scanned) '\\' e.Text = <Escape (e.Scanned) e.Text>;
+
+  (e.Scanned) '\'\'' e.Text = <Literal (e.Scanned '\'') e.Text>;
+
+  (e.Scanned) '\'' e.Text = (TLiteral e.Scanned) <LoTokens e.Text>;
+
+  (e.Scanned) '\n' e.Text =
+    (TError 'Unexpected end of line at literal') <LoTokens e.Text>;
+
+  (e.Scanned) =
+    (TError 'Unexpected end of file at literal');
+
+  (e.Scanned) s.Other e.Text =
+    <Literal (e.Scanned s.Other) e.Text>;
+}
+
+$EXTERN Literal-DecCode;
+
+Escape {
+  (e.Scanned) 'n' e.Text = <Literal (e.Scanned '\n') e.Text>;
+
+  (e.Scanned) 't' e.Text = <Literal (e.Scanned '\t') e.Text>;
+
+  (e.Scanned) '\\' e.Text = <Literal (e.Scanned '\\') e.Text>;
+
+  (e.Scanned) 'd' e.Text = <Literal-DecCode (e.Scanned) e.Text>;
+
+  (e.Scanned) '\'' e.Text = <Literal (e.Scanned '\'') e.Text>;
+
+  (e.Scanned) s.Other e.Text =
+    (TError 'Unexpected escaped character') <LoTokens e.Text>;
+}
+
+SwIsDigit {
+  s.Char e.Dig-B s.Char e.Dig-E = (True s.Char);
+
+  s.Char e.Other = (False s.Char);
+}
+
+IsDigit {
+  s.Char = <SwIsDigit s.Char <Digits>>;
+}
+
+$EXTERN Literal-DecCode-SwDigit;
+
+Literal-DecCode {
+  (e.Scanned) e.Tail =
+    <Literal-DecCode-SwDigit
+      (e.Scanned) <IntFromStr e.Tail>
+    >;
+
+  (e.Scanned) =
+    (TError 'Unexpected end of file');
+}
+
+Literal-DecCode-SwDigit {
+  (e.Scanned) Success s.Number e.Tail =
+    <Literal (e.Scanned <Chr s.Number>) e.Tail>;
+
+  (e.Scanned) Fails e.Tail =
+    (TError 'Expected digits') <LoTokens e.Tail>;
+}
+
+NameFail {
+  () s.Next e.Tail =
+    (TError 'Unexpected chararcter ' s.Next) <LoTokens e.Tail>;
+}
+
+NameTailFail {
+  (e.Scanned) e.Tail =
+    (TName e.Scanned) <LoTokens e.Tail>;
+}
+
+NameTail {
+  (e.Scanned) e.Tail =
+    <NextInSet
+      NameTail NameTailFail
+      ( <NameTailSet> )
+      (e.Scanned) e.Tail
+    >;
+}
+
+Name {
+  e.Tail =
+    <NextInSet
+      NameTail NameFail ( <HiLetters> ) () e.Tail
+    >;
+}

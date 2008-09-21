@@ -1,0 +1,28 @@
+$PROGRAM Example;$IMPORT IOLib;
+ 
+
+$ENTRY Go {
+  = <& IOLib.Write 'Hello, World!'>;
+  //s.X = s.Y;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$END Example.

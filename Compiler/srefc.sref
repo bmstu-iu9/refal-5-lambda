@@ -1,0 +1,76 @@
+//FROM Driver
+$EXTERN CompileFile;
+
+//FROM LibraryEx
+$EXTERN Map, ArgList;
+
+//FROM Library
+$EXTERN Success, Fails, WriteLine, System;
+
+$EXTERN SrcName, OutputName;
+
+$EXTERN SwCompiled;
+
+CompileFile-UnBracket {
+  (e.FileName) =
+    <SwCompiled
+      <WriteLine '*Compiling ' e.FileName ':'>
+      <CompileFile
+        (<SrcName e.FileName>)
+        <OutputName e.FileName>
+      >
+    >;
+}
+
+SwCompiled {
+  Success e.OutputName = (e.OutputName);
+
+  Fails = Fails;
+}
+
+$EXTERN CallCppCompiler;
+
+Link {
+  e.Modules-B Fails e.Modules-E = ;
+
+  e.Modules = <CallCppCompiler e.Modules>;
+}
+
+UnBracketSpace {
+  (e.Module) = e.Module ' ';
+}
+
+CallCppCompiler {
+  e.Modules =
+    <System
+      'call_cpp_compiler '
+      <Map UnBracketSpace e.Modules>
+      'refalrts.cpp'
+    >
+    <WriteLine '** Compilation successed **'>;
+}
+
+Main {
+  (e.ProgName) e.FileList =
+    <Link
+      <Map CompileFile-UnBracket e.FileList>
+    >;
+}
+
+$EXTERN UseFunctions;
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+SrcName {
+  e.FileName '.sref' = e.FileName '.sref';
+
+  e.FileName = e.FileName;
+}
+
+OutputName {
+  e.FileName '.sref' = e.FileName '.cpp';
+
+  e.FileName = e.FileName '.cpp';
+}

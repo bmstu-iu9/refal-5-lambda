@@ -1,0 +1,1 @@
+INTERNAL ERROR: Can't open file 'text.lex' for reading

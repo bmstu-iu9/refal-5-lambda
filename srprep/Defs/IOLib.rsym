@@ -1,0 +1,9 @@
+$module IOLib;
+
+
+$entry Fails;
+$entry Read;
+$entry Success;
+$entry Write;
+
+$end IOLib.

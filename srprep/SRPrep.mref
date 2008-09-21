@@ -1,0 +1,31 @@
+$PROGRAM SRPrep;
+
+$IMPORT InOut;
+$IMPORT MLambda;
+$IMPORT MOS;
+
+$IMPORT MLocation;
+$IMPORT MPreprocessor;
+
+$ENTRY Go = <Main <MOS::ArgList>>;
+
+Main {
+  (e.ProgName) =
+    <InOut::WriteText
+      ('Command line error')
+      ('Use: ' e.ProgName ' mainsrc [optsrc1 [optsrc2 ...]]')
+    >;
+
+  (e.ProgName) (e.MainSrc) e.OtherSrcs =
+    <MLambda::Map
+      & MPreprocessor.Unit
+      e.OtherSrcs
+    >
+    <MPreprocessor::Program e.MainSrc>
+    <MOS::System
+      'compile_mr '
+      <MLocation::OutName e.MainSrc>
+    >;
+}
+
+$END SRPrep.

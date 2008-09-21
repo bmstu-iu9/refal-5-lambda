@@ -1,0 +1,24 @@
+
+/*
+  Генератор лексических анализаторов.
+*/
+
+//FROM LibraryEx
+$EXTERN ArgList;
+
+//FROM Library
+$EXTERN WriteLine;
+
+//FROM Generator
+$EXTERN Generate;
+
+Main {
+  (e.ProgName) (e.File) =
+    <Generate e.File>;
+
+  (e.ProgName) e.Other = <WriteLine 'Command line error'>;
+}
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}

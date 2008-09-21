@@ -1,0 +1,33 @@
+
+---------- LIBRARYEX.SREF
+$ENTRY Map {
+$ENTRY Reduce {
+$ENTRY MapReduce {
+$ENTRY UnBracket {
+$ENTRY DelAccummulator {
+$ENTRY LoadFile {
+$ENTRY SaveFile {
+$ENTRY Inc {
+$ENTRY Dec {
+$ENTRY ArgList {
+
+---------- TEST.SREF
+$ENTRY Go {
+
+---------- LIBRARY.SREF_
+$ENTRY Add { }
+$ENTRY Sub { }
+$ENTRY ReadLine { }
+$ENTRY WriteLine { }
+$ENTRY FOpen { }
+$ENTRY FClose { }
+$ENTRY FReadLine { }
+$ENTRY FWriteLine { }
+$ENTRY System { }
+$ENTRY StrFromInt { }
+$ENTRY IntFromStr { }
+$ENTRY Exit { }
+$ENTRY Arg { }
+$ENTRY Ord { }
+$ENTRY Chr { }
+$ENTRY ExistFile  { }

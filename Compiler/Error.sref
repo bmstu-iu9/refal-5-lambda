@@ -1,0 +1,70 @@
+$ENUM ErrorList;
+
+$ENTRY EL-Create {
+  = (ErrorList);
+}
+
+$ENTRY EL-AddError {
+  (ErrorList e.Errors) e.Message =
+    (ErrorList
+      e.Errors
+      ('  ERROR: ' e.Message)
+    );
+}
+
+//FROM Library
+$EXTERN StrFromInt;
+
+$ENTRY EL-AddErrorAt {
+  (ErrorList e.Errors) s.LineNumber e.Message =
+    (ErrorList
+      e.Errors
+      ('  ERROR at ' <StrFromInt s.LineNumber> ': ' e.Message)
+    );
+}
+
+//FROM Lexer
+$EXTERN StrFromToken, TkError, TkUnexpected ;
+
+$ENTRY EL-AddUnexpected {
+  t.ErrorList (TkError s.LineNumber e.Message) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber e.Message
+    >;
+
+  t.ErrorList (TkUnexpected s.LineNumber e.Unexpected) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber
+      'Unknown characters "' e.Unexpected '"'
+    >;
+
+  t.ErrorList (s.Unexpected s.LineNumber e.Info) e.Expected =
+    <EL-AddErrorAt
+      t.ErrorList s.LineNumber
+      'Unexpected ' <StrFromToken s.Unexpected e.Info>
+      ', expected ' e.Expected
+    >;
+}
+
+//FROM LibraryEx
+$EXTERN Map;
+
+//FROM Library
+$EXTERN WriteLine;
+
+PrintError {
+  (e.Line) = <WriteLine e.Line>;
+}
+
+$ENTRY EL-Print {
+  (ErrorList e.Errors) =
+    <Map PrintError e.Errors> (ErrorList e.Errors);
+}
+
+$EENUM EL-NoErrors, EL-HasErrors;
+
+$ENTRY EL-IsEmpty {
+  (ErrorList) = EL-NoErrors;
+
+  t.ErrorList = EL-HasErrors;
+}

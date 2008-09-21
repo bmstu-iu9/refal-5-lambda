@@ -1,0 +1,140 @@
+//FROM Library
+$EXTERN Add, Sub, WriteLine, ReadLine;
+
+DoMatchBrackets {
+  (e.Brackets-B '!' s.Left s.Right e.Brackets-E)
+  t.MultiBracket (e.Scanned) s.Left e.Tail =
+    <DoMatchBrackets
+      (e.Brackets-B '!' s.Left s.Right e.Brackets-E)
+      (t.MultiBracket e.Scanned s.Left) () e.Tail
+    >;
+
+  (e.Brackets-B '!' s.Left s.Right e.Brackets-E)
+  (t.MultiBracket e.Scanned s.Left) (e.Inner) s.Right e.Tail =
+    <DoMatchBrackets
+      (e.Brackets-B '!' s.Left s.Right e.Brackets-E)
+      t.MultiBracket (e.Scanned ('*' s.Left '*' e.Inner '*' s.Right '*')) e.Tail
+    >;
+
+  (e.Brackets-B '!' s.OtherLeft s.OtherRight e.Brackets-E)
+  (t.MultiBracket e.Scanned s.Left) (e.Inner) s.OtherRight e.Tail =
+    <WriteLine
+      'Unballansed bracket: expected cobracket for ''' s.Left
+      ''', got''' s.OtherRight ''
+    >;
+
+  (e.Brackets) t.MultiBracket (e.Scanned) s.NoBracket e.Tail =
+    <DoMatchBrackets
+      (e.Brackets) t.MultiBracket (e.Scanned s.NoBracket) e.Tail
+    >;
+
+  (e.Brackets) '$' (e.Scanned) =
+    <WriteLine 'Brackets ballanced: ' e.Scanned>;
+
+  (e.Brackets) t.MultiBracket (e.Scanned) e.Tail =
+    <WriteLine 'Found unclosed brackets ' t.MultiBracket ( e.Scanned )>;
+}
+
+Brackets { = '!()!{}![]!<>'; }
+
+MatchBrackets {
+  e.WithBrackets =
+    <DoMatchBrackets
+      ( <Brackets> )
+      '$' (/* result */) e.WithBrackets
+    >;
+}
+
+Test1 {
+  = <WriteLine
+    <MatchBrackets
+      'Brackets { = (''()'') (''{}'') (''[]'') (''<>''); }'
+      'abcd'
+    >
+  >;
+}
+
+Fib {
+  0 = 1;
+  1 = 1;
+  s.Num =
+    <Add <Fib <Sub s.Num 1> > <Fib <Sub s.Num 2> > >;
+}
+
+Test2 {
+  = <WriteLine <Fib 10>>;
+}
+
+Copy3 {
+  e.Var = e.Var e.Var e.Var;
+}
+
+Test3 {
+  = <WriteLine> <WriteLine '!' <Copy3 'Saluton'> '!'>;
+}
+
+Test4 {
+  = <WriteLine '"' <ReadLine> '"'>;
+}
+
+$EXTERN FReadLine, FOpen, Arg;
+$EXTERN LoadFile, SaveFile;
+
+$ENUM FailDown;
+
+Test5 {
+  = <SaveFile ('copy') <LoadFile 'Test.sref'>>;
+}
+
+$EXTERN ArgList;
+
+Test6 {
+  = <SaveFile ('_arguments') <ArgList>>;
+}
+
+$EXTERN ExistFile;
+
+TestFile {
+  e.FileName = <WriteLine e.FileName ' - ' <ExistFile e.FileName>>;
+}
+
+Test7 {
+  = <TestFile 'Test.sref'> <TestFile 'FooBar.txt'>;
+}
+
+$EXTERN Exit, System;
+
+Test8 {
+  = <Exit 3>;
+}
+
+Test9 {
+  = <System 'dir /w'>;
+}
+
+$EXTERN IntFromStr, StrFromInt;
+
+Test10 {
+  = <WriteLine <IntFromStr <ReadLine>>>;
+}
+
+Test11 {
+  = <WriteLine '"' <StrFromInt 10> '"'>;
+}
+
+ExecuteAll {
+  s.Function e.Tail =
+    <WriteLine '###' s.Function '###'>
+    <s.Function>
+    <ExecuteAll e.Tail>;
+
+  = ;
+}
+
+Test12 {
+  = <ExecuteAll Test1 Test2 Test3 Test4 Test5 Test6 Test7 /*Test8*/ Test9 Test10 Test11>;
+}
+
+$ENTRY Go {
+  = <Test12>;
+}

@@ -1,0 +1,11 @@
+$module SRPrep;
+
+$import InOut;
+$import MLambda;
+$import MOS;
+$import MLocation;
+$import MPreprocessor;
+
+$entry Go;
+
+$end SRPrep.

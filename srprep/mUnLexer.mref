@@ -1,0 +1,50 @@
+$MODULE MUnLexer;
+
+$IMPORT FileIO;
+$IMPORT MLambda;
+
+$ENTRY Write
+  (e.FileName) e.Tokens =
+    <FileIO::Save
+      (e.FileName)
+      ( <MLambda::Map &TokenToText e.Tokens> )
+    >;
+
+TokenToText
+  (s.Type (e.Space) e.Value) =
+    e.Space <SwTokenToText s.Type e.Value>;
+
+SwTokenToText {
+  Number e.Digits = e.Digits;
+
+  Name e.Name = e.Name;
+
+  Punctuation s.Punctuation = s.Punctuation;
+
+  Unexpected e.Unexpected = '/*' e.Unexpected '*/';
+
+  CppComment e.Comment = '//' e.Comment '\n';
+
+  CComment e.Comment = '/*' e.Comment '*/';
+
+  Literal e.Literal = '\'' e.Literal '\'';
+
+  Directive s.Directive = <Directive s.Directive>;
+
+  Var e.Var = e.Var;
+
+  Nothing = ;
+
+  EOF = ;
+}
+
+Directive {
+  Entry   =  '$ENTRY';
+  Import  =  '$IMPORT';
+  Module  =  '$MODULE';
+  Program =  '$PROGRAM';
+  End     =  '$END';
+  Swap    =  '$SWAP';
+}
+
+$END MUnLexer.

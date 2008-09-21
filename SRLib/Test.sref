@@ -1,0 +1,19 @@
+//FROM Library
+$EXTERN WriteLine;
+
+//FROM LibraryEx
+$EXTERN LoadFile, SaveFile, ArgList;
+
+Main {
+  (e.ProgName) = <WriteLine 'Expected file name'>;
+
+  (e.ProgName) (e.File) e.Other =
+    <SaveFile
+      (e.File '.out')
+      <LoadFile e.File>
+    >;
+}
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}

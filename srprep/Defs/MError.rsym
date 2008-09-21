@@ -1,0 +1,10 @@
+$module MError;
+
+$import InOut;
+$import MOS;
+
+$entry Error;
+$entry Fatal;
+$entry Unexpected;
+
+$end MError.
