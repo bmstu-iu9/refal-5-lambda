@@ -7,57 +7,77 @@ $EXTERN ArgList, Map;
 //FROM FileScanner
 $EXTERN CreateFileList;
 
-$EXTERN Make;
+//FROM ParseCmdLine
+$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
 
-Main {
-  (e.Program) (e.MainFile) =
-    <Make e.MainFile>;
-
-  (e.Program) e.Other =
-    <WriteLine 'Command line error'>;
-}
+$FORWARD Main;
 
 $ENTRY Go { = <Main <ArgList>>; }
 
-DoUnExt {
-  e.Name '.' (e.Ext) = e.Name;
+$FORWARD MakeProject;
 
-  e.Name s.Last (e.Ext) =
-    <DoUnExt e.Name (s.Last e.Ext)>;
-
-  // ָלÿ פאיכא בוח נאסרטנוםטÿ
-  e.Name '\\' (e.Ext) = e.Name '\\' e.Ext;
-
-  e.Name '/' (e.Ext) = e.Name '/' e.Ext;
-
-  (e.Ext) = e.Ext;
+Main {
+  (e.Program) e.Arguments =
+    <MakeProject
+      <ParseCommandLine e.Arguments>
+    >;
 }
 
-UnExt {
-  e.Name = <DoUnExt e.Name ()>;
+$FORWARD Make;
+
+MakeProject {
+  (CmdLineError e.Message) =
+    <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
+
+  (NoCompile) (e.Folders) (e.File) =
+    <WriteLine
+      'COMMAND LINE ERROR: Compiler not selected'
+    >;
+
+  (CompileCommand e.Command) (e.Folders) (e.File) =
+    <Make
+      (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
+    >;
+
+  t.Compiler (e.Folders) e.ManyFiles =
+    <WriteLine
+      'COMMAND LINE ERROR: many files selected'
+    >;
 }
 
-$EXTERN Make-Aux;
+//FROM FindFile
+$EXTERN Source, Output, NotFound;
+
+$FORWARD PrintNotFound, PrintDirectory, PrintUnit;
 
 Make {
-  e.MainFile =
-    <Make-Aux
-      <CreateFileList () (<UnExt e.MainFile>)>
-    >;
-}
+  (e.CompilerCommand) (e.Directories)
+  e.Units-B (NotFound e.UnitName) e.Units-E =
+    <Map PrintNotFound (NotFound e.UnitName) e.Units-E>;
 
-CheckName {
-  ('Library') = ;
-  ('LibraryEx') = '..\\SRLib\\LibraryEx.sref ';
-  (e.OtherModule) = e.OtherModule '.sref ';
-}
-
-Make-Aux {
-  e.Files =
-    <System 'copy ..\\SRLib\\Library.mref Library.mref'>
+  (e.CompilerCommand) (e.Directories) e.Units =
     <System
-      'refgo ..\\srprep\\srprep '
-      <Map CheckName e.Files>
+      'srefc -c "' e.CompilerCommand '" '
+      <Map PrintDirectory e.Directories>
+      <Map PrintUnit e.Units>
     >;
 }
 
+PrintNotFound {
+  (NotFound e.UnitName) =
+    <WriteLine
+      'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
+    >;
+
+  (Output e.Output) = ;
+  (Source (e.Source) e.Output) = ;
+}
+
+PrintDirectory {
+  (e.Folder) = '-d "' e.Folder '" ';
+}
+
+PrintUnit {
+  (Output e.Output) = '"' e.Output '" ';
+  (Source (e.Source) e.Output) = '"' e.Source '" ';
+}

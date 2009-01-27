@@ -1,0 +1,107 @@
+$EENUM Source, Output, NotFound;
+
+$FORWARD AnalyzeFile-ByFolders;
+
+$ENUM Current;
+
+//FROM LibraryEx
+$EXTERN Map;
+
+/**
+  <FindFiles (e.Folders) e.Files>
+    == t.FoundFile*
+
+  t.FoundFile ::=
+    (Source (e.Source) e.Output)
+    (Output e.Output)
+    (NotFound e.FileName)
+*/
+$ENTRY FindFiles {
+  (e.Folders) e.Files =
+    <Map (AnalyzeFile-ByFolders Current e.Folders) e.Files>;
+}
+
+$FORWARD AnalyzeFile-CheckNotFound, AnalyzeInFolder;
+
+AnalyzeFile-ByFolders {
+  e.Folders (e.FileName) =
+    <AnalyzeFile-CheckNotFound
+      (e.FileName)
+      <Map (AnalyzeInFolder e.FileName) e.Folders>
+    >;
+}
+
+$FORWARD AnalyzeFile;
+
+AnalyzeInFolder {
+  e.FileName Current = <AnalyzeFile e.FileName>;
+
+  e.FileName (e.Folder) = <AnalyzeFile e.Folder '/' e.FileName>;
+}
+
+AnalyzeFile-CheckNotFound {
+  (e.FileName) (Source (e.Source) e.Output) e.Variants =
+    (Source (e.Source) e.Output);
+
+  (e.FileName) (Output e.Output) e.Variants =
+    (Output e.Output);
+
+  (e.FileName) (NotFound e.NotFoundPath) e.Variants =
+    <AnalyzeFile-CheckNotFound (e.FileName) e.Variants>;
+
+  (e.FileName) = (NotFound e.FileName);
+}
+
+//------------------------------------------------------------------------------
+
+$FORWARD AnalyzeSource-CheckExist, AnalyzeOutput-CheckExist,
+  AnalyzeBoth-CheckExist;
+
+//FROM Library
+$EXTERN ExistFile, True, False;
+
+ExistFile-T {
+  e.FileName = <ExistFile e.FileName> e.FileName;
+}
+
+AnalyzeFile {
+  e.FileName '.sref' =
+    <AnalyzeSource-CheckExist
+      <ExistFile-T e.FileName '.sref'>
+    >;
+
+  e.FileName '.cpp' =
+    <AnalyzeOutput-CheckExist
+      <ExistFile-T e.FileName '.cpp'>
+    >;
+
+  e.FileName =
+    <AnalyzeBoth-CheckExist
+      ( <ExistFile-T e.FileName '.sref'> )
+      <ExistFile-T e.FileName '.cpp'>
+    >;
+}
+
+AnalyzeSource-CheckExist {
+  True e.UnitName '.sref' =
+    (Source (e.UnitName '.sref') e.UnitName '.cpp');
+
+  False e.SourceName = (NotFound e.SourceName);
+}
+
+AnalyzeOutput-CheckExist {
+  True e.OutName = (Output e.OutName);
+
+  False e.OutName = (NotFound e.OutName);
+}
+
+AnalyzeBoth-CheckExist {
+  ( True e.SourceName ) s.Res e.OutName =
+    (Source (e.SourceName) e.OutName);
+
+  ( False e.SourceName ) True e.OutName =
+    (Output e.OutName);
+
+  ( False e.UnitName '.sref' ) False e.UnitName '.cpp' =
+    (NotFound e.UnitName);
+}

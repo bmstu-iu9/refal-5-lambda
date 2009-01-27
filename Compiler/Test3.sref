@@ -1,0 +1,35 @@
+//FROM Library
+$EXTERN WriteLine, TypeCharacter, TypeNumber, TypeFunction, TypeFile,
+  FOpen, FClose;
+
+//FROM LibraryEx
+$EXTERN Type, TypeBracket;
+
+$FORWARD PrintType;
+
+$ENTRY Go {
+  =
+    <PrintType 'a'>
+    <PrintType 10>
+    <PrintType PrintType>
+    <PrintType ()>
+    <PrintType <FOpen 'r' 'Test3.sref'>>;
+}
+
+$FORWARD PrintType-Aux;
+
+PrintType {
+  t.Term = <PrintType-Aux t.Term <Type t.Term>>;
+}
+
+PrintType-Aux {
+  t.Term TypeCharacter = <WriteLine t.Term ' is character'>;
+
+  t.Term TypeNumber = <WriteLine t.Term ' is number'>;
+
+  t.Term TypeFunction = <WriteLine t.Term ' is function'>;
+
+  t.Term TypeFile = <WriteLine t.Term ' is file'> <FClose t.Term>;
+
+  t.Term TypeBracket = <WriteLine t.Term ' is bracket'>;
+}

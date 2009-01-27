@@ -2,41 +2,48 @@
 // Расширения библиотеки и функции, реализуемые
 // средствами самого Простого Рефала
 
-$ENTRY Map {
-  s.Fn t.Next e.Tail = <s.Fn t.Next> <Map s.Fn e.Tail>;
+$ENTRY Apply {
+  s.Fn e.Argument = <s.Fn e.Argument>;
 
-  s.Fn = ;
+  (t.Closure e.Bounded) e.Argument =
+    <Apply t.Closure e.Bounded e.Argument>;
+}
+
+$ENTRY Map {
+  t.Fn t.Next e.Tail = <Apply t.Fn t.Next> <Map t.Fn e.Tail>;
+
+  t.Fn = ;
 }
 
 $ENTRY Reduce {
-  s.Fn t.Acc t.Next e.Tail =
+  t.Fn t.Acc t.Next e.Tail =
     <Reduce
-      s.Fn <s.Fn t.Acc t.Next> e.Tail
+      t.Fn <Apply t.Fn t.Acc t.Next> e.Tail
     >;
 
-  s.Fn t.Acc = t.Acc;
+  t.Fn t.Acc = t.Acc;
 }
 
-$EXTERN DoMapReduce;
+$FORWARD DoMapReduce;
 
 $ENTRY MapReduce {
-  s.Fn t.Acc e.Tail =
-    <DoMapReduce s.Fn t.Acc () e.Tail>;
+  t.Fn t.Acc e.Tail =
+    <DoMapReduce t.Fn t.Acc () e.Tail>;
 }
 
-$EXTERN MapReduce--AddScanned;
+$FORWARD MapReduce--AddScanned;
 
 DoMapReduce {
-  s.Fn t.Acc (e.Scanned) t.Next e.Tail =
+  t.Fn t.Acc (e.Scanned) t.Next e.Tail =
     <DoMapReduce
-      s.Fn
+      t.Fn
       <MapReduce--AddScanned
-        <s.Fn t.Acc t.Next> (e.Scanned)
+        <Apply t.Fn t.Acc t.Next> (e.Scanned)
       >
       e.Tail
     >;
 
-  s.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
+  t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
 }
 
 MapReduce--AddScanned {
@@ -55,7 +62,7 @@ $ENTRY DelAccummulator {
 //FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine;
 
-$EXTERN DoLoadFile;
+$FORWARD DoLoadFile;
 
 $ENTRY LoadFile {
   e.FileName =
@@ -76,7 +83,7 @@ DoLoadFile {
     >;
 }
 
-$EXTERN WriteBracketLine;
+$FORWARD WriteBracketLine;
 
 $ENTRY SaveFile {
   (e.FileName) e.Lines =
@@ -121,13 +128,13 @@ $ENTRY FastIntFromStr {
 //FROM Library
 $EXTERN Arg;
 
-$EXTERN DoArgList;
+$FORWARD DoArgList;
 
 $ENTRY ArgList {
   = <DoArgList 0>;
 }
 
-$EXTERN SwDoArgList;
+$FORWARD SwDoArgList;
 
 DoArgList {
   s.Next = <SwDoArgList <Inc s.Next> <Arg s.Next>>;
@@ -139,4 +146,118 @@ SwDoArgList {
   s.Next e.Arg = (e.Arg) <DoArgList s.Next>;
 }
 
+$FORWARD Lexicon;
 
+//FROM Library
+$EXTERN SymbCompare;
+
+$ENTRY Compare {
+  (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
+
+  (e.Left) s.Right = '>';
+  s.Left (e.Right) = '<';
+
+  s.Left s.Right = <SymbCompare s.Left s.Right>;
+}
+
+$FORWARD Lexicon-Aux;
+
+Lexicon {
+  (t.FirstLeft e.Left) (t.FirstRight e.Right) =
+    <Lexicon-Aux
+      <Compare t.FirstLeft t.FirstRight>
+      (e.Left) (e.Right)
+    >;
+
+  () () = '=';
+
+  () (e.Right) = '<';
+  (e.Left) () = '>';
+}
+
+Lexicon-Aux {
+  '<' (e.Left) (e.Right) = '<';
+  '=' (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
+  '>' (e.Left) (e.Right) = '>';
+}
+
+$FORWARD Lexicon-T;
+
+$ENTRY Compare-T {
+  (e.Left) (e.Right) = <Lexicon-T () (e.Left) () (e.Right)>;
+
+  (e.Left) s.Right = '>' (e.Left) s.Right;
+  s.Left (e.Right) = '<' s.Left (e.Right);
+
+  s.Left s.Right = <SymbCompare s.Left s.Right> s.Left s.Right;
+}
+
+$FORWARD Lexicon-T-Aux;
+
+Lexicon-T {
+  (e.ScannedLeft) (t.FirstLeft e.Left)
+  (e.ScannedRight) (t.FirstRight e.Right) =
+    <Lexicon-T-Aux
+      (e.ScannedLeft) (e.ScannedRight)
+      <Compare-T t.FirstLeft t.FirstRight>
+      (e.Left) (e.Right)
+    >;
+
+  (e.ScannedLeft) () (e.ScannedRight) () =
+    '=' (e.ScannedLeft) (e.ScannedRight);
+
+  (e.ScannedLeft) () (e.ScannedRight) (e.Right) =
+    '<' (e.ScannedLeft) (e.ScannedRight e.Right);
+
+  (e.ScannedLeft) (e.Left) (e.ScannedRight) () =
+    '>' (e.ScannedLeft e.Left) (e.ScannedRight);
+}
+
+Lexicon-T-Aux {
+  (e.ScannedLeft) (e.ScannedRight)
+  '<' t.NextLeft t.NextRight (e.Left) (e.Right) =
+    '<' (e.ScannedLeft t.NextLeft e.Left)
+    (e.ScannedRight t.NextRight e.Right);
+
+  (e.ScannedLeft) (e.ScannedRight)
+  '=' t.NextLeft t.NextRight (e.Left) (e.Right) =
+    <Lexicon-T
+      (e.ScannedLeft t.NextLeft) (e.Left)
+      (e.ScannedRight t.NextRight) (e.Right)
+    >;
+
+  (e.ScannedLeft) (e.ScannedRight)
+  '>' t.NextLeft t.NextRight (e.Left) (e.Right) =
+    '>' (e.ScannedLeft t.NextLeft e.Left)
+    (e.ScannedRight t.NextRight e.Right);
+}
+
+//FROM Library
+$EXTERN SymbType;
+
+$EENUM TypeBracket;
+
+$ENTRY Type {
+  (e.InBracket) = TypeBracket;
+  s.Symbol = <SymbType s.Symbol>;
+}
+
+$ENTRY Type-T {
+  (e.InBrackets) e.Tail = TypeBracket (e.InBrackets) e.Tail;
+  s.Symbol e.Tail = <SymbType s.Symbol> s.Symbol e.Tail;
+  = '*';
+}
+
+$FORWARD Trim-R;
+
+$ENTRY Trim {
+  ' ' e.Line = <Trim e.Line>;
+  '\t' e.Line = <Trim e.Line>;
+  e.Line = <Trim-R e.Line>;
+}
+
+Trim-R {
+  e.Line ' ' = <Trim-R e.Line>;
+  e.Line '\t' = <Trim-R e.Line>;
+  e.Line = e.Line;
+}

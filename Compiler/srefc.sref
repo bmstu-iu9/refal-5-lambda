@@ -7,18 +7,71 @@ $EXTERN Map, ArgList;
 //FROM Library
 $EXTERN Success, Fails, WriteLine, System;
 
-$EXTERN SrcName, OutputName;
+//------------------------------------------------------------------------------
 
-$EXTERN SwCompiled;
+$FORWARD Main;
 
-CompileFile-UnBracket {
-  (e.FileName) =
-    <SwCompiled
-      <WriteLine '*Compiling ' e.FileName ':'>
-      <CompileFile
-        (<SrcName e.FileName>)
-        <OutputName e.FileName>
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+$FORWARD Compile-And-Link, FindFiles-Compilers;
+
+//FROM ParseCmdLine
+$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
+
+Main {
+  (e.ProgName) e.Arguments =
+    <Compile-And-Link
+      <FindFiles-Compilers
+        <ParseCommandLine e.Arguments>
       >
+    >;
+}
+
+//FROM FindFile
+$EXTERN FindFiles;
+
+FindFiles-Compilers {
+  t.Compilers (e.Folders) e.Files =
+    t.Compilers <FindFiles (e.Folders) e.Files>;
+}
+
+//FROM FindFile
+$EXTERN Source, Output, NotFound;
+
+$FORWARD PrintNotFound, CompileEachFile, Link;
+
+Compile-And-Link {
+  (CmdLineError e.Message) =
+    <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
+
+  t.Compiler e.Files-B (NotFound e.FileName) e.Files-E =
+    <Map PrintNotFound (NotFound e.FileName) e.Files-E>;
+
+  t.Compiler e.Files = <Link t.Compiler <Map CompileEachFile e.Files>>;
+}
+
+PrintNotFound {
+  (NotFound e.FileName) =
+    <WriteLine 'COMMAND LINE ERROR: file ' e.FileName ' not found'>;
+
+  (Output e.FileName) = ;
+
+  (Source (e.Source) e.Output) = ;
+}
+
+
+$FORWARD SwCompiled;
+
+CompileEachFile {
+  (Output e.OutputName) =
+    <WriteLine '+Linking ' e.OutputName> (e.OutputName);
+
+  (Source (e.Source) e.Output) =
+    <SwCompiled
+      <WriteLine '*Compiling ' e.Source ':'>
+      <CompileFile (e.Source) e.Output>
     >;
 }
 
@@ -28,49 +81,16 @@ SwCompiled {
   Fails = Fails;
 }
 
-$EXTERN CallCppCompiler;
+UnBracketSpace {
+  (e.FileName) = ' ' e.FileName;
+}
 
 Link {
-  e.Modules-B Fails e.Modules-E = ;
+  (NoCompile) e.Files = ;
 
-  e.Modules = <CallCppCompiler e.Modules>;
-}
+  (CompileCommand e.Command) e.Outputs-B Fails e.Outputs-E = ;
 
-UnBracketSpace {
-  (e.Module) = e.Module ' ';
-}
-
-CallCppCompiler {
-  e.Modules =
-    <System
-      'call_cpp_compiler '
-      <Map UnBracketSpace e.Modules>
-      'refalrts.cpp'
-    >
+  (CompileCommand e.Command) e.Outputs =
+    <System e.Command <Map UnBracketSpace e.Outputs>>
     <WriteLine '** Compilation successed **'>;
-}
-
-Main {
-  (e.ProgName) e.FileList =
-    <Link
-      <Map CompileFile-UnBracket e.FileList>
-    >;
-}
-
-$EXTERN UseFunctions;
-
-$ENTRY Go {
-  = <Main <ArgList>>;
-}
-
-SrcName {
-  e.FileName '.sref' = e.FileName '.sref';
-
-  e.FileName = e.FileName;
-}
-
-OutputName {
-  e.FileName '.sref' = e.FileName '.cpp';
-
-  e.FileName = e.FileName '.cpp';
 }

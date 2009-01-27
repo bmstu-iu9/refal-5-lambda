@@ -1,7 +1,5 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <vector>
-#include <ctype.h>
+#include <stdlib.h>
 
 #include <assert.h>
 
@@ -76,7 +74,9 @@ void refalrts::move_right(
 }
 
 bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
-  assert( (first == 0) == (last == 0) );
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
 
   return (first == 0) && (last == 0);
 }
@@ -349,13 +349,17 @@ bool refalrts::next_term(
   return tvar_left( temp, first, last );
 }
 
-namespace {
+namespace refalrts {
 
 class UnexpectedTypeException { };
 
+} // namespace refalrts
+
+namespace {
+
 bool equal_nodes(
   refalrts::Iter node1, refalrts::Iter node2
-) // throws UnexpectedTypeException
+) // throws refalrts::UnexpectedTypeException
 {
   if( node1->tag != node2->tag ) {
     return false;
@@ -391,7 +395,7 @@ bool equal_nodes(
         познавания образца. Поэтому других узлов мы тут не ожидаем.
       */
       default:
-        throw UnexpectedTypeException();
+        throw refalrts::UnexpectedTypeException();
         // break;
     }
     // Все ветви в case завершаются либо return, либо throw.
@@ -401,7 +405,7 @@ bool equal_nodes(
 bool equal_expressions(
   refalrts::Iter first1, refalrts::Iter last1,
   refalrts::Iter first2, refalrts::Iter last2
-) // throws UnexpectedTypeException
+) // throws refalrts::UnexpectedTypeException
 {
   assert( (first1 == 0) == (last1 == 0) );
   assert( (first2 == 0) == (last2 == 0) );
@@ -672,7 +676,7 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       должно.
     */
     default:
-      throw UnexpectedTypeException();
+      throw refalrts::UnexpectedTypeException();
       // break;
   }
 }
@@ -1146,7 +1150,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
     }
   }
 
-  printf("\n\nTOTAL STEPS %d\n", g_step_counter);
+  // printf("\n\nTOTAL STEPS %d\n", g_step_counter);
 
   return res;
 }
@@ -1246,7 +1250,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           default:
-            throw UnexpectedTypeException();
+            throw refalrts::UnexpectedTypeException();
             // break;
         }
 
@@ -1299,7 +1303,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
         continue;
 
       default:
-        throw UnexpectedTypeException();
+        throw refalrts::UnexpectedTypeException();
     }
   }
 }
@@ -1335,849 +1339,11 @@ void refalrts::vm::free_view_field() {
 }
 
 //==============================================================================
-// Библиотека "встроенных" функций
-//==============================================================================
 
-// Основные перечисления
-
-refalrts::FnResult Success( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult Fails( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult True( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult False( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-// Математические операции
-
-refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info + sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info - sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-// Ввод-вывод
-
-refalrts::FnResult write_to_stream(
-  FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
-) {
-  if( ferror( out ) ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  int printf_res;
-
-  for(
-    refalrts::Iter p = str_begin;
-    ! empty_seq( p, str_end );
-    move_left( p, str_end )
-  ) {
-    switch( p->tag ) {
-      case refalrts::cDataChar: {
-        printf_res = fprintf( out, "%c", p->char_info );
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      case refalrts::cDataNumber: {
-        printf_res = fprintf( out, "%d ", p->number_info );
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      case refalrts::cDataFunction: {
-        if( p->function_info.name[0] != '\0' ) {
-          printf_res = fprintf( out, "%s ", p->function_info.name );
-        } else {
-          printf_res = fprintf( out, "&%p ", p->function_info.ptr );
-        }
-
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      case refalrts::cDataOpenBracket: {
-        printf_res = fprintf( out, "(" );
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      case refalrts::cDataCloseBracket: {
-        printf_res = fprintf( out, ")" );
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      case refalrts::cDataFile: {
-        printf_res = fprintf( out, "*%p", p->file_info );
-        if( printf_res < 0 ) {
-          return refalrts::cRecognitionImpossible;
-        } else {
-          break;
-        }
-      }
-
-      default:
-        throw UnexpectedTypeException();
-        // break;
-    }
-  }
-
-  printf_res = fprintf( out, "\n" );
-  if( printf_res < 0 ) {
-    return refalrts::cRecognitionImpossible;
-  } else {
-    return refalrts::cSuccess;
-  }
-}
-
-refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter eLine_b_1;
-    refalrts::Iter eLine_e_1;
-    eLine_b_1 = bb_0;
-    refalrts::use( eLine_b_1 );
-    eLine_e_1 = be_0;
-    refalrts::use( eLine_e_1 );
-
-    refalrts::FnResult fnres =
-      write_to_stream( stdout, eLine_b_1, eLine_e_1 );
-
-    if( fnres != refalrts::cSuccess )
-      return fnres;
-
-    refalrts::reset_allocator();
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return fnres;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sFileHandle_1;
-    refalrts::Iter eLine_b_1;
-    refalrts::Iter eLine_e_1;
-    // s.FileHandle e.Line
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
-      break;
-    if( sFileHandle_1->tag != refalrts::cDataFile )
-      break;
-    eLine_b_1 = bb_0;
-    refalrts::use( eLine_b_1 );
-    eLine_e_1 = be_0;
-    refalrts::use( eLine_e_1 );
-
-    refalrts::FnResult write_result =
-      write_to_stream(
-        static_cast<FILE*>( sFileHandle_1->file_info ), eLine_b_1, eLine_e_1
-      );
-
-    if( write_result != refalrts::cSuccess )
-      return write_result;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::splice_stvar( res, sFileHandle_1 );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult read_from_stream(
-  FILE *input, refalrts::Iter& begin, refalrts::Iter& end
-) {
-  refalrts::Iter before_begin =
-    prev( refalrts::allocator::free_ptr() );
-  refalrts::Iter cur_char_node = 0;
-
-  int cur_char;
-
-  for( ;; ) {
-    cur_char = getc(input);
-    if( EOF == cur_char ) {
-      if( ! refalrts::alloc_number( cur_char_node, 0UL ) ) {
-        return refalrts::cNoMemory;
-      }
-      break;
-    } else if ( '\n' == cur_char ) {
-      break;
-    } else {
-      /*
-        Пользуемся тем фактом, что в данной реализации размещёные в свободной
-        памяти узлы располагаются в последовательных адресах, которые будут
-        начинаться с before_begin->next.
-      */
-      if( ! refalrts::alloc_char( cur_char_node, cur_char ) ) {
-        return refalrts::cNoMemory;
-      }
-    }
-  }
-
-  if( cur_char_node != 0 ) {
-    begin = next( before_begin );
-    end = cur_char_node;
-  } else {
-    begin = 0;
-    end = 0;
-  }
-
-  return refalrts::cSuccess;
-}
-
-refalrts::FnResult ReadLine(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    refalrts::Iter str_begin, str_end;
-
-    refalrts::FnResult fn_result =
-      read_from_stream( stdin, str_begin, str_end );
-
-    if( fn_result != refalrts::cSuccess )
-      return fn_result;
-
-    res = refalrts::splice_evar( res, str_begin, str_end );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult FReadLine(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sFileHandle_1;
-    // s.FileHandle
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
-      break;
-    if( sFileHandle_1->tag != refalrts::cDataFile )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    refalrts::Iter str_begin, str_end;
-
-    refalrts::FnResult fn_result =
-      read_from_stream(
-        static_cast<FILE*>( sFileHandle_1->file_info ), str_begin, str_end
-      );
-
-    if( fn_result != refalrts::cSuccess )
-      return fn_result;
-
-    res = refalrts::splice_evar( res, str_begin, str_end );
-    res = refalrts::splice_stvar( res, sFileHandle_1 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult string_from_seq(
-  std::vector<char>& string, refalrts::Iter begin, refalrts::Iter end
-) {
-  std::vector<char> result;
-
-  while(
-    ! empty_seq( begin, end )
-      && (refalrts::cDataChar == begin->tag)
-  ) {
-    result.push_back( begin->char_info );
-
-    move_left( begin, end );
-  }
-
-  /*
-    Здесь empty_seq( begin, end ) || (begin->tag != cDataChar).
-  */
-
-  if( empty_seq( begin, end ) ) {
-    result.push_back( '\0' );
-    string.swap( result );
-    return refalrts::cSuccess;
-  } else {
-    // здесь begin->tag != cDataChar
-    return refalrts::cRecognitionImpossible;
-  }
-}
-
-refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter eFileName_b_1;
-    refalrts::Iter eFileName_e_1;
-
-    const char *mode;
-
-    if( refalrts::char_left( 'r', bb_0, be_0 ) ) {
-      mode = "r";
-    } else if ( refalrts::char_left( 'w', bb_0, be_0 ) ) {
-      mode = "w";
-    } else {
-      break;
-    }
-
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
-
-    std::vector<char> filename;
-
-    refalrts::FnResult fname_read =
-      string_from_seq( filename, eFileName_b_1, eFileName_e_1 );
-
-    if( refalrts::cSuccess != fname_read )
-      return fname_read;
-
-    if( filename.empty() )
-      return refalrts::cRecognitionImpossible;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    refalrts::Iter file_ptr = 0;
-    if( ! refalrts::allocator::alloc_node( file_ptr ) )
-      return refalrts::cNoMemory;
-
-    file_ptr->tag = refalrts::cDataFile;
-
-    if( FILE *f = fopen( &filename[0], mode ) ) {
-      file_ptr->file_info = f;
-    } else {
-      return refalrts::cRecognitionImpossible;
-    }
-
-    res = refalrts::splice_elem( res, file_ptr );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sFileHandle_1;
-    // s.FileHandle
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
-      break;
-    if( sFileHandle_1->tag != refalrts::cDataFile )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    int fclose_res =
-      fclose( static_cast<FILE*>( sFileHandle_1->file_info ) );
-
-    if( EOF == fclose_res ) {
-      return refalrts::cRecognitionImpossible;
-    } else {
-      /* Ничего не делаем */;
-    }
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-// Глобальные переменные, хранящие параметры вызова
+// Используются в Library.cpp
 
 char **g_argv = 0;
 int g_argc = 0;
-
-refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sParamNumber_1;
-    // s.ParamNumber
-    if( ! refalrts::svar_left( sParamNumber_1, bb_0, be_0 ) ) 
-      break;
-    if( sParamNumber_1->tag != refalrts::cDataNumber )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    int arg_number = sParamNumber_1->number_info;
-
-    if( arg_number < g_argc ) {
-      refalrts::Iter char_pos;
-
-      for(char *arg = g_argv[ arg_number ]; *arg != '\0'; ++arg ) {
-        if( ! refalrts::alloc_char( char_pos, *arg ) )
-          return refalrts::cNoMemory;
-
-        refalrts::splice_elem( res, char_pos );
-      }
-    }
-
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter eFileName_b_1;
-    refalrts::Iter eFileName_e_1;
-    // e.FileName
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
-
-    std::vector<char> fname;
-
-    refalrts::FnResult fname_res =
-      string_from_seq( fname, eFileName_b_1, eFileName_e_1 );
-
-    if( fname_res != refalrts::cSuccess )
-      return fname_res;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    refalrts::Iter ans = 0;
-    if( FILE *f = fopen( &fname[0], "r" ) ) {
-      // Файл существует
-      fclose( f );
-
-      if( ! refalrts::alloc_name( ans, & True, "True" ) ) {
-        return refalrts::cNoMemory;
-      }
-    } else {
-      // Файл по-видимому не существует
-      if( ! refalrts::alloc_name( ans, & False, "False" ) ) {
-        return refalrts::cNoMemory;
-      }
-    }
-
-    res = refalrts::splice_elem( res, ans );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sCode_1;
-    // s.Code
-    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) ) 
-      break;
-    if( sCode_1->tag != refalrts::cDataNumber )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    exit( sCode_1->number_info );
-
-    refalrts::reset_allocator();
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter eCommand_b_1;
-    refalrts::Iter eCommand_e_1;
-    // e.Command
-    eCommand_b_1 = bb_0;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_0;
-    refalrts::use( eCommand_e_1 );
-
-    std::vector<char> command;
-
-    refalrts::FnResult read_res =
-      string_from_seq( command, eCommand_b_1, eCommand_e_1 );
-
-    if( read_res != refalrts::cSuccess )
-      return read_res;
-
-    system( &command[0] );
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-// Преобразование типов.
-
-refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter eNumber_b_1;
-    refalrts::Iter eNumber_e_1;
-    // e.NoNumber
-    eNumber_b_1 = bb_0;
-    refalrts::use( eNumber_b_1 );
-    eNumber_e_1 = be_0;
-    refalrts::use( eNumber_e_1 );
-
-    bool start_is_digit =
-      !empty_seq( eNumber_b_1, eNumber_e_1 )
-      && (refalrts::cDataChar == eNumber_b_1->tag)
-      && isdigit( eNumber_b_1->char_info );
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    if( ! start_is_digit ) {
-      refalrts::Iter fail_pos = 0;
-      if( ! refalrts::alloc_name( fail_pos, & Fails, "Fails" ) )
-        return refalrts::cNoMemory;
-
-      res = refalrts::splice_evar( res, eNumber_b_1, eNumber_e_1 );
-      res = refalrts::splice_elem( res, fail_pos );
-    } else {
-      refalrts::RefalNumber acc = 0;
-
-      for( ; ; ) {
-        if( empty_seq( eNumber_b_1, eNumber_e_1 ) ) {
-          break;
-        } else if ( eNumber_b_1->tag != refalrts::cDataChar ) {
-          break;
-        } else if ( ! isdigit( eNumber_b_1->char_info ) ) {
-          break;
-        } else {
-          (acc *= 10) += eNumber_b_1->char_info - '0';
-        }
-
-        move_left( eNumber_b_1, eNumber_e_1 );
-      }
-
-      refalrts::Iter success_pos = 0;
-      refalrts::Iter number_pos = 0;
-
-      if( ! refalrts::alloc_name( success_pos, & Success, "Success" ) )
-        return refalrts::cNoMemory;
-
-      if( ! refalrts::alloc_number( number_pos, acc ) )
-        return refalrts::cNoMemory;
-
-      res = refalrts::splice_evar( res, eNumber_b_1, eNumber_e_1 );
-      res = refalrts::splice_elem( res, number_pos );
-      res = refalrts::splice_elem( res, success_pos );
-    }
-
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber_1;
-    // s.Number
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
-      break;
-    if( sNumber_1->tag != refalrts::cDataNumber )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-
-    refalrts::Iter char_pos = 0;
-    if( refalrts::RefalNumber num = sNumber_1->number_info ) {
-      while( num != 0 ) {
-        if( ! refalrts::alloc_char( char_pos, (num % 10) + '0' ) )
-          return refalrts::cNoMemory;
-        res = refalrts::splice_elem( res, char_pos );
-
-        num /= 10;
-      }
-    } else {
-      if( ! refalrts::alloc_char( char_pos, '0' ) )
-        return refalrts::cNoMemory;
-
-      res = refalrts::splice_elem( res, char_pos );
-    }
-
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sCode_1;
-    // s.Code
-    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) ) 
-      break;
-    if( sCode_1->tag != refalrts::cDataNumber )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    char result = static_cast<char>( sCode_1->number_info );
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sChar_1;
-    // s.Char
-    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
-      break;
-    if( sChar_1->tag != refalrts::cDataChar )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-
-    refalrts::RefalNumber result =
-      static_cast<unsigned char>( sChar_1->char_info );
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
-}
-
-//==============================================================================
 
 int main(int argc, char **argv) {
   g_argc = argc;
@@ -2187,7 +1353,7 @@ int main(int argc, char **argv) {
   try {
     refalrts::vm::init_view_field();
     res = refalrts::vm::main_loop();
-  } catch ( UnexpectedTypeException ) {
+  } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
   } catch (...) {

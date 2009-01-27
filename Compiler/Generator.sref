@@ -42,6 +42,11 @@ $ENTRY GenExtern {
     ('extern refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
 }
 
+$ENTRY GenForward {
+  e.Name =
+    ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
+}
+
 $ENTRY GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"') () ();
@@ -62,7 +67,7 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdBrackets, CmdEmpty,
   AlgLeft, AlgRight,
   CmdComment;
 
-$EXTERN GenSentence-Aux, GenCommand, BracketsVar-B, BracketsVar-E;
+$FORWARD GenSentence-Aux, GenCommand, BracketsVar-B, BracketsVar-E;
 
 //FROM LibraryEx
 $EXTERN Map, MapReduce;
@@ -87,7 +92,7 @@ $ENTRY GenSentence {
     >;
 }
 
-$EXTERN GenCloseBrackets;
+$FORWARD GenCloseBrackets;
 
 GenSentence-Aux {
   (e.Indent) e.Generated =
@@ -102,25 +107,51 @@ BracketsVar-E {
   s.BracketNumber = 'be_' <StrFromInt s.BracketNumber>;
 }
 
-BracketsVar-OE {
-  s.BracketNumber = 'boe_' <StrFromInt s.BracketNumber>;
-}
+//BracketsVar-OE {
+//  s.BracketNumber = 'boe_' <StrFromInt s.BracketNumber>;
+//}
 
 /*
   ¬еличина отступа также определ€ет режим работы. ќтступ в 4 пробела --
   вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
 */
 
-$EXTERN PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OB, PrintEVar-OE,
+$FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OE,
   PrintMatchChar, PrintMatchNumber, PrintMatchName,
   PrintMatchBrackets, PrintMatchEmpty,
   PrintMatchSTVar, PrintMatchRepeated,
   PrintAllocateElem, PrintElemVar;
 
-$EXTERN StringFromCommand;
+$FORWARD StringFromCommand;
 
 //FROM LibraryEx
 $EXTERN Dec;
+
+PrintStkBracket {
+  e.Indent s.StkBracket =
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-B s.StkBracket> '_stk = '
+        <BracketsVar-B s.StkBracket> ';'
+    )
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-E s.StkBracket> '_stk = '
+        <BracketsVar-E s.StkBracket> ';'
+    );
+}
+
+PrintRecoverStackBracket {
+  e.Indent s.StkBracket =
+    (e.Indent
+      <BracketsVar-B s.StkBracket> ' = ' <BracketsVar-B s.StkBracket> '_stk,'
+    )
+    (e.Indent
+      <BracketsVar-E s.StkBracket> ' = ' <BracketsVar-E s.StkBracket> '_stk,'
+    );
+}
+
+BracketExcept {
+  e.Brackets-B s.Except e.Brackets-E s.Except = e.Brackets-B e.Brackets-E;
+}
 
 GenCommand {
   (e.Indent) (CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
@@ -175,29 +206,19 @@ GenCommand {
     )
     (e.Indent 'refalrts::use( ' <PrintEVar-E 1 'e' e.Index> ' );');
 
-  (e.Indent) (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index) =
+  (e.Indent)
+  (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index (e.BracketsForSave)) =
     (e.Indent '  ')
-    (e.Indent
-      'refalrts::Iter ' <BracketsVar-B s.BracketNumber> '_stk = '
-        <BracketsVar-B s.BracketNumber> ';'
-    )
-    (e.Indent
-      'refalrts::Iter ' <BracketsVar-E s.BracketNumber> '_stk = '
-        <BracketsVar-E s.BracketNumber> ';'
-    )
+    <Map (PrintStkBracket e.Indent) e.BracketsForSave>
     (e.Indent 'for( ')
     (e.Indent '  refalrts::Iter')
     (e.Indent
-      '    ' <PrintEVar-OB 1 'e' e.Index> ' = '
-        <BracketsVar-B s.BracketNumber> ','
+      '    ' <PrintEVar-B 1 'e' e.Index> ' = '
+        <BracketsVar-B s.BracketNumber> '_stk,'
     )
     (e.Indent
       '    ' <PrintEVar-OE 1 'e' e.Index> ' = '
-        <PrintEVar-OB 1 'e' e.Index> ','
-    )
-    (e.Indent
-      '    ' <BracketsVar-OE s.BracketNumber> ' = '
-        <BracketsVar-E s.BracketNumber> ','
+        <BracketsVar-B s.BracketNumber> '_stk,'
     )
     (e.Indent
       '    ' <BracketsVar-B s.BracketNumber> ' = '
@@ -211,9 +232,8 @@ GenCommand {
       '! empty_seq( ' <PrintEVar-OE 1 'e' e.Index> ', '
       <BracketsVar-E s.BracketNumber> ' );'
     )
+    <Map (PrintRecoverStackBracket e.Indent '  ') e.BracketsForSave>
     (e.Indent '  '
-      <BracketsVar-E s.BracketNumber> ' = '
-        <BracketsVar-OE s.BracketNumber> ', '
       'refalrts::next_term( ' <PrintEVar-OE 1 'e' e.Index> ', '
       <BracketsVar-E s.BracketNumber> ' )'
     )
@@ -222,7 +242,7 @@ GenCommand {
       <BracketsVar-B s.BracketNumber> ' = ' <PrintEVar-OE 1 'e' e.Index> ';'
     )
     (e.Indent '  '
-      <PrintEVar-B 1 'e' e.Index> ' = ' <PrintEVar-OB 1 'e' e.Index> ';'
+      <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> '_stk;'
     )
     (e.Indent '  '
       <PrintEVar-E 1 'e' e.Index> ' = ' <PrintEVar-OE 1 'e' e.Index> ';'
@@ -314,15 +334,11 @@ PrintEVar-E {
   s.Usings s.Mode e.Index = s.Mode e.Index '_e_' <StrFromInt s.Usings>;
 }
 
-PrintEVar-OB {
-  s.Usings s.Mode e.Index = s.Mode e.Index '_ob_' <StrFromInt s.Usings>;
-}
-
 PrintEVar-OE {
   s.Usings s.Mode e.Index = s.Mode e.Index '_oe_' <StrFromInt s.Usings>;
 }
 
-$EXTERN PrintMatch;
+$FORWARD PrintMatch;
 
 Escape {
   '\n' = '\\n'; '\t' = '\\t'; '\\' = '\\\\'; '' = '\\' '';
@@ -424,7 +440,7 @@ PrintElemVar {
   s.Number = 'n' <StrFromInt s.Number>;
 }
 
-$EXTERN PrintAllocate-Aux, SwAllocator, SwInfo;
+$FORWARD PrintAllocate-Aux, SwAllocator, SwInfo;
 
 PrintAllocateElem {
   (e.Indent) s.ElemNumber s.ElementType e.Info =

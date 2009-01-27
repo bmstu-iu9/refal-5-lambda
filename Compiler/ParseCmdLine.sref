@@ -1,0 +1,89 @@
+$FORWARD DoParseCommandLine, FindFiles-Compilers;
+
+/**
+  <ParseCommandLine e.Arguments>
+    == t.Compiler (e.Folders) t.FoundedFile*
+    == (CmdLineError e.Message)
+
+  t.FoundedFile -- см. в FindFile
+  t.Compiler ::= (NoCompile) | (CompileCommand e.Command)
+*/
+$ENTRY ParseCommandLine {
+  e.Arguments =
+    <DoParseCommandLine (/* files */) (/* folders */) e.Arguments>;
+}
+
+$EENUM NoCompile, CompileCommand, CmdLineError;
+
+$FORWARD DoParseFileNames, DoParseFileNamesOnly;
+
+DoParseCommandLine {
+  (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Files =
+    <DoParseFileNames
+      (CompileCommand e.CompileCommand) (e.ScannedFiles) (e.Folders) e.Files
+    >;
+
+  (e.ScannedFiles) (e.Folders) ('-c') =
+    (CmdLineError 'After option ''-c'' expected C++ compiler command line');
+
+  (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
+    <DoParseCommandLine
+      (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
+    >;
+
+  (e.ScannedFiles) (e.Folders) ('-d') =
+    (CmdLineError 'After option ''-d'' expected find directory');
+
+  (e.ScannedFiles) (e.Folders) ('--') e.Options =
+    <DoParseFileNamesOnly
+      (NoCompile) (e.ScannedFiles) (e.Folders) e.Options
+    >;
+
+  (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
+    <DoParseCommandLine
+       (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
+    >;
+
+  (e.ScannedFiles) (e.Folders) = (NoCompile) (e.Folders) e.ScannedFiles;
+}
+
+DoParseFileNames {
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Options =
+    (CmdLineError 'Multiple declaration of C++ compiler command line');
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') =
+    (CmdLineError 'After option ''-c'' expected C++ compiler command line');
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
+    <DoParseFileNames
+      t.Compiler (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
+    >;
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') =
+    (CmdLineError 'After option ''-d'' expected find directory');
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('--') e.Files =
+    <DoParseFileNamesOnly
+      t.Compiler (e.ScannedFiles) (e.Folders) e.Files
+    >;
+
+  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
+    <DoParseFileNames
+      t.Compiler (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
+    >;
+
+  t.Compiler (e.ScannedFiles) (e.Folders) =
+    t.Compiler (e.Folders) e.ScannedFiles;
+}
+
+DoParseFileNamesOnly {
+  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Files =
+    <DoParseFileNamesOnly
+      t.Compiler
+      (e.ScannedFiles (e.NextFileName)) e.Files
+    >;
+
+  t.Compiler (e.ScannedFiles) (e.Folders) =
+    t.Compiler (e.Folders) e.ScannedFiles;
+}
+

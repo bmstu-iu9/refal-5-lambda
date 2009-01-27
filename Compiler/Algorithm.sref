@@ -1,6 +1,6 @@
-$EXTERN GeneralizeResult, GenPattern, GenResult;
+$FORWARD GeneralizeResult, GenPattern, GenResult;
 
-$EXTERN LeftPtr, RightPtr;
+$FORWARD LeftPtr, RightPtr;
 
 $ENTRY MakeAlgorithm {
   (e.Pattern) (e.Result) =
@@ -45,7 +45,8 @@ $EENUM AlgLeft, AlgRight;
       (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
     новые s и t, формат (CmdVar s.Direction s.BracketNum s.Mode e.Index)
     открытые e, формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
-    закрытые e, формат (CmdClosedE AlgLeft s.BracketNum 'e' e.Index)
+    закрытые e, формат
+      (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
   Комментарий, вносимый в исходный код (CmdComment e.Text)
 */
 $EENUM
@@ -54,7 +55,7 @@ $EENUM
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
   CmdComment;
 
-$EXTERN TextFromPattern;
+$FORWARD TextFromPattern, SaveBrackets;
 
 GenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
@@ -194,13 +195,97 @@ GenPattern {
 
   // Завершение разбора. Все указатели аннигилировали.
   e.Pattern (e.Vars) (e.Commands) =
-    (e.Vars) ((CmdComment <TextFromPattern e.Pattern> ) e.Commands);
+    (e.Vars)
+    ((CmdComment <TextFromPattern e.Pattern> )
+      <SaveBrackets e.Commands >
+    );
+}
+
+$FORWARD DoSaveBrackets, DoSaveBrackets-Aux;
+
+SaveBrackets {
+  e.Commands = <DoSaveBrackets () e.Commands>;
+}
+
+DoSaveBrackets {
+  (e.Scanned)
+  e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index) e.Commands-E =
+    <DoSaveBrackets-Aux
+      (e.Scanned
+        e.Commands-B
+        (CmdOpenedE AlgLeft s.Num 'e' e.Index)
+      )
+      e.Commands-E
+    >;
+
+  (e.Scanned) e.Commands = e.Scanned e.Commands;
+}
+
+$FORWARD CalcSavedBrackets;
+
+DoSaveBrackets-Aux {
+  (e.Scanned (CmdOpenedE AlgLeft s.Num 'e' e.Index )) e.Commands =
+    <DoSaveBrackets
+      (e.Scanned
+        (CmdOpenedE
+          AlgLeft s.Num 'e' e.Index
+          (
+            <CalcSavedBrackets
+              (e.Scanned (CmdOpenedE AlgLeft s.Num 'e' e.Index))
+              e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index)
+            >
+          )
+        )
+      )
+      e.Commands
+    >;
+}
+
+$FORWARD Brackets-Intersect, Brackets-Set, ExtractBrackets;
+
+//FROM LibraryEx
+$EXTERN Map;
+
+CalcSavedBrackets {
+  (e.Scanned) e.Commands =
+    <Brackets-Intersect
+      ( <Brackets-Set <Map ExtractBrackets e.Scanned>> )
+      ( <Brackets-Set <Map ExtractBrackets e.Commands>> )
+    >;
+}
+
+ExtractBrackets {
+  /*
+    Все команды распознавания, кроме CmdEmpty содержат номер скобок
+    третьим термом, общий формат
+    (s.Command s.Direction s.BracketNum e.Info)
+  */
+  (CmdEmpty s.BracketNum) = s.BracketNum;
+
+  (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
+    s.BracketNum s.InnerNum;
+
+  (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
+}
+
+Brackets-Set {
+  e.Unique s.Repeated e.Middle s.Repeated e.Rest =
+    e.Unique <Brackets-Set s.Repeated e.Middle e.Rest>;
+
+  e.Unique = e.Unique;
+}
+
+Brackets-Intersect {
+  (e.Set1-B s.Common e.Set1-E) (e.Set2-B s.Common e.Set2-E) =
+    s.Common <Brackets-Intersect (e.Set1-E) (e.Set2-B e.Set2-E)>;
+
+  (e.Set1) (e.Set2) = ;
 }
 
 //FROM Library
 $EXTERN StrFromInt;
 
-$EXTERN TextFromPattern-Char;
+$FORWARD TextFromPattern-Char;
 
 TextFromPattern {
   (TkOpenBracket s.Number) e.Tail =
@@ -255,7 +340,7 @@ $ENUM
 //FROM Lexer
 $EXTERN TkOpenCall, TkCloseCall;
 
-$EXTERN GenResult-Commands;
+$FORWARD GenResult-Commands;
 
 GenResult {
   // Создаём литералы
@@ -382,7 +467,7 @@ GenResult {
   построение результата (в обратном порядке)
 */
 
-$EXTERN ConvertCommad, ConvertCommands-Separated;
+$FORWARD ConvertCommad, ConvertCommands-Separated;
 
 //FROM LibraryEx
 $EXTERN MapReduce, Map;
@@ -405,7 +490,7 @@ GenResult-Commands {
     >;
 }
 
-$EXTERN Reverse, ConvertAllocates, ConvertCommand;
+$FORWARD Reverse, ConvertAllocates, ConvertCommand;
 
 ConvertCommands-Separated {
   (e.Allocates) e.OtherCommands =
@@ -472,7 +557,7 @@ ConvertCommand {
 // копирование повторных.
 //==============================================================================
 
-$EXTERN GeneralizeResult-Vars, ReplicateVars;
+$FORWARD GeneralizeResult-Vars, ReplicateVars;
 
 GeneralizeResult {
   (e.PatternVars) (e.PatternCommands)
@@ -499,7 +584,7 @@ ReplicateVars {
   e.Vars = <Map ReplicateVar e.Vars>;
 }
 
-$EXTERN GeneralizeResult-CopyVars, VarSetUnion, VarSetDifference;
+$FORWARD GeneralizeResult-CopyVars, VarSetUnion, VarSetDifference;
 
 GeneralizeResult-Vars {
   ( e.PatternVars ) ( e.ResultVars )
@@ -527,7 +612,7 @@ VarSetDifference {
   ( e.Set1 ) ( e.Set2 ) = e.Set1;
 }
 
-$EXTERN MakeDeclaration, MakeCopyVar;
+$FORWARD MakeDeclaration, MakeCopyVar;
 
 $EENUM CmdEmptyResult, CmdReturnResult;
 

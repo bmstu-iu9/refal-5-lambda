@@ -1,0 +1,32 @@
+/*
+  Сравнение по типам:
+  Number > Character > Functions
+  Цифры сравниваются по арифметическим правилам.
+  Characters сравниваются по ASCII-значениям.
+  Функции сравниваются неизвестным способом: известно лишь, что
+  для любых функций выполняется:
+  (1) f1 < f2 или f1 == f2 или f1 > f2
+  (2) Если f1 < f2 и f2 < f3, то f1 < f3
+  (3) Если f1 == f2 и f2 == f3, то f1 == f3
+*/
+$ENTRY SymbCompare {
+  s.Num1 s.Num2 = '?';
+  s.Num1 s.Char2 = '>';
+  s.Num1 s.Func2 = '>';
+
+  s.Char1 s.Num2 = '<';
+  s.Char1 s.Char2 = '?';
+  s.Char1 s.Func2 = '>';
+
+  s.Func1 s.Num2 = '<';
+  s.Func1 s.Char2 = '<';
+  s.Func1 s.Func2 = '?';
+}
+
+$EENUM Number, Character, Function;
+
+$ENTRY SymbType {
+  s.Num = Number;
+  s.Char = Character;
+  s.Func = Function;
+}
