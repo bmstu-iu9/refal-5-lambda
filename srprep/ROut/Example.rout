@@ -1,9 +1,0 @@
-v ROUT3 Module Refal 0.1
-r file ROut/Example.rout
-
-b Entry::Example::Go
-c $Entry::Example::Go$ {
-c 	=
-c 		<$Entry::IOLib::Write$ 'Hello, World!' > ;
-c }
-
