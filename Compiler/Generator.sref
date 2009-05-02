@@ -47,6 +47,26 @@ $ENTRY GenForward {
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
 }
 
+$ENTRY GenESwap {
+  e.Name = ('//$ESWAP ' e.Name) ();
+}
+
+$ENTRY GenSwap {
+  e.Name = ('//$SWAP ' e.Name) ();
+}
+
+$ENTRY GenIdent {
+  e.Name =
+    ('//$LABEL ' e.Name)
+    ('template <typename T>')
+    ('struct ' e.Name ' {')
+    ('  static const char *name() {')
+    ('    return "' e.Name '";')
+    ('  }')
+    ('};')
+    ();
+}
+
 $ENTRY GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"') () ();
@@ -54,12 +74,15 @@ $ENTRY GenCommonHeaders {
 
 // Команды и их подтипы
 //FROM Algorithm
-$EXTERN CmdChar, CmdNumber, CmdName, CmdBrackets, CmdEmpty,
+$EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
+  CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
   CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
   CmdInsertElem, CmdInsertEVar,
-  ElChar, ElName, ElNumber,
-  ElOpenBracket, ElCloseBracket, ElOpenCall, ElCloseCall,
+  ElChar, ElName, ElNumber, ElIdent,
+  ElOpenADT, ElCloseADT,
+  ElOpenBracket, ElCloseBracket,
+  ElOpenCall, ElCloseCall,
   ElElem, ElSTVar,
   CmdEmptyResult, CmdReturnResult,
   CmdDeclareEVar, CmdDeclareVar,
@@ -118,7 +141,10 @@ BracketsVar-E {
 
 $FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OE,
   PrintMatchChar, PrintMatchNumber, PrintMatchName,
-  PrintMatchBrackets, PrintMatchEmpty,
+  PrintMatchIdent,
+  PrintMatchADT,
+  PrintMatchBrackets,
+  PrintMatchEmpty,
   PrintMatchSTVar, PrintMatchRepeated,
   PrintAllocateElem, PrintElemVar;
 
@@ -177,11 +203,23 @@ GenCommand {
     (e.Indent)
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>;
 
+  (e.Indent) (CmdIdent s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>;
+
   (e.Indent) (CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
     (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>;
+
+  (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
+    (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    <PrintMatchADT
+      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
+    >;
 
   (e.Indent) (CmdEmpty s.BracketNumber) =
     (e.Indent)
@@ -341,7 +379,11 @@ PrintEVar-OE {
 $FORWARD PrintMatch;
 
 Escape {
-  '\n' = '\\n'; '\t' = '\\t'; '\\' = '\\\\'; '' = '\\' '';
+  '\n' = '\\n';
+  '\t' = '\\t';
+  '\r' = '\\r';
+  '\\' = '\\\\';
+  '' = '\\' '';
   s.Other = s.Other;
 }
 
@@ -369,12 +411,31 @@ PrintMatchName {
     >;
 }
 
+PrintMatchIdent {
+  (e.Indent) s.Direction s.BracketNumber e.Name =
+    <PrintMatch
+      (e.Indent) s.Direction s.BracketNumber
+      ('ident') ' & ' e.Name '<int>::name'
+    >;
+}
+
 PrintMatchBrackets {
   (e.Indent) s.Direction s.BracketNumber s.InnerNum =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('brackets')
       <BracketsVar-B s.InnerNum> ', ' <BracketsVar-E s.InnerNum>
+    >;
+}
+
+PrintMatchADT {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
+    <PrintMatch
+      (e.Indent) s.Direction s.BracketNumber
+      ('adt')
+      <BracketsVar-B s.InnerNum> ', '
+      <BracketsVar-E s.InnerNum> ', '
+      '& ' e.Name
     >;
 }
 
@@ -461,11 +522,19 @@ PrintAllocate-Aux {
 }
 
 SwAllocator {
-  ElChar = 'alloc_char'; ElName = 'alloc_name'; ElNumber = 'alloc_number';
+  ElChar = 'alloc_char';
+  ElName = 'alloc_name';
+  ElNumber = 'alloc_number';
+  ElIdent = 'alloc_ident';
 
-  ElOpenBracket = 'alloc_open_bracket'; ElCloseBracket = 'alloc_close_bracket';
+  ElOpenADT = 'alloc_open_adt';
+  ElCloseADT = 'alloc_close_adt';
 
-  ElOpenCall = 'alloc_open_call'; ElCloseCall = 'alloc_close_call';
+  ElOpenBracket = 'alloc_open_bracket';
+  ElCloseBracket = 'alloc_close_bracket';
+
+  ElOpenCall = 'alloc_open_call';
+  ElCloseCall = 'alloc_close_call';
 }
 
 SwInfo {
@@ -474,6 +543,8 @@ SwInfo {
   ElName e.Name = ', & ' e.Name ', "' e.Name '"';
 
   ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
+
+  ElIdent e.Name = ', & ' e.Name '<int>::name';
 
   // Остальное -- скобки
   s.Other = ;
@@ -488,18 +559,6 @@ GenCloseBrackets {
 
 ElemVarName {
   s.Num = 'h' <StrFromInt s.Num>;
-}
-
-AllocateCtor {
-  ElChar s.Char = '"' <Escape s.Char> '"';
-
-  ElName e.Name = '&' e.Name;
-
-  ElNumber s.Number = <StrFromInt s.Number>;
-
-  ElOpenBracket = '"("'; ElCloseBracket = '")"';
-
-  ElOpenCall = '"<"'; ElCloseCall = '">"';
 }
 
 InsertElem {

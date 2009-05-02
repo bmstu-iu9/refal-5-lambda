@@ -81,6 +81,10 @@ refalrts::FnResult TypeFile(refalrts::Iter, refalrts::Iter) {
   return refalrts::cRecognitionImpossible;
 }
 
+refalrts::FnResult TypeIdentifier(refalrts::Iter, refalrts::Iter) {
+  return refalrts::cRecognitionImpossible;
+}
+
 // Математические операции
 
 refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -320,6 +324,33 @@ refalrts::FnResult write_to_stream(
           printf_res = fprintf( out, "&%p ", p->function_info.ptr );
         }
 
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
+      case refalrts::cDataIdentifier: {
+        printf_res = fprintf( out, "%s ", (p->ident_info)() );
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
+      case refalrts::cDataOpenADT: {
+        printf_res = fprintf( out, "[" );
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
+      case refalrts::cDataCloseADT: {
+        printf_res = fprintf( out, "]" );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -1071,6 +1102,10 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
           order = '>';
           break;
 
+        case refalrts::cDataIdentifier:
+          order = '>';
+          break;
+
         case refalrts::cDataFile:
           order = '>';
           break;
@@ -1092,6 +1127,10 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
           break;
 
         case refalrts::cDataFunction:
+          order = '>';
+          break;
+
+        case refalrts::cDataIdentifier:
           order = '>';
           break;
 
@@ -1137,6 +1176,48 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
           }
           break;
 
+        case refalrts::cDataIdentifier:
+          order = '>';
+          break;
+
+        case refalrts::cDataFile:
+          order = '>';
+          break;
+
+        default:
+          order = '?';
+          break;
+      }
+      break;
+
+    case refalrts::cDataIdentifier:
+      switch( sSymb2_1->tag ) {
+        case refalrts::cDataNumber:
+          order = '<';
+          break;
+
+        case refalrts::cDataChar:
+          order = '<';
+          break;
+
+        case refalrts::cDataFunction:
+          order = '<';
+          break;
+
+        case refalrts::cDataIdentifier:
+          {
+            int cmpres =
+              strcmp((sSymb1_1->ident_info)(), (sSymb2_1->ident_info)());
+            if( cmpres < 0 ) {
+              order = '<';
+            } else if (cmpres > 0) {
+              order = '>';
+            } else {
+              order = '=';
+            }
+          }
+          break;
+
         case refalrts::cDataFile:
           order = '>';
           break;
@@ -1158,6 +1239,10 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
           break;
 
         case refalrts::cDataFunction:
+          order = '<';
+          break;
+
+        case refalrts::cDataIdentifier:
           order = '<';
           break;
 
@@ -1228,6 +1313,11 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     case refalrts::cDataFunction:
       fnname = "TypeFunction";
       fnptr = & TypeFunction;
+      break;
+
+    case refalrts::cDataIdentifier:
+      fnname = "TypeIdentifier";
+      fnptr = & TypeIdentifier;
       break;
 
     case refalrts::cDataFile:

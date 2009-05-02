@@ -9,7 +9,7 @@ $EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
 //FROM Library
 $EXTERN True, False, Success, Fails;
 
-$EXTERN GenCode;
+$FORWARD GenCode;
 
 $ENTRY Generate {
   e.FileName =
@@ -45,7 +45,7 @@ WarningAt {
     <WriteLine 'WARNING at ' <StrFromInt s.Number> ' ' e.Message>;
 }
 
-$EXTERN GenCode-Aux;
+$FORWARD GenCode-Aux;
 
 GenCode {
   e.LinesBefore ('/*GEN:TOKENS') e.Description =
@@ -57,7 +57,7 @@ GenCode {
   e.Other = <Error 'Lexer description not found'>;
 }
 
-$EXTERN GenerateFromDFA, Tokens, Parse;
+$FORWARD GenerateFromDFA, Tokens, Parse;
 
 GenCode-Aux {
   ( s.Length e.LinesBefore )
@@ -107,7 +107,7 @@ $ENUM Set, Sentence, Chars, Empty, None, Unnamed, FlushError, Finitive, Flush,
 // Генератор автомата
 //==============================================================================
 
-$EXTERN GenerateAutomat, ResolvingSets, Separate;
+$FORWARD GenerateAutomat, ResolvingSets, Separate;
 
 GenerateFromDFA {
   e.Elements =
@@ -131,7 +131,7 @@ Separate {
     <Reduce SeparateOne ((/* sets */) (/* rules */)) e.Elements>;
 }
 
-$EXTERN ResolvingSets-Aux;
+$FORWARD ResolvingSets-Aux;
 
 ResolvingSets {
   ( (e.Sets) (e.Rules) ) =
@@ -146,7 +146,7 @@ NormingSet {
   e.Set = e.Set;
 }
 
-$EXTERN SetPartNormalize, SetSubstitute, SetCheckRecursion;
+$FORWARD SetPartNormalize, SetSubstitute, SetCheckRecursion;
 
 ResolvingSets-Aux {
   e.Sets =
@@ -230,7 +230,7 @@ SetSubstitute {
   e.Sets = e.Sets;
 }
 
-$EXTERN SubstituteSetsToRules;
+$FORWARD SubstituteSetsToRules;
 
 $ENUM Used, NotUsed;
 
@@ -249,7 +249,7 @@ GenerateAutomat {
     >;
 }
 
-$EXTERN GenerateSentences;
+$FORWARD GenerateSentences;
 
 SubstituteSetsToRules {
   ( ((e.Name) s.Used Chars e.Content) e.Sets )
@@ -344,7 +344,7 @@ SubstituteSetsToRules {
  () (e.Rules) = <GenerateSentences e.Rules>;
 }
 
-$EXTERN WriteCode, NormalizeRule;
+$FORWARD WriteCode, NormalizeRule;
 
 GenerateSentences {
   e.Rules =
@@ -402,7 +402,7 @@ NormalizeRule {
     );
 }
 
-$EXTERN WriteFunctions;
+$FORWARD WriteFunctions;
 
 WriteCode {
   e.Rules =
@@ -412,7 +412,7 @@ WriteCode {
     >;
 }
 
-$EXTERN WriteFunction;
+$FORWARD WriteFunction;
 
 ExtractExpected {
   ( t.Head t.Flush Finitive ) = ;
@@ -450,7 +450,7 @@ WriteFunctions {
     <ErrorAt s.LineNumber 'Rule ' e.NextRule ' not found'>;
 }
 
-$EXTERN WriteAlternative;
+$FORWARD WriteAlternative;
 
 WriteFunction {
   (e.NextRule) e.Alternatives =
@@ -471,7 +471,7 @@ t.Flush ::= None | Unnamed | (Flush e.FlushName) | (FlushError e.Message)
 t.NextState ::= (t.SrcPos e.NextStateName) | Finitive
 */
 
-$EXTERN EC; //EscapeChar
+$FORWARD EC; //EscapeChar
 
 WriteAlternative {
   (Empty None Finitive) =
@@ -497,15 +497,19 @@ WriteAlternative {
     ('  (e.Accum) = (TokenError ' '' e.Message '' ');');
 
   (Empty (FlushError e.Message) (t.SrcPos e.NextStateName)) =
-    ('  (e.Accum) e.Text =')
-    ('    (TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;');
+    (
+      '  (e.Accum) e.Text = '
+      '(TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;'
+    );
 
   (s.Char None Finitive) =
     ('  (e.Accum) ' <EC s.Char> ' = (TokenAccum e.Accum ' <EC s.Char> ');');
 
   (s.Char None (t.SrcPos e.NextStateName)) =
-    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
-    ('    <' e.NextStateName ' (e.Accum ' <EC s.Char> ') e.Text>;');
+    (
+      '  (e.Accum) ' <EC s.Char> ' e.Text = '
+      '<' e.NextStateName ' (e.Accum ' <EC s.Char> ') e.Text>;'
+    );
 
   (s.Char Unnamed Finitive) =
     ('  (e.Accum) ' <EC s.Char> ' = ;');
@@ -514,20 +518,26 @@ WriteAlternative {
     ('  (e.Accum) ' <EC s.Char> ' e.Text = <' e.NextStateName ' () e.Text>;');
 
   (s.Char (Flush e.FlushName) Finitive) =
-    ('  (e.Accum) ' <EC s.Char> ' =')
-    ('    (' e.FlushName ' e.Accum ' <EC s.Char> ');');
+    (
+      '  (e.Accum) ' <EC s.Char> ' = '
+      '(' e.FlushName ' e.Accum ' <EC s.Char> ');'
+    );
 
   (s.Char (Flush e.FlushName) (t.SrcPos e.NextStateName)) =
-    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
-    ('    (' e.FlushName ' e.Accum ' <EC s.Char> ')')
-    ('    <' e.NextStateName ' () e.Text>;');
+    (
+      '  (e.Accum) ' <EC s.Char> ' e.Text = '
+      '(' e.FlushName ' e.Accum ' <EC s.Char> ') '
+      '<' e.NextStateName ' () e.Text>;'
+    );
 
   (s.Char (FlushError e.Message) Finitive) =
     ('  (e.Accum) ' <EC s.Char> ' = (TokenError ' '' e.Message '' ');');
 
   (s.Char (FlushError e.Message) (t.SrcPos e.NextStateName)) =
-    ('  (e.Accum) ' <EC s.Char> ' e.Text =')
-    ('    (TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;');
+    (
+      '  (e.Accum) ' <EC s.Char> ' e.Text = '
+      '(TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;'
+    );
 }
 
 //EscapeChar
@@ -537,6 +547,8 @@ EC {
   '\n' = '' '\\n' '';
 
   '\t' = '' '\\t' '';
+
+  '\r' = '' '\\r' '';
 
   '' = '' '\\' '' '';
 
@@ -575,13 +587,13 @@ $ENUM TSetName, TLiteral, TName, TNamedFlush,
 // Синтаксический разбор
 //==============================================================================
 
-$EXTERN ParseElements;
+$FORWARD ParseElements;
 
 Parse {
   e.Tokens = <ParseElements (/* Sets */ ('Any')) (/* Rules */) e.Tokens>;
 }
 
-$EXTERN ParseSetDescr, ParseSentence, UnexpectedToken;
+$FORWARD ParseSetDescr, ParseSentence, UnexpectedToken;
 
 ParseElements {
   (e.Sets-B (e.Name) e.Sets-E) (e.Rules)
@@ -609,7 +621,7 @@ ParseElements {
     <UnexpectedToken t.Unexpected 'name or set name'>;
 }
 
-$EXTERN ParseSetDescr-Sets;
+$FORWARD ParseSetDescr-Sets;
 
 ParseSetDescr {
   (e.Sets) (e.Rules) (e.Name) (TEquals t.SrcPos) e.Tail =
@@ -621,7 +633,7 @@ ParseSetDescr {
     <UnexpectedToken t.Unexpected '"="'>;
 }
 
-$EXTERN ParseSetDescr-Sets-Aux, ExtractSets;
+$FORWARD ParseSetDescr-Sets-Aux, ExtractSets;
 
 ParseSetDescr-Sets {
   (e.Sets) (e.Rules) (e.Name) e.Tail =
@@ -665,7 +677,7 @@ ParseSetDescr-Sets-Aux {
     <Error 'Unexpected eof'>;
 }
 
-$EXTERN ParseSentence-Body, ExtractAlternatives;
+$FORWARD ParseSentence-Body, ExtractAlternatives;
 
 ParseSentence {
   (e.Sets) (e.Rules) (e.Name) (TEquals t.SrcPos) e.Tail =
@@ -689,7 +701,7 @@ ParseSentence-Body {
     <UnexpectedToken t.Unexpected 'end of sentence'>;
 }
 
-$EXTERN ExtractAlternatives-Flush;
+$FORWARD ExtractAlternatives-Flush;
 
 ExtractAlternatives {
   (e.Found) (TLiteral t.SrcPos e.Content) e.Tail =
@@ -738,7 +750,7 @@ ExtractAlternatives {
   (e.Found) = (e.Found);
 }
 
-$EXTERN ExtractAlternatives-NextState;
+$FORWARD ExtractAlternatives-NextState;
 
 ExtractAlternatives-Flush {
   (e.Found) t.Head (TFlush t.SrcPos) e.Tail =
@@ -777,7 +789,7 @@ ExtractAlternatives-Flush {
   (e.Found) t.Head = (e.Found);
 }
 
-$EXTERN ExtractAlternatives-Finish;
+$FORWARD ExtractAlternatives-Finish;
 
 ExtractAlternatives-NextState {
   (e.Found) t.Head t.Flush (TName t.SrcPos e.Name) e.Tail =
@@ -853,7 +865,7 @@ ToPlain {
   (e.Line) = e.Line '\n';
 }
 
-$EXTERN LoTokens;
+$FORWARD LoTokens;
 
 AddEOF {
   s.LineNumber e.Tokens =
@@ -873,11 +885,12 @@ Tokens {
     >;
 }
 
-$EXTERN SetName, FlushName, Literal, Name;
+$FORWARD SetName, FlushName, Literal, Name;
 
 LoTokens {
   ' ' e.Text = <LoTokens e.Text>;
   '\t' e.Text = <LoTokens e.Text>;
+  '\r' e.Text = <LoTokens e.Text>;
 
   '\n' e.Text = (TNewLine) <LoTokens e.Text>;
 
@@ -908,7 +921,7 @@ LoLetters { = 'abcdefghijklmnopqrstuvwxyz'; }
 Digits { = '0123456789'; }
 NameTailSet { = <HiLetters> <LoLetters> <Digits> '-_'; }
 
-$EXTERN SetNameFail;
+$FORWARD SetNameFail;
 
 SetName {
   (e.Scanned) ':' e.Text =
@@ -929,7 +942,7 @@ SetNameFail {
     (TError 'expected end of set name, got ' s.Next);
 }
 
-$EXTERN FlushNameTail, FlushNameFail, ErrorFlush, ErrorFlushFail;
+$FORWARD FlushNameTail, FlushNameFail, ErrorFlush, ErrorFlushFail;
 
 FlushName {
   '-' e.Text = (TFlush) <LoTokens e.Text>;
@@ -981,7 +994,7 @@ FlushNameTail {
     >;
 }
 
-$EXTERN Escape;
+$FORWARD Escape;
 
 Literal {
   (e.Scanned) '\\' e.Text = <Escape (e.Scanned) e.Text>;
@@ -1000,10 +1013,12 @@ Literal {
     <Literal (e.Scanned s.Other) e.Text>;
 }
 
-$EXTERN Literal-DecCode;
+$FORWARD Literal-DecCode;
 
 Escape {
   (e.Scanned) 'n' e.Text = <Literal (e.Scanned '\n') e.Text>;
+
+  (e.Scanned) 'r' e.Text = <Literal (e.Scanned '\r') e.Text>;
 
   (e.Scanned) 't' e.Text = <Literal (e.Scanned '\t') e.Text>;
 
@@ -1027,7 +1042,7 @@ IsDigit {
   s.Char = <SwIsDigit s.Char <Digits>>;
 }
 
-$EXTERN Literal-DecCode-SwDigit;
+$FORWARD Literal-DecCode-SwDigit;
 
 Literal-DecCode {
   (e.Scanned) e.Tail =

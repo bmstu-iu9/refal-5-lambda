@@ -38,6 +38,9 @@ $EXTERN FOpen, FClose, FWriteLine;
     '$EENUM' NameList |
     '$EXTERN' NameList |
     '$FORWARD' NameList |
+    '$SWAP' NameList |
+    '$ESWAP' NameList |
+    '$LABEL' NameList |
     '$ENTRY' Function |
     Function .
 
@@ -50,7 +53,10 @@ $EXTERN FOpen, FClose, FWriteLine;
 
   Pattern = PatternTerm* .
 
-  PatternTerm = Char | OpenBracket | CloseBracket | Number | Name | Variable .
+  PatternTerm = Char |
+    OpenBracket | CloseBracket |
+    OpenADT | CloseADT |
+    Number | Name | Variable | '#' Ident.
 
   Result = ResultTerm* .
 
@@ -64,7 +70,7 @@ $EXTERN FOpen, FClose, FWriteLine;
 */
 
 //FROM SymTable
-$EXTERN ST-Create, ST-AddDeclared, ST-AddDefined;
+$EXTERN ST-Create, ST-AddDeclared, ST-AddDefined, ST-AddIdent;
 
 //FROM Error
 $EXTERN EL-Create, EL-AddError, EL-AddErrorAt, EL-Print, EL-IsEmpty,
@@ -103,12 +109,19 @@ WriteGenerated {
     '$ENUM' NameList |
     '$EENUM' NameList |
     '$EXTERN' NameList |
+    '$FORWARD' NameList |
+    '$SWAP' NameList |
+    '$ESWAP' NameList |
+    '$LABEL' NameList |
     '$ENTRY' Function |
     Function .
 */
 
 //FROM Lexer
-$EXTERN TkDirective, Enum, EEnum, Extern, Forward, Entry, TkName, TkEOF;
+$EXTERN
+  TkDirective,
+  Enum, EEnum, Extern, Forward, Entry, Swap, ESwap, Ident,
+  TkName, TkEOF;
 
 $FORWARD ParseElement-SwDirective, ParseFunction;
 
@@ -139,7 +152,7 @@ ParseElements {
 }
 
 //FROM Generator
-$EXTERN GenEEnum, GenEnum, GenExtern, GenForward;
+$EXTERN GenEEnum, GenEnum, GenExtern, GenForward, GenESwap, GenSwap, GenIdent;
 
 $FORWARD ParseNameList;
 
@@ -148,6 +161,10 @@ GenFunctionsFromDirective {
   Enum    = GenEnum    ST-AddDefined  GN-Local;
   Extern  = GenExtern  ST-AddDeclared GN-Entry;
   Forward = GenForward ST-AddDeclared GN-Local;
+  ESwap   = GenESwap   ST-AddDefined  GN-Entry;
+  Swap    = GenSwap    ST-AddDefined  GN-Entry;
+  // Для меток не важно: entry или local.
+  Ident   = GenIdent   ST-AddIdent    GN-Entry;
 }
 
 ParseElement-SwDirective {
@@ -269,12 +286,19 @@ ParseSentences {
 }
 
 //FROM Lexer
-$EXTERN TkChar, TkOpenBracket, TkCloseBracket, TkNumber, TkVariable;
+$EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
+  TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT;
+
+//FROM Algorithm
+$EXTERN TkIdentifier;
 
 /*
   Pattern = PatternTerm* .
 
-  PatternTerm = Char | OpenBracket | CloseBracket | Number | Name | Variable .
+  PatternTerm = Char |
+    OpenBracket | CloseBracket |
+    OpenADT | CloseADT |
+    Number | Name | Variable | '#' Name .
 */
 
 ParsePattern {
@@ -291,6 +315,21 @@ ParsePattern {
   (e.Pattern) (TkCloseBracket s.LnNum) e.Tail =
     <ParsePattern
       (e.Pattern (TkCloseBracket s.LnNum)) e.Tail
+    >;
+
+  (e.Pattern) (TkOpenADT s.LnNum) e.Tail =
+    <ParsePattern
+      (e.Pattern (TkOpenADT s.LnNum)) e.Tail
+    >;
+
+  (e.Pattern) (TkCloseADT s.LnNum) e.Tail =
+    <ParsePattern
+      (e.Pattern (TkCloseADT s.LnNum)) e.Tail
+    >;
+
+  (e.Pattern) (TkIdentMarker s.LnNum) e.Tail =
+    <ParsePattern
+      (e.Pattern (TkIdentMarker s.LnNum)) e.Tail
     >;
 
   (e.Pattern) (TkNumber s.LnNum s.Number) e.Tail =
@@ -389,18 +428,21 @@ ParseSentence-Finish {
 }
 
 //FROM SymTable
-$EXTERN ST-CheckDeclared;
+$EXTERN ST-CheckDeclared, ST-CheckIdent;
 
 $ENUM Brackets;
 
 StrFromBracket {
   TkOpenBracket = '('; TkCloseBracket = ')';
   TkOpenCall = '<'; TkCloseCall = '>';
+  TkOpenADT = '['; TkCloseADT = ']';
 }
 
 CoBracket {
+  TkOpenADT = TkCloseADT;
   TkOpenBracket = TkCloseBracket;
   TkOpenCall = TkCloseCall;
+  TkCloseADT = TkOpenADT;
   TkCloseBracket = TkOpenBracket;
   TkCloseCall = TkOpenCall;
 }
@@ -432,6 +474,21 @@ DoCheckPaired {
       (TkVariable s.LnNum e.ModeIndex) ( e.Expr )
     >;
 
+  // Проверка для #
+  t.ErrorList t.SymTable t.MultiBracket e.Scanned
+  ( (TkIdentMarker s.MrkLnNum) (TkName s.NameLnNum e.Name) e.Expr ) =
+    <DoCheckPaired
+      <ST-CheckIdent t.ErrorList t.SymTable s.NameLnNum e.Name>
+      t.MultiBracket e.Scanned (TkIdentifier e.Name) ( e.Expr )
+    >;
+
+  t.ErrorList t.SymTable t.MultiBracket e.Scanned
+  ( (TkIdentMarker s.LnNum) e.Expr ) =
+    <DoCheckPaired
+      <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after ''#'''>
+      t.SymTable t.MultiBracket e.Scanned ( e.Expr )
+    >;
+
   /*
     Все нетерминалы просмотрены. Обрабатываем только скобки.
   */
@@ -449,6 +506,25 @@ DoCheckPaired {
     <DoCheckPaired
       t.ErrorList t.SymTable
       ((t.MultiBracket TkOpenCall TkCloseCall s.LnNum) e.Scanned)
+      ( e.Expr )
+    >;
+
+  t.ErrorList t.SymTable t.MultiBracket e.Scanned
+  ( (TkOpenADT s.BracketLnNum) (TkName s.NameLnNum e.Name) e.Expr ) =
+    <DoCheckPaired
+      <ST-CheckDeclared t.ErrorList t.SymTable s.NameLnNum e.Name>
+      ((t.MultiBracket TkOpenADT TkCloseADT s.BracketLnNum) e.Scanned)
+      (TkName e.Name) ( e.Expr )
+    >;
+
+  t.ErrorList t.SymTable t.MultiBracket e.Scanned
+  ( (TkOpenADT s.LnNum) e.Expr ) =
+    <DoCheckPaired
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Expected name after "["'
+      >
+      t.SymTable
+      ((t.MultiBracket TkOpenADT TkCloseADT s.LnNum) e.Scanned)
       ( e.Expr )
     >;
 
@@ -632,6 +708,23 @@ CheckVariables-Result {
 $EXTERN Inc;
 
 DoNumerateBrackets {
+  s.Number e.Expr-B
+  (Brackets TkOpenADT (TkName e.Name) e.Inner TkCloseADT)
+  e.Expr-E =
+    <DoNumerateBrackets
+      <Inc s.Number>
+      e.Expr-B (TkOpenADT s.Number)
+      (TkName e.Name) e.Inner
+      (TkCloseADT s.Number) e.Expr-E
+    >;
+
+  s.Number e.Expr-B (Brackets TkOpenADT e.Inner TkCloseADT) e.Expr-E =
+    <DoNumerateBrackets
+      <Inc s.Number>
+      e.Expr-B (TkOpenBracket s.Number) e.Inner
+      (TkCloseBracket s.Number) e.Expr-E
+    >;
+
   s.Number e.Expr-B (Brackets s.Open e.Inner s.Close) e.Expr-E =
     <DoNumerateBrackets
       <Inc s.Number>
