@@ -1129,6 +1129,51 @@ void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
 }
 
+//------------------------------------------------------------------------------
+
+// Инициализация головного узла статического ящика
+
+namespace refalrts {
+
+namespace vm {
+
+extern NodePtr g_left_swap_ptr;
+
+} // namepsace vm
+
+} // namespace refalrts
+
+refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
+  assert( cDataFunction == head->tag );
+
+  splice_elem( vm::g_left_swap_ptr, head );
+  const char *name = head->function_info.name;
+  head->tag = cDataSwapHead;
+  head->swap_info.next_head = vm::g_left_swap_ptr;
+  head->swap_info.name = name;
+  vm::g_left_swap_ptr = head;
+  return vm::g_left_swap_ptr;
+}
+
+void refalrts::swap_info_bounds(
+  refalrts::Iter& first, refalrts::Iter& last, refalrts::Iter head
+) {
+  assert( cDataSwapHead == head->tag );
+
+  first = head;
+  last = head->swap_info.next_head;
+  move_left( first, last );
+  move_right( first, last );
+}
+
+void refalrts::swap_save(
+  refalrts::Iter head, refalrts::Iter first, refalrts::Iter last
+) {
+  assert( cDataSwapHead == head->tag );
+
+  list_splice( head->swap_info.next_head, first, last );
+}
+
 //==============================================================================
 // Распределитель памяти
 //==============================================================================
@@ -1240,6 +1285,8 @@ refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 
 refalrts::Iter g_begin_view_field = & g_last_marker;
 const refalrts::Iter g_end_view_field = & g_last_marker;
+
+refalrts::NodePtr g_left_swap_ptr = g_end_view_field;
 
 unsigned g_step_counter = 0;
 
@@ -1364,11 +1411,16 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             if( 0 == begin->prev ) {
               fprintf( output, "[FIRST] " );
             } else if ( 0 == begin->next ) {
-              fprintf( output, "[LAST]" );
+              fprintf( output, "\n[LAST]" );
               state = cStateFinish;
             } else {
-              fprintf( output, "[NONE]" );
+              fprintf( output, "\n[NONE]" );
             }
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataSwapHead:
+            fprintf( output, "\n\nSwap %s:", begin->swap_info.name );
             refalrts::move_left( begin, end );
             continue;
 

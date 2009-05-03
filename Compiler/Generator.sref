@@ -47,12 +47,46 @@ $ENTRY GenForward {
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
 }
 
+$FORWARD GenSwap-Aux;
+
 $ENTRY GenESwap {
-  e.Name = ('//$ESWAP ' e.Name) ();
+  e.Name =
+    ('//$ESWAP ' e.Name)
+    <GenSwap-Aux GN-Entry e.Name>;
 }
 
 $ENTRY GenSwap {
-  e.Name = ('//$SWAP ' e.Name) ();
+  e.Name =
+    ('//$SWAP ' e.Name)
+    <GenSwap-Aux GN-Local e.Name>;
+}
+
+GenSwap-Aux {
+  s.MemoryClass e.Name =
+    <GenFnStart s.MemoryClass e.Name>
+    ('  refalrts::Iter func_name = arg_begin;')
+    ()
+    ('  refalrts::move_left( func_name, arg_end );')
+    ()
+    ('  refalrts::Iter info_b = func_name;')
+    ('  refalrts::Iter info_e = arg_end;')
+    ()
+    ('  refalrts::move_left( info_b, info_e );')
+    ('  refalrts::move_right( info_b, info_e );')
+    ()
+    ('  static refalrts::Iter s_head = refalrts::initialize_swap_head( func_name );')
+    ()
+    ('  refalrts::Iter saved_b;')
+    ('  refalrts::Iter saved_e;')
+    ()
+    ('  refalrts::swap_info_bounds( saved_b, saved_e, s_head );')
+    ('  refalrts::splice_evar( arg_begin, saved_b, saved_e );')
+    ('  refalrts::swap_save( s_head, info_b, info_e );')
+    ('  refalrts::splice_to_freelist( arg_begin, arg_end );')
+    ()
+    ('  return refalrts::cSuccess;')
+    ('}')
+    ();
 }
 
 $ENTRY GenIdent {
