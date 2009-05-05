@@ -1,0 +1,17 @@
+E:\Коновалов\BCC55\Lib\c0x32.obj+
+Srefc.obj+
+Driver.obj+
+Lexer.obj+
+Algorithm.obj+
+Error.obj+
+Generator.obj+
+SymTable.obj+
+FindFile.obj+
+ParseCmdLine.obj+
+Library.obj+
+LibraryEx.obj+
+refalrts.obj
+Srefc.exe
+/Gn/L"E:\Коновалов\BCC55\Lib\"/c/x/ap/Tpe
+E:\Коновалов\BCC55\Lib\import32.lib+
+E:\Коновалов\BCC55\Lib\cw32.lib

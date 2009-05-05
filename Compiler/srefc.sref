@@ -82,8 +82,10 @@ SwCompiled {
 }
 
 UnBracketSpace {
-  (e.FileName) = ' ' e.FileName;
+  (e.FileName) = ' "' e.FileName '"';
 }
+
+$FORWARD CompileOneCpp;
 
 Link {
   (NoCompile) e.Files = ;
@@ -91,6 +93,15 @@ Link {
   (CompileCommand e.Command) e.Outputs-B Fails e.Outputs-E = ;
 
   (CompileCommand e.Command) e.Outputs =
-    <System e.Command <Map UnBracketSpace e.Outputs>>
+    <System
+      e.Command
+      <Map (CompileOneCpp (e.Command)) e.Outputs>
+    >
     <WriteLine '** Compilation successed **'>;
+}
+
+CompileOneCpp {
+  (e.Command) (e.FileName '.cpp') =
+    <System e.Command ' "' e.FileName '.cpp"'>
+    ' "' e.FileName '.obj"';
 }

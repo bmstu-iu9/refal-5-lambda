@@ -162,7 +162,7 @@ GenFunctionsFromDirective {
   Extern  = GenExtern  ST-AddDeclared GN-Entry;
   Forward = GenForward ST-AddDeclared GN-Local;
   ESwap   = GenESwap   ST-AddDefined  GN-Entry;
-  Swap    = GenSwap    ST-AddDefined  GN-Entry;
+  Swap    = GenSwap    ST-AddDefined  GN-Local;
   // Для меток не важно: entry или local.
   Ident   = GenIdent   ST-AddIdent    GN-Entry;
 }
