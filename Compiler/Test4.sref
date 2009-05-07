@@ -29,7 +29,7 @@ $ENUM TestDump;
 
 $EXTERN SymbCompare;
 
-$ENUM A
+$ENUM A;
 
 TestOrder {
   = <WriteLine <SymbCompare # Ident2 A>>;

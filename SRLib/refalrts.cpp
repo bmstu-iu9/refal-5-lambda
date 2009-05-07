@@ -431,7 +431,7 @@ bool refalrts::tvar_left(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataOpenBracket == first->tag ) {
+  } else if ( is_open_bracket( first ) ) {
     refalrts::Iter right_bracket = first->link_info;
 
     tvar = first;
@@ -452,7 +452,7 @@ bool refalrts::tvar_right(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataCloseBracket == last->tag ) {
+  } else if ( is_close_bracket( last ) ) {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
 
@@ -517,6 +517,8 @@ bool equal_nodes(
       */
       case refalrts::cDataOpenBracket:
       case refalrts::cDataCloseBracket:
+      case refalrts::cDataOpenADT:
+      case refalrts::cDataCloseADT:
         return true;
         // break;
 
@@ -851,13 +853,6 @@ bool refalrts::copy_evar(
   VALID_LINKED( evar_b_sample );
   VALID_LINKED( evar_e_sample );
 
-#if SHOW_DEBUG
-
-  printf("\nCopy e-var Begin\n");
-  refalrts::vm::make_dump( evar_b_sample, evar_e_sample );
-
-#endif // SHOW_DEBUG
-
 //END DEBUG CODE
 
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
@@ -899,15 +894,6 @@ bool refalrts::copy_evar(
 
   VALID_LINKED( evar_res_b );
   VALID_LINKED( evar_res_e );
-
-
-#if SHOW_DEBUG
-
-  printf("\nCopy e-var End\n");
-  refalrts::vm::make_dump( evar_res_b, evar_res_e );
-
-
-#endif // SHOW_DEBUG
 
 //END DEBUG CODE
 
@@ -1047,13 +1033,6 @@ refalrts::Iter list_splice(
   refalrts::Iter res, refalrts::Iter begin, refalrts::Iter end
 ) {
 
-#if SHOW_DEBUG
-
-  printf("\nlist_splice-B\n");
-  refalrts::vm::make_dump( begin, end );
-
-#endif //SHOW_DEBUG
-
   VALID_LINKED( res );
   VALID_LINKED( res->prev );
   VALID_LINKED( begin );
@@ -1062,12 +1041,6 @@ refalrts::Iter list_splice(
   VALID_LINKED( end->prev );
 
   if( (res == begin) || empty_seq( begin, end ) ) {
-
-#if SHOW_DEBUG
-
-    printf("\nlist_splice_altE\n");
-
-#endif //SHOW_DEBUG
 
     // Цель достигнута сама по себе
     return res;
@@ -1088,13 +1061,6 @@ refalrts::Iter list_splice(
   VALID_LINKED( end );
   VALID_LINKED( end->next );
 
-#if SHOW_DEBUG
-
-  printf("\nlist_splice-E\n");
-  refalrts::vm::make_dump( begin, res );
-
-#endif //SHOW_DEBUG
-
   return begin;
 }
 
@@ -1110,7 +1076,7 @@ refalrts::Iter refalrts::splice_stvar(
   refalrts::Iter res, refalrts::Iter var
 ) {
   refalrts::Iter var_end;
-  if( cDataOpenBracket == var->tag ) {
+  if( is_open_bracket( var ) ) {
     var_end = var->link_info;
   } else {
     var_end = var;
@@ -1420,7 +1386,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf( output, "\n\nSwap %s:", begin->swap_info.name );
+            fprintf( output, "\n\n  Swap %s\n:", begin->swap_info.name );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1557,7 +1523,7 @@ void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   printf( "\n" );
 
   printf("End dump\n");
-  fflush(stdout);
+  fflush(stderr);
 }
 
 void refalrts::vm::free_view_field() {

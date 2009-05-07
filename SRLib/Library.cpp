@@ -807,6 +807,52 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
+refalrts::FnResult GetEnv(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    refalrts::Iter eEnvName_b_1;
+    refalrts::Iter eEnvName_e_1;
+    // e.EnvName
+    eEnvName_b_1 = bb_0;
+    refalrts::use( eEnvName_b_1 );
+    eEnvName_e_1 = be_0;
+    refalrts::use( eEnvName_e_1 );
+
+    std::vector<char> envname;
+
+    refalrts::FnResult envname_res =
+      string_from_seq( envname, eEnvName_b_1, eEnvName_e_1 );
+
+    if( envname_res != refalrts::cSuccess )
+      return envname_res;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+
+    const char *envres = getenv( & envname[0] );
+
+    if( envres != 0 ) {
+      refalrts::Iter char_pos;
+
+      for( const char *env = envres; *env != '\0'; ++ env ) {
+        if( ! refalrts::alloc_char( char_pos, *env ) )
+          return refalrts::cNoMemory;
+
+        refalrts::splice_elem( res, char_pos );
+      }
+    }
+
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+  } while ( 0 );
+
+  return refalrts::cRecognitionImpossible;
+}
+
 refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {
     refalrts::Iter bb_0 = arg_begin;

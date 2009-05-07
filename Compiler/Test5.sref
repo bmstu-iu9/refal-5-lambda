@@ -1,0 +1,8 @@
+$EXTERN GetEnv, WriteLine;
+
+$ENTRY Go {
+  =
+    <WriteLine '@1' <GetEnv 'Xyzzy'>>
+    <WriteLine '@2' <GetEnv 'path'>>
+    <WriteLine '@3' <GetEnv 'TEMP'>>;
+}
