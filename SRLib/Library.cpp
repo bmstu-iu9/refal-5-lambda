@@ -34,10 +34,9 @@ namespace refalrts{
 
 namespace allocator {
 
-void reset_allocator();
 bool alloc_node( Iter& node );
+
 Iter free_ptr();
-void splice_to_freelist( Iter begin, Iter end );
 
 } // namespace allocator
 
@@ -583,18 +582,24 @@ refalrts::FnResult FReadLine(
   return refalrts::cRecognitionImpossible;
 }
 
+namespace {
+
 refalrts::FnResult string_from_seq(
   std::vector<char>& string, refalrts::Iter begin, refalrts::Iter end
 ) {
   std::vector<char> result;
 
-  while(
-    ! empty_seq( begin, end )
-      && (refalrts::cDataChar == begin->tag)
-  ) {
-    result.push_back( begin->char_info );
+  enum { cBufLen = 100 };
+  char buffer[cBufLen + 1] = { 0 };
 
-    move_left( begin, end );
+  for( ; ; ) {
+    unsigned read = refalrts::read_chars(buffer, cBufLen, begin, end);
+
+    if( read == 0 ) {
+      break;
+    }
+
+    result.insert( result.end(), buffer, buffer + read );
   }
 
   /*
@@ -610,6 +615,8 @@ refalrts::FnResult string_from_seq(
     return refalrts::cRecognitionImpossible;
   }
 }
+
+} // unnamed namespace
 
 refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {
@@ -734,19 +741,17 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
 
     refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
 
     int arg_number = sParamNumber_1->number_info;
 
+    refalrts::Iter res_begin = 0;
+    refalrts::Iter res_end = 0;
+
     if( arg_number < g_argc ) {
-      refalrts::Iter char_pos;
-
-      for(char *arg = g_argv[ arg_number ]; *arg != '\0'; ++arg ) {
-        if( ! refalrts::alloc_char( char_pos, *arg ) )
-          return refalrts::cNoMemory;
-
-        refalrts::splice_elem( res, char_pos );
-      }
+      if( ! alloc_string( res_begin, res_end, g_argv[arg_number] ) )
+        return refalrts::cNoMemory;
+    
+      refalrts::splice_evar( arg_begin, res_begin, res_end );
     }
 
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -831,19 +836,26 @@ refalrts::FnResult GetEnv(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       return envname_res;
 
     refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
 
     const char *envres = getenv( & envname[0] );
 
     if( envres != 0 ) {
-      refalrts::Iter char_pos;
+      refalrts::Iter env_begin;
+      refalrts::Iter env_end;
 
-      for( const char *env = envres; *env != '\0'; ++ env ) {
-        if( ! refalrts::alloc_char( char_pos, *env ) )
-          return refalrts::cNoMemory;
+      if( ! refalrts::alloc_string( env_begin, env_end, envres ) )
+        return refalrts::cNoMemory;
 
-        refalrts::splice_elem( res, char_pos );
-      }
+      refalrts::splice_evar( arg_begin, env_begin, env_end );
+
+      //refalrts::Iter char_pos;
+      //
+      //for( const char *env = envres; *env != '\0'; ++ env ) {
+      //  if( ! refalrts::alloc_char( char_pos, *env ) )
+      //    return refalrts::cNoMemory;
+      //
+      //  refalrts::splice_elem( res, char_pos );
+      //}
     }
 
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -870,11 +882,11 @@ refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 
-    exit( sCode_1->number_info );
+    refalrts::set_return_code( sCode_1->number_info );
 
     refalrts::reset_allocator();
     refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
+    return refalrts::cExit;
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
@@ -1010,22 +1022,36 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     refalrts::Iter char_pos = 0;
     if( refalrts::RefalNumber num = sNumber_1->number_info ) {
-      while( num != 0 ) {
-        if( ! refalrts::alloc_char( char_pos, (num % 10) + '0' ) )
-          return refalrts::cNoMemory;
-        res = refalrts::splice_elem( res, char_pos );
+      // Хрен с ним, что много. Главное, что не мало.
+      enum { cMaxNumberLen = 30 };
 
+      char buffer[cMaxNumberLen + 1] = { 0 };
+      char *lim_digit = buffer + cMaxNumberLen;
+      char *cur_digit = lim_digit;
+
+      while( num != 0 ) {
+        -- cur_digit;
+        *cur_digit = (num % 10) + '0';
         num /= 10;
       }
+
+      refalrts::Iter num_begin;
+      refalrts::Iter num_end;
+
+      if( ! refalrts::alloc_chars(
+          num_begin, num_end, cur_digit, lim_digit - cur_digit) )
+        return refalrts::cNoMemory;
+
+      refalrts::splice_evar( res, num_begin, num_end );
     } else {
       if( ! refalrts::alloc_char( char_pos, '0' ) )
         return refalrts::cNoMemory;
 
-      res = refalrts::splice_elem( res, char_pos );
+      refalrts::splice_elem( res, char_pos );
     }
 
-    refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
+
     return refalrts::cSuccess;
   } while ( 0 );
 

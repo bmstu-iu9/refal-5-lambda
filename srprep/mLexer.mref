@@ -150,6 +150,7 @@ DoScanLiteral {
 FinishDirective {
   ('$ENTRY') e.Text = (Directive Entry) e.Text;
   ('$EXTERN') e.Text = (Directive Extern) e.Text;
+  ('$FORWARD') e.Text = (Directive Extern) e.Text;
   ('$ENUM') e.Text = (Directive Enum) e.Text;
   ('$EENUM') e.Text = (Directive EEnum) e.Text;
   ('$SWAP') e.Text = (Directive Swap) e.Text;

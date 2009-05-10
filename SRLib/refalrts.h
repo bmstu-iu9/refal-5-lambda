@@ -6,7 +6,8 @@ namespace refalrts {
 typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
-  cSuccess = 2
+  cSuccess = 2,
+  cExit = 3
 } FnResult;
 
 typedef struct Node Node;
@@ -116,6 +117,10 @@ extern bool repeated_evar_right(
   Iter& first, Iter& last
 );
 
+extern unsigned read_chars(
+  char buffer[], unsigned buflen, Iter& first, Iter& last
+);
+
 // Операции построения результата
 
 extern void reset_allocator();
@@ -139,6 +144,11 @@ extern bool alloc_close_bracket( Iter& res );
 extern bool alloc_open_call( Iter& res );
 extern bool alloc_close_call( Iter& res );
 
+extern bool alloc_chars(
+  Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
+);
+extern bool alloc_string( Iter& res_b, Iter& res_e, const char *string );
+
 extern void push_stack( Iter call_bracket );
 extern void link_brackets( Iter left, Iter right );
 
@@ -152,6 +162,14 @@ extern void splice_to_freelist( Iter first, Iter last );
 extern Iter initialize_swap_head( Iter head );
 extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
 extern void swap_save( Iter head, Iter first, Iter last );
+
+// Профилирование
+
+extern void this_is_generated_function();
+
+// Прочие функции
+
+extern void set_return_code( int retcode );
 
 } //namespace refalrts
 

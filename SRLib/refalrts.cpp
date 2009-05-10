@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <assert.h>
 
@@ -745,6 +746,25 @@ bool refalrts::repeated_evar_right(
   }
 }
 
+unsigned refalrts::read_chars(
+  char buffer[], unsigned buflen, refalrts::Iter& first, refalrts::Iter& last
+) {
+  unsigned read = 0;
+  for( ; ; ) {
+    if( read == buflen ) {
+      return read;
+    } else if( empty_seq(first, last) ) {
+      return read;
+    } else if( first->tag != refalrts::cDataChar ) {
+      return read;
+    } else {
+      buffer[read] = first->char_info;
+      ++ read;
+      move_left( first, last );
+    }
+  }
+}
+
 //------------------------------------------------------------------------------
 
 // Операции распределителя памяти
@@ -998,6 +1018,55 @@ bool refalrts::alloc_close_call( refalrts::Iter& res ) {
   return alloc_some_bracket( res, cDataCloseCall );
 }
 
+bool refalrts::alloc_chars(
+  refalrts::Iter& res_b, refalrts::Iter& res_e,
+  const char buffer[], unsigned buflen
+) {
+  if( buflen == 0 ) {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev( refalrts::allocator::free_ptr() );
+    refalrts::Iter end_seq = 0;
+
+    for( unsigned i = 0; i < buflen; ++ i ) {
+      if( ! alloc_char( end_seq, buffer[i] ) ) {
+        return false;
+      }
+    }
+
+    res_b = next( before_begin_seq );
+    res_e = end_seq;
+
+    return true;
+  }
+}
+
+bool refalrts::alloc_string(
+  refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
+) {
+  if( *string == '\0' ) {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev( refalrts::allocator::free_ptr() );
+    refalrts::Iter end_seq = 0;
+
+    for( const char *p = string; *p != '\0'; ++ p ) {
+      if( ! alloc_char( end_seq, *p ) ) {
+        return false;
+      }
+    }
+
+    res_b = next( before_begin_seq );
+    res_e = end_seq;
+
+    return true;
+  }
+}
+
 namespace refalrts {
 
 namespace vm {
@@ -1140,6 +1209,42 @@ void refalrts::swap_save(
   list_splice( head->swap_info.next_head, first, last );
 }
 
+//------------------------------------------------------------------------------
+
+// Средства профилирования
+
+namespace refalrts {
+
+namespace profiler {
+
+extern void start_generated_function();
+
+} // namespace profiler
+
+} // namespace refalrts
+
+void refalrts::this_is_generated_function() {
+  refalrts::profiler::start_generated_function();
+}
+
+//------------------------------------------------------------------------------
+
+// Прочие операции
+
+namespace refalrts {
+
+namespace vm {
+
+extern int g_ret_code;
+
+} // namespace vm
+
+} // namespace refalrts
+
+void refalrts::set_return_code( int code ) {
+  refalrts::vm::g_ret_code = code;
+}
+
 //==============================================================================
 // Распределитель памяти
 //==============================================================================
@@ -1221,6 +1326,60 @@ void refalrts::allocator::free_memory() {
 }
 
 //==============================================================================
+// Упрощённый профилировщик
+//==============================================================================
+
+namespace refalrts {
+
+namespace profiler {
+
+clock_t g_start_program_time;
+clock_t g_start_gen_function_time;
+clock_t g_total_gen_function_time;
+
+bool g_in_generated;
+
+void start_profiler();
+void end_profiler();
+void start_generated_function();
+void after_step();
+
+} // namespace profiler
+
+} // namespace refalrts
+
+void refalrts::profiler::start_profiler() {
+  g_start_program_time = clock();
+  g_in_generated = false;
+}
+
+void refalrts::profiler::end_profiler() {
+  refalrts::profiler::after_step();
+
+  double full_time = (clock() - g_start_program_time) / CLOCKS_PER_SEC;
+  double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
+  double io_time = full_time - pure_time;
+
+  fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
+  fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
+  fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
+}
+
+void refalrts::profiler::start_generated_function() {
+  g_start_gen_function_time = clock();
+  g_in_generated = true;
+}
+
+void refalrts::profiler::after_step() {
+  if( g_in_generated ) {
+    clock_t calc_time = clock() - g_start_gen_function_time;
+    g_total_gen_function_time += calc_time;
+  }
+
+  g_in_generated = false;
+}
+
+//==============================================================================
 // Виртуальная машина
 //==============================================================================
 
@@ -1255,6 +1414,8 @@ const refalrts::Iter g_end_view_field = & g_last_marker;
 refalrts::NodePtr g_left_swap_ptr = g_end_view_field;
 
 unsigned g_step_counter = 0;
+
+int g_ret_code;
 
 } // namespace vm
 
@@ -1305,21 +1466,25 @@ refalrts::FnResult refalrts::vm::main_loop() {
     refalrts::Iter active_end = pop_stack();
 
     res = execute_active( active_begin, active_end );
+    refalrts::profiler::after_step();
 
     ++ g_step_counter;
 
     if( res != cSuccess ) {
       switch( res ) {
         case refalrts::cRecognitionImpossible:
-          printf("\nRECOGNITION IMPOSSIBLE\n\n");
+          fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
           break;
 
         case refalrts::cNoMemory:
-          printf("\nNO MEMORY\n\n");
+          fprintf(stderr, "\nNO MEMORY\n\n");
           break;
 
+        case refalrts::cExit:
+          return res;
+
         default:
-          printf("\nUNKNOWN ERROR\n\n");
+          fprintf(stderr, "\nUNKNOWN ERROR\n\n");
           break;
       }
       make_dump( active_begin, active_end );
@@ -1386,7 +1551,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf( output, "\n\n  Swap %s\n:", begin->swap_info.name );
+            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1510,19 +1675,18 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
 } // unnamed namespace
 
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
-  printf( "\nERROR EXPRESSION:\n" );
-  print_seq( stdout, begin, end );
-  printf( "\nVIEW FIELD:\n" );
-  print_seq( stdout, & g_first_marker, & g_last_marker );
-  printf( "\nFREE LIST:\n" );
+  fprintf( stderr, "\nERROR EXPRESSION:\n" );
+  print_seq( stderr, begin, end );
+  fprintf( stderr, "\nVIEW FIELD:\n" );
+  print_seq( stderr, & g_first_marker, & g_last_marker );
+  fprintf( stderr, "\nFREE LIST:\n" );
   print_seq(
-    stdout,
+    stderr,
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
-  printf( "\n" );
 
-  printf("End dump\n");
+  fprintf( stderr,"\nEnd dump\n");
   fflush(stderr);
 }
 
@@ -1551,7 +1715,9 @@ int main(int argc, char **argv) {
   refalrts::FnResult res;
   try {
     refalrts::vm::init_view_field();
+    refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
+    refalrts::profiler::end_profiler();
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
@@ -1571,6 +1737,9 @@ int main(int argc, char **argv) {
 
     case refalrts::cNoMemory:
       return 2;
+
+    case refalrts::cExit:
+      return refalrts::vm::g_ret_code;
 
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main");

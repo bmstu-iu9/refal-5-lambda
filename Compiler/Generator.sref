@@ -17,7 +17,8 @@ SwGenFnStart {
     (
       <TextFromMemoryClass s.MemoryClass>
       'refalrts::FnResult ' e.Name '(' <s.FnArguments> ') {'
-    );
+    )
+    ('  refalrts::this_is_generated_function();');
 }
 
 $ENTRY GenFnStart {
