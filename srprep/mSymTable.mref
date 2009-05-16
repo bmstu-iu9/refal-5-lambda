@@ -17,7 +17,7 @@ $ENTRY Create = [SymTable];
 */
 $ENTRY AddExport
   t.SymTable (e.Name) e.ModuleName =
-    <SwAddDeclaration t.SymTable (e.Name) e.ModuleName '.' e.Name>;
+    <SwAddDeclaration t.SymTable (e.Name) 'Cpp-SR-BE.' e.ModuleName '.' e.Name>;
 
 SwAddDeclaration {
   [SymTable e.Names-B (e.Name (e.Exported)) e.Names-E]
