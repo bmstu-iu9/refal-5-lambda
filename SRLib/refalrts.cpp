@@ -1265,6 +1265,8 @@ refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
+unsigned g_memory_use = 0;
+
 } // namespace allocator
 
 } // namespace refalrts
@@ -1310,6 +1312,8 @@ bool refalrts::allocator::create_nodes() {
 
     g_free_ptr = new_node;
 
+    ++ g_memory_use;
+
     return true;
   }
 }
@@ -1323,6 +1327,8 @@ void refalrts::allocator::free_memory() {
     free( begin );
     begin = next_begin;
   }
+
+  fprintf( stderr, "Memory used %d bytes\n", g_memory_use * sizeof(Node) );
 }
 
 //==============================================================================
@@ -1699,6 +1705,8 @@ void refalrts::vm::free_view_field() {
     free( begin );
     begin = next_begin;
   }
+
+  fprintf( stderr, "Step count %d\n", g_step_counter );
 }
 
 //==============================================================================
@@ -1717,7 +1725,6 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
-    refalrts::profiler::end_profiler();
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
@@ -1725,6 +1732,8 @@ int main(int argc, char **argv) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
     return 4;
   }
+
+  refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
   
