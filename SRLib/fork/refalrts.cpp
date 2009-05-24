@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <exception>
-
 #include <assert.h>
 
 #include "refalrts.h"
@@ -958,13 +956,21 @@ bool refalrts::alloc_number(
   }
 }
 
+const char *unknown() { return "@unknown"; }
+
 bool refalrts::alloc_name(
-  refalrts::Iter& res, refalrts::RefalFunctionPtr fn, const char *name
+  refalrts::Iter& res,
+  refalrts::RefalFunctionPtr fn,
+  refalrts::RefalIdentifier name
 ) {
   if( allocator::alloc_node( res ) ) {
     res->tag = cDataFunction;
     res->function_info.ptr = fn;
-    res->function_info.name = name;
+    if( name != 0 ) {
+      res->function_info.name = name;
+    } else {
+      res->function_info.name = unknown;
+    }
     return true;
   } else {
     return false;
@@ -1184,7 +1190,7 @@ refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
   assert( cDataFunction == head->tag );
 
   splice_elem( vm::g_left_swap_ptr, head );
-  const char *name = head->function_info.name;
+  refalrts::RefalIdentifier name = head->function_info.name;
   head->tag = cDataSwapHead;
   head->swap_info.next_head = vm::g_left_swap_ptr;
   head->swap_info.name = name;
@@ -1444,6 +1450,14 @@ bool refalrts::vm::empty_stack() {
   return (g_stack_ptr == 0);
 }
 
+//$LABEL Go
+template <typename T>
+struct GoL_ {
+  static const char *name() {
+    return "Go";
+  }
+};
+
 bool refalrts::vm::init_view_field() {
   refalrts::reset_allocator();
   refalrts::Iter res = g_begin_view_field;
@@ -1451,7 +1465,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & Go, "Go" ) )
+  if( ! refalrts::alloc_name( n1, & Go, GoL_<int>::name ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
@@ -1535,13 +1549,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
     cStateFinish
   } state = cStateView;
 
-  unsigned long loop_counter = 0;
-
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
-    ++ loop_counter;
-    //if( loop_counter > 100000UL ) {
-    //  throw "Loop counter";
-    //}
 
     switch( state ) {
       case cStateView:
@@ -1574,11 +1582,12 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataFunction:
-            if( begin->function_info.name[0] != 0 ) {
-              fprintf( output, "&%s ", begin->function_info.name );
-            } else {
-              fprintf( output, "&%p ", begin->function_info.ptr );
-            }
+            fprintf( output, "&%s ", (begin->function_info.name)() );
+            //if( begin->function_info.name[0] != 0 ) {
+            //  fprintf( output, "&%s ", begin->function_info.name );
+            //} else {
+            //  fprintf( output, "&%p ", begin->function_info.ptr );
+            //}
             refalrts::move_left( begin, end );
             continue;
 
@@ -1730,8 +1739,6 @@ int main(int argc, char **argv) {
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
-  } catch ( std::exception& e ) {
-    fprintf(stderr, "INTERNAL ERROR: %s\n", e.what());
   } catch (...) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
     return 4;
