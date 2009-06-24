@@ -60,6 +60,38 @@ typedef struct Node {
   };
 } Node;
 
+typedef enum iCmd {
+  icChar,
+  icInt,
+  icFunc,
+  icIdent,
+  icString,
+  icBracket,
+  icSpliceSTVar,
+  icSpliceEVar,
+  icCopySTVar,
+  icCopyEVar,
+  icEnd
+} iCmd;
+
+typedef enum BracketType {
+  ibOpenADT,
+  ibOpenBracket,
+  ibOpenCall,
+  ibCloseADT,
+  ibCloseBracket,
+  ibCloseCall
+} BracketType;
+
+typedef struct ResultAction {
+    iCmd cmd;
+    void *ptr_value1;
+    void *ptr_value2;
+    int value;
+    Node *alloc_ptr1;
+    Node *alloc_ptr2;
+} ResultAction;
+
 extern void use( Iter& );
 
 // Операции распознавания образца
@@ -170,6 +202,14 @@ extern void this_is_generated_function();
 // Прочие функции
 
 extern void set_return_code( int retcode );
+
+// Интерпретатор
+
+extern FnResult interpret_array(
+  ResultAction raa[],
+  Iter begin,
+  Iter end
+);
 
 } //namespace refalrts
 

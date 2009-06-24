@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <exception>
-
 #include <assert.h>
 
 #include "refalrts.h"
@@ -864,7 +862,6 @@ void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
 } // namespace refalrts
 
-
 bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
@@ -1267,8 +1264,6 @@ refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
-unsigned g_memory_use = 0;
-
 } // namespace allocator
 
 } // namespace refalrts
@@ -1314,8 +1309,6 @@ bool refalrts::allocator::create_nodes() {
 
     g_free_ptr = new_node;
 
-    ++ g_memory_use;
-
     return true;
   }
 }
@@ -1329,8 +1322,6 @@ void refalrts::allocator::free_memory() {
     free( begin );
     begin = next_begin;
   }
-
-  fprintf( stderr, "Memory used %d bytes\n", g_memory_use * sizeof(Node) );
 }
 
 //==============================================================================
@@ -1539,9 +1530,9 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
 
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
     ++ loop_counter;
-    //if( loop_counter > 100000UL ) {
-    //  throw "Loop counter";
-    //}
+    if( loop_counter > 100000UL ) {
+      throw "Loop counter";
+    }
 
     switch( state ) {
       case cStateView:
@@ -1707,8 +1698,172 @@ void refalrts::vm::free_view_field() {
     free( begin );
     begin = next_begin;
   }
+}
 
-  fprintf( stderr, "Step count %d\n", g_step_counter );
+//==============================================================================
+// Интерпретатор
+//==============================================================================
+
+refalrts::FnResult refalrts::interpret_array(refalrts::ResultAction raa[],
+  refalrts::Iter begin, refalrts::Iter end)
+{
+	int i = 0;
+	Iter stack_ptr = 0;
+	Iter res = begin;
+	Iter cobracket;
+	
+    //fprintf(stderr, "Interp: Phase 2\n");
+
+	while(raa[i].cmd != icEnd)
+	{
+		//Выделение памяти
+		switch(raa[i].cmd)
+		{
+            case icChar:
+                if(!alloc_char(raa[i].alloc_ptr1, static_cast<char>(raa[i].value)))
+                  return cNoMemory;
+                break;
+
+            case icInt:
+                if(!alloc_number(raa[i].alloc_ptr1, raa[i].value))
+                  return cNoMemory;
+                break;
+
+            case icFunc:
+                if(!alloc_name(raa[i].alloc_ptr1, static_cast<RefalFunctionPtr>(raa[i].ptr_value1), static_cast<const char*>(raa[i].ptr_value2)))
+                  return cNoMemory;
+                break;
+
+            case icIdent:
+                if(!alloc_ident(raa[i].alloc_ptr1,  static_cast<RefalIdentifier>(raa[i].ptr_value1)))
+                  return cNoMemory;
+                break;
+
+			case icBracket:
+				switch(raa[i].value)
+				{
+					case ibOpenADT:
+                        if(!alloc_open_adt(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibOpenBracket:
+                        if(!alloc_open_bracket(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibOpenCall:
+                        if(!alloc_open_call(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibCloseADT:
+                        if(!alloc_close_adt(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        break;
+
+                    case ibCloseBracket:
+                        if(!alloc_close_bracket(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        cobracket = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        link_brackets( raa[i].alloc_ptr1, cobracket );
+                        break;
+                        
+                    case ibCloseCall:
+                        if(!alloc_close_call(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        break;
+
+					default:
+                        throw UnexpectedTypeException();
+				}
+
+			case icSpliceSTVar:
+				break;
+				
+			case icSpliceEVar:
+				break;
+				
+			case icCopySTVar:
+				if(!copy_stvar(raa[i].alloc_ptr1, *static_cast<Iter*>(raa[i].ptr_value1)))
+					return cNoMemory;
+				break;
+
+			case icCopyEVar:
+				if(!copy_evar(raa[i].alloc_ptr1, raa[i].alloc_ptr2, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2)))
+					return cNoMemory;
+				break;
+
+            default:
+				throw UnexpectedTypeException();
+		}
+		i++;
+	}
+	
+    //fprintf(stderr, "Interp: Phase 3\n");
+
+	while(i >= 0)
+	{
+		//Компановка стека
+		switch(raa[i].cmd)
+		{
+            case icChar:
+            case icInt:
+            case icFunc:
+            case icIdent:
+				res = splice_elem(res, raa[i].alloc_ptr1);
+                break;
+
+			case icSpliceSTVar:
+				res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
+				break;
+				
+			case icSpliceEVar:
+				res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+				break;
+			
+            case icBracket:
+                if( raa[i].value == ibCloseCall )
+                {
+                    Iter open_call = raa[i].alloc_ptr1->link_info;
+                    push_stack(raa[i].alloc_ptr1);
+                    push_stack(open_call);
+                }
+                res = splice_elem( res, raa[i].alloc_ptr1 );
+                break;
+				
+			case icCopyEVar:
+				res = splice_evar(res, raa[i].alloc_ptr1, raa[i].alloc_ptr2);
+				break;
+
+			case icCopySTVar:
+				res = splice_stvar(res, raa[i].alloc_ptr1);
+				break;
+
+			case icEnd:
+				break;
+
+            default:
+				throw UnexpectedTypeException();
+		}
+		i--;
+	}
+	splice_to_freelist(begin, end);
+
+	//fprintf(stderr, "Interp: End phase 3\n");
+
+	return cSuccess;
 }
 
 //==============================================================================
@@ -1727,17 +1882,14 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
+    refalrts::profiler::end_profiler();
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
-  } catch ( std::exception& e ) {
-    fprintf(stderr, "INTERNAL ERROR: %s\n", e.what());
   } catch (...) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
     return 4;
   }
-
-  refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
   
