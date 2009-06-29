@@ -1,0 +1,49 @@
+$LABEL Ident2;
+
+$EXTERN CreateIdent, WriteLine;
+
+TestIdent {
+  # Ident2 = <WriteLine 'Test ident success'>;
+
+  s.Other = <WriteLine 'Test ident fails'>;
+}
+
+$ENUM Tag1, Tag2;
+
+$FORWARD DoTestADT;
+
+TestADT {
+  = <DoTestADT [Tag1] 'abcd' 'efgh' [Tag2]>;
+}
+
+DoTestADT {
+  [Tag1 e.1] s.Next e.Inner s.Last [Tag2 e.2] =
+    <DoTestADT
+      [Tag1 e.1 s.Next] e.Inner [Tag2 s.Last e.2]
+    >;
+
+  [Tag1 e.1] [Tag2 e.2] = <WriteLine 'ADT Success'>;
+}
+
+$ENUM TestDump;
+
+$EXTERN SymbCompare;
+
+$ENUM A;
+
+TestOrder {
+  = <WriteLine <SymbCompare # Ident2 A>>;
+}
+
+$SWAP MySwap;
+
+$ESWAP MyESwap;
+
+$ENTRY Go {
+  =
+    <TestIdent <CreateIdent>>
+    <TestADT>
+    //<TestDump # Ident2 [Tag1 'x'] [Tag2 100]>
+    <WriteLine 'Test print ' # Ident2 [Tag1 [Tag2 # Ident2 ]]>
+    <TestOrder>;
+}

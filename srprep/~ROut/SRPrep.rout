@@ -1,0 +1,18 @@
+v ROUT3 Module Refal 0.1
+r file ~ROut\SRPrep.rout
+
+b Local::SRPrep::Main
+c $Local::SRPrep::Main$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::ProgName$ ) =
+c 		<$Entry::InOut::WriteText$ ( $ADT::__StructureBrackets$ 'Command line error' ) ( $ADT::__StructureBrackets$ 'Use: ' e.$Index::ProgName$ ' mainsrc [optsrc1 [optsrc2 ...]]' ) > ;
+c 	( $ADT::__StructureBrackets$ e.$Index::ProgName$ ) ( $ADT::__StructureBrackets$ e.$Index::MainSrc$ ) e.$Index::OtherSrcs$ =
+c 		<$Entry::MLambda::Map$ $Entry::MPreprocessor::Unit$ e.$Index::OtherSrcs$ > <$Entry::MPreprocessor::Program$ e.$Index::MainSrc$ > <$Entry::MOS::System$ 'compile_mr ' <$Entry::MLocation::OutName$ e.$Index::MainSrc$ > > ;
+c }
+
+b Entry::SRPrep::Go
+c $Entry::SRPrep::Go$ {
+c 	=
+c 		<$Local::SRPrep::Main$ <$Entry::MOS::ArgList$ > > ;
+c }
+
+e <$Entry::SRPrep::Go$ > 

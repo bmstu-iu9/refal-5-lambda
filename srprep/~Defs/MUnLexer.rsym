@@ -1,0 +1,8 @@
+$module MUnLexer;
+
+$import FileIO;
+$import MLambda;
+
+$entry Write;
+
+$end MUnLexer.

@@ -1,0 +1,10 @@
+$module MSymTable;
+
+
+$entry AddExport;
+$entry AddForward;
+$entry ConvertName;
+$entry Create;
+$entry Destroy;
+
+$end MSymTable.

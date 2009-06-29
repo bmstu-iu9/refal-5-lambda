@@ -6,7 +6,8 @@ namespace refalrts {
 typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
-  cSuccess = 2
+  cSuccess = 2,
+  cExit = 3
 } FnResult;
 
 typedef struct Node Node;
@@ -17,21 +18,32 @@ typedef struct Node *Iter;
 
 typedef enum DataTag {
   cDataIllegal = 0,
+  cDataSwapHead,
   cDataChar,
   cDataNumber,
   cDataFunction,
+  cDataIdentifier,
+  cDataOpenADT, cDataCloseADT,
   cDataOpenBracket, cDataCloseBracket,
   cDataOpenCall, cDataCloseCall,
   cDataFile
 } DataTag;
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
+
 typedef struct RefalFunction {
   RefalFunctionPtr ptr;
   const char *name;
 } RefalFunction;
 
 typedef unsigned long RefalNumber;
+
+typedef const char *(*RefalIdentifier) ();
+
+typedef struct RefalSwapHead {
+  Iter next_head;
+  const char *name;
+} RefalSwapHead;
 
 typedef struct Node {
   NodePtr prev;
@@ -41,10 +53,44 @@ typedef struct Node {
     char char_info;
     RefalNumber number_info;
     RefalFunction function_info;
+    RefalIdentifier ident_info;
     NodePtr link_info;
     void *file_info;
+    RefalSwapHead swap_info;
   };
 } Node;
+
+typedef enum iCmd {
+  icChar,
+  icInt,
+  icFunc,
+  icIdent,
+  icString,
+  icBracket,
+  icSpliceSTVar,
+  icSpliceEVar,
+  icCopySTVar,
+  icCopyEVar,
+  icEnd
+} iCmd;
+
+typedef enum BracketType {
+  ibOpenADT,
+  ibOpenBracket,
+  ibOpenCall,
+  ibCloseADT,
+  ibCloseBracket,
+  ibCloseCall
+} BracketType;
+
+typedef struct ResultAction {
+    iCmd cmd;
+    void *ptr_value1;
+    void *ptr_value2;
+    int value;
+    Node *alloc_ptr1;
+    Node *alloc_ptr2;
+} ResultAction;
 
 extern void use( Iter& );
 
@@ -62,6 +108,20 @@ extern bool char_right( char ch, Iter& first, Iter& last );
 
 extern bool number_left( RefalNumber num, Iter& first, Iter& last );
 extern bool number_right( RefalNumber num, Iter& first, Iter& last );
+
+extern bool ident_left( RefalIdentifier ident, Iter& first, Iter& last );
+extern bool ident_right( RefalIdentifier ident, Iter& first, Iter& last );
+
+extern bool adt_left(
+  Iter& res_first, Iter& res_last,
+  RefalFunctionPtr tag,
+  Iter& first, Iter& last
+);
+extern bool adt_right(
+  Iter& res_first, Iter& res_last,
+  RefalFunctionPtr tag,
+  Iter& first, Iter& last
+);
 
 extern bool brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 extern bool brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
@@ -89,6 +149,10 @@ extern bool repeated_evar_right(
   Iter& first, Iter& last
 );
 
+extern unsigned read_chars(
+  char buffer[], unsigned buflen, Iter& first, Iter& last
+);
+
 // Операции построения результата
 
 extern void reset_allocator();
@@ -104,10 +168,18 @@ extern bool alloc_number( Iter& res, RefalNumber num );
 extern bool alloc_name(
   Iter& res, RefalFunctionPtr func, const char *name = ""
 );
+extern bool alloc_ident( Iter& res, RefalIdentifier ident );
+extern bool alloc_open_adt( Iter& res );
+extern bool alloc_close_adt( Iter& res );
 extern bool alloc_open_bracket( Iter& res );
 extern bool alloc_close_bracket( Iter& res );
 extern bool alloc_open_call( Iter& res );
 extern bool alloc_close_call( Iter& res );
+
+extern bool alloc_chars(
+  Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
+);
+extern bool alloc_string( Iter& res_b, Iter& res_e, const char *string );
 
 extern void push_stack( Iter call_bracket );
 extern void link_brackets( Iter left, Iter right );
@@ -116,6 +188,28 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+
+// Работа со статическими ящиками
+
+extern Iter initialize_swap_head( Iter head );
+extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
+extern void swap_save( Iter head, Iter first, Iter last );
+
+// Профилирование
+
+extern void this_is_generated_function();
+
+// Прочие функции
+
+extern void set_return_code( int retcode );
+
+// Интерпретатор
+
+extern FnResult interpret_array(
+  ResultAction raa[],
+  Iter begin,
+  Iter end
+);
 
 } //namespace refalrts
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <assert.h>
 
@@ -47,6 +48,16 @@ static refalrts::Iter next( refalrts::Iter current ) {
 
 static refalrts::Iter prev( refalrts::Iter current ) {
   return current->prev;
+}
+
+bool is_open_bracket( refalrts::Iter node ) {
+  return (refalrts::cDataOpenBracket == node->tag)
+    || (refalrts::cDataOpenADT == node->tag);
+}
+
+bool is_close_bracket( refalrts::Iter node ) {
+  return (refalrts::cDataCloseBracket == node->tag)
+    || (refalrts::cDataCloseADT == node->tag);
 }
 
 } // unnamed namespace
@@ -184,6 +195,40 @@ bool refalrts::number_right(
   }
 }
 
+bool refalrts::ident_left(
+  refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return false;
+  } else if ( cDataIdentifier != first->tag ) {
+    return false;
+  } else if ( first->ident_info != ident ) {
+    return false;
+  } else {
+    move_left( first, last );
+    return true;
+  }
+}
+
+bool refalrts::ident_right(
+  refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return false;
+  } else if ( cDataIdentifier != last->tag ) {
+    return false;
+  } else if ( last->ident_info != ident ) {
+    return false;
+  } else {
+    move_right( first, last );
+    return true;
+  }
+}
+
 bool refalrts::brackets_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
@@ -250,6 +295,92 @@ bool refalrts::brackets_right(
   }
 }
 
+bool refalrts::adt_left(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::RefalFunctionPtr tag,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return false;
+  } else if ( cDataOpenADT != first->tag ) {
+    return false;
+  } else {
+    refalrts::Iter left_bracket = first;
+    refalrts::Iter right_bracket = left_bracket->link_info;
+    refalrts::Iter pnext = next( left_bracket );
+
+    if( pnext == right_bracket ) {
+      return false;
+    } else if( cDataFunction != pnext->tag ) {
+      return false;
+    } else if( pnext->function_info.ptr != tag ) {
+      return false;
+    } else {
+      if( next( pnext ) != right_bracket ) {
+        res_first = next( pnext );
+        res_last = prev( right_bracket );
+      } else {
+        res_first = 0;
+        res_last = 0;
+      }
+
+      if( right_bracket == last ) {
+        first = 0;
+        last = 0;
+      } else {
+        first = next( right_bracket );
+      }
+
+      return true;
+    }
+  }
+}
+
+bool refalrts::adt_right(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::RefalFunctionPtr tag,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return false;
+  } else if( cDataCloseADT != last->tag ) {
+    return false;
+  } else {
+    refalrts::Iter right_bracket = last;
+    refalrts::Iter left_bracket = right_bracket->link_info;
+    refalrts::Iter pnext = next( left_bracket );
+
+    if( pnext == right_bracket ) {
+      return false;
+    } else if( cDataFunction != pnext->tag ) {
+      return false;
+    } else if( pnext->function_info.ptr != tag ) {
+      return false;
+    } else {
+      if( next( pnext ) != right_bracket ) {
+        res_first = next( pnext );
+        res_last = prev( right_bracket );
+      } else {
+        res_first = 0;
+        res_last = 0;
+      }
+
+      if( first == left_bracket ) {
+        first = 0;
+        last = 0;
+      } else {
+        last = prev( left_bracket );
+      }
+
+      return true;
+    }
+  }
+}
+
 bool refalrts::svar_left(
   refalrts::Iter& svar, refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -257,7 +388,7 @@ bool refalrts::svar_left(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataOpenBracket == first->tag ) {
+  } else if ( is_open_bracket( first ) ) {
     return false;
   } else {
     svar = first;
@@ -273,7 +404,7 @@ bool refalrts::svar_right(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataCloseBracket == last->tag ) {
+  } else if ( is_close_bracket( last ) ) {
     return false;
   } else {
     svar = last;
@@ -301,7 +432,7 @@ bool refalrts::tvar_left(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataOpenBracket == first->tag ) {
+  } else if ( is_open_bracket( first ) ) {
     refalrts::Iter right_bracket = first->link_info;
 
     tvar = first;
@@ -322,7 +453,7 @@ bool refalrts::tvar_right(
 
   if( empty_seq( first, last ) ) {
     return false;
-  } else if ( cDataCloseBracket == last->tag ) {
+  } else if ( is_close_bracket( last ) ) {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
 
@@ -377,12 +508,18 @@ bool equal_nodes(
         return (node1->function_info.ptr == node2->function_info.ptr);
         // break;
 
+      case refalrts::cDataIdentifier:
+        return (node1->ident_info == node2->ident_info);
+        // break;
+
       /*
         Сведения о связях между скобками нужны для других целей, здесь
         же нам важны только их одновременные появления.
       */
       case refalrts::cDataOpenBracket:
       case refalrts::cDataCloseBracket:
+      case refalrts::cDataOpenADT:
+      case refalrts::cDataCloseADT:
         return true;
         // break;
 
@@ -455,7 +592,7 @@ bool refalrts::repeated_stvar_left(
       left_term_e = prev( first );
     }
 
-    if( cDataOpenBracket == stvar_sample->tag ) {
+    if( is_open_bracket( stvar_sample ) ) {
       stvar_sample_e = stvar_sample->link_info;
     } else {
       stvar_sample_e = stvar_sample;
@@ -491,7 +628,7 @@ bool refalrts::repeated_stvar_right(
     refalrts::Iter right_term_e = old_last;
     refalrts::Iter stvar_sample_e;
 
-    if( cDataOpenBracket == stvar_sample->tag ) {
+    if( is_open_bracket( stvar_sample ) ) {
       stvar_sample_e = stvar_sample->link_info;
     } else {
       stvar_sample_e = stvar_sample;
@@ -609,6 +746,25 @@ bool refalrts::repeated_evar_right(
   }
 }
 
+unsigned refalrts::read_chars(
+  char buffer[], unsigned buflen, refalrts::Iter& first, refalrts::Iter& last
+) {
+  unsigned read = 0;
+  for( ; ; ) {
+    if( read == buflen ) {
+      return read;
+    } else if( empty_seq(first, last) ) {
+      return read;
+    } else if( first->tag != refalrts::cDataChar ) {
+      return read;
+    } else {
+      buffer[read] = first->char_info;
+      ++ read;
+      move_left( first, last );
+    }
+  }
+}
+
 //------------------------------------------------------------------------------
 
 // Операции распределителя памяти
@@ -652,12 +808,24 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       );
       // break;
 
+    case refalrts::cDataIdentifier:
+      return refalrts::alloc_ident( res, sample->ident_info );
+      //break;
+
     case refalrts::cDataOpenBracket:
       return refalrts::alloc_open_bracket( res );
       // break;
 
     case refalrts::cDataCloseBracket:
       return refalrts::alloc_close_bracket( res );
+      // break;
+
+    case refalrts::cDataOpenADT:
+      return refalrts::alloc_open_adt( res );
+      // break;
+
+    case refalrts::cDataCloseADT:
+      return refalrts::alloc_close_adt( res );
       // break;
 
     case refalrts::cDataFile: {
@@ -694,7 +862,6 @@ void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
 } // namespace refalrts
 
-
 bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
@@ -704,13 +871,6 @@ bool refalrts::copy_evar(
 
   VALID_LINKED( evar_b_sample );
   VALID_LINKED( evar_e_sample );
-
-#if SHOW_DEBUG
-
-  printf("\nCopy e-var Begin\n");
-  refalrts::vm::make_dump( evar_b_sample, evar_e_sample );
-
-#endif // SHOW_DEBUG
 
 //END DEBUG CODE
 
@@ -728,10 +888,10 @@ bool refalrts::copy_evar(
         return false;
       }
       
-      if ( cDataOpenBracket == res->tag ) {
+      if( is_open_bracket( res ) ) {
         res->link_info = bracket_stack;
         bracket_stack = res;
-      } else if ( cDataCloseBracket == res->tag ) {
+      } else if( is_close_bracket( res ) ) {
         assert( bracket_stack != 0 );
 
         refalrts::Iter open_cobracket = bracket_stack;
@@ -754,15 +914,6 @@ bool refalrts::copy_evar(
   VALID_LINKED( evar_res_b );
   VALID_LINKED( evar_res_e );
 
-
-#if SHOW_DEBUG
-
-  printf("\nCopy e-var End\n");
-  refalrts::vm::make_dump( evar_res_b, evar_res_e );
-
-
-#endif // SHOW_DEBUG
-
 //END DEBUG CODE
 
   return true;
@@ -772,7 +923,7 @@ bool refalrts::copy_stvar(
   refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
   refalrts::Iter end_of_sample;
-  if( cDataOpenBracket == stvar_sample->tag ) {
+  if( is_open_bracket( stvar_sample ) ) {
     end_of_sample = stvar_sample->link_info;
   } else {
     end_of_sample = stvar_sample;
@@ -817,6 +968,18 @@ bool refalrts::alloc_name(
   }
 }
 
+bool refalrts::alloc_ident(
+  refalrts::Iter& res, refalrts::RefalIdentifier ident
+) {
+  if( allocator::alloc_node( res ) ) {
+    res->tag = cDataIdentifier;
+    res->ident_info = ident;
+    return true;
+  } else {
+    return false;
+  }
+}
+
 namespace {
 
 bool alloc_some_bracket( refalrts::Iter& res, refalrts::DataTag tag ) {
@@ -829,6 +992,14 @@ bool alloc_some_bracket( refalrts::Iter& res, refalrts::DataTag tag ) {
 }
 
 } // unnamed namespace
+
+bool refalrts::alloc_open_adt( refalrts::Iter& res ) {
+  return alloc_some_bracket( res, cDataOpenADT );
+}
+
+bool refalrts::alloc_close_adt( refalrts::Iter& res ) {
+  return alloc_some_bracket( res, cDataCloseADT );
+}
 
 bool refalrts::alloc_open_bracket( refalrts::Iter& res ) {
   return alloc_some_bracket( res, cDataOpenBracket );
@@ -844,6 +1015,55 @@ bool refalrts::alloc_open_call( refalrts::Iter& res ) {
 
 bool refalrts::alloc_close_call( refalrts::Iter& res ) {
   return alloc_some_bracket( res, cDataCloseCall );
+}
+
+bool refalrts::alloc_chars(
+  refalrts::Iter& res_b, refalrts::Iter& res_e,
+  const char buffer[], unsigned buflen
+) {
+  if( buflen == 0 ) {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev( refalrts::allocator::free_ptr() );
+    refalrts::Iter end_seq = 0;
+
+    for( unsigned i = 0; i < buflen; ++ i ) {
+      if( ! alloc_char( end_seq, buffer[i] ) ) {
+        return false;
+      }
+    }
+
+    res_b = next( before_begin_seq );
+    res_e = end_seq;
+
+    return true;
+  }
+}
+
+bool refalrts::alloc_string(
+  refalrts::Iter& res_b, refalrts::Iter& res_e, const char *string
+) {
+  if( *string == '\0' ) {
+    res_b = 0;
+    res_e = 0;
+    return true;
+  } else {
+    refalrts::Iter before_begin_seq = prev( refalrts::allocator::free_ptr() );
+    refalrts::Iter end_seq = 0;
+
+    for( const char *p = string; *p != '\0'; ++ p ) {
+      if( ! alloc_char( end_seq, *p ) ) {
+        return false;
+      }
+    }
+
+    res_b = next( before_begin_seq );
+    res_e = end_seq;
+
+    return true;
+  }
 }
 
 namespace refalrts {
@@ -881,13 +1101,6 @@ refalrts::Iter list_splice(
   refalrts::Iter res, refalrts::Iter begin, refalrts::Iter end
 ) {
 
-#if SHOW_DEBUG
-
-  printf("\nlist_splice-B\n");
-  refalrts::vm::make_dump( begin, end );
-
-#endif //SHOW_DEBUG
-
   VALID_LINKED( res );
   VALID_LINKED( res->prev );
   VALID_LINKED( begin );
@@ -896,12 +1109,6 @@ refalrts::Iter list_splice(
   VALID_LINKED( end->prev );
 
   if( (res == begin) || empty_seq( begin, end ) ) {
-
-#if SHOW_DEBUG
-
-    printf("\nlist_splice_altE\n");
-
-#endif //SHOW_DEBUG
 
     // Цель достигнута сама по себе
     return res;
@@ -922,13 +1129,6 @@ refalrts::Iter list_splice(
   VALID_LINKED( end );
   VALID_LINKED( end->next );
 
-#if SHOW_DEBUG
-
-  printf("\nlist_splice-E\n");
-  refalrts::vm::make_dump( begin, res );
-
-#endif //SHOW_DEBUG
-
   return begin;
 }
 
@@ -944,7 +1144,7 @@ refalrts::Iter refalrts::splice_stvar(
   refalrts::Iter res, refalrts::Iter var
 ) {
   refalrts::Iter var_end;
-  if( cDataOpenBracket == var->tag ) {
+  if( is_open_bracket( var ) ) {
     var_end = var->link_info;
   } else {
     var_end = var;
@@ -961,6 +1161,87 @@ refalrts::Iter refalrts::splice_evar(
 
 void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
+}
+
+//------------------------------------------------------------------------------
+
+// Инициализация головного узла статического ящика
+
+namespace refalrts {
+
+namespace vm {
+
+extern NodePtr g_left_swap_ptr;
+
+} // namepsace vm
+
+} // namespace refalrts
+
+refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
+  assert( cDataFunction == head->tag );
+
+  splice_elem( vm::g_left_swap_ptr, head );
+  const char *name = head->function_info.name;
+  head->tag = cDataSwapHead;
+  head->swap_info.next_head = vm::g_left_swap_ptr;
+  head->swap_info.name = name;
+  vm::g_left_swap_ptr = head;
+  return vm::g_left_swap_ptr;
+}
+
+void refalrts::swap_info_bounds(
+  refalrts::Iter& first, refalrts::Iter& last, refalrts::Iter head
+) {
+  assert( cDataSwapHead == head->tag );
+
+  first = head;
+  last = head->swap_info.next_head;
+  move_left( first, last );
+  move_right( first, last );
+}
+
+void refalrts::swap_save(
+  refalrts::Iter head, refalrts::Iter first, refalrts::Iter last
+) {
+  assert( cDataSwapHead == head->tag );
+
+  list_splice( head->swap_info.next_head, first, last );
+}
+
+//------------------------------------------------------------------------------
+
+// Средства профилирования
+
+namespace refalrts {
+
+namespace profiler {
+
+extern void start_generated_function();
+
+} // namespace profiler
+
+} // namespace refalrts
+
+void refalrts::this_is_generated_function() {
+  refalrts::profiler::start_generated_function();
+}
+
+//------------------------------------------------------------------------------
+
+// Прочие операции
+
+namespace refalrts {
+
+namespace vm {
+
+extern int g_ret_code;
+
+} // namespace vm
+
+} // namespace refalrts
+
+void refalrts::set_return_code( int code ) {
+  refalrts::vm::g_ret_code = code;
 }
 
 //==============================================================================
@@ -1044,6 +1325,60 @@ void refalrts::allocator::free_memory() {
 }
 
 //==============================================================================
+// Упрощённый профилировщик
+//==============================================================================
+
+namespace refalrts {
+
+namespace profiler {
+
+clock_t g_start_program_time;
+clock_t g_start_gen_function_time;
+clock_t g_total_gen_function_time;
+
+bool g_in_generated;
+
+void start_profiler();
+void end_profiler();
+void start_generated_function();
+void after_step();
+
+} // namespace profiler
+
+} // namespace refalrts
+
+void refalrts::profiler::start_profiler() {
+  g_start_program_time = clock();
+  g_in_generated = false;
+}
+
+void refalrts::profiler::end_profiler() {
+  refalrts::profiler::after_step();
+
+  double full_time = (clock() - g_start_program_time) / CLOCKS_PER_SEC;
+  double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
+  double io_time = full_time - pure_time;
+
+  fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
+  fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
+  fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
+}
+
+void refalrts::profiler::start_generated_function() {
+  g_start_gen_function_time = clock();
+  g_in_generated = true;
+}
+
+void refalrts::profiler::after_step() {
+  if( g_in_generated ) {
+    clock_t calc_time = clock() - g_start_gen_function_time;
+    g_total_gen_function_time += calc_time;
+  }
+
+  g_in_generated = false;
+}
+
+//==============================================================================
 // Виртуальная машина
 //==============================================================================
 
@@ -1075,7 +1410,11 @@ refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 refalrts::Iter g_begin_view_field = & g_last_marker;
 const refalrts::Iter g_end_view_field = & g_last_marker;
 
+refalrts::NodePtr g_left_swap_ptr = g_end_view_field;
+
 unsigned g_step_counter = 0;
+
+int g_ret_code;
 
 } // namespace vm
 
@@ -1126,21 +1465,25 @@ refalrts::FnResult refalrts::vm::main_loop() {
     refalrts::Iter active_end = pop_stack();
 
     res = execute_active( active_begin, active_end );
+    refalrts::profiler::after_step();
 
     ++ g_step_counter;
 
     if( res != cSuccess ) {
       switch( res ) {
         case refalrts::cRecognitionImpossible:
-          printf("\nRECOGNITION IMPOSSIBLE\n\n");
+          fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
           break;
 
         case refalrts::cNoMemory:
-          printf("\nNO MEMORY\n\n");
+          fprintf(stderr, "\nNO MEMORY\n\n");
           break;
 
+        case refalrts::cExit:
+          return res;
+
         default:
-          printf("\nUNKNOWN ERROR\n\n");
+          fprintf(stderr, "\nUNKNOWN ERROR\n\n");
           break;
       }
       make_dump( active_begin, active_end );
@@ -1198,11 +1541,16 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             if( 0 == begin->prev ) {
               fprintf( output, "[FIRST] " );
             } else if ( 0 == begin->next ) {
-              fprintf( output, "[LAST]" );
+              fprintf( output, "\n[LAST]" );
               state = cStateFinish;
             } else {
-              fprintf( output, "[NONE]" );
+              fprintf( output, "\n[NONE]" );
             }
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataSwapHead:
+            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1222,6 +1570,21 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             } else {
               fprintf( output, "&%p ", begin->function_info.ptr );
             }
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataIdentifier:
+            fprintf( output, "#%s ", (begin->ident_info)() );
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataOpenADT:
+            fprintf( output, "[ " );
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataCloseADT:
+            fprintf( output, "] " );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1311,20 +1674,19 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
 } // unnamed namespace
 
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
-  printf( "\nERROR EXPRESSION:\n" );
-  print_seq( stdout, begin, end );
-  printf( "\nVIEW FIELD:\n" );
-  print_seq( stdout, & g_first_marker, & g_last_marker );
-  printf( "\nFREE LIST:\n" );
+  fprintf( stderr, "\nERROR EXPRESSION:\n" );
+  print_seq( stderr, begin, end );
+  fprintf( stderr, "\nVIEW FIELD:\n" );
+  print_seq( stderr, & g_first_marker, & g_last_marker );
+  fprintf( stderr, "\nFREE LIST:\n" );
   print_seq(
-    stdout,
+    stderr,
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
-  printf( "\n" );
 
-  printf("End dump\n");
-  fflush(stdout);
+  fprintf( stderr,"\nEnd dump\n");
+  fflush(stderr);
 }
 
 void refalrts::vm::free_view_field() {
@@ -1336,6 +1698,172 @@ void refalrts::vm::free_view_field() {
     free( begin );
     begin = next_begin;
   }
+}
+
+//==============================================================================
+// Интерпретатор
+//==============================================================================
+
+refalrts::FnResult refalrts::interpret_array(refalrts::ResultAction raa[],
+  refalrts::Iter begin, refalrts::Iter end)
+{
+	int i = 0;
+	Iter stack_ptr = 0;
+	Iter res = begin;
+	Iter cobracket;
+	
+    //fprintf(stderr, "Interp: Phase 2\n");
+
+	while(raa[i].cmd != icEnd)
+	{
+		//Выделение памяти
+		switch(raa[i].cmd)
+		{
+            case icChar:
+                if(!alloc_char(raa[i].alloc_ptr1, static_cast<char>(raa[i].value)))
+                  return cNoMemory;
+                break;
+
+            case icInt:
+                if(!alloc_number(raa[i].alloc_ptr1, raa[i].value))
+                  return cNoMemory;
+                break;
+
+            case icFunc:
+                if(!alloc_name(raa[i].alloc_ptr1, static_cast<RefalFunctionPtr>(raa[i].ptr_value1), static_cast<const char*>(raa[i].ptr_value2)))
+                  return cNoMemory;
+                break;
+
+            case icIdent:
+                if(!alloc_ident(raa[i].alloc_ptr1,  static_cast<RefalIdentifier>(raa[i].ptr_value1)))
+                  return cNoMemory;
+                break;
+
+			case icBracket:
+				switch(raa[i].value)
+				{
+					case ibOpenADT:
+                        if(!alloc_open_adt(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibOpenBracket:
+                        if(!alloc_open_bracket(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibOpenCall:
+                        if(!alloc_open_call(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = raa[i].alloc_ptr1;
+                        break;
+
+                    case ibCloseADT:
+                        if(!alloc_close_adt(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        break;
+
+                    case ibCloseBracket:
+                        if(!alloc_close_bracket(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        cobracket = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        link_brackets( raa[i].alloc_ptr1, cobracket );
+                        break;
+                        
+                    case ibCloseCall:
+                        if(!alloc_close_call(raa[i].alloc_ptr1))
+                            return cNoMemory;
+                        raa[i].alloc_ptr1->link_info = stack_ptr;
+                        stack_ptr = stack_ptr->link_info;
+                        break;
+
+					default:
+                        throw UnexpectedTypeException();
+				}
+
+			case icSpliceSTVar:
+				break;
+				
+			case icSpliceEVar:
+				break;
+				
+			case icCopySTVar:
+				if(!copy_stvar(raa[i].alloc_ptr1, *static_cast<Iter*>(raa[i].ptr_value1)))
+					return cNoMemory;
+				break;
+
+			case icCopyEVar:
+				if(!copy_evar(raa[i].alloc_ptr1, raa[i].alloc_ptr2, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2)))
+					return cNoMemory;
+				break;
+
+            default:
+				throw UnexpectedTypeException();
+		}
+		i++;
+	}
+	
+    //fprintf(stderr, "Interp: Phase 3\n");
+
+	while(i >= 0)
+	{
+		//Компановка стека
+		switch(raa[i].cmd)
+		{
+            case icChar:
+            case icInt:
+            case icFunc:
+            case icIdent:
+				res = splice_elem(res, raa[i].alloc_ptr1);
+                break;
+
+			case icSpliceSTVar:
+				res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
+				break;
+				
+			case icSpliceEVar:
+				res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+				break;
+			
+            case icBracket:
+                if( raa[i].value == ibCloseCall )
+                {
+                    Iter open_call = raa[i].alloc_ptr1->link_info;
+                    push_stack(raa[i].alloc_ptr1);
+                    push_stack(open_call);
+                }
+                res = splice_elem( res, raa[i].alloc_ptr1 );
+                break;
+				
+			case icCopyEVar:
+				res = splice_evar(res, raa[i].alloc_ptr1, raa[i].alloc_ptr2);
+				break;
+
+			case icCopySTVar:
+				res = splice_stvar(res, raa[i].alloc_ptr1);
+				break;
+
+			case icEnd:
+				break;
+
+            default:
+				throw UnexpectedTypeException();
+		}
+		i--;
+	}
+	splice_to_freelist(begin, end);
+
+	//fprintf(stderr, "Interp: End phase 3\n");
+
+	return cSuccess;
 }
 
 //==============================================================================
@@ -1352,7 +1880,9 @@ int main(int argc, char **argv) {
   refalrts::FnResult res;
   try {
     refalrts::vm::init_view_field();
+    refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
+    refalrts::profiler::end_profiler();
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
@@ -1372,6 +1902,9 @@ int main(int argc, char **argv) {
 
     case refalrts::cNoMemory:
       return 2;
+
+    case refalrts::cExit:
+      return refalrts::vm::g_ret_code;
 
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main");

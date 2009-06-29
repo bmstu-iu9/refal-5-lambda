@@ -1,0 +1,9 @@
+$module MLocation;
+
+$import FS = MFileSystem;
+
+$entry ModuleName;
+$entry OutName;
+$entry SrcName;
+
+$end MLocation.

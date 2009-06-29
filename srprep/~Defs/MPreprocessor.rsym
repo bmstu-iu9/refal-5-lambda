@@ -1,0 +1,14 @@
+$module MPreprocessor;
+
+$import InOut;
+$import MLambda;
+$import MError;
+$import MLexer;
+$import MLocation;
+$import MSymTable;
+$import MUnLexer;
+
+$entry Program;
+$entry Unit;
+
+$end MPreprocessor.

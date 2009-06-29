@@ -31,11 +31,11 @@ CommonUnit
 Preprocess
   (s.MainDirective e.ModuleName) e.Tokens =
     (Directive () s.MainDirective)
-    (Name (' ') e.ModuleName)
+    (Name (' ') 'Cpp-SR-BE::' e.ModuleName)
     (Punctuation () ';')
     <PreprocessBody e.Tokens>
     (Directive () End)
-    (Name (' ') e.ModuleName)
+    (Name (' ') 'Cpp-SR-BE::' e.ModuleName)
     (Punctuation () '.');
 
 PreprocessBody
@@ -69,7 +69,7 @@ DoPreprocessBody {
   (Directive t.FromSpace From) (Name t.NameSpace e.Import)
   (Directive t.ExternSpace Extern) e.Tokens =
     (Directive t.FromSpace Import)
-    (Name t.NameSpace e.Import)
+    (Name t.NameSpace 'Cpp-SR-BE::' e.Import)
     (Punctuation () ';')
     (Nothing t.ExternSpace)
     <ExportFunctions
