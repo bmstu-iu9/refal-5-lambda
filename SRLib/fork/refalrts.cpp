@@ -1567,7 +1567,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
+            fprintf( output, "\n\n*Swap %s:\n", (begin->swap_info.name)() );
             refalrts::move_left( begin, end );
             continue;
 
