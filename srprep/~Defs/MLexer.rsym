@@ -1,9 +1,0 @@
-$module MLexer;
-
-$import FileIO;
-$import MLambda;
-$import Types;
-
-$entry Tokens;
-
-$end MLexer.

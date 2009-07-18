@@ -33,7 +33,8 @@ $EENUM
   TkReplace,
   TkSemicolon,
   TkUnexpected,
-  TkVariable;
+  TkVariable,
+  TkRedefinition;
 
 $EENUM EEnum, Entry, Enum, Extern, Forward, Swap, ESwap, Ident;
 
@@ -69,6 +70,7 @@ $ENTRY StrFromToken {
   TkSemicolon = '";"';
   TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
   TkVariable s.Mode e.Index = s.Mode '.' e.Index;
+  TkRedefinition = '"^"';
 }
 
 $ENUM
@@ -148,7 +150,7 @@ SwPunctuation {
   '(' = TkOpenBracket; ')' = TkCloseBracket;
   '=' = TkReplace; ',' = TkComma; ';' = TkSemicolon;
   '[' = TkOpenADT; ']' = TkCloseADT;
-  '#' = TkIdentMarker;
+  '#' = TkIdentMarker; '^' = TkRedefinition;
 }
 
 AddLineNumber {
@@ -170,8 +172,8 @@ NormalizeTokens {
 }
 
 $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
-  StartComment, VariableIndex, Punctuation, StringLiteral, DirectiveTail,
-  DirectiveBody, StringLiteral-Escape, SL-E-C1, CComment, CppComment,
+  StartComment, VariableIndex, StringLiteral, DirectiveTail,
+  StringLiteral-Escape, SL-E-C1, CComment, CppComment,
   VariableIndexTail, StringLiteral-Quote, CComment-CheckNested,
   CComment-CheckEnd, StringLiteral-Escape-Code, SL-E-C2;
 
@@ -180,7 +182,7 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
   :UpLetter: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
   :LoLetter: = 'abcdefghijklmnopqrstuvwxyz'.
   :Digit: = '0123456789'.
-  :Punctuation: = '<>(){}[]=;,#'.
+  :Punctuation: = '<>(){}[]=;,#^'.
 
   :StartIdentifier: = :UpLetter:.
   :TailIdentifier: = :UpLetter: :LoLetter: :Digit: '_-'.
@@ -313,6 +315,7 @@ Root {
   (e.Accum) ';' e.Text = (TkPunctuation e.Accum ';') <Root () e.Text>;
   (e.Accum) ',' e.Text = (TkPunctuation e.Accum ',') <Root () e.Text>;
   (e.Accum) '#' e.Text = (TkPunctuation e.Accum '#') <Root () e.Text>;
+  (e.Accum) '^' e.Text = (TkPunctuation e.Accum '^') <Root () e.Text>;
   (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
   (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
   (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;

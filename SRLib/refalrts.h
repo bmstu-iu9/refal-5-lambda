@@ -26,23 +26,32 @@ typedef enum DataTag {
   cDataOpenADT, cDataCloseADT,
   cDataOpenBracket, cDataCloseBracket,
   cDataOpenCall, cDataCloseCall,
-  cDataFile
+  cDataFile,
+  cDataClosure,
+  cDataUnwrappedClosure,
+  cDataClosureHead
 } DataTag;
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
 
+typedef const char *(*RefalIdentifier) ();
+
+#ifdef MODULE_REFAL
+typedef RefalIdentifier RefalFuncName;
+#else
+typedef const char * RefalFuncName;
+#endif
+
 typedef struct RefalFunction {
   RefalFunctionPtr ptr;
-  const char *name;
+  RefalFuncName name;
 } RefalFunction;
 
 typedef unsigned long RefalNumber;
 
-typedef const char *(*RefalIdentifier) ();
-
 typedef struct RefalSwapHead {
   Iter next_head;
-  const char *name;
+  RefalFuncName name;
 } RefalSwapHead;
 
 typedef struct Node {
@@ -88,8 +97,6 @@ typedef struct ResultAction {
     void *ptr_value1;
     void *ptr_value2;
     int value;
-    Node *alloc_ptr1;
-    Node *alloc_ptr2;
 } ResultAction;
 
 extern void use( Iter& );
@@ -158,7 +165,8 @@ extern unsigned read_chars(
 extern void reset_allocator();
 
 extern bool copy_evar(
-  Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
+  Iter& evar_res_b, Iter& evar_res_e,
+  Iter evar_b_sample, Iter evar_e_sample
 );
 
 extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
@@ -166,7 +174,7 @@ extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
 extern bool alloc_char( Iter& res, char ch );
 extern bool alloc_number( Iter& res, RefalNumber num );
 extern bool alloc_name(
-  Iter& res, RefalFunctionPtr func, const char *name = ""
+  Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
 );
 extern bool alloc_ident( Iter& res, RefalIdentifier ident );
 extern bool alloc_open_adt( Iter& res );
@@ -175,6 +183,19 @@ extern bool alloc_open_bracket( Iter& res );
 extern bool alloc_close_bracket( Iter& res );
 extern bool alloc_open_call( Iter& res );
 extern bool alloc_close_call( Iter& res );
+
+#ifndef alloc_copy_svar
+#define alloc_copy_svar alloc_copy_svar_
+#endif
+
+#ifndef alloc_copy_tvar
+#define alloc_copy_tvar copy_stvar
+#endif
+
+extern bool alloc_copy_evar(
+  Iter& res, Iter evar_b_sample, Iter evar_e_sample
+);
+extern bool alloc_copy_svar_( Iter& svar_res, Iter svar_sample );
 
 extern bool alloc_chars(
   Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
@@ -188,6 +209,11 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+extern void splice_from_freelist( Iter pos );
+
+extern FnResult create_closure( Iter begin, Iter end );
+Iter unwrap_closure( Iter closure ); // Развернуть замыкание
+Iter wrap_closure( Iter closure ); // Свернуть замыкание
 
 // Работа со статическими ящиками
 
@@ -202,11 +228,28 @@ extern void this_is_generated_function();
 // Прочие функции
 
 extern void set_return_code( int retcode );
+extern void use_counter( unsigned& counter );
+
+inline void set_return_code( RefalNumber retcode ) {
+  set_return_code( static_cast<int>(retcode) );
+}
+
+/*
+  Функция производит печать рефал-выражения в поток file
+  в том же формате, как и при отладочном дампе памяти.
+
+  Переменная file представляет собой стандартный файловый
+  поток FILE* из stdio.h. Сделана она была void* только
+  для того, чтобы не включать сюда лишние заголовочные файлы
+  (пусть даже и стандартные).
+*/
+void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
 
 extern FnResult interpret_array(
-  ResultAction raa[],
+  const ResultAction raa[],
+  Iter allocs[],
   Iter begin,
   Iter end
 );

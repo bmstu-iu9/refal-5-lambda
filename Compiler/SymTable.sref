@@ -151,3 +151,7 @@ $ENTRY ST-CheckIdent {
     <EL-AddErrorAt t.ErrorList s.LnNum 'Identifier ' e.Name ' not declared'>
     t.SymTable;
 }
+
+$ENTRY ST-GetAnyName {
+  (TSymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E) = e.Name;
+}

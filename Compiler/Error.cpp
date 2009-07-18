@@ -19,13 +19,14 @@ refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & ErrorList, "ErrorList"},
+      {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -62,9 +63,13 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eErrors_b_1;
+    refalrts::use( eErrors_b_1 );
     static refalrts::Iter eErrors_e_1;
+    refalrts::use( eErrors_e_1 );
     static refalrts::Iter eMessage_b_1;
+    refalrts::use( eMessage_b_1 );
     static refalrts::Iter eMessage_e_1;
+    refalrts::use( eMessage_e_1 );
     // (~1 & ErrorList e.Errors )~1 e.Message
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -81,9 +86,9 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eMessage_e_1 = be_0;
     refalrts::use( eMessage_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & ErrorList, "ErrorList"},
+      {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
       {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icChar, 0, 0, ' '},
@@ -100,7 +105,8 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -186,10 +192,15 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eErrors_b_1;
+    refalrts::use( eErrors_b_1 );
     static refalrts::Iter eErrors_e_1;
+    refalrts::use( eErrors_e_1 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     static refalrts::Iter eMessage_b_1;
+    refalrts::use( eMessage_b_1 );
     static refalrts::Iter eMessage_e_1;
+    refalrts::use( eMessage_e_1 );
     // (~1 & ErrorList e.Errors )~1 s.LineNumber e.Message
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -208,9 +219,9 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eMessage_e_1 = be_0;
     refalrts::use( eMessage_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & ErrorList, "ErrorList"},
+      {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
       {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icChar, 0, 0, ' '},
@@ -225,7 +236,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, 't'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StrFromInt, "StrFromInt"},
+      {refalrts::icFunc, (void*) & StrFromInt, (void*) "StrFromInt"},
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, ':'},
@@ -235,7 +246,8 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -356,11 +368,17 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
+    refalrts::use( tErrorList_1 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     static refalrts::Iter eMessage_b_1;
+    refalrts::use( eMessage_b_1 );
     static refalrts::Iter eMessage_e_1;
+    refalrts::use( eMessage_e_1 );
     static refalrts::Iter eExpected_b_1;
+    refalrts::use( eExpected_b_1 );
     static refalrts::Iter eExpected_e_1;
+    refalrts::use( eExpected_e_1 );
     // t.ErrorList (~1 & TkError s.LineNumber e.Message )~1 e.Expected
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
@@ -381,16 +399,17 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     eMessage_e_1 = be_1;
     refalrts::use( eMessage_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & EL_AddErrorAt, "EL_AddErrorAt"},
+      {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -426,11 +445,17 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
+    refalrts::use( tErrorList_1 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     static refalrts::Iter eUnexpected_b_1;
+    refalrts::use( eUnexpected_b_1 );
     static refalrts::Iter eUnexpected_e_1;
+    refalrts::use( eUnexpected_e_1 );
     static refalrts::Iter eExpected_b_1;
+    refalrts::use( eExpected_b_1 );
     static refalrts::Iter eExpected_e_1;
+    refalrts::use( eExpected_e_1 );
     // t.ErrorList (~1 & TkUnexpected s.LineNumber e.Unexpected )~1 e.Expected
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
@@ -451,9 +476,9 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     eUnexpected_e_1 = be_1;
     refalrts::use( eUnexpected_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & EL_AddErrorAt, "EL_AddErrorAt"},
+      {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -481,7 +506,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -601,12 +627,19 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
+    refalrts::use( tErrorList_1 );
     static refalrts::Iter eExpected_b_1;
+    refalrts::use( eExpected_b_1 );
     static refalrts::Iter eExpected_e_1;
+    refalrts::use( eExpected_e_1 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     static refalrts::Iter eInfo_b_1;
+    refalrts::use( eInfo_b_1 );
     static refalrts::Iter eInfo_e_1;
+    refalrts::use( eInfo_e_1 );
     // t.ErrorList (~1 s.Unexpected s.LineNumber e.Info )~1 e.Expected
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
@@ -627,9 +660,9 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     eInfo_e_1 = be_1;
     refalrts::use( eInfo_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & EL_AddErrorAt, "EL_AddErrorAt"},
+      {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -644,7 +677,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StrFromToken, "StrFromToken"},
+      {refalrts::icFunc, (void*) & StrFromToken, (void*) "StrFromToken"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icSpliceEVar, & eInfo_b_1, & eInfo_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
@@ -663,7 +696,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -812,7 +846,9 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
     static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
     // (~1 e.Line )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -825,14 +861,15 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     eLine_e_1 = be_1;
     refalrts::use( eLine_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & WriteLine, "WriteLine"},
+      {refalrts::icFunc, (void*) & WriteLine, (void*) "WriteLine"},
       {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -871,9 +908,13 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eErrors_b_1;
+    refalrts::use( eErrors_b_1 );
     static refalrts::Iter eErrors_e_1;
+    refalrts::use( eErrors_e_1 );
     static refalrts::Iter eErrors_b_2;
+    refalrts::use( eErrors_b_2 );
     static refalrts::Iter eErrors_e_2;
+    refalrts::use( eErrors_e_2 );
     // (~1 & ErrorList e.Errors )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -888,19 +929,20 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     eErrors_e_1 = be_1;
     refalrts::use( eErrors_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Map, "Map"},
-      {refalrts::icFunc, & PrintError, "PrintError"},
+      {refalrts::icFunc, (void*) & Map, (void*) "Map"},
+      {refalrts::icFunc, (void*) & PrintError, (void*) "PrintError"},
       {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & ErrorList, "ErrorList"},
+      {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
       {refalrts::icCopyEVar, & eErrors_b_1, & eErrors_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -980,11 +1022,12 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & EL_NoErrors, "EL_NoErrors"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & EL_NoErrors, (void*) "EL_NoErrors"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1007,17 +1050,19 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
+    refalrts::use( tErrorList_1 );
     // t.ErrorList
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & EL_HasErrors, "EL_HasErrors"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & EL_HasErrors, (void*) "EL_HasErrors"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1036,3 +1081,5 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   return refalrts::cRecognitionImpossible;
 }
 
+
+//End of file
