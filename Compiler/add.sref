@@ -1,3 +1,0 @@
-$ENTRY Add {
-  s.Number1 s.Number2 = 100;
-}
