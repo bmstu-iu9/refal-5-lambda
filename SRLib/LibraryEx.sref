@@ -24,6 +24,11 @@ $ENTRY Reduce {
   t.Fn t.Acc = t.Acc;
 }
 
+$ENTRY Fetch {
+  e.Argument t.Function =
+    <Apply t.Function e.Argument>;
+}
+
 $FORWARD DoMapReduce;
 
 $ENTRY MapReduce {

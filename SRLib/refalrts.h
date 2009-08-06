@@ -26,7 +26,10 @@ typedef enum DataTag {
   cDataOpenADT, cDataCloseADT,
   cDataOpenBracket, cDataCloseBracket,
   cDataOpenCall, cDataCloseCall,
-  cDataFile
+  cDataFile,
+  cDataClosure,
+  cDataUnwrappedClosure,
+  cDataClosureHead
 } DataTag;
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
@@ -88,8 +91,6 @@ typedef struct ResultAction {
     void *ptr_value1;
     void *ptr_value2;
     int value;
-    Node *alloc_ptr1;
-    Node *alloc_ptr2;
 } ResultAction;
 
 extern void use( Iter& );
@@ -189,6 +190,10 @@ extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
 
+extern FnResult create_closure( Iter begin, Iter end );
+Iter unwrap_closure( Iter closure ); // Развернуть замыкание
+Iter wrap_closure( Iter closure ); // Свернуть замыкание
+
 // Работа со статическими ящиками
 
 extern Iter initialize_swap_head( Iter head );
@@ -206,7 +211,8 @@ extern void set_return_code( int retcode );
 // Интерпретатор
 
 extern FnResult interpret_array(
-  ResultAction raa[],
+  const ResultAction raa[],
+  Iter allocs[],
   Iter begin,
   Iter end
 );

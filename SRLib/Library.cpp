@@ -384,6 +384,35 @@ refalrts::FnResult write_to_stream(
         }
       }
 
+      case refalrts::cDataClosure: {
+        printf_res = fprintf( out, "{ " );
+        p = refalrts::unwrap_closure( p );
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
+      case refalrts::cDataClosureHead: {
+        printf_res = fprintf( out, "[%d] ", p->number_info );
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
+      case refalrts::cDataUnwrappedClosure: {
+        printf_res = fprintf( out, "} " );
+        refalrts::wrap_closure( p );
+        if( printf_res < 0 ) {
+          return refalrts::cRecognitionImpossible;
+        } else {
+          break;
+        }
+      }
+
       default:
         throw refalrts::UnexpectedTypeException();
         // break;

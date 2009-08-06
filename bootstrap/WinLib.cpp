@@ -367,6 +367,8 @@ refalrts::FnResult CoreP_MFileSystemP_DirList(refalrts::Iter arg_begin, refalrts
     } while( FindNextFile( hFind, & find_file_data ) != 0 );
 
     for( unsigned i = 0; i < brackets.size(); ++i ) {
+      fprintf( stderr, "DirList #6\n" );
+
       res = refalrts::splice_evar( res, brackets[i].first, brackets[i].second );
     }
     res = refalrts::splice_elem( res, nSF );

@@ -64,7 +64,7 @@ $EENUM
   CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
-  CmdComment;
+  CmdComment, CmdPrint;
 
 $FORWARD TextFromPattern, SaveBrackets;
 
@@ -556,7 +556,7 @@ GenResult {
 
   // Завершение просмотра
   (e.Vars) (e.Commands) s.Counter =
-    (e.Vars) ( <GenResult-Commands e.Commands> );
+    (e.Vars) ( e.Commands );
 }
 
 /*
@@ -716,18 +716,34 @@ VarSetDifference {
   ( e.Set1 ) ( e.Set2 ) = e.Set1;
 }
 
-$FORWARD MakeDeclaration, MakeCopyVar;
+$FORWARD MakeDeclaration, MakeCopyVar, MakeInterpCommands,
+  GenerateResult-Interp;
 
-$EENUM CmdEmptyResult, CmdReturnResult;
+$EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
+  CmdInitRAA, CmdFinRAA;
 
 GeneralizeResult-CopyVars {
   ( e.CommonVars ) ( e.Pattern ) ( e.CopiedVars ) ( e.Result ) =
-    <Map MakeDeclaration e.CommonVars>
+    <GenerateResult-Interp
+      (<Map MakeDeclaration e.CommonVars> e.Pattern)
+      (e.CopiedVars)
+      (e.Result)
+    >;
+}
+
+GenerateResult-Interp {
+  (e.Pattern) (e.CopiedVars) (e.Result) =
     e.Pattern
+    (CmdIfDef)
+    (CmdInitRAA)
+    <Map (MakeInterpCommands e.CopiedVars) e.Result>
+    (CmdFinRAA)
+    (CmdElse)
     (CmdEmptyResult)
     <Map MakeCopyVar e.CopiedVars>
-    e.Result
-    (CmdReturnResult);
+    <GenResult-Commands e.Result>
+    (CmdReturnResult)
+    (CmdEndIf);
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
@@ -748,3 +764,50 @@ MakeCopyVar {
     (CmdCopyVar s.Usings s.Mode e.Index);
 }
 
+$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrIdent, CmdArrOB, CmdArrCB,
+  CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+
+MakeInterpCommands {
+  e.CopiedVars-B (s.Usings s.Mode e.Index) e.CopiedVars-E
+  (CtInsertVar s.Usings  s.Mode e.Index) =
+    (CmdArrCopy s.Mode e.Index);
+
+  e.CopiedVars (CtInsertVar s.Usings  s.Mode e.Index) =
+    (CmdArrSplice s.Usings s.Mode e.Index);
+
+  e.CopiedVars (CtBrackets e.CmdInfo) = ;
+  e.CopiedVars (CtInsert s.ElemNo) = ;
+
+  e.CopiedVars (CtAlloc StChar s.Counter s.Value) = 
+    (CmdArrChar s.Value);
+
+  e.CopiedVars (CtAlloc StName s.Counter e.Name) = 
+    (CmdArrFunc e.Name);
+
+  e.CopiedVars (CtAlloc StNumber s.Counter s.Number) = 
+    (CmdArrInt s.Number);
+
+  e.CopiedVars (CtAlloc StIdent s.Counter e.Name) = 
+    (CmdArrIdent e.Name);
+
+  e.CopiedVars (CtAlloc StOpenBracket s.Counter s.Num) = 
+    (CmdArrOB);
+
+  e.CopiedVars (CtAlloc StOpenADT s.Counter s.Num) = 
+    (CmdArrOADT);
+
+  e.CopiedVars (CtAlloc StOpenCall s.Counter s.Num) = 
+    (CmdArrOC);
+
+  e.CopiedVars (CtAlloc StCloseBracket s.Counter s.Num) = 
+    (CmdArrCB);
+
+  e.CopiedVars (CtAlloc StCloseADT s.Counter s.Num) = 
+    (CmdArrCADT);
+
+  e.CopiedVars (CtAlloc StCloseCall s.Counter s.Num) = 
+    (CmdArrCC);
+
+  e.CopiedVars (e.AnyCommand) =
+    (CmdComment e.AnyCommand ' ');
+}

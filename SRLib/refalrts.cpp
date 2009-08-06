@@ -42,11 +42,11 @@ void refalrts::use( refalrts::Iter& ) {
 
 namespace {
 
-static refalrts::Iter next( refalrts::Iter current ) {
+refalrts::Iter next( refalrts::Iter current ) {
   return current->next;
 }
 
-static refalrts::Iter prev( refalrts::Iter current ) {
+refalrts::Iter prev( refalrts::Iter current ) {
   return current->prev;
 }
 
@@ -416,18 +416,6 @@ bool refalrts::svar_right(
 bool refalrts::tvar_left(
   refalrts::Iter& tvar, refalrts::Iter& first, refalrts::Iter& last
 ) {
-
-#if SHOW_DEBUG
-
-  if( (first == 0) != (last == 0) ) {
-    printf("\nstvar_left\n");
-    printf("first = %p\n", first);
-    printf("last = %p\n", last);
-    fflush(stdout);
-  }
-
-#endif // SHOW_DEBUG
-
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
@@ -525,6 +513,10 @@ bool equal_nodes(
 
       case refalrts::cDataFile:
         return (node1->file_info == node2->file_info);
+        // break;
+
+      case refalrts::cDataClosure:
+        return (node1->link_info == node2->link_info);
         // break;
 
       /*
@@ -828,6 +820,20 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       return refalrts::alloc_close_adt( res );
       // break;
 
+    case refalrts::cDataClosure: {
+      bool allocated = refalrts::allocator::alloc_node( res );
+      if( allocated ) {
+        res->tag = refalrts::cDataClosure;
+        refalrts::Iter head = sample->link_info;
+        res->link_info = head;
+        ++ (head->number_info);
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // break;
+
     case refalrts::cDataFile: {
       bool allocated = refalrts::allocator::alloc_node( res );
       if( allocated ) {
@@ -838,6 +844,7 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
         return false;
       }
     }
+    // break;
 
     /*
       Копируем только объектное выражение -- никаких вызовов функций быть не
@@ -866,14 +873,6 @@ bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
-
-//DEBUG CODE
-
-  VALID_LINKED( evar_b_sample );
-  VALID_LINKED( evar_e_sample );
-
-//END DEBUG CODE
-
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
     evar_res_b = 0;
     evar_res_e = 0;
@@ -907,14 +906,6 @@ bool refalrts::copy_evar(
     evar_res_b = next( prev_res_begin );
     evar_res_e = res;
   }
-
-
-//DEBUG CODE
-
-  VALID_LINKED( evar_res_b );
-  VALID_LINKED( evar_res_e );
-
-//END DEBUG CODE
 
   return true;
 }
@@ -986,6 +977,43 @@ bool alloc_some_bracket( refalrts::Iter& res, refalrts::DataTag tag ) {
   if( refalrts::allocator::alloc_node( res ) ) {
     res->tag = tag;
     return true;
+  } else {
+    return false;
+  }
+}
+
+void link_adjacent( refalrts::Iter left, refalrts::Iter right ) {
+  if( left != 0 ) {
+    left->next = right;
+  }
+
+  if( right != 0 ) {
+    right->prev = left;
+  }
+}
+
+bool alloc_closure( refalrts::Iter& res ) {
+  bool allocated = refalrts::allocator::alloc_node( res );
+  if( allocated ) {
+    refalrts::Iter head = 0;
+    allocated = refalrts::allocator::alloc_node( head );
+    if( allocated ) {
+      refalrts::Iter prev_head = prev( head );
+      refalrts::Iter next_head = next( head );
+
+      link_adjacent( prev_head, next_head );
+      link_adjacent( head, head );
+
+      res->tag = refalrts::cDataClosure;
+      res->link_info = head;
+
+      head->tag = refalrts::cDataClosureHead;
+      head->number_info = 1;
+
+      return true;
+    } else {
+      return false;
+    }
   } else {
     return false;
   }
@@ -1087,16 +1115,6 @@ void refalrts::link_brackets( Iter left, Iter right ) {
 
 namespace {
 
-void link_adjacent( refalrts::Iter left, refalrts::Iter right ) {
-  if( left != 0 ) {
-    left->next = right;
-  }
-
-  if( right != 0 ) {
-    right->prev = left;
-  }
-}
-
 refalrts::Iter list_splice(
   refalrts::Iter res, refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1161,6 +1179,78 @@ refalrts::Iter refalrts::splice_evar(
 
 void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
+}
+
+refalrts::FnResult refalrts::create_closure(
+  refalrts::Iter begin, refalrts::Iter end
+) {
+  refalrts::Iter closure_b = begin;
+  refalrts::Iter closure_e = end;
+
+  refalrts::move_left( closure_b, closure_e ); // пропуск <
+  refalrts::move_left( closure_b, closure_e ); // пропуск имени функции
+  refalrts::move_right( closure_b, closure_e ); // пропуск >
+
+  if( empty_seq( closure_b, closure_e ) )
+    return refalrts::cRecognitionImpossible;
+
+  refalrts::Iter closure = 0;
+
+  if( ! alloc_closure( closure ) )
+    return refalrts::cNoMemory;
+
+  refalrts::Iter head = closure->link_info;
+
+  list_splice( head, closure_b, closure_e );
+  list_splice( begin, closure, closure );
+  refalrts::splice_to_freelist( begin, end );
+
+  return refalrts::cSuccess;
+}
+
+/*
+  Собственно замыкание (функция + контекст) определяется как
+  [next(head), prev(head)]. Т.к. замыкание создаётся только функцией
+  create_closure, которая гарантирует непустоту замыкания, то
+  next(head) != head, prev(head) != head.
+*/
+
+// Развернуть замыкание
+refalrts::Iter refalrts::unwrap_closure( refalrts::Iter closure ) {
+  assert( closure->tag == refalrts::cDataClosure );
+
+  refalrts::Iter before_closure = prev( closure );
+  refalrts::Iter head = closure->link_info;
+  refalrts::Iter end_of_closure = prev( head );
+
+  assert( head != prev( head ) );
+  assert( head != next( head ) );
+
+  link_adjacent( before_closure, head );
+  link_adjacent( end_of_closure, closure );
+
+  closure->tag = refalrts::cDataUnwrappedClosure;
+
+  return prev(head);
+}
+
+// Свернуть замыкание
+refalrts::Iter refalrts::wrap_closure( refalrts::Iter closure ) {
+  assert( closure->tag == refalrts::cDataUnwrappedClosure );
+
+  refalrts::Iter head = closure->link_info;
+  refalrts::Iter before_closure = prev( head );
+  refalrts::Iter end_of_closure = prev( closure );
+
+  assert( head != prev( head ) );
+  assert( head != next( head ) );
+
+  link_adjacent( before_closure, closure );
+  link_adjacent( end_of_closure, head );
+
+  closure->tag = refalrts::cDataClosure;
+
+  return next(closure);
 }
 
 //------------------------------------------------------------------------------
@@ -1264,6 +1354,26 @@ refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
+namespace pool {
+
+enum { cChunkSize = 1000 };
+typedef struct Chunk {
+  Chunk *next;
+  refalrts::Node elems[cChunkSize];
+} Chunk;
+
+typedef Chunk *ChunkPtr;
+
+refalrts::NodePtr alloc_node();
+void free();
+bool grow();
+
+ChunkPtr g_pool = 0;
+unsigned g_avail = 0;
+refalrts::Node *g_pnext_node = 0;
+
+}
+
 } // namespace allocator
 
 } // namespace refalrts
@@ -1276,6 +1386,20 @@ bool refalrts::allocator::alloc_node( refalrts::Iter& node ) {
   if( (g_free_ptr == & g_last_marker) && ! create_nodes() ) {
     return false;
   } else {
+    if( refalrts::cDataClosure == g_free_ptr->tag ) {
+      refalrts::Iter head = g_free_ptr->link_info;
+      -- head->number_info;
+
+      if( 0 == head->number_info ) {
+        unwrap_closure( g_free_ptr );
+        // теперь перед g_free_ptr находится "развёрнутое" замыкание
+        g_free_ptr->tag = refalrts::cDataClosureHead;
+        g_free_ptr->number_info = 407193; // :-)
+
+        g_free_ptr = head;
+      }
+    }
+
     node = g_free_ptr;
     g_free_ptr = next( g_free_ptr );
     node->tag = refalrts::cDataIllegal;
@@ -1294,8 +1418,10 @@ void refalrts::allocator::splice_to_freelist(
 }
 
 bool refalrts::allocator::create_nodes() {
-  refalrts::NodePtr new_node =
-    static_cast<refalrts::NodePtr>( malloc( sizeof *new_node ) );
+//  refalrts::NodePtr new_node =
+//    static_cast<refalrts::NodePtr>( malloc( sizeof *new_node ) );
+
+  refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
 
   if( new_node == 0 ) {
     return false;
@@ -1308,19 +1434,64 @@ bool refalrts::allocator::create_nodes() {
     new_node->next = g_free_ptr;
 
     g_free_ptr = new_node;
+    g_free_ptr->tag = refalrts::cDataIllegal;
 
     return true;
   }
 }
 
 void refalrts::allocator::free_memory() {
-  refalrts::Iter begin = g_first_marker.next;
-  refalrts::Iter end = &g_last_marker;
+//  refalrts::Iter begin = g_first_marker.next;
+//  refalrts::Iter end = &g_last_marker;
+//
+//  while( begin != end ) {
+//    refalrts::Iter next_begin = next( begin );
+//
+//    if( refalrts::cDataClosure == next_begin->tag ) {
+//      refalrts::Iter head = begin->link_info;
+//
+//      if( 1 == head->number_info ) {
+//        begin = unwrap_closure( begin );
+//      } else {
+//        free( begin );
+//        begin = next_begin;
+//      }
+//    } else {
+//      free( begin );
+//      begin = next_begin;
+//    }
+//  }
 
-  while( begin != end ) {
-    refalrts::Iter next_begin = next( begin );
-    free( begin );
-    begin = next_begin;
+  refalrts::allocator::pool::free();
+}
+
+refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
+  if( (g_avail != 0) || grow() ) {
+    -- g_avail;
+    return g_pnext_node++;
+  } else {
+    return 0;
+  }
+}
+
+bool refalrts::allocator::pool::grow() {
+  ChunkPtr p = static_cast<ChunkPtr>( malloc( sizeof(Chunk) ) );
+  if( p != 0 ) {
+    p->next = g_pool;
+    g_pool = p;
+    g_avail = cChunkSize;
+    g_pnext_node = p->elems;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void refalrts::allocator::pool::free() {
+  while( g_pool != 0 ) {
+    ChunkPtr p = g_pool;
+    g_pool = g_pool->next;
+    ::free( p );
   }
 }
 
@@ -1504,16 +1675,47 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 #if SHOW_DEBUG
 
-  printf("\nexecute\n");
+  fprintf(stderr, "\nexecute\n");
   make_dump( begin, end );
 
 #endif // SHOW_DEBUG
 
   refalrts::Iter function = next( begin );
-  if( function->tag != cDataFunction ) {
-    return cRecognitionImpossible;
-  } else {
+  if( cDataFunction == function->tag ) {
     return (function->function_info.ptr)( begin, end );
+  } else if( cDataClosure == function->tag ) {
+    refalrts::Iter head = function->link_info;
+
+    if( 1 == head->number_info ) {
+      /*
+        Пользуемся тем, что при развёртке содержимое замыкания оказывается
+        в поле зрения между головой и (развёрнутым!) узлом замыкания.
+        Во избежание проблем, связанным с помещением развёрнутого замыкания
+        в список свободных блоков, проинициализируем его как голову замыкания.
+      */
+      unwrap_closure( function );
+      function->tag = cDataClosureHead;
+      function->number_info = 73501505; // :-)
+      splice_to_freelist( function, function );
+      splice_to_freelist( head, head );
+    } else {
+      refalrts::Iter begin_argument = next( function );
+      refalrts::Iter closure_b = 0;
+      refalrts::Iter closure_e = 0;
+
+      if( ! copy_evar( closure_b, closure_e, next(head), prev(head) ) )
+        return cNoMemory;
+
+      list_splice( begin_argument, closure_b, closure_e );
+      splice_to_freelist( function, function );
+    }
+
+    refalrts::vm::push_stack( end );
+    refalrts::vm::push_stack( begin );
+
+    return cSuccess;
+  } else {
+    return cRecognitionImpossible;
   }
 }
 
@@ -1612,6 +1814,22 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             refalrts::move_left( begin, end );
             continue;
 
+          case refalrts::cDataClosure:
+            fprintf( output, "{ " );
+            begin = unwrap_closure( begin );
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataClosureHead:
+            fprintf( output, "[%d] ", begin->number_info );
+            refalrts::move_left( begin, end );
+            continue;
+
+          case refalrts::cDataUnwrappedClosure:
+            fprintf( output, "} " );
+            begin = wrap_closure( begin );
+            continue;
+
           default:
             throw refalrts::UnexpectedTypeException();
             // break;
@@ -1693,10 +1911,13 @@ void refalrts::vm::free_view_field() {
   refalrts::Iter begin = g_first_marker.next;
   refalrts::Iter end = & g_last_marker;
 
-  while( begin != end ) {
-    refalrts::Iter next_begin = next( begin );
-    free( begin );
-    begin = next_begin;
+  if( begin != end ) {
+    end = end->prev;
+    refalrts::allocator::splice_to_freelist( begin, end );
+  } else {
+    /*
+      Поле зрения пустое -- его не нужно освобождать.
+    */;
   }
 }
 
@@ -1704,166 +1925,208 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
-refalrts::FnResult refalrts::interpret_array(refalrts::ResultAction raa[],
-  refalrts::Iter begin, refalrts::Iter end)
-{
-	int i = 0;
-	Iter stack_ptr = 0;
-	Iter res = begin;
-	Iter cobracket;
-	
-    //fprintf(stderr, "Interp: Phase 2\n");
+refalrts::FnResult refalrts::interpret_array(
+  const refalrts::ResultAction raa[],
+  refalrts::Iter allocs[],
+  refalrts::Iter begin, refalrts::Iter end
+) {
+  int i = 0;
+  Iter stack_ptr = 0;
+  Iter res = begin;
+  Iter cobracket;
 
-	while(raa[i].cmd != icEnd)
-	{
-		//Выделение памяти
-		switch(raa[i].cmd)
-		{
-            case icChar:
-                if(!alloc_char(raa[i].alloc_ptr1, static_cast<char>(raa[i].value)))
-                  return cNoMemory;
-                break;
+  while(raa[i].cmd != icEnd)
+  {
+    //Выделение памяти
+    switch(raa[i].cmd)
+    {
+      case icChar:
+        if(!alloc_char(*allocs, static_cast<char>(raa[i].value)))
+          return cNoMemory;
+        ++allocs;
+        break;
 
-            case icInt:
-                if(!alloc_number(raa[i].alloc_ptr1, raa[i].value))
-                  return cNoMemory;
-                break;
+      case icInt:
+        if(!alloc_number(*allocs, raa[i].value))
+          return cNoMemory;
+        ++allocs;
+        break;
 
-            case icFunc:
-                if(!alloc_name(raa[i].alloc_ptr1, static_cast<RefalFunctionPtr>(raa[i].ptr_value1), static_cast<const char*>(raa[i].ptr_value2)))
-                  return cNoMemory;
-                break;
+      case icFunc:
+        if(
+            !alloc_name(
+              *allocs,
+              (RefalFunctionPtr)(raa[i].ptr_value1),
+              static_cast<const char*>(raa[i].ptr_value2)
+            )
+        )
+          return cNoMemory;
+        ++allocs;
+        break;
 
-            case icIdent:
-                if(!alloc_ident(raa[i].alloc_ptr1,  static_cast<RefalIdentifier>(raa[i].ptr_value1)))
-                  return cNoMemory;
-                break;
+      case icIdent:
+        if(
+            !alloc_ident(
+              *allocs,
+              (RefalIdentifier)(raa[i].ptr_value1)
+            )
+        )
+          return cNoMemory;
+        ++allocs;
+        break;
 
-			case icBracket:
-				switch(raa[i].value)
-				{
-					case ibOpenADT:
-                        if(!alloc_open_adt(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        raa[i].alloc_ptr1->link_info = stack_ptr;
-                        stack_ptr = raa[i].alloc_ptr1;
-                        break;
+      case icBracket:
+        switch(raa[i].value)
+        {
+          case ibOpenADT:
+            if(!alloc_open_adt(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
 
-                    case ibOpenBracket:
-                        if(!alloc_open_bracket(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        raa[i].alloc_ptr1->link_info = stack_ptr;
-                        stack_ptr = raa[i].alloc_ptr1;
-                        break;
+          case ibOpenBracket:
+            if(!alloc_open_bracket(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
 
-                    case ibOpenCall:
-                        if(!alloc_open_call(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        raa[i].alloc_ptr1->link_info = stack_ptr;
-                        stack_ptr = raa[i].alloc_ptr1;
-                        break;
+          case ibOpenCall:
+            if(!alloc_open_call(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
 
-                    case ibCloseADT:
-                        if(!alloc_close_adt(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        raa[i].alloc_ptr1->link_info = stack_ptr;
-                        stack_ptr = stack_ptr->link_info;
-                        break;
+          case ibCloseADT:
+            if(!alloc_close_adt(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
 
-                    case ibCloseBracket:
-                        if(!alloc_close_bracket(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        cobracket = stack_ptr;
-                        stack_ptr = stack_ptr->link_info;
-                        link_brackets( raa[i].alloc_ptr1, cobracket );
-                        break;
-                        
-                    case ibCloseCall:
-                        if(!alloc_close_call(raa[i].alloc_ptr1))
-                            return cNoMemory;
-                        raa[i].alloc_ptr1->link_info = stack_ptr;
-                        stack_ptr = stack_ptr->link_info;
-                        break;
+          case ibCloseBracket:
+            if(!alloc_close_bracket(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
 
-					default:
-                        throw UnexpectedTypeException();
-				}
+          case ibCloseCall:
+            if(!alloc_close_call(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
 
-			case icSpliceSTVar:
-				break;
-				
-			case icSpliceEVar:
-				break;
-				
-			case icCopySTVar:
-				if(!copy_stvar(raa[i].alloc_ptr1, *static_cast<Iter*>(raa[i].ptr_value1)))
-					return cNoMemory;
-				break;
+          default:
+            throw UnexpectedTypeException();
+        }
 
-			case icCopyEVar:
-				if(!copy_evar(raa[i].alloc_ptr1, raa[i].alloc_ptr2, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2)))
-					return cNoMemory;
-				break;
+      case icSpliceSTVar:
+        break;
 
-            default:
-				throw UnexpectedTypeException();
-		}
-		i++;
-	}
-	
-    //fprintf(stderr, "Interp: Phase 3\n");
+      case icSpliceEVar:
+        break;
 
-	while(i >= 0)
-	{
-		//Компановка стека
-		switch(raa[i].cmd)
-		{
-            case icChar:
-            case icInt:
-            case icFunc:
-            case icIdent:
-				res = splice_elem(res, raa[i].alloc_ptr1);
-                break;
+      case icCopySTVar:
+        if(!copy_stvar(*allocs, *static_cast<Iter*>(raa[i].ptr_value1)))
+          return cNoMemory;
+        ++allocs;
+        break;
 
-			case icSpliceSTVar:
-				res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
-				break;
-				
-			case icSpliceEVar:
-				res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-				break;
-			
-            case icBracket:
-                if( raa[i].value == ibCloseCall )
-                {
-                    Iter open_call = raa[i].alloc_ptr1->link_info;
-                    push_stack(raa[i].alloc_ptr1);
-                    push_stack(open_call);
-                }
-                res = splice_elem( res, raa[i].alloc_ptr1 );
-                break;
-				
-			case icCopyEVar:
-				res = splice_evar(res, raa[i].alloc_ptr1, raa[i].alloc_ptr2);
-				break;
+      case icCopyEVar: {
+        refalrts::Iter& ebegin = *allocs;
+        ++allocs;
+        refalrts::Iter& eend = *allocs;
+        ++allocs;
+        if(
+            !copy_evar(
+              ebegin,
+              eend,
+              *static_cast<Iter*>(raa[i].ptr_value1),
+              *static_cast<Iter*>(raa[i].ptr_value2)
+            )
+          )
+          return cNoMemory;
+        break;
+      }
 
-			case icCopySTVar:
-				res = splice_stvar(res, raa[i].alloc_ptr1);
-				break;
+      default:
+        throw UnexpectedTypeException();
+    }
+    i++;
+  }
 
-			case icEnd:
-				break;
+  while(i >= 0)
+  {
+    //Компоновка стека
+    switch(raa[i].cmd)
+    {
+      case icChar:
+      case icInt:
+      case icFunc:
+      case icIdent:
+        --allocs;
+        res = splice_elem(res, *allocs);
+        break;
 
-            default:
-				throw UnexpectedTypeException();
-		}
-		i--;
-	}
-	splice_to_freelist(begin, end);
+      case icSpliceSTVar:
+        res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
+        break;
 
-	//fprintf(stderr, "Interp: End phase 3\n");
+      case icSpliceEVar:
+        res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        break;
 
-	return cSuccess;
+      case icBracket:
+        --allocs;
+        if( raa[i].value == ibCloseCall )
+        {
+          Iter open_call = (*allocs)->link_info;
+          push_stack(*allocs);
+          push_stack(open_call);
+        }
+        res = splice_elem( res, *allocs);
+        break;
+
+      case icCopyEVar: {
+        --allocs;
+        refalrts::Iter eend = *allocs;
+        --allocs;
+        refalrts::Iter ebegin = *allocs;
+        res = splice_evar(res, ebegin, eend);
+        break;
+      }
+
+      case icCopySTVar:
+        --allocs;
+        res = splice_stvar(res, *allocs);
+        break;
+
+      case icEnd:
+        break;
+
+      default:
+        throw UnexpectedTypeException();
+    }
+    i--;
+  }
+  splice_to_freelist(begin, end);
+
+  //fprintf(stderr, "Interp: End phase 3\n");
+
+  return cSuccess;
 }
 
 //==============================================================================

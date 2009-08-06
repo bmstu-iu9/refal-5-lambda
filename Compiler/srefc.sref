@@ -20,7 +20,13 @@ $FORWARD Compile-And-Link, FindFiles-Compilers;
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
 
+//FROM LibraryEx
+$EXTERN LoadFile;
+
 Main {
+  (e.ProgName) ('@' e.Config) =
+    <Main (e.ProgName) <LoadFile e.Config>>;
+
   (e.ProgName) e.Arguments =
     <Compile-And-Link
       <FindFiles-Compilers
