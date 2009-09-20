@@ -40,6 +40,11 @@ void refalrts::use( refalrts::Iter& ) {
   компилятора о том, что переменная не используется */;
 }
 
+void refalrts::use_counter( unsigned& ) {
+  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
+  компилятора о том, что переменная не используется */;
+}
+
 namespace {
 
 static refalrts::Iter next( refalrts::Iter current ) {

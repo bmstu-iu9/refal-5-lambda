@@ -170,6 +170,7 @@ extern void this_is_generated_function();
 // Прочие функции
 
 extern void set_return_code( int retcode );
+extern void use_counter( unsigned& counter );
 
 } //namespace refalrts
 
