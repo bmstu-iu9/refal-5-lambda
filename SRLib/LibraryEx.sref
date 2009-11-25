@@ -29,6 +29,10 @@ $ENTRY Fetch {
     <Apply t.Function e.Argument>;
 }
 
+$ENTRY Y {
+  s.Func = { e.Arg = <<s.Func <Y s.Func>> e.Arg>; };
+}
+
 $FORWARD DoMapReduce;
 
 $ENTRY MapReduce {

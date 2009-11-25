@@ -1106,7 +1106,7 @@ ParseResult {
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
-        t.ErrorList s.CloseBracket
+        t.ErrorList s.LnNum
         'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
       >
       t.SymTable t.Context

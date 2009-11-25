@@ -4,7 +4,7 @@
 @set modules=%modules% Error.sref Generator.sref SymTable.sref
 @set modules=%modules% FindFile ParseCmdLine Context.sref
 @set modules=%modules% Library LibraryEx refalrts.cpp
-@srefc_ -c "compile_bcc -I..\SRLib -DINTERPRET1 " -d ..\SRLib %modules%
+@srefc_ -c "compile_cl -I..\SRLib -DINTERPRET1 " -d ..\SRLib %modules%
 @rem srefc_ -c "g++ -osrefc.exe -I..\SRLib -DINTERPRET1 " -d ..\SRLib %modules%
 @del *.obj
 @del *.tds
