@@ -16044,6 +16044,8 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::use( sCloseBracket_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
+    static refalrts::Iter sCloseBracket_2;
+    refalrts::use( sCloseBracket_2 );
     // (~1 e.Functions )~1 t.ErrorList t.SymTable t.Context (~2 e.Sentences )~2 (~3 e.Pattern )~3 (~4 s.BracketNumber )~4 (~5 e.Scanned )~5 (~6 # CClose s.CloseBracket s.LnNum )~6 e.Tail
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16117,7 +16119,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
       {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLnNum_1},
+      {refalrts::icSpliceSTVar, & sCloseBracket_1},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'b'},
@@ -16140,7 +16142,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & StrFromBracket, (void*) "StrFromBracket"},
-      {refalrts::icSpliceSTVar, & sCloseBracket_1},
+      {refalrts::icCopySTVar, & sCloseBracket_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
@@ -16169,6 +16171,8 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( sCloseBracket_2, sCloseBracket_1 ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
@@ -16318,7 +16322,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::push_stack( n28 );
     refalrts::push_stack( n26 );
     res = refalrts::splice_elem( res, n28 );
-    res = refalrts::splice_stvar( res, sCloseBracket_1 );
+    res = refalrts::splice_stvar( res, sCloseBracket_2 );
     res = refalrts::splice_elem( res, n27 );
     res = refalrts::splice_elem( res, n26 );
     res = refalrts::splice_elem( res, n25 );
@@ -16341,7 +16345,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     res = refalrts::splice_elem( res, n8 );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_stvar( res, sLnNum_1 );
+    res = refalrts::splice_stvar( res, sCloseBracket_1 );
     res = refalrts::splice_stvar( res, tErrorList_1 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
