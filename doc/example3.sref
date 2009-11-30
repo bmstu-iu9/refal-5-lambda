@@ -1,0 +1,5 @@
+$LABEL Success, Fails;
+
+F {
+  # Success = # Fails;
+}

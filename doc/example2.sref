@@ -1,0 +1,27 @@
+// Библиотечные функции
+$EXTERN ArgList, LoadFile, SaveFile, MapReduce, Map, Inc;
+
+// Точка входа в программу
+$ENTRY Go {
+  =
+    <Map
+      {
+        (e.FileName) =
+          <SaveFile
+            (e.FileName '.out')
+            <MapReduce
+              {
+                s.Number (e.Line) =
+                  <Inc s.Number>
+                  (e.FileName ':' s.Number ':' e.Line);
+              }
+              1 <LoadFile e.FileName>
+            >
+          >;
+      }
+      // Пропуск первого аргумента — имени программы
+      <{ (e.ProgName) e.Args = e.Args; } <ArgList>>
+    >;
+}
+
+					
