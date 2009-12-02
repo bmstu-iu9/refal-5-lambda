@@ -1,0 +1,1 @@
+..\..\Simple" "Refal\Compiler\srefc %*

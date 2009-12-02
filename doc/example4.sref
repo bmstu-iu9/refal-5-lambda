@@ -1,0 +1,32 @@
+$LABEL A, B;
+
+F {
+  e.X #A e.Y #B e.Z = ;
+  e.X #A e.Y = ;
+  (e.X #A) e.Y #B = ;
+}
+
+// Объявления библиотечных функций
+$EXTERN WriteLine, Dec, Mul;
+// Объявление локальной функции
+$FORWARD Fact;
+// Точка входа в программу
+$ENTRY Go {
+  = <WriteLine '6! = ' <Fact 6>>;
+}
+
+Fact {
+  0 = 1;
+
+  s.Number =
+    <Mul
+      s.Number
+      <Fact <Dec s.Number>>
+    >;
+}
+
+Fab {
+  e.X #A e.Y = e.X #B <Fab e.Y>;
+
+  e.X = e.X;
+}
