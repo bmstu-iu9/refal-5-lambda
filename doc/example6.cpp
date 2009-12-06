@@ -2,7 +2,7 @@
 #include "refalrts.h"
 
 
-static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::Iter bb_0 = arg_begin;
@@ -10,20 +10,20 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sF_1;
-    refalrts::use( sF_1 );
-    static refalrts::Iter tNext_1;
-    refalrts::use( tNext_1 );
+    static refalrts::Iter sTrans_1;
+    refalrts::use( sTrans_1 );
+    static refalrts::Iter tFirst_1;
+    refalrts::use( tFirst_1 );
     static refalrts::Iter eTail_b_1;
     refalrts::use( eTail_b_1 );
     static refalrts::Iter eTail_e_1;
     refalrts::use( eTail_e_1 );
-    static refalrts::Iter sF_2;
-    refalrts::use( sF_2 );
-    // s.F t.Next e.Tail
-    if( ! refalrts::svar_left( sF_1, bb_0, be_0 ) ) 
+    static refalrts::Iter sTrans_2;
+    refalrts::use( sTrans_2 );
+    // s.Trans t.First e.Tail
+    if( ! refalrts::svar_left( sTrans_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::tvar_left( tNext_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tFirst_1, bb_0, be_0 ) ) 
       break;
     eTail_b_1 = bb_0;
     refalrts::use( eTail_b_1 );
@@ -32,12 +32,12 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sF_1},
-      {refalrts::icSpliceSTVar, & tNext_1},
+      {refalrts::icSpliceSTVar, & sTrans_1},
+      {refalrts::icSpliceSTVar, & tFirst_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Map, (void*) "Map"},
-      {refalrts::icCopySTVar, & sF_1},
+      {refalrts::icCopySTVar, & sTrans_1},
       {refalrts::icSpliceEVar, & eTail_b_1, & eTail_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -49,7 +49,7 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_stvar( sF_2, sF_1 ) )
+    if( ! refalrts::copy_stvar( sTrans_2, sTrans_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -70,14 +70,14 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, eTail_b_1, eTail_e_1 );
-    res = refalrts::splice_stvar( res, sF_2 );
+    res = refalrts::splice_stvar( res, sTrans_2 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     refalrts::push_stack( n1 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_stvar( res, tNext_1 );
-    res = refalrts::splice_stvar( res, sF_1 );
+    res = refalrts::splice_stvar( res, tFirst_1 );
+    res = refalrts::splice_stvar( res, sTrans_1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -91,10 +91,10 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sF_1;
-    refalrts::use( sF_1 );
-    // s.F
-    if( ! refalrts::svar_left( sF_1, bb_0, be_0 ) ) 
+    static refalrts::Iter sTrans_1;
+    refalrts::use( sTrans_1 );
+    // s.Trans
+    if( ! refalrts::svar_left( sTrans_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -118,9 +118,9 @@ static refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   return refalrts::cRecognitionImpossible;
 }
 
-static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CartProd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-static refalrts::FnResult lambda_Cartprod_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+static refalrts::FnResult lambda_CartProd_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::Iter bb_0 = arg_begin;
@@ -128,22 +128,22 @@ static refalrts::FnResult lambda_Cartprod_0(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tX_1;
-    refalrts::use( tX_1 );
-    static refalrts::Iter tY_1;
-    refalrts::use( tY_1 );
-    // t.X t.Y
-    if( ! refalrts::tvar_left( tX_1, bb_0, be_0 ) ) 
+    static refalrts::Iter tA_1;
+    refalrts::use( tA_1 );
+    static refalrts::Iter tB_1;
+    refalrts::use( tB_1 );
+    // t.A t.B
+    if( ! refalrts::tvar_left( tA_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::tvar_left( tY_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tB_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceSTVar, & tX_1},
-      {refalrts::icSpliceSTVar, & tY_1},
+      {refalrts::icSpliceSTVar, & tA_1},
+      {refalrts::icSpliceSTVar, & tB_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -162,8 +162,8 @@ static refalrts::FnResult lambda_Cartprod_0(refalrts::Iter arg_begin, refalrts::
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_stvar( res, tY_1 );
-    res = refalrts::splice_stvar( res, tX_1 );
+    res = refalrts::splice_stvar( res, tB_1 );
+    res = refalrts::splice_stvar( res, tA_1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -174,7 +174,7 @@ static refalrts::FnResult lambda_Cartprod_0(refalrts::Iter arg_begin, refalrts::
   return refalrts::cRecognitionImpossible;
 }
 
-static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+static refalrts::FnResult lambda_CartProd_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::Iter bb_0 = arg_begin;
@@ -182,22 +182,22 @@ static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eYs_b_1;
-    refalrts::use( eYs_b_1 );
-    static refalrts::Iter eYs_e_1;
-    refalrts::use( eYs_e_1 );
-    static refalrts::Iter tX_1;
-    refalrts::use( tX_1 );
-    // (~1 e.Ys )~1 t.X
+    static refalrts::Iter eSetB_b_1;
+    refalrts::use( eSetB_b_1 );
+    static refalrts::Iter eSetB_e_1;
+    refalrts::use( eSetB_e_1 );
+    static refalrts::Iter tA_1;
+    refalrts::use( tA_1 );
+    // (~1 e.SetB )~1 t.A
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    eYs_b_1 = bb_1;
-    refalrts::use( eYs_b_1 );
-    eYs_e_1 = be_1;
-    refalrts::use( eYs_e_1 );
-    if( ! refalrts::tvar_left( tX_1, bb_0, be_0 ) ) 
+    eSetB_b_1 = bb_1;
+    refalrts::use( eSetB_b_1 );
+    eSetB_e_1 = be_1;
+    refalrts::use( eSetB_e_1 );
+    if( ! refalrts::tvar_left( tA_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -207,10 +207,10 @@ static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::
       {refalrts::icFunc, (void*) & Map, (void*) "Map"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Cartprod_0, (void*) "lambda_Cartprod_0"},
-      {refalrts::icSpliceSTVar, & tX_1},
+      {refalrts::icFunc, (void*) & lambda_CartProd_0, (void*) "lambda_CartProd_0"},
+      {refalrts::icSpliceSTVar, & tA_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eYs_b_1, & eYs_e_1},
+      {refalrts::icSpliceEVar, & eSetB_b_1, & eSetB_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -234,7 +234,7 @@ static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_name( n3, & refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & lambda_Cartprod_0, "lambda_Cartprod_0" ) )
+    if( ! refalrts::alloc_name( n4, & lambda_CartProd_0, "lambda_CartProd_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -245,11 +245,11 @@ static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::
     refalrts::push_stack( n6 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eYs_b_1, eYs_e_1 );
+    res = refalrts::splice_evar( res, eSetB_b_1, eSetB_e_1 );
     refalrts::push_stack( n5 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_stvar( res, tX_1 );
+    res = refalrts::splice_stvar( res, tA_1 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
@@ -264,7 +264,7 @@ static refalrts::FnResult lambda_Cartprod_1(refalrts::Iter arg_begin, refalrts::
   return refalrts::cRecognitionImpossible;
 }
 
-static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+refalrts::FnResult CartProd(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::Iter bb_0 = arg_begin;
@@ -272,15 +272,15 @@ static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eXs_b_1;
-    refalrts::use( eXs_b_1 );
-    static refalrts::Iter eXs_e_1;
-    refalrts::use( eXs_e_1 );
-    static refalrts::Iter eYs_b_1;
-    refalrts::use( eYs_b_1 );
-    static refalrts::Iter eYs_e_1;
-    refalrts::use( eYs_e_1 );
-    // (~1 e.Xs )~1 (~2 e.Ys )~2
+    static refalrts::Iter eSetA_b_1;
+    refalrts::use( eSetA_b_1 );
+    static refalrts::Iter eSetA_e_1;
+    refalrts::use( eSetA_e_1 );
+    static refalrts::Iter eSetB_b_1;
+    refalrts::use( eSetB_b_1 );
+    static refalrts::Iter eSetB_e_1;
+    refalrts::use( eSetB_e_1 );
+    // (~1 e.SetA )~1 (~2 e.SetB )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
@@ -291,26 +291,26 @@ static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
-    eXs_b_1 = bb_1;
-    refalrts::use( eXs_b_1 );
-    eXs_e_1 = be_1;
-    refalrts::use( eXs_e_1 );
-    eYs_b_1 = bb_2;
-    refalrts::use( eYs_b_1 );
-    eYs_e_1 = be_2;
-    refalrts::use( eYs_e_1 );
+    eSetA_b_1 = bb_1;
+    refalrts::use( eSetA_b_1 );
+    eSetA_e_1 = be_1;
+    refalrts::use( eSetA_e_1 );
+    eSetB_b_1 = bb_2;
+    refalrts::use( eSetB_b_1 );
+    eSetB_e_1 = be_2;
+    refalrts::use( eSetB_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Map, (void*) "Map"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Cartprod_1, (void*) "lambda_Cartprod_1"},
+      {refalrts::icFunc, (void*) & lambda_CartProd_1, (void*) "lambda_CartProd_1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eYs_b_1, & eYs_e_1},
+      {refalrts::icSpliceEVar, & eSetB_b_1, & eSetB_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eXs_b_1, & eXs_e_1},
+      {refalrts::icSpliceEVar, & eSetA_b_1, & eSetA_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -334,7 +334,7 @@ static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_name( n3, & refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & lambda_Cartprod_1, "lambda_Cartprod_1" ) )
+    if( ! refalrts::alloc_name( n4, & lambda_CartProd_1, "lambda_CartProd_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_open_bracket( n5 ) )
@@ -351,13 +351,13 @@ static refalrts::FnResult Cartprod(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::push_stack( n8 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eXs_b_1, eXs_e_1 );
+    res = refalrts::splice_evar( res, eSetA_b_1, eSetA_e_1 );
     refalrts::push_stack( n7 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eYs_b_1, eYs_e_1 );
+    res = refalrts::splice_evar( res, eSetB_b_1, eSetB_e_1 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
