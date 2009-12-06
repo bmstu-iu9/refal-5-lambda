@@ -1,0 +1,16 @@
+Map {
+  s.F t.Next e.Tail = <s.F t.Next> <Map s.F e.Tail>;
+
+  s.F = ;
+}
+
+Cartprod {
+  (e.Xs) (e.Ys) =
+    <Map
+      {
+        t.X =
+          <Map { t.Y = (t.X t.Y); } e.Ys>;
+      }
+      e.Xs
+    >;
+}
