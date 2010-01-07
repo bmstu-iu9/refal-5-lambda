@@ -12,7 +12,11 @@
 #  define VALID_LINKED( iter ) valid_linked_aux( #iter, iter );
 #endif
 
+#ifndef SHOW_DEBUG
 #define SHOW_DEBUG 0
+#endif // ifdef SHOW_DEBUG
+
+enum { SWITCH_DEFAULT_VIOLATION = 0 };
 
 void valid_linked_aux( const char *text, refalrts::Iter i ) {
   printf("checking %s\n", text);
@@ -70,6 +74,10 @@ bool is_close_bracket( refalrts::Iter node ) {
 void refalrts::move_left(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -81,6 +89,10 @@ void refalrts::move_left(
 void refalrts::move_right(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -537,6 +549,7 @@ bool equal_nodes(
         познавания образца. Поэтому других узлов мы тут не ожидаем.
       */
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
         // break;
     }
@@ -849,6 +862,7 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       должно.
     */
     default:
+      assert( SWITCH_DEFAULT_VIOLATION );
       throw refalrts::UnexpectedTypeException();
       // break;
   }
@@ -1249,6 +1263,7 @@ namespace refalrts {
 namespace vm {
 
 extern int g_ret_code;
+extern void print_seq(FILE *output, refalrts::Iter begin, refalrts::Iter end);
 
 } // namespace vm
 
@@ -1256,6 +1271,12 @@ extern int g_ret_code;
 
 void refalrts::set_return_code( int code ) {
   refalrts::vm::g_ret_code = code;
+}
+
+void refalrts::debug_print_expr(
+  void *file, refalrts::Iter first, refalrts::Iter last
+) {
+  refalrts::vm::print_seq( static_cast<FILE*>(file), first, last );
 }
 
 //==============================================================================
@@ -1284,7 +1305,7 @@ unsigned g_memory_use = 0;
 
 } // namespace refalrts
 
-void refalrts::allocator::reset_allocator() {
+inline void refalrts::allocator::reset_allocator() {
   g_free_ptr = g_first_marker.next;
 }
 
@@ -1306,6 +1327,7 @@ refalrts::Iter refalrts::allocator::free_ptr() {
 void refalrts::allocator::splice_to_freelist(
   refalrts::Iter begin, refalrts::Iter end
 ) {
+  reset_allocator();
   g_free_ptr = list_splice( g_free_ptr, begin, end );
 }
 
@@ -1532,8 +1554,14 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 #if SHOW_DEBUG
 
-  printf("\nexecute\n");
-  make_dump( begin, end );
+  static unsigned s_counter = 0;
+
+  ++s_counter;
+
+  fprintf(stderr, "\nexecute %d\n", s_counter);
+  if( s_counter > (unsigned) SHOW_DEBUG ) {
+    make_dump( begin, end );
+  }
 
 #endif // SHOW_DEBUG
 
@@ -1545,9 +1573,9 @@ refalrts::FnResult refalrts::vm::execute_active(
   }
 }
 
-namespace {
-
-void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
+void refalrts::vm::print_seq(
+  FILE *output, refalrts::Iter begin, refalrts::Iter end
+) {
   enum {
     cStateView = 100,
     cStateString,
@@ -1636,6 +1664,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           default:
+            assert( SWITCH_DEFAULT_VIOLATION );
             throw refalrts::UnexpectedTypeException();
             // break;
         }
@@ -1689,12 +1718,15 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
         continue;
 
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
     }
   }
-}
 
-} // unnamed namespace
+  if( cStateString == state ) {
+    fprintf( output, "\'" );
+  }
+}
 
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   fprintf( stderr, "\nERROR EXPRESSION:\n" );

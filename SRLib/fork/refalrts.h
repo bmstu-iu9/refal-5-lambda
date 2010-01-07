@@ -172,6 +172,21 @@ extern void this_is_generated_function();
 extern void set_return_code( int retcode );
 extern void use_counter( unsigned& counter );
 
+inline void set_return_code( RefalNumber retcode ) {
+  set_return_code( static_cast<int>(retcode) );
+}
+
+/*
+  Функция производит печать рефал-выражения в поток file
+  в том же формате, как и при отладочном дампе памяти.
+
+  Переменная file представляет собой стандартный файловый
+  поток FILE* из stdio.h. Сделана она была void* только
+  для того, чтобы не включать сюда лишние заголовочные файлы
+  (пусть даже и стандартные).
+*/
+void debug_print_expr(void *file, Iter first, Iter last);
+
 } //namespace refalrts
 
 #endif //RefalRTS_H_
