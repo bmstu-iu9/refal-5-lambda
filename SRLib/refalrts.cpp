@@ -12,7 +12,11 @@
 #  define VALID_LINKED( iter ) valid_linked_aux( #iter, iter );
 #endif
 
+#ifndef SHOW_DEBUG
 #define SHOW_DEBUG 0
+#endif // ifdef SHOW_DEBUG
+
+enum { SWITCH_DEFAULT_VIOLATION = 0 };
 
 void valid_linked_aux( const char *text, refalrts::Iter i ) {
   printf("checking %s\n", text);
@@ -36,6 +40,11 @@ void valid_linked_aux( const char *text, refalrts::Iter i ) {
 // Операции распознавания
 
 void refalrts::use( refalrts::Iter& ) {
+  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
+  компилятора о том, что переменная не используется */;
+}
+
+void refalrts::use_counter( unsigned& ) {
   /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
   компилятора о том, что переменная не используется */;
 }
@@ -65,6 +74,10 @@ bool is_close_bracket( refalrts::Iter node ) {
 void refalrts::move_left(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -76,6 +89,10 @@ void refalrts::move_left(
 void refalrts::move_right(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -524,6 +541,7 @@ bool equal_nodes(
         познавания образца. Поэтому других узлов мы тут не ожидаем.
       */
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
         // break;
     }
@@ -851,6 +869,7 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       должно.
     */
     default:
+      assert( SWITCH_DEFAULT_VIOLATION );
       throw refalrts::UnexpectedTypeException();
       // break;
   }
@@ -946,13 +965,25 @@ bool refalrts::alloc_number(
   }
 }
 
+#ifdef MODULE_REFAL
+const char *unknown() { return "@unknown"; }
+#else
+const char *unknown = "@unknown";
+#endif
+
 bool refalrts::alloc_name(
-  refalrts::Iter& res, refalrts::RefalFunctionPtr fn, const char *name
+  refalrts::Iter& res,
+  refalrts::RefalFunctionPtr fn,
+  refalrts::RefalFuncName name
 ) {
   if( allocator::alloc_node( res ) ) {
     res->tag = cDataFunction;
     res->function_info.ptr = fn;
-    res->function_info.name = name;
+    if( name != 0 ) {
+      res->function_info.name = name;
+    } else {
+      res->function_info.name = unknown;
+    }
     return true;
   } else {
     return false;
@@ -1271,7 +1302,7 @@ refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
   assert( cDataFunction == head->tag );
 
   splice_elem( vm::g_left_swap_ptr, head );
-  const char *name = head->function_info.name;
+  refalrts::RefalFuncName name = head->function_info.name;
   head->tag = cDataSwapHead;
   head->swap_info.next_head = vm::g_left_swap_ptr;
   head->swap_info.name = name;
@@ -1325,6 +1356,7 @@ namespace refalrts {
 namespace vm {
 
 extern int g_ret_code;
+extern void print_seq(FILE *output, refalrts::Iter begin, refalrts::Iter end);
 
 } // namespace vm
 
@@ -1332,6 +1364,12 @@ extern int g_ret_code;
 
 void refalrts::set_return_code( int code ) {
   refalrts::vm::g_ret_code = code;
+}
+
+void refalrts::debug_print_expr(
+  void *file, refalrts::Iter first, refalrts::Iter last
+) {
+  refalrts::vm::print_seq( static_cast<FILE*>(file), first, last );
 }
 
 //==============================================================================
@@ -1374,11 +1412,13 @@ refalrts::Node *g_pnext_node = 0;
 
 }
 
+unsigned g_memory_use = 0;
+
 } // namespace allocator
 
 } // namespace refalrts
 
-void refalrts::allocator::reset_allocator() {
+inline void refalrts::allocator::reset_allocator() {
   g_free_ptr = g_first_marker.next;
 }
 
@@ -1414,13 +1454,11 @@ refalrts::Iter refalrts::allocator::free_ptr() {
 void refalrts::allocator::splice_to_freelist(
   refalrts::Iter begin, refalrts::Iter end
 ) {
+  reset_allocator();
   g_free_ptr = list_splice( g_free_ptr, begin, end );
 }
 
 bool refalrts::allocator::create_nodes() {
-//  refalrts::NodePtr new_node =
-//    static_cast<refalrts::NodePtr>( malloc( sizeof *new_node ) );
-
   refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
 
   if( new_node == 0 ) {
@@ -1435,34 +1473,15 @@ bool refalrts::allocator::create_nodes() {
 
     g_free_ptr = new_node;
     g_free_ptr->tag = refalrts::cDataIllegal;
+    ++ g_memory_use;
 
     return true;
   }
 }
 
 void refalrts::allocator::free_memory() {
-//  refalrts::Iter begin = g_first_marker.next;
-//  refalrts::Iter end = &g_last_marker;
-//
-//  while( begin != end ) {
-//    refalrts::Iter next_begin = next( begin );
-//
-//    if( refalrts::cDataClosure == next_begin->tag ) {
-//      refalrts::Iter head = begin->link_info;
-//
-//      if( 1 == head->number_info ) {
-//        begin = unwrap_closure( begin );
-//      } else {
-//        free( begin );
-//        begin = next_begin;
-//      }
-//    } else {
-//      free( begin );
-//      begin = next_begin;
-//    }
-//  }
-
   refalrts::allocator::pool::free();
+  fprintf( stderr, "Memory used %d bytes\n", g_memory_use * sizeof(Node) );
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
@@ -1606,6 +1625,19 @@ bool refalrts::vm::empty_stack() {
   return (g_stack_ptr == 0);
 }
 
+#ifdef MODULE_REFAL
+//$LABEL Go
+template <typename T>
+struct GoL_ {
+  static const char *name() {
+    return "Go";
+  }
+};
+#define GO_NAME GoL_<int>::name
+#else
+#define GO_NAME "Go"
+#endif
+
 bool refalrts::vm::init_view_field() {
   refalrts::reset_allocator();
   refalrts::Iter res = g_begin_view_field;
@@ -1613,7 +1645,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & Go, "Go" ) )
+  if( ! refalrts::alloc_name( n1, & Go, GO_NAME ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
@@ -1675,8 +1707,14 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 #if SHOW_DEBUG
 
-  fprintf(stderr, "\nexecute\n");
-  make_dump( begin, end );
+  static unsigned s_counter = 0;
+
+  ++s_counter;
+
+  fprintf(stderr, "\nexecute %d\n", s_counter);
+  if( s_counter > (unsigned) SHOW_DEBUG ) {
+    make_dump( begin, end );
+  }
 
 #endif // SHOW_DEBUG
 
@@ -1719,22 +1757,16 @@ refalrts::FnResult refalrts::vm::execute_active(
   }
 }
 
-namespace {
-
-void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
+void refalrts::vm::print_seq(
+  FILE *output, refalrts::Iter begin, refalrts::Iter end
+) {
   enum {
     cStateView = 100,
     cStateString,
     cStateFinish
   } state = cStateView;
 
-  unsigned long loop_counter = 0;
-
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
-    ++ loop_counter;
-    if( loop_counter > 100000UL ) {
-      throw "Loop counter";
-    }
 
     switch( state ) {
       case cStateView:
@@ -1752,7 +1784,11 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataSwapHead:
+#ifdef MODULE_REFAL
+            fprintf( output, "\n\n*Swap %s:\n", (begin->swap_info.name)() );
+#else
             fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
+#endif
             refalrts::move_left( begin, end );
             continue;
 
@@ -1767,11 +1803,15 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataFunction:
+#ifdef MODULE_REFAL
+            fprintf( output, "&%s ", (begin->function_info.name)() );
+#else
             if( begin->function_info.name[0] != 0 ) {
               fprintf( output, "&%s ", begin->function_info.name );
             } else {
               fprintf( output, "&%p ", begin->function_info.ptr );
             }
+#endif
             refalrts::move_left( begin, end );
             continue;
 
@@ -1831,6 +1871,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           default:
+            assert( SWITCH_DEFAULT_VIOLATION );
             throw refalrts::UnexpectedTypeException();
             // break;
         }
@@ -1884,12 +1925,15 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
         continue;
 
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
     }
   }
-}
 
-} // unnamed namespace
+  if( cStateString == state ) {
+    fprintf( output, "\'" );
+  }
+}
 
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   fprintf( stderr, "\nERROR EXPRESSION:\n" );
@@ -1919,6 +1963,8 @@ void refalrts::vm::free_view_field() {
       Поле зрения пустое -- его не нужно освобождать.
     */;
   }
+
+  fprintf( stderr, "Step count %d\n", g_step_counter );
 }
 
 //==============================================================================
@@ -1957,7 +2003,7 @@ refalrts::FnResult refalrts::interpret_array(
             !alloc_name(
               *allocs,
               (RefalFunctionPtr)(raa[i].ptr_value1),
-              static_cast<const char*>(raa[i].ptr_value2)
+              (RefalFuncName)(raa[i].ptr_value2)
             )
         )
           return cNoMemory;
@@ -2124,8 +2170,6 @@ refalrts::FnResult refalrts::interpret_array(
   }
   splice_to_freelist(begin, end);
 
-  //fprintf(stderr, "Interp: End phase 3\n");
-
   return cSuccess;
 }
 
@@ -2145,7 +2189,6 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
-    refalrts::profiler::end_profiler();
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
@@ -2153,6 +2196,8 @@ int main(int argc, char **argv) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
     return 4;
   }
+
+  refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
   

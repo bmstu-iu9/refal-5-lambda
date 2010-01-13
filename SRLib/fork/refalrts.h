@@ -26,23 +26,32 @@ typedef enum DataTag {
   cDataOpenADT, cDataCloseADT,
   cDataOpenBracket, cDataCloseBracket,
   cDataOpenCall, cDataCloseCall,
-  cDataFile
+  cDataFile,
+  cDataClosure,
+  cDataUnwrappedClosure,
+  cDataClosureHead
 } DataTag;
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
 
 typedef const char *(*RefalIdentifier) ();
 
+#ifdef MODULE_REFAL
+typedef RefalIdentifier RefalFuncName;
+#else
+typedef const char * RefalFuncName;
+#endif
+
 typedef struct RefalFunction {
   RefalFunctionPtr ptr;
-  RefalIdentifier name;
+  RefalFuncName name;
 } RefalFunction;
 
 typedef unsigned long RefalNumber;
 
 typedef struct RefalSwapHead {
   Iter next_head;
-  RefalIdentifier name;
+  RefalFuncName name;
 } RefalSwapHead;
 
 typedef struct Node {
@@ -59,6 +68,36 @@ typedef struct Node {
     RefalSwapHead swap_info;
   };
 } Node;
+
+typedef enum iCmd {
+  icChar,
+  icInt,
+  icFunc,
+  icIdent,
+  icString,
+  icBracket,
+  icSpliceSTVar,
+  icSpliceEVar,
+  icCopySTVar,
+  icCopyEVar,
+  icEnd
+} iCmd;
+
+typedef enum BracketType {
+  ibOpenADT,
+  ibOpenBracket,
+  ibOpenCall,
+  ibCloseADT,
+  ibCloseBracket,
+  ibCloseCall
+} BracketType;
+
+typedef struct ResultAction {
+    iCmd cmd;
+    void *ptr_value1;
+    void *ptr_value2;
+    int value;
+} ResultAction;
 
 extern void use( Iter& );
 
@@ -134,7 +173,7 @@ extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
 extern bool alloc_char( Iter& res, char ch );
 extern bool alloc_number( Iter& res, RefalNumber num );
 extern bool alloc_name(
-  Iter& res, RefalFunctionPtr func, RefalIdentifier name = 0
+  Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
 );
 extern bool alloc_ident( Iter& res, RefalIdentifier ident );
 extern bool alloc_open_adt( Iter& res );
@@ -156,6 +195,10 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+
+extern FnResult create_closure( Iter begin, Iter end );
+Iter unwrap_closure( Iter closure ); // Развернуть замыкание
+Iter wrap_closure( Iter closure ); // Свернуть замыкание
 
 // Работа со статическими ящиками
 
@@ -186,6 +229,15 @@ inline void set_return_code( RefalNumber retcode ) {
   (пусть даже и стандартные).
 */
 void debug_print_expr(void *file, Iter first, Iter last);
+
+// Интерпретатор
+
+extern FnResult interpret_array(
+  const ResultAction raa[],
+  Iter allocs[],
+  Iter begin,
+  Iter end
+);
 
 } //namespace refalrts
 

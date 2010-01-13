@@ -34,18 +34,24 @@ typedef enum DataTag {
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
 
+typedef const char *(*RefalIdentifier) ();
+
+#ifdef MODULE_REFAL
+typedef RefalIdentifier RefalFuncName;
+#else
+typedef const char * RefalFuncName;
+#endif
+
 typedef struct RefalFunction {
   RefalFunctionPtr ptr;
-  const char *name;
+  RefalFuncName name;
 } RefalFunction;
 
 typedef unsigned long RefalNumber;
 
-typedef const char *(*RefalIdentifier) ();
-
 typedef struct RefalSwapHead {
   Iter next_head;
-  const char *name;
+  RefalFuncName name;
 } RefalSwapHead;
 
 typedef struct Node {
@@ -167,7 +173,7 @@ extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
 extern bool alloc_char( Iter& res, char ch );
 extern bool alloc_number( Iter& res, RefalNumber num );
 extern bool alloc_name(
-  Iter& res, RefalFunctionPtr func, const char *name = ""
+  Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
 );
 extern bool alloc_ident( Iter& res, RefalIdentifier ident );
 extern bool alloc_open_adt( Iter& res );
@@ -207,6 +213,22 @@ extern void this_is_generated_function();
 // Прочие функции
 
 extern void set_return_code( int retcode );
+extern void use_counter( unsigned& counter );
+
+inline void set_return_code( RefalNumber retcode ) {
+  set_return_code( static_cast<int>(retcode) );
+}
+
+/*
+  Функция производит печать рефал-выражения в поток file
+  в том же формате, как и при отладочном дампе памяти.
+
+  Переменная file представляет собой стандартный файловый
+  поток FILE* из stdio.h. Сделана она была void* только
+  для того, чтобы не включать сюда лишние заголовочные файлы
+  (пусть даже и стандартные).
+*/
+void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
 
