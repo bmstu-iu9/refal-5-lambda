@@ -272,7 +272,7 @@ ParseNameList-Tail {
 $EXTERN TkOpenBlock, TkCloseBlock;
 
 //FROM Generator
-$EXTERN GenFnStart, GenSentence, GenFnEnd;
+$EXTERN GenFnStart, GenSentence, GenFnEnd, GenFnEnd-Success;
 
 $FORWARD ParseSentences;
 
@@ -357,9 +357,22 @@ CreateLambdaName {
     'lambda_' e.Name '_' <StrFromInt s.Number>;
 }
 
+//FROM Lexer
+$EXTERN TkVariable;
+
 $FORWARD PrepareAndGenSentence;
 
 GenFunctionBody-Aux {
+  s.ScopeClass (e.MainName) (e.Name)
+  e.Sentences (((TkVariable 'e' e.Index)) (e.Result)) =
+    <GenFnStart s.ScopeClass e.Name>
+    <Map
+      (PrepareAndGenSentence e.MainName)
+      e.Sentences
+      (((TkVariable 'e' e.Index)) (e.Result))
+    >
+    <GenFnEnd-Success>;
+
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
     <Map

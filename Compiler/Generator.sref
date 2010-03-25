@@ -30,6 +30,10 @@ $ENTRY GenFnEnd {
   = ('  return refalrts::cRecognitionImpossible;') ('}') ();
 }
 
+$ENTRY GenFnEnd-Success {
+  = ('  //return refalrts::cRecognitionImpossible;') ('}') ();
+}
+
 $ENTRY GenEEnum {
   e.Name = <SwGenFnStart GN-Entry NakedArguments e.Name> <GenFnEnd>;
 }
