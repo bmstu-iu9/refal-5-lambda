@@ -363,15 +363,15 @@ $EXTERN TkVariable;
 $FORWARD PrepareAndGenSentence;
 
 GenFunctionBody-Aux {
-  s.ScopeClass (e.MainName) (e.Name)
-  e.Sentences (((TkVariable 'e' e.Index)) (e.Result)) =
-    <GenFnStart s.ScopeClass e.Name>
-    <Map
-      (PrepareAndGenSentence e.MainName)
-      e.Sentences
-      (((TkVariable 'e' e.Index)) (e.Result))
-    >
-    <GenFnEnd-Success>;
+  //s.ScopeClass (e.MainName) (e.Name)
+  //e.Sentences (((TkVariable 'e' e.Index)) (e.Result)) =
+  //  <GenFnStart s.ScopeClass e.Name>
+  //  <Map
+  //    (PrepareAndGenSentence e.MainName)
+  //    e.Sentences
+  //    (((TkVariable 'e' e.Index)) (e.Result))
+  //  >
+  //  <GenFnEnd-Success>;
 
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
