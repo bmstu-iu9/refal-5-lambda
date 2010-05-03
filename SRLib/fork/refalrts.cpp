@@ -1940,12 +1940,17 @@ void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   print_seq( stderr, begin, end );
   fprintf( stderr, "\nVIEW FIELD:\n" );
   print_seq( stderr, & g_first_marker, & g_last_marker );
+
+#ifdef DUMP_FREE_LIST
+
   fprintf( stderr, "\nFREE LIST:\n" );
   print_seq(
     stderr,
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
+
+#endif //ifdef DUMP_FREE_LIST
 
   fprintf( stderr,"\nEnd dump\n");
   fflush(stderr);
