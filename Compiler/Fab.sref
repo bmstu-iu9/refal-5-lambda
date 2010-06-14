@@ -1,0 +1,10 @@
+$LABEL A, B, C;
+
+$ENTRY Fab {
+  e.X #A e.Y = e.X #B <Fab e.Y>;
+  e.X = e.X;
+}
+
+$ENTRY Go {
+  = <Fab #A #B #C #A #C>;
+}

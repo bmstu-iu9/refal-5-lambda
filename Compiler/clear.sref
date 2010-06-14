@@ -1,0 +1,32 @@
+$EXTERN ArgList, LoadFile, SaveFile, Map, Fetch;
+
+ClearLine {
+  e.Line ' ' = <ClearLine e.Line>;
+  e.Line '\t' = <ClearLine e.Line>;
+
+  e.Line = e.Line;
+}
+
+$ENTRY Go {
+  =
+    <Fetch
+      <ArgList> {
+        (e.ProgName) e.Arguments =
+          <Map
+            {
+              (e.FileName) =
+                <SaveFile
+                  (e.FileName '.new')
+                  <Map
+                    {
+                      (e.Line) = (<ClearLine e.Line>);
+                    }
+                    <LoadFile e.FileName>
+                  >
+                >;
+            }
+            e.Arguments
+          >;
+      }
+    >;
+}

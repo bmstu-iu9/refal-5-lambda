@@ -15,13 +15,22 @@ refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    //
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
+    // e.FileName
+    eFileName_b_1 = bb_0;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_0;
+    refalrts::use( eFileName_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -39,9 +48,19 @@ refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_name( n1, & TSymTable, "TSymTable" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_bracket( n2 ) )
+    if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n2 );
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_bracket( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n4 );
+    res = refalrts::splice_elem( res, n4 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -85,6 +104,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -107,7 +130,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( sOtherScopeClass_1 );
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Defined s.OtherScopeClass e.Name )~2 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined s.OtherScopeClass e.Name )~3 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -116,6 +139,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
@@ -141,21 +172,21 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sOtherScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sOtherScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -192,6 +223,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -303,24 +337,34 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::alloc_open_bracket( n30 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n31 = 0;
-      if( ! refalrts::alloc_name( n31, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n31 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n32 = 0;
-      if( ! refalrts::alloc_close_bracket( n32 ) )
+      if( ! refalrts::alloc_open_bracket( n32 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n33 = 0;
-      if( ! refalrts::alloc_close_bracket( n33 ) )
+      if( ! refalrts::alloc_name( n33, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n28, n33 );
-      res = refalrts::splice_elem( res, n33 );
+      refalrts::Iter n34 = 0;
+      if( ! refalrts::alloc_close_bracket( n34 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n35 = 0;
+      if( ! refalrts::alloc_close_bracket( n35 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n28, n35 );
+      res = refalrts::splice_elem( res, n35 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n30, n32 );
-      res = refalrts::splice_elem( res, n32 );
+      refalrts::link_brackets( n32, n34 );
+      res = refalrts::splice_elem( res, n34 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
       res = refalrts::splice_stvar( res, sOtherScopeClass_1 );
-      res = refalrts::splice_elem( res, n31 );
-      res = refalrts::splice_elem( res, n30 );
+      res = refalrts::splice_elem( res, n33 );
+      res = refalrts::splice_elem( res, n32 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n30, n31 );
+      res = refalrts::splice_elem( res, n31 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n30 );
       res = refalrts::splice_elem( res, n29 );
       res = refalrts::splice_elem( res, n28 );
       refalrts::push_stack( n27 );
@@ -371,6 +415,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter eName_b_1;
@@ -393,7 +441,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared s.ScopeClass e.Name )~3 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -402,6 +450,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
@@ -427,17 +483,17 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -448,6 +504,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -475,24 +534,34 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -511,6 +580,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -529,7 +602,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E )~1 & GN_Local s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared & GN_Entry e.Name )~3 e.Names_E )~1 & GN_Local s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -540,6 +613,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -563,17 +644,17 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -623,6 +704,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -761,27 +845,37 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::alloc_open_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_name( n41, & GN_Entry, "GN_Entry" ) )
+      if( ! refalrts::alloc_open_bracket( n41 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n43 = 0;
-      if( ! refalrts::alloc_close_bracket( n43 ) )
+      if( ! refalrts::alloc_name( n43, & GN_Entry, "GN_Entry" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n37, n43 );
-      res = refalrts::splice_elem( res, n43 );
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n45 = 0;
+      if( ! refalrts::alloc_close_bracket( n45 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n37, n45 );
+      res = refalrts::splice_elem( res, n45 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n39, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::link_brackets( n41, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n43 );
+      res = refalrts::splice_elem( res, n42 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n39, n40 );
+      res = refalrts::splice_elem( res, n40 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -841,6 +935,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -859,7 +957,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E )~1 & GN_Entry s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared & GN_Local e.Name )~3 e.Names_E )~1 & GN_Entry s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -870,6 +968,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -893,17 +999,17 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -953,6 +1059,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -1091,27 +1200,37 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::alloc_open_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_name( n41, & GN_Local, "GN_Local" ) )
+      if( ! refalrts::alloc_open_bracket( n41 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n43 = 0;
-      if( ! refalrts::alloc_close_bracket( n43 ) )
+      if( ! refalrts::alloc_name( n43, & GN_Local, "GN_Local" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n37, n43 );
-      res = refalrts::splice_elem( res, n43 );
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n45 = 0;
+      if( ! refalrts::alloc_close_bracket( n45 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n37, n45 );
+      res = refalrts::splice_elem( res, n45 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n39, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::link_brackets( n41, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n43 );
+      res = refalrts::splice_elem( res, n42 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n39, n40 );
+      res = refalrts::splice_elem( res, n40 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -1171,6 +1290,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eNames_b_1;
     refalrts::use( eNames_b_1 );
     static refalrts::Iter eNames_e_1;
@@ -1183,7 +1306,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    // t.ErrorList (~1 & TSymTable e.Names )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -1192,6 +1315,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
@@ -1209,6 +1340,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -1235,23 +1369,33 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Defined, "Defined" ) )
+    if( ! refalrts::alloc_close_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_close_bracket( n4 ) )
+    if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_bracket( n5 ) )
+    if( ! refalrts::alloc_name( n5, & Defined, "Defined" ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n5 );
-    res = refalrts::splice_elem( res, n5 );
-    refalrts::link_brackets( n2, n4 );
-    res = refalrts::splice_elem( res, n4 );
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_close_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_bracket( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n7 );
+    res = refalrts::splice_elem( res, n7 );
+    refalrts::link_brackets( n4, n6 );
+    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
     res = refalrts::splice_stvar( res, sScopeClass_1 );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -1274,6 +1418,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter eName_b_1;
@@ -1296,7 +1444,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared s.ScopeClass e.Name )~3 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -1305,6 +1453,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
@@ -1330,17 +1486,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -1351,6 +1507,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
@@ -1378,24 +1537,34 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Declared, "Declared" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Declared, "Declared" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -1414,6 +1583,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter eName_b_1;
@@ -1436,7 +1609,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined s.ScopeClass e.Name )~3 e.Names_E )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -1445,6 +1618,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
@@ -1470,17 +1651,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -1491,6 +1672,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -1518,24 +1702,34 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -1554,6 +1748,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -1572,7 +1770,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E )~1 & GN_Local s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared & GN_Entry e.Name )~3 e.Names_E )~1 & GN_Local s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -1583,6 +1781,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -1606,17 +1812,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -1666,6 +1872,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
@@ -1804,27 +2013,37 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & Declared, "Declared" ) )
+      if( ! refalrts::alloc_close_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_name( n41, & GN_Entry, "GN_Entry" ) )
+      if( ! refalrts::alloc_open_bracket( n41 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & Declared, "Declared" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n43 = 0;
-      if( ! refalrts::alloc_close_bracket( n43 ) )
+      if( ! refalrts::alloc_name( n43, & GN_Entry, "GN_Entry" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n37, n43 );
-      res = refalrts::splice_elem( res, n43 );
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n45 = 0;
+      if( ! refalrts::alloc_close_bracket( n45 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n37, n45 );
+      res = refalrts::splice_elem( res, n45 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n39, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::link_brackets( n41, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n43 );
+      res = refalrts::splice_elem( res, n42 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n39, n40 );
+      res = refalrts::splice_elem( res, n40 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -1884,6 +2103,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -1902,7 +2125,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E )~1 & GN_Entry s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared & GN_Local e.Name )~3 e.Names_E )~1 & GN_Entry s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -1913,6 +2136,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -1936,17 +2167,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -1996,6 +2227,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
@@ -2134,27 +2368,37 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & Declared, "Declared" ) )
+      if( ! refalrts::alloc_close_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_name( n41, & GN_Local, "GN_Local" ) )
+      if( ! refalrts::alloc_open_bracket( n41 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & Declared, "Declared" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n43 = 0;
-      if( ! refalrts::alloc_close_bracket( n43 ) )
+      if( ! refalrts::alloc_name( n43, & GN_Local, "GN_Local" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n37, n43 );
-      res = refalrts::splice_elem( res, n43 );
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n45 = 0;
+      if( ! refalrts::alloc_close_bracket( n45 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n37, n45 );
+      res = refalrts::splice_elem( res, n45 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n39, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::link_brackets( n41, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n43 );
+      res = refalrts::splice_elem( res, n42 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n39, n40 );
+      res = refalrts::splice_elem( res, n40 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -2214,6 +2458,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -2232,7 +2480,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Defined & GN_Entry e.Name )~2 e.Names_E )~1 & GN_Local s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined & GN_Entry e.Name )~3 e.Names_E )~1 & GN_Local s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -2243,6 +2491,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -2266,17 +2522,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -2325,6 +2581,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -2460,27 +2719,37 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n38 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n39 = 0;
-      if( ! refalrts::alloc_name( n39, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & GN_Entry, "GN_Entry" ) )
+      if( ! refalrts::alloc_open_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_close_bracket( n41 ) )
+      if( ! refalrts::alloc_name( n41, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & GN_Entry, "GN_Entry" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n36, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::Iter n43 = 0;
+      if( ! refalrts::alloc_close_bracket( n43 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n36, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n38, n41 );
-      res = refalrts::splice_elem( res, n41 );
+      refalrts::link_brackets( n40, n43 );
+      res = refalrts::splice_elem( res, n43 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n42 );
+      res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n38, n39 );
+      res = refalrts::splice_elem( res, n39 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       res = refalrts::splice_elem( res, n36 );
       refalrts::push_stack( n35 );
@@ -2539,6 +2808,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -2557,7 +2830,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eNames_E_b_1 );
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Defined & GN_Local e.Name )~2 e.Names_E )~1 & GN_Entry s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined & GN_Local e.Name )~3 e.Names_E )~1 & GN_Entry s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -2568,6 +2841,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -2591,17 +2872,17 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
@@ -2650,6 +2931,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -2785,27 +3069,37 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::alloc_open_bracket( n38 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n39 = 0;
-      if( ! refalrts::alloc_name( n39, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n39 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n40 = 0;
-      if( ! refalrts::alloc_name( n40, & GN_Local, "GN_Local" ) )
+      if( ! refalrts::alloc_open_bracket( n40 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n41 = 0;
-      if( ! refalrts::alloc_close_bracket( n41 ) )
+      if( ! refalrts::alloc_name( n41, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n42 = 0;
-      if( ! refalrts::alloc_close_bracket( n42 ) )
+      if( ! refalrts::alloc_name( n42, & GN_Local, "GN_Local" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n36, n42 );
-      res = refalrts::splice_elem( res, n42 );
+      refalrts::Iter n43 = 0;
+      if( ! refalrts::alloc_close_bracket( n43 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n44 = 0;
+      if( ! refalrts::alloc_close_bracket( n44 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n36, n44 );
+      res = refalrts::splice_elem( res, n44 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n38, n41 );
-      res = refalrts::splice_elem( res, n41 );
+      refalrts::link_brackets( n40, n43 );
+      res = refalrts::splice_elem( res, n43 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_elem( res, n42 );
+      res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
-      res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n38, n39 );
+      res = refalrts::splice_elem( res, n39 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       res = refalrts::splice_elem( res, n36 );
       refalrts::push_stack( n35 );
@@ -2864,6 +3158,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eNames_b_1;
     refalrts::use( eNames_b_1 );
     static refalrts::Iter eNames_e_1;
@@ -2876,7 +3174,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    // t.ErrorList (~1 & TSymTable e.Names )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -2885,6 +3183,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
@@ -2902,6 +3208,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
@@ -2928,23 +3237,33 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Declared, "Declared" ) )
+    if( ! refalrts::alloc_close_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_close_bracket( n4 ) )
+    if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_bracket( n5 ) )
+    if( ! refalrts::alloc_name( n5, & Declared, "Declared" ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n5 );
-    res = refalrts::splice_elem( res, n5 );
-    refalrts::link_brackets( n2, n4 );
-    res = refalrts::splice_elem( res, n4 );
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_close_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_bracket( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n7 );
+    res = refalrts::splice_elem( res, n7 );
+    refalrts::link_brackets( n4, n6 );
+    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
     res = refalrts::splice_stvar( res, sScopeClass_1 );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -2967,6 +3286,10 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     static refalrts::Iter eName_b_1;
@@ -2989,7 +3312,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter sOtherScopeClass_1;
     refalrts::use( sOtherScopeClass_1 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E )~1 s.OtherScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Identifier s.ScopeClass e.Name )~3 e.Names_E )~1 s.OtherScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -2998,6 +3321,14 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sOtherScopeClass_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
@@ -3023,21 +3354,21 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Identifier, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -3075,6 +3406,9 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
@@ -3189,24 +3523,34 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       if( ! refalrts::alloc_open_bracket( n31 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n32 = 0;
-      if( ! refalrts::alloc_name( n32, & Identifier, "Identifier" ) )
+      if( ! refalrts::alloc_close_bracket( n32 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n33 = 0;
-      if( ! refalrts::alloc_close_bracket( n33 ) )
+      if( ! refalrts::alloc_open_bracket( n33 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n34 = 0;
-      if( ! refalrts::alloc_close_bracket( n34 ) )
+      if( ! refalrts::alloc_name( n34, & Identifier, "Identifier" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n29, n34 );
-      res = refalrts::splice_elem( res, n34 );
+      refalrts::Iter n35 = 0;
+      if( ! refalrts::alloc_close_bracket( n35 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n36 = 0;
+      if( ! refalrts::alloc_close_bracket( n36 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n29, n36 );
+      res = refalrts::splice_elem( res, n36 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n31, n33 );
-      res = refalrts::splice_elem( res, n33 );
+      refalrts::link_brackets( n33, n35 );
+      res = refalrts::splice_elem( res, n35 );
       res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n32 );
-      res = refalrts::splice_elem( res, n31 );
+      res = refalrts::splice_elem( res, n34 );
+      res = refalrts::splice_elem( res, n33 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n31, n32 );
+      res = refalrts::splice_elem( res, n32 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n31 );
       res = refalrts::splice_elem( res, n30 );
       res = refalrts::splice_elem( res, n29 );
       refalrts::push_stack( n28 );
@@ -3258,6 +3602,10 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eNames_b_1;
     refalrts::use( eNames_b_1 );
     static refalrts::Iter eNames_e_1;
@@ -3270,7 +3618,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::use( eName_e_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    // t.ErrorList (~1 & TSymTable e.Names )~1 s.ScopeClass s.LnNum e.Name
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names )~1 s.ScopeClass s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -3279,6 +3627,14 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
@@ -3296,6 +3652,9 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icSpliceSTVar, & tErrorList_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
@@ -3322,23 +3681,33 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Identifier, "Identifier" ) )
+    if( ! refalrts::alloc_close_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_close_bracket( n4 ) )
+    if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_bracket( n5 ) )
+    if( ! refalrts::alloc_name( n5, & Identifier, "Identifier" ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n5 );
-    res = refalrts::splice_elem( res, n5 );
-    refalrts::link_brackets( n2, n4 );
-    res = refalrts::splice_elem( res, n4 );
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_close_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_bracket( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n7 );
+    res = refalrts::splice_elem( res, n7 );
+    refalrts::link_brackets( n4, n6 );
+    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
     res = refalrts::splice_stvar( res, sScopeClass_1 );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -3351,6 +3720,8 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
   return refalrts::cRecognitionImpossible;
 }
 
+static refalrts::FnResult MakePrefix(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
 refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -3361,10 +3732,18 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eName_b_1;
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eName_b_2;
+    refalrts::use( eName_b_2 );
+    static refalrts::Iter eName_e_2;
+    refalrts::use( eName_e_2 );
     static refalrts::Iter eNames_B_b_1;
     refalrts::use( eNames_B_b_1 );
     static refalrts::Iter eNames_B_e_1;
@@ -3377,11 +3756,13 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E )~1 s.LnNum e.Name
+    static refalrts::Iter eFileName_b_2;
+    refalrts::use( eFileName_b_2 );
+    static refalrts::Iter eFileName_e_2;
+    refalrts::use( eFileName_e_2 );
+    static refalrts::Iter sScopeClass_2;
+    refalrts::use( sScopeClass_2 );
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Declared s.ScopeClass e.Name )~3 e.Names_E )~1 s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -3390,6 +3771,14 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -3413,27 +3802,30 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
@@ -3442,6 +3834,12 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+        {refalrts::icFunc, (void*) & MakePrefix, (void*) "MakePrefix"},
+        {refalrts::icCopySTVar, & sScopeClass_1},
+        {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3451,6 +3849,10 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
 
       refalrts::reset_allocator();
       refalrts::Iter res = arg_begin;
+      if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+        return refalrts::cNoMemory;
+      if( ! refalrts::copy_stvar( sScopeClass_2, sScopeClass_1 ) )
+        return refalrts::cNoMemory;
       refalrts::Iter n0 = 0;
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
@@ -3461,24 +3863,51 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Declared, "Declared" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Declared, "Declared" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n8 = 0;
+      if( ! refalrts::alloc_open_call( n8 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n9 = 0;
+      if( ! refalrts::alloc_name( n9, & MakePrefix, "MakePrefix" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_close_call( n10 ) )
+        return refalrts::cNoMemory;
+      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      refalrts::push_stack( n10 );
+      refalrts::push_stack( n8 );
+      res = refalrts::splice_elem( res, n10 );
+      res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+      res = refalrts::splice_stvar( res, sScopeClass_2 );
+      res = refalrts::splice_elem( res, n9 );
+      res = refalrts::splice_elem( res, n8 );
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -3497,10 +3926,18 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eName_b_1;
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eName_b_2;
+    refalrts::use( eName_b_2 );
+    static refalrts::Iter eName_e_2;
+    refalrts::use( eName_e_2 );
     static refalrts::Iter eNames_B_b_1;
     refalrts::use( eNames_B_b_1 );
     static refalrts::Iter eNames_B_e_1;
@@ -3513,11 +3950,13 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E )~1 s.LnNum e.Name
+    static refalrts::Iter eFileName_b_2;
+    refalrts::use( eFileName_b_2 );
+    static refalrts::Iter eFileName_e_2;
+    refalrts::use( eFileName_e_2 );
+    static refalrts::Iter sScopeClass_2;
+    refalrts::use( sScopeClass_2 );
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined s.ScopeClass e.Name )~3 e.Names_E )~1 s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -3526,6 +3965,14 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -3549,27 +3996,30 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
@@ -3578,6 +4028,12 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+        {refalrts::icFunc, (void*) & MakePrefix, (void*) "MakePrefix"},
+        {refalrts::icCopySTVar, & sScopeClass_1},
+        {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3587,6 +4043,10 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
 
       refalrts::reset_allocator();
       refalrts::Iter res = arg_begin;
+      if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+        return refalrts::cNoMemory;
+      if( ! refalrts::copy_stvar( sScopeClass_2, sScopeClass_1 ) )
+        return refalrts::cNoMemory;
       refalrts::Iter n0 = 0;
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
@@ -3597,24 +4057,51 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Defined, "Defined" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Defined, "Defined" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n8 = 0;
+      if( ! refalrts::alloc_open_call( n8 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n9 = 0;
+      if( ! refalrts::alloc_name( n9, & MakePrefix, "MakePrefix" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_close_call( n10 ) )
+        return refalrts::cNoMemory;
+      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      refalrts::push_stack( n10 );
+      refalrts::push_stack( n8 );
+      res = refalrts::splice_elem( res, n10 );
+      res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+      res = refalrts::splice_stvar( res, sScopeClass_2 );
+      res = refalrts::splice_elem( res, n9 );
+      res = refalrts::splice_elem( res, n8 );
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -3641,6 +4128,10 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eName_b_2;
+    refalrts::use( eName_b_2 );
+    static refalrts::Iter eName_e_2;
+    refalrts::use( eName_e_2 );
     // t.ErrorList t.SymTable s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
@@ -3683,6 +4174,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceSTVar, & tSymTable_1},
+      {refalrts::icCopyEVar, & eName_b_1, & eName_e_1},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3692,6 +4184,8 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_evar( eName_b_2, eName_e_2, eName_b_1, eName_e_1 ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
@@ -3767,6 +4261,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_close_call( n24 ) )
       return refalrts::cNoMemory;
+    res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
     res = refalrts::splice_stvar( res, tSymTable_1 );
     refalrts::push_stack( n24 );
     refalrts::push_stack( n0 );
@@ -3807,6 +4302,354 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
   return refalrts::cRecognitionImpossible;
 }
 
+extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+extern refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult MakePrefix(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult lambda_MakePrefix_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter sChar_1;
+    refalrts::use( sChar_1 );
+    // s.Char
+    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
+      break;
+    if( ! empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & StrFromInt, (void*) "StrFromInt"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Ord, (void*) "Ord"},
+      {refalrts::icSpliceSTVar, & sChar_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icChar, 0, 0, '_'},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & StrFromInt, "StrFromInt" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_name( n3, & Ord, "Ord" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_close_call( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_char( n6, '_' ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::push_stack( n5 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_stvar( res, sChar_1 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::cRecognitionImpossible;
+}
+
+static refalrts::FnResult MakePrefix(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
+    // & GN_Entry e.FileName
+    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
+      break;
+    eFileName_b_1 = bb_0;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_0;
+    refalrts::use( eFileName_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icChar, 0, 0, 'g'},
+      {refalrts::icChar, 0, 0, 'l'},
+      {refalrts::icChar, 0, 0, 'o'},
+      {refalrts::icChar, 0, 0, 'b'},
+      {refalrts::icChar, 0, 0, 'a'},
+      {refalrts::icChar, 0, 0, 'l'},
+      {refalrts::icChar, 0, 0, '_'},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_char( n0, 'g' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_char( n1, 'l' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_char( n2, 'o' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_char( n3, 'b' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_char( n4, 'a' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_char( n5, 'l' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_char( n6, '_' ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
+    // & GN_Local e.FileName
+    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
+      break;
+    eFileName_b_1 = bb_0;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_0;
+    refalrts::use( eFileName_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icChar, 0, 0, 'l'},
+      {refalrts::icChar, 0, 0, 'o'},
+      {refalrts::icChar, 0, 0, 'c'},
+      {refalrts::icChar, 0, 0, 'a'},
+      {refalrts::icChar, 0, 0, 'l'},
+      {refalrts::icChar, 0, 0, '_'},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Map, (void*) "Map"},
+      {refalrts::icFunc, (void*) & lambda_MakePrefix_0, (void*) "lambda_MakePrefix_0"},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icChar, 0, 0, 'E'},
+      {refalrts::icChar, 0, 0, '_'},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_char( n0, 'l' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_char( n1, 'o' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_char( n2, 'c' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_char( n3, 'a' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_char( n4, 'l' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_char( n5, '_' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_call( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_name( n7, & Map, "Map" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, & lambda_MakePrefix_0, "lambda_MakePrefix_0" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_char( n10, 'E' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_char( n11, '_' ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_elem( res, n10 );
+    refalrts::push_stack( n9 );
+    refalrts::push_stack( n6 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::cRecognitionImpossible;
+}
+
+refalrts::FnResult ST_MakePrefixed(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
+    static refalrts::Iter sScopeClass_1;
+    refalrts::use( sScopeClass_1 );
+    static refalrts::Iter eName_b_1;
+    refalrts::use( eName_b_1 );
+    static refalrts::Iter eName_e_1;
+    refalrts::use( eName_e_1 );
+    static refalrts::Iter eNames_b_1;
+    refalrts::use( eNames_b_1 );
+    static refalrts::Iter eNames_e_1;
+    refalrts::use( eNames_e_1 );
+    // (~1 & TSymTable (~2 e.FileName )~2 e.Names )~1 s.ScopeClass e.Name
+    refalrts::Iter bb_1 = 0;
+    refalrts::Iter be_1 = 0;
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+      break;
+    if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
+      break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
+    eNames_b_1 = bb_1;
+    refalrts::use( eNames_b_1 );
+    eNames_e_1 = be_1;
+    refalrts::use( eNames_e_1 );
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+      break;
+    eName_b_1 = bb_0;
+    refalrts::use( eName_b_1 );
+    eName_e_1 = be_0;
+    refalrts::use( eName_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & MakePrefix, (void*) "MakePrefix"},
+      {refalrts::icSpliceSTVar, & sScopeClass_1},
+      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & MakePrefix, "MakePrefix" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_stvar( res, sScopeClass_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::cRecognitionImpossible;
+}
+
 refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -3817,10 +4660,18 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eName_b_1;
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eName_b_2;
+    refalrts::use( eName_b_2 );
+    static refalrts::Iter eName_e_2;
+    refalrts::use( eName_e_2 );
     static refalrts::Iter eNames_B_b_1;
     refalrts::use( eNames_B_b_1 );
     static refalrts::Iter eNames_B_e_1;
@@ -3833,11 +4684,11 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( sScopeClass_1 );
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList (~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E )~1 s.LnNum e.Name
+    static refalrts::Iter eFileName_b_2;
+    refalrts::use( eFileName_b_2 );
+    static refalrts::Iter eFileName_e_2;
+    refalrts::use( eFileName_e_2 );
+    // t.ErrorList (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Identifier s.ScopeClass e.Name )~3 e.Names_E )~1 s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
     refalrts::Iter bb_1 = 0;
@@ -3846,6 +4697,14 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
       break;
     eName_b_1 = bb_0;
@@ -3869,27 +4728,30 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Identifier, bb_3, be_3 ) ) 
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+        {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
@@ -3898,6 +4760,12 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+        {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+        {refalrts::icFunc, (void*) & MakePrefix, (void*) "MakePrefix"},
+        {refalrts::icFunc, (void*) & GN_Local, (void*) "GN_Local"},
+        {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+        {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3907,6 +4775,8 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
 
       refalrts::reset_allocator();
       refalrts::Iter res = arg_begin;
+      if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+        return refalrts::cNoMemory;
       refalrts::Iter n0 = 0;
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
@@ -3917,24 +4787,54 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Identifier, "Identifier" ) )
+      if( ! refalrts::alloc_close_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_close_bracket( n4 ) )
+      if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_close_bracket( n5 ) )
+      if( ! refalrts::alloc_name( n5, & Identifier, "Identifier" ) )
         return refalrts::cNoMemory;
-      refalrts::link_brackets( n0, n5 );
-      res = refalrts::splice_elem( res, n5 );
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_close_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_close_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n8 = 0;
+      if( ! refalrts::alloc_open_call( n8 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n9 = 0;
+      if( ! refalrts::alloc_name( n9, & MakePrefix, "MakePrefix" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_name( n10, & GN_Local, "GN_Local" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n11 = 0;
+      if( ! refalrts::alloc_close_call( n11 ) )
+        return refalrts::cNoMemory;
+      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      refalrts::push_stack( n11 );
+      refalrts::push_stack( n8 );
+      res = refalrts::splice_elem( res, n11 );
+      res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+      res = refalrts::splice_elem( res, n10 );
+      res = refalrts::splice_elem( res, n9 );
+      res = refalrts::splice_elem( res, n8 );
+      refalrts::link_brackets( n0, n7 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
-      refalrts::link_brackets( n2, n4 );
-      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n4, n6 );
+      res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
       res = refalrts::splice_stvar( res, sScopeClass_1 );
-      res = refalrts::splice_elem( res, n3 );
-      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+      res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       res = refalrts::splice_stvar( res, tErrorList_1 );
@@ -3961,6 +4861,10 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eName_b_2;
+    refalrts::use( eName_b_2 );
+    static refalrts::Iter eName_e_2;
+    refalrts::use( eName_e_2 );
     // t.ErrorList t.SymTable s.LnNum e.Name
     if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
       break;
@@ -4005,6 +4909,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceSTVar, & tSymTable_1},
+      {refalrts::icCopyEVar, & eName_b_1, & eName_e_1},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4014,6 +4919,8 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_evar( eName_b_2, eName_e_2, eName_b_1, eName_e_1 ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
@@ -4095,6 +5002,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter n26 = 0;
     if( ! refalrts::alloc_close_call( n26 ) )
       return refalrts::cNoMemory;
+    res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
     res = refalrts::splice_stvar( res, tSymTable_1 );
     refalrts::push_stack( n26 );
     refalrts::push_stack( n0 );
@@ -4149,6 +5057,10 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
+    static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
+    static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     static refalrts::Iter eNames_B_b_1;
     refalrts::use( eNames_B_b_1 );
     static refalrts::Iter eNames_B_e_1;
@@ -4159,15 +5071,23 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eNames_E_e_1 );
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
-    // (~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E )~1
+    // (~1 & TSymTable (~2 e.FileName )~2 e.Names_B (~3 & Defined s.ScopeClass e.Name )~3 e.Names_E )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
     if( ! refalrts::function_left( & TSymTable, bb_1, be_1 ) ) 
       break;
+    refalrts::Iter bb_2 = 0;
+    refalrts::Iter be_2 = 0;
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
+    eFileName_b_1 = bb_2;
+    refalrts::use( eFileName_b_1 );
+    eFileName_e_1 = be_2;
+    refalrts::use( eFileName_e_1 );
     refalrts::Iter bb_1_stk = bb_1;
     refalrts::Iter be_1_stk = be_1;
     for( 
@@ -4185,21 +5105,21 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
-      refalrts::Iter bb_2 = 0;
-      refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      refalrts::Iter bb_3 = 0;
+      refalrts::Iter be_3 = 0;
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_3, be_3 ) ) 
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_3, be_3 ) ) 
         continue;
-      eName_b_1 = bb_2;
+      eName_b_1 = bb_3;
       refalrts::use( eName_b_1 );
-      eName_e_1 = be_2;
+      eName_e_1 = be_3;
       refalrts::use( eName_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {

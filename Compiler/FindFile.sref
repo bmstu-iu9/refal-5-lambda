@@ -36,7 +36,7 @@ $FORWARD AnalyzeFile;
 AnalyzeInFolder {
   e.FileName Current = <AnalyzeFile e.FileName>;
 
-  e.FileName (e.Folder) = <AnalyzeFile e.Folder '/' e.FileName>;
+  e.FileName (e.Folder) = <AnalyzeFile e.Folder '\\' e.FileName>;
 }
 
 AnalyzeFile-CheckNotFound {
@@ -70,21 +70,21 @@ AnalyzeFile {
       <ExistFile-T e.FileName '.sref'>
     >;
 
-  e.FileName '.cpp' =
+  e.FileName '.cs' =
     <AnalyzeOutput-CheckExist
-      <ExistFile-T e.FileName '.cpp'>
+      <ExistFile-T e.FileName '.cs'>
     >;
 
   e.FileName =
     <AnalyzeBoth-CheckExist
       ( <ExistFile-T e.FileName '.sref'> )
-      <ExistFile-T e.FileName '.cpp'>
+      <ExistFile-T e.FileName '.cs'>
     >;
 }
 
 AnalyzeSource-CheckExist {
   True e.UnitName '.sref' =
-    (Source (e.UnitName '.sref') e.UnitName '.cpp');
+    (Source (e.UnitName '.sref') e.UnitName '.cs');
 
   False e.SourceName = (NotFound e.SourceName);
 }
@@ -102,6 +102,6 @@ AnalyzeBoth-CheckExist {
   ( False e.SourceName ) True e.OutName =
     (Output e.OutName);
 
-  ( False e.UnitName '.sref' ) False e.UnitName '.cpp' =
+  ( False e.UnitName '.sref' ) False e.UnitName '.cs' =
     (NotFound e.UnitName);
 }

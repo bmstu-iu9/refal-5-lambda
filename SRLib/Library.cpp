@@ -308,7 +308,7 @@ refalrts::FnResult write_to_stream(
       }
 
       case refalrts::cDataNumber: {
-        printf_res = fprintf( out, "%lu ", p->number_info );
+        printf_res = fprintf( out, "%d ", p->number_info );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -395,7 +395,7 @@ refalrts::FnResult write_to_stream(
       }
 
       case refalrts::cDataClosureHead: {
-        printf_res = fprintf( out, "[%lu] ", p->number_info );
+        printf_res = fprintf( out, "[%d] ", p->number_info );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -945,9 +945,6 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( read_res != refalrts::cSuccess )
       return read_res;
 
-    fflush(stdout);
-    fflush(stderr);
-
     system( &command[0] );
 
     refalrts::reset_allocator();
@@ -1400,7 +1397,7 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 
-    const char *fnname = 0;
+    char *fnname = 0;
     refalrts::RefalFunctionPtr fnptr = 0;
 
     switch( sSymb_1->tag ) {

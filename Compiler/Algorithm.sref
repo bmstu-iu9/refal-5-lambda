@@ -10,7 +10,7 @@ $ENTRY MakeAlgorithm {
         (/* vars */) (/* commands */)
       >
       <GenResult
-        (/* vars */) (/* commands */) 0 // счётчик новых элементов
+        (/* vars */) (/* commands */) 0 // СЃС‡С‘С‚С‡РёРє РЅРѕРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ
         e.Result
       >
     >;
@@ -21,7 +21,7 @@ $ENTRY MakeAlgorithm {
 */
 
 //==============================================================================
-// Генерация образца
+// Р“РµРЅРµСЂР°С†РёСЏ РѕР±СЂР°Р·С†Р°
 //==============================================================================
 
 //FROM Lexer
@@ -30,35 +30,35 @@ $EXTERN
   TkName, TkNumber, TkVariable, TkChar;
 
 //FROM LibraryEx
-$EXTERN Inc;
+$EXTERN Inc, MapReduce;
 
 $ENUM LeftPtr, RightPtr;
 
-// Направление распознавания
+// РќР°РїСЂР°РІР»РµРЅРёРµ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
 $EENUM AlgLeft, AlgRight;
 
 /*
-  Тип идентификатора следует сделать доступным
-  и из Driver'а, и из Generator'а.
-  Остаётся только импортировать отсюда.
+  РўРёРї РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СЃР»РµРґСѓРµС‚ СЃРґРµР»Р°С‚СЊ РґРѕСЃС‚СѓРїРЅС‹Рј
+  Рё РёР· Driver'Р°, Рё РёР· Generator'Р°.
+  РћСЃС‚Р°С‘С‚СЃСЏ С‚РѕР»СЊРєРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РѕС‚СЃСЋРґР°.
 */
 $EENUM TkIdentifier;
 
 /*
-Команды распознавания
-  Литералы, формат (Cmd*** s.Direction s.BracketNum e.Literal)
-  Скобки, формат (CmdBrackets s.Direction s.BracketNum s.InnerNum)
-  АТД, формат
+РљРѕРјР°РЅРґС‹ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
+  Р›РёС‚РµСЂР°Р»С‹, С„РѕСЂРјР°С‚ (Cmd*** s.Direction s.BracketNum e.Literal)
+  РЎРєРѕР±РєРё, С„РѕСЂРјР°С‚ (CmdBrackets s.Direction s.BracketNum s.InnerNum)
+  РђРўР”, С„РѕСЂРјР°С‚
     (CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (CmdEmpty s.BracketNum)
-  Переменные:
-    повторные, формат
+  РџСѓСЃС‚С‹Рµ СЃРєРѕР±РєРё, С„РѕСЂРјР°С‚ (CmdEmpty s.BracketNum)
+  РџРµСЂРµРјРµРЅРЅС‹Рµ:
+    РїРѕРІС‚РѕСЂРЅС‹Рµ, С„РѕСЂРјР°С‚
       (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
-    новые s и t, формат (CmdVar s.Direction s.BracketNum s.Mode e.Index)
-    открытые e, формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
-    закрытые e, формат
+    РЅРѕРІС‹Рµ s Рё t, С„РѕСЂРјР°С‚ (CmdVar s.Direction s.BracketNum s.Mode e.Index)
+    РѕС‚РєСЂС‹С‚С‹Рµ e, С„РѕСЂРјР°С‚ (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
+    Р·Р°РєСЂС‹С‚С‹Рµ e, С„РѕСЂРјР°С‚
       (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
-  Комментарий, вносимый в исходный код (CmdComment e.Text)
+  РљРѕРјРјРµРЅС‚Р°СЂРёР№, РІРЅРѕСЃРёРјС‹Р№ РІ РёСЃС…РѕРґРЅС‹Р№ РєРѕРґ (CmdComment e.Text)
 */
 $EENUM
   CmdChar, CmdNumber, CmdName, CmdIdent,
@@ -69,7 +69,7 @@ $EENUM
 $FORWARD TextFromPattern, SaveBrackets;
 
 GenPattern {
-  // Распознавание литералов (символьных, целочисленных, имён)
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ Р»РёС‚РµСЂР°Р»РѕРІ (СЃРёРјРІРѕР»СЊРЅС‹С…, С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹С…, РёРјС‘РЅ)
   e.Pattern-B (LeftPtr s.Num) (TkChar s.Char) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
@@ -126,7 +126,7 @@ GenPattern {
       (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
     >;
 
-  // Распознавание скобок
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ СЃРєРѕР±РѕРє
   e.Pattern-B (LeftPtr s.Num) (TkOpenBracket s.Inner)
   e.Pattern-M (TkCloseBracket s.Inner) e.Pattern-E
   (e.Vars) (e.Commands) =
@@ -147,7 +147,7 @@ GenPattern {
       (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.Inner))
     >;
 
-  // Распознавание АТД-скобок
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ РђРўР”-СЃРєРѕР±РѕРє
   e.Pattern-B (LeftPtr s.Num) (TkOpenADT s.Inner)
   (TkName e.Name) e.Pattern-M (TkCloseADT s.Inner) e.Pattern-E
   (e.Vars) (e.Commands) =
@@ -170,7 +170,7 @@ GenPattern {
       (e.Commands (CmdADT AlgRight s.Num s.Inner e.Name))
     >;
 
-  // Указатели аннигилируют при встрече
+  // РЈРєР°Р·Р°С‚РµР»Рё Р°РЅРЅРёРіРёР»РёСЂСѓСЋС‚ РїСЂРё РІСЃС‚СЂРµС‡Рµ
   e.Pattern-B (LeftPtr s.Num) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
@@ -178,7 +178,7 @@ GenPattern {
       (e.Vars) (e.Commands (CmdEmpty s.Num))
     >;
 
-  // Распознавание переменных
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…
   e.Pattern-B (LeftPtr s.Num) (TkVariable s.Mode e.Index) e.Pattern-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <GenPattern
@@ -195,7 +195,7 @@ GenPattern {
       (e.Commands (CmdRepeated AlgRight s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  // Указатели аннигилируют через закрытую e-переменную
+  // РЈРєР°Р·Р°С‚РµР»Рё Р°РЅРЅРёРіРёР»РёСЂСѓСЋС‚ С‡РµСЂРµР· Р·Р°РєСЂС‹С‚СѓСЋ e-РїРµСЂРµРјРµРЅРЅСѓСЋ
   e.Pattern-B (LeftPtr s.Num) (TkVariable 'e' e.Index)
   (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
@@ -241,7 +241,7 @@ GenPattern {
       (e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index))
     >;
 
-  // Завершение разбора. Все указатели аннигилировали.
+  // Р—Р°РІРµСЂС€РµРЅРёРµ СЂР°Р·Р±РѕСЂР°. Р’СЃРµ СѓРєР°Р·Р°С‚РµР»Рё Р°РЅРЅРёРіРёР»РёСЂРѕРІР°Р»Рё.
   e.Pattern (e.Vars) (e.Commands) =
     (e.Vars)
     ((CmdComment <TextFromPattern e.Pattern> )
@@ -249,10 +249,24 @@ GenPattern {
     );
 }
 
-$FORWARD DoSaveBrackets, DoSaveBrackets-Aux;
+$FORWARD DoSaveBrackets, DoSaveBrackets-Aux, Renumerate-Comment,
+  RenumerateSavedBrackets;
 
 SaveBrackets {
-  e.Commands = <DoSaveBrackets () e.Commands>;
+  e.Commands =
+    <Renumerate-Comment
+      <MapReduce
+        RenumerateSavedBrackets
+        ((0 0))
+        <DoSaveBrackets () e.Commands>
+      >
+    >;
+}
+
+Renumerate-Comment {
+  (e.RenumerateMap) e.Commands =
+    (CmdComment e.RenumerateMap)
+    e.Commands;
 }
 
 DoSaveBrackets {
@@ -302,10 +316,69 @@ CalcSavedBrackets {
     >;
 }
 
+$FORWARD IncrementBySaved, IncrementSaved;
+
+RenumerateSavedBrackets {
+  (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+  (CmdOpenedE AlgLeft s.Bracket s.Mode e.Index (e.Saved)) =
+    (
+      <Map
+        (IncrementBySaved e.Saved)
+        e.Brackets-B (s.Bracket s.Nested) e.Brackets-E
+      >
+    )
+    (CmdComment 'РћС‚РєСЂС‹С‚Р°СЏ e-РїРµСЂРµРјРµРЅРЅР°СЏ ' s.Mode '.' e.Index)
+    (CmdOpenedE
+      AlgLeft s.Bracket s.Nested s.Mode e.Index
+      (
+        <Map
+          (IncrementSaved
+            e.Brackets-B (s.Bracket s.Nested) e.Brackets-E
+          )
+          e.Saved
+        >
+      )
+    );
+
+  (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+  (CmdEmpty s.Bracket) =
+    (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+    (CmdEmpty s.Bracket s.Nested);
+
+  (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+  (CmdBrackets s.Direction s.Bracket s.Inner) =
+    (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E (s.Inner 0))
+    (CmdBrackets s.Direction s.Bracket s.Nested s.Inner);
+
+  (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+  (CmdADT s.Direction s.Bracket s.Inner e.Name) =
+    (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E (s.Inner 0))
+    (CmdADT s.Direction s.Bracket s.Nested s.Inner e.Name);
+
+  (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+  (s.Command s.Direction s.Bracket e.Info) =
+    (e.Brackets-B (s.Bracket s.Nested) e.Brackets-E)
+    (s.Command s.Direction s.Bracket s.Nested e.Info);
+}
+
+IncrementBySaved {
+  e.Saved-B s.Bracket e.Saved-E (s.Bracket s.Nested) =
+    (s.Bracket <Inc s.Nested>);
+
+  e.Saved (s.Bracket s.Nested) = (s.Bracket s.Nested);
+}
+
+IncrementSaved {
+  e.Numerated-B (s.Bracket s.Nested) e.Numerated-E s.Bracket =
+    (s.Bracket s.Nested);
+
+  // Р’СЃРµ СЃРєРѕР±РєРё РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СѓС‡С‚РµРЅС‹
+}
+
 ExtractBrackets {
   /*
-    Все команды распознавания, кроме CmdEmpty содержат номер скобок
-    третьим термом, общий формат
+    Р’СЃРµ РєРѕРјР°РЅРґС‹ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ, РєСЂРѕРјРµ CmdEmpty СЃРѕРґРµСЂР¶Р°С‚ РЅРѕРјРµСЂ СЃРєРѕР±РѕРє
+    С‚СЂРµС‚СЊРёРј С‚РµСЂРјРѕРј, РѕР±С‰РёР№ С„РѕСЂРјР°С‚
     (s.Command s.Direction s.BracketNum e.Info)
   */
   (CmdEmpty s.BracketNum) = s.BracketNum;
@@ -387,12 +460,12 @@ TextFromPattern-Char {
 }
 
 //==============================================================================
-// Генерация результата
+// Р“РµРЅРµСЂР°С†РёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 //==============================================================================
 
-// Тип команды
+// РўРёРї РєРѕРјР°РЅРґС‹
 $ENUM CtAlloc, CtInsert, CtBrackets, CtInsertVar;
-// Подтип команды
+// РџРѕРґС‚РёРї РєРѕРјР°РЅРґС‹
 $ENUM
   StChar, StName, StNumber, StIdent,
   StOpenBracket, StCloseBracket, StOpenCall, StCloseCall,
@@ -405,7 +478,7 @@ $EXTERN TkOpenCall, TkCloseCall;
 $FORWARD GenResult-Commands;
 
 GenResult {
-  // Создаём литералы
+  // РЎРѕР·РґР°С‘Рј Р»РёС‚РµСЂР°Р»С‹
   (e.Vars) (e.Commands) s.Counter (TkChar s.Value) e.Result =
     <GenResult
       (e.Vars)
@@ -447,8 +520,8 @@ GenResult {
     >;
 
   /*
-    Обработка открывающих скобок обоих типов ничем не отличается
-    от обработки литералов.
+    РћР±СЂР°Р±РѕС‚РєР° РѕС‚РєСЂС‹РІР°СЋС‰РёС… СЃРєРѕР±РѕРє РѕР±РѕРёС… С‚РёРїРѕРІ РЅРёС‡РµРј РЅРµ РѕС‚Р»РёС‡Р°РµС‚СЃСЏ
+    РѕС‚ РѕР±СЂР°Р±РѕС‚РєРё Р»РёС‚РµСЂР°Р»РѕРІ.
   */
   (e.Vars) (e.Commands) s.Counter (TkOpenBracket s.Num) e.Result =
     <GenResult
@@ -481,9 +554,9 @@ GenResult {
     >;
 
   /*
-    Закрывающие скобки надо обрабатывать особым образом.
-    Круглые скобки и АТД --
-    слинковать, угловые -- добавить в стек.
+    Р—Р°РєСЂС‹РІР°СЋС‰РёРµ СЃРєРѕР±РєРё РЅР°РґРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РѕСЃРѕР±С‹Рј РѕР±СЂР°Р·РѕРј.
+    РљСЂСѓРіР»С‹Рµ СЃРєРѕР±РєРё Рё РђРўР” --
+    СЃР»РёРЅРєРѕРІР°С‚СЊ, СѓРіР»РѕРІС‹Рµ -- РґРѕР±Р°РІРёС‚СЊ РІ СЃС‚РµРє.
   */
   (e.Vars)
   (e.Commands-B (CtAlloc StOpenBracket s.OpenCounter s.Num) e.Commands-E)
@@ -534,7 +607,7 @@ GenResult {
       <Inc s.Counter> e.Result
     >;
 
-  // Обработка переменных
+  // РћР±СЂР°Р±РѕС‚РєР° РїРµСЂРµРјРµРЅРЅС‹С…
   (e.Vars-B (s.Usings s.Mode e.Index) e.Vars-E)
   (e.Commands) s.Counter (TkVariable s.Mode e.Index) e.Result =
     <GenResult
@@ -554,19 +627,19 @@ GenResult {
       s.Counter e.Result
     >;
 
-  // Завершение просмотра
+  // Р—Р°РІРµСЂС€РµРЅРёРµ РїСЂРѕСЃРјРѕС‚СЂР°
   (e.Vars) (e.Commands) s.Counter =
-    (e.Vars) ( e.Commands );
+    (e.Vars) ( <GenResult-Commands e.Commands> );
 }
 
 /*
-  Порядок выполнения команд.
-  1. Все выделения памяти (в порядке перечисления)
-  2. Связывание крулых и угловых скобок и
-  построение результата (в обратном порядке)
+  РџРѕСЂСЏРґРѕРє РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґ.
+  1. Р’СЃРµ РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё (РІ РїРѕСЂСЏРґРєРµ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ)
+  2. РЎРІСЏР·С‹РІР°РЅРёРµ РєСЂСѓР»С‹С… Рё СѓРіР»РѕРІС‹С… СЃРєРѕР±РѕРє Рё
+  РїРѕСЃС‚СЂРѕРµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚Р° (РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ)
 */
 
-$FORWARD ConvertCommands-Separated;
+$FORWARD ConvertCommad, ConvertCommands-Separated;
 
 //FROM LibraryEx
 $EXTERN MapReduce, Map;
@@ -603,7 +676,7 @@ Reverse {
   = ;
 }
 
-// Основные команды работы с образцом
+// РћСЃРЅРѕРІРЅС‹Рµ РєРѕРјР°РЅРґС‹ СЂР°Р±РѕС‚С‹ СЃ РѕР±СЂР°Р·С†РѕРј
 //  (CmdAllocateElem s.Number s.ElType e.Info)
 //  (CmdLinkBrackets s.Left s.Right)
 //  (CmdPushStack s.Number)
@@ -614,9 +687,10 @@ $EENUM
   CmdLinkBrackets,
   CmdPushStack,
   CmdInsertElem,
-  CmdInsertEVar;
+  CmdInsertEVar,
+  CmdCheckEVar;
 
-// Спецификаторы команд (элементы)
+// РЎРїРµС†РёС„РёРєР°С‚РѕСЂС‹ РєРѕРјР°РЅРґ (СЌР»РµРјРµРЅС‚С‹)
 $EENUM
   ElChar, ElName, ElNumber, ElIdent,
   ElOpenADT, ElCloseADT,
@@ -657,8 +731,8 @@ ConvertCommand {
 }
 
 //==============================================================================
-// Обобщение информации -- уничтожение ненужных переменных,
-// копирование повторных.
+// РћР±РѕР±С‰РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё -- СѓРЅРёС‡С‚РѕР¶РµРЅРёРµ РЅРµРЅСѓР¶РЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С…,
+// РєРѕРїРёСЂРѕРІР°РЅРёРµ РїРѕРІС‚РѕСЂРЅС‹С….
 //==============================================================================
 
 $FORWARD GeneralizeResult-Vars, ReplicateVars;
@@ -724,26 +798,22 @@ $EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
 
 GeneralizeResult-CopyVars {
   ( e.CommonVars ) ( e.Pattern ) ( e.CopiedVars ) ( e.Result ) =
-    <GenerateResult-Interp
-      (<Map MakeDeclaration e.CommonVars> e.Pattern)
-      (e.CopiedVars)
-      (e.Result)
-    >;
-}
-
-GenerateResult-Interp {
-  (e.Pattern) (e.CopiedVars) (e.Result) =
+    <Map MakeDeclaration e.CommonVars>
     e.Pattern
-    (CmdIfDef)
-    (CmdInitRAA)
-    <Map (MakeInterpCommands e.CopiedVars) e.Result>
-    (CmdFinRAA)
-    (CmdElse)
+    <Map
+      // РћР±РЅСѓР»РµРЅРёРµ e-РїРµСЂРµРјРµРЅРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚Р°
+      {
+        (CmdInsertEVar s.Usings 'e' e.Index) =
+          (CmdCheckEVar s.Usings 'e' e.Index);
+
+        t.OtherCommand = /* РїСѓСЃС‚Рѕ */;
+      }
+      e.Result
+    >
     (CmdEmptyResult)
     <Map MakeCopyVar e.CopiedVars>
-    <GenResult-Commands e.Result>
-    (CmdReturnResult)
-    (CmdEndIf);
+    e.Result
+    (CmdReturnResult);
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
@@ -764,50 +834,4 @@ MakeCopyVar {
     (CmdCopyVar s.Usings s.Mode e.Index);
 }
 
-$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrIdent, CmdArrOB, CmdArrCB,
-  CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
 
-MakeInterpCommands {
-  e.CopiedVars-B (s.Usings s.Mode e.Index) e.CopiedVars-E
-  (CtInsertVar s.Usings  s.Mode e.Index) =
-    (CmdArrCopy s.Mode e.Index);
-
-  e.CopiedVars (CtInsertVar s.Usings  s.Mode e.Index) =
-    (CmdArrSplice s.Usings s.Mode e.Index);
-
-  e.CopiedVars (CtBrackets e.CmdInfo) = ;
-  e.CopiedVars (CtInsert s.ElemNo) = ;
-
-  e.CopiedVars (CtAlloc StChar s.Counter s.Value) = 
-    (CmdArrChar s.Value);
-
-  e.CopiedVars (CtAlloc StName s.Counter e.Name) = 
-    (CmdArrFunc e.Name);
-
-  e.CopiedVars (CtAlloc StNumber s.Counter s.Number) = 
-    (CmdArrInt s.Number);
-
-  e.CopiedVars (CtAlloc StIdent s.Counter e.Name) = 
-    (CmdArrIdent e.Name);
-
-  e.CopiedVars (CtAlloc StOpenBracket s.Counter s.Num) = 
-    (CmdArrOB);
-
-  e.CopiedVars (CtAlloc StOpenADT s.Counter s.Num) = 
-    (CmdArrOADT);
-
-  e.CopiedVars (CtAlloc StOpenCall s.Counter s.Num) = 
-    (CmdArrOC);
-
-  e.CopiedVars (CtAlloc StCloseBracket s.Counter s.Num) = 
-    (CmdArrCB);
-
-  e.CopiedVars (CtAlloc StCloseADT s.Counter s.Num) = 
-    (CmdArrCADT);
-
-  e.CopiedVars (CtAlloc StCloseCall s.Counter s.Num) = 
-    (CmdArrCC);
-
-  e.CopiedVars (e.AnyCommand) =
-    (CmdComment e.AnyCommand ' ');
-}

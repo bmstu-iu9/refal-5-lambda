@@ -1,0 +1,14 @@
+//$EENUM
+//  SymbCompare,
+//  SymbType;
+
+$EXTERN Success, Fails;
+
+//$ENTRY IntFromStr {
+//  e.Tail = Success 42 e.Tail;
+//  e.Tail = Fails e.Tail;
+//}
+
+//$ENTRY System {
+//  e.CmdLine = ;
+//}

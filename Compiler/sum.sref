@@ -1,0 +1,31 @@
+$EXTERN StrFromInt, IntFromStr, WriteLine, Add, Fetch, ReadLine, Success, Trim;
+
+$FORWARD AsNumber;
+
+$ENTRY Go {
+  =
+    <Fetch
+      <Trim <ReadLine>> {
+        e.First ' ' e.Second =
+          <Fetch
+            (<AsNumber e.First>) (<AsNumber e.Second>) {
+              (Success s.FirstNum) (Success s.LastNum) =
+                <WriteLine
+                  'Sum of this number is ' <StrFromInt <Add s.FirstNum s.LastNum>>
+                >;
+
+              e.Other =
+                // ¬ведены не числа
+                <WriteLine 'Entered not a numbers'>;
+            }
+          >;
+
+        e.Other =
+          <WriteLine 'You must enter two numbers divided by space!'>;
+      }
+    >;
+}
+
+AsNumber {
+  e.Text = <IntFromStr <Trim e.Text>>;
+}

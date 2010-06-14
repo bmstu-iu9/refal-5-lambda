@@ -89,7 +89,7 @@ GetFileName {
 }
 
 GetFileName-Aux {
-  e.FileName '.cpp' = <DoGetFileName e.FileName>;
+  e.FileName '.cs' = <DoGetFileName e.FileName>;
 }
 
 $FORWARD Lower;
@@ -212,8 +212,8 @@ $EXTERN StrFromInt;
 FileNum {
   0 e.File = e.File;
 
-  s.Number e.File '.cpp' =
-    e.File '@' <StrFromInt s.Number> '.cpp';
+  s.Number e.File '.cs' =
+    e.File '@' <StrFromInt s.Number> '.cs';
 }
 
 SwCompiled {
@@ -225,6 +225,8 @@ SwCompiled {
 UnBracketSpace {
   (e.FileName) = ' "' e.FileName '"';
 }
+
+$FORWARD CompileOneCpp;
 
 Link {
   (NoCompile) e.Files = ;

@@ -1,0 +1,7 @@
+$ENTRY SymbCompare {
+  s.Left s.Right = '=';
+}
+
+$ENTRY SymbType {
+  s.Symbol = 0;
+}

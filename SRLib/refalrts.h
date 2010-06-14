@@ -165,8 +165,7 @@ extern unsigned read_chars(
 extern void reset_allocator();
 
 extern bool copy_evar(
-  Iter& evar_res_b, Iter& evar_res_e,
-  Iter evar_b_sample, Iter evar_e_sample
+  Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
 );
 
 extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
@@ -184,19 +183,6 @@ extern bool alloc_close_bracket( Iter& res );
 extern bool alloc_open_call( Iter& res );
 extern bool alloc_close_call( Iter& res );
 
-#ifndef alloc_copy_svar
-#define alloc_copy_svar alloc_copy_svar_
-#endif
-
-#ifndef alloc_copy_tvar
-#define alloc_copy_tvar copy_stvar
-#endif
-
-extern bool alloc_copy_evar(
-  Iter& res, Iter evar_b_sample, Iter evar_e_sample
-);
-extern bool alloc_copy_svar_( Iter& svar_res, Iter svar_sample );
-
 extern bool alloc_chars(
   Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
 );
@@ -209,7 +195,6 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
-extern void splice_from_freelist( Iter pos );
 
 extern FnResult create_closure( Iter begin, Iter end );
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание

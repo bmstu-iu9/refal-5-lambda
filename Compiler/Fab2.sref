@@ -1,0 +1,11 @@
+$EXTERN WriteLine, ReadLine;
+
+$ENTRY Fab {
+  e.X 'A' e.Y = <Fab e.X> 'B' <Fab e.Y>;
+  e.X 'a' e.Y = e.X 'b' <Fab e.Y>;
+  e.X = e.X;
+}
+
+$ENTRY Go {
+  = <WriteLine <Fab <ReadLine>>>;
+}

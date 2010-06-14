@@ -332,7 +332,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeFile, (void*) "AnalyzeFile"},
       {refalrts::icSpliceEVar, & eFolder_b_1, & eFolder_e_1},
-      {refalrts::icChar, 0, 0, '/'},
+      {refalrts::icChar, 0, 0, '\\'},
       {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -351,7 +351,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_name( n1, & AnalyzeFile, "AnalyzeFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_char( n2, '/' ) )
+    if( ! refalrts::alloc_char( n2, '\\' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -892,10 +892,8 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::use( eFileName_b_1 );
     static refalrts::Iter eFileName_e_1;
     refalrts::use( eFileName_e_1 );
-    // e.FileName '.cpp'
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
+    // e.FileName '.cs'
+    if( ! refalrts::char_right( 's', bb_0, be_0 ) ) 
       break;
     if( ! refalrts::char_right( 'c', bb_0, be_0 ) ) 
       break;
@@ -914,8 +912,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'p'},
+      {refalrts::icChar, 0, 0, 's'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -946,23 +943,19 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n5, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, 'p' ) )
+    if( ! refalrts::alloc_char( n6, 's' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, 'p' ) )
+    if( ! refalrts::alloc_close_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_call( n8 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_close_call( n9 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n9 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n9 );
     refalrts::push_stack( n8 );
-    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
+    refalrts::push_stack( n7 );
+    refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
@@ -1017,8 +1010,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'p'},
+      {refalrts::icChar, 0, 0, 's'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -1081,23 +1073,19 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n15, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'p' ) )
+    if( ! refalrts::alloc_char( n16, 's' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, 'p' ) )
+    if( ! refalrts::alloc_close_call( n17 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
     if( ! refalrts::alloc_close_call( n18 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_close_call( n19 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n19 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n19 );
     refalrts::push_stack( n18 );
-    refalrts::push_stack( n12 );
+    refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n18 );
+    refalrts::push_stack( n17 );
+    refalrts::push_stack( n12 );
     res = refalrts::splice_elem( res, n17 );
     res = refalrts::splice_elem( res, n16 );
     res = refalrts::splice_elem( res, n15 );
@@ -1178,8 +1166,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       {refalrts::icCopyEVar, & eUnitName_b_1, & eUnitName_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'p'},
+      {refalrts::icChar, 0, 0, 's'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1226,16 +1213,12 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_char( n10, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, 'p' ) )
+    if( ! refalrts::alloc_char( n11, 's' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, 'p' ) )
+    if( ! refalrts::alloc_close_bracket( n12 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_close_bracket( n13 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n13 );
-    res = refalrts::splice_elem( res, n13 );
+    refalrts::link_brackets( n0, n12 );
     res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_elem( res, n11 );
     res = refalrts::splice_elem( res, n10 );
@@ -1585,10 +1568,8 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::use( eUnitName_b_2 );
     static refalrts::Iter eUnitName_e_2;
     refalrts::use( eUnitName_e_2 );
-    // (~1 & False e.UnitName '.sref )~1 & False e.UnitName '.cpp'
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
+    // (~1 & False e.UnitName '.sref )~1 & False e.UnitName '.cs'
+    if( ! refalrts::char_right( 's', bb_0, be_0 ) ) 
       break;
     if( ! refalrts::char_right( 'c', bb_0, be_0 ) ) 
       break;

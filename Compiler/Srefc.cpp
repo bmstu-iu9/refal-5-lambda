@@ -1337,10 +1337,8 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eFileName_b_1 );
     static refalrts::Iter eFileName_e_1;
     refalrts::use( eFileName_e_1 );
-    // e.FileName '.cpp'
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
+    // e.FileName '.cs'
+    if( ! refalrts::char_right( 's', bb_0, be_0 ) ) 
       break;
     if( ! refalrts::char_right( 'c', bb_0, be_0 ) ) 
       break;
@@ -3963,10 +3961,8 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::use( eFile_b_1 );
     static refalrts::Iter eFile_e_1;
     refalrts::use( eFile_e_1 );
-    // s.Number e.File '.cpp'
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
-      break;
-    if( ! refalrts::char_right( 'p', bb_0, be_0 ) ) 
+    // s.Number e.File '.cs'
+    if( ! refalrts::char_right( 's', bb_0, be_0 ) ) 
       break;
     if( ! refalrts::char_right( 'c', bb_0, be_0 ) ) 
       break;
@@ -3988,8 +3984,7 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'p'},
+      {refalrts::icChar, 0, 0, 's'},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4018,12 +4013,8 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_char( n5, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, 'p' ) )
+    if( ! refalrts::alloc_char( n6, 's' ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, 'p' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
@@ -4188,6 +4179,8 @@ static refalrts::FnResult UnBracketSpace(refalrts::Iter arg_begin, refalrts::Ite
 
   return refalrts::cRecognitionImpossible;
 }
+
+static refalrts::FnResult CompileOneCpp(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();

@@ -4538,9 +4538,13 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
 
 static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+static refalrts::FnResult Punctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
 static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult DirectiveBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
