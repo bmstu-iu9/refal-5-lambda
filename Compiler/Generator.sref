@@ -306,7 +306,7 @@ GenCommand {
   (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index (e.BracketsForSave)) =
     (e.Indent '  ')
     <Map (PrintStkBracket e.Indent) e.BracketsForSave>
-    (e.Indent 'for( ')
+    (e.Indent 'for(')
     (e.Indent '  refalrts::Iter')
     (e.Indent
       '    ' <PrintEVar-B 1 'e' e.Index> ' = '
@@ -660,7 +660,7 @@ PrintMatch {
     (e.Indent
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
       '( ' e.TextRep ', ' <BracketsVar-B s.BracketNumber> ', '
-      <BracketsVar-E s.BracketNumber> ' ) ) '
+      <BracketsVar-E s.BracketNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }

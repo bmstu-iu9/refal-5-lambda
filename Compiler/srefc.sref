@@ -46,9 +46,12 @@ FindFiles-Compilers {
 //FROM FindFile
 $EXTERN Source, Output, NotFound;
 
+//FROM LibraryEx
+$EXTERN Fetch;
+
 $FORWARD PrintNotFound, CompileEachFile, Link;
 
-$FORWARD ScanCollisions, GetFileName;
+$FORWARD ScanCollisions, GetFileName, SimpleCompile;
 
 Compile-And-Link {
   (CmdLineError e.Message) =
@@ -57,9 +60,17 @@ Compile-And-Link {
   t.Compiler e.Files-B (NotFound e.FileName) e.Files-E =
     <Map PrintNotFound (NotFound e.FileName) e.Files-E>;
 
-  t.Compiler e.Files =
+  (CompileCommand e.Command) e.Files =
     <ScanCollisions
-      t.Compiler <Map GetFileName e.Files>
+      (CompileCommand e.Command) <Map GetFileName e.Files>
+    >;
+
+  (NoCompile) e.Files =
+    <Fetch
+      <Map SimpleCompile e.Files>
+      {
+        e.Outputs = /* пусто */;
+      }
     >;
 }
 
@@ -122,9 +133,6 @@ DoLower {
 
 $FORWARD Renumerate;
 
-//FROM LibraryEx
-$EXTERN DelAccummulator, MapReduce;
-
 ScanCollisions {
   t.Compiler
   e.Files-B (e.FileName 0 (Output e.Output1)) e.Files-M
@@ -141,11 +149,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 1 t.Location) e.Files-M
       (e.FileName 0 (Output e.Output))
-      <DelAccummulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
   t.Compiler
@@ -155,11 +159,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
       (e.FileName 1 t.Location)
-      <DelAccummulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
   t.Compiler
@@ -169,11 +169,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 0 t.Location1)
       e.Files-M (e.FileName 1 t.Location2)
-      <DelAccummulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
   t.Compiler e.Files =
@@ -181,16 +177,23 @@ ScanCollisions {
 }
 
 //FROM LibraryEx
-$EXTERN Inc;
+$EXTERN Inc, DelAccummulator, MapReduce;
 
 Renumerate {
-  e.FileName s.NextNumber
-  (e.FileName 0 (Source (e.Source) e.Output)) =
-    <Inc s.NextNumber>
-    (e.FileName s.NextNumber (Source (e.Source) e.Output));
+  (e.FileName) e.Files =
+    <DelAccummulator
+      <MapReduce
+        {
+          s.NextNumber (e.FileName 0 (Source (e.Source) e.Output)) =
+            <Inc s.NextNumber>
+            (e.FileName s.NextNumber (Source (e.Source) e.Output));
 
-  e.FileName s.NextNumber t.NextFile =
-    s.NextNumber t.NextFile;
+          s.NextNumber t.NextFile =
+            s.NextNumber t.NextFile;
+        }
+        2 e.Files
+      >
+    >;
 }
 
 $FORWARD SwCompiled, FileNum;
@@ -203,6 +206,17 @@ CompileEachFile {
     <SwCompiled
       <WriteLine '*Compiling ' e.Source ':'>
       <CompileFile (e.Source) <FileNum s.Num e.Output>>
+    >;
+}
+
+SimpleCompile {
+  (Output e.OutputName) =
+    <WriteLine '+Linking ' e.OutputName> (e.OutputName);
+
+  (Source (e.Source) e.Output) =
+    <SwCompiled
+      <WriteLine '*Compiling ' e.Source ':'>
+      <CompileFile (e.Source) e.Output>
     >;
 }
 

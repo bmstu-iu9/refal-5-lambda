@@ -1757,6 +1757,20 @@ refalrts::FnResult refalrts::vm::execute_active(
   }
 }
 
+namespace {
+
+void print_indent(FILE *output, unsigned level)
+{
+  putc( '\n', output );
+  while( level > 0 )
+  {
+    putc( ' ', output );
+    -- level;
+  }
+}
+
+} // unnamed namespace
+
 void refalrts::vm::print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1766,7 +1780,21 @@ void refalrts::vm::print_seq(
     cStateFinish
   } state = cStateView;
 
+  unsigned indent = 0;
+  bool after_bracket = false;
+  bool reset_after_bracket = true;
+
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
+    if( reset_after_bracket )
+    {
+      after_bracket = false;
+      reset_after_bracket = false;
+    }
+
+    if( after_bracket )
+    {
+      reset_after_bracket = true;
+    }
 
     switch( state ) {
       case cStateView:
@@ -1821,30 +1849,52 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenADT:
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
             fprintf( output, "[ " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseADT:
+            --indent;
             fprintf( output, "] " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenBracket:
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
             fprintf( output, "( " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseBracket:
+            --indent;
             fprintf( output, ") " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenCall:
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
             fprintf( output, "<" );
             refalrts::move_left( begin, end );
             continue;
+
           case refalrts::cDataCloseCall:
+            --indent;
             fprintf( output, "> " );
             refalrts::move_left( begin, end );
             continue;
