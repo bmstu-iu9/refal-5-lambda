@@ -117,28 +117,34 @@ $ENTRY GenCommonTailer {
 $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
-  CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
+  CmdAllocateElem, CmdReinitElem,
+  CmdLinkBrackets, CmdPushStack,
   CmdInsertElem, CmdInsertEVar,
   ElChar, ElName, ElNumber, ElIdent,
   ElOpenADT, ElCloseADT,
   ElOpenBracket, ElCloseBracket,
   ElOpenCall, ElCloseCall,
-  ElElem, ElSTVar,
+  ElElem, ElSTVar, ElSeq,
   CmdEmptyResult, CmdReturnResult,
   CmdIfDef, CmdElse, CmdEndIf,
   CmdInitRAA, CmdFinRAA,
   CmdDeclareEVar, CmdDeclareVar,
-  CmdCopyEVar, CmdCopyVar,
+  CmdCopyEVar, CmdCopyVar,                             
   AlgLeft, AlgRight,
   CmdComment, CmdPrint,
   CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
   CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
-  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy,
+  CmdDropIndent;
+
+//FROM Algorithm_v2
+$EXTERN CmdInner, CmdTerm, AlgMatch;
+
 
 $FORWARD GenSentence-Aux, GenCommand, BracketsVar-B, BracketsVar-E;
 
 //FROM LibraryEx
-$EXTERN Map, MapReduce;
+$EXTERN Map, MapReduce, Fetch;
 
 //FROM Library
 $EXTERN StrFromInt, WriteLine;
@@ -164,7 +170,9 @@ $FORWARD GenCloseBrackets;
 
 GenSentence-Aux {
   (e.Indent) e.Generated =
-    e.Generated <GenCloseBrackets e.Indent> ();
+    e.Generated
+    //<GenCloseBrackets e.Indent>
+    ();
 }
 
 BracketsVar-B {
@@ -173,6 +181,10 @@ BracketsVar-B {
 
 BracketsVar-E {
   s.BracketNumber = 'be_' <StrFromInt s.BracketNumber>;
+}
+
+PosVar {
+  s.Pos = 'n' <StrFromInt s.Pos>;
 }
 
 /*
@@ -184,13 +196,13 @@ $FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OE,
   PrintArrVar, PrintArrEVar-B, PrintArrEVar-E,
   PrintMatchChar, PrintMatchNumber, PrintMatchName,
   PrintMatchIdent,
-  PrintMatchADT,
+  PrintMatchADT, PrintMatchTerm,
   PrintMatchBrackets,
   PrintMatchEmpty,
   PrintMatchSTVar, PrintMatchRepeated,
-  PrintAllocateElem, PrintElemVar;
+  PrintAllocateElem, PrintReinitElem, PrintElemVar;
 
-$FORWARD Escape;
+$FORWARD StringFromCommand, Escape;
 
 //FROM LibraryEx
 $EXTERN Dec;
@@ -217,6 +229,10 @@ PrintRecoverStackBracket {
     );
 }
 
+BracketExcept {
+  e.Brackets-B s.Except e.Brackets-E s.Except = e.Brackets-B e.Brackets-E;
+}
+
 $LABEL CCreateClosure;
 
 PrintName {
@@ -228,6 +244,8 @@ PrintName {
 GenCommand {
   (e.Indent) (CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
   (e.Indent) (CmdPrint e.Text) = (e.Indent) (e.Indent e.Text);
+
+  (e.Indent) (CmdDropIndent) = ('    ');
 
   (e.Indent) (CmdDeclareEVar e.VarInfo) =
     (e.Indent)
@@ -257,11 +275,21 @@ GenCommand {
     (e.Indent)
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>;
 
+  (e.Indent) (CmdBrackets AlgMatch s.Left s.Right) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter ' <PosVar s.Right> ' = 0; // Right')
+    <PrintMatchBrackets (e.Indent) AlgMatch s.Left s.Right>;
+
   (e.Indent) (CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
     (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>;
+
+  (e.Indent) (CmdADT AlgMatch s.Left s.Right) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter ' <PosVar s.Right> ' = 0; // Right')
+    <PrintMatchADT (e.Indent) AlgMatch s.Left s.Right>;
 
   (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
@@ -278,6 +306,29 @@ GenCommand {
   (e.Indent) (CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
     (e.Indent)
     <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode e.Info>;
+
+  (e.Indent) (CmdTerm s.Direction s.BracketNumber s.Pos) =
+    (e.Indent)
+    <PrintMatchTerm (e.Indent) s.Direction s.BracketNumber s.Pos>;
+
+  (e.Indent) (CmdInner s.BracketNumber s.Left s.Right) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-B s.BracketNumber>
+      ' = ' <PosVar s.Left> ';'
+    )
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-E s.BracketNumber>
+      ' = ' <PosVar s.Right> ';'
+    )
+    (e.Indent
+      'refalrts::move_left( ' <BracketsVar-B s.BracketNumber>
+      ', ' <BracketsVar-E s.BracketNumber> ' );'
+    )
+    (e.Indent
+      'refalrts::move_right( ' <BracketsVar-B s.BracketNumber>
+      ', ' <BracketsVar-E s.BracketNumber> ' );'
+    );
 
   (e.Indent) (CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
     (e.Indent)
@@ -370,6 +421,10 @@ GenCommand {
     (e.Indent 'refalrts::Iter ' <PrintElemVar s.ElemNumber> ' = 0;')
     <PrintAllocateElem (e.Indent) s.ElemNumber e.ElemInfo>;
 
+  (e.Indent) (CmdReinitElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintReinitElem (e.Indent) s.ElemNumber e.ElemInfo>;
+
   (e.Indent) (CmdLinkBrackets s.Left s.Right) =
     (e.Indent)
     (e.Indent
@@ -388,6 +443,12 @@ GenCommand {
       'res = refalrts::splice_elem( res, ' <PrintElemVar s.ElemNumber> ' );'
     );
 
+  (e.Indent) (CmdInsertElem ElSeq s.Num-Begin s.Num-End) = 
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_elems( res, ' <PrintElemVar s.Num-Begin> ', ' <PrintElemVar s.Num-End> ' );'
+    );
+
   (e.Indent) (CmdInsertElem ElSTVar s.Usings s.Mode e.Index) =
     (e.Indent)
     (e.Indent
@@ -404,13 +465,14 @@ GenCommand {
     );
 
   (e.Indent) (CmdReturnResult) =
-    (e.Indent)
+    ('    ')
     (e.Indent 'refalrts::use( res );')
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
-    (e.Indent 'return refalrts::cSuccess;');
+    (e.Indent 'return refalrts::cSuccess;')
+    <GenCloseBrackets e.Indent>;
 
-  (e.Indent) (CmdIfDef) =
-    (e.Indent) ('#ifdef INTERPRET');
+  (e.Indent) (CmdIfDef e.Macros) =
+    (e.Indent) ('#ifdef ' e.Macros);
 
   (e.Indent) (CmdElse) = 
     (e.Indent) ('#else');
@@ -433,7 +495,8 @@ GenCommand {
       'refalrts::FnResult res = '
       'refalrts::interpret_array( raa, allocs, arg_begin, arg_end );'
     )
-    (e.Indent 'return res;');
+    (e.Indent 'return res;')
+    <GenCloseBrackets e.Indent>;
 
   (e.Indent) (CmdArrChar s.Value) =
     (e.Indent)
@@ -580,6 +643,11 @@ PrintMatchIdent {
 }
 
 PrintMatchBrackets {
+  (e.Indent) AlgMatch s.Left s.Right =
+    <PrintMatch
+      (e.Indent) AlgMatch s.Left ('brackets') <PosVar s.Right>
+    >;
+
   (e.Indent) s.Direction s.BracketNumber s.InnerNum =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
@@ -589,6 +657,11 @@ PrintMatchBrackets {
 }
 
 PrintMatchADT {
+  (e.Indent) AlgMatch s.Left s.Right e.Name =
+    <PrintMatch
+      (e.Indent) AlgMatch s.Left ('adt') <PosVar s.Right>
+    >;
+
   (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
@@ -614,8 +687,17 @@ PrintMatchEmpty {
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
 
+$LABEL Dir, Num, NoNum, DirLeft, DirRight;
+
 StrFromDirection {
-  AlgLeft = 'left'; AlgRight = 'right';
+  s.Direction =
+    <Fetch
+      <s.Direction #Dir>
+      {
+        #DirLeft = 'left';
+        #DirRight = 'right';
+      }
+    >;
 }
 
 VarMatchFunction { 's' = 'svar'; 't' = 'tvar'; }
@@ -625,6 +707,15 @@ PrintMatchSTVar {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       (<VarMatchFunction s.Mode>) <PrintVar 1 s.Mode e.Index>
+    >;
+}
+
+PrintMatchTerm {
+  (e.Indent) s.Direction s.BracketNumber s.Pos =
+    (e.Indent 'refalrts::Iter ' <PosVar s.Pos> ' = 0;')
+    <PrintMatch
+      (e.Indent) s.Direction s.BracketNumber
+      ('tvar') <PosVar s.Pos>
     >;
 }
 
@@ -648,13 +739,37 @@ PrintMatchRepeated {
 }
 
 PrintMatch {
-  (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
+  (e.Indent) AlgMatch s.Pos (e.Function) e.TextRep =
     (e.Indent
-      'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
-      '( ' e.TextRep ', ' <BracketsVar-B s.BracketNumber> ', '
-      <BracketsVar-E s.BracketNumber> ' ) ) '
+      'if( ! refalrts::' e.Function '_match'
+      '( ' e.TextRep ', ' <PosVar s.Pos> ' ) ) '
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+  (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
+    <Fetch
+      <s.Direction #Num>
+      {
+        #NoNum =
+          (e.Indent
+            'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
+            '( ' e.TextRep ', ' <BracketsVar-B s.BracketNumber> ', '
+          <BracketsVar-E s.BracketNumber> ' ) ) '
+          )
+          (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+        s.Num =
+          (e.Indent 'refalrts::Iter ' <PrintElemVar s.Num> ';')
+          (e.Indent
+            'if( (' <PrintElemVar s.Num>
+            ' = refalrts::' e.Function '_' <StrFromDirection s.Direction>
+            '( ' e.TextRep ', ' <BracketsVar-B s.BracketNumber> ', '
+          <BracketsVar-E s.BracketNumber> ' )) == 0 ) '
+          )
+          (e.Indent '  ' <BreakerFromIndent e.Indent>)
+          (e.Indent 'refalrts::use( ' <PrintElemVar s.Num> ' );');
+      }
+    >;
 }
 
 PrintElemVar {
@@ -681,20 +796,34 @@ PrintAllocate-Aux {
     );
 }
 
+$FORWARD SwElementFunc;
+
+PrintReinitElem {
+  (e.Indent) s.ElemNumber s.ElementType e.Info =
+    (e.Indent
+      'refalrts::reinit_' <SwElementFunc s.ElementType>
+      '( ' <PrintElemVar s.ElemNumber> <SwInfo s.ElementType e.Info> ' );'
+    );
+}
+
 SwAllocator {
-  ElChar = 'alloc_char';
-  ElName = 'alloc_name';
-  ElNumber = 'alloc_number';
-  ElIdent = 'alloc_ident';
+  s.Element = 'alloc_' <SwElementFunc s.Element>;
+}
 
-  ElOpenADT = 'alloc_open_adt';
-  ElCloseADT = 'alloc_close_adt';
+SwElementFunc {
+  ElChar = 'char';
+  ElName = 'name';
+  ElNumber = 'number';
+  ElIdent = 'ident';
 
-  ElOpenBracket = 'alloc_open_bracket';
-  ElCloseBracket = 'alloc_close_bracket';
+  ElOpenADT = 'open_adt';
+  ElCloseADT = 'close_adt';
 
-  ElOpenCall = 'alloc_open_call';
-  ElCloseCall = 'alloc_close_call';
+  ElOpenBracket = 'open_bracket';
+  ElCloseBracket = 'close_bracket';
+
+  ElOpenCall = 'open_call';
+  ElCloseCall = 'close_call';
 }
 
 SwInfo {
@@ -715,4 +844,27 @@ GenCloseBrackets {
 
   '  ' e.Indent =
     (e.Indent '}') <GenCloseBrackets e.Indent>;
+}
+
+ElemVarName {
+  s.Num = 'h' <StrFromInt s.Num>;
+}
+
+InsertElem {
+  ElElem s.Number = <ElemVarName s.Number>;
+
+  ElSTVar s.Usings s.Mode e.Index =
+    <PrintVar s.Usings s.Mode e.Index>;
+}
+
+//FROM LibraryEx
+$EXTERN Dec;
+
+SwStringFromCommand {
+  CmdReturnResult = 'RETURN res';
+}
+
+StringFromCommand {
+  (s.Command e.Arguments) =
+    ( '    // ' <SwStringFromCommand s.Command e.Arguments> );
 }

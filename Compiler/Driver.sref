@@ -274,6 +274,8 @@ $EXTERN TkOpenBlock, TkCloseBlock;
 //FROM Generator
 $EXTERN GenFnStart, GenSentence, GenFnEnd;
 
+$FORWARD ParseSentences;
+
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
 
@@ -297,7 +299,7 @@ ParseFunction {
     >;
 }
 
-$FORWARD GenFunctionBody;
+$FORWARD GenFunctionBody, Reverse;
 
 $LABEL CLambdaScope;
 
@@ -790,7 +792,17 @@ ParsePattern {
   (e.Scanned) (TkReplace s.LnNum) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.Scanned)
+      (e.Sentences)
+      (s.BracketNumber
+        <Map
+          {
+            (TkOpenCall s.Number) = (TkOpenBracket s.Number);
+            (TkCloseCall s.Number) = (TkCloseBracket s.Number);
+            t.Other = t.Other;
+          }
+          e.Scanned
+        >
+      )
       (1)
       () e.Tail
     >;
@@ -834,7 +846,17 @@ ParsePattern {
         'Incorrect pattern termination'
       >
       t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.Scanned)
+      (e.Sentences)
+      (s.BracketNumber
+        <Map
+          {
+            (TkOpenCall s.Number) = (TkOpenBracket s.Number);
+            (TkCloseCall s.Number) = (TkCloseBracket s.Number);
+            t.Other = t.Other;
+          }
+          e.Scanned
+        >
+      )
       (1)
       () e.Tail
     >;

@@ -96,9 +96,9 @@ refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sNumber1_1;
     refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -135,9 +135,9 @@ refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sNumber1_1;
     refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -174,9 +174,9 @@ refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sNumber1_1;
     refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -213,9 +213,9 @@ refalrts::FnResult Div(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sNumber1_1;
     refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -252,9 +252,9 @@ refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sNumber1_1;
     refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -308,7 +308,7 @@ refalrts::FnResult write_to_stream(
       }
 
       case refalrts::cDataNumber: {
-        printf_res = fprintf( out, "%lu ", p->number_info );
+        printf_res = fprintf( out, "%d ", p->number_info );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -395,7 +395,7 @@ refalrts::FnResult write_to_stream(
       }
 
       case refalrts::cDataClosureHead: {
-        printf_res = fprintf( out, "[%lu] ", p->number_info );
+        printf_res = fprintf( out, "[%d] ", p->number_info );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -468,7 +468,7 @@ refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter eLine_b_1;
     refalrts::Iter eLine_e_1;
     // s.FileHandle e.Line
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
       break;
     if( sFileHandle_1->tag != refalrts::cDataFile )
       break;
@@ -581,7 +581,7 @@ refalrts::FnResult FReadLine(
 
     refalrts::Iter sFileHandle_1;
     // s.FileHandle
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
       break;
     if( sFileHandle_1->tag != refalrts::cDataFile )
       break;
@@ -718,7 +718,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sFileHandle_1;
     // s.FileHandle
-    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sFileHandle_1, bb_0, be_0 ) ) 
       break;
     if( sFileHandle_1->tag != refalrts::cDataFile )
       break;
@@ -762,7 +762,7 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sParamNumber_1;
     // s.ParamNumber
-    if( ! refalrts::svar_left( sParamNumber_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sParamNumber_1, bb_0, be_0 ) ) 
       break;
     if( sParamNumber_1->tag != refalrts::cDataNumber )
       break;
@@ -779,7 +779,7 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( arg_number < g_argc ) {
       if( ! alloc_string( res_begin, res_end, g_argv[arg_number] ) )
         return refalrts::cNoMemory;
-
+    
       refalrts::splice_evar( arg_begin, res_begin, res_end );
     }
 
@@ -904,7 +904,7 @@ refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sCode_1;
     // s.Code
-    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) ) 
       break;
     if( sCode_1->tag != refalrts::cDataNumber )
       break;
@@ -944,9 +944,6 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     if( read_res != refalrts::cSuccess )
       return read_res;
-
-    fflush(stdout);
-    fflush(stderr);
 
     system( &command[0] );
 
@@ -1042,7 +1039,7 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     refalrts::Iter sNumber_1;
     // s.Number
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
       break;
     if( sNumber_1->tag != refalrts::cDataNumber )
       break;
@@ -1100,7 +1097,7 @@ refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sCode_1;
     // s.Code
-    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sCode_1, bb_0, be_0 ) ) 
       break;
     if( sCode_1->tag != refalrts::cDataNumber )
       break;
@@ -1133,7 +1130,7 @@ refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter sChar_1;
     // s.Char
-    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
       break;
     if( sChar_1->tag != refalrts::cDataChar )
       break;
@@ -1182,9 +1179,9 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter sSymb1_1;
     refalrts::Iter sSymb2_1;
     // s.Num1 s.Num2
-    if( ! refalrts::svar_left( sSymb1_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sSymb1_1, bb_0, be_0 ) ) 
       break;
-    if( ! refalrts::svar_left( sSymb2_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sSymb2_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -1395,12 +1392,12 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( bb_0, be_0 );
     refalrts::Iter sSymb_1;
     // s.Num
-    if( ! refalrts::svar_left( sSymb_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sSymb_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 
-    const char *fnname = 0;
+    char *fnname = 0;
     refalrts::RefalFunctionPtr fnptr = 0;
 
     switch( sSymb_1->tag ) {

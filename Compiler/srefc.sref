@@ -226,6 +226,8 @@ UnBracketSpace {
   (e.FileName) = ' "' e.FileName '"';
 }
 
+$FORWARD CompileOneCpp;
+
 Link {
   (NoCompile) e.Files = ;
 

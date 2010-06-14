@@ -1,4 +1,4 @@
-$FORWARD DoParseCommandLine;
+$FORWARD DoParseCommandLine, FindFiles-Compilers;
 
 /**
   <ParseCommandLine e.Arguments>

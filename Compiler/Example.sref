@@ -1,0 +1,22 @@
+$ENTRY Fab {
+  e.X 'A' e.Y = e.X 'B' <Fab e.Y>;
+  e.X = e.X;
+}
+
+X {
+  (e.X) 'X' e.Y (e.Z 5) = ;
+}
+
+$FORWARD DoFab;
+
+Fab2 {
+  e.X = <DoFab () e.X>;
+}
+
+DoFab {
+  (e.Scanned) 'A' e.Tail = <DoFab (e.Scanned 'B') e.Tail>;
+
+  (e.Scanned) s.X e.Tail = <DoFab (e.Scanned s.X) e.Tail>;
+
+  (e.Scanned) = e.Scanned;
+}

@@ -456,16 +456,16 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sFunc_1;
-    refalrts::use( sFunc_1 );
+    static refalrts::Iter sY_Func_1;
+    refalrts::use( sY_Func_1 );
     static refalrts::Iter eArg_b_1;
     refalrts::use( eArg_b_1 );
     static refalrts::Iter eArg_e_1;
     refalrts::use( eArg_e_1 );
-    static refalrts::Iter sFunc_2;
-    refalrts::use( sFunc_2 );
-    // s.Func e.Arg
-    if( ! refalrts::svar_left( sFunc_1, bb_0, be_0 ) ) 
+    static refalrts::Iter sY_Func_2;
+    refalrts::use( sY_Func_2 );
+    // s.Y_Func e.Arg
+    if( ! refalrts::svar_left( sY_Func_1, bb_0, be_0 ) ) 
       break;
     eArg_b_1 = bb_0;
     refalrts::use( eArg_b_1 );
@@ -475,10 +475,10 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sFunc_1},
+      {refalrts::icSpliceSTVar, & sY_Func_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Y, (void*) "Y"},
-      {refalrts::icCopySTVar, & sFunc_1},
+      {refalrts::icCopySTVar, & sY_Func_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceEVar, & eArg_b_1, & eArg_e_1},
@@ -492,7 +492,7 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_stvar( sFunc_2, sFunc_1 ) )
+    if( ! refalrts::copy_stvar( sY_Func_2, sY_Func_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -525,10 +525,10 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_stvar( res, sFunc_2 );
+    res = refalrts::splice_stvar( res, sY_Func_2 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, sFunc_1 );
+    res = refalrts::splice_stvar( res, sY_Func_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -548,10 +548,10 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sFunc_1;
-    refalrts::use( sFunc_1 );
-    // s.Func
-    if( ! refalrts::svar_left( sFunc_1, bb_0, be_0 ) ) 
+    static refalrts::Iter sY_Func_1;
+    refalrts::use( sY_Func_1 );
+    // s.Y_Func
+    if( ! refalrts::svar_left( sY_Func_1, bb_0, be_0 ) ) 
       break;
     if( ! empty_seq( bb_0, be_0 ) )
       break;
@@ -560,7 +560,7 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
       {refalrts::icFunc, (void*) & lambda_Y_0, (void*) "lambda_Y_0"},
-      {refalrts::icSpliceSTVar, & sFunc_1},
+      {refalrts::icSpliceSTVar, & sY_Func_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -586,7 +586,7 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::push_stack( n3 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sFunc_1 );
+    res = refalrts::splice_stvar( res, sY_Func_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );

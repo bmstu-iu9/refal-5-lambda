@@ -4,6 +4,9 @@
 @set modules=%modules% Error.sref Generator.sref SymTable.sref
 @set modules=%modules% FindFile ParseCmdLine Context.sref
 @set modules=%modules% Library LibraryEx refalrts.cpp
-@srefc.s -c "compile_bcc -I..\SRLib -w-aus" -d ..\SRLib %modules%
+@set modules=%modules% Algorithm_v1 Algorithm_v2
+@set modules=%modules% Alg_Pattern_v1 Alg_Pattern_v2
+@rem srefc.s.exe -c "compile_cl -I..\SRLib -DINTERPRET1 " -d ..\SRLib %modules%
+@srefc.s.exe -c "compile_bcc -esrefc.exe -I..\SRLib -DINTERPRET1 " -d ..\SRLib %modules%
 @del *.obj
 @del *.tds

@@ -1,0 +1,17 @@
+$FORWARD Collect-Aux;
+
+$ENTRY Collect {
+  (t.Key e.Val1) (t.Key e.Val2) e.Tail =
+    <Collect-Aux t.Key ((e.Val1) (e.Val2)) e.Tail>;
+
+  (t.Key e.Val) e.Tail = (t.Key (e.Val)) <Collect e.Tail>;
+
+  = ;
+}
+
+Collect-Aux {
+  t.Key (e.Values) (t.Key e.NextValue) e.Tail =
+    <Collect-Aux t.Key (e.Values (e.NextValue)) e.Tail>;
+
+  t.Key (e.Values) e.Other = (t.Key e.Values) <Collect e.Other>;
+}

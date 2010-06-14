@@ -1,3 +1,5 @@
-@copy "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\mspdb80.dll" mspdb80.dll
-"C:\Program Files\Microsoft Visual Studio 8\VC\bin\"cl.exe  /I"C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\Include" /I"C:\Program Files\Microsoft Visual Studio 8\VC\include" /Zc:forScope  %*  /EHsc /link /LIBPATH:"C:\Program Files\Microsoft Visual Studio 8\VC\lib" /LIBPATH:"C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib"
-@erase mspdb80.dll
+set VC=C:\Program Files (x86)\Microsoft Visual Studio 10.0
+set VCSDK=C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A
+@copy "%VC%\Common7\IDE\mspdb100.dll" mspdb100.dll
+"%VC%\VC\bin\"cl.exe  /I"%VCSDK%\Include" /I"%VC%\VC\include" /Zc:forScope  %*  /EHsc /link /LIBPATH:"%VC%\VC\lib" /LIBPATH:"%VCSDK%\lib"
+@erase mspdb100.dll

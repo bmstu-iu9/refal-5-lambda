@@ -107,31 +107,37 @@ extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
 extern bool empty_seq( Iter begin, Iter end );
 
-extern bool function_left( RefalFunctionPtr func, Iter& first, Iter& last );
-extern bool function_right( RefalFunctionPtr func, Iter& first, Iter& last );
+extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
+extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
+extern bool function_match( RefalFunctionPtr func, Iter pos );
 
-extern bool char_left( char ch, Iter& first, Iter& last );
-extern bool char_right( char ch, Iter& first, Iter& last );
+extern Iter char_left( char ch, Iter& first, Iter& last );
+extern Iter char_right( char ch, Iter& first, Iter& last );
+extern bool char_match( char ch, Iter pos );
 
-extern bool number_left( RefalNumber num, Iter& first, Iter& last );
-extern bool number_right( RefalNumber num, Iter& first, Iter& last );
+extern Iter number_left( RefalNumber num, Iter& first, Iter& last );
+extern Iter number_right( RefalNumber num, Iter& first, Iter& last );
+extern bool number_match( RefalNumber num, Iter pos );
 
-extern bool ident_left( RefalIdentifier ident, Iter& first, Iter& last );
-extern bool ident_right( RefalIdentifier ident, Iter& first, Iter& last );
+extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
+extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
+extern bool ident_match( RefalIdentifier ident, Iter pos );
 
-extern bool adt_left(
+extern Iter adt_left(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
-extern bool adt_right(
+extern Iter adt_right(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
+extern bool adt_match( Iter& right, Iter pos /* left */ );
 
-extern bool brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
-extern bool brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern bool brackets_match( Iter& right, Iter pos /* left */ );
 
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
@@ -165,8 +171,7 @@ extern unsigned read_chars(
 extern void reset_allocator();
 
 extern bool copy_evar(
-  Iter& evar_res_b, Iter& evar_res_e,
-  Iter evar_b_sample, Iter evar_e_sample
+  Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
 );
 
 extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
@@ -184,23 +189,23 @@ extern bool alloc_close_bracket( Iter& res );
 extern bool alloc_open_call( Iter& res );
 extern bool alloc_close_call( Iter& res );
 
-#ifndef alloc_copy_svar
-#define alloc_copy_svar alloc_copy_svar_
-#endif
-
-#ifndef alloc_copy_tvar
-#define alloc_copy_tvar copy_stvar
-#endif
-
-extern bool alloc_copy_evar(
-  Iter& res, Iter evar_b_sample, Iter evar_e_sample
-);
-extern bool alloc_copy_svar_( Iter& svar_res, Iter svar_sample );
-
 extern bool alloc_chars(
   Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
 );
 extern bool alloc_string( Iter& res_b, Iter& res_e, const char *string );
+
+extern void reinit_char( Iter res, char ch );
+extern void reinit_number( Iter res, RefalNumber num );
+extern void reinit_name(
+  Iter res, RefalFunctionPtr func, RefalFuncName name = 0
+);
+extern void reinit_ident( Iter res, RefalIdentifier ident );
+extern void reinit_open_adt( Iter res );
+extern void reinit_close_adt( Iter res );
+extern void reinit_open_bracket( Iter res );
+extern void reinit_close_bracket( Iter res );
+extern void reinit_open_call( Iter res );
+extern void reinit_close_call( Iter res );
 
 extern void push_stack( Iter call_bracket );
 extern void link_brackets( Iter left, Iter right );
@@ -208,8 +213,13 @@ extern void link_brackets( Iter left, Iter right );
 extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
+
+inline Iter splice_elems(Iter res, Iter first, Iter last)
+{
+  return splice_evar(res, first, last);
+}
+
 extern void splice_to_freelist( Iter first, Iter last );
-extern void splice_from_freelist( Iter pos );
 
 extern FnResult create_closure( Iter begin, Iter end );
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание

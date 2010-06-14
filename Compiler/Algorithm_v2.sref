@@ -1,0 +1,431 @@
+// Команды и их подтипы
+//FROM Algorithm
+$EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
+  CmdBrackets, CmdADT, CmdEmpty,
+  CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
+  CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
+  CmdInsertElem, CmdInsertEVar,
+  ElChar, ElName, ElNumber, ElIdent,
+  ElOpenADT, ElCloseADT,
+  ElOpenBracket, ElCloseBracket,
+  ElOpenCall, ElCloseCall,
+  ElElem, ElSTVar, ElSeq,
+  CmdEmptyResult, CmdReturnResult,
+  CmdIfDef, CmdElse, CmdEndIf,
+  CmdInitRAA, CmdFinRAA,
+  CmdDeclareEVar, CmdDeclareVar,
+  CmdCopyEVar, CmdCopyVar,
+  AlgLeft, AlgRight,
+  CmdComment, CmdPrint,
+  CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
+  CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
+  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+
+//FROM Lexer
+$EXTERN
+  TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
+  TkName, TkNumber, TkVariable, TkChar, TkOpenCall, TkCloseCall;
+
+//FROM Algorithm_v1
+$EXTERN TkIdentifier;
+
+$EXTERN AlgMatch, CmdTerm, CmdInner, CmdReinitElem;
+
+//FROM LibraryEx
+$EXTERN Map, Inc, Fetch;
+
+$FORWARD EnumeratePattern;
+$EXTERN GenPattern_v2;
+$FORWARD GenResult;
+
+//FROM Algorithm
+$EXTERN VarSetUnion, VarSetDifference, ReplicateVars, MakeDeclaration;
+
+$ENTRY MakeAlgorithm_v2 {
+    (e.Pattern)(e.Result) = 
+    <Fetch
+      <GenPattern_v2 e.Pattern>
+      {
+        s.Total (e.Vars) (e.ScannedPattern) (e.Commands) =
+          <Map MakeDeclaration <ReplicateVars e.Vars>>
+          e.Commands
+          <GenResult s.Total (e.ScannedPattern) (e.Result)>;
+      }
+    >;
+}
+
+
+//==============================================================================
+// Генерация результата
+//==============================================================================
+
+$FORWARD DoGenResult-FindSamples, DoGenResult-FindReuse,
+  DoGenResult-EnumerateVars, GenResultCommands;
+
+GenResult {
+  //e.X = /*(CmdComment e.X)*/ (CmdEmptyResult) (CmdReturnResult);
+
+  s.Total (e.ScannedPattern) (e.Result) =
+    <Fetch
+      <DoGenResult-EnumerateVars (/* vartable */) e.Result>
+      {
+        e.NumResult =
+          <Fetch
+            <DoGenResult-FindSamples (e.ScannedPattern) () e.NumResult>
+            {
+              (e.Pattern1) (e.Result1) =
+                <Fetch
+                  <DoGenResult-FindReuse (e.Pattern1) () e.Result1>
+                  {
+                    e.PreparedResult =
+                      <GenResultCommands s.Total e.PreparedResult>;
+                  }
+                >;
+            }
+          >;
+      }
+    >;
+}
+
+$ENUM Sample, FullReuse, PartReuse, Alloc, NoNum;
+
+/*
+  Типы переиспользований:
+  
+  Sample --- точное совпадение, повторное использование не требует переинициализации.
+  PartReuse --- совпадают только типы, значения разные.
+  FullReuse --- полная переинициализация (и тип, и значение).
+  Alloc --- использовать повторно в образце этот элемент невозможно,
+    необходимо распределять заново в динамической памяти.
+*/
+
+/*
+  Формат подготовленного результата
+  e.PreparedResult, e.Result1, e.NumResult ::=
+    t.PreparedTerm
+
+  t.ResutlTerm ::= (e.Info)
+
+  t.PreparedTerm ::=
+    (s.PrepType s.Pos e.Info)
+
+  s.PrepType ::= Sample | Reuse | Alloc
+  e.Info ::= Tk... ....
+*/
+
+/*
+  <DoGenResult-EnumerateVars (e.Vars) e.Result>
+    == e.Result'
+*/
+DoGenResult-EnumerateVars {
+  (e.Vars-B (s.Mode s.Num e.Index) e.Vars-E)
+  (TkVariable s.Mode e.Index) e.Result =
+    (Alloc s.Num TkVariable s.Mode e.Index)
+    <DoGenResult-EnumerateVars
+      (e.Vars-B (s.Mode <Inc s.Num> e.Index) e.Vars-E)
+      e.Result
+    >;
+
+  (e.Vars)
+  (TkVariable s.Mode e.Index) e.Result =
+    (Alloc 1 TkVariable s.Mode e.Index)
+    <DoGenResult-EnumerateVars
+      (e.Vars (s.Mode 2 e.Index)) e.Result
+    >;
+
+  (e.Vars) (e.OtherElement) e.Result =
+    (Alloc NoNum e.OtherElement)
+    <DoGenResult-EnumerateVars
+      (e.Vars) e.Result
+    >;
+
+  (e.Vars) /* пусто */ = /* все */;
+}
+
+/*
+  <DoGenResult-FindSamples
+    (e.ScannedPattern) (e.Result'') e.Result'
+  >
+    == (e.ScannedPattern') (e.Result'')
+*/
+DoGenResult-FindSamples {
+  (e.Begin (TkOpenBracket s.Num e.Info) e.End) (e.Scanned) (Alloc s.ResultNum TkOpenBracket s.BracketNo) e.Result =
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.Num TkOpenBracket s.BracketNo)) e.Result>;
+
+  (e.Begin (TkCloseBracket s.Num e.Info) e.End) (e.Scanned) (Alloc s.ResultNum TkCloseBracket s.BracketNo) e.Result =
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.Num TkCloseBracket s.BracketNo)) e.Result>;
+
+  (e.Begin (TkOpenADT s.Num e.Info) e.End) (e.Scanned) (Alloc s.ResultNum TkOpenADT s.BracketNo) e.Result =
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.Num TkOpenADT s.BracketNo)) e.Result>;
+
+  (e.Begin (TkCloseADT s.Num e.Info) e.End) (e.Scanned) (Alloc s.ResultNum TkCloseADT s.BracketNo) e.Result =
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.Num TkCloseADT s.BracketNo)) e.Result>;
+
+  (e.Begin (TkVariable s.Num e.Info) e.End) (e.Scanned) (Alloc s.Num TkVariable e.Info) e.Result = 
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.Num TkVariable e.Info)) e.Result>;
+
+  (e.Begin (s.Type s.PatternPos e.Info) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.Info) e.Result = 
+    <DoGenResult-FindSamples (e.Begin e.End) (e.Scanned (Sample s.PatternPos s.Type e.Info)) e.Result>;
+
+  (e.Pattern) (e.Scanned) (Alloc s.ResultPos s.Type e.Info) e.Result = 
+    <DoGenResult-FindSamples (e.Pattern) (e.Scanned (Alloc s.ResultPos s.Type e.Info)) e.Result>;
+
+  (e.Pattern) (e.Scanned) = (e.Pattern) (e.Scanned);
+}
+
+/*
+  <DoGenResult-FindReuse
+    s.Counter (e.ScannedPattern) (e.Result''') e.Result''
+  >
+    == e.Result'''
+*/
+DoGenResult-FindReuse {
+  (e.Pattern) (e.Scanned) (Sample e.Info) e.Result =
+    <DoGenResult-FindReuse (e.Pattern) (e.Scanned (Sample e.Info)) e.Result>;
+
+  (e.Pattern) (e.Scanned) (Alloc s.Num TkVariable s.Type e.Index) e.Result = 
+    <DoGenResult-FindReuse (e.Pattern) (e.Scanned (Alloc s.Num TkVariable s.Type e.Index)) e.Result>;
+                                                                                                  
+  (e.Begin (s.Type s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (PartReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+
+  (e.Begin (TkChar s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkName s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkIdentifier s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkOpenBracket s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkOpenADT s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkCloseBracket s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Begin (TkCloseADT s.PatternPos e.PatternInfo) e.End) (e.Scanned) (Alloc s.ResultPos s.Type e.ResultInfo) e.Result = 
+    <DoGenResult-FindReuse (e.Begin e.End) (e.Scanned (FullReuse s.PatternPos s.Type e.ResultInfo)) e.Result>;
+  
+  (e.Pattern) (e.Scanned) (Alloc e.Info) e.Result =
+    <DoGenResult-FindReuse (e.Pattern) (e.Scanned (Alloc e.Info)) e.Result>;
+
+  (e.Pattern) (e.Scanned) = e.Scanned; 
+}
+
+NoCR {
+  '\\' e.Tail = '\\\\' <NoCR e.Tail>;
+  '\n' e.Tail = '\\n' <NoCR e.Tail>;
+  s.Other e.Tail = s.Other <NoCR e.Tail>;
+  (e.Inner) e.Tail = (<NoCR e.Inner>) <NoCR e.Tail>;
+  = ;
+}
+
+PrintItems {
+  e.Items =
+    <Map
+      { (e.Command) = (CmdComment <NoCR e.Command>); }
+      e.Items
+    >;
+}
+
+$FORWARD InitAllocs, SeparateAllocs, SeparateReinits, LinkBrackets, LinkCalls, BuildResult;
+
+GenResultCommands {
+  s.Total e.Result =
+    <Fetch
+      <InitAllocs s.Total e.Result> {
+        e.Initialized =
+          (CmdEmptyResult)
+          <SeparateAllocs e.Initialized>
+          <SeparateReinits e.Initialized>
+          <LinkBrackets e.Initialized>
+          <LinkCalls e.Initialized>
+          <BuildResult e.Initialized>
+          (CmdReturnResult);
+      }
+    >;
+}
+
+InitAllocs {
+  s.Total (Sample e.Info) e.End = (Sample e.Info) <InitAllocs s.Total e.End>;
+  s.Total (PartReuse e.Info) e.End = (PartReuse e.Info) <InitAllocs s.Total e.End>;
+  s.Total (FullReuse e.Info) e.End = (FullReuse e.Info) <InitAllocs s.Total e.End>;
+
+  s.Total (Alloc s.Num TkVariable e.Info) e.End = (Alloc s.Num TkVariable e.Info) <InitAllocs s.Total e.End>;
+  s.Total (Alloc NoNum e.Info) e.End = (Alloc s.Total e.Info) <InitAllocs <Inc s.Total> e.End>;
+  s.Total  = ;
+}
+
+SeparateAllocs {
+  e.Elems =
+    (CmdComment '{{{ ALLOCS')
+    <Map
+      {
+        (Sample e.Info) = ;
+        (PartReuse e.Info) = ;
+        (FullReuse e.Info) = ;
+
+        (Alloc s.Num TkVariable 'e' e.Index) =
+          (CmdDeclareEVar s.Num 'e' e.Index)
+          (CmdCopyEVar s.Num 'e' e.Index);
+
+        (Alloc s.Num TkVariable s.Type e.Index) =
+          (CmdDeclareVar s.Num s.Type e.Index)
+          (CmdCopyVar s.Num s.Type e.Index);
+
+        (Alloc s.Num TkChar e.Info) = (CmdAllocateElem s.Num ElChar e.Info);
+        (Alloc s.Num TkName e.Info) = (CmdAllocateElem s.Num ElName e.Info);
+        (Alloc s.Num TkNumber e.Info) = (CmdAllocateElem s.Num ElNumber e.Info);
+        (Alloc s.Num TkIdentifier e.Info) = (CmdAllocateElem s.Num ElIdent e.Info);
+
+        (Alloc s.Num TkOpenBracket e.Info) = (CmdAllocateElem s.Num ElOpenBracket);
+        (Alloc s.Num TkOpenADT e.Info) = (CmdAllocateElem s.Num ElOpenADT);
+        (Alloc s.Num TkOpenCall e.Info) = (CmdAllocateElem s.Num ElOpenCall);
+
+        (Alloc s.Num TkCloseBracket e.Info) = (CmdAllocateElem s.Num ElCloseBracket);
+        (Alloc s.Num TkCloseADT e.Info) = (CmdAllocateElem s.Num ElCloseADT);
+        (Alloc s.Num TkCloseCall e.Info) = (CmdAllocateElem s.Num ElCloseCall);
+      }
+      e.Elems
+    >
+    (CmdComment '}}} ALLOCS');
+}
+
+SeparateReinits {
+  e.Elems =
+    (CmdComment '{{{ REINITS')
+    <Map
+      {
+        (Sample e.Info) = ;
+        (Alloc e.Info) = ;
+
+        (PartReuse s.Num TkChar e.Info) = (CmdReinitElem s.Num ElChar e.Info);
+        (PartReuse s.Num TkName e.Info) = (CmdReinitElem s.Num ElName e.Info);
+        (PartReuse s.Num TkNumber e.Info) = (CmdReinitElem s.Num ElNumber e.Info);
+        (PartReuse s.Num TkIdentifier e.Info) = (CmdReinitElem s.Num ElIdent e.Info);
+
+        (PartReuse s.Num TkOpenBracket e.Info) = (CmdReinitElem s.Num ElOpenBracket);
+        (PartReuse s.Num TkOpenADT e.Info) = (CmdReinitElem s.Num ElOpenADT);
+        (PartReuse s.Num TkOpenCall e.Info) = (CmdReinitElem s.Num ElOpenCall);
+
+        (PartReuse s.Num TkCloseBracket e.Info) = (CmdReinitElem s.Num ElCloseBracket);
+        (PartReuse s.Num TkCloseADT e.Info) = (CmdReinitElem s.Num ElCloseADT);
+        (PartReuse s.Num TkCloseCall e.Info) = (CmdReinitElem s.Num ElCloseCall);
+
+        (FullReuse s.Num TkChar e.Info) = (CmdReinitElem s.Num ElChar e.Info);
+        (FullReuse s.Num TkName e.Info) = (CmdReinitElem s.Num ElName e.Info);
+        (FullReuse s.Num TkNumber e.Info) = (CmdReinitElem s.Num ElNumber e.Info);
+        (FullReuse s.Num TkIdentifier e.Info) = (CmdReinitElem s.Num ElIdent e.Info);
+
+        (FullReuse s.Num TkOpenBracket e.Info) = (CmdReinitElem s.Num ElOpenBracket);
+        (FullReuse s.Num TkOpenADT e.Info) = (CmdReinitElem s.Num ElOpenADT);
+        (FullReuse s.Num TkOpenCall e.Info) = (CmdReinitElem s.Num ElOpenCall);
+
+        (FullReuse s.Num TkCloseBracket e.Info) = (CmdReinitElem s.Num ElCloseBracket);
+        (FullReuse s.Num TkCloseADT e.Info) = (CmdReinitElem s.Num ElCloseADT);
+        (FullReuse s.Num TkCloseCall e.Info) = (CmdReinitElem s.Num ElCloseCall);
+      }
+      e.Elems
+    >
+    (CmdComment '}}} REINITS');
+}
+
+LinkBrackets {
+  e.Elems-B (s.Reuse-L s.Left TkOpenBracket s.Pair) e.Elems-M
+  (s.Reuse-R s.Right TkCloseBracket s.Pair) e.Elems-E =
+    (CmdLinkBrackets s.Left s.Right)
+    <LinkBrackets e.Elems-B e.Elems-M e.Elems-E>;
+
+  e.Elems-B (s.Reuse-L s.Left TkOpenADT s.Pair) e.Elems-M
+  (s.Reuse-R s.Right TkCloseADT s.Pair) e.Elems-E =
+    (CmdLinkBrackets s.Left s.Right)
+    <LinkBrackets e.Elems-B e.Elems-M e.Elems-E>;
+
+  e.Elems = ;
+}
+
+LinkCalls {
+  e.Elems-B (s.Reuse-L s.Left TkOpenCall s.Pair) e.Elems-E
+  (s.Reuse-R s.Right TkCloseCall s.Pair) =
+    (CmdPushStack s.Right)
+    (CmdPushStack s.Left)
+    <LinkCalls e.Elems-B e.Elems-E>;
+
+  e.Elems t.OtherTerm = <LinkCalls e.Elems>;
+
+  /* пусто */ = /* пусто */;
+}
+
+$ENUM Reuse, Var;
+
+$FORWARD BuildResult-Aux, Group;
+
+BuildResult {
+  e.Result =
+    <Fetch
+      <Map
+        {
+          (s.Reuse s.Num TkVariable s.Mode e.Index) =
+            (Var s.Num TkVariable s.Mode e.Index);
+
+          (PartReuse e.Info) = (Reuse e.Info);
+          (FullReuse e.Info) = (Reuse e.Info);
+
+          (Sample e.Info) = (Reuse e.Info);
+
+          (Alloc e.Info) = (Alloc e.Info);
+        }
+        e.Result
+      >
+      {
+        e.TaggedResult =
+          <BuildResult-Aux <Group e.TaggedResult> ()>;
+      }
+    >;
+}
+
+BuildResult-Aux {
+  e.Begin (s.Num TkVariable 'e' e.Index) (e.Scanned) = 
+    <BuildResult-Aux e.Begin (e.Scanned (CmdInsertEVar s.Num 'e' e.Index))>;
+
+  e.Begin (s.Num TkVariable s.Mode e.Index) (e.Scanned) =
+    <BuildResult-Aux e.Begin (e.Scanned (CmdInsertElem ElSTVar s.Num s.Mode e.Index))>;
+
+  e.Begin ((s.Num e.Info)) (e.Scanned) = 
+    <BuildResult-Aux e.Begin (e.Scanned (CmdInsertElem ElElem s.Num))>;
+
+  e.Begin ((s.Num1 e.Info2) e.Middle (s.Num2 e.Info1)) (e.Scanned) =
+    <BuildResult-Aux e.Begin (e.Scanned (CmdInsertElem ElSeq s.Num1 s.Num2))>;
+
+  (e.Scanned) = e.Scanned;
+
+}
+
+$FORWARD Group-Aux;
+
+Group {
+  (Var e.Info) e.Tail = (e.Info) <Group e.Tail>;
+
+  (s.Reuse s.Num e.Info) e.Tail =
+    <Group-Aux s.Reuse <Inc s.Num> ((s.Num e.Info)) e.Tail>;
+
+  (t.Key e.Val) e.Tail =
+    <Group-Aux t.Key ((e.Val)) e.Tail>;
+
+  = ;
+}
+
+Group-Aux {
+  s.Reuse s.Next (e.Group) (s.Reuse s.Next e.Info) e.Tail =
+    <Group-Aux
+      s.Reuse <Inc s.Next> (e.Group (s.Next e.Info)) e.Tail
+    >;
+
+  s.Reuse s.Next (e.Group) e.Other = (e.Group) <Group e.Other>;
+}
+
+

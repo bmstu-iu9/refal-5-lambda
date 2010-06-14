@@ -1,0 +1,1751 @@
+
+execute 1
+
+execute 2
+
+ERROR EXPRESSION:
+<&ArgList > 
+VIEW FIELD:
+[FIRST] <&Main <&ArgList > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Go > 
+[LAST]
+End dump
+
+execute 3
+
+ERROR EXPRESSION:
+<&DoArgList 0 > 
+VIEW FIELD:
+[FIRST] <&Main <&DoArgList 0 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&ArgList > 
+[LAST]
+End dump
+
+execute 4
+
+ERROR EXPRESSION:
+<&Inc 0 > 
+VIEW FIELD:
+[FIRST] <&Main <&SwDoArgList <&Inc 0 > <&Arg 0 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 5
+
+ERROR EXPRESSION:
+<&Add 0 1 > 
+VIEW FIELD:
+[FIRST] <&Main <&SwDoArgList <&Add 0 1 > <&Arg 0 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 6
+
+ERROR EXPRESSION:
+<&Arg 0 > 
+VIEW FIELD:
+[FIRST] <&Main <&SwDoArgList 1 <&Arg 0 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 0 1 > &Inc > 
+[LAST]
+End dump
+
+execute 7
+
+ERROR EXPRESSION:
+<&SwDoArgList 1 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' > 
+VIEW FIELD:
+[FIRST] <&Main <&SwDoArgList 1 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 0 > 
+[LAST]
+End dump
+
+execute 8
+
+ERROR EXPRESSION:
+<&DoArgList 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) <&DoArgList 1 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 9
+
+ERROR EXPRESSION:
+<&Inc 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) <&SwDoArgList <&Inc 1 > <&Arg 1 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 10
+
+ERROR EXPRESSION:
+<&Add 1 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) <&SwDoArgList <&Add 1 1 > <&Arg 1 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 11
+
+ERROR EXPRESSION:
+<&Arg 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) <&SwDoArgList 2 <&Arg 1 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 1 1 > &Inc > 
+[LAST]
+End dump
+
+execute 12
+
+ERROR EXPRESSION:
+<&SwDoArgList 2 '-c' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) <&SwDoArgList 2 '-c' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 1 > 1 1 > &Inc > 
+[LAST]
+End dump
+
+execute 13
+
+ERROR EXPRESSION:
+<&DoArgList 2 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) <&DoArgList 2 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 1 > &Inc > 
+[LAST]
+End dump
+
+execute 14
+
+ERROR EXPRESSION:
+<&Inc 2 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) <&SwDoArgList <&Inc 2 > <&Arg 2 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 15
+
+ERROR EXPRESSION:
+<&Add 2 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) <&SwDoArgList <&Add 2 1 > <&Arg 2 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 16
+
+ERROR EXPRESSION:
+<&Arg 2 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) <&SwDoArgList 3 <&Arg 2 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 2 1 > &Inc > 
+[LAST]
+End dump
+
+execute 17
+
+ERROR EXPRESSION:
+<&SwDoArgList 3 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) <&SwDoArgList 3 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 2 > 
+[LAST]
+End dump
+
+execute 18
+
+ERROR EXPRESSION:
+<&DoArgList 3 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) <&DoArgList 3 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 19
+
+ERROR EXPRESSION:
+<&Inc 3 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) <&SwDoArgList <&Inc 3 > <&Arg 3 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 20
+
+ERROR EXPRESSION:
+<&Add 3 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) <&SwDoArgList <&Add 3 1 > <&Arg 3 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 21
+
+ERROR EXPRESSION:
+<&Arg 3 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) <&SwDoArgList 4 <&Arg 3 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 3 1 > &Inc > 
+[LAST]
+End dump
+
+execute 22
+
+ERROR EXPRESSION:
+<&SwDoArgList 4 '-d' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) <&SwDoArgList 4 '-d' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 3 > 3 1 > &Inc > 
+[LAST]
+End dump
+
+execute 23
+
+ERROR EXPRESSION:
+<&DoArgList 4 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) <&DoArgList 4 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 1 > &Inc > 
+[LAST]
+End dump
+
+execute 24
+
+ERROR EXPRESSION:
+<&Inc 4 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) <&SwDoArgList <&Inc 4 > <&Arg 4 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 25
+
+ERROR EXPRESSION:
+<&Add 4 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) <&SwDoArgList <&Add 4 1 > <&Arg 4 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 26
+
+ERROR EXPRESSION:
+<&Arg 4 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) <&SwDoArgList 5 <&Arg 4 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 4 1 > &Inc > 
+[LAST]
+End dump
+
+execute 27
+
+ERROR EXPRESSION:
+<&SwDoArgList 5 '..\\SRLib' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) <&SwDoArgList 5 '..\\SRLib' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 4 > 
+[LAST]
+End dump
+
+execute 28
+
+ERROR EXPRESSION:
+<&DoArgList 5 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) <&DoArgList 5 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 29
+
+ERROR EXPRESSION:
+<&Inc 5 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) <&SwDoArgList <&Inc 5 > <&Arg 5 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 30
+
+ERROR EXPRESSION:
+<&Add 5 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) <&SwDoArgList <&Add 5 1 > <&Arg 5 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 31
+
+ERROR EXPRESSION:
+<&Arg 5 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) <&SwDoArgList 6 <&Arg 5 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 5 1 > &Inc > 
+[LAST]
+End dump
+
+execute 32
+
+ERROR EXPRESSION:
+<&SwDoArgList 6 'Srefc.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) <&SwDoArgList 6 'Srefc.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 5 > 
+[LAST]
+End dump
+
+execute 33
+
+ERROR EXPRESSION:
+<&DoArgList 6 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) <&DoArgList 6 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 34
+
+ERROR EXPRESSION:
+<&Inc 6 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) <&SwDoArgList <&Inc 6 > <&Arg 6 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 35
+
+ERROR EXPRESSION:
+<&Add 6 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) <&SwDoArgList <&Add 6 1 > <&Arg 6 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 36
+
+ERROR EXPRESSION:
+<&Arg 6 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) <&SwDoArgList 7 <&Arg 6 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 6 1 > &Inc > 
+[LAST]
+End dump
+
+execute 37
+
+ERROR EXPRESSION:
+<&SwDoArgList 7 'Driver.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) <&SwDoArgList 7 'Driver.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 6 > 
+[LAST]
+End dump
+
+execute 38
+
+ERROR EXPRESSION:
+<&DoArgList 7 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) <&DoArgList 7 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 39
+
+ERROR EXPRESSION:
+<&Inc 7 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) <&SwDoArgList <&Inc 7 > <&Arg 7 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 40
+
+ERROR EXPRESSION:
+<&Add 7 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) <&SwDoArgList <&Add 7 1 > <&Arg 7 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 41
+
+ERROR EXPRESSION:
+<&Arg 7 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) <&SwDoArgList 8 <&Arg 7 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 7 1 > &Inc > 
+[LAST]
+End dump
+
+execute 42
+
+ERROR EXPRESSION:
+<&SwDoArgList 8 'Lexer.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) <&SwDoArgList 8 'Lexer.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 7 > 
+[LAST]
+End dump
+
+execute 43
+
+ERROR EXPRESSION:
+<&DoArgList 8 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) <&DoArgList 8 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 44
+
+ERROR EXPRESSION:
+<&Inc 8 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) <&SwDoArgList <&Inc 8 > <&Arg 8 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 45
+
+ERROR EXPRESSION:
+<&Add 8 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) <&SwDoArgList <&Add 8 1 > <&Arg 8 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 46
+
+ERROR EXPRESSION:
+<&Arg 8 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) <&SwDoArgList 9 <&Arg 8 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 8 1 > &Inc > 
+[LAST]
+End dump
+
+execute 47
+
+ERROR EXPRESSION:
+<&SwDoArgList 9 'Algorithm.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) <&SwDoArgList 9 'Algorithm.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 8 > 
+[LAST]
+End dump
+
+execute 48
+
+ERROR EXPRESSION:
+<&DoArgList 9 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) <&DoArgList 9 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 49
+
+ERROR EXPRESSION:
+<&Inc 9 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) <&SwDoArgList <&Inc 9 > <&Arg 9 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 50
+
+ERROR EXPRESSION:
+<&Add 9 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) <&SwDoArgList <&Add 9 1 > <&Arg 9 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 51
+
+ERROR EXPRESSION:
+<&Arg 9 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) <&SwDoArgList 10 <&Arg 9 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 9 1 > &Inc > 
+[LAST]
+End dump
+
+execute 52
+
+ERROR EXPRESSION:
+<&SwDoArgList 10 'Error.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) <&SwDoArgList 10 'Error.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 9 > 
+[LAST]
+End dump
+
+execute 53
+
+ERROR EXPRESSION:
+<&DoArgList 10 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) <&DoArgList 10 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 54
+
+ERROR EXPRESSION:
+<&Inc 10 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) <&SwDoArgList <&Inc 10 > <&Arg 10 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 55
+
+ERROR EXPRESSION:
+<&Add 10 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) <&SwDoArgList <&Add 10 1 > <&Arg 10 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 56
+
+ERROR EXPRESSION:
+<&Arg 10 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) <&SwDoArgList 11 <&Arg 10 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 10 1 > &Inc > 
+[LAST]
+End dump
+
+execute 57
+
+ERROR EXPRESSION:
+<&SwDoArgList 11 'Generator.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) <&SwDoArgList 11 'Generator.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 10 > 
+[LAST]
+End dump
+
+execute 58
+
+ERROR EXPRESSION:
+<&DoArgList 11 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) <&DoArgList 11 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 59
+
+ERROR EXPRESSION:
+<&Inc 11 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) <&SwDoArgList <&Inc 11 > <&Arg 11 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 60
+
+ERROR EXPRESSION:
+<&Add 11 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) <&SwDoArgList <&Add 11 1 > <&Arg 11 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 61
+
+ERROR EXPRESSION:
+<&Arg 11 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) <&SwDoArgList 12 <&Arg 11 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 11 1 > &Inc > 
+[LAST]
+End dump
+
+execute 62
+
+ERROR EXPRESSION:
+<&SwDoArgList 12 'SymTable.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) <&SwDoArgList 12 'SymTable.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 11 > 
+[LAST]
+End dump
+
+execute 63
+
+ERROR EXPRESSION:
+<&DoArgList 12 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) <&DoArgList 12 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 64
+
+ERROR EXPRESSION:
+<&Inc 12 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) <&SwDoArgList <&Inc 12 > <&Arg 12 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 65
+
+ERROR EXPRESSION:
+<&Add 12 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) <&SwDoArgList <&Add 12 1 > <&Arg 12 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 66
+
+ERROR EXPRESSION:
+<&Arg 12 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) <&SwDoArgList 13 <&Arg 12 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 12 1 > &Inc > 
+[LAST]
+End dump
+
+execute 67
+
+ERROR EXPRESSION:
+<&SwDoArgList 13 'FindFile' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) <&SwDoArgList 13 'FindFile' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 12 > 
+[LAST]
+End dump
+
+execute 68
+
+ERROR EXPRESSION:
+<&DoArgList 13 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) <&DoArgList 13 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 69
+
+ERROR EXPRESSION:
+<&Inc 13 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) <&SwDoArgList <&Inc 13 > <&Arg 13 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 70
+
+ERROR EXPRESSION:
+<&Add 13 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) <&SwDoArgList <&Add 13 1 > <&Arg 13 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 71
+
+ERROR EXPRESSION:
+<&Arg 13 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) <&SwDoArgList 14 <&Arg 13 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 13 1 > &Inc > 
+[LAST]
+End dump
+
+execute 72
+
+ERROR EXPRESSION:
+<&SwDoArgList 14 'ParseCmdLine' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) <&SwDoArgList 14 'ParseCmdLine' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 13 > 
+[LAST]
+End dump
+
+execute 73
+
+ERROR EXPRESSION:
+<&DoArgList 14 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) <&DoArgList 14 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 74
+
+ERROR EXPRESSION:
+<&Inc 14 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) <&SwDoArgList <&Inc 14 > <&Arg 14 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 75
+
+ERROR EXPRESSION:
+<&Add 14 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) <&SwDoArgList <&Add 14 1 > <&Arg 14 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 76
+
+ERROR EXPRESSION:
+<&Arg 14 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) <&SwDoArgList 15 <&Arg 14 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 14 1 > &Inc > 
+[LAST]
+End dump
+
+execute 77
+
+ERROR EXPRESSION:
+<&SwDoArgList 15 'Context.sref' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) <&SwDoArgList 15 'Context.sref' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 14 > 
+[LAST]
+End dump
+
+execute 78
+
+ERROR EXPRESSION:
+<&DoArgList 15 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) <&DoArgList 15 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 79
+
+ERROR EXPRESSION:
+<&Inc 15 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) <&SwDoArgList <&Inc 15 > <&Arg 15 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 80
+
+ERROR EXPRESSION:
+<&Add 15 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) <&SwDoArgList <&Add 15 1 > <&Arg 15 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 81
+
+ERROR EXPRESSION:
+<&Arg 15 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) <&SwDoArgList 16 <&Arg 15 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 15 1 > &Inc > 
+[LAST]
+End dump
+
+execute 82
+
+ERROR EXPRESSION:
+<&SwDoArgList 16 'Algorithm_v1' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) <&SwDoArgList 16 'Algorithm_v1' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 15 > 
+[LAST]
+End dump
+
+execute 83
+
+ERROR EXPRESSION:
+<&DoArgList 16 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) <&DoArgList 16 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 84
+
+ERROR EXPRESSION:
+<&Inc 16 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) <&SwDoArgList <&Inc 16 > <&Arg 16 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 85
+
+ERROR EXPRESSION:
+<&Add 16 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) <&SwDoArgList <&Add 16 1 > <&Arg 16 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 86
+
+ERROR EXPRESSION:
+<&Arg 16 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) <&SwDoArgList 17 <&Arg 16 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 16 1 > &Inc > 
+[LAST]
+End dump
+
+execute 87
+
+ERROR EXPRESSION:
+<&SwDoArgList 17 'Algorithm_v2' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) <&SwDoArgList 17 'Algorithm_v2' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 16 > 
+[LAST]
+End dump
+
+execute 88
+
+ERROR EXPRESSION:
+<&DoArgList 17 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) <&DoArgList 17 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 89
+
+ERROR EXPRESSION:
+<&Inc 17 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) <&SwDoArgList <&Inc 17 > <&Arg 17 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 90
+
+ERROR EXPRESSION:
+<&Add 17 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) <&SwDoArgList <&Add 17 1 > <&Arg 17 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 91
+
+ERROR EXPRESSION:
+<&Arg 17 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) <&SwDoArgList 18 <&Arg 17 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 17 1 > &Inc > 
+[LAST]
+End dump
+
+execute 92
+
+ERROR EXPRESSION:
+<&SwDoArgList 18 'Alg_Pattern_v1' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) <&SwDoArgList 18 'Alg_Pattern_v1' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 17 > 
+[LAST]
+End dump
+
+execute 93
+
+ERROR EXPRESSION:
+<&DoArgList 18 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) <&DoArgList 18 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 94
+
+ERROR EXPRESSION:
+<&Inc 18 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) <&SwDoArgList <&Inc 18 > <&Arg 18 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 95
+
+ERROR EXPRESSION:
+<&Add 18 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) <&SwDoArgList <&Add 18 1 > <&Arg 18 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 96
+
+ERROR EXPRESSION:
+<&Arg 18 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) <&SwDoArgList 19 <&Arg 18 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 18 1 > &Inc > 
+[LAST]
+End dump
+
+execute 97
+
+ERROR EXPRESSION:
+<&SwDoArgList 19 'Alg_Pattern_v2' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) <&SwDoArgList 19 'Alg_Pattern_v2' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 18 > 
+[LAST]
+End dump
+
+execute 98
+
+ERROR EXPRESSION:
+<&DoArgList 19 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) <&DoArgList 19 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 99
+
+ERROR EXPRESSION:
+<&Inc 19 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) <&SwDoArgList <&Inc 19 > <&Arg 19 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 100
+
+ERROR EXPRESSION:
+<&Add 19 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) <&SwDoArgList <&Add 19 1 > <&Arg 19 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 101
+
+ERROR EXPRESSION:
+<&Arg 19 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) <&SwDoArgList 20 <&Arg 19 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 19 1 > &Inc > 
+[LAST]
+End dump
+
+execute 102
+
+ERROR EXPRESSION:
+<&SwDoArgList 20 'Library' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) <&SwDoArgList 20 'Library' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 19 > 
+[LAST]
+End dump
+
+execute 103
+
+ERROR EXPRESSION:
+<&DoArgList 20 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) <&DoArgList 20 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 104
+
+ERROR EXPRESSION:
+<&Inc 20 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) <&SwDoArgList <&Inc 20 > <&Arg 20 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 105
+
+ERROR EXPRESSION:
+<&Add 20 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) <&SwDoArgList <&Add 20 1 > <&Arg 20 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 106
+
+ERROR EXPRESSION:
+<&Arg 20 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) <&SwDoArgList 21 <&Arg 20 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 20 1 > &Inc > 
+[LAST]
+End dump
+
+execute 107
+
+ERROR EXPRESSION:
+<&SwDoArgList 21 'LibraryEx' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) <&SwDoArgList 21 'LibraryEx' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 20 > 
+[LAST]
+End dump
+
+execute 108
+
+ERROR EXPRESSION:
+<&DoArgList 21 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) <&DoArgList 21 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 109
+
+ERROR EXPRESSION:
+<&Inc 21 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) <&SwDoArgList <&Inc 21 > <&Arg 21 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 110
+
+ERROR EXPRESSION:
+<&Add 21 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) <&SwDoArgList <&Add 21 1 > <&Arg 21 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 111
+
+ERROR EXPRESSION:
+<&Arg 21 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) <&SwDoArgList 22 <&Arg 21 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 21 1 > &Inc > 
+[LAST]
+End dump
+
+execute 112
+
+ERROR EXPRESSION:
+<&SwDoArgList 22 'refalrts.cpp' > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) <&SwDoArgList 22 'refalrts.cpp' > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 21 > 
+[LAST]
+End dump
+
+execute 113
+
+ERROR EXPRESSION:
+<&DoArgList 22 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) <&DoArgList 22 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList > 
+[LAST]
+End dump
+
+execute 114
+
+ERROR EXPRESSION:
+<&Inc 22 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) <&SwDoArgList <&Inc 22 > <&Arg 22 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoArgList > 
+[LAST]
+End dump
+
+execute 115
+
+ERROR EXPRESSION:
+<&Add 22 1 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) <&SwDoArgList <&Add 22 1 > <&Arg 22 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Inc > 
+[LAST]
+End dump
+
+execute 116
+
+ERROR EXPRESSION:
+<&Arg 22 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) <&SwDoArgList 23 <&Arg 22 > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 117
+
+ERROR EXPRESSION:
+<&SwDoArgList 23 > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) <&SwDoArgList 23 > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Arg 22 > <&Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 118
+
+ERROR EXPRESSION:
+<&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+[LAST]
+FREE LIST:
+[FIRST] <&SwDoArgList 23 > <&Arg 22 > <&Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 119
+
+ERROR EXPRESSION:
+<&ParseCommandLine ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&ParseCommandLine ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Main ( 'C:\\PATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 120
+
+ERROR EXPRESSION:
+<&DoParseCommandLine ( ) ( ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseCommandLine ( ) ( ) ( '-c' ) ( 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&ParseCommandLine > 'ATRIOT\\Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 121
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ) ( ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ) ( ) ( '-d' ) ( '..\\SRLib' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseCommandLine ( ) ( ) ( '-c' ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 122
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ) ( ( '..\\SRLib' ) ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ) ( ( '..\\SRLib' ) ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( '-d' ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 123
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 124
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 125
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 126
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 127
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 128
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ) ( ( '..\\SRLib' ) ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ) ( ( '..\\SRLib' ) ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 129
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ) ( ( '..\\SRLib' ) ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ) ( ( '..\\SRLib' ) ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 130
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ) ( ( '..\\SRLib' ) ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ) ( ( '..\\SRLib' ) ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 131
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ) ( ( '..\\SRLib' ) ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ) ( ( '..\\SRLib' ) ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 132
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 133
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ) ( ( '..\\SRLib' ) ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 134
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ) ( ( '..\\SRLib' ) ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ) ( ( '..\\SRLib' ) ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 135
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ) ( ( '..\\SRLib' ) ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ) ( ( '..\\SRLib' ) ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 136
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ) ( ( '..\\SRLib' ) ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ) ( ( '..\\SRLib' ) ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 137
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ) ( ( '..\\SRLib' ) ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ) ( ( '..\\SRLib' ) ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 138
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ) ( ( '..\\SRLib' ) ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ) ( ( '..\\SRLib' ) ) ( 'refalrts.cpp' ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 139
+
+ERROR EXPRESSION:
+<&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) ) ( ( '..\\SRLib' ) ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers <&DoParseFileNames ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) ) ( ( '..\\SRLib' ) ) > > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 140
+
+ERROR EXPRESSION:
+<&FindFiles_Compilers ( ( '..\\SRLib' ) ) ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link <&FindFiles_Compilers ( ( '..\\SRLib' ) ) ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&DoParseFileNames ( ) ( ) > ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 141
+
+ERROR EXPRESSION:
+<&FindFiles ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&FindFiles ( &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&FindFiles_Compilers ( ) > ) > ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 142
+
+ERROR EXPRESSION:
+<&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&FindFiles ( ) > ( ) ( ) ( ) > ) ( ) > ) ( ) > 'Study\\10 сем Курсач\\Simple Refal\\Simple Refal\\Compiler\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 143
+
+ERROR EXPRESSION:
+<&Apply ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&Apply ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Srefc.sref' ) > <&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Map > 'r\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 144
+
+ERROR EXPRESSION:
+<&Apply &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&Apply &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > <&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Apply ( ) > 'r\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+execute 145
+
+ERROR EXPRESSION:
+<&AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > <&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Apply > ( ) > 'r\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+RECOGNITION IMPOSSIBLE
+
+
+ERROR EXPRESSION:
+<&AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > 
+VIEW FIELD:
+[FIRST] <&Compile_And_Link ( ( '..\\SRLib' ) ) <&AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ( 'Srefc.sref' ) > <&Map ( &AnalyzeFile_ByFolders &Current &CompileCommand 'compile_bcc -esrefc.exe -I..\\SRLib -DINTERPRET1 -DSHOW_DEBUG=1' ) ( 'Driver.sref' ) ( 'Lexer.sref' ) ( 'Algorithm.sref' ) ( 'Error.sref' ) ( 'Generator.sref' ) ( 'SymTable.sref' ) ( 'FindFile' ) ( 'ParseCmdLine' ) ( 'Context.sref' ) ( 'Algorithm_v1' ) ( 'Algorithm_v2' ) ( 'Alg_Pattern_v1' ) ( 'Alg_Pattern_v2' ) ( 'Library' ) ( 'LibraryEx' ) ( 'refalrts.cpp' ) > > 
+[LAST]
+FREE LIST:
+[FIRST] <&Apply > ( ) > 'r\\srefc_.exe' ) > &Add 22 1 > &Inc > 
+[LAST]
+End dump
+
+Total program time: 0.624 seconds.
+Pure calculation time: 0.000 seconds.
+In/out time: 0.624 seconds.
+Step count 145
+Memory used 8120 bytes
+Could Not Find C:\PATRIOT\Study\10 бҐ¬ Љгаб з\Simple Refal\Simple Refal\Compiler\*.obj
+Could Not Find C:\PATRIOT\Study\10 бҐ¬ Љгаб з\Simple Refal\Simple Refal\Compiler\*.tds

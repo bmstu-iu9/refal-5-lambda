@@ -109,153 +109,184 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   return (first == 0) && (last == 0);
 }
 
-bool refalrts::function_left(
+refalrts::Iter refalrts::function_left(
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = first;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if( first->tag != cDataFunction ) {
-    return false;
+    return NULL;
   } else if ( first->function_info.ptr != fn ) {
-    return false;
+    return NULL;
   } else {
     move_left( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::function_right(
+refalrts::Iter refalrts::function_right(
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = last;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataFunction != last->tag ) {
-    return false;
+    return NULL;
   } else if ( last->function_info.ptr != fn ) {
-    return false;
+    return NULL;
   } else {
     move_right( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::char_left(
+bool refalrts::function_match(
+  refalrts::RefalFunctionPtr fn, refalrts::Iter pos
+) {
+  return ( cDataFunction == pos->tag ) && ( pos->function_info.ptr == fn);
+}
+
+refalrts::Iter refalrts::char_left(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = first;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataChar != first->tag ) {
-    return false;
+    return NULL;
   } else if ( first->char_info != ch ) {
-    return false;
+    return NULL;
   } else {
     move_left( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::char_right(
+refalrts::Iter refalrts::char_right(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = last;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataChar != last->tag ) {
-    return false;
+    return NULL;
   } else if ( last->char_info != ch ) {
-    return false;
+    return NULL;
   } else {
     move_right( first, last );
-    return true;
+    return res;
   }
 }
 
+bool refalrts::char_match(
+  char ch, refalrts::Iter pos
+) {
+  return ( cDataChar == pos->tag ) && ( pos->char_info == ch);
+}
 
-bool refalrts::number_left(
+refalrts::Iter refalrts::number_left(
   refalrts::RefalNumber num, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = first;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataNumber != first->tag ) {
-    return false;
+    return NULL;
   } else if ( first->number_info != num ) {
-    return false;
+    return NULL;
   } else {
     move_left( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::number_right(
+refalrts::Iter refalrts::number_right(
   refalrts::RefalNumber num, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = last;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataNumber != last->tag ) {
-    return false;
+    return NULL;
   } else if ( last->number_info != num ) {
-    return false;
+    return NULL;
   } else {
     move_right( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::ident_left(
+bool refalrts::number_match(
+  refalrts::RefalNumber num, refalrts::Iter pos
+) {
+  return ( cDataNumber == pos->tag ) && ( pos->number_info == num);
+}
+
+refalrts::Iter refalrts::ident_left(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = first;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataIdentifier != first->tag ) {
-    return false;
+    return NULL;
   } else if ( first->ident_info != ident ) {
-    return false;
+    return NULL;
   } else {
     move_left( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::ident_right(
+refalrts::Iter refalrts::ident_right(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
+  Iter res = last;
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataIdentifier != last->tag ) {
-    return false;
+    return NULL;
   } else if ( last->ident_info != ident ) {
-    return false;
+    return NULL;
   } else {
     move_right( first, last );
-    return true;
+    return res;
   }
 }
 
-bool refalrts::brackets_left(
+bool refalrts::ident_match(
+  refalrts::RefalIdentifier ident, refalrts::Iter pos
+) {
+  return ( cDataIdentifier == pos->tag ) && ( pos->ident_info == ident);
+}
+
+refalrts::Iter refalrts::brackets_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataOpenBracket != first->tag ) {
-    return false;
+    return NULL;
   } else {
     refalrts::Iter left_bracket = first;
     refalrts::Iter right_bracket = left_bracket->link_info;
@@ -275,20 +306,20 @@ bool refalrts::brackets_left(
       first = next( right_bracket );
     }
 
-    return true;
+    return left_bracket;
   }
 }
 
-bool refalrts::brackets_right(
+refalrts::Iter refalrts::brackets_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if( cDataCloseBracket != last->tag ) {
-    return false;
+    return NULL;
   } else {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
@@ -308,11 +339,22 @@ bool refalrts::brackets_right(
       last = prev( left_bracket );
     }
 
+    return left_bracket;
+  }
+}
+
+bool refalrts::brackets_match(
+  refalrts::Iter& right, refalrts::Iter left /* pos */
+) {
+  if( cDataOpenBracket != left->tag ) {
+    return false;
+  } else {
+    right = left->link_info;
     return true;
   }
 }
 
-bool refalrts::adt_left(
+refalrts::Iter refalrts::adt_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::RefalFunctionPtr tag,
   refalrts::Iter& first, refalrts::Iter& last
@@ -320,20 +362,20 @@ bool refalrts::adt_left(
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if ( cDataOpenADT != first->tag ) {
-    return false;
+    return NULL;
   } else {
     refalrts::Iter left_bracket = first;
     refalrts::Iter right_bracket = left_bracket->link_info;
     refalrts::Iter pnext = next( left_bracket );
 
     if( pnext == right_bracket ) {
-      return false;
+      return NULL;
     } else if( cDataFunction != pnext->tag ) {
-      return false;
+      return NULL;
     } else if( pnext->function_info.ptr != tag ) {
-      return false;
+      return NULL;
     } else {
       if( next( pnext ) != right_bracket ) {
         res_first = next( pnext );
@@ -350,12 +392,12 @@ bool refalrts::adt_left(
         first = next( right_bracket );
       }
 
-      return true;
+      return left_bracket;
     }
   }
 }
 
-bool refalrts::adt_right(
+refalrts::Iter refalrts::adt_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::RefalFunctionPtr tag,
   refalrts::Iter& first, refalrts::Iter& last
@@ -363,20 +405,20 @@ bool refalrts::adt_right(
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return NULL;
   } else if( cDataCloseADT != last->tag ) {
-    return false;
+    return NULL;
   } else {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
     refalrts::Iter pnext = next( left_bracket );
 
     if( pnext == right_bracket ) {
-      return false;
+      return NULL;
     } else if( cDataFunction != pnext->tag ) {
-      return false;
+      return NULL;
     } else if( pnext->function_info.ptr != tag ) {
-      return false;
+      return NULL;
     } else {
       if( next( pnext ) != right_bracket ) {
         res_first = next( pnext );
@@ -393,10 +435,22 @@ bool refalrts::adt_right(
         last = prev( left_bracket );
       }
 
-      return true;
+      return left_bracket;
     }
   }
 }
+
+bool refalrts::adt_match(
+  refalrts::Iter& right, refalrts::Iter left /* pos */
+) {
+  if( cDataOpenADT != left->tag ) {
+    return false;
+  } else {
+    right = left->link_info;
+    return true;
+  }
+}
+
 
 bool refalrts::svar_left(
   refalrts::Iter& svar, refalrts::Iter& first, refalrts::Iter& last
@@ -787,23 +841,8 @@ void reset_allocator();
 bool alloc_node( Iter& node );
 Iter free_ptr();
 void splice_to_freelist( Iter begin, Iter end );
-void splice_from_freelist( Iter pos );
 
 } // namespace allocator
-
-} // namespace refalrts
-
-//------------------------------------------------------------------------------
-
-// Средства профилирования
-
-namespace refalrts {
-
-namespace profiler {
-
-extern void start_building_result();
-
-} // namespace profiler
 
 } // namespace refalrts
 
@@ -812,7 +851,6 @@ extern void start_building_result();
 // Операции построения результата
 
 void refalrts::reset_allocator() {
-  profiler::start_building_result();
   allocator::reset_allocator();
 }
 
@@ -881,8 +919,8 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
     // break;
 
     /*
-      Копируем только объектное выражение -- никаких вызовов функций
-      быть не должно.
+      Копируем только объектное выражение -- никаких вызовов функций быть не
+      должно.
     */
     default:
       assert( SWITCH_DEFAULT_VIOLATION );
@@ -900,49 +938,9 @@ namespace vm {
 
 void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
-} // namespace vm
+} // namepsace vm
 
 } // namespace refalrts
-
-namespace {
-
-bool copy_nonempty_evar(
-  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
-  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
-) {
-  refalrts::Iter res = 0;
-  refalrts::Iter bracket_stack = 0;
-
-  refalrts::Iter prev_res_begin =
-    prev( refalrts::allocator::free_ptr() );
-
-  while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
-    if( ! copy_node( res, evar_b_sample ) ) {
-      return false;
-    }
-
-    if( is_open_bracket( res ) ) {
-      res->link_info = bracket_stack;
-      bracket_stack = res;
-    } else if( is_close_bracket( res ) ) {
-      assert( bracket_stack != 0 );
-
-      refalrts::Iter open_cobracket = bracket_stack;
-      bracket_stack = bracket_stack->link_info;
-      link_brackets( open_cobracket, res );
-    }
-
-    move_left( evar_b_sample, evar_e_sample );
-  }
-
-  assert( bracket_stack == 0 );
-
-  evar_res_b = next( prev_res_begin );
-  evar_res_e = res;
-  return true;
-}
-
-} // unnamed namespace
 
 bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
@@ -951,12 +949,38 @@ bool refalrts::copy_evar(
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
     evar_res_b = 0;
     evar_res_e = 0;
-    return true;
   } else {
-    return copy_nonempty_evar(
-      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
-    );
+    refalrts::Iter res = 0;
+    refalrts::Iter bracket_stack = 0;
+
+    refalrts::Iter prev_res_begin = prev( allocator::free_ptr() );
+
+    while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
+      if( ! copy_node( res, evar_b_sample ) ) {
+        return false;
+      }
+      
+      if( is_open_bracket( res ) ) {
+        res->link_info = bracket_stack;
+        bracket_stack = res;
+      } else if( is_close_bracket( res ) ) {
+        assert( bracket_stack != 0 );
+
+        refalrts::Iter open_cobracket = bracket_stack;
+        bracket_stack = bracket_stack->link_info;
+        link_brackets( open_cobracket, res );
+      }
+
+      move_left( evar_b_sample, evar_e_sample );
+    }
+
+    assert( bracket_stack == 0 );
+
+    evar_res_b = next( prev_res_begin );
+    evar_res_e = res;
   }
+
+  return true;
 }
 
 bool refalrts::copy_stvar(
@@ -970,32 +994,8 @@ bool refalrts::copy_stvar(
   }
 
   refalrts::Iter end_of_res;
-  return copy_evar(
-    stvar_res, end_of_res, stvar_sample, end_of_sample
-  );
+  return copy_evar( stvar_res, end_of_res, stvar_sample, end_of_sample );
 }
-
-bool refalrts::alloc_copy_evar(
-  refalrts::Iter& res,
-  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
-) {
-  if( empty_seq( evar_b_sample, evar_e_sample ) ) {
-    res = 0;
-    return true;
-  } else {
-    refalrts::Iter res_e = 0;
-    return copy_nonempty_evar(
-      res, res_e, evar_b_sample, evar_e_sample
-    );
-  }
-}
-
-bool refalrts::alloc_copy_svar_(
-  refalrts::Iter& svar_res, refalrts::Iter svar_sample
-) {
-  return copy_node( svar_res, svar_sample );
-}
-
 
 bool refalrts::alloc_char( refalrts::Iter& res, char ch ) {
   if( allocator::alloc_node( res ) ) {
@@ -1179,6 +1179,65 @@ bool refalrts::alloc_string(
   }
 }
 
+// Љ®¬ ­¤л ЇҐаҐЁ­ЁжЁ «Ё§ жЁЁ
+
+void refalrts::reinit_char( refalrts::Iter res, char ch ) {
+  res->tag = cDataChar;
+  res->char_info = ch;
+}
+
+void refalrts::reinit_number(
+  refalrts::Iter res, refalrts::RefalNumber num
+) {
+  res->tag = cDataNumber;
+  res->number_info = num; 
+}
+
+void refalrts::reinit_name(
+  refalrts::Iter res,
+  refalrts::RefalFunctionPtr fn,
+  refalrts::RefalFuncName name
+) {
+  res->tag = cDataFunction;
+  res->function_info.ptr = fn;
+  if( name != 0 ) {
+    res->function_info.name = name;
+  } else {
+    res->function_info.name = unknown;
+  }  
+}
+
+void refalrts::reinit_ident(
+  refalrts::Iter res, refalrts::RefalIdentifier ident
+) {
+  res->tag = cDataIdentifier;
+  res->ident_info = ident;
+}
+
+void refalrts::reinit_open_adt( refalrts::Iter res ) {
+  res->tag = cDataOpenADT;
+}
+
+void refalrts::reinit_close_adt( refalrts::Iter res ) {
+  res->tag = cDataCloseADT;
+}
+
+void refalrts::reinit_open_bracket( refalrts::Iter res ) {
+  res->tag = cDataOpenBracket;
+}
+
+void refalrts::reinit_close_bracket( refalrts::Iter res ) {
+  res->tag = cDataCloseBracket;
+}
+
+void refalrts::reinit_open_call( refalrts::Iter res ) {
+  res->tag = cDataOpenCall;
+}
+
+void refalrts::reinit_close_call( refalrts::Iter res ) {
+  res->tag = cDataCloseCall;
+}
+
 namespace refalrts {
 
 namespace vm {
@@ -1266,10 +1325,6 @@ void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
 }
 
-void refalrts::splice_from_freelist( refalrts::Iter pos ) {
-  allocator::splice_from_freelist( pos );
-}
-
 refalrts::FnResult refalrts::create_closure(
   refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1352,7 +1407,7 @@ namespace vm {
 
 extern NodePtr g_left_swap_ptr;
 
-} // namespace vm
+} // namepsace vm
 
 } // namespace refalrts
 
@@ -1468,9 +1523,9 @@ ChunkPtr g_pool = 0;
 unsigned g_avail = 0;
 refalrts::Node *g_pnext_node = 0;
 
-} // namespace pool
+}
 
-unsigned long g_memory_use = 0;
+unsigned g_memory_use = 0;
 
 } // namespace allocator
 
@@ -1516,22 +1571,8 @@ void refalrts::allocator::splice_to_freelist(
   g_free_ptr = list_splice( g_free_ptr, begin, end );
 }
 
-void refalrts::allocator::splice_from_freelist( refalrts::Iter pos ) {
-  if (g_free_ptr != g_first_marker.next ) {
-    list_splice( pos, g_first_marker.next, g_free_ptr->prev );
-  }
-}
-
 bool refalrts::allocator::create_nodes() {
   refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
-
-#ifdef MEMORY_LIMIT
-
-  if( g_memory_use >= MEMORY_LIMIT ) {
-    return false;
-  }
-
-#endif //ifdef MEMORY_LIMIT
 
   if( new_node == 0 ) {
     return false;
@@ -1553,16 +1594,7 @@ bool refalrts::allocator::create_nodes() {
 
 void refalrts::allocator::free_memory() {
   refalrts::allocator::pool::free();
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(
-    stderr,
-    "Memory used %lu nodes, %lu * %lu = %lu bytes\n",
-    g_memory_use,
-    g_memory_use,
-    static_cast<unsigned long>(sizeof(Node)),
-    static_cast<unsigned long>(g_memory_use * sizeof(Node))
-  );
-#endif // DONT_PRINT_STATISTICS
+  fprintf( stderr, "Memory used %d bytes\n", g_memory_use * sizeof(Node) );
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
@@ -1604,10 +1636,8 @@ namespace refalrts {
 namespace profiler {
 
 clock_t g_start_program_time;
-clock_t g_start_pattern_match_time;
-clock_t g_total_pattern_match_time;
-clock_t g_start_building_result_time;
-clock_t g_total_building_result_time;
+clock_t g_start_gen_function_time;
+clock_t g_total_gen_function_time;
 
 bool g_in_generated;
 
@@ -1627,65 +1657,25 @@ void refalrts::profiler::start_profiler() {
 
 void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
-#ifndef DONT_PRINT_STATISTICS
 
-  const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
+  double full_time = (clock() - g_start_program_time) / CLOCKS_PER_SEC;
+  double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
+  double io_time = full_time - pure_time;
 
-  double full_time =
-    (clock() - g_start_program_time) / cfCLOCKS_PER_SEC;
-  double pattern_time = g_total_pattern_match_time / cfCLOCKS_PER_SEC;
-  double result_time = g_total_building_result_time / cfCLOCKS_PER_SEC;
-  double refal_time = pattern_time + result_time;
-  double io_time = full_time - refal_time;
-
-  double pattern_percent = 100 * pattern_time / refal_time;
-  double pattern_clear_percent = 100 * pattern_time / full_time;
-  double result_percent = 100 * result_time / refal_time;
-  double result_clear_percent = 100 * result_time / full_time;
-  double refal_persent = 100 * refal_time / full_time;
-
-  fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
-  fprintf(
-    stderr,
-    "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "p/r = %.2f.\n", pattern_time, pattern_percent,
-    pattern_clear_percent, pattern_time / result_time
-  );
-  fprintf(
-    stderr,
-    "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "r/p = %.2f.\n", result_time, result_percent,
-    result_clear_percent, result_time / pattern_time
-  );
-  fprintf(
-    stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
-    refal_time, refal_persent
-  );
-  fprintf(
-    stderr, "Builtin time: %.3f seconds (%1.1f%%).\n",
-    io_time, 100.0 - refal_persent
-  );
-#endif // DONT_PRINT_STATISTICS
+  fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
+  fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
+  fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
 }
 
 void refalrts::profiler::start_generated_function() {
-  g_start_pattern_match_time = clock();
+  g_start_gen_function_time = clock();
   g_in_generated = true;
-}
-
-void refalrts::profiler::start_building_result() {
-  if( g_in_generated ) {
-    g_start_building_result_time = clock();
-    clock_t pattern_match =
-      g_start_building_result_time - g_start_pattern_match_time;
-    g_total_pattern_match_time += pattern_match;
-  }
 }
 
 void refalrts::profiler::after_step() {
   if( g_in_generated ) {
-    clock_t building_result = clock() - g_start_building_result_time;
-    g_total_building_result_time += building_result;
+    clock_t calc_time = clock() - g_start_gen_function_time;
+    g_total_gen_function_time += calc_time;
   }
 
   g_in_generated = false;
@@ -1695,15 +1685,7 @@ void refalrts::profiler::after_step() {
 // Виртуальная машина
 //==============================================================================
 
-#ifdef MODULE_REFAL
-#define GO_START_FUNCTION Entry_Go
-#else
-#define GO_START_FUNCTION Go
-#endif
-
-extern refalrts::FnResult GO_START_FUNCTION(
-  refalrts::Iter, refalrts::Iter
-);
+extern refalrts::FnResult Go( refalrts::Iter, refalrts::Iter );
 
 namespace refalrts {
 
@@ -1718,7 +1700,6 @@ bool init_view_field();
 refalrts::FnResult main_loop();
 refalrts::FnResult execute_active( refalrts::Iter begin, refalrts::Iter end );
 void make_dump( refalrts::Iter begin, refalrts::Iter end );
-FILE* dump_stream();
 
 void free_view_field();
 
@@ -1777,7 +1758,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & GO_START_FUNCTION, GO_NAME ) )
+  if( ! refalrts::alloc_name( n1, & Go, GO_NAME ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
@@ -1845,7 +1826,6 @@ refalrts::FnResult refalrts::vm::execute_active(
 
   fprintf(stderr, "\nexecute %d\n", s_counter);
   if( s_counter > (unsigned) SHOW_DEBUG ) {
-    fprintf(refalrts::vm::dump_stream(), "\nexecute %d\n", s_counter);
     make_dump( begin, end );
   }
 
@@ -1890,26 +1870,6 @@ refalrts::FnResult refalrts::vm::execute_active(
   }
 }
 
-namespace {
-
-void print_indent(FILE *output, unsigned level)
-{
-  enum { cPERIOD = 4 };
-  putc( '\n', output );
-  for( unsigned i = 0; i < level; ++i )
-  {
-    // Каждые cPERIOD позиций вместо пробела ставим точку.
-    bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
-
-    const char cSpace =  ' ';
-    const char cMarker = '.';
-
-    putc( (put_marker ? cMarker : cSpace), output );
-  }
-}
-
-} // unnamed namespace
-
 void refalrts::vm::print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1919,21 +1879,7 @@ void refalrts::vm::print_seq(
     cStateFinish
   } state = cStateView;
 
-  unsigned indent = 0;
-  bool after_bracket = false;
-  bool reset_after_bracket = true;
-
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
-    if( reset_after_bracket )
-    {
-      after_bracket = false;
-      reset_after_bracket = false;
-    }
-
-    if( after_bracket )
-    {
-      reset_after_bracket = true;
-    }
 
     switch( state ) {
       case cStateView:
@@ -1959,13 +1905,13 @@ void refalrts::vm::print_seq(
             refalrts::move_left( begin, end );
             continue;
 
-          case refalrts::cDataChar:
+          case refalrts::cDataChar: 
             state = cStateString;
             fprintf( output, "\'" );
             continue;
 
           case refalrts::cDataNumber:
-            fprintf( output, "%lu ", begin->number_info );
+            fprintf( output, "%d ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1988,56 +1934,31 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenADT:
-            if( ! after_bracket )
-            {
-              print_indent( output, indent );
-            }
-            ++indent;
-            after_bracket = true;
-            reset_after_bracket = false;
-            fprintf( output, "[" );
+            fprintf( output, "[ " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseADT:
-            --indent;
-            fprintf( output, "]" );
+            fprintf( output, "] " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenBracket:
-            if( ! after_bracket )
-            {
-              print_indent( output, indent );
-            }
-            ++indent;
-            after_bracket = true;
-            reset_after_bracket = false;
-            fprintf( output, "(" );
+            fprintf( output, "( " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseBracket:
-            --indent;
-            fprintf( output, ")" );
+            fprintf( output, ") " );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenCall:
-            if( ! after_bracket )
-            {
-              print_indent( output, indent );
-            }
-            ++indent;
-            after_bracket = true;
-            reset_after_bracket = false;
             fprintf( output, "<" );
             refalrts::move_left( begin, end );
             continue;
-
           case refalrts::cDataCloseCall:
-            --indent;
-            fprintf( output, ">" );
+            fprintf( output, "> " );
             refalrts::move_left( begin, end );
             continue;
 
@@ -2053,7 +1974,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosureHead:
-            fprintf( output, "[%lu] ", begin->number_info );
+            fprintf( output, "[%d] ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
@@ -2078,11 +1999,11 @@ void refalrts::vm::print_seq(
                 case '<': case '>':
                   fprintf( output, "\\%c", ch );
                   break;
-
+  
                 case '\n':
                   fprintf( output, "\\n" );
                   break;
-
+  
                 case '\t':
                   fprintf( output, "\\t" );
                   break;
@@ -2094,7 +2015,7 @@ void refalrts::vm::print_seq(
                 case '\'':
                   fprintf( output, "\\\'" );
                   break;
-
+  
                 default:
                   if( ch < '\x20' ) {
                     fprintf( output, "\\x%02x", static_cast<int>(ch) );
@@ -2128,50 +2049,19 @@ void refalrts::vm::print_seq(
 }
 
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
-  using refalrts::vm::dump_stream;
-
-  fprintf( dump_stream(), "\nERROR EXPRESSION:\n" );
-  print_seq( dump_stream(), begin, end );
-  fprintf( dump_stream(), "\nVIEW FIELD:\n" );
-  print_seq( dump_stream(), & g_first_marker, & g_last_marker );
-
-#ifdef DUMP_FREE_LIST
-
-  fprintf( dump_stream(), "\nFREE LIST:\n" );
+  fprintf( stderr, "\nERROR EXPRESSION:\n" );
+  print_seq( stderr, begin, end );
+  fprintf( stderr, "\nVIEW FIELD:\n" );
+  print_seq( stderr, & g_first_marker, & g_last_marker );
+  fprintf( stderr, "\nFREE LIST:\n" );
   print_seq(
-    dump_stream(),
+    stderr,
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
 
-#endif //ifdef DUMP_FREE_LIST
-
-  fprintf( dump_stream(),"\nEnd dump\n");
-  fflush(dump_stream());
-}
-
-FILE *refalrts::vm::dump_stream() {
-#ifdef DUMP_FILE
-
-  static FILE *dump_file = 0;
-
-  if( dump_file == 0 ) {
-    // Необходимо открыть файл.
-    // Если файл не открывается, используем stderr
-    dump_file = fopen( DUMP_FILE, "wt" );
-
-    if( dump_file == 0 ) {
-      dump_file = stderr;
-    }
-  }
-
-  return dump_file;
-
-#else //ifdef DUMP_FILE
-
-  return stderr;
-
-#endif //ifdef DUMP_FILE
+  fprintf( stderr,"\nEnd dump\n");
+  fflush(stderr);
 }
 
 void refalrts::vm::free_view_field() {
@@ -2187,9 +2077,7 @@ void refalrts::vm::free_view_field() {
     */;
   }
 
-#ifndef DONT_PRINT_STATISTICS
   fprintf( stderr, "Step count %d\n", g_step_counter );
-#endif // DONT_PRINT_STATISTICS
 }
 
 //==============================================================================
@@ -2414,8 +2302,6 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
-    fflush(stderr);
-    fflush(stdout);
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
@@ -2427,9 +2313,7 @@ int main(int argc, char **argv) {
   refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
-
-  fflush(stdout);
-
+  
   switch( res ) {
     case refalrts::cSuccess:
       return 0;
