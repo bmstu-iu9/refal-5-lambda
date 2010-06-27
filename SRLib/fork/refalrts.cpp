@@ -1761,11 +1761,17 @@ namespace {
 
 void print_indent(FILE *output, unsigned level)
 {
+  enum { cPERIOD = 4 };
   putc( '\n', output );
-  while( level > 0 )
+  for( unsigned i = 0; i < level; ++i )
   {
-    putc( ' ', output );
-    -- level;
+    // Каждые cPERIOD позиций вместо пробела ставим точку.
+    bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
+
+    const char cSpace =  ' ';
+    const char cMarker = '.';
+
+    putc( (put_marker ? cMarker : cSpace), output );
   }
 }
 
@@ -1855,13 +1861,14 @@ void refalrts::vm::print_seq(
             }
             ++indent;
             after_bracket = true;
-            fprintf( output, "[ " );
+            reset_after_bracket = false;
+            fprintf( output, "[" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseADT:
             --indent;
-            fprintf( output, "] " );
+            fprintf( output, "]" );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1872,13 +1879,14 @@ void refalrts::vm::print_seq(
             }
             ++indent;
             after_bracket = true;
-            fprintf( output, "( " );
+            reset_after_bracket = false;
+            fprintf( output, "(" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseBracket:
             --indent;
-            fprintf( output, ") " );
+            fprintf( output, ")" );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1889,13 +1897,14 @@ void refalrts::vm::print_seq(
             }
             ++indent;
             after_bracket = true;
+            reset_after_bracket = false;
             fprintf( output, "<" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseCall:
             --indent;
-            fprintf( output, "> " );
+            fprintf( output, ">" );
             refalrts::move_left( begin, end );
             continue;
 
@@ -2255,6 +2264,8 @@ int main(int argc, char **argv) {
   refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
+
+  fflush(stdout);
   
   switch( res ) {
     case refalrts::cSuccess:
