@@ -1,8 +1,9 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccummulator, Inc, Map;
+$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccummulator, Inc, Map,
+  Fetch, Reduce;
 
 //FROM Library
-$EXTERN Chr, StrFromInt;
+$EXTERN Chr, StrFromInt, Mul, Add;
 
 LinearizeLine {
   (e.Line) = e.Line '\n';
@@ -76,9 +77,15 @@ $ENTRY StrFromToken {
 $ENUM
   TkLiteral-Char,
   TkLiteral-Code,
+  TkLiteral-OCode,
+  TkLiteral-XCode,
   TkLiteral-NewLine,
   TkLiteral-CarriageReturn,
   TkLiteral-Tab,
+  TkLiteral-Bell,
+  TkLiteral-BS,
+  TkLiteral-FF,
+  TkLiteral-VT,
   TkNewLine,
   TkPunctuation,
   TokenAccum,
@@ -95,6 +102,8 @@ NormalizeName {
   e.Name = e.Name;
 }
 
+$FORWARD CharFromNum;
+
 NormalizeToken {
   (TkDirective e.Directive) =
     <ValidDirective e.Directive>;
@@ -106,11 +115,19 @@ NormalizeToken {
   (TkLiteral-Code e.DecCode) =
     (TkChar <Chr <FastIntFromStr e.DecCode>>);
 
+  (TkLiteral-OCode e.OctCode) =
+    (TkChar <CharFromNum 8 e.OctCode>);
+
+  (TkLiteral-XCode e.HexCode) =
+    (TkChar <CharFromNum 16 e.HexCode>);
+
   (TkLiteral-NewLine 'n') = (TkChar '\n');
-
   (TkLiteral-CarriageReturn 'r') = (TkChar '\r');
-
   (TkLiteral-Tab 't') = (TkChar '\t');
+  (TkLiteral-Bell 'a') = (TkChar '\x07');
+  (TkLiteral-BS 'b') = (TkChar '\x08');
+  (TkLiteral-FF 'f') = (TkChar '\x0C');
+  (TkLiteral-VT 'v') = (TkChar '\x0b');
 
   (TkName e.Name) = (TkName <NormalizeName e.Name>);
 
@@ -130,6 +147,45 @@ NormalizeToken {
   (TokenUnexpected e.Unexpected) = (TkUnexpected e.Unexpected);
 
   (TokenUnexpectedEOF) = (TkError 'Unexpected EOF');
+}
+
+$FORWARD DoCharFromNum, DigitFromChar;
+
+CharFromNum {
+  s.Base e.Chars =
+    <Chr
+      <Reduce
+        {
+          s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
+        }
+        0 <Map DigitFromChar e.Chars>
+      >
+    >;
+}
+
+DoCharFromNum {
+  s.Base s.Accum s.First e.Digits =
+    <DoCharFromNum
+      s.Base
+      <Add <Mul s.Accum s.Base> s.First>
+      e.Digits
+    >;
+
+  s.Base s.Accum = s.Accum;
+}
+
+DigitFromChar {
+  s.Char =
+    <Fetch
+      (0 '0') (1 '1') (2 '2') (3 '3')
+      (4 '4') (5 '5') (6 '6') (7 '7')
+      (8 '8') (9 '9') (10 'Aa') (11 'Bb')
+      (12 'Cc') (13 'Dd') (14 'Ee') (15 'Ff')
+      {
+        e.Assoc-B (s.Digit e.Vars-B s.Char e.Vars-E) e.Assoc-E =
+          s.Digit;
+      }
+    >;
 }
 
 ValidDirective {
@@ -175,13 +231,16 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
   StartComment, VariableIndex, Punctuation, StringLiteral, DirectiveTail,
   DirectiveBody, StringLiteral-Escape, SL-E-C1, CComment, CppComment,
   VariableIndexTail, StringLiteral-Quote, CComment-CheckNested,
-  CComment-CheckEnd, StringLiteral-Escape-Code, SL-E-C2;
+  CComment-CheckEnd, StringLiteral-Escape-Code, SL-E-C2, SL-E-OC1,
+  SL-E-OC2, StringLiteral-Escape-OCode, StringLiteral-Escape-XCode;
 
 /*GEN:TOKENS
 
   :UpLetter: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
   :LoLetter: = 'abcdefghijklmnopqrstuvwxyz'.
   :Digit: = '0123456789'.
+  :ODigit: = '01234567' .
+  :XDigit: = '0123456789ABCDEFabcdef' .
   :Punctuation: = '<>(){}[]=;,#^'.
 
   :StartIdentifier: = :UpLetter:.
@@ -250,9 +309,18 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
     'n'     !TkLiteral-NewLine                  StringLiteral             |
     'r'     !TkLiteral-CarriageReturn           StringLiteral             |
     't'     !TkLiteral-Tab                      StringLiteral             |
+    'a'     !TkLiteral-Bell                     StringLiteral             |
+    'b'     !TkLiteral-BS                       StringLiteral             |
+    'f'     !TkLiteral-FF                       StringLiteral             |
+    'v'     !TkLiteral-VT                       StringLiteral             |
     '\\'    !TkLiteral-Char                     StringLiteral             |
     '\''    !TkLiteral-Char                     StringLiteral             |
+    '"'     !TkLiteral-Char                     StringLiteral             |
     'd'     !-                                  StringLiteral-Escape-Code |
+    'D'     !-                                  StringLiteral-Escape-Code |
+    :ODigit:                                    StringLiteral-Escape-OCode|
+    'x'     !-                                  StringLiteral-Escape-XCode|
+    'X'     !-                                  StringLiteral-Escape-XCode|
     '\n'    !"Unclosed quote"                   Root                      |
             !"Unexpected escape sequence"       StringLiteral             .
 
@@ -267,6 +335,22 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
   SL-E-C2 =
     :Digit: !TkLiteral-Code                     StringLiteral             |
             !TkLiteral-Code                     StringLiteral             .
+
+  StringLiteral-Escape-OCode =
+    :ODigit:                                    SL-E-OC1                  |
+            !TkLiteral-OCode                    StringLiteral             .
+
+  SL-E-OC1 =
+    :ODigit:                                    SL-E-OC2                  |
+            !TkLiteral-OCode                    StringLiteral             .
+
+  SL-E-OC2 =
+    :ODigit:!TkLiteral-OCode                    StringLiteral             |
+            !TkLiteral-OCode                    StringLiteral             .
+
+  StringLiteral-Escape-XCode =
+    :XDigit:                                    StringLiteral-Escape-XCode|
+            !TkLiteral-XCode                    StringLiteral             .
 
   StringLiteral-Quote =
     '\''    !TkLiteral-Char                     StringLiteral             |
@@ -727,9 +811,25 @@ StringLiteral-Escape {
   (e.Accum) 'n' e.Text = (TkLiteral-NewLine e.Accum 'n') <StringLiteral () e.Text>;
   (e.Accum) 'r' e.Text = (TkLiteral-CarriageReturn e.Accum 'r') <StringLiteral () e.Text>;
   (e.Accum) 't' e.Text = (TkLiteral-Tab e.Accum 't') <StringLiteral () e.Text>;
+  (e.Accum) 'a' e.Text = (TkLiteral-Bell e.Accum 'a') <StringLiteral () e.Text>;
+  (e.Accum) 'b' e.Text = (TkLiteral-BS e.Accum 'b') <StringLiteral () e.Text>;
+  (e.Accum) 'f' e.Text = (TkLiteral-FF e.Accum 'f') <StringLiteral () e.Text>;
+  (e.Accum) 'v' e.Text = (TkLiteral-VT e.Accum 'v') <StringLiteral () e.Text>;
   (e.Accum) '\\' e.Text = (TkLiteral-Char e.Accum '\\') <StringLiteral () e.Text>;
   (e.Accum) '\'' e.Text = (TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
+  (e.Accum) '\"' e.Text = (TkLiteral-Char e.Accum '\"') <StringLiteral () e.Text>;
   (e.Accum) 'd' e.Text = <StringLiteral-Escape-Code () e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Code () e.Text>;
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-OCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-OCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-OCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-OCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-OCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-OCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-OCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-OCode (e.Accum '7') e.Text>;
+  (e.Accum) 'x' e.Text = <StringLiteral-Escape-XCode () e.Text>;
+  (e.Accum) 'X' e.Text = <StringLiteral-Escape-XCode () e.Text>;
   (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Root () e.Text >;
   (e.Accum) e.Text = (TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -778,6 +878,52 @@ StringLiteral-Escape-Code {
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
+StringLiteral-Escape-OCode {
+  (e.Accum) '0' e.Text = <SL-E-OC1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-OC1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-OC1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-OC1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-OC1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-OC1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-OC1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-OC1 (e.Accum '7') e.Text>;
+  (e.Accum) e.Text =
+    (TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
+  (e.Accum) s.Unexpected e.Text = 
+    (TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
+}
+
+StringLiteral-Escape-XCode {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-XCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-XCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-XCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-XCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-XCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-XCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-XCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-XCode (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-XCode (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-XCode (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <StringLiteral-Escape-XCode (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <StringLiteral-Escape-XCode (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <StringLiteral-Escape-XCode (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-XCode (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <StringLiteral-Escape-XCode (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <StringLiteral-Escape-XCode (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <StringLiteral-Escape-XCode (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <StringLiteral-Escape-XCode (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <StringLiteral-Escape-XCode (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-XCode (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <StringLiteral-Escape-XCode (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <StringLiteral-Escape-XCode (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text =
+    (TkLiteral-XCode e.Accum) <StringLiteral () e.Text>;
+  (e.Accum) s.Unexpected e.Text = 
+    (TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
+}
+
 SL-E-C1 {
   (e.Accum) '0' e.Text = <SL-E-C2 (e.Accum '0') e.Text>;
   (e.Accum) '1' e.Text = <SL-E-C2 (e.Accum '1') e.Text>;
@@ -796,6 +942,22 @@ SL-E-C1 {
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
+SL-E-OC1 {
+  (e.Accum) '0' e.Text = <SL-E-OC2 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-OC2 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-OC2 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-OC2 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-OC2 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-OC2 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-OC2 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-OC2 (e.Accum '7') e.Text>;
+  (e.Accum) e.Text =
+    (TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
+  (e.Accum) s.Unexpected e.Text = 
+    (TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
+}
+
 SL-E-C2 {
   (e.Accum) '0' e.Text = (TkLiteral-Code e.Accum '0') <StringLiteral () e.Text>;
   (e.Accum) '1' e.Text = (TkLiteral-Code e.Accum '1') <StringLiteral () e.Text>;
@@ -809,6 +971,22 @@ SL-E-C2 {
   (e.Accum) '9' e.Text = (TkLiteral-Code e.Accum '9') <StringLiteral () e.Text>;
   (e.Accum) e.Text =
     (TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
+  (e.Accum) s.Unexpected e.Text = 
+    (TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
+}
+
+SL-E-OC2 {
+  (e.Accum) '0' e.Text = (TkLiteral-OCode e.Accum '0') <StringLiteral () e.Text>;
+  (e.Accum) '1' e.Text = (TkLiteral-OCode e.Accum '1') <StringLiteral () e.Text>;
+  (e.Accum) '2' e.Text = (TkLiteral-OCode e.Accum '2') <StringLiteral () e.Text>;
+  (e.Accum) '3' e.Text = (TkLiteral-OCode e.Accum '3') <StringLiteral () e.Text>;
+  (e.Accum) '4' e.Text = (TkLiteral-OCode e.Accum '4') <StringLiteral () e.Text>;
+  (e.Accum) '5' e.Text = (TkLiteral-OCode e.Accum '5') <StringLiteral () e.Text>;
+  (e.Accum) '6' e.Text = (TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
+  (e.Accum) '7' e.Text = (TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
+  (e.Accum) e.Text =
+    (TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);

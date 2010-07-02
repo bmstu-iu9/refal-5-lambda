@@ -1,2 +1,2 @@
-..\Compiler\srefc -c "compile_bcc -I../SRLib" -d ..\SRLib LexGen.sref Generator.sref Library LibraryEx refalrts
+..\Compiler\srefc -c "compile_bcc -I../SRLib" -d ..\SRLib LexGen.sref Generator.sref Library LibraryEx refalrts Escape
 del *.obj

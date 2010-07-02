@@ -540,21 +540,13 @@ WriteAlternative {
     );
 }
 
+//FROM Escape
+$EXTERN EscapeChar;
+
 //EscapeChar
 EC {
   Any = 's.Any';
-
-  '\n' = '' '\\n' '';
-
-  '\t' = '' '\\t' '';
-
-  '\r' = '' '\\r' '';
-
-  '' = '' '\\' '' '';
-
-  '\\' = '' '\\\\' '';
-
-  s.Other = '' s.Other '';
+  s.Other = '' <EscapeChar s.Other> '';
 }
 
 

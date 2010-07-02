@@ -1,0 +1,35 @@
+//FROM Library
+$EXTERN Div, Mod, Ord, Compare;
+
+//FROM LibraryEx
+$EXTERN Fetch;
+
+HexDigit {
+  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3'; 4 = '4';
+  5 = '5'; 6 = '6'; 7 = '7'; 8 = '8'; 9 = '9';
+  10 = 'A'; 11 = 'B'; 12 = 'C';
+  13 = 'D'; 14 = 'E'; 15 = 'F';
+}
+
+//EscapeChar
+$ENTRY EscapeChar {
+  '\n' = '\\n';
+  '\t' = '\\t';
+  '\r' = '\\r';
+  '' = '\\' '';
+  '"' = '\\' '"';
+  '\\' = '\\\\';
+
+  s.Other =
+    <Fetch
+      <Compare s.Other ' '> <Ord s.Other>
+      {
+        '<' s.Code =
+          '\\x'
+          <HexDigit <Div s.Code 16>>
+          <HexDigit <Mod s.Code 16>>;
+
+        s.Compare s.Code = s.Other;
+      }
+    >;
+}

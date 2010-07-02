@@ -1,0 +1,18 @@
+-c
+compile_bcc -I..\Libraries.sr -DINTERPRET1 
+-d
+..\Libraries.sr
+Srefc.sref
+Driver.sref
+Lexer.sref
+Algorithm.sref
+Error.sref
+Generator.sref
+SymTable.sref
+FindFile
+ParseCmdLine
+Context.sref
+Library
+LibraryEx
+refalrts.cpp
+Escape
