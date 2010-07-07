@@ -4,11 +4,9 @@ $EXTERN Div, Mod, Ord, Compare;
 //FROM LibraryEx
 $EXTERN Fetch;
 
-HexDigit {
-  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3'; 4 = '4';
-  5 = '5'; 6 = '6'; 7 = '7'; 8 = '8'; 9 = '9';
-  10 = 'A'; 11 = 'B'; 12 = 'C';
-  13 = 'D'; 14 = 'E'; 15 = 'F';
+OctDigit {
+  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3';
+  4 = '4'; 5 = '5'; 6 = '6'; 7 = '7';
 }
 
 //EscapeChar
@@ -25,9 +23,10 @@ $ENTRY EscapeChar {
       <Compare s.Other ' '> <Ord s.Other>
       {
         '<' s.Code =
-          '\\x'
-          <HexDigit <Div s.Code 16>>
-          <HexDigit <Mod s.Code 16>>;
+          '\\'
+          <OctDigit <Div s.Code 64>>
+          <OctDigit <Mod <Div s.Code 8> 8>>
+          <OctDigit <Mod s.Code 8>>;
 
         s.Compare s.Code = s.Other;
       }

@@ -817,7 +817,7 @@ StringLiteral-Escape {
   (e.Accum) 'v' e.Text = (TkLiteral-VT e.Accum 'v') <StringLiteral () e.Text>;
   (e.Accum) '\\' e.Text = (TkLiteral-Char e.Accum '\\') <StringLiteral () e.Text>;
   (e.Accum) '\'' e.Text = (TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
-  (e.Accum) '\"' e.Text = (TkLiteral-Char e.Accum '\"') <StringLiteral () e.Text>;
+  (e.Accum) '"' e.Text = (TkLiteral-Char e.Accum '"') <StringLiteral () e.Text>;
   (e.Accum) 'd' e.Text = <StringLiteral-Escape-Code () e.Text>;
   (e.Accum) 'D' e.Text = <StringLiteral-Escape-Code () e.Text>;
   (e.Accum) '0' e.Text = <StringLiteral-Escape-OCode (e.Accum '0') e.Text>;

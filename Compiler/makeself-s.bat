@@ -1,5 +1,5 @@
 @echo off
-..\lexgen\lexgen Lexer.sref
+LexGen.exe Lexer.sref
 copy srefc.exe srefc_.exe
 srefc.s @srefc.prj
 del *.obj

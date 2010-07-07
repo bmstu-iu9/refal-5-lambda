@@ -1,89 +1,175 @@
-$FORWARD DoParseCommandLine, FindFiles-Compilers;
+$FORWARD DoParseCommandLine, CollectorObject;
+
+$LABEL CCompileCommand, CErrorFile, CNone;
 
 /**
   <ParseCommandLine e.Arguments>
-    == t.Compiler (e.Folders) t.FoundedFile*
+    == s.CommandLineInfo (e.Folders) t.FoundedFile*
     == (CmdLineError e.Message)
 
   t.FoundedFile -- см. в FindFile
-  t.Compiler ::= (NoCompile) | (CompileCommand e.Command)
+
+  <s.CommandLineInfo #CCompilerCommand>
+    == #CNone
+    == e.Command
+
+  <s.CommandLineInfo #CErrorFile>
+    == #CNone
+    == e.FileName
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
-    <DoParseCommandLine (/* files */) (/* folders */) e.Arguments>;
+    <DoParseCommandLine
+      CollectorObject (/* files */) (/* folders */) e.Arguments
+    >;
 }
 
-$EENUM NoCompile, CompileCommand, CmdLineError;
+$EENUM CmdLineError;
 
-$FORWARD DoParseFileNames, DoParseFileNamesOnly;
+$LABEL CAddCompileCommand, CAddErrorFile, CGetInfo;
+
+$FORWARD DoParseFileNamesOnly;
 
 DoParseCommandLine {
-  (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Files =
-    <DoParseFileNames
-      (CompileCommand e.CompileCommand) (e.ScannedFiles) (e.Folders) e.Files
+  s.Collector (e.Files) (e.Folders) ('-c') (e.CompileCommand) e.Arguments =
+    <DoParseCommandLine
+      <s.Collector #CAddCompileCommand e.CompileCommand>
+      (e.Files) (e.Folders) e.Arguments
     >;
 
-  (e.ScannedFiles) (e.Folders) ('-c') =
+  s.Collector (e.Files) (e.Folders) ('-c') =
     (CmdLineError 'After option ''-c'' expected C++ compiler command line');
 
-  (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
+  s.Collector (e.Files) (e.Folders) ('-e') (e.ErrorFile) e.Arguments =
     <DoParseCommandLine
-      (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
+      <s.Collector #CAddErrorFile e.ErrorFile>
+      (e.Files) (e.Folders) e.Arguments
     >;
 
-  (e.ScannedFiles) (e.Folders) ('-d') =
+  s.Collector (e.Files) (e.Folders) ('-e') =
+    (CmdLineError 'After option ''-e'' expected name of error flag file');
+
+  s.Collector (e.Files) (e.Folders) ('-d') (e.Directory) e.Arguments =
+    <DoParseCommandLine
+      s.Collector (e.Files) (e.Folders (e.Directory)) e.Arguments
+    >;
+
+  s.Collector (e.Files) (e.Folders) ('-d') =
     (CmdLineError 'After option ''-d'' expected find directory');
 
-  (e.ScannedFiles) (e.Folders) ('--') e.Options =
+  s.Collector (e.Files) (e.Folders) ('--') e.Arguments =
     <DoParseFileNamesOnly
-      (NoCompile) (e.ScannedFiles) (e.Folders) e.Options
+      s.Collector (e.Files) (e.Folders) e.Arguments
     >;
 
-  (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
+  s.Collector (e.Files) (e.Folders) (e.NextFileName) e.Arguments =
     <DoParseCommandLine
-       (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
+      s.Collector (e.Files (e.NextFileName)) (e.Folders) e.Arguments
     >;
 
-  (e.ScannedFiles) (e.Folders) = (NoCompile) (e.Folders) e.ScannedFiles;
-}
-
-DoParseFileNames {
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Options =
-    (CmdLineError 'Multiple declaration of C++ compiler command line');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') =
-    (CmdLineError 'After option ''-c'' expected C++ compiler command line');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
-    <DoParseFileNames
-      t.Compiler (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') =
-    (CmdLineError 'After option ''-d'' expected find directory');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('--') e.Files =
-    <DoParseFileNamesOnly
-      t.Compiler (e.ScannedFiles) (e.Folders) e.Files
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
-    <DoParseFileNames
-      t.Compiler (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) =
-    t.Compiler (e.Folders) e.ScannedFiles;
+  s.Collector (e.Files) (e.Folders) =
+    <s.Collector #CGetInfo (e.Folders) e.Files>;
 }
 
 DoParseFileNamesOnly {
-  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Files =
+  s.Collector (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Files =
     <DoParseFileNamesOnly
-      t.Compiler
+      s.Collector
       (e.ScannedFiles (e.NextFileName)) e.Files
     >;
 
-  t.Compiler (e.ScannedFiles) (e.Folders) =
-    t.Compiler (e.Folders) e.ScannedFiles;
+  s.Collector (e.ScannedFiles) (e.Folders) =
+    <s.Collector #CGetInfo (e.Folders) e.ScannedFiles>;
 }
 
+//------------------------------------------------------------------------------
+
+$FORWARD Collector-Compiler, Collector-ErrorFile;
+
+CollectorObject {
+  #CAddCompileCommand e.Command = <Collector-Compiler e.Command>;
+
+  #CAddErrorFile e.ErrorFile = <Collector-ErrorFile e.ErrorFile>;
+
+  #CGetInfo (e.Folders) e.Files =
+    {
+      #CCompileCommand = #CNone;
+      #CErrorFile = #CNone;
+    }
+    (e.Folders) e.Files;
+}
+
+$FORWARD Collector-Error-CC, Collector-Compiler-ErrorFile;
+
+Collector-Compiler {
+  e.Command =
+    {
+      #CAddCompileCommand e.NewCommand = <Collector-Error-CC>;
+
+      #CAddErrorFile e.ErrorFile =
+        <Collector-Compiler-ErrorFile (e.Command) (e.ErrorFile)>;
+
+      #CGetInfo (e.Folders) e.Files =
+        {
+          #CCompileCommand = e.Command;
+          #CErrorFile = #CNone;
+        }
+        (e.Folders) e.Files;
+    };
+}
+
+$FORWARD Collector-Error;
+
+Collector-Error-CC {
+  = <Collector-Error 'Multiple declaration of C++ compiler command line'>;
+}
+
+$FORWARD Collector-Error-EF;
+
+Collector-ErrorFile {
+  e.ErrorFile =
+    {
+      #CAddCompileCommand e.Command =
+        <Collector-Compiler-ErrorFile (e.Command) (e.ErrorFile)>;
+
+      #CAddErrorFile e.ErrorFile = Collector-Error-EF;
+
+      #CGetInfo (e.Folders) e.Files =
+        {
+          #CCompileCommand = #CNone;
+          #CErrorFile = e.ErrorFile;
+        }
+        (e.Folders) e.Files;
+    };
+}
+
+Collector-Error-EF {
+  = <Collector-Error 'Multiple declaration of error flag file name'>;
+}
+
+Collector-Compiler-ErrorFile {
+  (e.Command) (e.ErrorFile) =
+    {
+      #CAddCompileCommand e.NewCommand = <Collector-Error-CC>;
+
+      #CAddErrorFile e.NewFile = <Collector-Error-EF>;
+
+      #CGetInfo (e.Folders) e.Files =
+        {
+          #CCompileCommand = e.Command;
+          #CErrorFile = e.ErrorFile;
+        }
+        (e.Folders) e.Files;
+    };
+}
+
+Collector-Error {
+  e.Message =
+    {
+      #CAddCompileCommand e.Command = <Collector-Error e.Message>;
+
+      #CAddErrorFile e.ErrorFile = <Collector-Error e.Message>;
+
+      #CGetInfo (e.Folders) e.Files = (CmdLineError e.Message);
+    };
+}
