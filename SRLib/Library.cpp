@@ -945,6 +945,9 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( read_res != refalrts::cSuccess )
       return read_res;
 
+    fflush(stdout);
+    fflush(stderr);
+
     system( &command[0] );
 
     refalrts::reset_allocator();

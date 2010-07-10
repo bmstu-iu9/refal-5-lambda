@@ -1,7 +1,9 @@
 -c
-compile_bcc -I..\Libraries.sr -DINTERPRET1 
+compile_bcc -I../Runtime/all.cpp -DINTERPRET1 
 -d
-..\Libraries.sr
+../Libraries.sr
+-d
+../Runtime/all.cpp
 Srefc.sref
 Driver.sref
 Lexer.sref

@@ -1757,6 +1757,26 @@ refalrts::FnResult refalrts::vm::execute_active(
   }
 }
 
+namespace {
+
+void print_indent(FILE *output, unsigned level)
+{
+  enum { cPERIOD = 4 };
+  putc( '\n', output );
+  for( unsigned i = 0; i < level; ++i )
+  {
+    // Каждые cPERIOD позиций вместо пробела ставим точку.
+    bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
+
+    const char cSpace =  ' ';
+    const char cMarker = '.';
+
+    putc( (put_marker ? cMarker : cSpace), output );
+  }
+}
+
+} // unnamed namespace
+
 void refalrts::vm::print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1766,7 +1786,21 @@ void refalrts::vm::print_seq(
     cStateFinish
   } state = cStateView;
 
+  unsigned indent = 0;
+  bool after_bracket = false;
+  bool reset_after_bracket = true;
+
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
+    if( reset_after_bracket )
+    {
+      after_bracket = false;
+      reset_after_bracket = false;
+    }
+
+    if( after_bracket )
+    {
+      reset_after_bracket = true;
+    }
 
     switch( state ) {
       case cStateView:
@@ -1821,31 +1855,56 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenADT:
-            fprintf( output, "[ " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "[" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseADT:
-            fprintf( output, "] " );
+            --indent;
+            fprintf( output, "]" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenBracket:
-            fprintf( output, "( " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "(" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseBracket:
-            fprintf( output, ") " );
+            --indent;
+            fprintf( output, ")" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenCall:
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
             fprintf( output, "<" );
             refalrts::move_left( begin, end );
             continue;
+
           case refalrts::cDataCloseCall:
-            fprintf( output, "> " );
+            --indent;
+            fprintf( output, ">" );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1940,12 +1999,17 @@ void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   print_seq( stderr, begin, end );
   fprintf( stderr, "\nVIEW FIELD:\n" );
   print_seq( stderr, & g_first_marker, & g_last_marker );
+
+#ifdef DUMP_FREE_LIST
+
   fprintf( stderr, "\nFREE LIST:\n" );
   print_seq(
     stderr,
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
+
+#endif //ifdef DUMP_FREE_LIST
 
   fprintf( stderr,"\nEnd dump\n");
   fflush(stderr);
@@ -2200,6 +2264,8 @@ int main(int argc, char **argv) {
   refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
+
+  fflush(stdout);
   
   switch( res ) {
     case refalrts::cSuccess:

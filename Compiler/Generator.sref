@@ -98,7 +98,7 @@ $ENTRY GenIdent {
   e.Name =
     ('//$LABEL ' e.Name)
     ('template <typename T>')
-    ('struct ' e.Name 'L_ {')
+    ('struct ' e.Name ' {')
     ('  static const char *name() {')
     ('    return "' e.Name '";')
     ('  }')

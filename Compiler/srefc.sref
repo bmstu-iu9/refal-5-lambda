@@ -46,8 +46,6 @@ $LABEL CCompileCommand, CNone, CErrorFile;
 
 $FORWARD PrintNotFound, ForEach, RenameFiles, Link;
 
-adfadfafdadfafdafa
-
 FindFiles-Compilers {
   (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
