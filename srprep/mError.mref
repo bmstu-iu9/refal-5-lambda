@@ -1,6 +1,6 @@
 $MODULE MError;
 
-$IMPORT InOut;
+$IMPORT InOut = MInOut;
 $IMPORT MOS;
 
 $ENTRY Unexpected

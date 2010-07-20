@@ -7,12 +7,15 @@ $EXTERN Map, ArgList;
 //FROM Library
 $EXTERN Success, Fails, WriteLine, System, Exit;
 
+//FROM Version
+$EXTERN ShowVersion;
+
 //------------------------------------------------------------------------------
 
 $FORWARD Main;
 
 $ENTRY Go {
-  = <Main <ArgList>>;
+  = <ShowVersion> <Main <ArgList>>;
 }
 
 $FORWARD FindFiles-Compilers;

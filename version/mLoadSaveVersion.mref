@@ -1,0 +1,237 @@
+$MODULE MLoadSaveVersion;
+
+$IMPORT FileIO = MFileIO;
+$IMPORT Math = MMath;
+$IMPORT MFileSystem;
+$IMPORT MStrings;
+
+//------------------------------------------------------------------------------
+
+$DATA Version; // t.Version ::= [Version s.Major s.Minor s.BuildNumber]
+
+/**
+  <Load e.FileName> ==
+    t.Version
+*/
+$ENTRY Load
+  e.FileName =
+    <CheckExist
+      <MFileSystem::ExistFile-T e.FileName>
+    >;
+
+CheckExist {
+  True e.FileName =
+    <ParseNumber
+      <FileIO::Load e.FileName>
+    >;
+
+  False e.FileName =
+    <Default>;
+}
+
+ParseNumber {
+  (e.FirstLine) () =
+    <ParseNumber (e.FirstLine)>;
+
+  (e.FirstLine) =
+    <ParseLine e.FirstLine>;
+
+  e.Other =
+    [Version 100 199 2323];
+}
+
+ParseLine {
+  e.Major '.' e.Minor '.' e.BuildNumber =
+    <CheckLoaded
+      (<IsNumber e.Major>)
+      (<IsNumber e.Minor>)
+      (<IsNumber e.BuildNumber>)
+    >;
+
+  e.Other = <Default>;
+}
+
+CheckLoaded {
+  (Number s.Major) (Number s.Minor) (Number s.Build) =
+    [Version s.Major s.Minor s.Build];
+
+  e.Other =
+    <Default>;
+}
+
+Numbers = '0123456789';
+
+IsNumber e.Digits = <DoIsNumber (<Numbers>) () e.Digits>;
+
+DoIsNumber {
+  (e.Digits-B s.NextDigit e.Digits-E)
+  (e.ScannedDigits) s.NextDigit e.NotYetScanned =
+    <DoIsNumber
+      (e.Digits-B s.NextDigit e.Digits-E)
+      (e.ScannedDigits s.NextDigit) e.NotYetScanned
+    >;
+
+  (e.Digits) (e.DigitLine) =
+    <ValidConvertion
+      (<MStrings::Numb e.DigitLine>)
+      e.DigitLine
+    >;
+
+  (e.Digits) (e.ScannedDigits) e.Tail =
+    String e.ScannedDigits e.Tail;
+}
+
+ValidConvertion {
+  (s.OneMacroNumber) e.DigitLine =
+    Number s.OneMacroNumber;
+
+  (e.MacroNumbers) e.DigitLine =
+    String e.DigitLine;
+}
+
+Default = [Version 0 0 0];
+
+//------------------------------------------------------------------------------
+
+/**
+  <Increment t.Version>
+    == t.UpdatedVersion
+*/
+$ENTRY Increment
+  [Version s.Major s.Minor s.BuildNumber] =
+    [Version
+      s.Major s.Minor
+      <Math::Inc s.BuildNumber>
+    ];
+
+//------------------------------------------------------------------------------
+
+/**
+  <Save t.Version e.FileName>
+    == empty
+*/
+$ENTRY Save
+  [Version s.Major s.Minor s.BuildNumber]
+  e.FileName =
+    <FileIO::Save
+      (e.FileName)
+      (<ToString s.Major s.Minor s.BuildNumber>)
+    >;
+
+ToString
+  s.Major s.Minor s.BuildNumber =
+    <MStrings::Symb s.Major>
+    '.' <MStrings::Symb s.Minor>
+    '.' <MStrings::Symb s.BuildNumber>;
+
+//------------------------------------------------------------------------------
+
+/**
+  <UpdateSource
+    t.Version e.SourceName
+  > == t.Version s.Result
+  s.Result ::= Success | ErrorInFile
+*/
+$ENTRY UpdateSource
+  [Version s.Major s.Minor s.BuildNumber]
+  e.SourceName =
+    [Version s.Major s.Minor s.BuildNumber]
+    <SaveIfSuccess
+      (e.SourceName)
+      <ScanFile
+        s.Major s.Minor s.BuildNumber
+        ( /* Scanned lines */ )
+        <FileIO::Load e.SourceName>
+      >
+    >;
+
+SaveIfSuccess {
+  (e.SourceName) ErrorInFile =
+    ErrorInFile;
+
+  (e.SourceName) e.Lines =
+    <FileIO::Save (e.SourceName) e.Lines>
+    Success;
+}
+
+ScanFile {
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  ('//{{GEN:VERSION') e.Lines =
+    <ScanForEndTag
+      s.Major s.Minor s.BuildNumber
+      (e.Scanned ('//{{GEN:VERSION'))
+      e.Lines
+    >;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  ('//{{GEN:' e.OtherTag) e.Lines =
+    ErrorInFile;
+
+  s.?Major s.?Minor s.?BuildNumber
+  (e.?Scanned)
+  ('//}}GEN') e.Lines =
+    ErrorInFile;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  (e.NextLine) e.Lines =
+    <ScanFile
+      s.Major s.Minor s.BuildNumber
+      (e.Scanned (e.NextLine))
+      e.Lines
+    >;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned) =
+    e.Scanned;
+}
+
+ScanForEndTag {
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  ('//}}GEN') e.Lines =
+    <ScanFile
+      s.Major s.Minor s.BuildNumber
+      (e.Scanned
+        <Generate s.Major s.Minor s.BuildNumber>
+        ('//}}GEN')
+      ) e.Lines
+    >;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  (e.OtherLine) e.Lines =
+    <ScanForEndTag
+      s.Major s.Minor s.BuildNumber
+      (e.Scanned) e.Lines
+    >;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned)
+  ('//{{GEN:' e.GenerationTag) e.Lines =
+    <ScanFile
+      s.Major s.Minor s.BuildNumber
+      (e.Scanned
+        <Generate s.Major s.Minor s.BuildNumber>
+        ('//}}GEN')
+      ) ('//{{GEN:' e.GenerationTag) e.Lines
+    >;
+
+  s.Major s.Minor s.BuildNumber
+  (e.Scanned) =
+    e.Scanned
+    <Generate s.Major s.Minor s.BuildNumber>
+    ('//}}GEN');
+}
+
+Generate
+  s.Major s.Minor s.BuildNumber =
+    ()
+    ('VerNumber { = \''
+      <ToString s.Major s.Minor s.BuildNumber> '\'; }'
+    )
+    ();
+
+$END MLoadSaveVersion.

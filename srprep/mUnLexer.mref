@@ -1,11 +1,11 @@
 $MODULE MUnLexer;
 
-$IMPORT FileIO;
+$IMPORT MFileIO;
 $IMPORT MLambda;
 
 $ENTRY Write
   (e.FileName) e.Tokens =
-    <FileIO::Save
+    <MFileIO::Save
       (e.FileName)
       ( <MLambda::Map &TokenToText e.Tokens> )
     >;

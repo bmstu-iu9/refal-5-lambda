@@ -1,6 +1,6 @@
 $MODULE MPreprocessor;
 
-$IMPORT InOut;
+$IMPORT InOut = MInOut;
 $IMPORT MLambda;
 
 $IMPORT MError;

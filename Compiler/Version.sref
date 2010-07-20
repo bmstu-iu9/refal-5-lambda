@@ -1,0 +1,18 @@
+//FROM Library
+$EXTERN WriteLine;
+
+$FORWARD VerNumber;
+
+$ENTRY ShowVersion {
+  =
+    <WriteLine
+      'Simple Refal, part of Module Refal ' <VerNumber>
+      ' (c) Mazdaywik 2008-2010'
+    >;
+}
+
+//{{GEN:VERSION
+
+VerNumber { = '0.1.973'; }
+
+//}}GEN

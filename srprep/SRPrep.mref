@@ -1,17 +1,20 @@
 $PROGRAM SRPrep;
 
-$IMPORT InOut;
+$IMPORT MInOut;
 $IMPORT MLambda;
 $IMPORT MOS;
 
 $IMPORT MLocation;
 $IMPORT MPreprocessor;
+$IMPORT MUtilitiesBanner;
 
-$ENTRY Go = <Main <MOS::ArgList>>;
+$ENTRY Go =
+  <MUtilitiesBanner::Type 'SRPrep'>
+  <Main <MOS::ArgList>>;
 
 Main {
   (e.ProgName) =
-    <InOut::WriteText
+    <MInOut::WriteText
       ('Command line error')
       ('Use: ' e.ProgName ' mainsrc [optsrc1 [optsrc2 ...]]')
     >;

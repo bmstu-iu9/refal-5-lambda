@@ -4,11 +4,14 @@ $EXTERN WriteLine, System;
 //FROM LibraryEx
 $EXTERN ArgList, Map;
 
-//FROM FileScanner
+//FROM SRMake_FileScanner
 $EXTERN CreateFileList;
 
-//FROM ParseCmdLine
+//FROM SRMake_ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
+
+//FROM sUtilitiesBanner
+$EXTERN TypeBanner;
 
 $FORWARD Main;
 
@@ -18,6 +21,7 @@ $FORWARD MakeProject;
 
 Main {
   (e.Program) e.Arguments =
+    <TypeBanner 'SRMake'>
     <MakeProject
       <ParseCommandLine e.Arguments>
     >;

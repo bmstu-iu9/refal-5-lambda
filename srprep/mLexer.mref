@@ -1,8 +1,8 @@
 $MODULE MLexer;
 
-$IMPORT FileIO;
+$IMPORT MFileIO;
 $IMPORT MLambda;
-$IMPORT Types;
+$IMPORT Types = MStrings;
 
 $ENTRY Tokens
   e.FileName =
@@ -27,7 +27,7 @@ ConcatFreeAndValue {
 
 LoadFile
   e.FileName =
-    <MLambda::Map &ToPlain <FileIO::Load e.FileName>>;
+    <MLambda::Map &ToPlain <MFileIO::Load e.FileName>>;
 
 ToPlain
   (e.Line) = e.Line '\n';

@@ -9,8 +9,11 @@ $EXTERN ArgList;
 //FROM Library
 $EXTERN WriteLine;
 
-//FROM Generator
+//FROM LexGen_Generator
 $EXTERN Generate;
+
+//FROM sUtilitiesBanner
+$EXTERN TypeBanner;
 
 Main {
   (e.ProgName) (e.File) =
@@ -20,5 +23,7 @@ Main {
 }
 
 $ENTRY Go {
-  = <Main <ArgList>>;
+  =
+    <TypeBanner 'LexGen'>
+    <Main <ArgList>>;
 }

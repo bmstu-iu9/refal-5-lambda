@@ -4,6 +4,8 @@ compile_bcc -I../Runtime/all.cpp -DINTERPRET1
 ../Libraries.sr
 -d
 ../Runtime/all.cpp
+-e
+__has_errors__
 Srefc.sref
 Driver.sref
 Lexer.sref
