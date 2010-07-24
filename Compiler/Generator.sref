@@ -97,7 +97,7 @@ GenSwap-Aux {
 $ENTRY GenIdent {
   e.Name =
     ('//$LABEL ' e.Name)
-    ('template <typename T>')
+    ('template <typename SREFAL_PARAM_INT>')
     ('struct ' e.Name ' {')
     ('  static const char *name() {')
     ('    return "' e.Name '";')
