@@ -13,6 +13,6 @@ $ENTRY ShowVersion {
 
 //{{GEN:VERSION
 
-VerNumber { = '0.1.977'; }
+VerNumber { = '0.1.978'; }
 
 //}}GEN
