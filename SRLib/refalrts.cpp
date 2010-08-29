@@ -1410,7 +1410,7 @@ ChunkPtr g_pool = 0;
 unsigned g_avail = 0;
 refalrts::Node *g_pnext_node = 0;
 
-}
+} // namespace pool
 
 unsigned g_memory_use = 0;
 
@@ -1461,6 +1461,14 @@ void refalrts::allocator::splice_to_freelist(
 bool refalrts::allocator::create_nodes() {
   refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
 
+#ifdef MEMORY_LIMIT
+
+  if( g_memory_use >= MEMORY_LIMIT ) {
+    return false;
+  }
+
+#endif //ifdef MEMORY_LIMIT
+
   if( new_node == 0 ) {
     return false;
   } else {
@@ -1481,7 +1489,14 @@ bool refalrts::allocator::create_nodes() {
 
 void refalrts::allocator::free_memory() {
   refalrts::allocator::pool::free();
-  fprintf( stderr, "Memory used %d bytes\n", g_memory_use * sizeof(Node) );
+  fprintf(
+    stderr,
+    "Memory used %d nodes, %d * %d = %d bytes\n",
+    g_memory_use,
+    g_memory_use,
+    sizeof(Node),
+    g_memory_use * sizeof(Node)
+  );
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
