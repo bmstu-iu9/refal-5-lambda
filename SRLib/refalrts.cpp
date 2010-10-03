@@ -2295,6 +2295,8 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
+    fflush(stderr);
+    fflush(stdout);
   } catch ( refalrts::UnexpectedTypeException ) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
