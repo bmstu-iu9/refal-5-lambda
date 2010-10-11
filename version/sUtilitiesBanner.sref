@@ -15,6 +15,6 @@ $ENTRY TypeBanner {
 
 //{{GEN:VERSION
 
-VerNumber { = '0.1.121'; }
+VerNumber { = '0.2.122'; }
 
 //}}GEN
