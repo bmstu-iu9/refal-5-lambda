@@ -306,6 +306,8 @@ $LABEL CLambdaScope;
 //FROM LibraryEx
 $EXTERN Fetch;
 
+$FORWARD CreateLambdaName;
+
 ParseFunction-Aux {
   s.ScopeClass (e.Name)
   (s.NextNumber e.FunctionBodies t.MainBody)
@@ -334,7 +336,7 @@ ParseFunction-Aux {
     <ParseElements t.ErrorList t.SymTable e.Tail>;
 }
 
-$FORWARD CreateLambdaName, GenFunctionBody-Aux;
+$FORWARD GenFunctionBody-Aux;
 
 GenFunctionBody {
   # CLambdaScope e.Name (s.Number e.Sentences) =
@@ -363,11 +365,16 @@ $EXTERN TkVariable;
 $FORWARD PrepareAndGenSentence;
 
 GenFunctionBody-Aux {
+  // Закомментированный код содержит вариант кодогенерации,
+  // при котором если последнее предложение имеет вид
+  // e.X = ...;, в конце не генерится возврат
+  // return RecognitionImpossible;
+
   //s.ScopeClass (e.MainName) (e.Name)
   //e.Sentences (((TkVariable 'e' e.Index)) (e.Result)) =
   //  <GenFnStart s.ScopeClass e.Name>
   //  <Map
-  //    (PrepareAndGenSentence e.MainName)
+  //    <PrepareAndGenSentence e.MainName>
   //    e.Sentences
   //    (((TkVariable 'e' e.Index)) (e.Result))
   //  >
@@ -376,7 +383,7 @@ GenFunctionBody-Aux {
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
     <Map
-      (PrepareAndGenSentence e.MainName) e.Sentences
+      <PrepareAndGenSentence e.MainName> e.Sentences
     >
     <GenFnEnd>;
 }
@@ -384,27 +391,32 @@ GenFunctionBody-Aux {
 //FROM Algorithm
 $EXTERN MakeAlgorithm;
 
-$FORWARD InsertMainName;
-
-PrepareAndGenSentence {
-  e.MainName ((e.Pattern) (e.Result)) =
-    <GenSentence
-      <MakeAlgorithm
-        (e.Pattern) (<Map (InsertMainName e.MainName) e.Result>)
-      >
-    >;
-}
-
 //FROM Lexer
 $EXTERN TkName, TkVariable;
 
 $LABEL CLambdaName;
 
-InsertMainName {
-  e.MainName (TkName # CLambdaName s.Number) =
-    (TkName <CreateLambdaName e.MainName s.Number>);
+PrepareAndGenSentence {
+  e.MainName =
+    {
+      ((e.Pattern) (e.Result)) =
+        <GenSentence
+          <MakeAlgorithm
+            (e.Pattern)
+            (
+              <Map
+                {
+                  (TkName # CLambdaName s.Number) =
+                    (TkName <CreateLambdaName e.MainName s.Number>);
 
-  e.MainName t.OtherToken = t.OtherToken;
+                  t.OtherToken = t.OtherToken;
+                }
+                e.Result
+              >
+            )
+          >
+        >;
+    };
 }
 
 $FORWARD DoParseBlock, ParseBlock-SetContext;
@@ -469,7 +481,9 @@ DoParseBlock {
     ( <Cntx-PopScope t.Context> )
     (TkEOF s.LnNum) e.Tail;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context (e.Sentences) e.Tokens =
+  (e.Functions)
+  t.ErrorList t.SymTable t.Context
+  (e.Sentences) e.Tokens =
     <DoParseBlock
       <ParseSentence
         (e.Functions) t.ErrorList t.SymTable t.Context
@@ -498,16 +512,18 @@ ParseBlock-SetContext {
     e.Tokens;
 }
 
-DelFirst { s.First e.Expr = e.Expr; }
-
 $FORWARD CreateContext;
 
 AddContextToSentence {
   e.Context ((s.LastBracket e.Pattern) (e.Result)) =
     (
       (
-        <DelFirst
-          <MapReduce CreateContext s.LastBracket e.Context>
+        <Fetch
+          <CreateContext s.LastBracket e.Context>
+          {
+            s.NextBracket e.PatternContext =
+              e.PatternContext;
+          }
         >
         e.Pattern
       )
@@ -516,14 +532,20 @@ AddContextToSentence {
 }
 
 CreateContext {
-  s.BracketNumber ('e' e.Index) =
-    <Inc s.BracketNumber>
-    (TkOpenBracket s.BracketNumber)
-    (TkVariable 'e' e.Index)
-    (TkCloseBracket s.BracketNumber);
+  s.LastBracketNumber e.Context =
+    <MapReduce
+      {
+        s.BracketNumber ('e' e.Index) =
+          <Inc s.BracketNumber>
+          (TkOpenBracket s.BracketNumber)
+          (TkVariable 'e' e.Index)
+          (TkCloseBracket s.BracketNumber);
 
-  s.BracketNumber (s.Mode e.Index) =
-    s.BracketNumber (TkVariable s.Mode e.Index);
+        s.BracketNumber (s.Mode e.Index) =
+          s.BracketNumber (TkVariable s.Mode e.Index);
+      }
+      s.LastBracketNumber e.Context
+    >;
 }
 
 $FORWARD ParsePattern;
@@ -660,9 +682,10 @@ ParsePattern {
   /*
     Скобки.
 
-    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
-    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
-    считаем, что соответствующая скобка была пропущена в конце выражения;
+    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую
+    скобку, считаем, что "та" была пропущена.
+    Если имеем непарную открывающую скобку, считаем,
+    что соответствующая скобка была пропущена в конце выражения;
     если имеем непарную закрывающую скобку, считаем её лишней.
   */
 
@@ -1003,13 +1026,15 @@ ParseResult {
   /*
     Скобки.
 
-    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
-    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
-    считаем, что соответствующая скобка была пропущена в конце выражения;
+    Стратегия обработки ошибок: если мы встретили "не ту"
+    закрывающую скобку, считаем, что "та" была пропущена.
+    Если имеем непарную открывающую скобку, считаем,
+    что соответствующая скобка была пропущена в конце выражения;
     если имеем непарную закрывающую скобку, считаем её лишней.
   */
 
-  // Хитро обрабатываются АДТ-скобки, т.к. требуется, чтобы после них было имя.
+  // Хитро обрабатываются АДТ-скобки,
+  // т.к. требуется, чтобы после них было имя.
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
@@ -1226,53 +1251,41 @@ SwCheckUseVariable {
     t.SymTable t.Context;
 }
 
-$FORWARD ParseResult-Block-Aux;
+$LABEL CCreateClosure;
 
 ParseResult-Block {
   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
   (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
-  ( t.Context /* свободные переменные в функции отсутствуют */ )
+  (t.Context e.FreeContext)
   e.Tail =
-   (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-   (e.Scanned (TkName # CLambdaName <Dec s.NextNum>))
-   e.Tail;
-
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-  (e.Scanned)
-  (s.NextNum e.Functions) t.ErrorList t.SymTable
-  ( t.Context e.FreeContext )
-  e.Tail =
-    <ParseResult-Block-Aux
-      (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern)
-      (e.MultiBracket)
-      (e.Scanned)
-      <Dec s.NextNum>
-      (<MapReduce CreateContext s.BracketNumber e.FreeContext>)
-      e.Tail
-    >;
-}
-
-$LABEL CCreateClosure;
-
-ParseResult-Block-Aux {
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) s.FunctionNumber
-  (s.NextBracketNumber e.RealContext)
-  e.Tail =
-    (e.Functions) t.ErrorList t.SymTable t.Context
+    (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
     (e.Sentences) (e.Pattern)
-    (<Inc s.NextBracketNumber> e.MultiBracket)
-    (
-      e.Scanned
-      (TkOpenCall s.NextBracketNumber)
-      (TkName # CCreateClosure)
-      (TkName # CLambdaName s.FunctionNumber)
-      e.RealContext
-      (TkCloseCall s.NextBracketNumber)
-    )
+    <Fetch
+      <CreateContext s.BracketNumber e.FreeContext>
+      {
+        s.NextBracketNumber
+        /* свободные переменные в функции отсутствуют */ =
+          (s.BracketNumber e.MultiBracket)
+          // Формируем вызов глобальной функции
+          (
+            e.Scanned
+            (TkName # CLambdaName <Dec s.NextNum>)
+          );
+
+        s.NextBracketNumber e.ResultContext =
+          (<Inc s.NextBracketNumber> e.MultiBracket)
+          // Формируем вызов замыкания
+          (
+            e.Scanned
+            (TkOpenCall s.NextBracketNumber)
+            (TkName # CCreateClosure)
+            (TkName # CLambdaName <Dec s.NextNum>)
+            e.ResultContext
+            (TkCloseCall s.NextBracketNumber)
+          );
+      }
+    >
     e.Tail;
 }
+
