@@ -1489,6 +1489,7 @@ bool refalrts::allocator::create_nodes() {
 
 void refalrts::allocator::free_memory() {
   refalrts::allocator::pool::free();
+#ifndef DONT_PRINT_STATISTICS
   fprintf(
     stderr,
     "Memory used %d nodes, %d * %d = %d bytes\n",
@@ -1497,6 +1498,7 @@ void refalrts::allocator::free_memory() {
     sizeof(Node),
     g_memory_use * sizeof(Node)
   );
+#endif // DONT_PRINT_STATISTICS
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
@@ -1564,9 +1566,11 @@ void refalrts::profiler::end_profiler() {
   double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
   double io_time = full_time - pure_time;
 
+#ifndef DONT_PRINT_STATISTICS
   fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
   fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
   fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
+#endif // DONT_PRINT_STATISTICS
 }
 
 void refalrts::profiler::start_generated_function() {
@@ -2070,7 +2074,9 @@ void refalrts::vm::free_view_field() {
     */;
   }
 
+#ifndef DONT_PRINT_STATISTICS
   fprintf( stderr, "Step count %d\n", g_step_counter );
+#endif // DONT_PRINT_STATISTICS
 }
 
 //==============================================================================
