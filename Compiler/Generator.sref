@@ -420,17 +420,17 @@ GenCommand {
   (e.Indent) (CmdIfDef) =
     (e.Indent) ('#ifdef INTERPRET');
 
-  (e.Indent) (CmdElse) = 
+  (e.Indent) (CmdElse) =
     (e.Indent) ('#else');
 
-  (e.Indent) (CmdEndIf) = 
+  (e.Indent) (CmdEndIf) =
     (e.Indent) ('#endif');
 
-  (e.Indent) (CmdInitRAA) = 
+  (e.Indent) (CmdInitRAA) =
     (e.Indent '  ')
     (e.Indent 'const static refalrts::ResultAction raa[] = {');
 
-  (e.Indent '  ') (CmdFinRAA) = 
+  (e.Indent '  ') (CmdFinRAA) =
     (e.Indent)
     (e.Indent '  {refalrts::icEnd}')
     (e.Indent '};')

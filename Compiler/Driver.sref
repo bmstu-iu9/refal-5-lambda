@@ -1236,7 +1236,7 @@ SwCheckUseVariable {
   t.ErrorList t.SymTable s.LnNum
   t.Context # CInvalidMode s.OldMode s.NewMode e.Index =
     <EL-AddErrorAt
-      t.ErrorList s.LnNum 
+      t.ErrorList s.LnNum
       'Variables ' s.OldMode '.' e.Index ' and '
       s.NewMode '.' e.Index ' has different modes'
     >

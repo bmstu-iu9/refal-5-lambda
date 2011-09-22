@@ -905,7 +905,7 @@ bool refalrts::copy_evar(
       if( ! copy_node( res, evar_b_sample ) ) {
         return false;
       }
-      
+
       if( is_open_bracket( res ) ) {
         res->link_info = bracket_stack;
         bracket_stack = res;
@@ -1846,7 +1846,7 @@ void refalrts::vm::print_seq(
             refalrts::move_left( begin, end );
             continue;
 
-          case refalrts::cDataChar: 
+          case refalrts::cDataChar:
             state = cStateString;
             fprintf( output, "\'" );
             continue;
@@ -1965,11 +1965,11 @@ void refalrts::vm::print_seq(
                 case '<': case '>':
                   fprintf( output, "\\%c", ch );
                   break;
-  
+
                 case '\n':
                   fprintf( output, "\\n" );
                   break;
-  
+
                 case '\t':
                   fprintf( output, "\\t" );
                   break;
@@ -1981,7 +1981,7 @@ void refalrts::vm::print_seq(
                 case '\'':
                   fprintf( output, "\\\'" );
                   break;
-  
+
                 default:
                   if( ch < '\x20' ) {
                     fprintf( output, "\\x%02x", static_cast<int>(ch) );
@@ -2041,7 +2041,7 @@ FILE *refalrts::vm::dump_stream() {
 #ifdef DUMP_FILE
 
   static FILE *dump_file = 0;
-  
+
   if( dump_file == 0 ) {
     // Необходимо открыть файл.
     // Если файл не открывается, используем stderr
@@ -2316,7 +2316,7 @@ int main(int argc, char **argv) {
   refalrts::allocator::free_memory();
 
   fflush(stdout);
-  
+
   switch( res ) {
     case refalrts::cSuccess:
       return 0;

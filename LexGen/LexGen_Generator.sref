@@ -74,7 +74,7 @@ GenCode-Aux {
    Основные синтаксические единицы
 
    e.LexerDefinition ::= t.Element*
-   
+
    t.Element ::= t.Sentence | t.Set
 
    t.Set ::= (Set (e.Name) t.SetContent* )
@@ -457,7 +457,7 @@ WriteFunction {
     ()
     (e.NextRule ' {')
     <Map WriteAlternative e.Alternatives>
-    ('  (e.Accum) s.Unexpected e.Text = ')
+    ('  (e.Accum) s.Unexpected e.Text =')
     ('    (TokenUnexpected s.Unexpected) <Root () e.Text>;')
     ('  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);')
     ('}');
@@ -492,7 +492,7 @@ WriteAlternative {
   (Empty (Flush e.FlushName) (t.SrcPos e.NextStateName)) =
     ('  (e.Accum) e.Text =')
     ('    (' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;');
-  
+
   (Empty (FlushError e.Message) Finitive) =
     ('  (e.Accum) = (TokenError ' '' e.Message '' ');');
 
