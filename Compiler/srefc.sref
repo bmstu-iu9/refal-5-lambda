@@ -21,7 +21,8 @@ $ENTRY Go {
 $FORWARD FindFiles-Compilers;
 
 //FROM ParseCmdLine
-$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
+$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError,
+  CompileList, CompileToTarget;
 
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile;
@@ -53,7 +54,10 @@ FindFiles-Compilers {
   (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
 
-  s.CommandLineInfo (e.Folders) e.Files =
+  s.CommandLineInfo CompileToTarget (e.Folders) (e.Source) (e.Output) =
+    ;
+
+  s.CommandLineInfo CompileList (e.Folders) e.Files =
     <Fetch
       <FindFiles (e.Folders) e.Files>
       {
