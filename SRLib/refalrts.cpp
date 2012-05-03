@@ -794,9 +794,24 @@ void splice_to_freelist( Iter begin, Iter end );
 
 //------------------------------------------------------------------------------
 
+// Средства профилирования
+
+namespace refalrts {
+
+namespace profiler {
+
+extern void start_building_result();
+
+} // namespace profiler
+
+} // namespace refalrts
+
+//------------------------------------------------------------------------------
+
 // Операции построения результата
 
 void refalrts::reset_allocator() {
+  profiler::start_building_result();
   allocator::reset_allocator();
 }
 
@@ -1540,8 +1555,10 @@ namespace refalrts {
 namespace profiler {
 
 clock_t g_start_program_time;
-clock_t g_start_gen_function_time;
-clock_t g_total_gen_function_time;
+clock_t g_start_pattern_match_time;
+clock_t g_total_pattern_match_time;
+clock_t g_start_building_result_time;
+clock_t g_total_building_result_time;
 
 bool g_in_generated;
 
@@ -1562,26 +1579,50 @@ void refalrts::profiler::start_profiler() {
 void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
 
-  double full_time = (clock() - g_start_program_time) / CLOCKS_PER_SEC;
-  double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
-  double io_time = full_time - pure_time;
+  const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
+
+  double full_time =
+    (clock() - g_start_program_time) / cfCLOCKS_PER_SEC;
+  double pattern_time = g_total_pattern_match_time / cfCLOCKS_PER_SEC;
+  double result_time = g_total_building_result_time / cfCLOCKS_PER_SEC;
+  double refal_time = pattern_time + result_time;
+  double io_time = full_time - refal_time;
+
+  double pattern_percent = 100 * pattern_time / refal_time;
+  double result_percent = 100 * result_time / refal_time;
 
 #ifndef DONT_PRINT_STATISTICS
-  fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
-  fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
-  fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
+  fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
+  fprintf(
+    stderr, "Pattern match time: %.3f seconds (%1.1f%%).\n",
+    pattern_time, pattern_percent
+  );
+  fprintf(
+    stderr, "Building result time: %.3f seconds (%1.1f%%).\n",
+    result_time, result_percent
+  );
+  fprintf(stderr, "In/out time: %.3f seconds.\n", io_time);
 #endif // DONT_PRINT_STATISTICS
 }
 
 void refalrts::profiler::start_generated_function() {
-  g_start_gen_function_time = clock();
+  g_start_pattern_match_time = clock();
   g_in_generated = true;
+}
+
+void refalrts::profiler::start_building_result() {
+  if( g_in_generated ) {
+    g_start_building_result_time = clock();
+    clock_t pattern_match =
+      g_start_building_result_time - g_start_pattern_match_time;
+    g_total_pattern_match_time += pattern_match;
+  }
 }
 
 void refalrts::profiler::after_step() {
   if( g_in_generated ) {
-    clock_t calc_time = clock() - g_start_gen_function_time;
-    g_total_gen_function_time += calc_time;
+    clock_t building_result = clock() - g_start_building_result_time;
+    g_total_building_result_time += building_result;
   }
 
   g_in_generated = false;
