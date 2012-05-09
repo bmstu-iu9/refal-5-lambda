@@ -880,8 +880,8 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
     // break;
 
     /*
-      Копируем только объектное выражение -- никаких вызовов функций быть не
-      должно.
+      Копируем только объектное выражение -- никаких вызовов функций
+      быть не должно.
     */
     default:
       assert( SWITCH_DEFAULT_VIOLATION );
@@ -1594,14 +1594,16 @@ void refalrts::profiler::end_profiler() {
 #ifndef DONT_PRINT_STATISTICS
   fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
   fprintf(
-    stderr, "Pattern match time: %.3f seconds (%1.1f%%).\n",
-    pattern_time, pattern_percent
+    stderr,
+    "Pattern match time: %.3f seconds (%1.1f%%), p/r = %.2f.\n",
+    pattern_time, pattern_percent, pattern_time / result_time
   );
   fprintf(
-    stderr, "Building result time: %.3f seconds (%1.1f%%).\n",
-    result_time, result_percent
+    stderr,
+    "Building result time: %.3f seconds (%1.1f%%), r/p = %.2f.\n",
+    result_time, result_percent, result_time / pattern_time
   );
-  fprintf(stderr, "In/out time: %.3f seconds.\n", io_time);
+  fprintf(stderr, "Builtin time: %.3f seconds.\n", io_time);
 #endif // DONT_PRINT_STATISTICS
 }
 
@@ -1632,7 +1634,15 @@ void refalrts::profiler::after_step() {
 // Виртуальная машина
 //==============================================================================
 
-extern refalrts::FnResult Go( refalrts::Iter, refalrts::Iter );
+#ifdef MODULE_REFAL
+#define GO_START_FUNCTION Entry_Go
+#else
+#define GO_START_FUNCTION Go
+#endif
+
+extern refalrts::FnResult GO_START_FUNCTION(
+  refalrts::Iter, refalrts::Iter
+);
 
 namespace refalrts {
 
@@ -1706,7 +1716,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & Go, GO_NAME ) )
+  if( ! refalrts::alloc_name( n1, & GO_START_FUNCTION, GO_NAME ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
