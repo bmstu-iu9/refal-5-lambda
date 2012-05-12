@@ -1784,6 +1784,7 @@ refalrts::FnResult refalrts::vm::execute_active(
 
   fprintf(stderr, "\nexecute %d\n", s_counter);
   if( s_counter > (unsigned) SHOW_DEBUG ) {
+    fprintf(refalrts::vm::dump_stream(), "\nexecute %d\n", s_counter);
     make_dump( begin, end );
   }
 
