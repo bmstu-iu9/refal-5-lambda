@@ -165,10 +165,16 @@ extern unsigned read_chars(
 extern void reset_allocator();
 
 extern bool copy_evar(
-  Iter& evar_res_b, Iter& evar_res_e, Iter evar_b_sample, Iter evar_e_sample
+  Iter& evar_res_b, Iter& evar_res_e,
+  Iter evar_b_sample, Iter evar_e_sample
 );
 
 extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
+
+extern bool alloc_copy_evar(
+  Iter& evar_res_b, Iter& evar_res_e,
+  Iter evar_b_sample, Iter evar_e_sample
+);
 
 extern bool alloc_char( Iter& res, char ch );
 extern bool alloc_number( Iter& res, RefalNumber num );
@@ -195,6 +201,7 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+extern void splice_from_freelist( Iter pos );
 
 extern FnResult create_closure( Iter begin, Iter end );
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание

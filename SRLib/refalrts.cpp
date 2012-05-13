@@ -787,6 +787,7 @@ void reset_allocator();
 bool alloc_node( Iter& node );
 Iter free_ptr();
 void splice_to_freelist( Iter begin, Iter end );
+void splice_from_freelist( Iter pos );
 
 } // namespace allocator
 
@@ -899,9 +900,49 @@ namespace vm {
 
 void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
-} // namepsace vm
+} // namespace vm
 
 } // namespace refalrts
+
+namespace {
+
+bool copy_nonempty_evar(
+  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  refalrts::Iter res = 0;
+  refalrts::Iter bracket_stack = 0;
+
+  refalrts::Iter prev_res_begin =
+    prev( refalrts::allocator::free_ptr() );
+
+  while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
+    if( ! copy_node( res, evar_b_sample ) ) {
+      return false;
+    }
+
+    if( is_open_bracket( res ) ) {
+      res->link_info = bracket_stack;
+      bracket_stack = res;
+    } else if( is_close_bracket( res ) ) {
+      assert( bracket_stack != 0 );
+
+      refalrts::Iter open_cobracket = bracket_stack;
+      bracket_stack = bracket_stack->link_info;
+      link_brackets( open_cobracket, res );
+    }
+
+    move_left( evar_b_sample, evar_e_sample );
+  }
+
+  assert( bracket_stack == 0 );
+
+  evar_res_b = next( prev_res_begin );
+  evar_res_e = res;
+  return true;
+}
+
+} // unnamed namespace
 
 bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
@@ -910,38 +951,12 @@ bool refalrts::copy_evar(
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
     evar_res_b = 0;
     evar_res_e = 0;
+    return true;
   } else {
-    refalrts::Iter res = 0;
-    refalrts::Iter bracket_stack = 0;
-
-    refalrts::Iter prev_res_begin = prev( allocator::free_ptr() );
-
-    while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
-      if( ! copy_node( res, evar_b_sample ) ) {
-        return false;
-      }
-
-      if( is_open_bracket( res ) ) {
-        res->link_info = bracket_stack;
-        bracket_stack = res;
-      } else if( is_close_bracket( res ) ) {
-        assert( bracket_stack != 0 );
-
-        refalrts::Iter open_cobracket = bracket_stack;
-        bracket_stack = bracket_stack->link_info;
-        link_brackets( open_cobracket, res );
-      }
-
-      move_left( evar_b_sample, evar_e_sample );
-    }
-
-    assert( bracket_stack == 0 );
-
-    evar_res_b = next( prev_res_begin );
-    evar_res_e = res;
+    return copy_nonempty_evar(
+      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+    );
   }
-
-  return true;
 }
 
 bool refalrts::copy_stvar(
@@ -955,8 +970,26 @@ bool refalrts::copy_stvar(
   }
 
   refalrts::Iter end_of_res;
-  return copy_evar( stvar_res, end_of_res, stvar_sample, end_of_sample );
+  return copy_evar(
+    stvar_res, end_of_res, stvar_sample, end_of_sample
+  );
 }
+
+bool refalrts::alloc_copy_evar(
+  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  if( empty_seq( evar_b_sample, evar_e_sample ) ) {
+    evar_res_b = 0;
+    evar_res_e = 0;
+    return true;
+  } else {
+    return copy_nonempty_evar(
+      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+    );
+  }
+}
+
 
 bool refalrts::alloc_char( refalrts::Iter& res, char ch ) {
   if( allocator::alloc_node( res ) ) {
@@ -1227,6 +1260,10 @@ void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
 }
 
+void refalrts::splice_from_freelist( refalrts::Iter pos ) {
+  allocator::splice_from_freelist( pos );
+}
+
 refalrts::FnResult refalrts::create_closure(
   refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -1309,7 +1346,7 @@ namespace vm {
 
 extern NodePtr g_left_swap_ptr;
 
-} // namepsace vm
+} // namespace vm
 
 } // namespace refalrts
 
@@ -1471,6 +1508,12 @@ void refalrts::allocator::splice_to_freelist(
 ) {
   reset_allocator();
   g_free_ptr = list_splice( g_free_ptr, begin, end );
+}
+
+void refalrts::allocator::splice_from_freelist( refalrts::Iter pos ) {
+  if (g_free_ptr != g_first_marker.next ) {
+    list_splice( pos, g_first_marker.next, g_free_ptr->prev );
+  }
 }
 
 bool refalrts::allocator::create_nodes() {
