@@ -976,18 +976,24 @@ bool refalrts::copy_stvar(
 }
 
 bool refalrts::alloc_copy_evar(
-  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter& res,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
-    evar_res_b = 0;
-    evar_res_e = 0;
+    res = 0;
     return true;
   } else {
+    refalrts::Iter res_e = 0;
     return copy_nonempty_evar(
-      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+      res, res_e, evar_b_sample, evar_e_sample
     );
   }
+}
+
+bool refalrts::alloc_copy_svar_(
+  refalrts::Iter& svar_res, refalrts::Iter svar_sample
+) {
+  return copy_node( svar_res, svar_sample );
 }
 
 
@@ -1621,6 +1627,7 @@ void refalrts::profiler::start_profiler() {
 
 void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
+#ifndef DONT_PRINT_STATISTICS
 
   const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
 
@@ -1632,21 +1639,32 @@ void refalrts::profiler::end_profiler() {
   double io_time = full_time - refal_time;
 
   double pattern_percent = 100 * pattern_time / refal_time;
+  double pattern_clear_percent = 100 * pattern_time / full_time;
   double result_percent = 100 * result_time / refal_time;
+  double result_clear_percent = 100 * result_time / full_time;
+  double refal_persent = 100 * refal_time / full_time;
 
-#ifndef DONT_PRINT_STATISTICS
   fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
   fprintf(
     stderr,
-    "Pattern match time: %.3f seconds (%1.1f%%), p/r = %.2f.\n",
-    pattern_time, pattern_percent, pattern_time / result_time
+    "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
+    "p/r = %.2f.\n", pattern_time, pattern_percent,
+    pattern_clear_percent, pattern_time / result_time
   );
   fprintf(
     stderr,
-    "Building result time: %.3f seconds (%1.1f%%), r/p = %.2f.\n",
-    result_time, result_percent, result_time / pattern_time
+    "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
+    "r/p = %.2f.\n", result_time, result_percent,
+    result_clear_percent, result_time / pattern_time
   );
-  fprintf(stderr, "Builtin time: %.3f seconds.\n", io_time);
+  fprintf(
+    stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
+    refal_time, refal_persent
+  );
+  fprintf(
+    stderr, "Builtin time: %.3f seconds (%1.1f%%).\n",
+    io_time, 100.0 - refal_persent
+  );
 #endif // DONT_PRINT_STATISTICS
 }
 
