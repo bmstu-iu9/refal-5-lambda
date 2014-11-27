@@ -1625,6 +1625,22 @@ void refalrts::profiler::start_profiler() {
   g_in_generated = false;
 }
 
+#ifndef DONT_PRINT_STATISTICS
+
+namespace {
+
+inline double divide(double numerator, double denominator) {
+  if (denominator != 0.0) {
+    return numerator / denominator;
+  } else {
+    return 0.0;
+  }
+}
+
+} // безымянное namespace
+
+#endif // DONT_PRINT_STATISTICS
+
 void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
 #ifndef DONT_PRINT_STATISTICS
@@ -1638,24 +1654,24 @@ void refalrts::profiler::end_profiler() {
   double refal_time = pattern_time + result_time;
   double io_time = full_time - refal_time;
 
-  double pattern_percent = 100 * pattern_time / refal_time;
-  double pattern_clear_percent = 100 * pattern_time / full_time;
-  double result_percent = 100 * result_time / refal_time;
-  double result_clear_percent = 100 * result_time / full_time;
-  double refal_persent = 100 * refal_time / full_time;
+  double pattern_percent = 100 * divide(pattern_time, refal_time);
+  double pattern_clear_percent = 100 * divide(pattern_time, full_time);
+  double result_percent = 100 * divide(result_time, refal_time);
+  double result_clear_percent = 100 * divide(result_time, full_time);
+  double refal_persent = 100 * divide(refal_time, full_time);
 
   fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
   fprintf(
     stderr,
     "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
     "p/r = %.2f.\n", pattern_time, pattern_percent,
-    pattern_clear_percent, pattern_time / result_time
+    pattern_clear_percent, divide(pattern_time, result_time)
   );
   fprintf(
     stderr,
     "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
     "r/p = %.2f.\n", result_time, result_percent,
-    result_clear_percent, result_time / pattern_time
+    result_clear_percent, divide(result_time, pattern_time)
   );
   fprintf(
     stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
