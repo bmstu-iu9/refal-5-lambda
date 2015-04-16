@@ -2,7 +2,7 @@
 $EXTERN WriteLine, System;
 
 //FROM LibraryEx
-$EXTERN ArgList, Map;
+$EXTERN ArgList, Map, Fetch;
 
 //FROM FileScanner
 $EXTERN CreateFileList;
@@ -14,32 +14,60 @@ $FORWARD Main;
 
 $ENTRY Go { = <Main <ArgList>>; }
 
-$FORWARD MakeProject;
+$FORWARD MakeProject, Get-s-option;
 
 Main {
+  (e.Program) =
+    <WriteLine 'Usage:'>
+    <WriteLine
+      '  srmake [-s path\\to\\srefc.exe] -c c++compiler {-d search-dir} MainFileName[.sref]'
+    >;
+
   (e.Program) e.Arguments =
     <MakeProject
-      <ParseCommandLine e.Arguments>
+      <Fetch
+        <Get-s-option e.Arguments>
+        {
+          (e.SrefC) e.RestOfArguments =
+            (e.SrefC) <ParseCommandLine e.RestOfArguments>;
+        }
+      >
     >;
+}
+
+/*
+  Да, костыль, но усложнение потребует большего объёма кода.
+  Костыль имеет недочёт: в командной строке может быть
+    srmake -c -s srefc g++ MainFile.sref
+  и эта строка корректно обработается.
+*/
+Get-s-option {
+  e.Arguments-B ('--') e.Arguments-E =
+    <Get-s-option e.Arguments-B> ('--') e.Arguments-E;
+
+  e.Arguments-B ('-s') (e.SrefC) e.Arguments-E =
+    (e.SrefC) e.Arguments-B e.Arguments-E;
+
+  e.Arguments = ('srefc') e.Arguments;
 }
 
 $FORWARD Make;
 
 MakeProject {
-  (CmdLineError e.Message) =
+  (e.SrefC) (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
 
-  (NoCompile) (e.Folders) (e.File) =
+  (e.SrefC) (NoCompile) (e.Folders) (e.File) =
     <WriteLine
       'COMMAND LINE ERROR: Compiler not selected'
     >;
 
-  (CompileCommand e.Command) (e.Folders) (e.File) =
+  (e.SrefC) (CompileCommand e.Command) (e.Folders) (e.File) =
     <Make
-      (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
+      (e.SrefC) (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
     >;
 
-  t.Compiler (e.Folders) e.ManyFiles =
+  (e.SrefC) t.Compiler (e.Folders) e.ManyFiles =
     <WriteLine
       'COMMAND LINE ERROR: many files selected'
     >;
@@ -51,13 +79,13 @@ $EXTERN Source, Output, NotFound;
 $FORWARD PrintNotFound, PrintDirectory, PrintUnit;
 
 Make {
-  (e.CompilerCommand) (e.Directories)
+  (e.SrefC) (e.CompilerCommand) (e.Directories)
   e.Units-B (NotFound e.UnitName) e.Units-E =
     <Map PrintNotFound (NotFound e.UnitName) e.Units-E>;
 
-  (e.CompilerCommand) (e.Directories) e.Units =
+  (e.SrefC) (e.CompilerCommand) (e.Directories) e.Units =
     <System
-      'srefc -c "' e.CompilerCommand '" '
+      e.SrefC ' -c "' e.CompilerCommand '" '
       <Map PrintDirectory e.Directories>
       <Map PrintUnit e.Units>
     >;

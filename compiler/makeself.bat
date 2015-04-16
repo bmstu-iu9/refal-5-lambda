@@ -5,10 +5,7 @@ setlocal
   if not exist srefc_.exe copy ..\bin\srefc.exe srefc_.exe
   copy srefc.exe srefc_.exe >NUL
   ..\bin\lexgen Lexer.sref
-  set modules=Srefc Driver Lexer Algorithm Error Generator
-  set modules=%modules% SymTable FindFile ParseCmdLine Context
-  set modules=%modules% Library LibraryEx refalrts
-  srefc_ -c "%CPPLINE% -I..\srlib" -d ..\srlib %modules%
+  ..\bin\srmake -s srefc_ -c "%CPPLINE% -I..\srlib" -d ..\srlib srefc
   if exist a.exe move a.exe srefc.exe
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
