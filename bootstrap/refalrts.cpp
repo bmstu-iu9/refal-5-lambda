@@ -1,3 +1,4 @@
+#include <exception>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -12,7 +13,11 @@
 #  define VALID_LINKED( iter ) valid_linked_aux( #iter, iter );
 #endif
 
+#ifndef SHOW_DEBUG
 #define SHOW_DEBUG 0
+#endif // ifdef SHOW_DEBUG
+
+enum { SWITCH_DEFAULT_VIOLATION = 0 };
 
 void valid_linked_aux( const char *text, refalrts::Iter i ) {
   printf("checking %s\n", text);
@@ -36,6 +41,11 @@ void valid_linked_aux( const char *text, refalrts::Iter i ) {
 // Операции распознавания
 
 void refalrts::use( refalrts::Iter& ) {
+  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
+  компилятора о том, что переменная не используется */;
+}
+
+void refalrts::use_counter( unsigned& ) {
   /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
   компилятора о том, что переменная не используется */;
 }
@@ -65,6 +75,10 @@ bool is_close_bracket( refalrts::Iter node ) {
 void refalrts::move_left(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -76,6 +90,10 @@ void refalrts::move_left(
 void refalrts::move_right(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  //assert( (first == 0) == (last == 0) );
+  if( first == 0 ) assert (last == 0);
+  if( first != 0 ) assert (last != 0);
+
   if( first == last ) {
     first = 0;
     last = 0;
@@ -524,12 +542,28 @@ bool equal_nodes(
         познавания образца. Поэтому других узлов мы тут не ожидаем.
       */
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
         // break;
     }
     // Все ветви в case завершаются либо return, либо throw.
   }
 }
+
+} // unnamed namespace
+
+namespace refalrts {
+
+namespace profiler {
+
+void add_match_repeated_tvar_time(clock_t duration);
+void add_match_repeated_evar_time(clock_t duration);
+
+}
+
+}
+
+namespace {
 
 bool equal_expressions(
   refalrts::Iter first1, refalrts::Iter last1,
@@ -539,12 +573,15 @@ bool equal_expressions(
   assert( (first1 == 0) == (last1 == 0) );
   assert( (first2 == 0) == (last2 == 0) );
 
+  clock_t start_match = clock();
+
   for(
     /* Пользуемся аргументами функции, инициализация не нужна */;
     // Порядок условий важен
-    !empty_seq( first1, last1 ) && ! empty_seq( first2, last2 )
+    ! refalrts::empty_seq( first1, last1 )
+      && ! refalrts::empty_seq( first2, last2 )
       && equal_nodes( first1, first2 );
-    move_left( first1, last1 ), move_left( first2, last2 )
+    refalrts::move_left( first1, last1 ), refalrts::move_left( first2, last2 )
   ) {
     continue;
   }
@@ -554,8 +591,12 @@ bool equal_expressions(
       || !equal_nodes( first1, first2 )
   */
 
+  refalrts::profiler::add_match_repeated_tvar_time(clock() - start_match);
+
   // Успешное завершение -- если мы достигли конца в обоих выражениях
-  if( empty_seq( first1, last1 ) && empty_seq( first2, last2 ) ) {
+  if(
+    refalrts::empty_seq( first1, last1 ) && refalrts::empty_seq( first2, last2 )
+  ) {
     return true;
   } else {
     // Любое другое завершение цикла свидетельствует о несовпадении
@@ -574,7 +615,9 @@ bool refalrts::repeated_stvar_left(
   refalrts::Iter left_term = 0;
   refalrts::Iter copy_last = last;
 
-  if( tvar_left( left_term, first, last ) ) {
+  if( ! is_open_bracket( stvar_sample ) && svar_left( stvar, first, last ) ) {
+    return equal_nodes( stvar, stvar_sample );
+  } else if( tvar_left( left_term, first, last ) ) {
     refalrts::Iter left_term_e;
     refalrts::Iter stvar_sample_e;
 
@@ -616,7 +659,9 @@ bool refalrts::repeated_stvar_right(
   refalrts::Iter right_term = 0;
   refalrts::Iter old_last = last;
 
-  if( tvar_right( right_term, first, last ) ) {
+  if( ! is_open_bracket( stvar_sample ) && svar_right( stvar, first, last ) ) {
+    return equal_nodes( stvar, stvar_sample );
+  } else if( tvar_right( right_term, first, last ) ) {
     refalrts::Iter right_term_e = old_last;
     refalrts::Iter stvar_sample_e;
 
@@ -648,6 +693,7 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  clock_t start_match = clock();
   refalrts::Iter current = first;
   refalrts::Iter cur_sample = evar_b_sample;
   refalrts::Iter copy_last = last;
@@ -662,6 +708,8 @@ bool refalrts::repeated_evar_left(
   ) {
     continue;
   }
+
+  refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
     Здесь empty_seq( current, copy_last )
@@ -695,6 +743,7 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  clock_t start_match = clock();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
   refalrts::Iter copy_first = first;
@@ -709,6 +758,8 @@ bool refalrts::repeated_evar_right(
   ) {
     continue;
   }
+
+  refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
     Здесь empty_seq( copy_first, current )
@@ -769,8 +820,23 @@ void reset_allocator();
 bool alloc_node( Iter& node );
 Iter free_ptr();
 void splice_to_freelist( Iter begin, Iter end );
+void splice_from_freelist( Iter pos );
 
 } // namespace allocator
+
+} // namespace refalrts
+
+//------------------------------------------------------------------------------
+
+// Средства профилирования
+
+namespace refalrts {
+
+namespace profiler {
+
+extern void start_building_result();
+
+} // namespace profiler
 
 } // namespace refalrts
 
@@ -779,6 +845,7 @@ void splice_to_freelist( Iter begin, Iter end );
 // Операции построения результата
 
 void refalrts::reset_allocator() {
+  profiler::start_building_result();
   allocator::reset_allocator();
 }
 
@@ -847,10 +914,11 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
     // break;
 
     /*
-      Копируем только объектное выражение -- никаких вызовов функций быть не
-      должно.
+      Копируем только объектное выражение -- никаких вызовов функций
+      быть не должно.
     */
     default:
+      assert( SWITCH_DEFAULT_VIOLATION );
       throw refalrts::UnexpectedTypeException();
       // break;
   }
@@ -865,9 +933,60 @@ namespace vm {
 
 void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
-} // namepsace vm
+} // namespace vm
+
+namespace profiler {
+
+void add_copy_tevar_time(clock_t duration);
+
+} // namespace profiler
 
 } // namespace refalrts
+
+namespace {
+
+bool copy_nonempty_evar(
+  refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  clock_t start_copy_time = clock();
+
+  refalrts::Iter res = 0;
+  refalrts::Iter bracket_stack = 0;
+
+  refalrts::Iter prev_res_begin =
+    prev( refalrts::allocator::free_ptr() );
+
+  while( ! refalrts::empty_seq( evar_b_sample, evar_e_sample ) ) {
+    if( ! copy_node( res, evar_b_sample ) ) {
+      return false;
+    }
+
+    if( is_open_bracket( res ) ) {
+      res->link_info = bracket_stack;
+      bracket_stack = res;
+    } else if( is_close_bracket( res ) ) {
+      assert( bracket_stack != 0 );
+
+      refalrts::Iter open_cobracket = bracket_stack;
+      bracket_stack = bracket_stack->link_info;
+      refalrts::link_brackets( open_cobracket, res );
+    }
+
+    refalrts::move_left( evar_b_sample, evar_e_sample );
+  }
+
+  assert( bracket_stack == 0 );
+
+  evar_res_b = next( prev_res_begin );
+  evar_res_e = res;
+
+  refalrts::profiler::add_copy_tevar_time(clock() - start_copy_time);
+
+  return true;
+}
+
+} // unnamed namespace
 
 bool refalrts::copy_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
@@ -876,53 +995,49 @@ bool refalrts::copy_evar(
   if( empty_seq( evar_b_sample, evar_e_sample ) ) {
     evar_res_b = 0;
     evar_res_e = 0;
+    return true;
   } else {
-    refalrts::Iter res = 0;
-    refalrts::Iter bracket_stack = 0;
-
-    refalrts::Iter prev_res_begin = prev( allocator::free_ptr() );
-
-    while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
-      if( ! copy_node( res, evar_b_sample ) ) {
-        return false;
-      }
-      
-      if( is_open_bracket( res ) ) {
-        res->link_info = bracket_stack;
-        bracket_stack = res;
-      } else if( is_close_bracket( res ) ) {
-        assert( bracket_stack != 0 );
-
-        refalrts::Iter open_cobracket = bracket_stack;
-        bracket_stack = bracket_stack->link_info;
-        link_brackets( open_cobracket, res );
-      }
-
-      move_left( evar_b_sample, evar_e_sample );
-    }
-
-    assert( bracket_stack == 0 );
-
-    evar_res_b = next( prev_res_begin );
-    evar_res_e = res;
+    return copy_nonempty_evar(
+      evar_res_b, evar_res_e, evar_b_sample, evar_e_sample
+    );
   }
-
-  return true;
 }
 
 bool refalrts::copy_stvar(
   refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
-  refalrts::Iter end_of_sample;
   if( is_open_bracket( stvar_sample ) ) {
-    end_of_sample = stvar_sample->link_info;
+    refalrts::Iter end_of_sample = stvar_sample->link_info;
+    refalrts::Iter end_of_res;
+    return copy_evar(
+      stvar_res, end_of_res, stvar_sample, end_of_sample
+    );
   } else {
-    end_of_sample = stvar_sample;
+    return copy_node(stvar_res, stvar_sample);
   }
-
-  refalrts::Iter end_of_res;
-  return copy_evar( stvar_res, end_of_res, stvar_sample, end_of_sample );
 }
+
+bool refalrts::alloc_copy_evar(
+  refalrts::Iter& res,
+  refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
+) {
+  if( empty_seq( evar_b_sample, evar_e_sample ) ) {
+    res = 0;
+    return true;
+  } else {
+    refalrts::Iter res_e = 0;
+    return copy_nonempty_evar(
+      res, res_e, evar_b_sample, evar_e_sample
+    );
+  }
+}
+
+bool refalrts::alloc_copy_svar_(
+  refalrts::Iter& svar_res, refalrts::Iter svar_sample
+) {
+  return copy_node( svar_res, svar_sample );
+}
+
 
 bool refalrts::alloc_char( refalrts::Iter& res, char ch ) {
   if( allocator::alloc_node( res ) ) {
@@ -946,13 +1061,25 @@ bool refalrts::alloc_number(
   }
 }
 
+#ifdef MODULE_REFAL
+const char *unknown() { return "@unknown"; }
+#else
+const char *unknown = "@unknown";
+#endif
+
 bool refalrts::alloc_name(
-  refalrts::Iter& res, refalrts::RefalFunctionPtr fn, const char *name
+  refalrts::Iter& res,
+  refalrts::RefalFunctionPtr fn,
+  refalrts::RefalFuncName name
 ) {
   if( allocator::alloc_node( res ) ) {
     res->tag = cDataFunction;
     res->function_info.ptr = fn;
-    res->function_info.name = name;
+    if( name != 0 ) {
+      res->function_info.name = name;
+    } else {
+      res->function_info.name = unknown;
+    }
     return true;
   } else {
     return false;
@@ -1126,7 +1253,7 @@ refalrts::Iter list_splice(
   VALID_LINKED( end );
   VALID_LINKED( end->prev );
 
-  if( (res == begin) || empty_seq( begin, end ) ) {
+  if( (res == begin) || refalrts::empty_seq( begin, end ) ) {
 
     // Цель достигнута сама по себе
     return res;
@@ -1179,6 +1306,10 @@ refalrts::Iter refalrts::splice_evar(
 
 void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
+}
+
+void refalrts::splice_from_freelist( refalrts::Iter pos ) {
+  allocator::splice_from_freelist( pos );
 }
 
 refalrts::FnResult refalrts::create_closure(
@@ -1263,7 +1394,7 @@ namespace vm {
 
 extern NodePtr g_left_swap_ptr;
 
-} // namepsace vm
+} // namespace vm
 
 } // namespace refalrts
 
@@ -1271,7 +1402,7 @@ refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
   assert( cDataFunction == head->tag );
 
   splice_elem( vm::g_left_swap_ptr, head );
-  const char *name = head->function_info.name;
+  refalrts::RefalFuncName name = head->function_info.name;
   head->tag = cDataSwapHead;
   head->swap_info.next_head = vm::g_left_swap_ptr;
   head->swap_info.name = name;
@@ -1307,6 +1438,9 @@ namespace refalrts {
 namespace profiler {
 
 extern void start_generated_function();
+extern void read_counters(unsigned long counters[]);
+extern void start_e_loop();
+extern void stop_e_loop();
 
 } // namespace profiler
 
@@ -1314,6 +1448,22 @@ extern void start_generated_function();
 
 void refalrts::this_is_generated_function() {
   refalrts::profiler::start_generated_function();
+}
+
+unsigned long refalrts::ticks_per_second() {
+  return CLOCKS_PER_SEC;
+}
+
+void refalrts::read_performance_counters(unsigned long counters[]) {
+  refalrts::profiler::read_counters(counters);
+}
+
+void refalrts::start_sentence() {
+  refalrts::profiler::stop_e_loop();
+}
+
+void refalrts::start_e_loop() {
+  refalrts::profiler::start_e_loop();
 }
 
 //------------------------------------------------------------------------------
@@ -1325,6 +1475,7 @@ namespace refalrts {
 namespace vm {
 
 extern int g_ret_code;
+extern void print_seq(FILE *output, refalrts::Iter begin, refalrts::Iter end);
 
 } // namespace vm
 
@@ -1332,6 +1483,12 @@ extern int g_ret_code;
 
 void refalrts::set_return_code( int code ) {
   refalrts::vm::g_ret_code = code;
+}
+
+void refalrts::debug_print_expr(
+  void *file, refalrts::Iter first, refalrts::Iter last
+) {
+  refalrts::vm::print_seq( static_cast<FILE*>(file), first, last );
 }
 
 //==============================================================================
@@ -1372,13 +1529,15 @@ ChunkPtr g_pool = 0;
 unsigned g_avail = 0;
 refalrts::Node *g_pnext_node = 0;
 
-}
+} // namespace pool
+
+unsigned g_memory_use = 0;
 
 } // namespace allocator
 
 } // namespace refalrts
 
-void refalrts::allocator::reset_allocator() {
+inline void refalrts::allocator::reset_allocator() {
   g_free_ptr = g_first_marker.next;
 }
 
@@ -1414,14 +1573,26 @@ refalrts::Iter refalrts::allocator::free_ptr() {
 void refalrts::allocator::splice_to_freelist(
   refalrts::Iter begin, refalrts::Iter end
 ) {
+  reset_allocator();
   g_free_ptr = list_splice( g_free_ptr, begin, end );
 }
 
-bool refalrts::allocator::create_nodes() {
-//  refalrts::NodePtr new_node =
-//    static_cast<refalrts::NodePtr>( malloc( sizeof *new_node ) );
+void refalrts::allocator::splice_from_freelist( refalrts::Iter pos ) {
+  if (g_free_ptr != g_first_marker.next ) {
+    list_splice( pos, g_first_marker.next, g_free_ptr->prev );
+  }
+}
 
+bool refalrts::allocator::create_nodes() {
   refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
+
+#ifdef MEMORY_LIMIT
+
+  if( g_memory_use >= MEMORY_LIMIT ) {
+    return false;
+  }
+
+#endif //ifdef MEMORY_LIMIT
 
   if( new_node == 0 ) {
     return false;
@@ -1435,34 +1606,24 @@ bool refalrts::allocator::create_nodes() {
 
     g_free_ptr = new_node;
     g_free_ptr->tag = refalrts::cDataIllegal;
+    ++ g_memory_use;
 
     return true;
   }
 }
 
 void refalrts::allocator::free_memory() {
-//  refalrts::Iter begin = g_first_marker.next;
-//  refalrts::Iter end = &g_last_marker;
-//
-//  while( begin != end ) {
-//    refalrts::Iter next_begin = next( begin );
-//
-//    if( refalrts::cDataClosure == next_begin->tag ) {
-//      refalrts::Iter head = begin->link_info;
-//
-//      if( 1 == head->number_info ) {
-//        begin = unwrap_closure( begin );
-//      } else {
-//        free( begin );
-//        begin = next_begin;
-//      }
-//    } else {
-//      free( begin );
-//      begin = next_begin;
-//    }
-//  }
-
   refalrts::allocator::pool::free();
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(
+    stderr,
+    "Memory used %d nodes, %d * %lu = %lu bytes\n",
+    g_memory_use,
+    g_memory_use,
+    static_cast<unsigned long>(sizeof(Node)),
+    static_cast<unsigned long>(g_memory_use * sizeof(Node))
+  );
+#endif // DONT_PRINT_STATISTICS
 }
 
 refalrts::NodePtr refalrts::allocator::pool::alloc_node() {
@@ -1504,15 +1665,31 @@ namespace refalrts {
 namespace profiler {
 
 clock_t g_start_program_time;
-clock_t g_start_gen_function_time;
-clock_t g_total_gen_function_time;
+clock_t g_start_pattern_match_time;
+clock_t g_total_pattern_match_time;
+clock_t g_start_building_result_time;
+clock_t g_total_building_result_time;
+clock_t g_total_copy_tevar_time;
+clock_t g_total_match_repeated_tvar_time;
+clock_t g_total_match_repeated_evar_time;
+clock_t g_start_e_loop;
+clock_t g_total_e_loop;
+clock_t g_total_match_repeated_tvar_time_outside_e;
+clock_t g_total_match_repeated_evar_time_outside_e;
 
 bool g_in_generated;
+int g_in_e_loop;
 
 void start_profiler();
 void end_profiler();
 void start_generated_function();
 void after_step();
+void read_counters(unsigned long counters[]);
+void add_copy_tevar_time(clock_t duration);
+void add_match_repeated_tvar_time(clock_t duration);
+void add_match_repeated_evar_time(clock_t duration);
+void start_e_loop();
+void stop_e_loop();
 
 } // namespace profiler
 
@@ -1523,37 +1700,190 @@ void refalrts::profiler::start_profiler() {
   g_in_generated = false;
 }
 
+#ifndef DONT_PRINT_STATISTICS
+
+namespace {
+
+inline double divide(double numerator, double denominator) {
+  if (denominator != 0.0) {
+    return numerator / denominator;
+  } else {
+    return 0.0;
+  }
+}
+
+} // безымянное namespace
+
+#endif // DONT_PRINT_STATISTICS
+
 void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
+#ifndef DONT_PRINT_STATISTICS
 
-  double full_time = (clock() - g_start_program_time) / CLOCKS_PER_SEC;
-  double pure_time = g_total_gen_function_time / CLOCKS_PER_SEC;
-  double io_time = full_time - pure_time;
+  const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
 
-  fprintf( stderr, "\nTotal program time: %.3f seconds.\n", full_time );
-  fprintf( stderr, "Pure calculation time: %.3f seconds.\n", pure_time );
-  fprintf( stderr, "In/out time: %.3f seconds.\n", io_time );
+  double full_time =
+    (clock() - g_start_program_time) / cfCLOCKS_PER_SEC;
+  double pattern_time = g_total_pattern_match_time / cfCLOCKS_PER_SEC;
+  double result_time = g_total_building_result_time / cfCLOCKS_PER_SEC;
+  double refal_time = pattern_time + result_time;
+  double io_time = full_time - refal_time;
+
+  double pattern_percent = 100 * divide(pattern_time, refal_time);
+  double pattern_clear_percent = 100 * divide(pattern_time, full_time);
+  double result_percent = 100 * divide(result_time, refal_time);
+  double result_clear_percent = 100 * divide(result_time, full_time);
+  double refal_persent = 100 * divide(refal_time, full_time);
+
+  fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
+  fprintf(
+    stderr,
+    "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
+    "p/r = %.2f.\n", pattern_time, pattern_percent,
+    pattern_clear_percent, divide(pattern_time, result_time)
+  );
+  fprintf(
+    stderr,
+    "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
+    "r/p = %.2f.\n", result_time, result_percent,
+    result_clear_percent, divide(result_time, pattern_time)
+  );
+  fprintf(
+    stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
+    refal_time, refal_persent
+  );
+  fprintf(
+    stderr, "Builtin time: %.3f seconds (%1.1f%%).\n",
+    io_time, 100.0 - refal_persent
+  );
+#endif // DONT_PRINT_STATISTICS
 }
 
 void refalrts::profiler::start_generated_function() {
-  g_start_gen_function_time = clock();
+  g_start_pattern_match_time = clock();
   g_in_generated = true;
+}
+
+void refalrts::profiler::start_building_result() {
+  if( g_in_generated ) {
+    g_start_building_result_time = clock();
+    clock_t pattern_match =
+      g_start_building_result_time - g_start_pattern_match_time;
+    g_total_pattern_match_time += pattern_match;
+
+    stop_e_loop();
+  }
 }
 
 void refalrts::profiler::after_step() {
   if( g_in_generated ) {
-    clock_t calc_time = clock() - g_start_gen_function_time;
-    g_total_gen_function_time += calc_time;
+    clock_t building_result = clock() - g_start_building_result_time;
+    g_total_building_result_time += building_result;
   }
 
+  assert(g_in_e_loop == 0);
+
   g_in_generated = false;
+  g_in_e_loop = 0;
+}
+
+namespace refalrts {
+
+namespace vm {
+
+extern unsigned g_step_counter;
+
+} // namespace vm
+
+} // namespace refalrts
+
+void refalrts::profiler::read_counters(unsigned long counters[]) {
+  clock_t full_time = clock() - g_start_program_time;
+  clock_t refal_time =
+    g_total_pattern_match_time + g_total_building_result_time;
+  clock_t pattern_time = g_total_pattern_match_time;
+  clock_t result_time = g_total_building_result_time;
+  counters[cPerformanceCounter_TotalTime] = full_time;
+  counters[cPerformanceCounter_BuiltInTime] = full_time - refal_time;
+  counters[cPerformanceCounter_RefalTime] = refal_time;
+  counters[cPerformanceCounter_PatternMatchTime] = pattern_time;
+  counters[cPerformanceCounter_BuildResultTime] = result_time;
+  counters[cPerformanceCounter_TotalSteps] = ::refalrts::vm::g_step_counter;
+  counters[cPerformanceCounter_HeapSize] =
+    static_cast<unsigned long>(
+      ::refalrts::allocator::g_memory_use * sizeof(Node)
+    );
+  counters[cPerformanceCounter_TEvarCopyTime] = g_total_copy_tevar_time;
+  refal_time -= g_total_copy_tevar_time;
+  result_time -= g_total_copy_tevar_time;
+  counters[cPerformanceCounter_RepeatTvarMatchTime] =
+    g_total_match_repeated_tvar_time;
+  counters[cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle] =
+    g_total_match_repeated_tvar_time_outside_e;
+  refal_time -= g_total_match_repeated_tvar_time_outside_e;
+  pattern_time -= g_total_match_repeated_tvar_time_outside_e;
+  counters[cPerformanceCounter_RepeatEvarMatchTime] =
+    g_total_match_repeated_evar_time;
+  counters[cPerformanceCounter_RepeatEvarMatchTimeOutsideECycle] =
+    g_total_match_repeated_evar_time_outside_e;
+  refal_time -= g_total_match_repeated_evar_time_outside_e;
+  pattern_time -= g_total_match_repeated_evar_time_outside_e;
+  counters[cPerformanceCounter_OpenELoopTime] = g_total_e_loop;
+  refal_time -= g_total_e_loop;
+  pattern_time -= g_total_e_loop;
+  counters[cPerformanceCounter_OpenELoopTimeClear] = g_total_e_loop
+    - (g_total_match_repeated_tvar_time + g_total_match_repeated_evar_time);
+  counters[cPerformanceCounter_LinearRefalTime] = refal_time;
+  counters[cPerformanceCounter_LinearPatternTime] = pattern_time;
+  counters[cPerformanceCounter_LinearResultTime] = result_time;
+}
+
+void refalrts::profiler::add_copy_tevar_time(clock_t duration) {
+  g_total_copy_tevar_time += duration;
+}
+
+void refalrts::profiler::add_match_repeated_tvar_time(clock_t duration) {
+  if (g_in_e_loop) {
+    g_total_match_repeated_tvar_time += duration;
+  } else {
+    g_total_match_repeated_tvar_time_outside_e += duration;
+  }
+}
+
+void refalrts::profiler::add_match_repeated_evar_time(clock_t duration) {
+  if (g_in_e_loop) {
+    g_total_match_repeated_evar_time += duration;
+  } else {
+    g_total_match_repeated_evar_time_outside_e += duration;
+  }
+}
+
+void refalrts::profiler::start_e_loop() {
+  if (g_in_e_loop++ == 0) {
+    g_start_e_loop = clock();
+  }
+}
+
+void refalrts::profiler::stop_e_loop() {
+  if (g_in_e_loop > 0) {
+    g_total_e_loop += (clock() - g_start_e_loop);
+    g_in_e_loop = 0;
+  }
 }
 
 //==============================================================================
 // Виртуальная машина
 //==============================================================================
 
-extern refalrts::FnResult Go( refalrts::Iter, refalrts::Iter );
+#ifdef MODULE_REFAL
+#define GO_START_FUNCTION Entry_Go
+#else
+#define GO_START_FUNCTION Go
+#endif
+
+extern refalrts::FnResult GO_START_FUNCTION(
+  refalrts::Iter, refalrts::Iter
+);
 
 namespace refalrts {
 
@@ -1568,6 +1898,7 @@ bool init_view_field();
 refalrts::FnResult main_loop();
 refalrts::FnResult execute_active( refalrts::Iter begin, refalrts::Iter end );
 void make_dump( refalrts::Iter begin, refalrts::Iter end );
+FILE* dump_stream();
 
 void free_view_field();
 
@@ -1606,6 +1937,19 @@ bool refalrts::vm::empty_stack() {
   return (g_stack_ptr == 0);
 }
 
+#ifdef MODULE_REFAL
+//$LABEL Go
+template <typename T>
+struct GoL_ {
+  static const char *name() {
+    return "Go";
+  }
+};
+#define GO_NAME GoL_<int>::name
+#else
+#define GO_NAME "Go"
+#endif
+
 bool refalrts::vm::init_view_field() {
   refalrts::reset_allocator();
   refalrts::Iter res = g_begin_view_field;
@@ -1613,7 +1957,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & Go, "Go" ) )
+  if( ! refalrts::alloc_name( n1, & GO_START_FUNCTION, GO_NAME ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
@@ -1675,8 +2019,15 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 #if SHOW_DEBUG
 
-  fprintf(stderr, "\nexecute\n");
-  make_dump( begin, end );
+  static unsigned s_counter = 0;
+
+  ++s_counter;
+
+  fprintf(stderr, "\nexecute %d\n", s_counter);
+  if( s_counter > (unsigned) SHOW_DEBUG ) {
+    fprintf(refalrts::vm::dump_stream(), "\nexecute %d\n", s_counter);
+    make_dump( begin, end );
+  }
 
 #endif // SHOW_DEBUG
 
@@ -1721,19 +2072,47 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 namespace {
 
-void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
+void print_indent(FILE *output, unsigned level)
+{
+  enum { cPERIOD = 4 };
+  putc( '\n', output );
+  for( unsigned i = 0; i < level; ++i )
+  {
+    // Каждые cPERIOD позиций вместо пробела ставим точку.
+    bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
+
+    const char cSpace =  ' ';
+    const char cMarker = '.';
+
+    putc( (put_marker ? cMarker : cSpace), output );
+  }
+}
+
+} // unnamed namespace
+
+void refalrts::vm::print_seq(
+  FILE *output, refalrts::Iter begin, refalrts::Iter end
+) {
   enum {
     cStateView = 100,
     cStateString,
     cStateFinish
   } state = cStateView;
 
-  unsigned long loop_counter = 0;
+  unsigned indent = 0;
+  bool after_bracket = false;
+  bool reset_after_bracket = true;
 
   while( (state != cStateFinish) && ! refalrts::empty_seq( begin, end ) ) {
-    ++ loop_counter;
-    if( loop_counter > 100000UL ) {
-      throw "Loop counter";
+    if( reset_after_bracket )
+    {
+      after_bracket = false;
+      reset_after_bracket = false;
+    }
+
+    if( after_bracket )
+    {
+      reset_after_bracket = true;
     }
 
     switch( state ) {
@@ -1752,26 +2131,34 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataSwapHead:
+#ifdef MODULE_REFAL
+            fprintf( output, "\n\n*Swap %s:\n", (begin->swap_info.name)() );
+#else
             fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
+#endif
             refalrts::move_left( begin, end );
             continue;
 
-          case refalrts::cDataChar: 
+          case refalrts::cDataChar:
             state = cStateString;
             fprintf( output, "\'" );
             continue;
 
           case refalrts::cDataNumber:
-            fprintf( output, "%d ", begin->number_info );
+            fprintf( output, "%ld ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataFunction:
+#ifdef MODULE_REFAL
+            fprintf( output, "&%s ", (begin->function_info.name)() );
+#else
             if( begin->function_info.name[0] != 0 ) {
               fprintf( output, "&%s ", begin->function_info.name );
             } else {
               fprintf( output, "&%p ", begin->function_info.ptr );
             }
+#endif
             refalrts::move_left( begin, end );
             continue;
 
@@ -1781,31 +2168,56 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataOpenADT:
-            fprintf( output, "[ " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "[" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseADT:
-            fprintf( output, "] " );
+            --indent;
+            fprintf( output, "]" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenBracket:
-            fprintf( output, "( " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "(" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataCloseBracket:
-            fprintf( output, ") " );
+            --indent;
+            fprintf( output, ")" );
             refalrts::move_left( begin, end );
             continue;
 
           case refalrts::cDataOpenCall:
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
             fprintf( output, "<" );
             refalrts::move_left( begin, end );
             continue;
+
           case refalrts::cDataCloseCall:
-            fprintf( output, "> " );
+            --indent;
+            fprintf( output, ">" );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1821,7 +2233,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           case refalrts::cDataClosureHead:
-            fprintf( output, "[%d] ", begin->number_info );
+            fprintf( output, "[%ld] ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
@@ -1831,6 +2243,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
             continue;
 
           default:
+            assert( SWITCH_DEFAULT_VIOLATION );
             throw refalrts::UnexpectedTypeException();
             // break;
         }
@@ -1845,11 +2258,11 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
                 case '<': case '>':
                   fprintf( output, "\\%c", ch );
                   break;
-  
+
                 case '\n':
                   fprintf( output, "\\n" );
                   break;
-  
+
                 case '\t':
                   fprintf( output, "\\t" );
                   break;
@@ -1861,7 +2274,7 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
                 case '\'':
                   fprintf( output, "\\\'" );
                   break;
-  
+
                 default:
                   if( ch < '\x20' ) {
                     fprintf( output, "\\x%02x", static_cast<int>(ch) );
@@ -1884,27 +2297,61 @@ void print_seq( FILE *output, refalrts::Iter begin, refalrts::Iter end ) {
         continue;
 
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
     }
   }
+
+  if( cStateString == state ) {
+    fprintf( output, "\'" );
+  }
 }
 
-} // unnamed namespace
-
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
-  fprintf( stderr, "\nERROR EXPRESSION:\n" );
-  print_seq( stderr, begin, end );
-  fprintf( stderr, "\nVIEW FIELD:\n" );
-  print_seq( stderr, & g_first_marker, & g_last_marker );
-  fprintf( stderr, "\nFREE LIST:\n" );
+  using refalrts::vm::dump_stream;
+
+  fprintf( dump_stream(), "\nERROR EXPRESSION:\n" );
+  print_seq( dump_stream(), begin, end );
+  fprintf( dump_stream(), "\nVIEW FIELD:\n" );
+  print_seq( dump_stream(), & g_first_marker, & g_last_marker );
+
+#ifdef DUMP_FREE_LIST
+
+  fprintf( dump_stream(), "\nFREE LIST:\n" );
   print_seq(
-    stderr,
+    dump_stream(),
     & refalrts::allocator::g_first_marker,
     & refalrts::allocator::g_last_marker
   );
 
-  fprintf( stderr,"\nEnd dump\n");
-  fflush(stderr);
+#endif //ifdef DUMP_FREE_LIST
+
+  fprintf( dump_stream(),"\nEnd dump\n");
+  fflush(dump_stream());
+}
+
+FILE *refalrts::vm::dump_stream() {
+#ifdef DUMP_FILE
+
+  static FILE *dump_file = 0;
+
+  if( dump_file == 0 ) {
+    // Необходимо открыть файл.
+    // Если файл не открывается, используем stderr
+    dump_file = fopen( DUMP_FILE, "wt" );
+
+    if( dump_file == 0 ) {
+      dump_file = stderr;
+    }
+  }
+
+  return dump_file;
+
+#else //ifdef DUMP_FILE
+
+  return stderr;
+
+#endif //ifdef DUMP_FILE
 }
 
 void refalrts::vm::free_view_field() {
@@ -1919,6 +2366,10 @@ void refalrts::vm::free_view_field() {
       Поле зрения пустое -- его не нужно освобождать.
     */;
   }
+
+#ifndef DONT_PRINT_STATISTICS
+  fprintf( stderr, "Step count %d\n", g_step_counter );
+#endif // DONT_PRINT_STATISTICS
 }
 
 //==============================================================================
@@ -1957,7 +2408,7 @@ refalrts::FnResult refalrts::interpret_array(
             !alloc_name(
               *allocs,
               (RefalFunctionPtr)(raa[i].ptr_value1),
-              static_cast<const char*>(raa[i].ptr_value2)
+              (RefalFuncName)(raa[i].ptr_value2)
             )
         )
           return cNoMemory;
@@ -2124,8 +2575,6 @@ refalrts::FnResult refalrts::interpret_array(
   }
   splice_to_freelist(begin, end);
 
-  //fprintf(stderr, "Interp: End phase 3\n");
-
   return cSuccess;
 }
 
@@ -2145,17 +2594,25 @@ int main(int argc, char **argv) {
     refalrts::vm::init_view_field();
     refalrts::profiler::start_profiler();
     res = refalrts::vm::main_loop();
-    refalrts::profiler::end_profiler();
-  } catch ( refalrts::UnexpectedTypeException ) {
+    fflush(stderr);
+    fflush(stdout);
+  } catch (refalrts::UnexpectedTypeException) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
+  } catch (std::exception& e) {
+    fprintf(stderr, "INTERNAL ERROR: std::exception %s\n", e.what());
+    return 4;
   } catch (...) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
-    return 4;
+    return 5;
   }
+
+  refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
-  
+
+  fflush(stdout);
+
   switch( res ) {
     case refalrts::cSuccess:
       return 0;

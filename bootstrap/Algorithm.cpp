@@ -37,7 +37,7 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     ePattern_b_1 = bb_1;
     refalrts::use( ePattern_b_1 );
@@ -382,7 +382,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -409,11 +409,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sChar_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -600,7 +600,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -627,11 +627,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sNumber_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -822,7 +822,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -853,7 +853,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1044,7 +1044,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -1075,7 +1075,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1262,7 +1262,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -1289,11 +1289,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sChar_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1480,7 +1480,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -1507,11 +1507,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1702,7 +1702,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -1733,7 +1733,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1924,7 +1924,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -1955,7 +1955,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -2152,7 +2152,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -2175,11 +2175,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         continue;
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sInner_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       refalrts::Iter bb_0_stk = bb_0;
       refalrts::Iter be_0_stk = be_0;
@@ -2189,7 +2189,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           ePattern_M_oe_1 = bb_0_stk,
           bb_0 = bb_0_stk,
           be_0 = be_0_stk;
-        ! empty_seq( ePattern_M_oe_1, be_0 );
+        ! refalrts::empty_seq( ePattern_M_oe_1, be_0 );
         bb_0 = bb_0_stk,
         be_0 = be_0_stk,
         refalrts::next_term( ePattern_M_oe_1, be_0 )
@@ -2206,7 +2206,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           continue;
         if( ! refalrts::repeated_stvar_left( sInner_2, sInner_1, bb_3, be_3 ) ) 
           continue;
-        if( ! empty_seq( bb_3, be_3 ) )
+        if( ! refalrts::empty_seq( bb_3, be_3 ) )
           continue;
         ePattern_E_b_1 = bb_0;
         refalrts::use( ePattern_E_b_1 );
@@ -2468,7 +2468,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -2485,7 +2485,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         continue;
       if( ! refalrts::svar_left( sInner_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       refalrts::Iter bb_0_stk = bb_0;
       refalrts::Iter be_0_stk = be_0;
@@ -2495,7 +2495,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           ePattern_M_oe_1 = bb_0_stk,
           bb_0 = bb_0_stk,
           be_0 = be_0_stk;
-        ! empty_seq( ePattern_M_oe_1, be_0 );
+        ! refalrts::empty_seq( ePattern_M_oe_1, be_0 );
         bb_0 = bb_0_stk,
         be_0 = be_0_stk,
         refalrts::next_term( ePattern_M_oe_1, be_0 )
@@ -2518,7 +2518,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           continue;
         if( ! refalrts::repeated_stvar_left( sInner_2, sInner_1, bb_2, be_2 ) ) 
           continue;
-        if( ! empty_seq( bb_2, be_2 ) )
+        if( ! refalrts::empty_seq( bb_2, be_2 ) )
           continue;
         ePattern_E_b_1 = bb_0;
         refalrts::use( ePattern_E_b_1 );
@@ -2526,7 +2526,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         refalrts::use( ePattern_E_e_1 );
         if( ! refalrts::svar_left( sNum_1, bb_3, be_3 ) ) 
           continue;
-        if( ! empty_seq( bb_3, be_3 ) )
+        if( ! refalrts::empty_seq( bb_3, be_3 ) )
           continue;
 #ifdef INTERPRET
         const static refalrts::ResultAction raa[] = {
@@ -2792,7 +2792,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -2825,11 +2825,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( eName_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sInner_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       refalrts::Iter bb_0_stk = bb_0;
       refalrts::Iter be_0_stk = be_0;
@@ -2839,7 +2839,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           ePattern_M_oe_1 = bb_0_stk,
           bb_0 = bb_0_stk,
           be_0 = be_0_stk;
-        ! empty_seq( ePattern_M_oe_1, be_0 );
+        ! refalrts::empty_seq( ePattern_M_oe_1, be_0 );
         bb_0 = bb_0_stk,
         be_0 = be_0_stk,
         refalrts::next_term( ePattern_M_oe_1, be_0 )
@@ -2856,7 +2856,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           continue;
         if( ! refalrts::repeated_stvar_left( sInner_2, sInner_1, bb_4, be_4 ) ) 
           continue;
-        if( ! empty_seq( bb_4, be_4 ) )
+        if( ! refalrts::empty_seq( bb_4, be_4 ) )
           continue;
         ePattern_E_b_1 = bb_0;
         refalrts::use( ePattern_E_b_1 );
@@ -3148,7 +3148,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -3175,7 +3175,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( eName_e_1 );
       if( ! refalrts::svar_left( sInner_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       refalrts::Iter bb_0_stk = bb_0;
       refalrts::Iter be_0_stk = be_0;
@@ -3185,7 +3185,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           ePattern_M_oe_1 = bb_0_stk,
           bb_0 = bb_0_stk,
           be_0 = be_0_stk;
-        ! empty_seq( ePattern_M_oe_1, be_0 );
+        ! refalrts::empty_seq( ePattern_M_oe_1, be_0 );
         bb_0 = bb_0_stk,
         be_0 = be_0_stk,
         refalrts::next_term( ePattern_M_oe_1, be_0 )
@@ -3208,7 +3208,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           continue;
         if( ! refalrts::repeated_stvar_left( sInner_2, sInner_1, bb_3, be_3 ) ) 
           continue;
-        if( ! empty_seq( bb_3, be_3 ) )
+        if( ! refalrts::empty_seq( bb_3, be_3 ) )
           continue;
         ePattern_E_b_1 = bb_0;
         refalrts::use( ePattern_E_b_1 );
@@ -3216,7 +3216,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         refalrts::use( ePattern_E_e_1 );
         if( ! refalrts::svar_left( sNum_1, bb_4, be_4 ) ) 
           continue;
-        if( ! empty_seq( bb_4, be_4 ) )
+        if( ! refalrts::empty_seq( bb_4, be_4 ) )
           continue;
 #ifdef INTERPRET
         const static refalrts::ResultAction raa[] = {
@@ -3482,7 +3482,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -3509,11 +3509,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sNum_2, sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -3673,7 +3673,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       bb_3 = bb_3_stk,
@@ -3702,7 +3702,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
         continue;
@@ -3718,7 +3718,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           eVars_B_oe_1 = bb_3_stk,
           bb_3 = bb_3_stk,
           be_3 = be_3_stk;
-        ! empty_seq( eVars_B_oe_1, be_3 );
+        ! refalrts::empty_seq( eVars_B_oe_1, be_3 );
         bb_3 = bb_3_stk,
         be_3 = be_3_stk,
         refalrts::next_term( eVars_B_oe_1, be_3 )
@@ -3741,7 +3741,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         refalrts::use( eVars_E_e_1 );
         if( ! refalrts::svar_left( sCount_1, bb_4, be_4 ) ) 
           continue;
-        if( ! empty_seq( bb_4, be_4 ) )
+        if( ! refalrts::empty_seq( bb_4, be_4 ) )
           continue;
 #ifdef INTERPRET
         const static refalrts::ResultAction raa[] = {
@@ -4012,7 +4012,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       bb_3 = bb_3_stk,
@@ -4047,7 +4047,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( eIndex_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       refalrts::Iter bb_3_stk = bb_3;
       refalrts::Iter be_3_stk = be_3;
@@ -4057,7 +4057,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
           eVars_B_oe_1 = bb_3_stk,
           bb_3 = bb_3_stk,
           be_3 = be_3_stk;
-        ! empty_seq( eVars_B_oe_1, be_3 );
+        ! refalrts::empty_seq( eVars_B_oe_1, be_3 );
         bb_3 = bb_3_stk,
         be_3 = be_3_stk,
         refalrts::next_term( eVars_B_oe_1, be_3 )
@@ -4080,7 +4080,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         refalrts::use( eVars_E_e_1 );
         if( ! refalrts::svar_left( sCount_1, bb_4, be_4 ) ) 
           continue;
-        if( ! empty_seq( bb_4, be_4 ) )
+        if( ! refalrts::empty_seq( bb_4, be_4 ) )
           continue;
 #ifdef INTERPRET
         const static refalrts::ResultAction raa[] = {
@@ -4339,7 +4339,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -4378,11 +4378,11 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sNum_2, sNum_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_3, be_3 ) )
+      if( ! refalrts::empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -4592,7 +4592,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -4625,7 +4625,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -4855,7 +4855,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -4888,7 +4888,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -5118,7 +5118,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -5151,7 +5151,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -5381,7 +5381,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -5414,7 +5414,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -5644,7 +5644,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         ePattern_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( ePattern_B_oe_1, be_0 );
+      ! refalrts::empty_seq( ePattern_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( ePattern_B_oe_1, be_0 )
@@ -5677,7 +5677,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       refalrts::use( ePattern_E_e_1 );
       if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -6095,7 +6095,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
         eCommands_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( eCommands_B_oe_1, be_0 );
+      ! refalrts::empty_seq( eCommands_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( eCommands_B_oe_1, be_0 )
@@ -6722,11 +6722,11 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
       break;
     if( ! refalrts::function_left( & CmdEmpty, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sBracketNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -6766,7 +6766,7 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
       break;
     if( ! refalrts::function_left( & CmdBrackets, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sDirection_1, bb_1, be_1 ) ) 
       break;
@@ -6774,7 +6774,7 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
       break;
     if( ! refalrts::svar_left( sInnerNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -6818,7 +6818,7 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sCommand_1, bb_1, be_1 ) ) 
       break;
@@ -6885,7 +6885,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
         eUnique_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( eUnique_oe_1, be_0 );
+      ! refalrts::empty_seq( eUnique_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( eUnique_oe_1, be_0 )
@@ -6904,7 +6904,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
           eMiddle_oe_1 = bb_0_stk,
           bb_0 = bb_0_stk,
           be_0 = be_0_stk;
-        ! empty_seq( eMiddle_oe_1, be_0 );
+        ! refalrts::empty_seq( eMiddle_oe_1, be_0 );
         bb_0 = bb_0_stk,
         be_0 = be_0_stk,
         refalrts::next_term( eMiddle_oe_1, be_0 )
@@ -7037,7 +7037,7 @@ static refalrts::FnResult Brackets_Intersect(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1_stk = bb_1;
     refalrts::Iter be_1_stk = be_1;
@@ -7049,7 +7049,7 @@ static refalrts::FnResult Brackets_Intersect(refalrts::Iter arg_begin, refalrts:
         eSet1_B_oe_1 = bb_1_stk,
         bb_1 = bb_1_stk,
         be_1 = be_1_stk;
-      ! empty_seq( eSet1_B_oe_1, be_1 );
+      ! refalrts::empty_seq( eSet1_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
       be_1 = be_1_stk,
       bb_2 = bb_2_stk,
@@ -7074,7 +7074,7 @@ static refalrts::FnResult Brackets_Intersect(refalrts::Iter arg_begin, refalrts:
           eSet2_B_oe_1 = bb_2_stk,
           bb_2 = bb_2_stk,
           be_2 = be_2_stk;
-        ! empty_seq( eSet2_B_oe_1, be_2 );
+        ! refalrts::empty_seq( eSet2_B_oe_1, be_2 );
         bb_2 = bb_2_stk,
         be_2 = be_2_stk,
         refalrts::next_term( eSet2_B_oe_1, be_2 )
@@ -7178,7 +7178,7 @@ static refalrts::FnResult Brackets_Intersect(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eSet1_b_1 = bb_1;
     refalrts::use( eSet1_b_1 );
@@ -7239,7 +7239,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -7336,7 +7336,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -7433,7 +7433,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -7530,7 +7530,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -7627,7 +7627,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sChar_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -7718,7 +7718,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8034,7 +8034,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8067,7 +8067,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\n'
     if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8105,7 +8105,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\r'
     if( ! refalrts::char_left( '\r', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8143,7 +8143,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\t'
     if( ! refalrts::char_left( '\t', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8181,7 +8181,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\\'
     if( ! refalrts::char_left( '\\', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8219,7 +8219,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\''
     if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8257,7 +8257,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // '\"'
     if( ! refalrts::char_left( '"', bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8297,7 +8297,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // s.Other
     if( ! refalrts::svar_left( sOther_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8348,7 +8348,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::use( eTail_e_1 );
     if( ! refalrts::svar_left( sChar_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8412,7 +8412,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -8635,7 +8635,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sValue_1, bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -9011,7 +9011,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNumber_1, bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -9387,7 +9387,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -9574,7 +9574,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -9761,7 +9761,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -9956,7 +9956,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_4, be_4 ) ) 
       break;
-    if( ! empty_seq( bb_4, be_4 ) )
+    if( ! refalrts::empty_seq( bb_4, be_4 ) )
       break;
     refalrts::Iter bb_2_stk = bb_2;
     refalrts::Iter be_2_stk = be_2;
@@ -9966,7 +9966,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
         eCommands_B_oe_1 = bb_2_stk,
         bb_2 = bb_2_stk,
         be_2 = be_2_stk;
-      ! empty_seq( eCommands_B_oe_1, be_2 );
+      ! refalrts::empty_seq( eCommands_B_oe_1, be_2 );
       bb_2 = bb_2_stk,
       be_2 = be_2_stk,
       refalrts::next_term( eCommands_B_oe_1, be_2 )
@@ -9991,7 +9991,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::use( eCommands_E_e_1 );
       if( ! refalrts::svar_left( sOpenCounter_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_3, be_3 ) )
+      if( ! refalrts::empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -10243,7 +10243,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_4, be_4 ) ) 
       break;
-    if( ! empty_seq( bb_4, be_4 ) )
+    if( ! refalrts::empty_seq( bb_4, be_4 ) )
       break;
     refalrts::Iter bb_2_stk = bb_2;
     refalrts::Iter be_2_stk = be_2;
@@ -10253,7 +10253,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
         eCommands_B_oe_1 = bb_2_stk,
         bb_2 = bb_2_stk,
         be_2 = be_2_stk;
-      ! empty_seq( eCommands_B_oe_1, be_2 );
+      ! refalrts::empty_seq( eCommands_B_oe_1, be_2 );
       bb_2 = bb_2_stk,
       be_2 = be_2_stk,
       refalrts::next_term( eCommands_B_oe_1, be_2 )
@@ -10278,7 +10278,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::use( eCommands_E_e_1 );
       if( ! refalrts::svar_left( sOpenCounter_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_3, be_3 ) )
+      if( ! refalrts::empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -10530,7 +10530,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eResult_e_1 );
     if( ! refalrts::svar_left( sNum_1, bb_4, be_4 ) ) 
       break;
-    if( ! empty_seq( bb_4, be_4 ) )
+    if( ! refalrts::empty_seq( bb_4, be_4 ) )
       break;
     refalrts::Iter bb_2_stk = bb_2;
     refalrts::Iter be_2_stk = be_2;
@@ -10540,7 +10540,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
         eCommands_B_oe_1 = bb_2_stk,
         bb_2 = bb_2_stk,
         be_2 = be_2_stk;
-      ! empty_seq( eCommands_B_oe_1, be_2 );
+      ! refalrts::empty_seq( eCommands_B_oe_1, be_2 );
       bb_2 = bb_2_stk,
       be_2 = be_2_stk,
       refalrts::next_term( eCommands_B_oe_1, be_2 )
@@ -10565,7 +10565,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::use( eCommands_E_e_1 );
       if( ! refalrts::svar_left( sOpenCounter_1, bb_3, be_3 ) ) 
         continue;
-      if( ! empty_seq( bb_3, be_3 ) )
+      if( ! refalrts::empty_seq( bb_3, be_3 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -10852,7 +10852,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
         eVars_B_oe_1 = bb_1_stk,
         bb_1 = bb_1_stk,
         be_1 = be_1_stk;
-      ! empty_seq( eVars_B_oe_1, be_1 );
+      ! refalrts::empty_seq( eVars_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
       be_1 = be_1_stk,
       refalrts::next_term( eVars_B_oe_1, be_1 )
@@ -10875,7 +10875,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::use( eVars_E_e_1 );
       if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
         continue;
-      if( ! empty_seq( bb_2, be_2 ) )
+      if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -11234,7 +11234,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eCommands_e_1 );
     if( ! refalrts::svar_left( sCounter_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -11282,8 +11282,6 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
   return refalrts::cRecognitionImpossible;
 }
 
-static refalrts::FnResult ConvertCommad(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ConvertCommands_Separated(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -11317,7 +11315,7 @@ static refalrts::FnResult SeparateAllocates(refalrts::Iter arg_begin, refalrts::
       break;
     if( ! refalrts::function_left( & CtAlloc, bb_2, be_2 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eAllocates_b_1 = bb_1;
     refalrts::use( eAllocates_b_1 );
@@ -11398,7 +11396,7 @@ static refalrts::FnResult SeparateAllocates(refalrts::Iter arg_begin, refalrts::
     refalrts::use( eAllocates_e_1 );
     if( ! refalrts::tvar_left( tOther_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -11720,7 +11718,7 @@ static refalrts::FnResult Reverse(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // t.One
     if( ! refalrts::tvar_left( tOne_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -11748,7 +11746,7 @@ static refalrts::FnResult Reverse(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -11870,7 +11868,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -11950,7 +11948,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12030,7 +12028,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12067,7 +12065,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12104,7 +12102,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12141,7 +12139,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12178,7 +12176,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12215,7 +12213,7 @@ static refalrts::FnResult ElemType(refalrts::Iter arg_begin, refalrts::Iter arg_
       break;
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12265,7 +12263,7 @@ static refalrts::FnResult ConvertAllocates(refalrts::Iter arg_begin, refalrts::I
       break;
     if( ! refalrts::function_left( & CtAlloc, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sType_1, bb_1, be_1 ) ) 
       break;
@@ -12351,11 +12349,11 @@ static refalrts::FnResult ConvertCommand(refalrts::Iter arg_begin, refalrts::Ite
       break;
     if( ! refalrts::function_left( & CtInsert, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12416,7 +12414,7 @@ static refalrts::FnResult ConvertCommand(refalrts::Iter arg_begin, refalrts::Ite
       break;
     if( ! refalrts::function_left( & CtInsertVar, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -12489,7 +12487,7 @@ static refalrts::FnResult ConvertCommand(refalrts::Iter arg_begin, refalrts::Ite
       break;
     if( ! refalrts::function_left( & CtInsertVar, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -12560,11 +12558,11 @@ static refalrts::FnResult ConvertCommand(refalrts::Iter arg_begin, refalrts::Ite
       break;
     if( ! refalrts::function_left( & StStack, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12620,13 +12618,13 @@ static refalrts::FnResult ConvertCommand(refalrts::Iter arg_begin, refalrts::Ite
       break;
     if( ! refalrts::function_left( & StLink, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sLeftNumber_1, bb_1, be_1 ) ) 
       break;
     if( ! refalrts::svar_left( sRightNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -12713,7 +12711,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     ePatternVars_b_1 = bb_1;
     refalrts::use( ePatternVars_b_1 );
@@ -12877,7 +12875,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
       break;
     if( ! refalrts::number_left( 1UL, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
       break;
@@ -12949,7 +12947,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsing_1, bb_1, be_1 ) ) 
       break;
@@ -13169,7 +13167,7 @@ static refalrts::FnResult GeneralizeResult_Vars(refalrts::Iter arg_begin, refalr
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     ePatternVars_b_1 = bb_1;
     refalrts::use( ePatternVars_b_1 );
@@ -13399,7 +13397,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1_stk = bb_1;
     refalrts::Iter be_1_stk = be_1;
@@ -13411,7 +13409,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
         eSet1_B_oe_1 = bb_1_stk,
         bb_1 = bb_1_stk,
         be_1 = be_1_stk;
-      ! empty_seq( eSet1_B_oe_1, be_1 );
+      ! refalrts::empty_seq( eSet1_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
       be_1 = be_1_stk,
       bb_2 = bb_2_stk,
@@ -13436,7 +13434,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
           eSet2_B_oe_1 = bb_2_stk,
           bb_2 = bb_2_stk,
           be_2 = be_2_stk;
-        ! empty_seq( eSet2_B_oe_1, be_2 );
+        ! refalrts::empty_seq( eSet2_B_oe_1, be_2 );
         bb_2 = bb_2_stk,
         be_2 = be_2_stk,
         refalrts::next_term( eSet2_B_oe_1, be_2 )
@@ -13542,7 +13540,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eSet1_b_1 = bb_1;
     refalrts::use( eSet1_b_1 );
@@ -13613,7 +13611,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1_stk = bb_1;
     refalrts::Iter be_1_stk = be_1;
@@ -13625,7 +13623,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
         eSet1_B_oe_1 = bb_1_stk,
         bb_1 = bb_1_stk,
         be_1 = be_1_stk;
-      ! empty_seq( eSet1_B_oe_1, be_1 );
+      ! refalrts::empty_seq( eSet1_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
       be_1 = be_1_stk,
       bb_2 = bb_2_stk,
@@ -13650,7 +13648,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
           eSet2_B_oe_1 = bb_2_stk,
           bb_2 = bb_2_stk,
           be_2 = be_2_stk;
-        ! empty_seq( eSet2_B_oe_1, be_2 );
+        ! refalrts::empty_seq( eSet2_B_oe_1, be_2 );
         bb_2 = bb_2_stk,
         be_2 = be_2_stk,
         refalrts::next_term( eSet2_B_oe_1, be_2 )
@@ -13754,7 +13752,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eSet1_b_1 = bb_1;
     refalrts::use( eSet1_b_1 );
@@ -13870,7 +13868,7 @@ static refalrts::FnResult GeneralizeResult_CopyVars(refalrts::Iter arg_begin, re
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eCommonVars_b_1 = bb_1;
     refalrts::use( eCommonVars_b_1 );
@@ -14029,7 +14027,7 @@ static refalrts::FnResult GenerateResult_Interp(refalrts::Iter arg_begin, refalr
     refalrts::Iter be_3 = 0;
     if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     ePattern_b_1 = bb_1;
     refalrts::use( ePattern_b_1 );
@@ -14290,7 +14288,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -14361,7 +14359,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -14442,7 +14440,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -14513,7 +14511,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sUsings_1, bb_1, be_1 ) ) 
       break;
@@ -14680,7 +14678,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
         eCopiedVars_B_oe_1 = bb_0_stk,
         bb_0 = bb_0_stk,
         be_0 = be_0_stk;
-      ! empty_seq( eCopiedVars_B_oe_1, be_0 );
+      ! refalrts::empty_seq( eCopiedVars_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
       be_0 = be_0_stk,
       refalrts::next_term( eCopiedVars_B_oe_1, be_0 )
@@ -14699,7 +14697,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
         continue;
       if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_1, be_1 ) ) 
         continue;
-      if( ! empty_seq( bb_1, be_1 ) )
+      if( ! refalrts::empty_seq( bb_1, be_1 ) )
         continue;
       eCopiedVars_E_b_1 = bb_0;
       refalrts::use( eCopiedVars_E_b_1 );
@@ -14890,7 +14888,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::use( eCopiedVars_e_1 );
     if( ! refalrts::svar_left( sElemNo_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -14940,7 +14938,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sValue_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15078,7 +15076,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNumber_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15216,7 +15214,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15282,7 +15280,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15348,7 +15346,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15414,7 +15412,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15480,7 +15478,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -15546,7 +15544,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( sNum_1, bb_1, be_1 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
