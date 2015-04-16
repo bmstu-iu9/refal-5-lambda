@@ -94,7 +94,7 @@ $ENTRY GenIdent {
   e.Name =
     ('//$LABEL ' e.Name)
     ('template <typename T>')
-    ('struct ' e.Name 'L_ {')
+    ('struct ' e.Name ' {')
     ('  static const char *name() {')
     ('    return "' e.Name '";')
     ('  }')
@@ -453,7 +453,7 @@ GenCommand {
 
   (e.Indent) (CmdArrIdent e.Name) =
     (e.Indent)
-    (e.Indent '{refalrts::icIdent, (void*) & ' e.Name 'L_<int>::name},');
+    (e.Indent '{refalrts::icIdent, (void*) & ' e.Name '<int>::name},');
 
   (e.Indent) (CmdArrOB) =
     (e.Indent)
@@ -575,7 +575,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' & ' e.Name 'L_<int>::name'
+      ('ident') ' & ' e.Name '<int>::name'
     >;
 }
 
@@ -704,7 +704,7 @@ SwInfo {
 
   ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
-  ElIdent e.Name = ', & ' e.Name 'L_<int>::name';
+  ElIdent e.Name = ', & ' e.Name '<int>::name';
 
   // Остальное -- скобки
   s.Other = ;
