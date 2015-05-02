@@ -276,7 +276,7 @@ $ENTRY Seq {
 
   t.Func e.Funcs =
     {
-      e.Arg = <Fetch <Apply t.Func> <Seq e.Funcs>>;
+      e.Arg = <Fetch <Apply t.Func e.Arg> <Seq e.Funcs>>;
     };
 
   /* пусто */ = { e.Arg = e.Arg; };
