@@ -126,7 +126,7 @@ DoLower {
 $FORWARD Renumerate;
 
 //FROM LibraryEx
-$EXTERN DelAccummulator, MapReduce;
+$EXTERN DelAccumulator, MapReduce;
 
 ScanCollisions {
   t.Compiler
@@ -144,7 +144,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 1 t.Location) e.Files-M
       (e.FileName 0 (Output e.Output))
-      <DelAccummulator
+      <DelAccumulator
         <MapReduce
           (Renumerate e.FileName) 2 e.Files-E
         >
@@ -158,7 +158,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
       (e.FileName 1 t.Location)
-      <DelAccummulator
+      <DelAccumulator
         <MapReduce
           (Renumerate e.FileName) 2 e.Files-E
         >
@@ -172,7 +172,7 @@ ScanCollisions {
       t.Compiler
       e.Files-B (e.FileName 0 t.Location1)
       e.Files-M (e.FileName 1 t.Location2)
-      <DelAccummulator
+      <DelAccumulator
         <MapReduce
           (Renumerate e.FileName) 2 e.Files-E
         >

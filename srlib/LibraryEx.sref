@@ -64,7 +64,7 @@ $ENTRY UnBracket {
   (e.Expr) = e.Expr;
 }
 
-$ENTRY DelAccummulator {
+$ENTRY DelAccumulator {
   t.Acc e.Tail = e.Tail;
 }
 
