@@ -1,6 +1,6 @@
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
-  DelAccummulator;
+  DelAccumulator;
 
 //FROM Library
 $EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
@@ -394,7 +394,7 @@ NormalizeRule {
     ((e.Name)
       <Map
         SplitAlternatives
-        <DelAccummulator
+        <DelAccumulator
           <MapReduce
             NormalizeAlternative
             () e.Alternatives

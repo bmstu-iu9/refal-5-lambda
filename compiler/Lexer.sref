@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccummulator, Inc, Map;
+$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccumulator, Inc, Map;
 
 //FROM Library
 $EXTERN Chr, StrFromInt;
@@ -163,7 +163,7 @@ AddLineNumber {
 
 NormalizeTokens {
   e.Tokens =
-    <DelAccummulator
+    <DelAccumulator
       <MapReduce
         AddLineNumber 1
         <Map NormalizeToken e.Tokens>
