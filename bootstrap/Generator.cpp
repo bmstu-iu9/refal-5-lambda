@@ -473,7 +473,7 @@ static refalrts::FnResult TextFromMemoryClass(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & GN_Local
-    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -536,7 +536,7 @@ static refalrts::FnResult TextFromMemoryClass(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & GN_Entry
-    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -577,9 +577,9 @@ static refalrts::FnResult SwGenFnStart(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // s.MemoryClass s.FnArguments e.Name
-    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sFnArguments_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sFnArguments_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -997,7 +997,7 @@ refalrts::FnResult GenFnStart(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // s.MemoryClass e.Name
-    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -2202,7 +2202,7 @@ static refalrts::FnResult GenSwap_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // s.MemoryClass e.Name
-    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMemoryClass_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -5588,8 +5588,6 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icChar, 0, 0, 't'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icCopyEVar, & eName_b_1, & eName_e_1},
-      {refalrts::icChar, 0, 0, 'L'},
-      {refalrts::icChar, 0, 0, '_'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, '{'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -5792,115 +5790,115 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_char( n41, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_char( n42, 'L' ) )
+    if( ! refalrts::alloc_char( n42, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
-    if( ! refalrts::alloc_char( n43, '_' ) )
+    if( ! refalrts::alloc_char( n43, '{' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n44 = 0;
-    if( ! refalrts::alloc_char( n44, ' ' ) )
+    if( ! refalrts::alloc_close_bracket( n44 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n45 = 0;
-    if( ! refalrts::alloc_char( n45, '{' ) )
+    if( ! refalrts::alloc_open_bracket( n45 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n46 = 0;
-    if( ! refalrts::alloc_close_bracket( n46 ) )
+    if( ! refalrts::alloc_char( n46, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n47 = 0;
-    if( ! refalrts::alloc_open_bracket( n47 ) )
+    if( ! refalrts::alloc_char( n47, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n48 = 0;
-    if( ! refalrts::alloc_char( n48, ' ' ) )
+    if( ! refalrts::alloc_char( n48, 's' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n49 = 0;
-    if( ! refalrts::alloc_char( n49, ' ' ) )
+    if( ! refalrts::alloc_char( n49, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n50 = 0;
-    if( ! refalrts::alloc_char( n50, 's' ) )
+    if( ! refalrts::alloc_char( n50, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n51 = 0;
     if( ! refalrts::alloc_char( n51, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n52 = 0;
-    if( ! refalrts::alloc_char( n52, 'a' ) )
+    if( ! refalrts::alloc_char( n52, 'i' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n53 = 0;
-    if( ! refalrts::alloc_char( n53, 't' ) )
+    if( ! refalrts::alloc_char( n53, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n54 = 0;
-    if( ! refalrts::alloc_char( n54, 'i' ) )
+    if( ! refalrts::alloc_char( n54, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n55 = 0;
     if( ! refalrts::alloc_char( n55, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n56 = 0;
-    if( ! refalrts::alloc_char( n56, ' ' ) )
+    if( ! refalrts::alloc_char( n56, 'o' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n57 = 0;
-    if( ! refalrts::alloc_char( n57, 'c' ) )
+    if( ! refalrts::alloc_char( n57, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n58 = 0;
-    if( ! refalrts::alloc_char( n58, 'o' ) )
+    if( ! refalrts::alloc_char( n58, 's' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n59 = 0;
-    if( ! refalrts::alloc_char( n59, 'n' ) )
+    if( ! refalrts::alloc_char( n59, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n60 = 0;
-    if( ! refalrts::alloc_char( n60, 's' ) )
+    if( ! refalrts::alloc_char( n60, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n61 = 0;
-    if( ! refalrts::alloc_char( n61, 't' ) )
+    if( ! refalrts::alloc_char( n61, 'c' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n62 = 0;
-    if( ! refalrts::alloc_char( n62, ' ' ) )
+    if( ! refalrts::alloc_char( n62, 'h' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n63 = 0;
-    if( ! refalrts::alloc_char( n63, 'c' ) )
+    if( ! refalrts::alloc_char( n63, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n64 = 0;
-    if( ! refalrts::alloc_char( n64, 'h' ) )
+    if( ! refalrts::alloc_char( n64, 'r' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n65 = 0;
-    if( ! refalrts::alloc_char( n65, 'a' ) )
+    if( ! refalrts::alloc_char( n65, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n66 = 0;
-    if( ! refalrts::alloc_char( n66, 'r' ) )
+    if( ! refalrts::alloc_char( n66, '*' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n67 = 0;
-    if( ! refalrts::alloc_char( n67, ' ' ) )
+    if( ! refalrts::alloc_char( n67, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n68 = 0;
-    if( ! refalrts::alloc_char( n68, '*' ) )
+    if( ! refalrts::alloc_char( n68, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n69 = 0;
-    if( ! refalrts::alloc_char( n69, 'n' ) )
+    if( ! refalrts::alloc_char( n69, 'm' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n70 = 0;
-    if( ! refalrts::alloc_char( n70, 'a' ) )
+    if( ! refalrts::alloc_char( n70, 'e' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n71 = 0;
-    if( ! refalrts::alloc_char( n71, 'm' ) )
+    if( ! refalrts::alloc_char( n71, '(' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n72 = 0;
-    if( ! refalrts::alloc_char( n72, 'e' ) )
+    if( ! refalrts::alloc_char( n72, ')' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n73 = 0;
-    if( ! refalrts::alloc_char( n73, '(' ) )
+    if( ! refalrts::alloc_char( n73, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n74 = 0;
-    if( ! refalrts::alloc_char( n74, ')' ) )
+    if( ! refalrts::alloc_char( n74, '{' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n75 = 0;
-    if( ! refalrts::alloc_char( n75, ' ' ) )
+    if( ! refalrts::alloc_close_bracket( n75 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n76 = 0;
-    if( ! refalrts::alloc_char( n76, '{' ) )
+    if( ! refalrts::alloc_open_bracket( n76 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n77 = 0;
-    if( ! refalrts::alloc_close_bracket( n77 ) )
+    if( ! refalrts::alloc_char( n77, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n78 = 0;
-    if( ! refalrts::alloc_open_bracket( n78 ) )
+    if( ! refalrts::alloc_char( n78, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n79 = 0;
     if( ! refalrts::alloc_char( n79, ' ' ) )
@@ -5909,98 +5907,90 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_char( n80, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n81 = 0;
-    if( ! refalrts::alloc_char( n81, ' ' ) )
+    if( ! refalrts::alloc_char( n81, 'r' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n82 = 0;
-    if( ! refalrts::alloc_char( n82, ' ' ) )
+    if( ! refalrts::alloc_char( n82, 'e' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n83 = 0;
-    if( ! refalrts::alloc_char( n83, 'r' ) )
+    if( ! refalrts::alloc_char( n83, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n84 = 0;
-    if( ! refalrts::alloc_char( n84, 'e' ) )
+    if( ! refalrts::alloc_char( n84, 'u' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n85 = 0;
-    if( ! refalrts::alloc_char( n85, 't' ) )
+    if( ! refalrts::alloc_char( n85, 'r' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n86 = 0;
-    if( ! refalrts::alloc_char( n86, 'u' ) )
+    if( ! refalrts::alloc_char( n86, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n87 = 0;
-    if( ! refalrts::alloc_char( n87, 'r' ) )
+    if( ! refalrts::alloc_char( n87, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n88 = 0;
-    if( ! refalrts::alloc_char( n88, 'n' ) )
+    if( ! refalrts::alloc_char( n88, '"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n89 = 0;
-    if( ! refalrts::alloc_char( n89, ' ' ) )
+    if( ! refalrts::alloc_char( n89, '"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n90 = 0;
-    if( ! refalrts::alloc_char( n90, '"' ) )
+    if( ! refalrts::alloc_char( n90, ';' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n91 = 0;
-    if( ! refalrts::alloc_char( n91, '"' ) )
+    if( ! refalrts::alloc_close_bracket( n91 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n92 = 0;
-    if( ! refalrts::alloc_char( n92, ';' ) )
+    if( ! refalrts::alloc_open_bracket( n92 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n93 = 0;
-    if( ! refalrts::alloc_close_bracket( n93 ) )
+    if( ! refalrts::alloc_char( n93, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n94 = 0;
-    if( ! refalrts::alloc_open_bracket( n94 ) )
+    if( ! refalrts::alloc_char( n94, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n95 = 0;
-    if( ! refalrts::alloc_char( n95, ' ' ) )
+    if( ! refalrts::alloc_char( n95, '}' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n96 = 0;
-    if( ! refalrts::alloc_char( n96, ' ' ) )
+    if( ! refalrts::alloc_close_bracket( n96 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n97 = 0;
-    if( ! refalrts::alloc_char( n97, '}' ) )
+    if( ! refalrts::alloc_open_bracket( n97 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n98 = 0;
-    if( ! refalrts::alloc_close_bracket( n98 ) )
+    if( ! refalrts::alloc_char( n98, '}' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n99 = 0;
-    if( ! refalrts::alloc_open_bracket( n99 ) )
+    if( ! refalrts::alloc_char( n99, ';' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n100 = 0;
-    if( ! refalrts::alloc_char( n100, '}' ) )
+    if( ! refalrts::alloc_close_bracket( n100 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n101 = 0;
-    if( ! refalrts::alloc_char( n101, ';' ) )
+    if( ! refalrts::alloc_open_bracket( n101 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n102 = 0;
     if( ! refalrts::alloc_close_bracket( n102 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n103 = 0;
-    if( ! refalrts::alloc_open_bracket( n103 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n104 = 0;
-    if( ! refalrts::alloc_close_bracket( n104 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n103, n104 );
-    res = refalrts::splice_elem( res, n104 );
-    res = refalrts::splice_elem( res, n103 );
-    refalrts::link_brackets( n99, n102 );
+    refalrts::link_brackets( n101, n102 );
     res = refalrts::splice_elem( res, n102 );
     res = refalrts::splice_elem( res, n101 );
+    refalrts::link_brackets( n97, n100 );
     res = refalrts::splice_elem( res, n100 );
     res = refalrts::splice_elem( res, n99 );
-    refalrts::link_brackets( n94, n98 );
     res = refalrts::splice_elem( res, n98 );
     res = refalrts::splice_elem( res, n97 );
+    refalrts::link_brackets( n92, n96 );
     res = refalrts::splice_elem( res, n96 );
     res = refalrts::splice_elem( res, n95 );
     res = refalrts::splice_elem( res, n94 );
-    refalrts::link_brackets( n78, n93 );
     res = refalrts::splice_elem( res, n93 );
     res = refalrts::splice_elem( res, n92 );
+    refalrts::link_brackets( n76, n91 );
     res = refalrts::splice_elem( res, n91 );
-    res = refalrts::splice_evar( res, eName_b_3, eName_e_3 );
     res = refalrts::splice_elem( res, n90 );
     res = refalrts::splice_elem( res, n89 );
+    res = refalrts::splice_evar( res, eName_b_3, eName_e_3 );
     res = refalrts::splice_elem( res, n88 );
     res = refalrts::splice_elem( res, n87 );
     res = refalrts::splice_elem( res, n86 );
@@ -6012,9 +6002,9 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     res = refalrts::splice_elem( res, n80 );
     res = refalrts::splice_elem( res, n79 );
     res = refalrts::splice_elem( res, n78 );
-    refalrts::link_brackets( n47, n77 );
     res = refalrts::splice_elem( res, n77 );
     res = refalrts::splice_elem( res, n76 );
+    refalrts::link_brackets( n45, n75 );
     res = refalrts::splice_elem( res, n75 );
     res = refalrts::splice_elem( res, n74 );
     res = refalrts::splice_elem( res, n73 );
@@ -6044,9 +6034,9 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     res = refalrts::splice_elem( res, n49 );
     res = refalrts::splice_elem( res, n48 );
     res = refalrts::splice_elem( res, n47 );
-    refalrts::link_brackets( n34, n46 );
     res = refalrts::splice_elem( res, n46 );
     res = refalrts::splice_elem( res, n45 );
+    refalrts::link_brackets( n34, n44 );
     res = refalrts::splice_elem( res, n44 );
     res = refalrts::splice_elem( res, n43 );
     res = refalrts::splice_elem( res, n42 );
@@ -7916,7 +7906,7 @@ static refalrts::FnResult GenSentence_Aux(refalrts::Iter arg_begin, refalrts::It
     // (~1 e.Indent )~1 e.Generated
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
@@ -7989,7 +7979,7 @@ static refalrts::FnResult BracketsVar_B(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::Iter sBracketNumber_1;
     refalrts::use( sBracketNumber_1 );
     // s.BracketNumber
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -8058,7 +8048,7 @@ static refalrts::FnResult BracketsVar_E(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::Iter sBracketNumber_1;
     refalrts::use( sBracketNumber_1 );
     // s.BracketNumber
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -8181,7 +8171,7 @@ static refalrts::FnResult PrintStkBracket(refalrts::Iter arg_begin, refalrts::It
     static refalrts::Iter sStkBracket_4;
     refalrts::use( sStkBracket_4 );
     // e.Indent s.StkBracket
-    if( ! refalrts::svar_right( sStkBracket_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_right( sStkBracket_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_0;
     refalrts::use( eIndent_b_1 );
@@ -8572,7 +8562,7 @@ static refalrts::FnResult PrintRecoverStackBracket(refalrts::Iter arg_begin, ref
     static refalrts::Iter sStkBracket_4;
     refalrts::use( sStkBracket_4 );
     // e.Indent s.StkBracket
-    if( ! refalrts::svar_right( sStkBracket_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_right( sStkBracket_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_0;
     refalrts::use( eIndent_b_1 );
@@ -8790,7 +8780,7 @@ static refalrts::FnResult PrintRecoverStackBracket(refalrts::Iter arg_begin, ref
 
 //$LABEL CCreateClosure
 template <typename T>
-struct CCreateClosureL_ {
+struct CCreateClosure {
   static const char *name() {
     return "CCreateClosure";
   }
@@ -8805,7 +8795,7 @@ static refalrts::FnResult PrintName(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // # CCreateClosure
-    if( ! refalrts::ident_left(  & CCreateClosureL_<int>::name, bb_0, be_0 ) ) 
+    if( ! refalrts::ident_left(  & CCreateClosure<int>::name, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9006,13 +8996,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdComment e.Text )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdComment, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdComment, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9102,13 +9092,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdPrint e.Text )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdPrint, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdPrint, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9212,13 +9202,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdDeclareEVar e.VarInfo )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdDeclareEVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdDeclareEVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9841,13 +9831,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdDeclareVar e.VarInfo )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdDeclareVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdDeclareVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10187,13 +10177,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdChar s.Direction s.BracketNumber s.Char )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdChar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdChar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10201,11 +10191,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sChar_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sChar_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -10300,13 +10290,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdNumber s.Direction s.BracketNumber s.Number )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdNumber, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdNumber, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10314,11 +10304,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -10415,13 +10405,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdName s.Direction s.BracketNumber e.Name )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdName, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdName, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10429,9 +10419,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
     eName_b_1 = bb_2;
     refalrts::use( eName_b_1 );
@@ -10530,13 +10520,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdIdent s.Direction s.BracketNumber e.Name )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdIdent, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdIdent, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10544,9 +10534,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
     eName_b_1 = bb_2;
     refalrts::use( eName_b_1 );
@@ -10655,13 +10645,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdBrackets s.Direction s.BracketNumber s.InnerBrackets )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdBrackets, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdBrackets, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -10669,11 +10659,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sInnerBrackets_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sInnerBrackets_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -11056,13 +11046,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdADT, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdADT, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -11070,11 +11060,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sInnerBrackets_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sInnerBrackets_1, bb_2, be_2 ) )
       break;
     eName_b_1 = bb_2;
     refalrts::use( eName_b_1 );
@@ -11441,13 +11431,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdEmpty s.BracketNumber )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdEmpty, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdEmpty, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -11455,7 +11445,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -11550,13 +11540,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdVar s.Direction s.BracketNumber s.Mode e.Info )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -11564,11 +11554,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) )
       break;
     eInfo_b_1 = bb_2;
     refalrts::use( eInfo_b_1 );
@@ -11669,13 +11659,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdRepeated s.Direction s.BracketNumber e.VarInfo )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdRepeated, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdRepeated, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -11683,9 +11673,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
     eVarInfo_b_1 = bb_2;
     refalrts::use( eVarInfo_b_1 );
@@ -11808,15 +11798,15 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdClosedE & AlgLeft s.BracketNumber 'e e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdClosedE, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdClosedE, bb_2, be_2 ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & AlgLeft, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -11824,9 +11814,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -12445,19 +12435,19 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdOpenedE & AlgLeft s.BracketNumber 'e e.Index (~3 e.BracketsForSave )~3 )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdOpenedE, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdOpenedE, bb_2, be_2 ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & AlgLeft, bb_2, be_2 ) )
       break;
     refalrts::Iter bb_3 = 0;
     refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_right( bb_3, be_3, bb_2, be_2 ) ) 
+    if( ! refalrts::brackets_right( bb_3, be_3, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -12469,9 +12459,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eBracketsForSave_b_1 );
     eBracketsForSave_e_1 = be_3;
     refalrts::use( eBracketsForSave_e_1 );
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -14239,13 +14229,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdEmptyResult )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdEmptyResult, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdEmptyResult, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -14666,13 +14656,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdCopyEVar s.Usings 'e e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdCopyEVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdCopyEVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -14680,9 +14670,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -15265,13 +15255,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdCopyVar s.Usings s.Mode e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdCopyVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdCopyVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -15279,9 +15269,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -15760,13 +15750,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdAllocateElem s.ElemNumber e.ElemInfo )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdAllocateElem, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdAllocateElem, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -15774,7 +15764,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) )
       break;
     eElemInfo_b_1 = bb_2;
     refalrts::use( eElemInfo_b_1 );
@@ -16003,13 +15993,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdLinkBrackets s.Left s.Right )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdLinkBrackets, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdLinkBrackets, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -16017,9 +16007,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sLeft_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sLeft_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sRight_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sRight_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -16275,13 +16265,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdPushStack s.ElemNumber )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdPushStack, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdPushStack, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -16289,7 +16279,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -16501,15 +16491,15 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdInsertElem & ElElem s.ElemNumber )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdInsertElem, bb_2, be_2 ) )
       break;
-    if( ! refalrts::function_left( & ElElem, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & ElElem, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -16517,7 +16507,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sElemNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -16795,15 +16785,15 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdInsertElem & ElSTVar s.Usings s.Mode e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdInsertElem, bb_2, be_2 ) )
       break;
-    if( ! refalrts::function_left( & ElSTVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & ElSTVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -16811,9 +16801,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -17106,13 +17096,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdInsertEVar s.Usings 'e e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertEVar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdInsertEVar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -17120,9 +17110,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -17449,13 +17439,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdReturnResult )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdReturnResult, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdReturnResult, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -18043,13 +18033,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdIfDef )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdIfDef, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdIfDef, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -18193,13 +18183,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdElse )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdElse, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdElse, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -18288,13 +18278,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdEndIf )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdEndIf, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdEndIf, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -18392,13 +18382,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdInitRAA )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdInitRAA, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdInitRAA, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -18721,17 +18711,17 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent '   )~1 (~2 & CmdFinRAA )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_right( ' ', bb_1, be_1 ) ) 
+    if( ! refalrts::char_right( ' ', bb_1, be_1 ) )
       break;
-    if( ! refalrts::char_right( ' ', bb_1, be_1 ) ) 
+    if( ! refalrts::char_right( ' ', bb_1, be_1 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdFinRAA, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdFinRAA, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -19715,13 +19705,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrChar s.Value )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrChar, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrChar, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -19729,7 +19719,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sValue_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sValue_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -19967,13 +19957,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrFunc e.Name )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrFunc, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrFunc, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -20304,13 +20294,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrInt s.Number )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrInt, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrInt, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -20318,7 +20308,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sNumber_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -20520,13 +20510,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrIdent e.Name )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrIdent, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrIdent, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -20576,8 +20566,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icChar, 0, 0, '&'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
-      {refalrts::icChar, 0, 0, 'L'},
-      {refalrts::icChar, 0, 0, '_'},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icChar, 0, 0, 'i'},
       {refalrts::icChar, 0, 0, 'n'},
@@ -20703,56 +20691,48 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_char( n32, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_char( n33, 'L' ) )
+    if( ! refalrts::alloc_char( n33, '<' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, '_' ) )
+    if( ! refalrts::alloc_char( n34, 'i' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_char( n35, '<' ) )
+    if( ! refalrts::alloc_char( n35, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, 'i' ) )
+    if( ! refalrts::alloc_char( n36, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, 'n' ) )
+    if( ! refalrts::alloc_char( n37, '>' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_char( n38, 't' ) )
+    if( ! refalrts::alloc_char( n38, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_char( n39, '>' ) )
+    if( ! refalrts::alloc_char( n39, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
-    if( ! refalrts::alloc_char( n40, ':' ) )
+    if( ! refalrts::alloc_char( n40, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_char( n41, ':' ) )
+    if( ! refalrts::alloc_char( n41, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_char( n42, 'n' ) )
+    if( ! refalrts::alloc_char( n42, 'm' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
-    if( ! refalrts::alloc_char( n43, 'a' ) )
+    if( ! refalrts::alloc_char( n43, 'e' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n44 = 0;
-    if( ! refalrts::alloc_char( n44, 'm' ) )
+    if( ! refalrts::alloc_char( n44, '}' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n45 = 0;
-    if( ! refalrts::alloc_char( n45, 'e' ) )
+    if( ! refalrts::alloc_char( n45, ',' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n46 = 0;
-    if( ! refalrts::alloc_char( n46, '}' ) )
+    if( ! refalrts::alloc_close_bracket( n46 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n47 = 0;
-    if( ! refalrts::alloc_char( n47, ',' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n48 = 0;
-    if( ! refalrts::alloc_close_bracket( n48 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n2, n48 );
-    res = refalrts::splice_elem( res, n48 );
-    res = refalrts::splice_elem( res, n47 );
+    refalrts::link_brackets( n2, n46 );
     res = refalrts::splice_elem( res, n46 );
     res = refalrts::splice_elem( res, n45 );
     res = refalrts::splice_elem( res, n44 );
@@ -20827,13 +20807,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrOB )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrOB, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrOB, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -21170,13 +21150,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrCB )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrCB, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrCB, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -21518,13 +21498,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrOADT )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrOADT, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrOADT, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -21841,13 +21821,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrCADT )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrCADT, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrCADT, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -22169,13 +22149,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrOC )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrOC, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrOC, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -22497,13 +22477,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrCC )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrCC, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrCC, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
@@ -22838,15 +22818,15 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrCopy 'e e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrCopy, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrCopy, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -23131,13 +23111,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrCopy s.Mode e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrCopy, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrCopy, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -23145,7 +23125,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -23386,13 +23366,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrSplice s.Usings 'e e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrSplice, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrSplice, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -23400,9 +23380,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_2, be_2 ) ) 
+    if( ! refalrts::char_left( 'e', bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -23699,13 +23679,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 (~2 & CmdArrSplice s.Usings s.Mode e.Index )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & CmdArrSplice, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & CmdArrSplice, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -23713,9 +23693,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_2, be_2 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_2, be_2 ) )
       break;
     eIndex_b_1 = bb_2;
     refalrts::use( eIndex_b_1 );
@@ -23959,9 +23939,9 @@ static refalrts::FnResult PrintVar(refalrts::Iter arg_begin, refalrts::Iter arg_
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Usings s.Mode e.Index
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24030,7 +24010,7 @@ static refalrts::FnResult PrintArrVar(refalrts::Iter arg_begin, refalrts::Iter a
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Mode e.Index
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24087,9 +24067,9 @@ static refalrts::FnResult PrintEVar_B(refalrts::Iter arg_begin, refalrts::Iter a
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Usings s.Mode e.Index
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24168,7 +24148,7 @@ static refalrts::FnResult PrintArrEVar_B(refalrts::Iter arg_begin, refalrts::Ite
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Mode e.Index
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24235,9 +24215,9 @@ static refalrts::FnResult PrintEVar_E(refalrts::Iter arg_begin, refalrts::Iter a
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Usings s.Mode e.Index
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24316,7 +24296,7 @@ static refalrts::FnResult PrintArrEVar_E(refalrts::Iter arg_begin, refalrts::Ite
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Mode e.Index
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24383,9 +24363,9 @@ static refalrts::FnResult PrintEVar_OE(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // s.Usings s.Mode e.Index
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -24465,7 +24445,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '\n'
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24503,7 +24483,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '\t'
-    if( ! refalrts::char_left( '\t', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\t', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24541,7 +24521,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '\r'
-    if( ! refalrts::char_left( '\r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\r', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24579,7 +24559,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '\\'
-    if( ! refalrts::char_left( '\\', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\\', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24617,7 +24597,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '\''
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24657,7 +24637,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sOther_1;
     refalrts::use( sOther_1 );
     // s.Other
-    if( ! refalrts::svar_left( sOther_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sOther_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24704,17 +24684,17 @@ static refalrts::FnResult PrintMatchChar(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.Char
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -24853,17 +24833,17 @@ static refalrts::FnResult PrintMatchNumber(refalrts::Iter arg_begin, refalrts::I
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.Number
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -25014,15 +24994,15 @@ static refalrts::FnResult PrintMatchName(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 e.Indent )~1 s.Direction s.BracketNumber e.Name
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -25168,15 +25148,15 @@ static refalrts::FnResult PrintMatchIdent(refalrts::Iter arg_begin, refalrts::It
     // (~1 e.Indent )~1 s.Direction s.BracketNumber e.Name
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -25202,8 +25182,6 @@ static refalrts::FnResult PrintMatchIdent(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icChar, 0, 0, '&'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
-      {refalrts::icChar, 0, 0, 'L'},
-      {refalrts::icChar, 0, 0, '_'},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icChar, 0, 0, 'i'},
       {refalrts::icChar, 0, 0, 'n'},
@@ -25268,51 +25246,43 @@ static refalrts::FnResult PrintMatchIdent(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_char( n13, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, 'L' ) )
+    if( ! refalrts::alloc_char( n14, '<' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, '_' ) )
+    if( ! refalrts::alloc_char( n15, 'i' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, '<' ) )
+    if( ! refalrts::alloc_char( n16, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, 'i' ) )
+    if( ! refalrts::alloc_char( n17, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, 'n' ) )
+    if( ! refalrts::alloc_char( n18, '>' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_char( n19, 't' ) )
+    if( ! refalrts::alloc_char( n19, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_char( n20, '>' ) )
+    if( ! refalrts::alloc_char( n20, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, ':' ) )
+    if( ! refalrts::alloc_char( n21, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_char( n22, ':' ) )
+    if( ! refalrts::alloc_char( n22, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, 'n' ) )
+    if( ! refalrts::alloc_char( n23, 'm' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, 'a' ) )
+    if( ! refalrts::alloc_char( n24, 'e' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, 'm' ) )
+    if( ! refalrts::alloc_close_call( n25 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, 'e' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_close_call( n27 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n27 );
+    refalrts::push_stack( n25 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n27 );
-    res = refalrts::splice_elem( res, n26 );
     res = refalrts::splice_elem( res, n25 );
     res = refalrts::splice_elem( res, n24 );
     res = refalrts::splice_elem( res, n23 );
@@ -25377,17 +25347,17 @@ static refalrts::FnResult PrintMatchBrackets(refalrts::Iter arg_begin, refalrts:
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.InnerNum
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sInnerNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sInnerNum_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -25573,17 +25543,17 @@ static refalrts::FnResult PrintMatchADT(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.InnerNum e.Name
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sInnerNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sInnerNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -25750,13 +25720,13 @@ static refalrts::FnResult BreakerFromIndent(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '    '
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -25914,13 +25884,13 @@ static refalrts::FnResult PrintMatchEmpty(refalrts::Iter arg_begin, refalrts::It
     // (~1 e.Indent )~1 s.BracketNumber
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26217,7 +26187,7 @@ static refalrts::FnResult StrFromDirection(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & AlgLeft
-    if( ! refalrts::function_left( & AlgLeft, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & AlgLeft, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26265,7 +26235,7 @@ static refalrts::FnResult StrFromDirection(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & AlgRight
-    if( ! refalrts::function_left( & AlgRight, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & AlgRight, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26323,7 +26293,7 @@ static refalrts::FnResult VarMatchFunction(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 's'
-    if( ! refalrts::char_left( 's', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 's', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26371,7 +26341,7 @@ static refalrts::FnResult VarMatchFunction(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 't'
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26442,17 +26412,17 @@ static refalrts::FnResult PrintMatchSTVar(refalrts::Iter arg_begin, refalrts::It
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -26613,19 +26583,19 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.Usings 'e e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'e', bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -26971,19 +26941,19 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     // (~1 e.Indent )~1 s.Direction s.BracketNumber s.Usings s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUsings_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -27240,19 +27210,19 @@ static refalrts::FnResult PrintMatch(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Indent )~1 s.Direction s.BracketNumber (~2 e.Function )~2 e.TextRep
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirection_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sBracketNumber_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
       break;
     eFunction_b_1 = bb_2;
     refalrts::use( eFunction_b_1 );
@@ -27307,7 +27277,6 @@ static refalrts::FnResult PrintMatch(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icChar, 0, 0, ')'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, ')'},
-      {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icCopyEVar, & eIndent_b_1, & eIndent_e_1},
@@ -27445,46 +27414,42 @@ static refalrts::FnResult PrintMatch(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_char( n36, ')' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, ' ' ) )
+    if( ! refalrts::alloc_close_bracket( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_close_bracket( n38 ) )
+    if( ! refalrts::alloc_open_bracket( n38 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_open_bracket( n39 ) )
+    if( ! refalrts::alloc_char( n39, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
     if( ! refalrts::alloc_char( n40, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_char( n41, ' ' ) )
+    if( ! refalrts::alloc_open_call( n41 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_open_call( n42 ) )
+    if( ! refalrts::alloc_name( n42, & BreakerFromIndent, "BreakerFromIndent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
-    if( ! refalrts::alloc_name( n43, & BreakerFromIndent, "BreakerFromIndent" ) )
+    if( ! refalrts::alloc_close_call( n43 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n44 = 0;
-    if( ! refalrts::alloc_close_call( n44 ) )
+    if( ! refalrts::alloc_close_bracket( n44 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n45 = 0;
-    if( ! refalrts::alloc_close_bracket( n45 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n39, n45 );
-    res = refalrts::splice_elem( res, n45 );
-    refalrts::push_stack( n44 );
-    refalrts::push_stack( n42 );
+    refalrts::link_brackets( n38, n44 );
     res = refalrts::splice_elem( res, n44 );
-    res = refalrts::splice_evar( res, eIndent_b_3, eIndent_e_3 );
+    refalrts::push_stack( n43 );
+    refalrts::push_stack( n41 );
     res = refalrts::splice_elem( res, n43 );
+    res = refalrts::splice_evar( res, eIndent_b_3, eIndent_e_3 );
     res = refalrts::splice_elem( res, n42 );
     res = refalrts::splice_elem( res, n41 );
     res = refalrts::splice_elem( res, n40 );
-    res = refalrts::splice_evar( res, eIndent_b_2, eIndent_e_2 );
     res = refalrts::splice_elem( res, n39 );
-    refalrts::link_brackets( n0, n38 );
+    res = refalrts::splice_evar( res, eIndent_b_2, eIndent_e_2 );
     res = refalrts::splice_elem( res, n38 );
+    refalrts::link_brackets( n0, n37 );
     res = refalrts::splice_elem( res, n37 );
     res = refalrts::splice_elem( res, n36 );
     res = refalrts::splice_elem( res, n35 );
@@ -27555,7 +27520,7 @@ static refalrts::FnResult PrintElemVar(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::Iter sNumber_1;
     refalrts::use( sNumber_1 );
     // s.Number
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -27638,15 +27603,15 @@ static refalrts::FnResult PrintAllocateElem(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Indent )~1 s.ElemNumber s.ElementType e.Info
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
-    if( ! refalrts::svar_left( sElemNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sElemNumber_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sElementType_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sElementType_1, bb_0, be_0 ) )
       break;
     eInfo_b_1 = bb_0;
     refalrts::use( eInfo_b_1 );
@@ -27953,15 +27918,15 @@ static refalrts::FnResult PrintAllocate_Aux(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Indent )~1 s.ElemNumber (~2 e.Constructor )~2 (~3 e.Value )~3
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_3 = 0;
     refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_right( bb_3, be_3, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_right( bb_3, be_3, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_right( bb_2, be_2, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_right( bb_2, be_2, bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_1;
     refalrts::use( eIndent_b_1 );
@@ -27975,7 +27940,7 @@ static refalrts::FnResult PrintAllocate_Aux(refalrts::Iter arg_begin, refalrts::
     refalrts::use( eValue_b_1 );
     eValue_e_1 = be_3;
     refalrts::use( eValue_e_1 );
-    if( ! refalrts::svar_left( sElemNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sElemNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28154,7 +28119,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElChar
-    if( ! refalrts::function_left( & ElChar, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElChar, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28232,7 +28197,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElName
-    if( ! refalrts::function_left( & ElName, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElName, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28310,7 +28275,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElNumber
-    if( ! refalrts::function_left( & ElNumber, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElNumber, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28398,7 +28363,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElIdent
-    if( ! refalrts::function_left( & ElIdent, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElIdent, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28481,7 +28446,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElOpenADT
-    if( ! refalrts::function_left( & ElOpenADT, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElOpenADT, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28579,7 +28544,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElCloseADT
-    if( ! refalrts::function_left( & ElCloseADT, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElCloseADT, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28682,7 +28647,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElOpenBracket
-    if( ! refalrts::function_left( & ElOpenBracket, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElOpenBracket, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28800,7 +28765,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElCloseBracket
-    if( ! refalrts::function_left( & ElCloseBracket, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElCloseBracket, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28923,7 +28888,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElOpenCall
-    if( ! refalrts::function_left( & ElOpenCall, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElOpenCall, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29026,7 +28991,7 @@ static refalrts::FnResult SwAllocator(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ElCloseCall
-    if( ! refalrts::function_left( & ElCloseCall, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElCloseCall, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29141,9 +29106,9 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sChar_1;
     refalrts::use( sChar_1 );
     // & ElChar s.Char
-    if( ! refalrts::function_left( & ElChar, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElChar, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29218,7 +29183,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // & ElName e.Name
-    if( ! refalrts::function_left( & ElName, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElName, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -29330,9 +29295,9 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sNumber_1;
     refalrts::use( sNumber_1 );
     // & ElNumber s.Number
-    if( ! refalrts::function_left( & ElNumber, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElNumber, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29403,7 +29368,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // & ElIdent e.Name
-    if( ! refalrts::function_left( & ElIdent, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ElIdent, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -29416,8 +29381,6 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, '&'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
-      {refalrts::icChar, 0, 0, 'L'},
-      {refalrts::icChar, 0, 0, '_'},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icChar, 0, 0, 'i'},
       {refalrts::icChar, 0, 0, 'n'},
@@ -29451,46 +29414,38 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_char( n3, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_char( n4, 'L' ) )
+    if( ! refalrts::alloc_char( n4, '<' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_char( n5, '_' ) )
+    if( ! refalrts::alloc_char( n5, 'i' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, '<' ) )
+    if( ! refalrts::alloc_char( n6, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, 'i' ) )
+    if( ! refalrts::alloc_char( n7, 't' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, 'n' ) )
+    if( ! refalrts::alloc_char( n8, '>' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_char( n9, 't' ) )
+    if( ! refalrts::alloc_char( n9, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, '>' ) )
+    if( ! refalrts::alloc_char( n10, ':' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, ':' ) )
+    if( ! refalrts::alloc_char( n11, 'n' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, ':' ) )
+    if( ! refalrts::alloc_char( n12, 'a' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, 'n' ) )
+    if( ! refalrts::alloc_char( n13, 'm' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, 'a' ) )
+    if( ! refalrts::alloc_char( n14, 'e' ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, 'm' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'e' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n16 );
-    res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_elem( res, n12 );
@@ -29522,7 +29477,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sOther_1;
     refalrts::use( sOther_1 );
     // s.Other
-    if( ! refalrts::svar_left( sOther_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sOther_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29555,13 +29510,13 @@ static refalrts::FnResult GenCloseBrackets(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '    '
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29688,9 +29643,9 @@ static refalrts::FnResult GenCloseBrackets(refalrts::Iter arg_begin, refalrts::I
     static refalrts::Iter eIndent_e_2;
     refalrts::use( eIndent_e_2 );
     // '   e.Indent
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
     eIndent_b_1 = bb_0;
     refalrts::use( eIndent_b_1 );

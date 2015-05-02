@@ -75,7 +75,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
     // [~1 & Context ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -103,7 +103,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
 
 //$LABEL CSuccess
 template <typename T>
-struct CSuccessL_ {
+struct CSuccess {
   static const char *name() {
     return "CSuccess";
   }
@@ -111,7 +111,7 @@ struct CSuccessL_ {
 
 //$LABEL CInvalidMode
 template <typename T>
-struct CInvalidModeL_ {
+struct CInvalidMode {
   static const char *name() {
     return "CInvalidMode";
   }
@@ -150,9 +150,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     // [~1 & Context e.Variables_B (~2 s.Mode e.Index )~2 e.Variables_E ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -177,11 +177,11 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -207,7 +207,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CSuccessL_<int>::name},
+        {refalrts::icIdent, (void*) & CSuccess<int>::name},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -248,7 +248,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & CSuccessL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & CSuccess<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_elem( res, n10 );
       refalrts::link_brackets( n0, n9 );
@@ -310,9 +310,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     // [~1 & Context e.Variables_B (~2 s.OldMode e.Index )~2 e.Variables_E ]~1 s.NewMode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -337,15 +337,15 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       eVariables_E_b_1 = bb_1;
       refalrts::use( eVariables_E_b_1 );
       eVariables_E_e_1 = be_1;
       refalrts::use( eVariables_E_e_1 );
-      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -360,7 +360,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CInvalidModeL_<int>::name},
+        {refalrts::icIdent, (void*) & CInvalidMode<int>::name},
         {refalrts::icCopySTVar, & sOldMode_1},
         {refalrts::icSpliceSTVar, & sNewMode_1},
         {refalrts::icSpliceEVar, & eIndex_b_2, & eIndex_e_2},
@@ -391,7 +391,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & CInvalidModeL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_evar( res, eIndex_b_2, eIndex_e_2 );
       res = refalrts::splice_stvar( res, sNewMode_1 );
@@ -434,13 +434,13 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     // [~1 & Context e.Variables ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_1;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_1;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -456,7 +456,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eVariables_b_1, & eVariables_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-      {refalrts::icIdent, (void*) & CSuccessL_<int>::name},
+      {refalrts::icIdent, (void*) & CSuccess<int>::name},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -482,7 +482,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_close_adt( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_ident( n5, & CSuccessL_<int>::name ) )
+    if( ! refalrts::alloc_ident( n5, & CSuccess<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n0, n4 );
@@ -541,9 +541,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 s.Mode e.Index )~1 e.Variables_B (~2 & FreeVarsSent e.Free )~2 e.Variables_E
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -568,9 +568,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
         continue;
-      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
       eFree_b_1 = bb_2;
       refalrts::use( eFree_b_1 );
@@ -707,13 +707,13 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 s.Mode e.Index )~1 e.Variables
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_0;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_0;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -772,9 +772,9 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
     // (~1 s.Mode e.Index )~1 e.Variables_B (~2 s.Mode e.Index )~2 e.Variables_E
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -799,11 +799,11 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -867,13 +867,13 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
     // (~1 s.Mode e.Index )~1 e.Variables
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_0;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_0;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -918,7 +918,7 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
 
 //$LABEL CExistVariable
 template <typename T>
-struct CExistVariableL_ {
+struct CExistVariable {
   static const char *name() {
     return "CExistVariable";
   }
@@ -926,7 +926,7 @@ struct CExistVariableL_ {
 
 //$LABEL CNotFound
 template <typename T>
-struct CNotFoundL_ {
+struct CNotFound {
   static const char *name() {
     return "CNotFound";
   }
@@ -965,9 +965,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     // [~1 & Context e.Variables_B (~2 s.Mode e.Index )~2 e.Variables_E ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -992,11 +992,11 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1022,7 +1022,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CSuccessL_<int>::name},
+        {refalrts::icIdent, (void*) & CSuccess<int>::name},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1063,7 +1063,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & CSuccessL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & CSuccess<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_elem( res, n10 );
       refalrts::link_brackets( n0, n9 );
@@ -1125,9 +1125,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     // [~1 & Context e.Variables_B (~2 s.OldMode e.Index )~2 e.Variables_E ]~1 s.NewMode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -1152,15 +1152,15 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       eVariables_E_b_1 = bb_1;
       refalrts::use( eVariables_E_b_1 );
       eVariables_E_e_1 = be_1;
       refalrts::use( eVariables_E_e_1 );
-      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1175,7 +1175,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CInvalidModeL_<int>::name},
+        {refalrts::icIdent, (void*) & CInvalidMode<int>::name},
         {refalrts::icCopySTVar, & sOldMode_1},
         {refalrts::icSpliceSTVar, & sNewMode_1},
         {refalrts::icSpliceEVar, & eIndex_b_2, & eIndex_e_2},
@@ -1206,7 +1206,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & CInvalidModeL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_evar( res, eIndex_b_2, eIndex_e_2 );
       res = refalrts::splice_stvar( res, sNewMode_1 );
@@ -1249,13 +1249,13 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     // [~1 & Context e.Variables ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_1;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_1;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -1271,7 +1271,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eVariables_b_1, & eVariables_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-      {refalrts::icIdent, (void*) & CSuccessL_<int>::name},
+      {refalrts::icIdent, (void*) & CSuccess<int>::name},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1297,7 +1297,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_close_adt( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_ident( n5, & CSuccessL_<int>::name ) )
+    if( ! refalrts::alloc_ident( n5, & CSuccess<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n0, n4 );
@@ -1362,9 +1362,9 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
     // (~1 s.Mode e.Index )~1 e.Variables_B (~2 & FreeVarsSent e.Free )~2 e.Variables_E
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -1389,9 +1389,9 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
         continue;
-      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
       eFree_b_1 = bb_2;
       refalrts::use( eFree_b_1 );
@@ -1547,13 +1547,13 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
     // (~1 s.Mode e.Index )~1 e.Variables
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_0;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_0;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -1612,9 +1612,9 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
     // (~1 s.Mode e.Index )~1 e.Variables_B (~2 s.Mode e.Index )~2 e.Variables_E
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -1639,11 +1639,11 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1692,13 +1692,13 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
     // (~1 s.Mode e.Index )~1 e.Variables
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_0;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_0;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -1763,9 +1763,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     // [~1 & Context e.Variables_B (~2 s.Mode e.Index )~2 e.Variables_E ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -1790,11 +1790,11 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1820,7 +1820,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CExistVariableL_<int>::name},
+        {refalrts::icIdent, (void*) & CExistVariable<int>::name},
         {refalrts::icCopySTVar, & sMode_1},
         {refalrts::icCopyEVar, & eIndex_b_1, & eIndex_e_1},
         {refalrts::icEnd}
@@ -1867,7 +1867,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & CExistVariableL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & CExistVariable<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_evar( res, eIndex_b_3, eIndex_e_3 );
       res = refalrts::splice_stvar( res, sMode_3 );
@@ -1931,9 +1931,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     // [~1 & Context e.Variables_B (~2 s.OldMode e.Index )~2 e.Variables_E ]~1 s.NewMode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNewMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -1958,15 +1958,15 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
       eVariables_E_b_1 = bb_1;
       refalrts::use( eVariables_E_b_1 );
       eVariables_E_e_1 = be_1;
       refalrts::use( eVariables_E_e_1 );
-      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1981,7 +1981,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icSpliceEVar, & eVariables_E_b_1, & eVariables_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-        {refalrts::icIdent, (void*) & CInvalidModeL_<int>::name},
+        {refalrts::icIdent, (void*) & CInvalidMode<int>::name},
         {refalrts::icCopySTVar, & sOldMode_1},
         {refalrts::icSpliceSTVar, & sNewMode_1},
         {refalrts::icSpliceEVar, & eIndex_b_2, & eIndex_e_2},
@@ -2012,7 +2012,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & CInvalidModeL_<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_evar( res, eIndex_b_2, eIndex_e_2 );
       res = refalrts::splice_stvar( res, sNewMode_1 );
@@ -2055,13 +2055,13 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     // [~1 & Context e.Variables ]~1 s.Mode e.Index
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     eVariables_b_1 = bb_1;
     refalrts::use( eVariables_b_1 );
     eVariables_e_1 = be_1;
     refalrts::use( eVariables_e_1 );
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -2073,7 +2073,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icFunc, (void*) & Context, (void*) "Context"},
       {refalrts::icSpliceEVar, & eVariables_b_1, & eVariables_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
-      {refalrts::icIdent, (void*) & CNotFoundL_<int>::name},
+      {refalrts::icIdent, (void*) & CNotFound<int>::name},
       {refalrts::icSpliceSTVar, & sMode_1},
       {refalrts::icSpliceEVar, & eIndex_b_1, & eIndex_e_1},
       {refalrts::icEnd}
@@ -2095,7 +2095,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_close_adt( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CNotFoundL_<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & CNotFound<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_evar( res, eIndex_b_1, eIndex_e_1 );
     res = refalrts::splice_stvar( res, sMode_1 );
@@ -2143,7 +2143,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
     // [~1 & Context e.Locals (~2 & FreeVarsSent e.FreeSent )~2 (~3 & FreeVarsFunc e.FreeFunc )~3 e.Outers ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2166,15 +2166,15 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       refalrts::move_right( eLocals_b_1, eLocals_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
       refalrts::Iter bb_3 = 0;
       refalrts::Iter be_3 = 0;
-      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & FreeVarsFunc, bb_3, be_3 ) ) 
+      if( ! refalrts::function_left( & FreeVarsFunc, bb_3, be_3 ) )
         continue;
       eFreeSent_b_1 = bb_2;
       refalrts::use( eFreeSent_b_1 );
@@ -2322,7 +2322,7 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eBegin_b_1 = bb_0_stk;
       eBegin_e_1 = eBegin_oe_1;
       refalrts::move_right( eBegin_b_1, eBegin_e_1 );
-      if( ! refalrts::tvar_left( tCopy_1, bb_0, be_0 ) ) 
+      if( ! refalrts::tvar_left( tCopy_1, bb_0, be_0 ) )
         continue;
       refalrts::Iter bb_0_stk = bb_0;
       refalrts::Iter be_0_stk = be_0;
@@ -2341,7 +2341,7 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
         eMiddle_b_1 = bb_0_stk;
         eMiddle_e_1 = eMiddle_oe_1;
         refalrts::move_right( eMiddle_b_1, eMiddle_e_1 );
-        if( ! refalrts::repeated_stvar_left( tCopy_2, tCopy_1, bb_0, be_0 ) ) 
+        if( ! refalrts::repeated_stvar_left( tCopy_2, tCopy_1, bb_0, be_0 ) )
           continue;
         eEnd_b_1 = bb_0;
         refalrts::use( eEnd_b_1 );
@@ -2443,7 +2443,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // [~1 & Context e.Variables ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2540,19 +2540,19 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // [~1 & Context (~2 & FreeVarsSent )~2 (~3 & FreeVarsFunc e.ClosureContext )~3 e.Outers ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & Context, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+    if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
       break;
-    if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) ) 
+    if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
       break;
     refalrts::Iter bb_3 = 0;
     refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) ) 
+    if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) )
       break;
-    if( ! refalrts::function_left( & FreeVarsFunc, bb_3, be_3 ) ) 
+    if( ! refalrts::function_left( & FreeVarsFunc, bb_3, be_3 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;

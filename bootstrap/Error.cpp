@@ -73,9 +73,9 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 & ErrorList e.Errors )~1 e.Message
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
     eErrors_b_1 = bb_1;
     refalrts::use( eErrors_b_1 );
@@ -204,15 +204,15 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 & ErrorList e.Errors )~1 s.LineNumber e.Message
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
     eErrors_b_1 = bb_1;
     refalrts::use( eErrors_b_1 );
     eErrors_e_1 = be_1;
     refalrts::use( eErrors_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) )
       break;
     eMessage_b_1 = bb_0;
     refalrts::use( eMessage_b_1 );
@@ -380,19 +380,19 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eExpected_e_1;
     refalrts::use( eExpected_e_1 );
     // t.ErrorList (~1 & TkError s.LineNumber e.Message )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkError, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkError, bb_1, be_1 ) )
       break;
     eExpected_b_1 = bb_0;
     refalrts::use( eExpected_b_1 );
     eExpected_e_1 = be_0;
     refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
       break;
     eMessage_b_1 = bb_1;
     refalrts::use( eMessage_b_1 );
@@ -457,19 +457,19 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eExpected_e_1;
     refalrts::use( eExpected_e_1 );
     // t.ErrorList (~1 & TkUnexpected s.LineNumber e.Unexpected )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) )
       break;
     eExpected_b_1 = bb_0;
     refalrts::use( eExpected_b_1 );
     eExpected_e_1 = be_0;
     refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
       break;
     eUnexpected_b_1 = bb_1;
     refalrts::use( eUnexpected_b_1 );
@@ -641,19 +641,19 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eInfo_e_1;
     refalrts::use( eInfo_e_1 );
     // t.ErrorList (~1 s.Unexpected s.LineNumber e.Info )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eExpected_b_1 = bb_0;
     refalrts::use( eExpected_b_1 );
     eExpected_e_1 = be_0;
     refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_1, be_1 ) )
       break;
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
       break;
     eInfo_b_1 = bb_1;
     refalrts::use( eInfo_b_1 );
@@ -852,7 +852,7 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Line )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -918,9 +918,9 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // (~1 & ErrorList e.Errors )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1013,9 +1013,9 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     // (~1 & ErrorList )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -1052,7 +1052,7 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     static refalrts::Iter tErrorList_1;
     refalrts::use( tErrorList_1 );
     // t.ErrorList
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
