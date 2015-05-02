@@ -108,15 +108,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sScopeClass_1;
     refalrts::use( sScopeClass_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.OtherScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -141,17 +141,17 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sOtherScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sOtherScopeClass_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -392,15 +392,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -425,13 +425,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -526,15 +526,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -559,13 +559,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -854,15 +854,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -887,13 +887,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1176,19 +1176,19 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
     refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1287,15 +1287,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1320,13 +1320,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1425,15 +1425,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1458,13 +1458,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1559,15 +1559,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1592,13 +1592,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -1887,15 +1887,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1920,13 +1920,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -2215,15 +2215,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -2248,13 +2248,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -2538,15 +2538,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_E_e_1;
     refalrts::use( eNames_E_e_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -2571,13 +2571,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -2855,19 +2855,19 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
     refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -2966,15 +2966,15 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::Iter sOtherScopeClass_1;
     refalrts::use( sOtherScopeClass_1 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E ]~1 s.OtherScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sOtherScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sOtherScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -2999,17 +2999,17 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -3245,19 +3245,19 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::Iter sLnNum_1;
     refalrts::use( sLnNum_1 );
     // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_b_1 = bb_1;
     refalrts::use( eNames_b_1 );
     eNames_e_1 = be_1;
     refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -3354,13 +3354,13 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -3385,17 +3385,17 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -3488,13 +3488,13 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -3519,17 +3519,17 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -3610,11 +3610,11 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // t.ErrorList t.SymTable s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -3806,13 +3806,13 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
     // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -3837,17 +3837,17 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) ) 
+      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -3928,11 +3928,11 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // t.ErrorList t.SymTable s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) ) 
+    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -4128,7 +4128,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) ) 
+    if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4151,15 +4151,15 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) ) 
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
         continue;
-      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) ) 
+      if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
       eNames_E_b_1 = bb_1;
       refalrts::use( eNames_E_b_1 );
       eNames_E_e_1 = be_1;
       refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) ) 
+      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
       eName_b_1 = bb_2;
       refalrts::use( eName_b_1 );

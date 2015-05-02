@@ -8,7 +8,7 @@ extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg
 
 extern refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-extern refalrts::FnResult DelAccummulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
@@ -33,7 +33,7 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Line )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -349,7 +349,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & EEnum
-    if( ! refalrts::function_left( & EEnum, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & EEnum, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -402,7 +402,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Entry
-    if( ! refalrts::function_left( & Entry, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Entry, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -455,7 +455,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Enum
-    if( ! refalrts::function_left( & Enum, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Enum, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -503,7 +503,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Extern
-    if( ! refalrts::function_left( & Extern, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Extern, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -561,7 +561,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Forward
-    if( ! refalrts::function_left( & Forward, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Forward, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -624,7 +624,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Swap
-    if( ! refalrts::function_left( & Swap, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Swap, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -672,7 +672,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & ESwap
-    if( ! refalrts::function_left( & ESwap, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & ESwap, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -725,7 +725,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & Ident
-    if( ! refalrts::function_left( & Ident, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & Ident, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -785,9 +785,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter sChar_1;
     refalrts::use( sChar_1 );
     // & TkChar s.Char
-    if( ! refalrts::function_left( & TkChar, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkChar, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sChar_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -827,7 +827,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkCloseADT
-    if( ! refalrts::function_left( & TkCloseADT, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkCloseADT, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -870,7 +870,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkCloseCall
-    if( ! refalrts::function_left( & TkCloseCall, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkCloseCall, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -913,7 +913,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkCloseBlock
-    if( ! refalrts::function_left( & TkCloseBlock, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkCloseBlock, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -956,7 +956,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkCloseBracket
-    if( ! refalrts::function_left( & TkCloseBracket, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkCloseBracket, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -999,7 +999,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkComma
-    if( ! refalrts::function_left( & TkComma, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkComma, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1044,9 +1044,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter sDirective_1;
     refalrts::use( sDirective_1 );
     // & TkDirective s.Directive
-    if( ! refalrts::function_left( & TkDirective, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkDirective, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sDirective_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sDirective_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1108,7 +1108,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkEOF
-    if( ! refalrts::function_left( & TkEOF, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkEOF, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1195,7 +1195,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter eMessage_e_1;
     refalrts::use( eMessage_e_1 );
     // & TkError e.Message
-    if( ! refalrts::function_left( & TkError, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkError, bb_0, be_0 ) )
       break;
     eMessage_b_1 = bb_0;
     refalrts::use( eMessage_b_1 );
@@ -1292,7 +1292,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkIdentMarker
-    if( ! refalrts::function_left( & TkIdentMarker, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkIdentMarker, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1339,7 +1339,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter eName_e_1;
     refalrts::use( eName_e_1 );
     // & TkName e.Name
-    if( ! refalrts::function_left( & TkName, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkName, bb_0, be_0 ) )
       break;
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
@@ -1398,9 +1398,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter sNumber_1;
     refalrts::use( sNumber_1 );
     // & TkNumber s.Number
-    if( ! refalrts::function_left( & TkNumber, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkNumber, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1482,7 +1482,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkOpenADT
-    if( ! refalrts::function_left( & TkOpenADT, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkOpenADT, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1525,7 +1525,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkOpenCall
-    if( ! refalrts::function_left( & TkOpenCall, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkOpenCall, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1568,7 +1568,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkOpenBlock
-    if( ! refalrts::function_left( & TkOpenBlock, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkOpenBlock, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1611,7 +1611,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkOpenBracket
-    if( ! refalrts::function_left( & TkOpenBracket, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkOpenBracket, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1654,7 +1654,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkReplace
-    if( ! refalrts::function_left( & TkReplace, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkReplace, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1697,7 +1697,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkSemicolon
-    if( ! refalrts::function_left( & TkSemicolon, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkSemicolon, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1744,7 +1744,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter eUnexpected_e_1;
     refalrts::use( eUnexpected_e_1 );
     // & TkUnexpected e.Unexpected
-    if( ! refalrts::function_left( & TkUnexpected, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkUnexpected, bb_0, be_0 ) )
       break;
     eUnexpected_b_1 = bb_0;
     refalrts::use( eUnexpected_b_1 );
@@ -1902,9 +1902,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
     // & TkVariable s.Mode e.Index
-    if( ! refalrts::function_left( & TkVariable, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkVariable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sMode_1, bb_0, be_0 ) )
       break;
     eIndex_b_1 = bb_0;
     refalrts::use( eIndex_b_1 );
@@ -1943,7 +1943,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // & TkRedefinition
-    if( ! refalrts::function_left( & TkRedefinition, bb_0, be_0 ) ) 
+    if( ! refalrts::function_left( & TkRedefinition, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2075,7 +2075,7 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
       eName_B_b_1 = bb_0_stk;
       eName_B_e_1 = eName_B_oe_1;
       refalrts::move_right( eName_B_b_1, eName_B_e_1 );
-      if( ! refalrts::char_left( '-', bb_0, be_0 ) ) 
+      if( ! refalrts::char_left( '-', bb_0, be_0 ) )
         continue;
       eName_E_b_1 = bb_0;
       refalrts::use( eName_E_b_1 );
@@ -2177,9 +2177,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkDirective e.Directive )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkDirective, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkDirective, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2232,9 +2232,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkEOF )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkEOF, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkEOF, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2284,13 +2284,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkLiteral_Char s.Char )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkLiteral_Char, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkLiteral_Char, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sChar_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sChar_1, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2342,9 +2342,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkLiteral_Code e.DecCode )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkLiteral_Code, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkLiteral_Code, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2430,11 +2430,11 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkLiteral_NewLine 'n )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkLiteral_NewLine, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkLiteral_NewLine, bb_1, be_1 ) )
       break;
-    if( ! refalrts::char_left( 'n', bb_1, be_1 ) ) 
+    if( ! refalrts::char_left( 'n', bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2487,11 +2487,11 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkLiteral_CarriageReturn 'r )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkLiteral_CarriageReturn, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkLiteral_CarriageReturn, bb_1, be_1 ) )
       break;
-    if( ! refalrts::char_left( 'r', bb_1, be_1 ) ) 
+    if( ! refalrts::char_left( 'r', bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2544,11 +2544,11 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkLiteral_Tab 't )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkLiteral_Tab, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkLiteral_Tab, bb_1, be_1 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_1, be_1 ) ) 
+    if( ! refalrts::char_left( 't', bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2605,9 +2605,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkName e.Name )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkName, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkName, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2680,9 +2680,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkNewLine e.Accumulated )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkNewLine, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkNewLine, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2736,9 +2736,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkNumber e.Digits )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkNumber, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkNumber, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -2809,13 +2809,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkPunctuation s.Punctuation )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkPunctuation, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkPunctuation, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sPunctuation_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sPunctuation_1, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -2881,15 +2881,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkVariable s.Type '. e.Index )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkVariable, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkVariable, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sType_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sType_1, bb_1, be_1 ) )
       break;
-    if( ! refalrts::char_left( '.', bb_1, be_1 ) ) 
+    if( ! refalrts::char_left( '.', bb_1, be_1 ) )
       break;
     eIndex_b_1 = bb_1;
     refalrts::use( eIndex_b_1 );
@@ -2962,9 +2962,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TkUnexpected e.Unexpected )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3020,9 +3020,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TokenError e.Message )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TokenError, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TokenError, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3078,9 +3078,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TokenUnexpected e.Unexpected )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TokenUnexpected, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TokenUnexpected, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3132,9 +3132,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     // (~1 & TokenUnexpectedEOF )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TokenUnexpectedEOF, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TokenUnexpectedEOF, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
@@ -3255,13 +3255,13 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'ENUM'
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3310,15 +3310,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'EENUM'
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3367,15 +3367,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'ENTRY'
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3424,17 +3424,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'EXTERN'
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3483,19 +3483,19 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'FORWARD'
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3544,13 +3544,13 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'SWAP'
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3599,15 +3599,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'ESWAP'
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3656,15 +3656,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // 'LABEL'
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3863,7 +3863,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '<'
-    if( ! refalrts::char_left( '<', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '<', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3896,7 +3896,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '>'
-    if( ! refalrts::char_left( '>', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '>', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3929,7 +3929,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '{'
-    if( ! refalrts::char_left( '{', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '{', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3962,7 +3962,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '}'
-    if( ! refalrts::char_left( '}', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '}', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -3995,7 +3995,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '('
-    if( ! refalrts::char_left( '(', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '(', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4028,7 +4028,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // ')'
-    if( ! refalrts::char_left( ')', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ')', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4061,7 +4061,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '='
-    if( ! refalrts::char_left( '=', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '=', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4094,7 +4094,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // ','
-    if( ! refalrts::char_left( ',', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ',', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4127,7 +4127,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // ';'
-    if( ! refalrts::char_left( ';', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ';', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4160,7 +4160,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '['
-    if( ! refalrts::char_left( '[', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '[', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4193,7 +4193,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // ']'
-    if( ! refalrts::char_left( ']', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ']', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4226,7 +4226,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '#'
-    if( ! refalrts::char_left( '#', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '#', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4259,7 +4259,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     // '^'
-    if( ! refalrts::char_left( '^', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '^', bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4301,13 +4301,13 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     // s.LineNumber (~1 & TkNewLine )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::function_left( & TkNewLine, bb_1, be_1 ) ) 
+    if( ! refalrts::function_left( & TkNewLine, bb_1, be_1 ) )
       break;
     if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
-    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -4366,13 +4366,13 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     // s.LineNumber (~1 s.TokType e.Info )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sTokType_1, bb_1, be_1 ) ) 
+    if( ! refalrts::svar_left( sTokType_1, bb_1, be_1 ) )
       break;
     eInfo_b_1 = bb_1;
     refalrts::use( eInfo_b_1 );
@@ -4439,7 +4439,7 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DelAccummulator, (void*) "DelAccummulator"},
+      {refalrts::icFunc, (void*) & DelAccumulator, (void*) "DelAccumulator"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & MapReduce, (void*) "MapReduce"},
       {refalrts::icFunc, (void*) & AddLineNumber, (void*) "AddLineNumber"},
@@ -4464,7 +4464,7 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DelAccummulator, "DelAccummulator" ) )
+    if( ! refalrts::alloc_name( n1, & DelAccumulator, "DelAccumulator" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -4581,9 +4581,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '  e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ' ', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ' ', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -4657,9 +4657,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '\t e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\t', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\t', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -4733,9 +4733,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '\r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\r', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -4809,9 +4809,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '< e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '<', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '<', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -4908,9 +4908,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '> e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '>', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '>', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5007,9 +5007,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '( e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '(', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '(', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5106,9 +5106,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 ') e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ')', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ')', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5205,9 +5205,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '{ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '{', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '{', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5304,9 +5304,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '} e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '}', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '}', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5403,9 +5403,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '[ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '[', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '[', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5502,9 +5502,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '] e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ']', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ']', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5601,9 +5601,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '= e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '=', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '=', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5700,9 +5700,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '; e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ';', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ';', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5799,9 +5799,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 ', e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( ',', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( ',', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5898,9 +5898,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '# e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '#', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '#', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -5997,9 +5997,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '^ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '^', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '^', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6096,9 +6096,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6179,9 +6179,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6262,9 +6262,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6345,9 +6345,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6428,9 +6428,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6511,9 +6511,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6594,9 +6594,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6677,9 +6677,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6760,9 +6760,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6843,9 +6843,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -6926,9 +6926,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7009,9 +7009,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7092,9 +7092,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7175,9 +7175,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7258,9 +7258,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7341,9 +7341,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7424,9 +7424,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7507,9 +7507,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7590,9 +7590,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7673,9 +7673,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7756,9 +7756,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7839,9 +7839,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -7922,9 +7922,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8005,9 +8005,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8088,9 +8088,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8171,9 +8171,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8254,9 +8254,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 's', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 's', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8337,9 +8337,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'e', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8420,9 +8420,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8503,9 +8503,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8586,9 +8586,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8669,9 +8669,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8752,9 +8752,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8835,9 +8835,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -8918,9 +8918,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9001,9 +9001,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9084,9 +9084,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9167,9 +9167,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9250,9 +9250,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9333,9 +9333,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '$ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '$', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '$', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9409,9 +9409,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9485,9 +9485,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '/', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '/', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9568,9 +9568,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -9663,7 +9663,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9725,13 +9725,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -9823,13 +9823,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -9913,7 +9913,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -9994,9 +9994,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10077,9 +10077,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10160,9 +10160,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10243,9 +10243,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10326,9 +10326,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10409,9 +10409,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10492,9 +10492,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10575,9 +10575,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10658,9 +10658,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10741,9 +10741,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10824,9 +10824,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'a', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'a', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10907,9 +10907,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'b', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'b', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -10990,9 +10990,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'c', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'c', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11073,9 +11073,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'd', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'd', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11156,9 +11156,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'e', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11239,9 +11239,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'f', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'f', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11322,9 +11322,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'g', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'g', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11405,9 +11405,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'h', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'h', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11488,9 +11488,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'i', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'i', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11571,9 +11571,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'j', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'j', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11654,9 +11654,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'k', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'k', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11737,9 +11737,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'l', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'l', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11820,9 +11820,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'm', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'm', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11903,9 +11903,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -11986,9 +11986,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'o', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'o', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12069,9 +12069,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'p', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'p', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12152,9 +12152,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12235,9 +12235,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'r', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12318,9 +12318,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 's', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 's', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12401,9 +12401,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12484,9 +12484,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'u', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'u', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12567,9 +12567,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'v', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'v', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12650,9 +12650,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'w', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'w', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12733,9 +12733,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'x', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'x', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12816,9 +12816,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12899,9 +12899,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -12982,9 +12982,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13065,9 +13065,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13148,9 +13148,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13231,9 +13231,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13314,9 +13314,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13397,9 +13397,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13480,9 +13480,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13563,9 +13563,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13646,9 +13646,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13729,9 +13729,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13812,9 +13812,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13895,9 +13895,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -13978,9 +13978,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14061,9 +14061,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14144,9 +14144,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14227,9 +14227,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14310,9 +14310,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14393,9 +14393,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14476,9 +14476,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14559,9 +14559,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14642,9 +14642,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14725,9 +14725,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14808,9 +14808,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14891,9 +14891,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -14974,9 +14974,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15057,9 +15057,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15140,9 +15140,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '_', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '_', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15223,9 +15223,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '-', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '-', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15306,7 +15306,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15400,13 +15400,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -15490,7 +15490,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -15571,9 +15571,9 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '. e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '.', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '.', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15654,7 +15654,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -15806,13 +15806,13 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -15896,7 +15896,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -15977,9 +15977,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16060,9 +16060,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16143,9 +16143,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16226,9 +16226,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16309,9 +16309,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16392,9 +16392,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16475,9 +16475,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16558,9 +16558,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16641,9 +16641,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16724,9 +16724,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16807,7 +16807,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -16901,13 +16901,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -16991,7 +16991,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -17072,9 +17072,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17155,9 +17155,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17238,9 +17238,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17321,9 +17321,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17404,9 +17404,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17487,9 +17487,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17570,9 +17570,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17653,9 +17653,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17736,9 +17736,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17819,9 +17819,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17902,9 +17902,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -17985,9 +17985,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18068,9 +18068,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18151,9 +18151,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18234,9 +18234,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18317,9 +18317,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18400,9 +18400,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18483,9 +18483,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18566,9 +18566,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18649,9 +18649,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18732,9 +18732,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18815,9 +18815,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18898,9 +18898,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -18981,9 +18981,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19064,9 +19064,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19147,9 +19147,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19230,7 +19230,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19437,13 +19437,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -19527,7 +19527,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -19608,9 +19608,9 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19707,7 +19707,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -19785,13 +19785,13 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -19875,7 +19875,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -19956,9 +19956,9 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '*', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '*', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20032,9 +20032,9 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '/', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '/', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20108,7 +20108,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20202,13 +20202,13 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -20292,7 +20292,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -20373,9 +20373,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20456,9 +20456,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20539,9 +20539,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20622,9 +20622,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20705,9 +20705,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20788,9 +20788,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20871,9 +20871,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -20954,9 +20954,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21037,9 +21037,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21120,9 +21120,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21203,9 +21203,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'a', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'a', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21286,9 +21286,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'b', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'b', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21369,9 +21369,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'c', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'c', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21452,9 +21452,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'd', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'd', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21535,9 +21535,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'e', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21618,9 +21618,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'f', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'f', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21701,9 +21701,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'g', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'g', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21784,9 +21784,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'h', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'h', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21867,9 +21867,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'i', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'i', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -21950,9 +21950,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'j', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'j', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22033,9 +22033,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'k', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'k', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22116,9 +22116,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'l', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'l', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22199,9 +22199,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'm', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'm', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22282,9 +22282,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22365,9 +22365,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'o', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'o', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22448,9 +22448,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'p', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'p', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22531,9 +22531,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22614,9 +22614,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'r', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22697,9 +22697,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 's', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 's', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22780,9 +22780,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22863,9 +22863,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'u', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'u', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -22946,9 +22946,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'v', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'v', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23029,9 +23029,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'w', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'w', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23112,9 +23112,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'x', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'x', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23195,9 +23195,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23278,9 +23278,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23361,9 +23361,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23444,9 +23444,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23527,9 +23527,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23610,9 +23610,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23693,9 +23693,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23776,9 +23776,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23859,9 +23859,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -23942,9 +23942,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24025,9 +24025,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24108,9 +24108,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24191,9 +24191,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24274,9 +24274,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24357,9 +24357,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24440,9 +24440,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24523,9 +24523,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24606,9 +24606,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24689,9 +24689,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24772,9 +24772,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24855,9 +24855,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -24938,9 +24938,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25021,9 +25021,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25104,9 +25104,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25187,9 +25187,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25270,9 +25270,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25353,9 +25353,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25436,9 +25436,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25519,9 +25519,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '_', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '_', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25602,9 +25602,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '-', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '-', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25685,7 +25685,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -25887,13 +25887,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -25977,7 +25977,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -26058,9 +26058,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26141,9 +26141,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26224,9 +26224,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26307,9 +26307,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26390,9 +26390,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26473,9 +26473,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26556,9 +26556,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26639,9 +26639,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26722,9 +26722,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26805,9 +26805,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26888,9 +26888,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -26971,9 +26971,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27054,9 +27054,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27137,9 +27137,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27220,9 +27220,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27303,9 +27303,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27386,9 +27386,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27469,9 +27469,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27552,9 +27552,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27635,9 +27635,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27718,9 +27718,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27801,9 +27801,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27884,9 +27884,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -27967,9 +27967,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28050,9 +28050,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28133,9 +28133,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28216,7 +28216,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28310,13 +28310,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -28400,7 +28400,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -28481,9 +28481,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '\\ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\\', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\\', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28557,9 +28557,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28633,9 +28633,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -28791,7 +28791,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29011,13 +29011,13 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -29109,13 +29109,13 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -29199,7 +29199,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29280,9 +29280,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '/', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '/', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -29356,9 +29356,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '*', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '*', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -29432,9 +29432,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -29533,13 +29533,13 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -29605,7 +29605,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29825,13 +29825,13 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -29915,7 +29915,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -29996,9 +29996,9 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30091,7 +30091,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -30153,13 +30153,13 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sAny_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -30231,13 +30231,13 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -30321,7 +30321,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -30402,9 +30402,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30485,9 +30485,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30568,9 +30568,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30651,9 +30651,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30734,9 +30734,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30817,9 +30817,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30900,9 +30900,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -30983,9 +30983,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31066,9 +31066,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31149,9 +31149,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31232,9 +31232,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'a', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'a', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31315,9 +31315,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'b', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'b', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31398,9 +31398,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'c', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'c', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31481,9 +31481,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'd', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'd', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31564,9 +31564,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'e', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'e', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31647,9 +31647,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'f', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'f', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31730,9 +31730,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'g', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'g', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31813,9 +31813,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'h', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'h', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31896,9 +31896,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'i', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'i', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -31979,9 +31979,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'j', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'j', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32062,9 +32062,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'k', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'k', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32145,9 +32145,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'l', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'l', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32228,9 +32228,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'm', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'm', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32311,9 +32311,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32394,9 +32394,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'o', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'o', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32477,9 +32477,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'p', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'p', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32560,9 +32560,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32643,9 +32643,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'r', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32726,9 +32726,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 's', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 's', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32809,9 +32809,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32892,9 +32892,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'u', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'u', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -32975,9 +32975,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'v', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'v', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33058,9 +33058,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'w', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'w', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33141,9 +33141,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'x', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'x', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33224,9 +33224,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33307,9 +33307,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33390,9 +33390,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'A', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'A', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33473,9 +33473,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'B', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'B', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33556,9 +33556,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'C', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'C', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33639,9 +33639,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'D', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'D', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33722,9 +33722,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'E', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'E', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33805,9 +33805,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'F', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'F', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33888,9 +33888,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'G', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'G', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -33971,9 +33971,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'H', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'H', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34054,9 +34054,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'I', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'I', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34137,9 +34137,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'J', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'J', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34220,9 +34220,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'K', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'K', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34303,9 +34303,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'L', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'L', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34386,9 +34386,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'M', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'M', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34469,9 +34469,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'N', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'N', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34552,9 +34552,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'O', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'O', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34635,9 +34635,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'P', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'P', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34718,9 +34718,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Q', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34801,9 +34801,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'R', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'R', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34884,9 +34884,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'S', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'S', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -34967,9 +34967,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'T', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'T', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35050,9 +35050,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'U', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'U', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35133,9 +35133,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'V', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'V', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35216,9 +35216,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'W', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'W', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35299,9 +35299,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'X', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'X', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35382,9 +35382,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Y', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35465,9 +35465,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'Z', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35548,9 +35548,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '_', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '_', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35631,9 +35631,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '-', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '-', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35714,7 +35714,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -35808,13 +35808,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -35898,7 +35898,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -35979,9 +35979,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36078,9 +36078,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'r', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'r', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36177,9 +36177,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 't', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 't', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36276,9 +36276,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 '\\ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\\', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\\', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36375,9 +36375,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36474,9 +36474,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( 'd', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( 'd', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36550,9 +36550,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\n', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36712,7 +36712,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -36934,13 +36934,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -37024,7 +37024,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -37105,9 +37105,9 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '\'', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '\'', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -37204,7 +37204,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -37282,13 +37282,13 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -37372,7 +37372,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -37453,9 +37453,9 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '*', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '*', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -37680,7 +37680,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -37758,13 +37758,13 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -37848,7 +37848,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -37929,9 +37929,9 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '/', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '/', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38005,7 +38005,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38083,13 +38083,13 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -38173,7 +38173,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -38254,9 +38254,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38337,9 +38337,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38420,9 +38420,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38503,9 +38503,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38586,9 +38586,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38669,9 +38669,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38752,9 +38752,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38835,9 +38835,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -38918,9 +38918,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39001,9 +39001,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39084,7 +39084,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39286,13 +39286,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -39376,7 +39376,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -39457,9 +39457,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39540,9 +39540,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39623,9 +39623,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39706,9 +39706,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39789,9 +39789,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39872,9 +39872,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -39955,9 +39955,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40038,9 +40038,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40121,9 +40121,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40204,9 +40204,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40287,7 +40287,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40381,13 +40381,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -40471,7 +40471,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -40552,9 +40552,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '0', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '0', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40651,9 +40651,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '1', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '1', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40750,9 +40750,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '2', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '2', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40849,9 +40849,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '3', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '3', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -40948,9 +40948,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '4', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '4', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41047,9 +41047,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '5', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '5', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41146,9 +41146,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '6', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '6', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41245,9 +41245,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '7', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '7', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41344,9 +41344,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '8', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '8', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41443,9 +41443,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::char_left( '9', bb_0, be_0 ) ) 
+    if( ! refalrts::char_left( '9', bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41542,7 +41542,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
@@ -41636,13 +41636,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     eAccum_b_1 = bb_1;
     refalrts::use( eAccum_b_1 );
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) ) 
+    if( ! refalrts::svar_left( sUnexpected_1, bb_0, be_0 ) )
       break;
     eText_b_1 = bb_0;
     refalrts::use( eText_b_1 );
@@ -41726,7 +41726,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
