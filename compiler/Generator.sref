@@ -652,7 +652,7 @@ PrintMatch {
     (e.Indent
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
       '( ' e.TextRep ', ' <BracketsVar-B s.BracketNumber> ', '
-      <BracketsVar-E s.BracketNumber> ' ) ) '
+      <BracketsVar-E s.BracketNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
