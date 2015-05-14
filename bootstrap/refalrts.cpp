@@ -2019,13 +2019,7 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 #if SHOW_DEBUG
 
-  static unsigned s_counter = 0;
-
-  ++s_counter;
-
-  fprintf(stderr, "\nexecute %d\n", s_counter);
-  if( s_counter > (unsigned) SHOW_DEBUG ) {
-    fprintf(refalrts::vm::dump_stream(), "\nexecute %d\n", s_counter);
+  if( g_step_counter >= (unsigned) SHOW_DEBUG ) {
     make_dump( begin, end );
   }
 
@@ -2310,6 +2304,7 @@ void refalrts::vm::print_seq(
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   using refalrts::vm::dump_stream;
 
+  fprintf( dump_stream(), "\nSTEP NUMBER %lu\n", g_step_counter );
   fprintf( dump_stream(), "\nERROR EXPRESSION:\n" );
   print_seq( dump_stream(), begin, end );
   fprintf( dump_stream(), "\nVIEW FIELD:\n" );
