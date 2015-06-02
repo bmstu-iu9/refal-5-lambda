@@ -15,7 +15,7 @@
   </annotation>
 
   <prototype name="Refal" description="Refal">
-    <location link="C:\Users\Mazdaywik\AppData\Roaming\Far Manager\Profile\refal.hrc"/>
+    <location link="refal.hrc"/>
     <filename>/\.[sm]?ref$/i</filename>
   </prototype>
 </hrc>
