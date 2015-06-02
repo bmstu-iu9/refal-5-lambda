@@ -1,5 +1,6 @@
 @echo off
 setlocal
+  mkdir ..\bin >NUL 2>NUL
   call ..\c-plus-plus.conf.bat
   %CPPLINE% -I..\srlib srefc.cpp *.cpp
   if exist srefc.exe move srefc.exe ..\bin
