@@ -174,7 +174,6 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -185,9 +184,11 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
@@ -195,9 +196,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -334,7 +335,6 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -345,15 +345,17 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
       if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
@@ -567,7 +569,6 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       refalrts::Iter
         eVariables_B_b_1 = bb_0_stk,
         eVariables_B_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -578,9 +579,11 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       eVariables_B_b_1 = bb_0_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_0;
+      refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
@@ -588,9 +591,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       refalrts::use( eFree_b_1 );
       eFree_e_1 = be_2;
       refalrts::use( eFree_e_1 );
-      eVariables_E_b_1 = bb_0;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_0;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -800,7 +803,6 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
       refalrts::Iter
         eVariables_B_b_1 = bb_0_stk,
         eVariables_B_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -811,9 +813,11 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
       eVariables_B_b_1 = bb_0_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_0;
+      refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
@@ -821,9 +825,9 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_0;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_0;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -995,7 +999,6 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1006,9 +1009,11 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
@@ -1016,9 +1021,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1155,7 +1160,6 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1166,15 +1170,17 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
       if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
@@ -1394,7 +1400,6 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
       refalrts::Iter
         eVariables_B_b_1 = bb_0_stk,
         eVariables_B_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -1405,9 +1410,11 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
       eVariables_B_b_1 = bb_0_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_0;
+      refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
@@ -1415,9 +1422,9 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
       refalrts::use( eFree_b_1 );
       eFree_e_1 = be_2;
       refalrts::use( eFree_e_1 );
-      eVariables_E_b_1 = bb_0;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_0;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1646,7 +1653,6 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
       refalrts::Iter
         eVariables_B_b_1 = bb_0_stk,
         eVariables_B_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -1657,9 +1663,11 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
       eVariables_B_b_1 = bb_0_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_0;
+      refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
@@ -1667,9 +1675,9 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_0;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_0;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1799,7 +1807,6 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1810,9 +1817,11 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_stvar_left( sMode_2, sMode_1, bb_2, be_2 ) )
         continue;
@@ -1820,9 +1829,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1967,7 +1976,6 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::Iter
         eVariables_B_b_1 = bb_1_stk,
         eVariables_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1978,15 +1986,17 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       eVariables_B_b_1 = bb_1_stk;
       eVariables_B_e_1 = eVariables_B_oe_1;
       refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eIndex_b_2, eIndex_e_2, eIndex_b_1, eIndex_e_1, bb_2, be_2 ) )
         continue;
-      eVariables_E_b_1 = bb_1;
+      eVariables_E_b_1 = bb_3;
       refalrts::use( eVariables_E_b_1 );
-      eVariables_E_e_1 = be_1;
+      eVariables_E_e_1 = be_3;
       refalrts::use( eVariables_E_e_1 );
       if( ! refalrts::svar_left( sOldMode_1, bb_2, be_2 ) )
         continue;
@@ -2177,7 +2187,6 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       refalrts::Iter
         eLocals_b_1 = bb_1_stk,
         eLocals_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eLocals_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -2188,15 +2197,17 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       eLocals_b_1 = bb_1_stk;
       eLocals_e_1 = eLocals_oe_1;
       refalrts::move_right( eLocals_b_1, eLocals_e_1 );
+      refalrts::Iter bb_4 = bb_1;
+      refalrts::Iter be_4 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_4, be_4 ) )
         continue;
       if( ! refalrts::function_left( & FreeVarsSent, bb_2, be_2 ) )
         continue;
       refalrts::Iter bb_3 = 0;
       refalrts::Iter be_3 = 0;
-      if( ! refalrts::brackets_left( bb_3, be_3, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_3, be_3, bb_4, be_4 ) )
         continue;
       if( ! refalrts::function_left( & FreeVarsFunc, bb_3, be_3 ) )
         continue;
@@ -2208,9 +2219,9 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       refalrts::use( eFreeFunc_b_1 );
       eFreeFunc_e_1 = be_3;
       refalrts::use( eFreeFunc_e_1 );
-      eOuters_b_1 = bb_1;
+      eOuters_b_1 = bb_4;
       refalrts::use( eOuters_b_1 );
-      eOuters_e_1 = be_1;
+      eOuters_e_1 = be_4;
       refalrts::use( eOuters_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -2337,7 +2348,6 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eBegin_b_1 = bb_0_stk,
         eBegin_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eBegin_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -2348,30 +2358,33 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eBegin_b_1 = bb_0_stk;
       eBegin_e_1 = eBegin_oe_1;
       refalrts::move_right( eBegin_b_1, eBegin_e_1 );
-      if( ! refalrts::tvar_left( tCopy_1, bb_0, be_0 ) )
+      refalrts::Iter bb_1 = bb_0;
+      refalrts::Iter be_1 = be_0;
+      if( ! refalrts::tvar_left( tCopy_1, bb_1, be_1 ) )
         continue;
-      refalrts::Iter bb_0_stk = bb_0;
-      refalrts::Iter be_0_stk = be_0;
+      refalrts::Iter bb_1_stk = bb_1;
+      refalrts::Iter be_1_stk = be_1;
       for( 
         refalrts::Iter
-          eMiddle_b_1 = bb_0_stk,
-          eMiddle_oe_1 = bb_0_stk,
-          bb_0 = bb_0_stk,
-          be_0 = be_0_stk;
-        ! refalrts::empty_seq( eMiddle_oe_1, be_0 );
-        bb_0 = bb_0_stk,
-        be_0 = be_0_stk,
-        refalrts::next_term( eMiddle_oe_1, be_0 )
+          eMiddle_b_1 = bb_1_stk,
+          eMiddle_oe_1 = bb_1_stk,
+          be_1 = be_1_stk;
+        ! refalrts::empty_seq( eMiddle_oe_1, be_1 );
+        bb_1 = bb_1_stk,
+        be_1 = be_1_stk,
+        refalrts::next_term( eMiddle_oe_1, be_1 )
       ) {
-        bb_0 = eMiddle_oe_1;
-        eMiddle_b_1 = bb_0_stk;
+        bb_1 = eMiddle_oe_1;
+        eMiddle_b_1 = bb_1_stk;
         eMiddle_e_1 = eMiddle_oe_1;
         refalrts::move_right( eMiddle_b_1, eMiddle_e_1 );
-        if( ! refalrts::repeated_stvar_left( tCopy_2, tCopy_1, bb_0, be_0 ) )
+        refalrts::Iter bb_2 = bb_1;
+        refalrts::Iter be_2 = be_1;
+        if( ! refalrts::repeated_stvar_left( tCopy_2, tCopy_1, bb_2, be_2 ) )
           continue;
-        eEnd_b_1 = bb_0;
+        eEnd_b_1 = bb_2;
         refalrts::use( eEnd_b_1 );
-        eEnd_e_1 = be_0;
+        eEnd_e_1 = be_2;
         refalrts::use( eEnd_e_1 );
 #ifdef INTERPRET
         const static refalrts::ResultAction raa[] = {
