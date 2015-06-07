@@ -5643,51 +5643,6 @@ static refalrts::FnResult ParseBlock_SetContext(refalrts::Iter arg_begin, refalr
   );
 }
 
-static refalrts::FnResult DelFirst(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
-  refalrts::this_is_generated_function();
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eExpr_b_1;
-    refalrts::use( eExpr_b_1 );
-    static refalrts::Iter eExpr_e_1;
-    refalrts::use( eExpr_e_1 );
-    static refalrts::Iter sFirst_1;
-    refalrts::use( sFirst_1 );
-    // s.First e.Expr
-    if( ! refalrts::svar_left( sFirst_1, bb_0, be_0 ) )
-      break;
-    eExpr_b_1 = bb_0;
-    refalrts::use( eExpr_b_1 );
-    eExpr_e_1 = be_0;
-    refalrts::use( eExpr_e_1 );
-#ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceEVar, & eExpr_b_1, & eExpr_e_1},
-      {refalrts::icEnd}
-    };
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
-#else
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    res = refalrts::splice_evar( res, eExpr_b_1, eExpr_e_1 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
 static refalrts::FnResult CreateContext(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -5746,13 +5701,10 @@ static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrt
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DelFirst, (void*) "DelFirst"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & MapReduce, (void*) "MapReduce"},
       {refalrts::icFunc, (void*) & CreateContext, (void*) "CreateContext"},
       {refalrts::icSpliceSTVar, & sLastBracket_1},
       {refalrts::icSpliceEVar, & eContext_b_1, & eContext_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceEVar, & ePattern_b_1, & ePattern_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -5779,54 +5731,40 @@ static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & DelFirst, "DelFirst" ) )
+    if( ! refalrts::alloc_name( n3, & MapReduce, "MapReduce" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_open_call( n4 ) )
+    if( ! refalrts::alloc_name( n4, & CreateContext, "CreateContext" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & MapReduce, "MapReduce" ) )
+    if( ! refalrts::alloc_close_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CreateContext, "CreateContext" ) )
+    if( ! refalrts::alloc_close_bracket( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_close_call( n7 ) )
+    if( ! refalrts::alloc_open_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_close_call( n8 ) )
+    if( ! refalrts::alloc_close_bracket( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_bracket( n9 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_open_bracket( n10 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_close_bracket( n11 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_close_bracket( n12 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n12 );
-    res = refalrts::splice_elem( res, n12 );
-    refalrts::link_brackets( n10, n11 );
-    res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_evar( res, eResult_b_1, eResult_e_1 );
-    res = refalrts::splice_elem( res, n10 );
-    refalrts::link_brackets( n1, n9 );
+    refalrts::link_brackets( n0, n9 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, ePattern_b_1, ePattern_e_1 );
-    refalrts::push_stack( n8 );
-    refalrts::push_stack( n2 );
+    refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    refalrts::push_stack( n7 );
-    refalrts::push_stack( n4 );
+    res = refalrts::splice_evar( res, eResult_b_1, eResult_e_1 );
     res = refalrts::splice_elem( res, n7 );
+    refalrts::link_brackets( n1, n6 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_evar( res, ePattern_b_1, ePattern_e_1 );
+    refalrts::push_stack( n5 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_evar( res, eContext_b_1, eContext_e_1 );
     res = refalrts::splice_stvar( res, sLastBracket_1 );
-    res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );

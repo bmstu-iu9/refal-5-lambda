@@ -483,17 +483,13 @@ ParseBlock-SetContext {
     e.Tokens;
 }
 
-DelFirst { s.First e.Expr = e.Expr; }
-
 $FORWARD CreateContext;
 
 AddContextToSentence {
   e.Context ((s.LastBracket e.Pattern) (e.Result)) =
     (
       (
-        <DelFirst
-          <MapReduce CreateContext s.LastBracket e.Context>
-        >
+        <MapReduce CreateContext s.LastBracket e.Context>
         e.Pattern
       )
       (e.Result)

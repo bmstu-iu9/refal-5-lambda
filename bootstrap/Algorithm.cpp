@@ -20,15 +20,17 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter ePattern_b_1;
-    refalrts::use( ePattern_b_1 );
-    static refalrts::Iter ePattern_e_1;
-    refalrts::use( ePattern_e_1 );
     static refalrts::Iter eResult_b_1;
     refalrts::use( eResult_b_1 );
     static refalrts::Iter eResult_e_1;
     refalrts::use( eResult_e_1 );
-    // (~1 e.Pattern )~1 (~2 e.Result )~2
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
+    static refalrts::Iter ePattern_b_1;
+    refalrts::use( ePattern_b_1 );
+    static refalrts::Iter ePattern_e_1;
+    refalrts::use( ePattern_e_1 );
+    // (~1 s.LastBracket e.Pattern )~1 (~2 e.Result )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -39,20 +41,23 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    ePattern_b_1 = bb_1;
-    refalrts::use( ePattern_b_1 );
-    ePattern_e_1 = be_1;
-    refalrts::use( ePattern_e_1 );
     eResult_b_1 = bb_2;
     refalrts::use( eResult_b_1 );
     eResult_e_1 = be_2;
     refalrts::use( eResult_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_1, be_1 ) )
+      break;
+    ePattern_b_1 = bb_1;
+    refalrts::use( ePattern_b_1 );
+    ePattern_e_1 = be_1;
+    refalrts::use( ePattern_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & GeneralizeResult, (void*) "GeneralizeResult"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+      {refalrts::icSpliceSTVar, & sLastBracket_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & LeftPtr, (void*) "LeftPtr"},
       {refalrts::icInt, 0, 0, 0 },
@@ -200,6 +205,7 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_stvar( res, sLastBracket_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -379,6 +385,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -395,7 +403,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sChar_2 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkChar s.Char )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkChar s.Char )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -412,6 +420,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -457,6 +467,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
@@ -574,6 +585,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -597,6 +609,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -613,7 +627,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sNumber_2 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkNumber s.Number )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkNumber s.Number )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -630,6 +644,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -675,6 +691,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkNumber, (void*) "TkNumber"},
@@ -792,6 +809,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -815,6 +833,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -835,7 +855,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_e_2 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkName e.Name )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkName e.Name )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -852,6 +872,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -897,6 +919,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkName, (void*) "TkName"},
@@ -1014,6 +1037,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -1037,6 +1061,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -1057,7 +1083,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_e_2 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkIdentifier e.Name )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkIdentifier e.Name )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -1074,6 +1100,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -1119,6 +1147,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkIdentifier, (void*) "TkIdentifier"},
@@ -1236,6 +1265,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -1259,6 +1289,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -1275,7 +1307,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sNum_2 );
     static refalrts::Iter sChar_2;
     refalrts::use( sChar_2 );
-    // e.Pattern_B (~1 & TkChar s.Char )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkChar s.Char )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -1292,6 +1324,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -1337,6 +1371,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -1454,6 +1489,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -1477,6 +1513,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -1493,7 +1531,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sNum_2 );
     static refalrts::Iter sNumber_2;
     refalrts::use( sNumber_2 );
-    // e.Pattern_B (~1 & TkNumber s.Number )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkNumber s.Number )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -1510,6 +1548,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -1555,6 +1595,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -1672,6 +1713,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -1695,6 +1737,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -1715,7 +1759,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // e.Pattern_B (~1 & TkName e.Name )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkName e.Name )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -1732,6 +1776,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -1777,6 +1823,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -1894,6 +1941,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -1917,6 +1965,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -1937,7 +1987,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // e.Pattern_B (~1 & TkIdentifier e.Name )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkIdentifier e.Name )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -1954,6 +2004,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -1999,6 +2051,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -2116,6 +2169,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -2139,6 +2193,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -2165,7 +2221,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sInner_5 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkOpenBracket s.Inner )~2 e.Pattern_M (~3 & TkCloseBracket s.Inner )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkOpenBracket s.Inner )~2 e.Pattern_M (~3 & TkCloseBracket s.Inner )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
     refalrts::Iter bb_5 = 0;
     refalrts::Iter be_5 = 0;
     if( ! refalrts::brackets_right( bb_5, be_5, bb_0, be_0 ) )
@@ -2182,6 +2238,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_5;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -2254,6 +2312,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & TkOpenBracket, (void*) "TkOpenBracket"},
@@ -2431,6 +2490,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -2455,6 +2515,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -2481,7 +2543,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sInner_4 );
     static refalrts::Iter sInner_5;
     refalrts::use( sInner_5 );
-    // e.Pattern_B (~1 & TkOpenBracket s.Inner )~1 e.Pattern_M (~2 & TkCloseBracket s.Inner )~2 (~3 & RightPtr s.Num )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
+    // s.LastBracket e.Pattern_B (~1 & TkOpenBracket s.Inner )~1 e.Pattern_M (~2 & TkCloseBracket s.Inner )~2 (~3 & RightPtr s.Num )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
     refalrts::Iter bb_5 = 0;
     refalrts::Iter be_5 = 0;
     if( ! refalrts::brackets_right( bb_5, be_5, bb_0, be_0 ) )
@@ -2498,6 +2560,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_5;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -2570,6 +2634,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -2747,6 +2812,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -2771,6 +2837,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -2805,7 +2873,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_e_2 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkOpenADT s.Inner )~2 (~3 & TkName e.Name )~3 e.Pattern_M (~4 & TkCloseADT s.Inner )~4 e.Pattern_E (~5 e.Vars )~5 (~6 e.Commands )~6
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkOpenADT s.Inner )~2 (~3 & TkName e.Name )~3 e.Pattern_M (~4 & TkCloseADT s.Inner )~4 e.Pattern_E (~5 e.Vars )~5 (~6 e.Commands )~6
     refalrts::Iter bb_6 = 0;
     refalrts::Iter be_6 = 0;
     if( ! refalrts::brackets_right( bb_6, be_6, bb_0, be_0 ) )
@@ -2822,6 +2890,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_6;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -2904,6 +2974,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & TkOpenADT, (void*) "TkOpenADT"},
@@ -3103,6 +3174,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -3127,6 +3199,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -3161,7 +3235,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eName_b_2 );
     static refalrts::Iter eName_e_2;
     refalrts::use( eName_e_2 );
-    // e.Pattern_B (~1 & TkOpenADT s.Inner )~1 (~2 & TkName e.Name )~2 e.Pattern_M (~3 & TkCloseADT s.Inner )~3 (~4 & RightPtr s.Num )~4 e.Pattern_E (~5 e.Vars )~5 (~6 e.Commands )~6
+    // s.LastBracket e.Pattern_B (~1 & TkOpenADT s.Inner )~1 (~2 & TkName e.Name )~2 e.Pattern_M (~3 & TkCloseADT s.Inner )~3 (~4 & RightPtr s.Num )~4 e.Pattern_E (~5 e.Vars )~5 (~6 e.Commands )~6
     refalrts::Iter bb_6 = 0;
     refalrts::Iter be_6 = 0;
     if( ! refalrts::brackets_right( bb_6, be_6, bb_0, be_0 ) )
@@ -3178,6 +3252,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_6;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -3260,6 +3336,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -3459,6 +3536,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -3483,6 +3561,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -3495,7 +3575,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sNum_1 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -3512,6 +3592,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -3557,6 +3639,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icSpliceEVar, & ePattern_E_b_1, & ePattern_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -3566,6 +3649,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         {refalrts::icSpliceEVar, & eCommands_b_1, & eCommands_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & CmdEmpty, (void*) "CmdEmpty"},
+        {refalrts::icFunc, (void*) & AlgLeft, (void*) "AlgLeft"},
         {refalrts::icSpliceSTVar, & sNum_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -3601,22 +3685,26 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       if( ! refalrts::alloc_name( n6, & CmdEmpty, "CmdEmpty" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
-      if( ! refalrts::alloc_close_bracket( n7 ) )
+      if( ! refalrts::alloc_name( n7, & AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
       if( ! refalrts::alloc_close_bracket( n8 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_close_call( n9 ) )
+      if( ! refalrts::alloc_close_bracket( n9 ) )
         return refalrts::cNoMemory;
-      refalrts::push_stack( n9 );
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_close_call( n10 ) )
+        return refalrts::cNoMemory;
+      refalrts::push_stack( n10 );
       refalrts::push_stack( n0 );
+      res = refalrts::splice_elem( res, n10 );
+      refalrts::link_brackets( n4, n9 );
       res = refalrts::splice_elem( res, n9 );
-      refalrts::link_brackets( n4, n8 );
+      refalrts::link_brackets( n5, n8 );
       res = refalrts::splice_elem( res, n8 );
-      refalrts::link_brackets( n5, n7 );
-      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_stvar( res, sNum_1 );
+      res = refalrts::splice_elem( res, n7 );
       res = refalrts::splice_elem( res, n6 );
       res = refalrts::splice_elem( res, n5 );
       res = refalrts::splice_evar( res, eCommands_b_1, eCommands_e_1 );
@@ -3627,6 +3715,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_E_b_1, ePattern_E_e_1 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -3646,6 +3735,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -3688,7 +3779,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( sNum_2 );
     static refalrts::Iter sCount_2;
     refalrts::use( sCount_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable s.Mode e.Index )~2 e.Pattern_E (~3 e.Vars_B (~4 s.Count s.Mode e.Index )~4 e.Vars_E )~3 (~5 e.Commands )~5
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable s.Mode e.Index )~2 e.Pattern_E (~3 e.Vars_B (~4 s.Count s.Mode e.Index )~4 e.Vars_E )~3 (~5 e.Commands )~5
     refalrts::Iter bb_5 = 0;
     refalrts::Iter be_5 = 0;
     if( ! refalrts::brackets_right( bb_5, be_5, bb_0, be_0 ) )
@@ -3701,6 +3792,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_5;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     refalrts::Iter bb_3_stk = bb_3;
@@ -3785,6 +3878,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
@@ -3965,6 +4059,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -3985,6 +4080,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -4027,7 +4124,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_e_3 );
     static refalrts::Iter sCount_2;
     refalrts::use( sCount_2 );
-    // e.Pattern_B (~1 & TkVariable s.Mode e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars_B (~4 s.Count s.Mode e.Index )~4 e.Vars_E )~3 (~5 e.Commands )~5
+    // s.LastBracket e.Pattern_B (~1 & TkVariable s.Mode e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars_B (~4 s.Count s.Mode e.Index )~4 e.Vars_E )~3 (~5 e.Commands )~5
     refalrts::Iter bb_5 = 0;
     refalrts::Iter be_5 = 0;
     if( ! refalrts::brackets_right( bb_5, be_5, bb_0, be_0 ) )
@@ -4040,6 +4137,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_5;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     refalrts::Iter bb_3_stk = bb_3;
@@ -4124,6 +4223,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         const static refalrts::ResultAction raa[] = {
           {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
           {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+          {refalrts::icSpliceSTVar, & sLastBracket_1},
           {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
           {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
           {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -4304,6 +4404,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
         res = refalrts::splice_elem( res, n3 );
         res = refalrts::splice_elem( res, n2 );
         res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+        res = refalrts::splice_stvar( res, sLastBracket_1 );
         res = refalrts::splice_elem( res, n1 );
         res = refalrts::splice_elem( res, n0 );
         refalrts::use( res );
@@ -4328,6 +4429,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -4352,7 +4455,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_b_3 );
     static refalrts::Iter eIndex_e_3;
     refalrts::use( eIndex_e_3 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 'e e.Index )~2 (~3 & RightPtr s.Num )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 'e e.Index )~2 (~3 & RightPtr s.Num )~3 e.Pattern_E (~4 e.Vars )~4 (~5 e.Commands )~5
     refalrts::Iter bb_5 = 0;
     refalrts::Iter be_5 = 0;
     if( ! refalrts::brackets_right( bb_5, be_5, bb_0, be_0 ) )
@@ -4369,6 +4472,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_5;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -4426,6 +4531,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
@@ -4558,6 +4664,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -4581,6 +4688,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -4605,7 +4714,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_e_3 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 's e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 's e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -4622,6 +4731,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -4669,6 +4780,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
@@ -4821,6 +4933,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -4844,6 +4957,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -4868,7 +4983,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_e_3 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 't e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 't e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -4885,6 +5000,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -4932,6 +5049,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
@@ -5084,6 +5202,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -5107,6 +5226,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -5131,7 +5252,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_b_3 );
     static refalrts::Iter eIndex_e_3;
     refalrts::use( eIndex_e_3 );
-    // e.Pattern_B (~1 & TkVariable 's e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkVariable 's e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -5148,6 +5269,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -5195,6 +5318,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -5347,6 +5471,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -5370,6 +5495,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -5394,7 +5521,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_b_3 );
     static refalrts::Iter eIndex_e_3;
     refalrts::use( eIndex_e_3 );
-    // e.Pattern_B (~1 & TkVariable 't e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & TkVariable 't e.Index )~1 (~2 & RightPtr s.Num )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -5411,6 +5538,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -5458,6 +5587,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & RightPtr, (void*) "RightPtr"},
@@ -5610,6 +5740,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -5633,6 +5764,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter ePattern_B_b_1;
     refalrts::use( ePattern_B_b_1 );
     static refalrts::Iter ePattern_B_e_1;
@@ -5657,7 +5790,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndex_e_3 );
     static refalrts::Iter sNum_2;
     refalrts::use( sNum_2 );
-    // e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 'e e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
+    // s.LastBracket e.Pattern_B (~1 & LeftPtr s.Num )~1 (~2 & TkVariable 'e e.Index )~2 e.Pattern_E (~3 e.Vars )~3 (~4 e.Commands )~4
     refalrts::Iter bb_4 = 0;
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_right( bb_4, be_4, bb_0, be_0 ) )
@@ -5674,6 +5807,8 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_4;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
     for( 
@@ -5721,6 +5856,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & GenPattern, (void*) "GenPattern"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icSpliceEVar, & ePattern_B_b_1, & ePattern_B_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
@@ -5873,6 +6009,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
       res = refalrts::splice_evar( res, ePattern_B_b_1, ePattern_B_e_1 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -5888,10 +6025,6 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter ePattern_b_1;
-    refalrts::use( ePattern_b_1 );
-    static refalrts::Iter ePattern_e_1;
-    refalrts::use( ePattern_e_1 );
     static refalrts::Iter eVars_b_1;
     refalrts::use( eVars_b_1 );
     static refalrts::Iter eVars_e_1;
@@ -5900,7 +6033,13 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
-    // e.Pattern (~1 e.Vars )~1 (~2 e.Commands )~2
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
+    static refalrts::Iter ePattern_b_1;
+    refalrts::use( ePattern_b_1 );
+    static refalrts::Iter ePattern_e_1;
+    refalrts::use( ePattern_e_1 );
+    // s.LastBracket e.Pattern (~1 e.Vars )~1 (~2 e.Commands )~2
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_right( bb_2, be_2, bb_0, be_0 ) )
@@ -5909,10 +6048,6 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
       break;
-    ePattern_b_1 = bb_0;
-    refalrts::use( ePattern_b_1 );
-    ePattern_e_1 = be_0;
-    refalrts::use( ePattern_e_1 );
     eVars_b_1 = bb_1;
     refalrts::use( eVars_b_1 );
     eVars_e_1 = be_1;
@@ -5921,6 +6056,12 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_2;
     refalrts::use( eCommands_e_1 );
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
+    ePattern_b_1 = bb_0;
+    refalrts::use( ePattern_b_1 );
+    ePattern_e_1 = be_0;
+    refalrts::use( ePattern_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -5936,6 +6077,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & SaveBrackets, (void*) "SaveBrackets"},
+      {refalrts::icSpliceSTVar, & sLastBracket_1},
       {refalrts::icSpliceEVar, & eCommands_b_1, & eCommands_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -5993,6 +6135,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::push_stack( n9 );
     res = refalrts::splice_elem( res, n11 );
     res = refalrts::splice_evar( res, eCommands_b_1, eCommands_e_1 );
+    res = refalrts::splice_stvar( res, sLastBracket_1 );
     res = refalrts::splice_elem( res, n10 );
     res = refalrts::splice_elem( res, n9 );
     refalrts::link_brackets( n3, n8 );
@@ -6033,11 +6176,15 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter eCommands_b_1;
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
-    // e.Commands
+    // s.LastBracket e.Commands
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     eCommands_b_1 = bb_0;
     refalrts::use( eCommands_b_1 );
     eCommands_e_1 = be_0;
@@ -6046,6 +6193,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & DoSaveBrackets, (void*) "DoSaveBrackets"},
+      {refalrts::icSpliceSTVar, & sLastBracket_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eCommands_b_1, & eCommands_e_1},
@@ -6081,6 +6229,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, sLastBracket_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -6102,6 +6251,8 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter eScanned_b_1;
     refalrts::use( eScanned_b_1 );
     static refalrts::Iter eScanned_e_1;
@@ -6120,7 +6271,9 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::use( eIndex_b_1 );
     static refalrts::Iter eIndex_e_1;
     refalrts::use( eIndex_e_1 );
-    // (~1 e.Scanned )~1 e.Commands_B (~2 & CmdOpenedE & AlgLeft s.Num 'e e.Index )~2 e.Commands_E
+    // s.LastBracket (~1 e.Scanned )~1 e.Commands_B (~2 & CmdOpenedE & AlgLeft s.Num 'e e.Index )~2 e.Commands_E
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -6170,6 +6323,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & DoSaveBrackets_Aux, (void*) "DoSaveBrackets_Aux"},
+        {refalrts::icSpliceSTVar, & sLastBracket_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icSpliceEVar, & eScanned_b_1, & eScanned_e_1},
         {refalrts::icSpliceEVar, & eCommands_B_b_1, & eCommands_B_e_1},
@@ -6239,6 +6393,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       res = refalrts::splice_evar( res, eCommands_B_b_1, eCommands_B_e_1 );
       res = refalrts::splice_evar( res, eScanned_b_1, eScanned_e_1 );
       res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_stvar( res, sLastBracket_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
@@ -6262,7 +6417,11 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::use( eCommands_b_1 );
     static refalrts::Iter eCommands_e_1;
     refalrts::use( eCommands_e_1 );
-    // (~1 e.Scanned )~1 e.Commands
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
+    // s.LastBracket (~1 e.Scanned )~1 e.Commands
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -6311,6 +6470,8 @@ static refalrts::FnResult DoSaveBrackets_Aux(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter sLastBracket_1;
+    refalrts::use( sLastBracket_1 );
     static refalrts::Iter eScanned_b_1;
     refalrts::use( eScanned_b_1 );
     static refalrts::Iter eScanned_e_1;
@@ -6345,7 +6506,9 @@ static refalrts::FnResult DoSaveBrackets_Aux(refalrts::Iter arg_begin, refalrts:
     refalrts::use( eCommands_b_2 );
     static refalrts::Iter eCommands_e_2;
     refalrts::use( eCommands_e_2 );
-    // (~1 e.Scanned (~2 & CmdOpenedE & AlgLeft s.Num 'e e.Index )~2 )~1 e.Commands
+    // s.LastBracket (~1 e.Scanned (~2 & CmdOpenedE & AlgLeft s.Num 'e e.Index )~2 )~1 e.Commands
+    if( ! refalrts::svar_left( sLastBracket_1, bb_0, be_0 ) )
+      break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -6378,6 +6541,7 @@ static refalrts::FnResult DoSaveBrackets_Aux(refalrts::Iter arg_begin, refalrts:
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & DoSaveBrackets, (void*) "DoSaveBrackets"},
+      {refalrts::icSpliceSTVar, & sLastBracket_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScanned_b_1, & eScanned_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -6560,6 +6724,7 @@ static refalrts::FnResult DoSaveBrackets_Aux(refalrts::Iter arg_begin, refalrts:
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_evar( res, eScanned_b_1, eScanned_e_1 );
     res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, sLastBracket_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -6755,46 +6920,6 @@ static refalrts::FnResult CalcSavedBrackets(refalrts::Iter arg_begin, refalrts::
 
 static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sBracketNum_1;
-    refalrts::use( sBracketNum_1 );
-    // (~1 & CmdEmpty s.BracketNum )~1
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::function_left( & CmdEmpty, bb_1, be_1 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sBracketNum_1, bb_1, be_1 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_1, be_1 ) )
-      break;
-#ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceSTVar, & sBracketNum_1},
-      {refalrts::icEnd}
-    };
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
-#else
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    res = refalrts::splice_stvar( res, sBracketNum_1 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
