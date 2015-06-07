@@ -139,8 +139,6 @@ extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 extern bool tvar_left( Iter& tvar, Iter& first, Iter& last );
 extern bool tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool next_term( Iter& first, Iter& last );
-
 extern bool repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 extern bool repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
@@ -153,6 +151,11 @@ extern bool repeated_evar_left(
 extern bool repeated_evar_right(
   Iter& evar_b, Iter& evar_e,
   Iter evar_b_sample, Iter evar_e_sample,
+  Iter& first, Iter& last
+);
+
+extern bool open_evar_advance(
+  Iter& evar_b, Iter& evar_e,
   Iter& first, Iter& last
 );
 

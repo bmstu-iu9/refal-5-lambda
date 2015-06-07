@@ -56,7 +56,11 @@ $EENUM TkIdentifier;
     повторные, формат
       (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
     новые s и t, формат (CmdVar s.Direction s.BracketNum s.Mode e.Index)
-    открытые e, формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
+    открытые e:
+      первоначальный формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
+      после обработки:
+        (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
+        (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index)
     закрытые e, формат
       (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
   Команды сохранения скобок
@@ -66,8 +70,11 @@ $EENUM TkIdentifier;
 $EENUM
   CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
-  CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
+  CmdRepeated, CmdVar, CmdClosedE,
+  CmdOpenedE-Start, CmdOpenedE-End,
   CmdComment, CmdSave;
+
+$ENUM CmdOpenedE;
 
 $FORWARD TextFromPattern, SaveBrackets;
 
@@ -740,19 +747,23 @@ GeneralizeResult-CopyVars {
     >;
 }
 
+$FORWARD GenerateResult-OpenELoops;
+
 GenerateResult-Interp {
   (e.Pattern) (e.CopiedVars) (e.Result) =
-    e.Pattern
-    (CmdIfDef)
-    (CmdInitRAA)
-    <Map (MakeInterpCommands e.CopiedVars) e.Result>
-    (CmdFinRAA)
-    (CmdElse)
-    (CmdEmptyResult)
-    <Map MakeCopyVar e.CopiedVars>
-    <GenResult-Commands e.Result>
-    (CmdReturnResult)
-    (CmdEndIf);
+    <GenerateResult-OpenELoops
+      e.Pattern
+      (CmdIfDef)
+      (CmdInitRAA)
+      <Map (MakeInterpCommands e.CopiedVars) e.Result>
+      (CmdFinRAA)
+      (CmdElse)
+      (CmdEmptyResult)
+      <Map MakeCopyVar e.CopiedVars>
+      <GenResult-Commands e.Result>
+      (CmdReturnResult)
+      (CmdEndIf)
+    >;
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
@@ -819,4 +830,14 @@ MakeInterpCommands {
 
   e.CopiedVars (e.AnyCommand) =
     (CmdComment e.AnyCommand ' ');
+}
+
+GenerateResult-OpenELoops {
+  e.Commands-B (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index) e.Commands-E =
+    e.Commands-B
+    (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
+    <GenerateResult-OpenELoops e.Commands-E>
+    (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index);
+
+  e.Commands = e.Commands;
 }

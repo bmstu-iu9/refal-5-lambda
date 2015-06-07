@@ -474,18 +474,6 @@ bool refalrts::tvar_right(
   }
 }
 
-bool refalrts::next_term(
-  refalrts::Iter& first, refalrts::Iter& last
-) {
-  /*
-    ‘ункци€ используетс€ дл€ промотки к следующему терму при анализе
-    открытой e-переменной. “.к. до этого в заголовке цикла провер€етс€ факт,
-    что first != last, возвращаемое значение функции можно не провер€ть.
-  */
-  refalrts::Iter temp;
-  return tvar_left( temp, first, last );
-}
-
 namespace refalrts {
 
 class UnexpectedTypeException { };
@@ -781,6 +769,31 @@ bool refalrts::repeated_evar_right(
       evar_e = last;
 
       last = current;
+    }
+
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool refalrts::open_evar_advance(
+  Iter& evar_b, Iter& evar_e,
+  Iter& first, Iter& last
+) {
+  assert( (evar_b == 0) == (evar_e == 0) );
+
+  refalrts::Iter prev_first = 0;
+
+  if ( tvar_left( prev_first, first, last ) ) {
+    if (! evar_b) {
+      evar_b = prev_first;
+    }
+
+    if ( is_open_bracket( prev_first ) ) {
+      evar_e = prev_first->link_info;
+    } else {
+      evar_e = prev_first;
     }
 
     return true;

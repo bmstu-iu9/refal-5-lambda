@@ -1,0 +1,11 @@
+//FROM refalrts
+
+WithE {
+  (e.Prefix e.Suffix) e.Prefixes-B (e.Prefix) e.Suffix = ;
+}
+
+$ENTRY Go {
+  =
+    <WithE ('prefix') ('prefix')>
+    <WithE () ()>;
+}
