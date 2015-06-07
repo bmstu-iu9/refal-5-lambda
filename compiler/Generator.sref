@@ -275,7 +275,7 @@ GenCommand {
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
     >;
 
-  (e.Indent) (CmdEmpty s.BracketNumber) =
+  (e.Indent) (CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
     <PrintMatchEmpty (e.Indent) s.BracketNumber>;
 

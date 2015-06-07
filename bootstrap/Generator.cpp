@@ -11716,11 +11716,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_e_1 );
     static refalrts::Iter sBracketNumber_1;
     refalrts::use( sBracketNumber_1 );
+    static refalrts::Iter sDirection_1;
+    refalrts::use( sDirection_1 );
     static refalrts::Iter eIndent_b_2;
     refalrts::use( eIndent_b_2 );
     static refalrts::Iter eIndent_e_2;
     refalrts::use( eIndent_e_2 );
-    // (~1 e.Indent )~1 (~2 & CmdEmpty s.BracketNumber )~2
+    // (~1 e.Indent )~1 (~2 & CmdEmpty s.Direction s.BracketNumber )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -11737,6 +11739,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::use( eIndent_b_1 );
     eIndent_e_1 = be_1;
     refalrts::use( eIndent_e_1 );
+    if( ! refalrts::svar_left( sDirection_1, bb_2, be_2 ) )
+      break;
     if( ! refalrts::svar_left( sBracketNumber_1, bb_2, be_2 ) )
       break;
     if( ! refalrts::empty_seq( bb_2, be_2 ) )

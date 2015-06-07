@@ -3,10 +3,10 @@ $FORWARD GeneralizeResult, GenPattern, GenResult;
 $FORWARD LeftPtr, RightPtr;
 
 $ENTRY MakeAlgorithm {
-  (e.Pattern) (e.Result) =
+  (s.LastBracket e.Pattern) (e.Result) =
     <GeneralizeResult
       <GenPattern
-        (LeftPtr 0) e.Pattern (RightPtr 0)
+        s.LastBracket (LeftPtr 0) e.Pattern (RightPtr 0)
         (/* vars */) (/* commands */)
       >
       <GenResult
@@ -50,7 +50,8 @@ $EENUM TkIdentifier;
   Скобки, формат (CmdBrackets s.Direction s.BracketNum s.InnerNum)
   АТД, формат
     (CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (CmdEmpty s.BracketNum)
+  Пустые скобки, формат (CmdEmpty AlgLeft s.BracketNum),
+    направление добавлено для единнобразия, генератором не используется
   Переменные:
     повторные, формат
       (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
@@ -70,100 +71,100 @@ $FORWARD TextFromPattern, SaveBrackets;
 
 GenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
-  e.Pattern-B (LeftPtr s.Num) (TkChar s.Char) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkChar s.Char) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkChar s.Char) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkChar s.Char) (LeftPtr s.Num) e.Pattern-E
       (e.Vars) (e.Commands (CmdChar AlgLeft s.Num s.Char))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkNumber s.Number) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkNumber s.Number) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkNumber s.Number) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkNumber s.Number) (LeftPtr s.Num) e.Pattern-E
       (e.Vars) (e.Commands (CmdNumber AlgLeft s.Num s.Number))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkName e.Name) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkName e.Name) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkName e.Name) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkName e.Name) (LeftPtr s.Num) e.Pattern-E
       (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkIdentifier e.Name) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkIdentifier e.Name) (LeftPtr s.Num) e.Pattern-E
       (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
     >;
 
-  e.Pattern-B (TkChar s.Char) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkChar s.Char) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkChar s.Char) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkChar s.Char) e.Pattern-E
       (e.Vars) (e.Commands (CmdChar AlgRight s.Num s.Char))
     >;
 
-  e.Pattern-B (TkNumber s.Number) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkNumber s.Number) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkNumber s.Number) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkNumber s.Number) e.Pattern-E
       (e.Vars) (e.Commands (CmdNumber AlgRight s.Num s.Number))
     >;
 
-  e.Pattern-B (TkName e.Name) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkName e.Name) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkName e.Name) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkName e.Name) e.Pattern-E
       (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
     >;
 
-  e.Pattern-B (TkIdentifier e.Name) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkIdentifier e.Name) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
       (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
     >;
 
   // Распознавание скобок
-  e.Pattern-B (LeftPtr s.Num) (TkOpenBracket s.Inner)
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkOpenBracket s.Inner)
   e.Pattern-M (TkCloseBracket s.Inner) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkOpenBracket s.Inner)
+      s.LastBracket e.Pattern-B (TkOpenBracket s.Inner)
       (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
       (TkCloseBracket s.Inner) (LeftPtr s.Num) e.Pattern-E
       (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.Inner))
     >;
 
-  e.Pattern-B (TkOpenBracket s.Inner) e.Pattern-M
+  s.LastBracket e.Pattern-B (TkOpenBracket s.Inner) e.Pattern-M
   (TkCloseBracket s.Inner) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkOpenBracket s.Inner)
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkOpenBracket s.Inner)
       (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
       (TkCloseBracket s.Inner) e.Pattern-E
       (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.Inner))
     >;
 
   // Распознавание АТД-скобок
-  e.Pattern-B (LeftPtr s.Num) (TkOpenADT s.Inner)
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkOpenADT s.Inner)
   (TkName e.Name) e.Pattern-M (TkCloseADT s.Inner) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name)
+      s.LastBracket e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name)
       (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
       (TkCloseADT s.Inner) (LeftPtr s.Num) e.Pattern-E
       (e.Vars)
       (e.Commands (CmdADT AlgLeft s.Num s.Inner e.Name))
     >;
 
-  e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name) e.Pattern-M
+  s.LastBracket e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name) e.Pattern-M
   (TkCloseADT s.Inner) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkOpenADT s.Inner)
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkOpenADT s.Inner)
       (TkName e.Name) (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
       (TkCloseADT s.Inner) e.Pattern-E
       (e.Vars)
@@ -171,94 +172,95 @@ GenPattern {
     >;
 
   // Указатели аннигилируют при встрече
-  e.Pattern-B (LeftPtr s.Num) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B e.Pattern-E
-      (e.Vars) (e.Commands (CmdEmpty s.Num))
+      s.LastBracket e.Pattern-B e.Pattern-E
+      (e.Vars) (e.Commands (CmdEmpty AlgLeft s.Num))
     >;
 
   // Распознавание переменных
-  e.Pattern-B (LeftPtr s.Num) (TkVariable s.Mode e.Index) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkVariable s.Mode e.Index) e.Pattern-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkVariable s.Mode e.Index) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkVariable s.Mode e.Index) (LeftPtr s.Num) e.Pattern-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
       (e.Commands (CmdRepeated AlgLeft s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  e.Pattern-B (TkVariable s.Mode e.Index) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkVariable s.Mode e.Index) (RightPtr s.Num) e.Pattern-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkVariable s.Mode e.Index) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkVariable s.Mode e.Index) e.Pattern-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
       (e.Commands (CmdRepeated AlgRight s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
   // Указатели аннигилируют через закрытую e-переменную
-  e.Pattern-B (LeftPtr s.Num) (TkVariable 'e' e.Index)
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkVariable 'e' e.Index)
   (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkVariable 'e' e.Index) e.Pattern-E
       (e.Vars (1 'e' e.Index))
       (e.Commands (CmdClosedE AlgLeft s.Num 'e' e.Index))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkVariable 's' e.Index) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkVariable 's' e.Index) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkVariable 's' e.Index) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkVariable 's' e.Index) (LeftPtr s.Num) e.Pattern-E
       (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 's' e.Index))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkVariable 't' e.Index) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkVariable 't' e.Index) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkVariable 't' e.Index) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkVariable 't' e.Index) (LeftPtr s.Num) e.Pattern-E
       (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 't' e.Index))
     >;
 
-  e.Pattern-B (TkVariable 's' e.Index) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkVariable 's' e.Index) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkVariable 's' e.Index) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkVariable 's' e.Index) e.Pattern-E
       (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgRight s.Num 's' e.Index))
     >;
 
-  e.Pattern-B (TkVariable 't' e.Index) (RightPtr s.Num) e.Pattern-E
+  s.LastBracket e.Pattern-B (TkVariable 't' e.Index) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (RightPtr s.Num) (TkVariable 't' e.Index) e.Pattern-E
+      s.LastBracket e.Pattern-B (RightPtr s.Num) (TkVariable 't' e.Index) e.Pattern-E
       (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgRight s.Num 't' e.Index))
     >;
 
-  e.Pattern-B (LeftPtr s.Num) (TkVariable 'e' e.Index) e.Pattern-E
+  s.LastBracket e.Pattern-B (LeftPtr s.Num) (TkVariable 'e' e.Index) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
-      e.Pattern-B (TkVariable 'e' e.Index) (LeftPtr s.Num) e.Pattern-E
+      s.LastBracket e.Pattern-B (TkVariable 'e' e.Index) (LeftPtr s.Num) e.Pattern-E
       (e.Vars (1 'e' e.Index))
       (e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index))
     >;
 
   // Завершение разбора. Все указатели аннигилировали.
-  e.Pattern (e.Vars) (e.Commands) =
+  s.LastBracket e.Pattern (e.Vars) (e.Commands) =
     (e.Vars)
     ((CmdComment <TextFromPattern e.Pattern> )
-      <SaveBrackets e.Commands >
+      <SaveBrackets s.LastBracket e.Commands >
     );
 }
 
 $FORWARD DoSaveBrackets, DoSaveBrackets-Aux;
 
 SaveBrackets {
-  e.Commands = <DoSaveBrackets () e.Commands>;
+  s.LastBracket e.Commands = <DoSaveBrackets s.LastBracket () e.Commands>;
 }
 
 DoSaveBrackets {
-  (e.Scanned)
+  s.LastBracket (e.Scanned)
   e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index) e.Commands-E =
     <DoSaveBrackets-Aux
+      s.LastBracket
       (e.Scanned
         e.Commands-B
         (CmdOpenedE AlgLeft s.Num 'e' e.Index)
@@ -266,14 +268,16 @@ DoSaveBrackets {
       e.Commands-E
     >;
 
-  (e.Scanned) e.Commands = e.Scanned e.Commands;
+  s.LastBracket (e.Scanned) e.Commands = e.Scanned e.Commands;
 }
 
 $FORWARD CalcSavedBrackets;
 
 DoSaveBrackets-Aux {
+  s.LastBracket
   (e.Scanned (CmdOpenedE AlgLeft s.Num 'e' e.Index )) e.Commands =
     <DoSaveBrackets
+      s.LastBracket
       (e.Scanned
         (CmdOpenedE
           AlgLeft s.Num 'e' e.Index
@@ -304,12 +308,9 @@ CalcSavedBrackets {
 
 ExtractBrackets {
   /*
-    Все команды распознавания, кроме CmdEmpty содержат номер скобок
-    третьим термом, общий формат
-    (s.Command s.Direction s.BracketNum e.Info)
+    Все команды распознавания содержат номер скобок третьим термом,
+    общий формат (s.Command s.Direction s.BracketNum e.Info)
   */
-  (CmdEmpty s.BracketNum) = s.BracketNum;
-
   (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
     s.BracketNum s.InnerNum;
 
