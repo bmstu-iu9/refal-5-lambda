@@ -2152,7 +2152,6 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
       refalrts::Iter
         eName_B_b_1 = bb_0_stk,
         eName_B_oe_1 = bb_0_stk,
-        bb_0 = bb_0_stk,
         be_0 = be_0_stk;
       ! refalrts::empty_seq( eName_B_oe_1, be_0 );
       bb_0 = bb_0_stk,
@@ -2163,11 +2162,13 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
       eName_B_b_1 = bb_0_stk;
       eName_B_e_1 = eName_B_oe_1;
       refalrts::move_right( eName_B_b_1, eName_B_e_1 );
-      if( ! refalrts::char_left( '-', bb_0, be_0 ) )
+      refalrts::Iter bb_1 = bb_0;
+      refalrts::Iter be_1 = be_0;
+      if( ! refalrts::char_left( '-', bb_1, be_1 ) )
         continue;
-      eName_E_b_1 = bb_0;
+      eName_E_b_1 = bb_1;
       refalrts::use( eName_E_b_1 );
-      eName_E_e_1 = be_0;
+      eName_E_e_1 = be_1;
       refalrts::use( eName_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {

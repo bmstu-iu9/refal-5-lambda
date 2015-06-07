@@ -59,13 +59,15 @@ $EENUM TkIdentifier;
     открытые e, формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
     закрытые e, формат
       (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
+   оманды сохранени€ скобок
+    (CmdSave s.OldNumber e.NewNumber)
    омментарий, вносимый в исходный код (CmdComment e.Text)
 */
 $EENUM
   CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
-  CmdComment, CmdPrint;
+  CmdComment, CmdSave;
 
 $FORWARD TextFromPattern, SaveBrackets;
 
@@ -250,71 +252,84 @@ GenPattern {
     );
 }
 
-$FORWARD DoSaveBrackets, DoSaveBrackets-Aux;
+$FORWARD DoSaveBrackets;
 
 SaveBrackets {
   s.LastBracket e.Commands = <DoSaveBrackets s.LastBracket () e.Commands>;
 }
 
+$FORWARD ExtractBrackets, DoSaveBrackets-MakeSavers;
+
+//FROM LibraryEx
+$EXTERN Fetch, Map;
+
 DoSaveBrackets {
   s.LastBracket (e.Scanned)
   e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index) e.Commands-E =
-    <DoSaveBrackets-Aux
+    <DoSaveBrackets-MakeSavers
       s.LastBracket
-      (e.Scanned
-        e.Commands-B
-        (CmdOpenedE AlgLeft s.Num 'e' e.Index)
-      )
+      <Fetch
+        e.Scanned e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index)
+        {
+          e.Commands^ =
+            ( <ExtractBrackets e.Commands> )
+            ( e.Commands );
+        }
+      >
       e.Commands-E
     >;
 
   s.LastBracket (e.Scanned) e.Commands = e.Scanned e.Commands;
 }
 
-$FORWARD CalcSavedBrackets;
-
-DoSaveBrackets-Aux {
+DoSaveBrackets-MakeSavers {
   s.LastBracket
-  (e.Scanned (CmdOpenedE AlgLeft s.Num 'e' e.Index )) e.Commands =
-    <DoSaveBrackets
-      s.LastBracket
-      (e.Scanned
-        (CmdOpenedE
-          AlgLeft s.Num 'e' e.Index
-          (
-            <CalcSavedBrackets
-              (e.Scanned (CmdOpenedE AlgLeft s.Num 'e' e.Index))
-              e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index)
-            >
-          )
-        )
-      )
-      e.Commands
+  (e.BoundedBrackets-B s.Num e.BoundedBrackets-E)
+  (e.Scanned)
+  e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E =
+    <DoSaveBrackets-MakeSavers
+      <Inc s.LastBracket>
+      (e.BoundedBrackets-B e.BoundedBrackets-E)
+      (e.Scanned (CmdSave s.Num s.LastBracket))
+      <Map
+        {
+          /*
+            ¬се команды распознавани€ содержат номер скобок третьим термом,
+            общий формат (s.Command s.Direction s.BracketNum e.Info)
+          */
+          (s.Command^ s.Direction^ s.Num e.Info^) =
+            (s.Command s.Direction s.LastBracket e.Info);
+
+          (s.Command^ s.Direction^ s.OtherNum e.Info^) =
+            (s.Command s.Direction s.OtherNum e.Info);
+        }
+        e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E
+      >
     >;
+
+  s.LastBracket (e.UnusedBoundedBrackets) (e.Scanned) e.Commands =
+    <DoSaveBrackets s.LastBracket (e.Scanned) e.Commands>;
 }
 
-$FORWARD Brackets-Intersect, Brackets-Set, ExtractBrackets;
-
-//FROM LibraryEx
-$EXTERN Map;
-
-CalcSavedBrackets {
-  (e.Scanned) e.Commands =
-    <Brackets-Intersect
-      ( <Brackets-Set <Map ExtractBrackets e.Scanned>> )
-      ( <Brackets-Set <Map ExtractBrackets e.Commands>> )
-    >;
-}
+$FORWARD Brackets-Set;
 
 ExtractBrackets {
-  /*
-    ¬се команды распознавани€ содержат номер скобок третьим термом,
-    общий формат (s.Command s.Direction s.BracketNum e.Info)
-  */
-  (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
-    s.BracketNum s.InnerNum;
+  e.Commands =
+    <Brackets-Set
+      <Map
+        {
+          /*
+            ¬се команды распознавани€ содержат номер скобок третьим термом,
+            общий формат (s.Command s.Direction s.BracketNum e.Info)
+          */
+          (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
+            s.BracketNum s.InnerNum;
 
-  (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
+          (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
+        }
+        e.Commands
+      >
+    >;
 }
 
 Brackets-Set {
@@ -322,13 +337,6 @@ Brackets-Set {
     e.Unique <Brackets-Set s.Repeated e.Middle e.Rest>;
 
   e.Unique = e.Unique;
-}
-
-Brackets-Intersect {
-  (e.Set1-B s.Common e.Set1-E) (e.Set2-B s.Common e.Set2-E) =
-    s.Common <Brackets-Intersect (e.Set1-E) (e.Set2-B e.Set2-E)>;
-
-  (e.Set1) (e.Set2) = ;
 }
 
 //FROM Library

@@ -134,7 +134,7 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdDeclareEVar, CmdDeclareVar,
   CmdCopyEVar, CmdCopyVar,
   AlgLeft, AlgRight,
-  CmdComment, CmdPrint,
+  CmdComment, CmdSave,
   CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
   CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
   CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
@@ -199,28 +199,6 @@ $FORWARD Escape;
 //FROM LibraryEx
 $EXTERN Dec;
 
-PrintStkBracket {
-  e.Indent s.StkBracket =
-    (e.Indent
-      'refalrts::Iter ' <BracketsVar-B s.StkBracket> '_stk = '
-        <BracketsVar-B s.StkBracket> ';'
-    )
-    (e.Indent
-      'refalrts::Iter ' <BracketsVar-E s.StkBracket> '_stk = '
-        <BracketsVar-E s.StkBracket> ';'
-    );
-}
-
-PrintRecoverStackBracket {
-  e.Indent s.StkBracket =
-    (e.Indent
-      <BracketsVar-B s.StkBracket> ' = ' <BracketsVar-B s.StkBracket> '_stk,'
-    )
-    (e.Indent
-      <BracketsVar-E s.StkBracket> ' = ' <BracketsVar-E s.StkBracket> '_stk,'
-    );
-}
-
 $LABEL CCreateClosure;
 
 PrintName {
@@ -231,7 +209,6 @@ PrintName {
 
 GenCommand {
   (e.Indent) (CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
-  (e.Indent) (CmdPrint e.Text) = (e.Indent) (e.Indent e.Text);
 
   (e.Indent) (CmdDeclareEVar e.VarInfo) =
     (e.Indent)
@@ -299,9 +276,16 @@ GenCommand {
     (e.Indent 'refalrts::use( ' <PrintEVar-E 1 'e' e.Index> ' );');
 
   (e.Indent)
-  (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index (e.BracketsForSave)) =
+  (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index) =
     (e.Indent '  ')
-    <Map (PrintStkBracket e.Indent) e.BracketsForSave>
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-B s.BracketNumber> '_stk = '
+        <BracketsVar-B s.BracketNumber> ';'
+    )
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-E s.BracketNumber> '_stk = '
+        <BracketsVar-E s.BracketNumber> ';'
+    )
     (e.Indent 'for( ')
     (e.Indent '  refalrts::Iter')
     (e.Indent
@@ -313,10 +297,6 @@ GenCommand {
         <BracketsVar-B s.BracketNumber> '_stk,'
     )
     (e.Indent
-      '    ' <BracketsVar-B s.BracketNumber> ' = '
-        <BracketsVar-B s.BracketNumber> '_stk,'
-    )
-    (e.Indent
       '    ' <BracketsVar-E s.BracketNumber> ' = '
         <BracketsVar-E s.BracketNumber> '_stk;'
     )
@@ -324,7 +304,12 @@ GenCommand {
       '! refalrts::empty_seq( ' <PrintEVar-OE 1 'e' e.Index> ', '
       <BracketsVar-E s.BracketNumber> ' );'
     )
-    <Map (PrintRecoverStackBracket e.Indent '  ') e.BracketsForSave>
+    (e.Indent
+      '  ' <BracketsVar-B s.BracketNumber> ' = ' <BracketsVar-B s.BracketNumber> '_stk,'
+    )
+    (e.Indent
+      '  ' <BracketsVar-E s.BracketNumber> ' = ' <BracketsVar-E s.BracketNumber> '_stk,'
+    )
     (e.Indent '  '
       'refalrts::next_term( ' <PrintEVar-OE 1 'e' e.Index> ', '
       <BracketsVar-E s.BracketNumber> ' )'
@@ -342,6 +327,17 @@ GenCommand {
     (e.Indent
       '  refalrts::move_right( ' <PrintEVar-B 1 'e' e.Index> ', '
       <PrintEVar-E 1 'e' e.Index> ' );'
+    );
+
+  (e.Indent) (CmdSave s.OldBracketNumber s.NewBracketNumber) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-B s.NewBracketNumber>
+      ' = ' <BracketsVar-B s.OldBracketNumber> ';'
+    )
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-E s.NewBracketNumber>
+      ' = ' <BracketsVar-E s.OldBracketNumber> ';'
     );
 
   (e.Indent) (CmdEmptyResult) =

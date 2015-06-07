@@ -138,7 +138,6 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -149,17 +148,19 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sOtherScopeClass_1, bb_2, be_2 ) )
         continue;
@@ -422,7 +423,6 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -433,9 +433,11 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -445,9 +447,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -556,7 +558,6 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -567,9 +568,11 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -579,9 +582,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -884,7 +887,6 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -895,9 +897,11 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -907,9 +911,9 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1319,7 +1323,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1330,9 +1333,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -1342,9 +1347,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1457,7 +1462,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1468,9 +1472,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
@@ -1480,9 +1486,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1591,7 +1597,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1602,9 +1607,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -1614,9 +1621,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -1919,7 +1926,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -1930,9 +1936,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
@@ -1942,9 +1950,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -2247,7 +2255,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -2258,9 +2265,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
@@ -2270,9 +2279,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -2570,7 +2579,6 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -2581,9 +2589,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
@@ -2593,9 +2603,9 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
@@ -3000,7 +3010,6 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -3011,17 +3020,19 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
@@ -3388,7 +3399,6 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -3399,17 +3409,19 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
@@ -3522,7 +3534,6 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -3533,17 +3544,19 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
@@ -3842,7 +3855,6 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -3853,17 +3865,19 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
       if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;
@@ -4158,7 +4172,6 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
       refalrts::Iter
         eNames_B_b_1 = bb_1_stk,
         eNames_B_oe_1 = bb_1_stk,
-        bb_1 = bb_1_stk,
         be_1 = be_1_stk;
       ! refalrts::empty_seq( eNames_B_oe_1, be_1 );
       bb_1 = bb_1_stk,
@@ -4169,15 +4182,17 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
       eNames_B_b_1 = bb_1_stk;
       eNames_B_e_1 = eNames_B_oe_1;
       refalrts::move_right( eNames_B_b_1, eNames_B_e_1 );
+      refalrts::Iter bb_3 = bb_1;
+      refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
       refalrts::Iter be_2 = 0;
-      if( ! refalrts::brackets_left( bb_2, be_2, bb_1, be_1 ) )
+      if( ! refalrts::brackets_left( bb_2, be_2, bb_3, be_3 ) )
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_1;
+      eNames_E_b_1 = bb_3;
       refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_1;
+      eNames_E_e_1 = be_3;
       refalrts::use( eNames_E_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
         continue;

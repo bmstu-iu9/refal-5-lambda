@@ -2306,7 +2306,7 @@ void refalrts::vm::print_seq(
 void refalrts::vm::make_dump( refalrts::Iter begin, refalrts::Iter end ) {
   using refalrts::vm::dump_stream;
 
-  fprintf( dump_stream(), "\nSTEP NUMBER %lu\n", g_step_counter );
+  fprintf( dump_stream(), "\nSTEP NUMBER %u\n", g_step_counter );
   fprintf( dump_stream(), "\nERROR EXPRESSION:\n" );
   print_seq( dump_stream(), begin, end );
   fprintf( dump_stream(), "\nVIEW FIELD:\n" );
