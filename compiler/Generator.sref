@@ -120,7 +120,8 @@ $ENTRY GenCommonTailer {
 //FROM Algorithm
 $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
-  CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
+  CmdRepeated, CmdVar, CmdClosedE,
+  CmdOpenedE-Start, CmdOpenedE-End,
   CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
   CmdInsertElem, CmdInsertEVar,
   ElChar, ElName, ElNumber, ElIdent,
@@ -184,7 +185,7 @@ BracketsVar-E {
   вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
 */
 
-$FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OE,
+$FORWARD PrintVar, PrintEVar-B, PrintEVar-E,
   PrintArrVar, PrintArrEVar-B, PrintArrEVar-E,
   PrintMatchChar, PrintMatchNumber, PrintMatchName,
   PrintMatchIdent,
@@ -276,57 +277,20 @@ GenCommand {
     (e.Indent 'refalrts::use( ' <PrintEVar-E 1 'e' e.Index> ' );');
 
   (e.Indent)
-  (CmdOpenedE AlgLeft s.BracketNumber 'e' e.Index) =
+  (CmdOpenedE-Start AlgLeft s.BracketNumber 'e' e.Index) =
     (e.Indent '  ')
+    (e.Indent <PrintEVar-B 1 'e' e.Index> ' = 0;')
+    (e.Indent <PrintEVar-E 1 'e' e.Index> ' = 0;')
+    (e.Indent 'do {');
+
+  (e.Indent '  ')
+  (CmdOpenedE-End AlgLeft s.BracketNumber 'e' e.Index) =
+    (e.Indent)
     (e.Indent
-      'refalrts::Iter ' <BracketsVar-B s.BracketNumber> '_stk = '
-        <BracketsVar-B s.BracketNumber> ';'
-    )
-    (e.Indent
-      'refalrts::Iter ' <BracketsVar-E s.BracketNumber> '_stk = '
-        <BracketsVar-E s.BracketNumber> ';'
-    )
-    (e.Indent 'for( ')
-    (e.Indent '  refalrts::Iter')
-    (e.Indent
-      '    ' <PrintEVar-B 1 'e' e.Index> ' = '
-        <BracketsVar-B s.BracketNumber> '_stk,'
-    )
-    (e.Indent
-      '    ' <PrintEVar-OE 1 'e' e.Index> ' = '
-        <BracketsVar-B s.BracketNumber> '_stk,'
-    )
-    (e.Indent
-      '    ' <BracketsVar-E s.BracketNumber> ' = '
-        <BracketsVar-E s.BracketNumber> '_stk;'
-    )
-    (e.Indent '  '
-      '! refalrts::empty_seq( ' <PrintEVar-OE 1 'e' e.Index> ', '
-      <BracketsVar-E s.BracketNumber> ' );'
-    )
-    (e.Indent
-      '  ' <BracketsVar-B s.BracketNumber> ' = ' <BracketsVar-B s.BracketNumber> '_stk,'
-    )
-    (e.Indent
-      '  ' <BracketsVar-E s.BracketNumber> ' = ' <BracketsVar-E s.BracketNumber> '_stk,'
-    )
-    (e.Indent '  '
-      'refalrts::next_term( ' <PrintEVar-OE 1 'e' e.Index> ', '
-      <BracketsVar-E s.BracketNumber> ' )'
-    )
-    (e.Indent ') {')
-    (e.Indent '  '
-      <BracketsVar-B s.BracketNumber> ' = ' <PrintEVar-OE 1 'e' e.Index> ';'
-    )
-    (e.Indent '  '
-      <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> '_stk;'
-    )
-    (e.Indent '  '
-      <PrintEVar-E 1 'e' e.Index> ' = ' <PrintEVar-OE 1 'e' e.Index> ';'
-    )
-    (e.Indent
-      '  refalrts::move_right( ' <PrintEVar-B 1 'e' e.Index> ', '
-      <PrintEVar-E 1 'e' e.Index> ' );'
+      '} while ( refalrts::open_evar_advance( '
+      <PrintEVar-B 1 'e' e.Index> ', ' <PrintEVar-E 1 'e' e.Index> ', '
+      <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>
+      ' ) );'
     );
 
   (e.Indent) (CmdSave s.OldBracketNumber s.NewBracketNumber) =
@@ -530,10 +494,6 @@ PrintEVar-E {
 
 PrintArrEVar-E {
   s.Mode e.Index = s.Mode e.Index '_e_1';
-}
-
-PrintEVar-OE {
-  s.Usings s.Mode e.Index = s.Mode e.Index '_oe_' <StrFromInt s.Usings>;
 }
 
 $FORWARD PrintMatch;

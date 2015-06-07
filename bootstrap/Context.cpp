@@ -168,22 +168,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -287,7 +274,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -329,22 +316,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -424,7 +398,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -563,22 +537,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_1;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_0_stk = bb_0;
-    refalrts::Iter be_0_stk = be_0;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_0_stk,
-        eVariables_B_oe_1 = bb_0_stk,
-        be_0 = be_0_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
-      bb_0 = bb_0_stk,
-      be_0 = be_0_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_0 )
-    ) {
-      bb_0 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_0_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_0;
       refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
@@ -700,7 +661,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_0, be_0 ) );
   } while ( 0 );
 
   do {
@@ -797,22 +758,9 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_1;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_0_stk = bb_0;
-    refalrts::Iter be_0_stk = be_0;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_0_stk,
-        eVariables_B_oe_1 = bb_0_stk,
-        be_0 = be_0_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
-      bb_0 = bb_0_stk,
-      be_0 = be_0_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_0 )
-    ) {
-      bb_0 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_0_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_0;
       refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
@@ -863,7 +811,7 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_0, be_0 ) );
   } while ( 0 );
 
   do {
@@ -993,22 +941,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -1112,7 +1047,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1154,22 +1089,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -1249,7 +1171,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1394,22 +1316,9 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_1;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_0_stk = bb_0;
-    refalrts::Iter be_0_stk = be_0;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_0_stk,
-        eVariables_B_oe_1 = bb_0_stk,
-        be_0 = be_0_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
-      bb_0 = bb_0_stk,
-      be_0 = be_0_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_0 )
-    ) {
-      bb_0 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_0_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_0;
       refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
@@ -1550,7 +1459,7 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_0, be_0 ) );
   } while ( 0 );
 
   do {
@@ -1647,22 +1556,9 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_1;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_0_stk = bb_0;
-    refalrts::Iter be_0_stk = be_0;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_0_stk,
-        eVariables_B_oe_1 = bb_0_stk,
-        be_0 = be_0_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_0 );
-      bb_0 = bb_0_stk,
-      be_0 = be_0_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_0 )
-    ) {
-      bb_0 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_0_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_0;
       refalrts::Iter be_3 = be_0;
       refalrts::Iter bb_2 = 0;
@@ -1698,7 +1594,7 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_0, be_0 ) );
   } while ( 0 );
 
   do {
@@ -1801,22 +1697,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -1928,7 +1811,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1970,22 +1853,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::use( eIndex_b_1 );
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eVariables_B_b_1 = bb_1_stk,
-        eVariables_B_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eVariables_B_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eVariables_B_oe_1, be_1 )
-    ) {
-      bb_1 = eVariables_B_oe_1;
-      eVariables_B_b_1 = bb_1_stk;
-      eVariables_B_e_1 = eVariables_B_oe_1;
-      refalrts::move_right( eVariables_B_b_1, eVariables_B_e_1 );
+    eVariables_B_b_1 = 0;
+    eVariables_B_e_1 = 0;
+    do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -2065,7 +1935,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eVariables_B_b_1, eVariables_B_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -2181,22 +2051,9 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    refalrts::Iter bb_1_stk = bb_1;
-    refalrts::Iter be_1_stk = be_1;
-    for( 
-      refalrts::Iter
-        eLocals_b_1 = bb_1_stk,
-        eLocals_oe_1 = bb_1_stk,
-        be_1 = be_1_stk;
-      ! refalrts::empty_seq( eLocals_oe_1, be_1 );
-      bb_1 = bb_1_stk,
-      be_1 = be_1_stk,
-      refalrts::next_term( eLocals_oe_1, be_1 )
-    ) {
-      bb_1 = eLocals_oe_1;
-      eLocals_b_1 = bb_1_stk;
-      eLocals_e_1 = eLocals_oe_1;
-      refalrts::move_right( eLocals_b_1, eLocals_e_1 );
+    eLocals_b_1 = 0;
+    eLocals_e_1 = 0;
+    do {
       refalrts::Iter bb_4 = bb_1;
       refalrts::Iter be_4 = be_1;
       refalrts::Iter bb_2 = 0;
@@ -2309,7 +2166,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    }
+    } while ( refalrts::open_evar_advance( eLocals_b_1, eLocals_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   return refalrts::FnResult(
@@ -2342,42 +2199,16 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter tCopy_2;
     refalrts::use( tCopy_2 );
     // e.Begin t.Copy e.Middle t.Copy e.End
-    refalrts::Iter bb_0_stk = bb_0;
-    refalrts::Iter be_0_stk = be_0;
-    for( 
-      refalrts::Iter
-        eBegin_b_1 = bb_0_stk,
-        eBegin_oe_1 = bb_0_stk,
-        be_0 = be_0_stk;
-      ! refalrts::empty_seq( eBegin_oe_1, be_0 );
-      bb_0 = bb_0_stk,
-      be_0 = be_0_stk,
-      refalrts::next_term( eBegin_oe_1, be_0 )
-    ) {
-      bb_0 = eBegin_oe_1;
-      eBegin_b_1 = bb_0_stk;
-      eBegin_e_1 = eBegin_oe_1;
-      refalrts::move_right( eBegin_b_1, eBegin_e_1 );
+    eBegin_b_1 = 0;
+    eBegin_e_1 = 0;
+    do {
       refalrts::Iter bb_1 = bb_0;
       refalrts::Iter be_1 = be_0;
       if( ! refalrts::tvar_left( tCopy_1, bb_1, be_1 ) )
         continue;
-      refalrts::Iter bb_1_stk = bb_1;
-      refalrts::Iter be_1_stk = be_1;
-      for( 
-        refalrts::Iter
-          eMiddle_b_1 = bb_1_stk,
-          eMiddle_oe_1 = bb_1_stk,
-          be_1 = be_1_stk;
-        ! refalrts::empty_seq( eMiddle_oe_1, be_1 );
-        bb_1 = bb_1_stk,
-        be_1 = be_1_stk,
-        refalrts::next_term( eMiddle_oe_1, be_1 )
-      ) {
-        bb_1 = eMiddle_oe_1;
-        eMiddle_b_1 = bb_1_stk;
-        eMiddle_e_1 = eMiddle_oe_1;
-        refalrts::move_right( eMiddle_b_1, eMiddle_e_1 );
+      eMiddle_b_1 = 0;
+      eMiddle_e_1 = 0;
+      do {
         refalrts::Iter bb_2 = bb_1;
         refalrts::Iter be_2 = be_1;
         if( ! refalrts::repeated_stvar_left( tCopy_2, tCopy_1, bb_2, be_2 ) )
@@ -2426,8 +2257,8 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
         refalrts::splice_to_freelist( arg_begin, arg_end );
         return refalrts::cSuccess;
 #endif
-      }
-    }
+      } while ( refalrts::open_evar_advance( eMiddle_b_1, eMiddle_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eBegin_b_1, eBegin_e_1, bb_0, be_0 ) );
   } while ( 0 );
 
   do {
