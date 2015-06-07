@@ -27,7 +27,11 @@ $ENTRY GenFnStart {
 }
 
 $ENTRY GenFnEnd {
-  = ('  return refalrts::cRecognitionImpossible;') ('}') ();
+  =
+    ('  return refalrts::FnResult(')
+    ('    refalrts::cRecognitionImpossible | (__LINE__ << 8)')
+    ('  );')
+    ('}') ();
 }
 
 $ENTRY GenEEnum {

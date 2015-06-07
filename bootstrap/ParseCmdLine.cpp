@@ -79,22 +79,30 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult NoCompile(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult CompileCommand(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult CmdLineError(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1331,7 +1339,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2766,7 +2776,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2961,7 +2973,9 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 

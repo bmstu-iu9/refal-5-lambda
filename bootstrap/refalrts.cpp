@@ -2027,7 +2027,9 @@ refalrts::FnResult refalrts::vm::execute_active(
 
   refalrts::Iter function = next( begin );
   if( cDataFunction == function->tag ) {
-    return (function->function_info.ptr)( begin, end );
+    return refalrts::FnResult(
+      (function->function_info.ptr)( begin, end ) & 0xFFU
+    );
   } else if( cDataClosure == function->tag ) {
     refalrts::Iter head = function->link_info;
 

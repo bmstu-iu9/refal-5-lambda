@@ -4,17 +4,23 @@
 
 static refalrts::FnResult Context(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult FreeVarsSent(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult FreeVarsFunc(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -61,7 +67,9 @@ refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -98,7 +106,9 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 //$LABEL CSuccess
@@ -501,7 +511,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -738,7 +750,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -913,7 +927,9 @@ static refalrts::FnResult ShiftVariable_Aux(refalrts::Iter arg_begin, refalrts::
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 //$LABEL CExistVariable
@@ -1316,7 +1332,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1578,7 +1596,9 @@ static refalrts::FnResult SetAsBoundVariable(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -1723,7 +1743,9 @@ static refalrts::FnResult SetAsBoundVariable_RemoveFromFree(refalrts::Iter arg_b
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2111,7 +2133,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -2277,7 +2301,9 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
     }
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2425,7 +2451,9 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2518,7 +2546,9 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2603,7 +2633,9 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 

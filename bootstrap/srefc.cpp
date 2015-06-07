@@ -80,7 +80,9 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -297,7 +299,9 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 extern refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -444,7 +448,9 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 extern refalrts::FnResult Source(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -817,7 +823,9 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -1148,7 +1156,9 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1380,7 +1390,9 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -1444,7 +1456,9 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1619,7 +1633,9 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1935,7 +1951,9 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -2083,7 +2101,9 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3401,7 +3421,9 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3597,7 +3619,9 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3966,7 +3990,9 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -4099,7 +4125,9 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4184,7 +4212,9 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult UnBracketSpace(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4244,7 +4274,9 @@ static refalrts::FnResult UnBracketSpace(refalrts::Iter arg_begin, refalrts::Ite
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4600,7 +4632,9 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 

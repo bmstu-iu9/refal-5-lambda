@@ -65,7 +65,9 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -192,152 +194,212 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkChar(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkCloseADT(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkCloseCall(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkCloseBlock(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkCloseBracket(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkComma(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkDirective(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkEOF(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkError(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkIdentMarker(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkName(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkNumber(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkOpenADT(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkOpenCall(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkOpenBlock(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkOpenBracket(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkReplace(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkSemicolon(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkUnexpected(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkVariable(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult TkRedefinition(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult EEnum(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Entry(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Enum(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Extern(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Forward(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Swap(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult ESwap(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult Ident(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -771,7 +833,9 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -1979,62 +2043,86 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkLiteral_Char(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkLiteral_Code(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkLiteral_NewLine(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkLiteral_CarriageReturn(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkLiteral_Tab(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkNewLine(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TkPunctuation(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TokenAccum(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TokenError(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TokenUnexpected(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult TokenUnexpectedEOF(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -2159,7 +2247,9 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -3243,7 +3333,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -3851,7 +3943,9 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4285,7 +4379,9 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4416,7 +4512,9 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -4521,7 +4619,9 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -9972,7 +10072,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -15549,7 +15651,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -15955,7 +16059,9 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -17050,7 +17156,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -19586,7 +19694,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -19934,7 +20044,9 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -20351,7 +20463,9 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -26036,7 +26150,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -28459,7 +28575,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -29258,7 +29376,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -29974,7 +30094,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -30380,7 +30502,9 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -35957,7 +36081,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -37083,7 +37209,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -37431,7 +37559,9 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -37907,7 +38037,9 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -38232,7 +38364,9 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -39435,7 +39569,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -40530,7 +40666,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -41785,7 +41923,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 
