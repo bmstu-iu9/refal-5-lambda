@@ -1,0 +1,6 @@
+/**
+  <Plain t.Function*> == (e.TextLine)*
+*/
+$ENTRY Plain {
+  e.Functions = ;
+}

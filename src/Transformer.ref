@@ -1,0 +1,6 @@
+/**
+  <Transform t.Function*> == t.Function
+*/
+$ENTRY Transform {
+  e.Functions = e.Functions;
+}

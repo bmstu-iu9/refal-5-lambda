@@ -1,0 +1,52 @@
+*$FROM Utils;
+$EXTERN ArgList, PrintLines, SaveFile;
+
+*$FROM Lexer;
+$EXTERN Scan;
+
+*$FROM Parser;
+$EXTERN Parse;
+
+*$FROM Transformer;
+$EXTERN Transform;
+
+*$FROM Plainer;
+$EXTERN Plain;
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+Title { = 'Convertor full Refal-5 sources to Basis Refal subset'; }
+
+Main {
+  (e.ProgName) (e.Source) (e.Destination) e.Skipped,
+      <PrintLines
+        (<Title>)
+        ('Source:      ' e.Source)
+        ('Destination: ' e.Destination)
+      >
+      <Parse <Scan e.Source>>: {
+        Success e.Functions =
+          <SaveFile
+            (e.Destination)
+            <Plain <Transform e.Functions>>
+          >;
+
+        Fails e.Errors =
+          <PrintLines
+            <FormatErrors e.Errors>
+          >;
+      };
+
+  (e.ProgName) e.Other =
+    <PrintLines
+      (<Title>)
+      ('Bad command line. Expected command line syntax:')
+      ('  refgo ' e.ProgName ' source.ref destination.ref')
+    >;
+}
+
+FormatErrors {
+  e.Errors, X : Y = ;
+}

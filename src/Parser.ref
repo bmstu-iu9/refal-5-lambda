@@ -1,0 +1,11 @@
+/**
+  <Parse e.Tokens>
+    == Success t.Function*
+    == Fails t.Error*
+
+  t.Error ::= (t.Pos e.Message)
+  t.Function ::= …
+*/
+$ENTRY Parse {
+  e.Tokens = Success;
+}

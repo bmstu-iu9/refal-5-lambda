@@ -1,0 +1,23 @@
+/**
+  <Scan e.SourceFile> == t.Token*
+
+  t.Token ::= (s.TokType t.Pos e.TokValue)
+  t.Pos ::= (s.Line s.Col e.FileName)
+
+  s.TokType ~ e.TokValue ::=
+    TkName ~ char*
+    TkCompound ~ char*
+    TkMacroDigit ~ macrodigit+
+    TkChars ~ char*
+    TkOpenBracket, TkCloseBracket, TkCloseCall,
+    TkOpenBlock, TkCloseBlock ~ пусто
+    TkOpenCall ~ char* -- имя функции
+    TkComma, TkColon, TkEqual, TkSemicolon ~ пусто
+    TkDirective ~ DirExtern | DirEntry
+    TkSpecComment ~ char*
+    TkEOF ~ пусто
+    TkError ~ char* -- сообщение об ошибке в лексике
+*/
+$ENTRY Scan {
+  e.FileName = ;
+}
