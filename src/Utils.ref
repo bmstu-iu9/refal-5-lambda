@@ -57,3 +57,20 @@ DoSaveFile {
 
   /* пусто */ = /* всё */;
 }
+
+
+/**
+  <LoadFile e.FileName> == (e.Line)*
+*/
+$ENTRY LoadFile {
+  e.FileName =
+    <Open 'r' 20 e.FileName>
+    <DoLoadFile <Get 20>>
+    <Close 20>;
+}
+
+DoLoadFile {
+  e.Line 0 = (e.Line);
+
+  e.Line = (e.Line) <DoLoadFile <Get 20>>;
+}

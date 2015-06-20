@@ -7,5 +7,5 @@
   t.Function ::= …
 */
 $ENTRY Parse {
-  e.Tokens = Success;
+  e.Tokens = Success e.Tokens;
 }

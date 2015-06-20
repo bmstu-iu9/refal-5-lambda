@@ -26,18 +26,19 @@ Main {
         ('Source:      ' e.Source)
         ('Destination: ' e.Destination)
       >
-      <Parse <Scan e.Source>>: {
-        Success e.Functions =
-          <SaveFile
-            (e.Destination)
-            <Plain <Transform e.Functions>>
-          >;
+      <Parse <Scan e.Source>>:
+    {
+      Success e.Functions =
+        <SaveFile
+          (e.Destination)
+          <Plain <Transform e.Functions>>
+        >;
 
-        Fails e.Errors =
-          <PrintLines
-            <FormatErrors e.Errors>
-          >;
-      };
+      Fails e.Errors =
+        <PrintLines
+          <FormatErrors e.Errors>
+        >;
+    };
 
   (e.ProgName) e.Other =
     <PrintLines

@@ -2,5 +2,5 @@
   <Plain t.Function*> == (e.TextLine)*
 */
 $ENTRY Plain {
-  e.Functions = ;
+  e.Functions = e.Functions;
 }
