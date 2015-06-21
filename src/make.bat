@@ -22,6 +22,6 @@ goto :EOF
 :test
   set SOURCE=%1
   set TARGET=%SOURCE:.ref=.out.ref%
-  refgo ..\rsls(%RSLS%) %SOURCE% %TARGET% || exit
+  echo Y | refgo ..\rsls(%RSLS%) %SOURCE% %TARGET% || exit
   echo.
 goto :EOF

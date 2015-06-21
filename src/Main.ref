@@ -49,5 +49,9 @@ Main {
 }
 
 FormatErrors {
-  e.Errors, X : Y = ;
+  ((s.Line s.Col e.FileName) e.Message) e.Errors =
+    <Prout e.FileName ':' <Symb s.Line> ':' <Symb s.Col> ':' e.Message>
+    <FormatErrors e.Errors>;
+
+  /* пусто */ = /* всё */
 }

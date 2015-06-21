@@ -12,12 +12,12 @@ $EXTERN LoadFile, Inc;
     TkCompound ~ char*
     TkMacroDigit ~ macrodigit
     TkChar ~ char
-    TkVar ~ s.VarType e.VarName
+    TkVariable ~ s.VarType e.VarName
     TkOpenBracket, TkCloseBracket, TkCloseCall,
     TkOpenBlock, TkCloseBlock ~ пусто
     TkOpenCall ~ char* -- имя функции
-    TkComma, TkColon, TkEqual, TkSemicolon ~ пусто
-    TkDirective ~ DirExtern | DirEntry
+    TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
+    TkExtern, TkEntry ~ пусто
     TkSpecComment ~ char*
     TkEOF ~ пусто
     TkError ~ char* -- сообщение об ошибке в лексике
@@ -116,19 +116,19 @@ IsPunctuation {
 
 DoScan-Keyword {
   t.Pos ('EXTERN' e.Line) e.Lines =
-    (TkDirective t.Pos DirExtern)
+    (TkExtern t.Pos)
     <DoScan <IncCol t.Pos Len '$EXTERN'> (e.Line) e.Lines>;
 
   t.Pos ('EXTRN' e.Line) e.Lines =
-    (TkDirective t.Pos DirExtern)
+    (TkExtern t.Pos)
     <DoScan <IncCol t.Pos Len '$EXTRN'> (e.Line) e.Lines>;
 
   t.Pos ('EXTERNAL' e.Line) e.Lines =
-    (TkDirective t.Pos DirExtern)
+    (TkExtern t.Pos)
     <DoScan <IncCol t.Pos Len '$EXTERNAL'> (e.Line) e.Lines>;
 
   t.Pos ('ENTRY' e.Line) e.Lines =
-    (TkDirective t.Pos DirEntry)
+    (TkEntry t.Pos)
     <DoScan <IncCol t.Pos Len '$ENTRY'> (e.Line) e.Lines>;
 
   t.Pos (e.BadLine) e.Lines =
@@ -181,7 +181,7 @@ DoScan-Var {
     >;
 
   t.Pos (s.Type '.' e.Index) (e.Line) e.Lines =
-    (TkVariable s.Type e.Index)
+    (TkVariable t.Pos s.Type e.Index)
     <DoScan
       <IncCol t.Pos Len s.Type '.' e.Index> (e.Line) e.Lines
     >;

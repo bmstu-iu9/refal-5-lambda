@@ -74,3 +74,12 @@ DoLoadFile {
 
   e.Line = (e.Line) <DoLoadFile <Get 20>>;
 }
+
+
+/**
+  <OneOf t.Elem e.SampleElems> == True | False
+*/
+$ENTRY OneOf {
+  t.Elem e.Elems-B t.Elem e.Elems-E = True;
+  t.Elem e.Elems = False;
+}
