@@ -88,7 +88,7 @@ Unit {
 */
 NameList {
   (TkName t.Pos e.Name) e.Tokens =
-    <NameList-DoNames (e.Name) (/* errors */) e.Tokens>;
+    <NameList-DoNames ((e.Name)) (/* errors */) e.Tokens>;
 
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value) =
@@ -639,15 +639,165 @@ TokName {
     == Fails t.Error*
 */
 Semantics {
-  e.Units (Error t.Pos e.Message) e.ErrorsUnits =
-    Fails (t.Pos e.Message) <FilterErrors e.ErrorsUnits>;
+  e.ErrorsUnits,
+      <FilterUnitsAndFunctionNames e.ErrorsUnits>: e.Units (e.Functions),
+      <FindSemanticsErrors (e.Functions) e.ErrorsUnits>:
+    {
+      /* пусто */ = Success e.Units;
 
-  e.Units = Success e.Units;
+      e.Errors = Fails e.Errors;
+    };
 }
 
-FilterErrors {
-  e.Units (Error t.Pos e.Message) e.ErrorsUnits =
-    (t.Pos e.Message) <FilterErrors e.ErrorsUnits>;
+FilterUnitsAndFunctionNames {
+  e.ErrorsUnits =
+    <DoFilterUnitsAndFunctionNames
+      e.ErrorsUnits (('+') ('-') ('*') ('/') ('%') <Builtins <ListOfBuiltin>>)
+    >;
+}
 
-  e.Units = /* пусто */
+Builtins {
+  (s.Number s.Name s.Type) e.Builtins =
+    (<Explode s.Name>) <Builtins e.Builtins>;
+
+  /* пусто */ = /* пусто */;
+}
+
+DoFilterUnitsAndFunctionNames {
+  (Error t.Pos e.Message) e.ErrorsUnits (e.Names) =
+    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
+
+  (SpecialComment t.Pos e.Text) e.ErrorsUnits (e.Names) =
+    (SpecialComment t.Pos e.Text)
+    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
+
+  (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits (e.Names) =
+    (Function t.Pos (e.Name) s.Scope e.Sentences)
+    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
+
+  (Extern e.ExternalNames) e.ErrorsUnits (e.Names) =
+    (Extern e.ExternalNames)
+    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names e.ExternalNames)>;
+
+  /* кончились юниты и ошибки */ (e.Names) = (e.Names);
+}
+
+FindSemanticsErrors {
+  (e.FuncNames) (Error t.Pos e.Message) e.ErrorsUnits =
+    (t.Pos e.Message)
+    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
+
+  (e.FuncNames) (SpecialComment t.Pos e.Text) e.ErrorsUnits =
+    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
+
+  (e.FuncNames) (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits =
+    <CheckSentences (e.FuncNames) (/* variables */) e.Sentences>
+    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
+
+  (e.FuncNames) (Extern e.Names) e.ErrorsUnits =
+    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
+
+  (e.FuncNames) /* кончились ошибки и юниты */ = /* пусто */
+}
+
+CheckSentences {
+  (e.FuncNames) (e.Variables) (e.Sentence) e.Sentences =
+    <CheckSentence
+      (e.FuncNames) (e.Variables) <ExtractCheckable e.Sentence>
+    >
+    <CheckSentences (e.FuncNames) (e.Variables) e.Sentences>;
+
+  (e.FuncNames) (e.Variables) /* всё */ = /* всё */;
+}
+
+ExtractCheckable {
+  (e.Pattern) e.Conditions-And-SentenceTail =
+    (<ExtractCheckable-Expr e.Pattern>)
+    <ExtractCheckable-Tail e.Conditions-And-SentenceTail>;
+}
+
+ExtractCheckable-Tail {
+  (Condition (e.Result) (e.Pattern)) e.Tail =
+    (Condition
+      (<ExtractCheckable-Expr e.Result>) (<ExtractCheckable-Expr e.Pattern>)
+    )
+    <ExtractCheckable-Tail e.Tail>;
+
+  RETURN (e.Result) = RETURN (<ExtractCheckable-Expr e.Result>);
+
+  CALL-BLOCK (e.Result) e.Sentences =
+    CALL-BLOCK (<ExtractCheckable-Expr e.Result>)
+    <ExtractCheckable-Sentences e.Sentences>;
+}
+
+ExtractCheckable-Sentences {
+  (e.Sentence) e.Sentences =
+    (<ExtractCheckable e.Sentence>) <ExtractCheckable-Sentences e.Sentences>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractCheckable-Expr {
+  t.Term e.Expr =
+    <ExtractCheckable-Term t.Term> <ExtractCheckable-Expr e.Expr>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractCheckable-Term {
+  (Variable t.SrcPos s.VarType e.Index) = (Variable t.SrcPos s.VarType e.Index);
+
+  (Brackets e.Expr) = <ExtractCheckable-Expr e.Expr>;
+
+  (Call t.Pos (e.Name) e.Expr) =
+    (Call t.Pos e.Name) <ExtractCheckable-Expr e.Expr>;
+
+  t.OtherTerm = /* здесь нет переменных */;
+}
+
+CheckSentence {
+  (e.FuncNames) (e.Variables) (e.PatternItems) e.Tail =
+    <CheckSentence-Tail
+      (e.FuncNames) (e.Variables e.PatternItems) e.Tail
+    >;
+}
+
+CheckSentence-Tail {
+  (e.FuncNames) (e.Variables) (Condition (e.ResultItems) (e.PatternItems)) e.Tail =
+    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
+    <CheckSentence-Tail (e.FuncNames) (e.Variables e.PatternItems) e.Tail>;
+
+  (e.FuncNames) (e.Variables) RETURN (e.ResultItems) =
+    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>;
+
+  (e.FuncNames) (e.Variables) CALL-BLOCK (e.ResultItems) e.Sentences =
+    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
+    <CheckSentences (e.FuncNames) (e.Variables) e.Sentences>;
+}
+
+CheckResult {
+  (e.FuncNames) (e.Variables) (Call t.Pos e.Name) e.Items,
+      e.FuncNames:
+    {
+      e.Names-B (e.Name) e.Names-E =
+        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
+
+      e.Names =
+        (t.Pos 'function ' e.Name ' not declared')
+        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
+    };
+
+  (e.FuncNames) (e.Variables) (Variable t.Pos s.Type e.Index) e.Items,
+      e.Variables:
+    {
+      e.Vars-B (Variable t.DeclPos s.Type e.Index) e.Vars-E =
+        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
+
+      e.Vars =
+        (t.Pos 'variable ' s.Type '.' e.Index ' not declared')
+        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
+    };
+
+  (e.FuncNames) (e.Variables) /* всё */ =
+    /* всё */;
 }
