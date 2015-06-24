@@ -45,8 +45,9 @@ DoTransform {
 Function {
   (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
     = <ScanFunction
-        (e.Names) (<ExtractVariables e.Sentences>)
-        t.SrcPos (e.Name) s.Scope
+        (e.Names)
+        t.SrcPos (e.Name /* — имя текущей функции */) s.Scope
+        (e.Name /* — префикс */)
         (/* scanned functions */)
         (/* scanned sentences */)
         e.Sentences
@@ -98,39 +99,40 @@ ExtractVariables-Expr {
 
 
 ScanFunction {
-  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
   (e.ScannedFunctions) (e.ScannedSentences)
   t.NextSentence e.Sentences (e.UnscannedFunctions)
     , t.NextSentence
     : {
         (t.Pattern (Condition t.CondResult t.CondPattern) e.Tail)
           = <ScanFunction-Condition
-              t.Names t.Variables t.SrcPos (e.Name) s.Scope
+              t.Names (<ExtractVariables t.NextSentence>)
+              t.SrcPos (e.Name) s.Scope (e.Prefix)
               (e.ScannedFunctions) (e.ScannedSentences)
               t.NextSentence e.Sentences (e.UnscannedFunctions)
             >;
 
          (t.Pattern CALL-BLOCK t.Result e.SubSentences)
            = <ScanFunction-Block
-               t.Names t.Variables t.SrcPos (e.Name) s.Scope
+               t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
                (e.ScannedFunctions) (e.ScannedSentences)
                t.NextSentence e.Sentences (e.UnscannedFunctions)
              >;
 
          (t.Pattern RETURN t.Result)
            = <ScanFunction
-               t.Names t.Variables t.SrcPos (e.Name) s.Scope
+               t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
                (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
                e.Sentences (e.UnscannedFunctions)
              >;
       };
 
-    t.Names t.Variables t.SrcPos (e.Name) s.Scope
+    t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
     (e.ScannedFunctions) (e.ScannedSentences)
     /* кончились предложения текущей функции */
     (((e.NextName) e.NextSentences) e.UnscannedFunctions)
       = <ScanFunction
-          t.Names t.Variables t.SrcPos (e.NextName) Local
+          t.Names t.SrcPos (e.NextName) Local (e.Prefix)
           (
             e.ScannedFunctions
             (Function t.SrcPos (e.Name) s.Scope e.ScannedSentences)
@@ -139,7 +141,7 @@ ScanFunction {
           e.NextSentences (e.UnscannedFunctions)
         >;
 
-    t.Names t.Variables t.SrcPos (e.Name) s.Scope
+    t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
     (e.ScannedFunctions) (e.ScannedSentences)
     /* кончились предложения текущей функции */
     (/* кончились непросканированные функции */)
@@ -149,22 +151,80 @@ ScanFunction {
 }
 
 ScanFunction-Condition {
-  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions) (e.ScannedSentences)
+  t.NextSentence /* последнее */ (e.UnscannedFunctions)
+    = <ScanFunction-Condition-Aux
+        t.Names t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
+        (e.ScannedFunctions) (e.ScannedSentences)
+        t.NextSentence LAST-SENTENCE (e.UnscannedFunctions)
+      >;
+
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
   (e.ScannedFunctions) (e.ScannedSentences)
   t.NextSentence e.Sentences (e.UnscannedFunctions)
-    = <ScanFunction
-        t.Names t.Variables t.SrcPos (e.Name) s.Scope
-        (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
-        e.Sentences (e.UnscannedFunctions)
+    , <NewName t.Names e.Prefix>: t.RefilledNames e.NewName
+    = <ScanFunction-Condition-Aux
+        t.RefilledNames t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
+        (e.ScannedFunctions) (e.ScannedSentences)
+        t.NextSentence (e.NewName)
+        (((e.NewName) e.Sentences) e.UnscannedFunctions)
       >;
 }
 
+NewName {
+  (e.Names-B (e.Prefix) e.Names-E) e.Prefix
+    = <DoNewName ((e.Prefix) e.Names-B e.Names-E) e.Prefix 0>;
+
+  (e.Names) e.Prefix = ((e.Prefix) e.Names) e.Prefix;
+}
+
+DoNewName {
+  (e.Names) e.Prefix s.SufNo
+    , e.Prefix <Symb s.SufNo>: e.NewName
+    , e.Names
+    : {
+        e.Names-B (e.NewName) e.Names-E
+          = <DoNewName
+              ((e.NewName) e.Names-B e.Names-E) e.Prefix <+ s.SufNo 1>
+            >;
+
+        e.Names = ((e.NewName) e.Names) e.NewName;
+      };
+}
+
+ScanFunction-Condition-Aux {
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions) (e.ScannedSentences)
+  t.NextSentence t.Continuation (e.UnscannedFunctions)
+    = <ScanFunction
+        t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
+        (e.ScannedFunctions)
+        (
+          e.ScannedSentences
+          t.NextSentence
+          <LastSentence-Continuation t.Continuation>
+        )
+        /* кончились предложения */ (e.UnscannedFunctions)
+      >;
+}
+
+LastSentence-Continuation {
+  LAST-SENTENCE = /* пусто */;
+
+  (e.FuncName) =
+    (
+      ((Variable () 'eOTHER'))
+      RETURN ((Call () (e.FuncName) (Variable () 'eOTHER')))
+    );
+}
+
 ScanFunction-Block {
-  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
   (e.ScannedFunctions) (e.ScannedSentences)
   t.NextSentence e.Sentences (e.UnscannedFunctions)
     = <ScanFunction
-        t.Names t.Variables t.SrcPos (e.Name) s.Scope
+        t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
         (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
         e.Sentences (e.UnscannedFunctions)
       >;
