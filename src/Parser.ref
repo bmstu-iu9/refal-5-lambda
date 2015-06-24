@@ -41,7 +41,7 @@ $ENTRY Parse {
 Program {
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type TkSpecComment TkExtern TkEntry TkName>: True =
+      <OneOf s.Type TkSpecComment TkExtern TkEntry TkName TkSemicolon>: True =
     <Program-AfterUnit <Unit t.NextToken e.Tokens>>;
 
   (TkEOF t.Pos) = /* всё */;
@@ -72,6 +72,9 @@ Unit {
 
       (TkExtern t.Pos) =
         <NameList e.Tokens>;
+
+      (TkSemicolon t.Pos) =
+        (/* игнорируем */) e.Tokens;
 
       (s.Type t.Pos e.Value),
           <OneOf s.Type TkEntry TkName>: True =

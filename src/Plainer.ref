@@ -1,6 +1,208 @@
 /**
-  <Plain t.Function*> == (e.TextLine)*
+  <Plain t.Units*> == (e.TextLine)*
 */
 $ENTRY Plain {
-  e.Functions = e.Functions;
+  (Extern e.Names) e.Units
+    = <Extern e.Names>
+      <Plain e.Units>;
+
+  (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
+    = <Function (e.Name) s.Scope e.Sentences>
+      <Plain e.Units>;
+
+  (SpecialComment t.SrcPos e.Text) e.Units
+    = ('*$' e.Text)
+      <Plain e.Units>;
+
+  /* пусто */ = /* пусто */;
+}
+
+
+MAX-LINE { = 79 }
+
+LongLine {
+  e.Line = <DoLongLine <MAX-LINE> e.Line>;
+}
+
+DoLongLine {
+  s.Len /* пусто */ = False;
+  0 e.Line = True;
+  s.Len t.Next e.Line = <DoLongLine <- s.Len 1> e.Line>;
+}
+
+Trim-R {
+  e.Line ' ' = <Trim-R e.Line>;
+  e.Line = e.Line;
+}
+
+
+Extern {
+  e.Names = <DoExtern ('$EXTERN ') e.Names>;
+}
+
+DoExtern {
+  (e.OutLine) (e.NextName) e.Names
+    , <CommaOrSemicolon e.Names>: e.SEP
+    , e.OutLine e.NextName e.SEP: e.NewOutLine
+    , <LongLine e.NewOutLine>
+    : {
+        True
+          = (<Trim-R e.OutLine>)
+            <DoExtern ('  ' e.NextName e.SEP) e.Names>;
+
+        False
+          = <DoExtern (e.NewOutLine) e.Names>;
+      };
+
+  (e.OutLine) /* кончились имена */
+    = (e.OutLine) /* точка с запятой добавлена на прошлой итерации */
+      ()
+}
+
+CommaOrSemicolon {
+  (e.NextName) e.Names = ', ';
+  /* пусто */ = ';';
+}
+
+
+Function {
+  (e.Name) s.Scope e.Sentences
+    = (<Entry s.Scope> e.Name ' {')
+      <Sentences ('  ') e.Sentences>
+      ('}')
+      ()
+};
+
+Entry {
+  Entry = '$ENTRY ';
+  Local = /* пусто */;
+}
+
+Sentences {
+  (e.Indent) (e.Sentence) e.Sentences
+    = <Sentence (e.Indent) e.Sentence> <Sentences (e.Indent) e.Sentences>;
+
+  (e.Indent) /* пусто */ = /* пусто */;
+}
+
+Sentence {
+  (e.Indent) (e.Pattern) e.Tail
+    = <Expression (e.Indent) (e.Indent) e.Pattern>
+      <Tail (e.Indent '  ') e.Tail>;
+}
+
+Tail {
+  (e.Indent) (Condition (e.Result) (e.Pattern)) e.Tail
+    = <Expression (e.Indent ', ') (e.Indent '  ') e.Result>
+      <Expression (e.Indent ': ') (e.Indent '  ') e.Pattern>
+      <Tail (e.Indent) e.Tail>;
+
+  (e.Indent) RETURN (e.Result)
+    = <Expression (e.Indent '= ') (e.Indent '  ') e.Result ';'>;
+
+  (e.Indent) CALL-BLOCK (e.Result) e.Sentences
+    = <Expression (e.Indent ', ') (e.Indent '  ') e.Result>
+      (e.Indent ': {')
+      <Sentences (e.Indent '    ') e.Sentences>
+      (e.Indent '  };')
+}
+
+Expression {
+  (e.Prefix) (e.Indent) e.Expression
+    , e.Prefix <InlineExpr e.Expression>: e.InlineExpr
+    , <LongLine e.InlineExpr>
+    : {
+        True
+          = <DoExpression (e.Indent) (e.Prefix) e.Expression>;
+
+        False
+          = (e.InlineExpr);
+      };
+}
+
+DoExpression {
+  (e.Indent) (e.OutLine) /* пусто */
+    = (<Trim-R e.OutLine>);
+
+  (e.Indent) (e.OutLine) /* пусто */ ';'
+    = (<Trim-R e.OutLine> ';');
+
+  (e.Indent) (e.OutLine) t.NextTerm e.Expr
+    , <InlineTerm t.NextTerm>: e.TextualTerm
+    , e.OutLine e.TextualTerm: e.NewOutLine
+    , <LongLine e.NewOutLine>
+    : {
+        True
+          , e.Indent e.TextualTerm: e.OutLineTerm
+          , <LongLine e.OutLineTerm>
+          : {
+              True
+                = (<Trim-R e.OutLine>)
+                  <MultilineTerm e.Indent t.NextTerm>
+                  <DoExpression (e.Indent) (e.Indent) e.Expr>;
+
+              False
+                = (<Trim-R e.OutLine>)
+                  <DoExpression (e.Indent) (e.OutLineTerm) e.Expr>;
+            };
+
+        False
+          = <DoExpression (e.Indent) (e.NewOutLine) e.Expr>;
+      };
+}
+
+InlineTerm {
+  (s.Type e.Value) = <Mu s.Type e.Value>;
+
+  ';' = ';';
+}
+
+MultilineTerm {
+  e.Indent (Brackets e.Expr)
+    = (e.Indent '(')
+      <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+      (e.Indent ')');
+
+  e.Indent (Call t.SrcPos (e.Function) e.Expr)
+    = (e.Indent '<' e.Function)
+      <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+      (e.Indent '>');
+
+  e.Indent (s.Type e.Value)
+    = (e.Indent <Mu s.Type e.Value>);
+
+  e.Indent ';' = (e.Indent ';');
+}
+
+Compound {
+  e.Chars = e.Chars;
+}
+
+Number {
+  s.Number = <Symb s.Number>;
+}
+
+Char {
+  s.Char = s.Char;
+}
+
+Variable {
+  t.SrcPos s.Type e.Index = s.Type '.' e.Index;
+}
+
+Brackets {
+  e.Expr = '(' <InlineExpr e.Expr> ')'
+}
+
+Call {
+  t.SrcPos (e.Function) e.Expr = '<' e.Function ' ' <InlineExpr e.Expr> '>'
+}
+
+InlineExpr {
+  t.Term1 t.Term2 e.Expr
+    = <InlineTerm t.Term1> ' ' <InlineExpr t.Term2 e.Expr>;
+
+  t.Term = <InlineTerm t.Term>;
+
+  /* пусто */ = /* пусто */
 }
