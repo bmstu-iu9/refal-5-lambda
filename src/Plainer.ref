@@ -2,6 +2,28 @@
   <Plain t.Units*> == (e.TextLine)*
 */
 $ENTRY Plain {
+  e.Units =
+    <UndoubleEmtpyLines <TrimLines <DoPlain e.Units>>>;
+}
+
+TrimLines {
+  (e.Line) e.Lines = (<Trim-R e.Line>) <TrimLines e.Lines>;
+
+  /* пусто */ = /* пусто */;
+}
+
+UndoubleEmtpyLines {
+  e.Lines-B () () e.Lines-E = e.Lines-B <UndoubleEmtpyLines () e.Lines-E>;
+
+  e.Lines = e.Lines;
+}
+
+Trim-R {
+  e.Line ' ' = <Trim-R e.Line>;
+  e.Line = e.Line;
+}
+
+DoPlain {
   (Extern e.Names) e.Units
     = <Extern e.Names>
       <Plain e.Units>;
@@ -28,11 +50,6 @@ DoLongLine {
   s.Len /* пусто */ = False;
   0 e.Line = True;
   s.Len t.Next e.Line = <DoLongLine <- s.Len 1> e.Line>;
-}
-
-Trim-R {
-  e.Line ' ' = <Trim-R e.Line>;
-  e.Line = e.Line;
 }
 
 
@@ -79,8 +96,12 @@ Entry {
 }
 
 Sentences {
+  (e.Indent) (e.Sentence) = <Sentence (e.Indent) e.Sentence>;
+
   (e.Indent) (e.Sentence) e.Sentences
-    = <Sentence (e.Indent) e.Sentence> <Sentences (e.Indent) e.Sentences>;
+    = <Sentence (e.Indent) e.Sentence>
+      ()
+      <Sentences (e.Indent) e.Sentences>;
 
   (e.Indent) /* пусто */ = /* пусто */;
 }
@@ -108,47 +129,54 @@ Tail {
 }
 
 Expression {
-  (e.Prefix) (e.Indent) e.Expression
-    , e.Prefix <InlineExpr e.Expression>: e.InlineExpr
-    , <LongLine e.InlineExpr>
-    : {
-        True
-          = <DoExpression (e.Indent) (e.Prefix) e.Expression>;
+  (e.Prefix) (e.Indent) /* пусто */, <Trim-R e.Prefix>: /* пусто */
+    = /* пусто */;
 
-        False
-          = (e.InlineExpr);
-      };
+  (e.Prefix) (e.Indent) /* пусто */
+    = (e.Prefix);
+
+  (e.Prefix) (e.Indent) e.Expression
+    = <DoExpression FIRST (e.Indent) (e.Prefix) e.Expression>;
 }
 
 DoExpression {
-  (e.Indent) (e.OutLine) /* пусто */
-    = (<Trim-R e.OutLine>);
+  s.Pos (e.Indent) (e.OutLine) /* пусто */ = (e.OutLine);
 
-  (e.Indent) (e.OutLine) /* пусто */ ';'
-    = (<Trim-R e.OutLine> ';');
+  s.Pos (e.Indent) (e.OutLine) /* пусто */ ';' = (e.OutLine ';');
 
-  (e.Indent) (e.OutLine) t.NextTerm e.Expr
+  s.Pos (e.Indent) (e.OutLine) t.NextTerm e.Expr
     , <InlineTerm t.NextTerm>: e.TextualTerm
-    , e.OutLine e.TextualTerm: e.NewOutLine
+    , <AppendTerm e.OutLine (e.TextualTerm)>: e.NewOutLine
     , <LongLine e.NewOutLine>
     : {
         True
           , e.Indent e.TextualTerm: e.OutLineTerm
           , <LongLine e.OutLineTerm>
           : {
+              True, e.Expr: ';'
+                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm (';')>;
+
+              True, e.Expr: /* пусто */
+                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>;
+
               True
-                = (<Trim-R e.OutLine>)
-                  <MultilineTerm e.Indent t.NextTerm>
-                  <DoExpression (e.Indent) (e.Indent) e.Expr>;
+                = <MultilineTerm s.Pos (e.OutLine) e.Indent t.NextTerm ()>
+                  <DoExpression NEXT (e.Indent) (e.Indent) e.Expr>;
 
               False
-                = (<Trim-R e.OutLine>)
-                  <DoExpression (e.Indent) (e.OutLineTerm) e.Expr>;
+                = (e.OutLine)
+                  <DoExpression NEXT (e.Indent) (e.OutLineTerm) e.Expr>;
             };
 
         False
-          = <DoExpression (e.Indent) (e.NewOutLine) e.Expr>;
+          = <DoExpression NEXT (e.Indent) (e.NewOutLine) e.Expr>;
       };
+}
+
+AppendTerm {
+  e.String '\'' ('\'' e.Term) = e.String e.Term;
+  e.String ' ' (e.Term) = e.String ' ' e.Term;
+  e.String (e.Term) = e.String ' ' e.Term;
 }
 
 InlineTerm {
@@ -158,24 +186,64 @@ InlineTerm {
 }
 
 MultilineTerm {
-  e.Indent (Brackets e.Expr)
-    = (e.Indent '(')
-      <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
-      (e.Indent ')');
+  FIRST (e.Prefix) e.Indent t.Term (e.Suffix)
+    = <MultilineTerm-Prefix (e.Prefix) e.Indent t.Term (e.Suffix)>;
 
-  e.Indent (Call t.SrcPos (e.Function) e.Expr)
-    = (e.Indent '<' e.Function)
-      <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
-      (e.Indent '>');
+  NEXT (e.Prefix) e.Indent t.Term (e.Suffix)
+    = <MultilineTerm-Prefix (e.Indent) e.Indent t.Term (e.Suffix)>;
+}
 
-  e.Indent (s.Type e.Value)
-    = (e.Indent <Mu s.Type e.Value>);
+MultilineTerm-Prefix {
+  (e.Prefix) e.Indent t.Term (e.Suffix)
+    , t.Term
+    : {
+        (Brackets e.Expr)
+          = (e.Prefix '(')
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            (e.Indent ')' e.Suffix);
 
-  e.Indent ';' = (e.Indent ';');
+        (Call t.SrcPos (e.Function) e.Expr)
+          = (e.Prefix '<' e.Function)
+            <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
+            (e.Indent '>' e.Suffix);
+
+        (s.Type e.Value)
+          = (e.Prefix <Mu s.Type e.Value> e.Suffix);
+      };
 }
 
 Compound {
-  e.Chars = e.Chars;
+  e.Chars, <IsIdent e.Chars>: True e.Textual = e.Textual;
+
+  e.Chars = '\"' <DoCompound e.Chars> '\"'
+}
+
+DoCompound {
+  s.Char e.Chars = <CharRep s.Char> <DoCompound e.Chars>;
+  /* пусто */ = /* Пусто */;
+}
+
+IsIdent {
+  s.Initial e.Tail
+    , <Type s.Initial>: 'L' s.SubType s.Initial
+    = <DoIsIdent (s.Initial) e.Tail>;
+}
+
+DoIsIdent {
+  (e.Valid) '-' e.Tail = <DoIsIdent (e.Valid '-') e.Tail>;
+  (e.Valid) '_' e.Tail = <DoIsIdent (e.Valid '_') e.Tail>;
+
+  (e.Valid) s.Next e.Tail
+    , <Type s.Next>: 'L' s.Subtype s.Next
+    = <DoIsIdent (e.Valid s.Next) e.Tail>;
+
+  (e.Valid) s.Next e.Tail
+    , <Type s.Next>: 'D0' s.Next
+    = <DoIsIdent (e.Valid s.Next) e.Tail>;
+
+  (e.Valid) /* пусто */ = True e.Valid;
+
+  (e.Valid) s.Other e.Tail = False;
 }
 
 Number {
@@ -183,7 +251,29 @@ Number {
 }
 
 Char {
+  s.Char = '\'' <CharRep s.Char> '\''
+}
+
+CharRep {
+  '\'' = '\\\'';
+  '\"' = '\\\"';
+  '\\' = '\\\\';
+  '\n' = '\\n';
+  '\r' = '\\r';
+  '\t' = '\\t';
+
+  s.Char
+    , <Ord s.Char>: s.Ord
+    , <Compare s.Ord 32>: '-'
+    = '\\x' <HexDigit </ s.Ord 16> <% s.Ord 16>>;
+
   s.Char = s.Char;
+}
+
+HexDigit {
+  s.Number
+    , <First s.Number '0123456789abcdef'>: (e.1) s.Digit e.2
+    = s.Digit
 }
 
 Variable {
@@ -199,10 +289,14 @@ Call {
 }
 
 InlineExpr {
-  t.Term1 t.Term2 e.Expr
-    = <InlineTerm t.Term1> ' ' <InlineExpr t.Term2 e.Expr>;
+  t.Term e.Expr = <DoInlineExpr (<InlineTerm t.Term>) e.Expr>;
 
-  t.Term = <InlineTerm t.Term>;
+  /* пусто */ = /* пусто */;
+}
 
-  /* пусто */ = /* пусто */
+DoInlineExpr {
+  (e.Text) t.NextTerm e.Expr
+    = <DoInlineExpr (<AppendTerm e.Text (<InlineTerm t.NextTerm>)>) e.Expr>;
+
+  (e.Text) = e.Text;
 }
