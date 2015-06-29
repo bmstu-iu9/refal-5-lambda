@@ -652,18 +652,14 @@ Semantics {
     };
 }
 
+*$FROM Utils;
+$EXTERN Builtins;
+
 FilterUnitsAndFunctionNames {
   e.ErrorsUnits =
     <DoFilterUnitsAndFunctionNames
-      e.ErrorsUnits (('+') ('-') ('*') ('/') ('%') <Builtins <ListOfBuiltin>>)
+      e.ErrorsUnits (<Builtins>)
     >;
-}
-
-Builtins {
-  (s.Number s.Name s.Type) e.Builtins =
-    (<Explode s.Name>) <Builtins e.Builtins>;
-
-  /* пусто */ = /* пусто */;
 }
 
 DoFilterUnitsAndFunctionNames {

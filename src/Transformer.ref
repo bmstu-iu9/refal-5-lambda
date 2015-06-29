@@ -1,6 +1,399 @@
+*$FROM Utils;
+$EXTERN Builtins;
+
 /**
-  <Transform t.Function*> == t.Function
+  <Transform t.Unit*> == t.Unit*
 */
 $ENTRY Transform {
-  e.Functions = e.Functions;
+  e.Units = <DoTransform <GetFunctionNames (<Builtins>) e.Units>>;
 }
+
+GetFunctionNames {
+  (e.Names) e.Units (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+    = <GetFunctionNames (e.Names (e.Name)) e.Units>
+      (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+
+  (e.Names) e.Units (Extern e.ExternalNames)
+    = <GetFunctionNames (e.Names e.ExternalNames) e.Units>
+      (Extern e.ExternalNames);
+
+  (e.Names) e.Units (SpecialComment t.SrcPos e.Text)
+    = <GetFunctionNames (e.Names) e.Units>
+      (SpecialComment t.SrcPos e.Text);
+
+  (e.Names) /* пусто */ = (e.Names);
+}
+
+DoTransform {
+  (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
+    , <Function (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+    : (e.NewNames) e.NewFunctions
+    = e.NewFunctions
+      <DoTransform (e.NewNames) e.Units>;
+
+  (e.Names) (Extern e.ExternNames) e.Units
+    = (Extern e.ExternNames)
+      <DoTransform (e.Names) e.Units>;
+
+  (e.Names) (SpecialComment t.SrcPos e.Text) e.Units
+    = (SpecialComment t.SrcPos e.Text)
+      <DoTransform (e.Names) e.Units>;
+
+  (e.Names) /* пусто */ = /* пусто */;
+}
+
+Function {
+  (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
+    = <ScanFunction
+        (e.Names) (<ExtractVariables e.Sentences>)
+        t.SrcPos (e.Name) s.Scope
+        (/* scanned functions */)
+        (/* scanned sentences */)
+        e.Sentences
+        (/* unscanned functions */)
+      >;
+}
+
+*$FROM Utils
+$EXTERN Unique;
+
+ExtractVariables {
+  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+}
+
+ExtractVariables-Sentences {
+  ((e.Pattern) e.Tail) e.Sentences
+    = <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>
+      <ExtractVariables-Sentences e.Sentences>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractVariables-Tail {
+  (Condition (e.Result) (e.Pattern)) e.Tail
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail e.Tail>;
+
+  RETURN (e.Result) = <ExtractVariables-Expr e.Result>;
+
+  CALL-BLOCK (e.Result) e.Sentences
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Sentences e.Sentences>;
+}
+
+ExtractVariables-Expr {
+  (Variable t.SrcPos s.VarType e.Index) e.Terms
+    = (s.VarType e.Index) <ExtractVariables-Expr e.Terms>;
+
+  (Brackets e.Inner) e.Terms = <ExtractVariables-Expr e.Inner e.Terms>;
+  (Call t.SrcPos (e.Function) e.Inner) e.Terms
+    = <ExtractVariables-Expr e.Inner e.Terms>;
+
+  t.Other e.Terms = <ExtractVariables-Expr e.Terms>;
+
+  /* пусто */ = /* пусто */;
+}
+
+
+ScanFunction {
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  (e.ScannedFunctions) (e.ScannedSentences)
+  t.NextSentence e.Sentences (e.UnscannedFunctions)
+    , t.NextSentence
+    : {
+        (t.Pattern (Condition t.CondResult t.CondPattern) e.Tail)
+          = <ScanFunction-Condition
+              t.Names t.Variables t.SrcPos (e.Name) s.Scope
+              (e.ScannedFunctions) (e.ScannedSentences)
+              t.NextSentence e.Sentences (e.UnscannedFunctions)
+            >;
+
+         (t.Pattern CALL-BLOCK t.Result e.SubSentences)
+           = <ScanFunction-Block
+               t.Names t.Variables t.SrcPos (e.Name) s.Scope
+               (e.ScannedFunctions) (e.ScannedSentences)
+               t.NextSentence e.Sentences (e.UnscannedFunctions)
+             >;
+
+         (t.Pattern RETURN t.Result)
+           = <ScanFunction
+               t.Names t.Variables t.SrcPos (e.Name) s.Scope
+               (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
+               e.Sentences (e.UnscannedFunctions)
+             >;
+      };
+
+    t.Names t.Variables t.SrcPos (e.Name) s.Scope
+    (e.ScannedFunctions) (e.ScannedSentences)
+    /* кончились предложения текущей функции */
+    (((e.NextName) e.NextSentences) e.UnscannedFunctions)
+      = <ScanFunction
+          t.Names t.Variables t.SrcPos (e.NextName) Local
+          (
+            e.ScannedFunctions
+            (Function t.SrcPos (e.Name) s.Scope e.ScannedSentences)
+          )
+          (/* scanned sentences */)
+          e.NextSentences (e.UnscannedFunctions)
+        >;
+
+    t.Names t.Variables t.SrcPos (e.Name) s.Scope
+    (e.ScannedFunctions) (e.ScannedSentences)
+    /* кончились предложения текущей функции */
+    (/* кончились непросканированные функции */)
+      = t.Names
+        e.ScannedFunctions
+        (Function t.SrcPos (e.Name) s.Scope e.ScannedSentences);
+}
+
+ScanFunction-Condition {
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  (e.ScannedFunctions) (e.ScannedSentences)
+  t.NextSentence e.Sentences (e.UnscannedFunctions)
+    = <ScanFunction
+        t.Names t.Variables t.SrcPos (e.Name) s.Scope
+        (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
+        e.Sentences (e.UnscannedFunctions)
+      >;
+}
+
+ScanFunction-Block {
+  t.Names t.Variables t.SrcPos (e.Name) s.Scope
+  (e.ScannedFunctions) (e.ScannedSentences)
+  t.NextSentence e.Sentences (e.UnscannedFunctions)
+    = <ScanFunction
+        t.Names t.Variables t.SrcPos (e.Name) s.Scope
+        (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
+        e.Sentences (e.UnscannedFunctions)
+      >;
+}
+
+/*
+Intersect {
+  (e.B1 s.1 e.E1) (e.B2 s.2 e.E2), <Eq s.1 s.2>: True
+    = s.1 <Intersect (e.E1) (e.B2 e.E2)>;
+
+  (e.1) (e.2) = пусто
+}
+
+
+Intersect {
+  (e.B1 s.1 e.E1) (e.B2 s.2 e.E2)
+    = <Intersect1 ((e.B1) s.1 e.E1) ((e.B2) s.2 e.E2) (<Eq s.1 s.2>)>;
+
+  (e.OTHER) = <Intersect3 e.OTHER>;
+}
+
+Intersect1 {
+  ((e.B1) s.1 e.E1) (e.B2 s.2 e.E2) (True)
+    = s.1 <Intersect (e.E1) (e.B2 e.E2)>;
+
+  ((e.B1) s.1 e.E1) ((e.B21) t.B2 e.B22 s.2 e.E2) (e.OTHER)
+    = <Intersect1 ((e.B1) s.1 e.E1) ((e.B2 t.B2 e.B22) s.2 e.E2) (<Eq s.1 s.2>)>;
+
+  ((e.B1) s.1 e.E1) ((e.B21) e.B22) (e.OTHER)
+    = <Intersect2 ((e.B1) s.1 e.E1) (e.B21 e.B22)>;
+}
+
+Intersect2 {
+  ((e.B11) t.B1 e.B12 s.1 e.E1) (e.B2 s.2 e.E2)
+    = <Intersect1 ((e.B11 t.B1 e.B12) s.1 e.E1) ((e.B2) s.2 e.E2) (<Eq s.1 s.2>)>;
+
+  ((e.B1) s.1 e.E1) (e.B21)
+    = <Intersect3 (e.B1 s.1 e.E1) (e.B21)>;
+}
+
+Intersect3 {
+  (e.1) (e.2) = пусто
+}
+
+
+FindXY {
+  (e.XB (e.XX) e.XE) e.YB (e.YY) e.YE
+    , <CheckX e.XX (e.YY)>: True
+    , <CheckY e.XX (e.YY)>: True
+    = Ok;
+
+  (e.X) e.Y = Fail;
+}
+
+
+FindXY {
+  (e.XB (e.XX) e.XE) e.YB (e.YY) e.YE
+    = <FindXY2 ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (<CheckX e.XX (e.YY)>)>;
+
+  e.OTHER = <FindXY1 e.OTHER>
+}
+
+FindXY1 {
+  (e.X) e.Y = Fail;
+}
+
+FindXY2 {
+  ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True)
+    , <CheckY e.XX (e.YY)>: True
+    = Ok;
+
+  ((e.XB) (e.XX) e.XE) (e.YB1) t.YB e.YB2 (e.YY) e.YE (e.OTHER)
+    = <FindXY2 ((e.XB) (e.XX) e.XE) (e.YB1 t.YB e.YB2) (e.YY) e.YE (<CheckX e.XX (e.YY)>)>;
+
+  ((e.XB) (e.XX) e.XE) (e.YB1) e.YB2 (e.OTHER)
+    = <FindXY3 ((e.XB) (e.XX) e.XE) e.YB1 e.YB2>;
+}
+
+FindXY3 {
+  ((e.XB1) t.XB e.XB2 (e.XX) e.XE) e.YB (e.YY) e.YE
+    = <FindXY2 ((e.XB1 t.XB e.XB2) (e.XX) e.XE) (e.YB) (e.YY) e.YE (<CheckX e.XX (e.YY)>)>;
+
+  ((e.XB1) e.XB2) e.YB1
+    = <FindXY1 (e.XB1 e.XB2) e.YB1>;
+}
+
+FindXY2 {
+  ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True)
+    = <FindXY22 ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True) (<CheckY e.XX (e.YY)>)>;
+
+  e.OTHER = <FindXY21 e.OTHER>;
+}
+
+FindXY21 {
+  ((e.XB) (e.XX) e.XE) (e.YB1) t.YB e.YB2 (e.YY) e.YE (e.OTHER)
+    = <FindXY2 ((e.XB) (e.XX) e.XE) (e.YB1 t.YB e.YB2) (e.YY) e.YE (<CheckX e.XX (e.YY)>)>;
+
+  ((e.XB) (e.XX) e.XE) (e.YB1) e.YB2 (e.OTHER)
+    = <FindXY3 ((e.XB) (e.XX) e.XE) e.YB1 e.YB2>;
+}
+
+FindXY22 {
+  ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True) (True)
+    = Ok;
+
+  ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True) (e.OTHER)
+    = <FindXY21 ((e.XB) (e.XX) e.XE) (e.YB) (e.YY) e.YE (True)>;
+}
+
+
+Delim {
+  e.Prefix t.Delim e.Suffix, <Delim t.Delim>: True = (e.Prefix) e.Suffix;
+
+  e.NoDelim = NoDelim
+}
+
+Delim {
+  e.Prefix t.Delim e.Suffix
+    = <Delim2 (e.Prefix) t.Delim e.Suffix (<Delim t.Delim>)>;
+
+  e.OTHER = <Delim1 e.OTHER>;
+}
+
+Delim1 { e.NoDelim = NoDelim }
+
+Delim2 {
+  (e.Prefix) t.Delim e.Suffix (True) = (e.Prefix) e.Suffix;
+
+  (e.Prefix1) t.Prefix e.Prefix2 t.Delim e.Suffix (e.OTHER)
+    = <Delim2 (e.Prefix1 t.Prefix e.Prefix2) t.Delim e.Suffix (<Delim t.Delim>)>;
+
+  (e.Prefix) t.Delim e.Suffix (e.OTHER)
+    = <Delim1 e.Prefix t.Delim e.Suffix>;
+}
+
+
+Delim {
+  e.Prefix e.Prefix t.Delim e.Suffix, <Delim t.Delim>: True = <F e.Prefix> <G e.Prefix>;
+  e.Other = Fail;
+}
+
+
+Delim {
+  e.Prefix e.Prefix t.Delim e.Suffix
+    <Delim2 (e.Prefix) (e.Prefix) t.Delim e.Suffix (<Delim t.Delim>)>
+
+  e.OTHER = <Delim1 e.OTHER>
+}
+
+Delim1 { e.Other = Fail }
+
+Delim2 {
+  (e.Prefix) (e.Prefix1) t.Delim e.Suffix (True)
+    = <F e.Prefix> <G e.Prefix1>;
+
+  (e.Prefix) (e.Prefix1) t.Delim e.Suffix (e.OTHER)
+    = <Delim3 (e.Prefix) e.Prefix1 t.Delim e.Suffix>;
+}
+
+Delim3 {
+  (e.Prefix1) t.Prefix e.Prefix2 e.Prefix1 t.Prefix e.Prefix2 t.Delim e.Suffix
+    = <Delim2
+        (e.Prefix1 t.Prefix e.Prefix2) (e.Prefix1 t.Prefix e.Prefix2) t.Delim e.Suffix
+        (<Delim t.Delim>)
+      >;
+
+  (e.Prefix) e.Prefix1 = <Delim1 e.Prefix e.Prefix1>;
+}
+
+
+NonsenceFunc {
+  e.Begin (e.Inner) e.Inner e.Begin e.End
+    , <Valid e.Begin>: e.End
+    = <F e.Begin> <G e.Inner e.End> <H e.Inner e.Begin e.End>;
+
+  s.ABC = s.ABC
+}
+
+NonsenceFunc {
+  e.Begin (e.Inner) e.Inner e.Begin e.End
+    = <NonsenceFunc2 (e.Begin) (e.Inner) (e.Inner) (e.Begin) e.End (<Valid e.Begin>)>;
+
+  e.OTHER = <NonsenceFunc1 e.OTHER>;
+}
+
+NonsenceFunc1 { s.ABC = s.ABC }
+
+NonsenceFunc2 {
+  (e.Begin) (e.Inner) (e.Inner1) (e.Begin1) e.End (e.End)
+    = <F e.Begin> <G e.Inner e.End> <H e.Inner1 e.Begin1 e.End>;
+
+  (e.Begin) (e.Inner) (e.Inner1) (e.Begin1) e.End (e.OTHER)
+    = <NonsenceFunc3 (e.Begin) (e.Inner) e.Inner1 e.Begin1 e.End>;
+}
+
+NonsenceFunc3 {
+  (e.Begin1) t.Begin e.Begin2 (e.Inner) e.Inner e.Begin1 t.Begin e.Begin2 e.End
+    = <NonsenceFunc2
+        (e.Begin1 t.Begin e.Begin2) (e.Inner) (e.Inner) (e.Begin1 t.Begin e.Begin2) e.End
+        (<Valid e.Begin1 t.Begin e.Begin2>)
+      >;
+
+  (e.Begin) e.Begin1 = <NonsenceFunc1 e.Begin e.Begin1>;
+}
+
+
+
+RepeatedNonsence {
+  (e.Repeated) e.Repeated e.Tail, <Tail e.Tail>: e.Tail
+    = <F (e.Tail) e.Repeated> <F (e.Repeated) e.Tail>;
+
+  s.ABC = s.ABC
+}
+
+RepeatedNonsence {
+  (e.Repeated) e.Repeated e.Tail
+    = <RepeatedNonsence2 (e.Repeated) (e.Repeated) e.Tail (<Tail e.Tail>)>;
+
+  e.OTHER = <RepeatedNonsence1 e.OTHER>;
+}
+
+RepeatedNonsence1 { s.ABC = s.ABC }
+
+RepeatedNonsence2 {
+  (e.Repeated) (e.Repeated1) e.Tail (e.Tail)
+    = <F (e.Tail) e.Repeated> <F (e.Repeated1) e.Tail>;
+
+  (e.Repeated) (e.Repeated1) e.Tail (e.OTHER)
+    = <RepeatedNonsence1 (e.Repeated) e.Repeated1 e.Tail>;
+}
+
+*/

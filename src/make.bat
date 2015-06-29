@@ -4,8 +4,7 @@ set SOURCES=%RSLS:+=.ref %.ref
 if exist ..\rsls\Main.rsl call :TEST NUL
 for %%s in (%SOURCES%) do call :REFC %%s
 mkdir ..\rsls >NUL 2>NUL
-move *.rsl ..\rsls
-echo.
+move *.rsl ..\rsls >NUL
 
 call :TEST REFC-OUT
 
@@ -19,12 +18,17 @@ goto :EOF
   set SOURCE=%1
   set TARGET=%SOURCE:.ref=.out.ref%
   if {%2}=={NUL} set TARGET=NUL
-  echo Y | refgo ..\rsls(%RSLS%) %SOURCE% %TARGET% || exit
+  echo Y | refgo ..\rsls(%RSLS%) %SOURCE% %TARGET% || call :FAIL
   echo.
   if {%2}=={REFC-OUT} (
     call :REFC %TARGET%
     erase %TARGET:.ref=.rsl%
   )
+goto :EOF
+
+:FAIL
+  erase ..\rsls\Main.rsl
+  exit
 goto :EOF
 
 :REFC

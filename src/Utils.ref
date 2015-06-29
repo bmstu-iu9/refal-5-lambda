@@ -83,3 +83,28 @@ $ENTRY OneOf {
   t.Elem e.Elems-B t.Elem e.Elems-E = True;
   t.Elem e.Elems = False;
 }
+
+
+/**
+  <Builtins> == (e.FunctionName)*
+*/
+$ENTRY Builtins {
+  = ('+') ('-') ('*') ('/') ('%') <DoBuiltins <ListOfBuiltin>>;
+}
+
+DoBuiltins {
+  (s.Number s.Name s.Type) e.Builtins
+    = (<Explode s.Name>) <DoBuiltins e.Builtins>;
+
+  /* пусто */ = /* пусто */;
+}
+
+/**
+  <Unique t.Item*> == t.Item*
+*/
+$ENTRY Unique {
+  e.Items-B t.Item e.Items-M t.Item e.Items-E
+    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
+
+  e.UniqueItems = e.UniqueItems;
+}
