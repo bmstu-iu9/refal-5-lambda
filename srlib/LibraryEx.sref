@@ -262,12 +262,16 @@ $FORWARD Trim-R;
 $ENTRY Trim {
   ' ' e.Line = <Trim e.Line>;
   '\t' e.Line = <Trim e.Line>;
+  '\r' e.Line = <Trim e.Line>;
+  '\n' e.Line = <Trim e.Line>;
   e.Line = <Trim-R e.Line>;
 }
 
 Trim-R {
   e.Line ' ' = <Trim-R e.Line>;
   e.Line '\t' = <Trim-R e.Line>;
+  e.Line '\r' = <Trim-R e.Line>;
+  e.Line '\n' = <Trim-R e.Line>;
   e.Line = e.Line;
 }
 
