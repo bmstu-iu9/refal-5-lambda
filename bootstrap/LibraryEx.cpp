@@ -4404,6 +4404,112 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::use( eLine_b_1 );
     static refalrts::Iter eLine_e_1;
     refalrts::use( eLine_e_1 );
+    // '\r e.Line
+    if( ! refalrts::char_left( '\r', bb_0, be_0 ) )
+      break;
+    eLine_b_1 = bb_0;
+    refalrts::use( eLine_b_1 );
+    eLine_e_1 = be_0;
+    refalrts::use( eLine_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Trim, (void*) "Trim"},
+      {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eLine_b_1, eLine_e_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
+    static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
+    // '\n e.Line
+    if( ! refalrts::char_left( '\n', bb_0, be_0 ) )
+      break;
+    eLine_b_1 = bb_0;
+    refalrts::use( eLine_b_1 );
+    eLine_e_1 = be_0;
+    refalrts::use( eLine_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Trim, (void*) "Trim"},
+      {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eLine_b_1, eLine_e_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
+    static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
     // e.Line
     eLine_b_1 = bb_0;
     refalrts::use( eLine_b_1 );
@@ -4517,6 +4623,112 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::use( eLine_e_1 );
     // e.Line '\t'
     if( ! refalrts::char_right( '\t', bb_0, be_0 ) )
+      break;
+    eLine_b_1 = bb_0;
+    refalrts::use( eLine_b_1 );
+    eLine_e_1 = be_0;
+    refalrts::use( eLine_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Trim_R, (void*) "Trim_R"},
+      {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eLine_b_1, eLine_e_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
+    static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
+    // e.Line '\r'
+    if( ! refalrts::char_right( '\r', bb_0, be_0 ) )
+      break;
+    eLine_b_1 = bb_0;
+    refalrts::use( eLine_b_1 );
+    eLine_e_1 = be_0;
+    refalrts::use( eLine_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Trim_R, (void*) "Trim_R"},
+      {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eLine_b_1, eLine_e_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
+    static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
+    // e.Line '\n'
+    if( ! refalrts::char_right( '\n', bb_0, be_0 ) )
       break;
     eLine_b_1 = bb_0;
     refalrts::use( eLine_b_1 );
