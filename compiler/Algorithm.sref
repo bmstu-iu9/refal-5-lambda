@@ -273,17 +273,17 @@ $EXTERN Fetch, Map;
 DoSaveBrackets {
   s.LastBracket (e.Scanned)
   e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index) e.Commands-E =
-    <DoSaveBrackets-MakeSavers
-      s.LastBracket
-      <Fetch
-        e.Scanned e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index)
-        {
-          e.Commands^ =
-            ( <ExtractBrackets e.Commands> )
-            ( e.Commands );
-        }
-      >
-      e.Commands-E
+    <Fetch
+      e.Scanned e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index)
+      {
+        e.CommandsBeforeEMatch =
+          <DoSaveBrackets-MakeSavers
+            s.LastBracket
+            ( <ExtractBrackets e.CommandsBeforeEMatch> )
+            ( e.CommandsBeforeEMatch )
+            e.Commands-E
+          >;
+      }
     >;
 
   s.LastBracket (e.Scanned) e.Commands = e.Scanned e.Commands;
