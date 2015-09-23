@@ -526,7 +526,7 @@ ParseSentence {
 
 
 $FORWARD CoBracket, CheckAddVariable, StrFromBracket,
-  ParseResult;
+  ParseResult, InvalidModeVariableError;
 
 //FROM Lexer
 $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
@@ -541,6 +541,8 @@ $EXTERN ST-CheckDeclared, ST-CheckIdent, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
+
+$LABEL CSuccess, CInvalidMode, CAlreadyBounded;
 
 ParsePattern {
   // Обработка литералов атомов
@@ -605,27 +607,39 @@ ParsePattern {
   (TkVariable s.LnNumVar s.Mode e.Index)
   (TkRedefinition s.LnNumRedef)
   e.Tail =
-    <ParsePattern
-      (e.Functions)
+    <Fetch
       <CheckAddVariable
-        t.ErrorList t.SymTable t.Context
+        t.ErrorList t.Context
         Cntx-AddNewVariable s.LnNumVar s.Mode e.Index
       >
-      (e.Sentences) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParsePattern
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.Sentences) (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+      }
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.MultiBracket)
   (e.Scanned) (TkVariable s.LnNum s.Mode e.Index) e.Tail =
-    <ParsePattern
-      (e.Functions)
+    <Fetch
       <CheckAddVariable
-        t.ErrorList t.SymTable t.Context
+        t.ErrorList t.Context
         Cntx-AddVariable s.LnNum s.Mode e.Index
       >
-      (e.Sentences) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParsePattern
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.Sentences) (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+      }
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
@@ -848,29 +862,38 @@ CoBracket {
 $FORWARD SwCheckAddVariable;
 
 CheckAddVariable {
-  t.ErrorList t.SymTable t.Context
-  s.ContextModifier s.LnNum s.Mode e.Index =
-    <SwCheckAddVariable
-      t.ErrorList t.SymTable s.LnNum
-      <s.ContextModifier t.Context s.Mode e.Index>
+  t.ErrorList t.Context
+  s.FnContextModifier s.LnNum s.Mode e.Index =
+    <Fetch
+      <s.FnContextModifier t.Context s.Mode e.Index>
+      {
+        t.Context^ # CSuccess s.Depth =
+          t.ErrorList t.Context s.Mode s.Depth;
+
+        t.Context^ # CInvalidMode s.Depth s.OldMode =
+          <InvalidModeVariableError
+            t.ErrorList s.LnNum s.OldMode s.Mode e.Index
+          >
+          t.Context s.OldMode s.Depth;
+
+        t.Context^ # CAlreadyBounded s.Depth =
+          <EL-AddErrorAt
+            t.ErrorList s.LnNum
+            'Variable hide operator^ must be applied to first occurence of '
+            'variable ' s.Mode '.' e.Index
+          >
+          t.Context s.Depth s.Mode;
+      }
     >;
 }
 
-$LABEL CSuccess, CInvalidMode;
-
-SwCheckAddVariable {
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CSuccess =
-    t.ErrorList t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CInvalidMode s.OldMode s.NewMode e.Index =
+InvalidModeVariableError {
+  t.ErrorList s.LnNum s.OldMode s.NewMode e.Index =
     <EL-AddErrorAt
       t.ErrorList s.LnNum
       'Variables ' s.OldMode '.' e.Index ' and '
       s.NewMode '.' e.Index ' has different modes'
-    >
-    t.SymTable t.Context;
+    >;
 }
 
 StrFromBracket {
@@ -951,14 +974,25 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned) (TkVariable s.LnNum s.Mode e.Index) e.Tail =
-    <ParseResult
-      (e.Functions)
-      <CheckUseVariable
-        t.ErrorList t.SymTable t.Context
-        s.LnNum s.Mode e.Index
-      >
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+    <Fetch
+      <CheckUseVariable t.ErrorList t.Context s.LnNum s.Mode e.Index>
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParseResult
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.Sentences) (e.Pattern) (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+
+        t.ErrorList^ t.Context^ =
+          <ParseResult
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.Sentences) (e.Pattern) (e.MultiBracket)
+            (e.Scanned) e.Tail
+          >;
+      }
     >;
 
   /*
@@ -1152,39 +1186,29 @@ ParseResult {
     >;
 }
 
-$FORWARD SwCheckUseVariable;
-
 $LABEL CExistVariable, CNotFound;
 
 CheckUseVariable {
-  t.ErrorList t.SymTable t.Context s.LnNum s.Mode e.Index =
-    <SwCheckUseVariable
-      t.ErrorList t.SymTable s.LnNum
+  t.ErrorList t.Context s.LnNum s.Mode e.Index =
+    <Fetch
       <Cntx-CheckVariable t.Context s.Mode e.Index>
+      {
+        t.Context^ # CExistVariable s.Depth =
+          t.ErrorList t.Context s.Mode s.Depth;
+
+        t.Context^ # CInvalidMode s.Depth s.OldMode =
+          <InvalidModeVariableError
+            t.ErrorList s.LnNum s.OldMode s.Mode e.Index
+          >
+          t.Context s.OldMode s.Depth;
+
+        t.Context^ # CNotFound =
+          <EL-AddErrorAt
+            t.ErrorList s.LnNum 'Variable ' s.Mode '.' e.Index ' not found'
+          >
+          t.Context;
+      }
     >;
-}
-
-SwCheckUseVariable {
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CExistVariable s.Mode e.Index =
-    t.ErrorList t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CInvalidMode s.OldMode s.NewMode e.Index =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 
-      'Variables ' s.OldMode '.' e.Index ' and '
-      s.NewMode '.' e.Index ' has different modes'
-    >
-    t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CNotFound s.Mode e.Index =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum
-      'Variable ' s.Mode '.' e.Index ' not found'
-    >
-    t.SymTable t.Context;
 }
 
 $FORWARD ParseResult-Block-Aux;

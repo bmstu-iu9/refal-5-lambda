@@ -468,15 +468,18 @@ GenCommand {
 }
 
 PrintVar {
-  s.Usings s.Mode e.Index = s.Mode e.Index '_' <StrFromInt s.Usings>;
+  s.Usings s.Mode e.Index s.Depth =
+    s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
 }
 
 PrintEVar-B {
-  s.Usings s.Mode e.Index = s.Mode e.Index '_b_' <StrFromInt s.Usings>;
+  s.Usings s.Mode e.Index s.Depth =
+    s.Mode e.Index '_' <StrFromInt s.Depth> '_b_' <StrFromInt s.Usings>;
 }
 
 PrintEVar-E {
-  s.Usings s.Mode e.Index = s.Mode e.Index '_e_' <StrFromInt s.Usings>;
+  s.Usings s.Mode e.Index s.Depth =
+    s.Mode e.Index '_' <StrFromInt s.Depth> '_e_' <StrFromInt s.Usings>;
 }
 
 PrintEVars {
