@@ -6211,6 +6211,111 @@ struct CAlreadyBounded {
   }
 };
 
+static refalrts::FnResult PatternBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    // & TkOpenCall
+    if( ! refalrts::function_left( & TkOpenCall, bb_0, be_0 ) )
+      break;
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkOpenBracket, (void*) "TkOpenBracket"},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_name( n0, & TkOpenBracket, "TkOpenBracket" ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    // & TkCloseCall
+    if( ! refalrts::function_left( & TkCloseCall, bb_0, be_0 ) )
+      break;
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkCloseBracket, (void*) "TkCloseBracket"},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_name( n0, & TkCloseBracket, "TkCloseBracket" ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter sBracket_1_1;
+    refalrts::use( sBracket_1_1 );
+    // s.Bracket1 
+    if( ! refalrts::svar_left( sBracket_1_1, bb_0, be_0 ) )
+      break;
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icSpliceSTVar, & sBracket_1_1},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    res = refalrts::splice_stvar( res, sBracket_1_1 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
 static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult lambda_ParsePattern_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -10277,12 +10382,18 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScanned_1_b_1, & eScanned_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icSpliceSTVar, & sOpenBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceSTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eInnerScanned_1_b_1, & eInnerScanned_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icSpliceSTVar, & sCloseBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icCopySTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -10330,36 +10441,64 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n9 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_close_bracket( n10 ) )
+    if( ! refalrts::alloc_open_call( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_open_bracket( n11 ) )
+    if( ! refalrts::alloc_name( n11, & PatternBracket, "PatternBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_close_bracket( n12 ) )
+    if( ! refalrts::alloc_close_call( n12 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_close_call( n14 ) )
+    if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n14 );
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_open_call( n15 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_name( n16, & PatternBracket, "PatternBracket" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n17 = 0;
+    if( ! refalrts::alloc_close_call( n17 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n18 = 0;
+    if( ! refalrts::alloc_close_bracket( n18 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n19 = 0;
+    if( ! refalrts::alloc_close_bracket( n19 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n20 = 0;
+    if( ! refalrts::alloc_close_call( n20 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n20 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n14 );
+    res = refalrts::splice_elem( res, n20 );
     res = refalrts::splice_evar( res, eTail_1_b_1, eTail_1_e_1 );
-    refalrts::link_brackets( n8, n13 );
-    res = refalrts::splice_elem( res, n13 );
-    refalrts::link_brackets( n11, n12 );
-    res = refalrts::splice_elem( res, n12 );
+    refalrts::link_brackets( n8, n19 );
+    res = refalrts::splice_elem( res, n19 );
+    refalrts::link_brackets( n14, n18 );
+    res = refalrts::splice_elem( res, n18 );
     res = refalrts::splice_stvar( res, sInnerNumber_1_2 );
+    refalrts::push_stack( n17 );
+    refalrts::push_stack( n15 );
+    res = refalrts::splice_elem( res, n17 );
     res = refalrts::splice_stvar( res, sCloseBracket_1_1 );
-    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_elem( res, n16 );
+    res = refalrts::splice_elem( res, n15 );
+    res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_evar( res, eInnerScanned_1_b_1, eInnerScanned_1_e_1 );
-    refalrts::link_brackets( n9, n10 );
-    res = refalrts::splice_elem( res, n10 );
+    refalrts::link_brackets( n9, n13 );
+    res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_stvar( res, sInnerNumber_1_1 );
+    refalrts::push_stack( n12 );
+    refalrts::push_stack( n10 );
+    res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_stvar( res, sOpenBracket_1_1 );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_elem( res, n10 );
     res = refalrts::splice_elem( res, n9 );
     res = refalrts::splice_evar( res, eScanned_1_b_1, eScanned_1_e_1 );
     res = refalrts::splice_elem( res, n8 );
@@ -10563,12 +10702,18 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScanned_1_b_1, & eScanned_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icCopySTVar, & sOpenBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceSTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eInnerScanned_1_b_1, & eInnerScanned_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icSpliceSTVar, & sCloseBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icCopySTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -10704,13 +10849,13 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n36 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_close_bracket( n37 ) )
+    if( ! refalrts::alloc_open_call( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_open_bracket( n38 ) )
+    if( ! refalrts::alloc_name( n38, & PatternBracket, "PatternBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_close_bracket( n39 ) )
+    if( ! refalrts::alloc_close_call( n39 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
     if( ! refalrts::alloc_close_bracket( n40 ) )
@@ -10719,36 +10864,64 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n41 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_ident( n42, & CClose<int>::name ) )
+    if( ! refalrts::alloc_open_call( n42 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
-    if( ! refalrts::alloc_close_bracket( n43 ) )
+    if( ! refalrts::alloc_name( n43, & PatternBracket, "PatternBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n44 = 0;
     if( ! refalrts::alloc_close_call( n44 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n44 );
+    refalrts::Iter n45 = 0;
+    if( ! refalrts::alloc_close_bracket( n45 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n46 = 0;
+    if( ! refalrts::alloc_close_bracket( n46 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n47 = 0;
+    if( ! refalrts::alloc_open_bracket( n47 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n48 = 0;
+    if( ! refalrts::alloc_ident( n48, & CClose<int>::name ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n49 = 0;
+    if( ! refalrts::alloc_close_bracket( n49 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n50 = 0;
+    if( ! refalrts::alloc_close_call( n50 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n50 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n44 );
+    res = refalrts::splice_elem( res, n50 );
     res = refalrts::splice_evar( res, eTail_1_b_1, eTail_1_e_1 );
-    refalrts::link_brackets( n41, n43 );
-    res = refalrts::splice_elem( res, n43 );
+    refalrts::link_brackets( n47, n49 );
+    res = refalrts::splice_elem( res, n49 );
     res = refalrts::splice_stvar( res, sLnNum_1_1 );
     res = refalrts::splice_stvar( res, sOtherCloseBracket_1_1 );
+    res = refalrts::splice_elem( res, n48 );
+    res = refalrts::splice_elem( res, n47 );
+    refalrts::link_brackets( n35, n46 );
+    res = refalrts::splice_elem( res, n46 );
+    refalrts::link_brackets( n41, n45 );
+    res = refalrts::splice_elem( res, n45 );
+    res = refalrts::splice_stvar( res, sInnerNumber_1_2 );
+    refalrts::push_stack( n44 );
+    refalrts::push_stack( n42 );
+    res = refalrts::splice_elem( res, n44 );
+    res = refalrts::splice_stvar( res, sCloseBracket_1_1 );
+    res = refalrts::splice_elem( res, n43 );
     res = refalrts::splice_elem( res, n42 );
     res = refalrts::splice_elem( res, n41 );
-    refalrts::link_brackets( n35, n40 );
-    res = refalrts::splice_elem( res, n40 );
-    refalrts::link_brackets( n38, n39 );
-    res = refalrts::splice_elem( res, n39 );
-    res = refalrts::splice_stvar( res, sInnerNumber_1_2 );
-    res = refalrts::splice_stvar( res, sCloseBracket_1_1 );
-    res = refalrts::splice_elem( res, n38 );
     res = refalrts::splice_evar( res, eInnerScanned_1_b_1, eInnerScanned_1_e_1 );
-    refalrts::link_brackets( n36, n37 );
-    res = refalrts::splice_elem( res, n37 );
+    refalrts::link_brackets( n36, n40 );
+    res = refalrts::splice_elem( res, n40 );
     res = refalrts::splice_stvar( res, sInnerNumber_1_1 );
+    refalrts::push_stack( n39 );
+    refalrts::push_stack( n37 );
+    res = refalrts::splice_elem( res, n39 );
     res = refalrts::splice_stvar( res, sOpenBracket_1_2 );
+    res = refalrts::splice_elem( res, n38 );
+    res = refalrts::splice_elem( res, n37 );
     res = refalrts::splice_elem( res, n36 );
     res = refalrts::splice_evar( res, eScanned_1_b_1, eScanned_1_e_1 );
     res = refalrts::splice_elem( res, n35 );
@@ -11489,12 +11662,18 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icCopySTVar, & sOpenBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icSpliceSTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eInnerScanned_1_b_1, & eInnerScanned_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & PatternBracket, (void*) "PatternBracket"},
       {refalrts::icSpliceSTVar, & sCloseBracket_1_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icCopySTVar, & sInnerNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eScanned_1_b_1, & eScanned_1_e_1},
@@ -11626,37 +11805,65 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n36 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_close_bracket( n37 ) )
+    if( ! refalrts::alloc_open_call( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_open_bracket( n38 ) )
+    if( ! refalrts::alloc_name( n38, & PatternBracket, "PatternBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_close_bracket( n39 ) )
+    if( ! refalrts::alloc_close_call( n39 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
     if( ! refalrts::alloc_close_bracket( n40 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_close_call( n41 ) )
+    if( ! refalrts::alloc_open_bracket( n41 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n41 );
+    refalrts::Iter n42 = 0;
+    if( ! refalrts::alloc_open_call( n42 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n43 = 0;
+    if( ! refalrts::alloc_name( n43, & PatternBracket, "PatternBracket" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n44 = 0;
+    if( ! refalrts::alloc_close_call( n44 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n45 = 0;
+    if( ! refalrts::alloc_close_bracket( n45 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n46 = 0;
+    if( ! refalrts::alloc_close_bracket( n46 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n47 = 0;
+    if( ! refalrts::alloc_close_call( n47 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n47 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n41 );
+    res = refalrts::splice_elem( res, n47 );
     res = refalrts::splice_evar( res, eTail_1_b_1, eTail_1_e_1 );
-    refalrts::link_brackets( n35, n40 );
-    res = refalrts::splice_elem( res, n40 );
+    refalrts::link_brackets( n35, n46 );
+    res = refalrts::splice_elem( res, n46 );
     res = refalrts::splice_evar( res, eScanned_1_b_1, eScanned_1_e_1 );
-    refalrts::link_brackets( n38, n39 );
-    res = refalrts::splice_elem( res, n39 );
+    refalrts::link_brackets( n41, n45 );
+    res = refalrts::splice_elem( res, n45 );
     res = refalrts::splice_stvar( res, sInnerNumber_1_2 );
+    refalrts::push_stack( n44 );
+    refalrts::push_stack( n42 );
+    res = refalrts::splice_elem( res, n44 );
     res = refalrts::splice_stvar( res, sCloseBracket_1_1 );
-    res = refalrts::splice_elem( res, n38 );
+    res = refalrts::splice_elem( res, n43 );
+    res = refalrts::splice_elem( res, n42 );
+    res = refalrts::splice_elem( res, n41 );
     res = refalrts::splice_evar( res, eInnerScanned_1_b_1, eInnerScanned_1_e_1 );
-    refalrts::link_brackets( n36, n37 );
-    res = refalrts::splice_elem( res, n37 );
+    refalrts::link_brackets( n36, n40 );
+    res = refalrts::splice_elem( res, n40 );
     res = refalrts::splice_stvar( res, sInnerNumber_1_1 );
+    refalrts::push_stack( n39 );
+    refalrts::push_stack( n37 );
+    res = refalrts::splice_elem( res, n39 );
     res = refalrts::splice_stvar( res, sOpenBracket_1_2 );
+    res = refalrts::splice_elem( res, n38 );
+    res = refalrts::splice_elem( res, n37 );
     res = refalrts::splice_elem( res, n36 );
     res = refalrts::splice_elem( res, n35 );
     refalrts::link_brackets( n33, n34 );
