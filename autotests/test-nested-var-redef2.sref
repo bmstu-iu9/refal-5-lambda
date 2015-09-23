@@ -1,0 +1,13 @@
+Test {
+  e.X =
+    {
+      = e.X;
+      e.X^ = ;
+    };
+}
+
+$ENTRY Go {
+  =
+    <{ 'abc' = ; } <<Test 'abc'>>>
+    <{ = ; } <<Test 'abc'> 'not empty'>>;
+}

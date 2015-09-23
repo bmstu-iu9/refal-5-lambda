@@ -93,47 +93,47 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sOtherScopeClass_1;
-    refalrts::use( sOtherScopeClass_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.OtherScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sOtherScopeClass_1_1;
+    refalrts::use( sOtherScopeClass_1_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.OtherScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -143,13 +143,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sOtherScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sOtherScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -157,8 +157,8 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -168,7 +168,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -188,13 +188,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
-        {refalrts::icSpliceSTVar, & sOtherScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceSTVar, & sOtherScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -309,14 +309,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         return refalrts::cNoMemory;
       refalrts::link_brackets( n28, n33 );
       res = refalrts::splice_elem( res, n33 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n30, n32 );
       res = refalrts::splice_elem( res, n32 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
-      res = refalrts::splice_stvar( res, sOtherScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
+      res = refalrts::splice_stvar( res, sOtherScopeClass_1_1 );
       res = refalrts::splice_elem( res, n31 );
       res = refalrts::splice_elem( res, n30 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n29 );
       res = refalrts::splice_elem( res, n28 );
       refalrts::push_stack( n27 );
@@ -338,7 +338,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -348,15 +348,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -365,47 +365,47 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_2;
-    refalrts::use( sScopeClass_2 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_2;
+    refalrts::use( sScopeClass_1_2 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -415,28 +415,28 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_stvar_left( sScopeClass_1_2, sScopeClass_1_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -467,22 +467,22 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -491,28 +491,28 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -520,14 +520,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -539,20 +539,20 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -562,7 +562,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -591,13 +591,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
         {refalrts::icFunc, (void*) & GN_Entry, (void*) "GN_Entry"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -742,14 +742,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         return refalrts::cNoMemory;
       refalrts::link_brackets( n37, n43 );
       res = refalrts::splice_elem( res, n43 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n39, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -780,7 +780,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -790,15 +790,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -807,28 +807,28 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -836,14 +836,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -855,20 +855,20 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -878,7 +878,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -907,13 +907,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
         {refalrts::icFunc, (void*) & GN_Local, (void*) "GN_Local"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -1058,14 +1058,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
         return refalrts::cNoMemory;
       refalrts::link_brackets( n37, n43 );
       res = refalrts::splice_elem( res, n43 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n39, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -1096,7 +1096,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -1106,15 +1106,15 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1123,49 +1123,49 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eNames_b_1;
-    refalrts::use( eNames_b_1 );
-    static refalrts::Iter eNames_e_1;
-    refalrts::use( eNames_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eNames_1_b_1;
+    refalrts::use( eNames_1_b_1 );
+    static refalrts::Iter eNames_1_e_1;
+    refalrts::use( eNames_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    eNames_b_1 = bb_1;
-    refalrts::use( eNames_b_1 );
-    eNames_e_1 = be_1;
-    refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    eNames_1_b_1 = bb_1;
+    refalrts::use( eNames_1_b_1 );
+    eNames_1_e_1 = be_1;
+    refalrts::use( eNames_1_e_1 );
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceSTVar, & tErrorList_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-      {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
+      {refalrts::icSpliceEVar, & eNames_1_b_1, & eNames_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
-      {refalrts::icSpliceSTVar, & sScopeClass_1},
-      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+      {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
       {refalrts::icEnd}
@@ -1199,14 +1199,14 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n2, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-    res = refalrts::splice_stvar( res, sScopeClass_1 );
+    res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+    res = refalrts::splice_stvar( res, sScopeClass_1_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    res = refalrts::splice_evar( res, eNames_1_b_1, eNames_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -1226,47 +1226,47 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_2;
-    refalrts::use( sScopeClass_2 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_2;
+    refalrts::use( sScopeClass_1_2 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -1276,28 +1276,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_stvar_left( sScopeClass_1_2, sScopeClass_1_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -1328,22 +1328,22 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1352,47 +1352,47 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_2;
-    refalrts::use( sScopeClass_2 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_2;
+    refalrts::use( sScopeClass_1_2 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -1402,28 +1402,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_stvar_left( sScopeClass_2, sScopeClass_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_stvar_left( sScopeClass_1_2, sScopeClass_1_1, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -1454,22 +1454,22 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1478,28 +1478,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -1507,14 +1507,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -1526,20 +1526,20 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -1549,7 +1549,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -1578,13 +1578,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
         {refalrts::icFunc, (void*) & GN_Entry, (void*) "GN_Entry"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -1729,14 +1729,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n37, n43 );
       res = refalrts::splice_elem( res, n43 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n39, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -1767,7 +1767,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -1777,15 +1777,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -1794,28 +1794,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -1823,14 +1823,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -1842,20 +1842,20 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -1865,7 +1865,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -1894,13 +1894,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
         {refalrts::icFunc, (void*) & GN_Local, (void*) "GN_Local"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -2045,14 +2045,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n37, n43 );
       res = refalrts::splice_elem( res, n43 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n39, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n41 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n38 );
       res = refalrts::splice_elem( res, n37 );
       refalrts::push_stack( n36 );
@@ -2083,7 +2083,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -2093,15 +2093,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -2110,28 +2110,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined & GN_Entry e.Name )~2 e.Names_E ]~1 & GN_Local s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2139,14 +2139,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Local, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -2158,20 +2158,20 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & GN_Entry, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -2181,7 +2181,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -2209,13 +2209,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
         {refalrts::icFunc, (void*) & GN_Entry, (void*) "GN_Entry"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -2357,14 +2357,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n36, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n38, n41 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n37 );
       res = refalrts::splice_elem( res, n36 );
       refalrts::push_stack( n35 );
@@ -2394,7 +2394,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -2404,15 +2404,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -2421,28 +2421,28 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined & GN_Local e.Name )~2 e.Names_E ]~1 & GN_Entry s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2450,14 +2450,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       break;
     if( ! refalrts::function_left( & GN_Entry, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -2469,20 +2469,20 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         continue;
       if( ! refalrts::function_left( & GN_Local, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_left( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_left( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'F'},
         {refalrts::icChar, 0, 0, 'u'},
         {refalrts::icChar, 0, 0, 'n'},
@@ -2492,7 +2492,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icChar, 0, 0, 'o'},
         {refalrts::icChar, 0, 0, 'n'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -2520,13 +2520,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
         {refalrts::icFunc, (void*) & GN_Local, (void*) "GN_Local"},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -2668,14 +2668,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
         return refalrts::cNoMemory;
       refalrts::link_brackets( n36, n42 );
       res = refalrts::splice_elem( res, n42 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n38, n41 );
       res = refalrts::splice_elem( res, n41 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
       res = refalrts::splice_elem( res, n40 );
       res = refalrts::splice_elem( res, n39 );
       res = refalrts::splice_elem( res, n38 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n37 );
       res = refalrts::splice_elem( res, n36 );
       refalrts::push_stack( n35 );
@@ -2705,7 +2705,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n13 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n10 );
       res = refalrts::splice_elem( res, n9 );
       res = refalrts::splice_elem( res, n8 );
@@ -2715,15 +2715,15 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -2732,49 +2732,49 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eNames_b_1;
-    refalrts::use( eNames_b_1 );
-    static refalrts::Iter eNames_e_1;
-    refalrts::use( eNames_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eNames_1_b_1;
+    refalrts::use( eNames_1_b_1 );
+    static refalrts::Iter eNames_1_e_1;
+    refalrts::use( eNames_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    eNames_b_1 = bb_1;
-    refalrts::use( eNames_b_1 );
-    eNames_e_1 = be_1;
-    refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    eNames_1_b_1 = bb_1;
+    refalrts::use( eNames_1_b_1 );
+    eNames_1_e_1 = be_1;
+    refalrts::use( eNames_1_e_1 );
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceSTVar, & tErrorList_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-      {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
+      {refalrts::icSpliceEVar, & eNames_1_b_1, & eNames_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
-      {refalrts::icSpliceSTVar, & sScopeClass_1},
-      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+      {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
       {refalrts::icEnd}
@@ -2808,14 +2808,14 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n2, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-    res = refalrts::splice_stvar( res, sScopeClass_1 );
+    res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+    res = refalrts::splice_stvar( res, sScopeClass_1_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    res = refalrts::splice_evar( res, eNames_1_b_1, eNames_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -2835,47 +2835,47 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter sOtherScopeClass_1;
-    refalrts::use( sOtherScopeClass_1 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E ]~1 s.OtherScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter sOtherScopeClass_1_1;
+    refalrts::use( sOtherScopeClass_1_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Identifier s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.OtherScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sOtherScopeClass_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sOtherScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -2885,13 +2885,13 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
         continue;
       if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
@@ -2899,8 +2899,8 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
         {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-        {refalrts::icSpliceSTVar, & tErrorList_1},
-        {refalrts::icSpliceSTVar, & sLnNum_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
+        {refalrts::icSpliceSTVar, & sLnNum_1_1},
         {refalrts::icChar, 0, 0, 'I'},
         {refalrts::icChar, 0, 0, 'd'},
         {refalrts::icChar, 0, 0, 'e'},
@@ -2912,7 +2912,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
         {refalrts::icChar, 0, 0, 'e'},
         {refalrts::icChar, 0, 0, 'r'},
         {refalrts::icChar, 0, 0, ' '},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icChar, 0, 0, ' '},
         {refalrts::icChar, 0, 0, 'a'},
         {refalrts::icChar, 0, 0, 'l'},
@@ -2931,13 +2931,13 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_2, & eName_e_2},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_2, & eName_1_e_2},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -3055,14 +3055,14 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
         return refalrts::cNoMemory;
       refalrts::link_brackets( n29, n34 );
       res = refalrts::splice_elem( res, n34 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n31, n33 );
       res = refalrts::splice_elem( res, n33 );
-      res = refalrts::splice_evar( res, eName_b_2, eName_e_2 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_2, eName_1_e_2 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n32 );
       res = refalrts::splice_elem( res, n31 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n30 );
       res = refalrts::splice_elem( res, n29 );
       refalrts::push_stack( n28 );
@@ -3083,7 +3083,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       res = refalrts::splice_elem( res, n15 );
       res = refalrts::splice_elem( res, n14 );
       res = refalrts::splice_elem( res, n13 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       res = refalrts::splice_elem( res, n12 );
       res = refalrts::splice_elem( res, n11 );
       res = refalrts::splice_elem( res, n10 );
@@ -3095,15 +3095,15 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       res = refalrts::splice_elem( res, n4 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_stvar( res, sLnNum_1 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, sLnNum_1_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -3112,49 +3112,49 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eNames_b_1;
-    refalrts::use( eNames_b_1 );
-    static refalrts::Iter eNames_e_1;
-    refalrts::use( eNames_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    // t.ErrorList [~1 & TSymTable e.Names ]~1 s.ScopeClass s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eNames_1_b_1;
+    refalrts::use( eNames_1_b_1 );
+    static refalrts::Iter eNames_1_e_1;
+    refalrts::use( eNames_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    eNames_b_1 = bb_1;
-    refalrts::use( eNames_b_1 );
-    eNames_e_1 = be_1;
-    refalrts::use( eNames_e_1 );
-    if( ! refalrts::svar_left( sScopeClass_1, bb_0, be_0 ) )
+    eNames_1_b_1 = bb_1;
+    refalrts::use( eNames_1_b_1 );
+    eNames_1_e_1 = be_1;
+    refalrts::use( eNames_1_e_1 );
+    if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceSTVar, & tErrorList_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
       {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-      {refalrts::icSpliceEVar, & eNames_b_1, & eNames_e_1},
+      {refalrts::icSpliceEVar, & eNames_1_b_1, & eNames_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
-      {refalrts::icSpliceSTVar, & sScopeClass_1},
-      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+      {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
       {refalrts::icEnd}
@@ -3188,14 +3188,14 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n2, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-    res = refalrts::splice_stvar( res, sScopeClass_1 );
+    res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+    res = refalrts::splice_stvar( res, sScopeClass_1_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eNames_b_1, eNames_e_1 );
+    res = refalrts::splice_evar( res, eNames_1_b_1, eNames_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -3215,43 +3215,43 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Declared s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -3261,28 +3261,28 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         continue;
       if( ! refalrts::function_left( & Declared, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Declared, (void*) "Declared"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -3313,22 +3313,22 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -3337,43 +3337,43 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -3383,28 +3383,28 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Defined, (void*) "Defined"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -3435,22 +3435,22 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -3459,33 +3459,33 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter tSymTable_1;
-    refalrts::use( tSymTable_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    // t.ErrorList t.SymTable s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter tSymTable_1_1;
+    refalrts::use( tSymTable_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    // t.ErrorList1  t.SymTable1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) )
+    if( ! refalrts::tvar_left( tSymTable_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-      {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLnNum_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
+      {refalrts::icSpliceSTVar, & sLnNum_1_1},
       {refalrts::icChar, 0, 0, 'F'},
       {refalrts::icChar, 0, 0, 'u'},
       {refalrts::icChar, 0, 0, 'n'},
@@ -3495,7 +3495,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'o'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'o'},
@@ -3510,7 +3510,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceSTVar, & tSymTable_1},
+      {refalrts::icSpliceSTVar, & tSymTable_1_1},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3595,7 +3595,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_close_call( n24 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_stvar( res, tSymTable_1 );
+    res = refalrts::splice_stvar( res, tSymTable_1_1 );
     refalrts::push_stack( n24 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n24 );
@@ -3612,7 +3612,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+    res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
     res = refalrts::splice_elem( res, n10 );
     res = refalrts::splice_elem( res, n9 );
     res = refalrts::splice_elem( res, n8 );
@@ -3622,8 +3622,8 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, sLnNum_1 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, sLnNum_1_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -3645,43 +3645,43 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_2;
-    refalrts::use( eName_b_2 );
-    static refalrts::Iter eName_e_2;
-    refalrts::use( eName_e_2 );
-    // t.ErrorList [~1 & TSymTable e.Names_B (~2 & Identifier s.ScopeClass e.Name )~2 e.Names_E ]~1 s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_2;
+    refalrts::use( eName_1_b_2 );
+    static refalrts::Iter eName_1_e_2;
+    refalrts::use( eName_1_e_2 );
+    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Identifier s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -3691,28 +3691,28 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Identifier, bb_2, be_2 ) )
         continue;
-      if( ! refalrts::repeated_evar_right( eName_b_2, eName_e_2, eName_b_1, eName_e_1, bb_2, be_2 ) )
+      if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceSTVar, & tErrorList_1},
+        {refalrts::icSpliceSTVar, & tErrorList_1_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},
         {refalrts::icFunc, (void*) & TSymTable, (void*) "TSymTable"},
-        {refalrts::icSpliceEVar, & eNames_B_b_1, & eNames_B_e_1},
+        {refalrts::icSpliceEVar, & eNames_B_1_b_1, & eNames_B_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
         {refalrts::icFunc, (void*) & Identifier, (void*) "Identifier"},
-        {refalrts::icSpliceSTVar, & sScopeClass_1},
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceSTVar, & sScopeClass_1_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-        {refalrts::icSpliceEVar, & eNames_E_b_1, & eNames_E_e_1},
+        {refalrts::icSpliceEVar, & eNames_E_1_b_1, & eNames_E_1_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},
         {refalrts::icEnd}
       };
@@ -3743,22 +3743,22 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
         return refalrts::cNoMemory;
       refalrts::link_brackets( n0, n5 );
       res = refalrts::splice_elem( res, n5 );
-      res = refalrts::splice_evar( res, eNames_E_b_1, eNames_E_e_1 );
+      res = refalrts::splice_evar( res, eNames_E_1_b_1, eNames_E_1_e_1 );
       refalrts::link_brackets( n2, n4 );
       res = refalrts::splice_elem( res, n4 );
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
-      res = refalrts::splice_stvar( res, sScopeClass_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
+      res = refalrts::splice_stvar( res, sScopeClass_1_1 );
       res = refalrts::splice_elem( res, n3 );
       res = refalrts::splice_elem( res, n2 );
-      res = refalrts::splice_evar( res, eNames_B_b_1, eNames_B_e_1 );
+      res = refalrts::splice_evar( res, eNames_B_1_b_1, eNames_B_1_e_1 );
       res = refalrts::splice_elem( res, n1 );
       res = refalrts::splice_elem( res, n0 );
-      res = refalrts::splice_stvar( res, tErrorList_1 );
+      res = refalrts::splice_stvar( res, tErrorList_1_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   do {
@@ -3767,33 +3767,33 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter tSymTable_1;
-    refalrts::use( tSymTable_1 );
-    static refalrts::Iter sLnNum_1;
-    refalrts::use( sLnNum_1 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    // t.ErrorList t.SymTable s.LnNum e.Name
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter tSymTable_1_1;
+    refalrts::use( tSymTable_1_1 );
+    static refalrts::Iter sLnNum_1_1;
+    refalrts::use( sLnNum_1_1 );
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    // t.ErrorList1  t.SymTable1  s.LnNum1  e.Name1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::tvar_left( tSymTable_1, bb_0, be_0 ) )
+    if( ! refalrts::tvar_left( tSymTable_1_1, bb_0, be_0 ) )
       break;
-    if( ! refalrts::svar_left( sLnNum_1, bb_0, be_0 ) )
+    if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
-    eName_b_1 = bb_0;
-    refalrts::use( eName_b_1 );
-    eName_e_1 = be_0;
-    refalrts::use( eName_e_1 );
+    eName_1_b_1 = bb_0;
+    refalrts::use( eName_1_b_1 );
+    eName_1_e_1 = be_0;
+    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-      {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLnNum_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
+      {refalrts::icSpliceSTVar, & sLnNum_1_1},
       {refalrts::icChar, 0, 0, 'I'},
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -3805,7 +3805,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'r'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+      {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'o'},
@@ -3820,7 +3820,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceSTVar, & tSymTable_1},
+      {refalrts::icSpliceSTVar, & tSymTable_1_1},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3911,7 +3911,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter n26 = 0;
     if( ! refalrts::alloc_close_call( n26 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_stvar( res, tSymTable_1 );
+    res = refalrts::splice_stvar( res, tSymTable_1_1 );
     refalrts::push_stack( n26 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n26 );
@@ -3928,7 +3928,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_elem( res, n13 );
-    res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+    res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
     res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_elem( res, n11 );
     res = refalrts::splice_elem( res, n10 );
@@ -3940,8 +3940,8 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, sLnNum_1 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, sLnNum_1_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -3963,29 +3963,29 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eName_b_1;
-    refalrts::use( eName_b_1 );
-    static refalrts::Iter eName_e_1;
-    refalrts::use( eName_e_1 );
-    static refalrts::Iter eNames_B_b_1;
-    refalrts::use( eNames_B_b_1 );
-    static refalrts::Iter eNames_B_e_1;
-    refalrts::use( eNames_B_e_1 );
-    static refalrts::Iter eNames_E_b_1;
-    refalrts::use( eNames_E_b_1 );
-    static refalrts::Iter eNames_E_e_1;
-    refalrts::use( eNames_E_e_1 );
-    static refalrts::Iter sScopeClass_1;
-    refalrts::use( sScopeClass_1 );
-    // [~1 & TSymTable e.Names_B (~2 & Defined s.ScopeClass e.Name )~2 e.Names_E ]~1
+    static refalrts::Iter eName_1_b_1;
+    refalrts::use( eName_1_b_1 );
+    static refalrts::Iter eName_1_e_1;
+    refalrts::use( eName_1_e_1 );
+    static refalrts::Iter eNames_B_1_b_1;
+    refalrts::use( eNames_B_1_b_1 );
+    static refalrts::Iter eNames_B_1_e_1;
+    refalrts::use( eNames_B_1_e_1 );
+    static refalrts::Iter eNames_E_1_b_1;
+    refalrts::use( eNames_E_1_b_1 );
+    static refalrts::Iter eNames_E_1_e_1;
+    refalrts::use( eNames_E_1_e_1 );
+    static refalrts::Iter sScopeClass_1_1;
+    refalrts::use( sScopeClass_1_1 );
+    // [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    eNames_B_b_1 = 0;
-    eNames_B_e_1 = 0;
+    eNames_B_1_b_1 = 0;
+    eNames_B_1_e_1 = 0;
     do {
       refalrts::Iter bb_3 = bb_1;
       refalrts::Iter be_3 = be_1;
@@ -3995,19 +3995,19 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      eNames_E_b_1 = bb_3;
-      refalrts::use( eNames_E_b_1 );
-      eNames_E_e_1 = be_3;
-      refalrts::use( eNames_E_e_1 );
-      if( ! refalrts::svar_left( sScopeClass_1, bb_2, be_2 ) )
+      eNames_E_1_b_1 = bb_3;
+      refalrts::use( eNames_E_1_b_1 );
+      eNames_E_1_e_1 = be_3;
+      refalrts::use( eNames_E_1_e_1 );
+      if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
-      eName_b_1 = bb_2;
-      refalrts::use( eName_b_1 );
-      eName_e_1 = be_2;
-      refalrts::use( eName_e_1 );
+      eName_1_b_1 = bb_2;
+      refalrts::use( eName_1_b_1 );
+      eName_1_e_1 = be_2;
+      refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
-        {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
+        {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
         {refalrts::icEnd}
       };
       refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4017,12 +4017,12 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
 
       refalrts::reset_allocator();
       refalrts::Iter res = arg_begin;
-      res = refalrts::splice_evar( res, eName_b_1, eName_e_1 );
+      res = refalrts::splice_evar( res, eName_1_b_1, eName_1_e_1 );
       refalrts::use( res );
       refalrts::splice_to_freelist( arg_begin, arg_end );
       return refalrts::cSuccess;
 #endif
-    } while ( refalrts::open_evar_advance( eNames_B_b_1, eNames_B_e_1, bb_1, be_1 ) );
+    } while ( refalrts::open_evar_advance( eNames_B_1_b_1, eNames_B_1_e_1, bb_1, be_1 ) );
   } while ( 0 );
 
   return refalrts::FnResult(

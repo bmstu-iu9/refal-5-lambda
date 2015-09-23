@@ -66,34 +66,34 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrors_b_1;
-    refalrts::use( eErrors_b_1 );
-    static refalrts::Iter eErrors_e_1;
-    refalrts::use( eErrors_e_1 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    // (~1 & ErrorList e.Errors )~1 e.Message
+    static refalrts::Iter eErrors_1_b_1;
+    refalrts::use( eErrors_1_b_1 );
+    static refalrts::Iter eErrors_1_e_1;
+    refalrts::use( eErrors_1_e_1 );
+    static refalrts::Iter eMessage_1_b_1;
+    refalrts::use( eMessage_1_b_1 );
+    static refalrts::Iter eMessage_1_e_1;
+    refalrts::use( eMessage_1_e_1 );
+    // (~1 & ErrorList e.Errors1  )~1 e.Message1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
-    eErrors_b_1 = bb_1;
-    refalrts::use( eErrors_b_1 );
-    eErrors_e_1 = be_1;
-    refalrts::use( eErrors_e_1 );
-    eMessage_b_1 = bb_0;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_0;
-    refalrts::use( eMessage_e_1 );
+    eErrors_1_b_1 = bb_1;
+    refalrts::use( eErrors_1_b_1 );
+    eErrors_1_e_1 = be_1;
+    refalrts::use( eErrors_1_e_1 );
+    eMessage_1_b_1 = bb_0;
+    refalrts::use( eMessage_1_b_1 );
+    eMessage_1_e_1 = be_0;
+    refalrts::use( eMessage_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
-      {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
+      {refalrts::icSpliceEVar, & eErrors_1_b_1, & eErrors_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, ' '},
@@ -104,7 +104,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icChar, 0, 0, 'R'},
       {refalrts::icChar, 0, 0, ':'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
+      {refalrts::icSpliceEVar, & eMessage_1_b_1, & eMessage_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
@@ -162,7 +162,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     res = refalrts::splice_elem( res, n13 );
     refalrts::link_brackets( n2, n12 );
     res = refalrts::splice_elem( res, n12 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, eMessage_1_b_1, eMessage_1_e_1 );
     res = refalrts::splice_elem( res, n11 );
     res = refalrts::splice_elem( res, n10 );
     res = refalrts::splice_elem( res, n9 );
@@ -173,7 +173,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eErrors_b_1, eErrors_e_1 );
+    res = refalrts::splice_evar( res, eErrors_1_b_1, eErrors_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -197,38 +197,38 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrors_b_1;
-    refalrts::use( eErrors_b_1 );
-    static refalrts::Iter eErrors_e_1;
-    refalrts::use( eErrors_e_1 );
-    static refalrts::Iter sLineNumber_1;
-    refalrts::use( sLineNumber_1 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    // (~1 & ErrorList e.Errors )~1 s.LineNumber e.Message
+    static refalrts::Iter eErrors_1_b_1;
+    refalrts::use( eErrors_1_b_1 );
+    static refalrts::Iter eErrors_1_e_1;
+    refalrts::use( eErrors_1_e_1 );
+    static refalrts::Iter sLineNumber_1_1;
+    refalrts::use( sLineNumber_1_1 );
+    static refalrts::Iter eMessage_1_b_1;
+    refalrts::use( eMessage_1_b_1 );
+    static refalrts::Iter eMessage_1_e_1;
+    refalrts::use( eMessage_1_e_1 );
+    // (~1 & ErrorList e.Errors1  )~1 s.LineNumber1  e.Message1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::function_left( & ErrorList, bb_1, be_1 ) )
       break;
-    eErrors_b_1 = bb_1;
-    refalrts::use( eErrors_b_1 );
-    eErrors_e_1 = be_1;
-    refalrts::use( eErrors_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_0, be_0 ) )
+    eErrors_1_b_1 = bb_1;
+    refalrts::use( eErrors_1_b_1 );
+    eErrors_1_e_1 = be_1;
+    refalrts::use( eErrors_1_e_1 );
+    if( ! refalrts::svar_left( sLineNumber_1_1, bb_0, be_0 ) )
       break;
-    eMessage_b_1 = bb_0;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_0;
-    refalrts::use( eMessage_e_1 );
+    eMessage_1_b_1 = bb_0;
+    refalrts::use( eMessage_1_b_1 );
+    eMessage_1_e_1 = be_0;
+    refalrts::use( eMessage_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
-      {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
+      {refalrts::icSpliceEVar, & eErrors_1_b_1, & eErrors_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, ' '},
@@ -243,11 +243,11 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & StrFromInt, (void*) "StrFromInt"},
-      {refalrts::icSpliceSTVar, & sLineNumber_1},
+      {refalrts::icSpliceSTVar, & sLineNumber_1_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, ':'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
+      {refalrts::icSpliceEVar, & eMessage_1_b_1, & eMessage_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
@@ -326,13 +326,13 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n20 );
     refalrts::link_brackets( n2, n19 );
     res = refalrts::splice_elem( res, n19 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, eMessage_1_b_1, eMessage_1_e_1 );
     res = refalrts::splice_elem( res, n18 );
     res = refalrts::splice_elem( res, n17 );
     refalrts::push_stack( n16 );
     refalrts::push_stack( n14 );
     res = refalrts::splice_elem( res, n16 );
-    res = refalrts::splice_stvar( res, sLineNumber_1 );
+    res = refalrts::splice_stvar( res, sLineNumber_1_1 );
     res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_elem( res, n13 );
@@ -347,7 +347,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eErrors_b_1, eErrors_e_1 );
+    res = refalrts::splice_evar( res, eErrors_1_b_1, eErrors_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -375,20 +375,20 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLineNumber_1;
-    refalrts::use( sLineNumber_1 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eExpected_b_1;
-    refalrts::use( eExpected_b_1 );
-    static refalrts::Iter eExpected_e_1;
-    refalrts::use( eExpected_e_1 );
-    // t.ErrorList (~1 & TkError s.LineNumber e.Message )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLineNumber_1_1;
+    refalrts::use( sLineNumber_1_1 );
+    static refalrts::Iter eMessage_1_b_1;
+    refalrts::use( eMessage_1_b_1 );
+    static refalrts::Iter eMessage_1_e_1;
+    refalrts::use( eMessage_1_e_1 );
+    static refalrts::Iter eExpected_1_b_1;
+    refalrts::use( eExpected_1_b_1 );
+    static refalrts::Iter eExpected_1_e_1;
+    refalrts::use( eExpected_1_e_1 );
+    // t.ErrorList1  (~1 & TkError s.LineNumber1  e.Message1  )~1 e.Expected1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -396,23 +396,23 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TkError, bb_1, be_1 ) )
       break;
-    eExpected_b_1 = bb_0;
-    refalrts::use( eExpected_b_1 );
-    eExpected_e_1 = be_0;
-    refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
+    eExpected_1_b_1 = bb_0;
+    refalrts::use( eExpected_1_b_1 );
+    eExpected_1_e_1 = be_0;
+    refalrts::use( eExpected_1_e_1 );
+    if( ! refalrts::svar_left( sLineNumber_1_1, bb_1, be_1 ) )
       break;
-    eMessage_b_1 = bb_1;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_1;
-    refalrts::use( eMessage_e_1 );
+    eMessage_1_b_1 = bb_1;
+    refalrts::use( eMessage_1_b_1 );
+    eMessage_1_e_1 = be_1;
+    refalrts::use( eMessage_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-      {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLineNumber_1},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
+      {refalrts::icSpliceSTVar, & sLineNumber_1_1},
+      {refalrts::icSpliceEVar, & eMessage_1_b_1, & eMessage_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -435,9 +435,9 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
-    res = refalrts::splice_stvar( res, sLineNumber_1 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_evar( res, eMessage_1_b_1, eMessage_1_e_1 );
+    res = refalrts::splice_stvar( res, sLineNumber_1_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -452,20 +452,20 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter sLineNumber_1;
-    refalrts::use( sLineNumber_1 );
-    static refalrts::Iter eUnexpected_b_1;
-    refalrts::use( eUnexpected_b_1 );
-    static refalrts::Iter eUnexpected_e_1;
-    refalrts::use( eUnexpected_e_1 );
-    static refalrts::Iter eExpected_b_1;
-    refalrts::use( eExpected_b_1 );
-    static refalrts::Iter eExpected_e_1;
-    refalrts::use( eExpected_e_1 );
-    // t.ErrorList (~1 & TkUnexpected s.LineNumber e.Unexpected )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter sLineNumber_1_1;
+    refalrts::use( sLineNumber_1_1 );
+    static refalrts::Iter eUnexpected_1_b_1;
+    refalrts::use( eUnexpected_1_b_1 );
+    static refalrts::Iter eUnexpected_1_e_1;
+    refalrts::use( eUnexpected_1_e_1 );
+    static refalrts::Iter eExpected_1_b_1;
+    refalrts::use( eExpected_1_b_1 );
+    static refalrts::Iter eExpected_1_e_1;
+    refalrts::use( eExpected_1_e_1 );
+    // t.ErrorList1  (~1 & TkUnexpected s.LineNumber1  e.Unexpected1  )~1 e.Expected1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -473,22 +473,22 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) )
       break;
-    eExpected_b_1 = bb_0;
-    refalrts::use( eExpected_b_1 );
-    eExpected_e_1 = be_0;
-    refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
+    eExpected_1_b_1 = bb_0;
+    refalrts::use( eExpected_1_b_1 );
+    eExpected_1_e_1 = be_0;
+    refalrts::use( eExpected_1_e_1 );
+    if( ! refalrts::svar_left( sLineNumber_1_1, bb_1, be_1 ) )
       break;
-    eUnexpected_b_1 = bb_1;
-    refalrts::use( eUnexpected_b_1 );
-    eUnexpected_e_1 = be_1;
-    refalrts::use( eUnexpected_e_1 );
+    eUnexpected_1_b_1 = bb_1;
+    refalrts::use( eUnexpected_1_b_1 );
+    eUnexpected_1_e_1 = be_1;
+    refalrts::use( eUnexpected_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-      {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLineNumber_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
+      {refalrts::icSpliceSTVar, & sLineNumber_1_1},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'k'},
@@ -509,7 +509,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 's'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, '"'},
-      {refalrts::icSpliceEVar, & eUnexpected_b_1, & eUnexpected_e_1},
+      {refalrts::icSpliceEVar, & eUnexpected_1_b_1, & eUnexpected_1_e_1},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -597,7 +597,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n23 );
     res = refalrts::splice_elem( res, n22 );
-    res = refalrts::splice_evar( res, eUnexpected_b_1, eUnexpected_e_1 );
+    res = refalrts::splice_evar( res, eUnexpected_1_b_1, eUnexpected_1_e_1 );
     res = refalrts::splice_elem( res, n21 );
     res = refalrts::splice_elem( res, n20 );
     res = refalrts::splice_elem( res, n19 );
@@ -618,8 +618,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, sLineNumber_1 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, sLineNumber_1_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -634,45 +634,45 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    static refalrts::Iter eExpected_b_1;
-    refalrts::use( eExpected_b_1 );
-    static refalrts::Iter eExpected_e_1;
-    refalrts::use( eExpected_e_1 );
-    static refalrts::Iter sUnexpected_1;
-    refalrts::use( sUnexpected_1 );
-    static refalrts::Iter sLineNumber_1;
-    refalrts::use( sLineNumber_1 );
-    static refalrts::Iter eInfo_b_1;
-    refalrts::use( eInfo_b_1 );
-    static refalrts::Iter eInfo_e_1;
-    refalrts::use( eInfo_e_1 );
-    // t.ErrorList (~1 s.Unexpected s.LineNumber e.Info )~1 e.Expected
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    static refalrts::Iter eExpected_1_b_1;
+    refalrts::use( eExpected_1_b_1 );
+    static refalrts::Iter eExpected_1_e_1;
+    refalrts::use( eExpected_1_e_1 );
+    static refalrts::Iter sUnexpected_1_1;
+    refalrts::use( sUnexpected_1_1 );
+    static refalrts::Iter sLineNumber_1_1;
+    refalrts::use( sLineNumber_1_1 );
+    static refalrts::Iter eInfo_1_b_1;
+    refalrts::use( eInfo_1_b_1 );
+    static refalrts::Iter eInfo_1_e_1;
+    refalrts::use( eInfo_1_e_1 );
+    // t.ErrorList1  (~1 s.Unexpected1  s.LineNumber1  e.Info1  )~1 e.Expected1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    eExpected_b_1 = bb_0;
-    refalrts::use( eExpected_b_1 );
-    eExpected_e_1 = be_0;
-    refalrts::use( eExpected_e_1 );
-    if( ! refalrts::svar_left( sUnexpected_1, bb_1, be_1 ) )
+    eExpected_1_b_1 = bb_0;
+    refalrts::use( eExpected_1_b_1 );
+    eExpected_1_e_1 = be_0;
+    refalrts::use( eExpected_1_e_1 );
+    if( ! refalrts::svar_left( sUnexpected_1_1, bb_1, be_1 ) )
       break;
-    if( ! refalrts::svar_left( sLineNumber_1, bb_1, be_1 ) )
+    if( ! refalrts::svar_left( sLineNumber_1_1, bb_1, be_1 ) )
       break;
-    eInfo_b_1 = bb_1;
-    refalrts::use( eInfo_b_1 );
-    eInfo_e_1 = be_1;
-    refalrts::use( eInfo_e_1 );
+    eInfo_1_b_1 = bb_1;
+    refalrts::use( eInfo_1_b_1 );
+    eInfo_1_e_1 = be_1;
+    refalrts::use( eInfo_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & EL_AddErrorAt, (void*) "EL_AddErrorAt"},
-      {refalrts::icSpliceSTVar, & tErrorList_1},
-      {refalrts::icSpliceSTVar, & sLineNumber_1},
+      {refalrts::icSpliceSTVar, & tErrorList_1_1},
+      {refalrts::icSpliceSTVar, & sLineNumber_1_1},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -686,8 +686,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & StrFromToken, (void*) "StrFromToken"},
-      {refalrts::icSpliceSTVar, & sUnexpected_1},
-      {refalrts::icSpliceEVar, & eInfo_b_1, & eInfo_e_1},
+      {refalrts::icSpliceSTVar, & sUnexpected_1_1},
+      {refalrts::icSpliceEVar, & eInfo_1_b_1, & eInfo_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, ','},
       {refalrts::icChar, 0, 0, ' '},
@@ -700,7 +700,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icSpliceEVar, & eExpected_b_1, & eExpected_e_1},
+      {refalrts::icSpliceEVar, & eExpected_1_b_1, & eExpected_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -798,7 +798,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::push_stack( n27 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n27 );
-    res = refalrts::splice_evar( res, eExpected_b_1, eExpected_e_1 );
+    res = refalrts::splice_evar( res, eExpected_1_b_1, eExpected_1_e_1 );
     res = refalrts::splice_elem( res, n26 );
     res = refalrts::splice_elem( res, n25 );
     res = refalrts::splice_elem( res, n24 );
@@ -813,8 +813,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::push_stack( n15 );
     refalrts::push_stack( n13 );
     res = refalrts::splice_elem( res, n15 );
-    res = refalrts::splice_evar( res, eInfo_b_1, eInfo_e_1 );
-    res = refalrts::splice_stvar( res, sUnexpected_1 );
+    res = refalrts::splice_evar( res, eInfo_1_b_1, eInfo_1_e_1 );
+    res = refalrts::splice_stvar( res, sUnexpected_1_1 );
     res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_elem( res, n12 );
@@ -828,8 +828,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, sLineNumber_1 );
-    res = refalrts::splice_stvar( res, tErrorList_1 );
+    res = refalrts::splice_stvar( res, sLineNumber_1_1 );
+    res = refalrts::splice_stvar( res, tErrorList_1_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -855,26 +855,26 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eLine_b_1;
-    refalrts::use( eLine_b_1 );
-    static refalrts::Iter eLine_e_1;
-    refalrts::use( eLine_e_1 );
-    // (~1 e.Line )~1
+    static refalrts::Iter eLine_1_b_1;
+    refalrts::use( eLine_1_b_1 );
+    static refalrts::Iter eLine_1_e_1;
+    refalrts::use( eLine_1_e_1 );
+    // (~1 e.Line1  )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    eLine_b_1 = bb_1;
-    refalrts::use( eLine_b_1 );
-    eLine_e_1 = be_1;
-    refalrts::use( eLine_e_1 );
+    eLine_1_b_1 = bb_1;
+    refalrts::use( eLine_1_b_1 );
+    eLine_1_e_1 = be_1;
+    refalrts::use( eLine_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & WriteLine, (void*) "WriteLine"},
-      {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
+      {refalrts::icSpliceEVar, & eLine_1_b_1, & eLine_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -897,7 +897,7 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eLine_b_1, eLine_e_1 );
+    res = refalrts::splice_evar( res, eLine_1_b_1, eLine_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -919,15 +919,15 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrors_b_1;
-    refalrts::use( eErrors_b_1 );
-    static refalrts::Iter eErrors_e_1;
-    refalrts::use( eErrors_e_1 );
-    static refalrts::Iter eErrors_b_2;
-    refalrts::use( eErrors_b_2 );
-    static refalrts::Iter eErrors_e_2;
-    refalrts::use( eErrors_e_2 );
-    // (~1 & ErrorList e.Errors )~1
+    static refalrts::Iter eErrors_1_b_1;
+    refalrts::use( eErrors_1_b_1 );
+    static refalrts::Iter eErrors_1_e_1;
+    refalrts::use( eErrors_1_e_1 );
+    static refalrts::Iter eErrors_1_b_2;
+    refalrts::use( eErrors_1_b_2 );
+    static refalrts::Iter eErrors_1_e_2;
+    refalrts::use( eErrors_1_e_2 );
+    // (~1 & ErrorList e.Errors1  )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -936,20 +936,20 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    eErrors_b_1 = bb_1;
-    refalrts::use( eErrors_b_1 );
-    eErrors_e_1 = be_1;
-    refalrts::use( eErrors_e_1 );
+    eErrors_1_b_1 = bb_1;
+    refalrts::use( eErrors_1_b_1 );
+    eErrors_1_e_1 = be_1;
+    refalrts::use( eErrors_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Map, (void*) "Map"},
       {refalrts::icFunc, (void*) & PrintError, (void*) "PrintError"},
-      {refalrts::icSpliceEVar, & eErrors_b_1, & eErrors_e_1},
+      {refalrts::icSpliceEVar, & eErrors_1_b_1, & eErrors_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & ErrorList, (void*) "ErrorList"},
-      {refalrts::icCopyEVar, & eErrors_b_1, & eErrors_e_1},
+      {refalrts::icCopyEVar, & eErrors_1_b_1, & eErrors_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -960,7 +960,7 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( eErrors_b_2, eErrors_e_2, eErrors_b_1, eErrors_e_1 ) )
+    if( ! refalrts::copy_evar( eErrors_1_b_2, eErrors_1_e_2, eErrors_1_b_1, eErrors_1_e_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -985,13 +985,13 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       return refalrts::cNoMemory;
     refalrts::link_brackets( n4, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eErrors_b_2, eErrors_e_2 );
+    res = refalrts::splice_evar( res, eErrors_1_b_2, eErrors_1_e_2 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     refalrts::push_stack( n3 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eErrors_b_1, eErrors_e_1 );
+    res = refalrts::splice_evar( res, eErrors_1_b_1, eErrors_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1067,10 +1067,10 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter tErrorList_1;
-    refalrts::use( tErrorList_1 );
-    // t.ErrorList
-    if( ! refalrts::tvar_left( tErrorList_1, bb_0, be_0 ) )
+    static refalrts::Iter tErrorList_1_1;
+    refalrts::use( tErrorList_1_1 );
+    // t.ErrorList1 
+    if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;

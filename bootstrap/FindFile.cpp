@@ -42,27 +42,27 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.Folders )~1 e.Files
+    static refalrts::Iter eFolders_1_b_1;
+    refalrts::use( eFolders_1_b_1 );
+    static refalrts::Iter eFolders_1_e_1;
+    refalrts::use( eFolders_1_e_1 );
+    static refalrts::Iter eFiles_1_b_1;
+    refalrts::use( eFiles_1_b_1 );
+    static refalrts::Iter eFiles_1_e_1;
+    refalrts::use( eFiles_1_e_1 );
+    // (~1 e.Folders1  )~1 e.Files1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_0;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_0;
-    refalrts::use( eFiles_e_1 );
+    eFolders_1_b_1 = bb_1;
+    refalrts::use( eFolders_1_b_1 );
+    eFolders_1_e_1 = be_1;
+    refalrts::use( eFolders_1_e_1 );
+    eFiles_1_b_1 = bb_0;
+    refalrts::use( eFiles_1_b_1 );
+    eFiles_1_e_1 = be_0;
+    refalrts::use( eFiles_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -70,9 +70,9 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & AnalyzeFile_ByFolders, (void*) "AnalyzeFile_ByFolders"},
       {refalrts::icFunc, (void*) & Current, (void*) "Current"},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
+      {refalrts::icSpliceEVar, & eFolders_1_b_1, & eFolders_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
+      {refalrts::icSpliceEVar, & eFiles_1_b_1, & eFiles_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -107,10 +107,10 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::push_stack( n6 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, eFiles_1_b_1, eFiles_1_e_1 );
     refalrts::link_brackets( n2, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, eFolders_1_b_1, eFolders_1_e_1 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
@@ -139,45 +139,45 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eFileName_b_2;
-    refalrts::use( eFileName_b_2 );
-    static refalrts::Iter eFileName_e_2;
-    refalrts::use( eFileName_e_2 );
-    // e.Folders (~1 e.FileName )~1
+    static refalrts::Iter eFolders_1_b_1;
+    refalrts::use( eFolders_1_b_1 );
+    static refalrts::Iter eFolders_1_e_1;
+    refalrts::use( eFolders_1_e_1 );
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eFileName_1_b_2;
+    refalrts::use( eFileName_1_b_2 );
+    static refalrts::Iter eFileName_1_e_2;
+    refalrts::use( eFileName_1_e_2 );
+    // e.Folders1  (~1 e.FileName1  )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
       break;
-    eFolders_b_1 = bb_0;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_0;
-    refalrts::use( eFolders_e_1 );
-    eFileName_b_1 = bb_1;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_1;
-    refalrts::use( eFileName_e_1 );
+    eFolders_1_b_1 = bb_0;
+    refalrts::use( eFolders_1_b_1 );
+    eFolders_1_e_1 = be_0;
+    refalrts::use( eFolders_1_e_1 );
+    eFileName_1_b_1 = bb_1;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_1;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeFile_CheckNotFound, (void*) "AnalyzeFile_CheckNotFound"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Map, (void*) "Map"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & AnalyzeInFolder, (void*) "AnalyzeInFolder"},
-      {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icCopyEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
+      {refalrts::icSpliceEVar, & eFolders_1_b_1, & eFolders_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -189,7 +189,7 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+    if( ! refalrts::copy_evar( eFileName_1_b_2, eFileName_1_e_2, eFileName_1_b_1, eFileName_1_e_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -230,17 +230,17 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     refalrts::push_stack( n9 );
     refalrts::push_stack( n4 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, eFolders_1_b_1, eFolders_1_e_1 );
     refalrts::link_brackets( n6, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+    res = refalrts::splice_evar( res, eFileName_1_b_2, eFileName_1_e_2 );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -265,22 +265,22 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // e.FileName & Current
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    // e.FileName1  & Current
     if( ! refalrts::function_right( & Current, bb_0, be_0 ) )
       break;
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeFile, (void*) "AnalyzeFile"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -303,7 +303,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -318,34 +318,34 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eFolder_b_1;
-    refalrts::use( eFolder_b_1 );
-    static refalrts::Iter eFolder_e_1;
-    refalrts::use( eFolder_e_1 );
-    // e.FileName (~1 e.Folder )~1
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eFolder_1_b_1;
+    refalrts::use( eFolder_1_b_1 );
+    static refalrts::Iter eFolder_1_e_1;
+    refalrts::use( eFolder_1_e_1 );
+    // e.FileName1  (~1 e.Folder1  )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
       break;
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
-    eFolder_b_1 = bb_1;
-    refalrts::use( eFolder_b_1 );
-    eFolder_e_1 = be_1;
-    refalrts::use( eFolder_e_1 );
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
+    eFolder_1_b_1 = bb_1;
+    refalrts::use( eFolder_1_b_1 );
+    eFolder_1_e_1 = be_1;
+    refalrts::use( eFolder_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeFile, (void*) "AnalyzeFile"},
-      {refalrts::icSpliceEVar, & eFolder_b_1, & eFolder_e_1},
+      {refalrts::icSpliceEVar, & eFolder_1_b_1, & eFolder_1_e_1},
       {refalrts::icChar, 0, 0, '/'},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -371,9 +371,9 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::push_stack( n3 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eFolder_b_1, eFolder_e_1 );
+    res = refalrts::splice_evar( res, eFolder_1_b_1, eFolder_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -395,23 +395,23 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eSource_b_1;
-    refalrts::use( eSource_b_1 );
-    static refalrts::Iter eSource_e_1;
-    refalrts::use( eSource_e_1 );
-    static refalrts::Iter eOutput_b_1;
-    refalrts::use( eOutput_b_1 );
-    static refalrts::Iter eOutput_e_1;
-    refalrts::use( eOutput_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eVariants_b_1;
-    refalrts::use( eVariants_b_1 );
-    static refalrts::Iter eVariants_e_1;
-    refalrts::use( eVariants_e_1 );
-    // (~1 e.FileName )~1 (~2 & Source (~3 e.Source )~3 e.Output )~2 e.Variants
+    static refalrts::Iter eSource_1_b_1;
+    refalrts::use( eSource_1_b_1 );
+    static refalrts::Iter eSource_1_e_1;
+    refalrts::use( eSource_1_e_1 );
+    static refalrts::Iter eOutput_1_b_1;
+    refalrts::use( eOutput_1_b_1 );
+    static refalrts::Iter eOutput_1_e_1;
+    refalrts::use( eOutput_1_e_1 );
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eVariants_1_b_1;
+    refalrts::use( eVariants_1_b_1 );
+    static refalrts::Iter eVariants_1_e_1;
+    refalrts::use( eVariants_1_e_1 );
+    // (~1 e.FileName1  )~1 (~2 & Source (~3 e.Source1  )~3 e.Output1  )~2 e.Variants1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -426,30 +426,30 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter be_3 = 0;
     if( ! refalrts::brackets_left( bb_3, be_3, bb_2, be_2 ) )
       break;
-    eFileName_b_1 = bb_1;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_1;
-    refalrts::use( eFileName_e_1 );
-    eSource_b_1 = bb_3;
-    refalrts::use( eSource_b_1 );
-    eSource_e_1 = be_3;
-    refalrts::use( eSource_e_1 );
-    eOutput_b_1 = bb_2;
-    refalrts::use( eOutput_b_1 );
-    eOutput_e_1 = be_2;
-    refalrts::use( eOutput_e_1 );
-    eVariants_b_1 = bb_0;
-    refalrts::use( eVariants_b_1 );
-    eVariants_e_1 = be_0;
-    refalrts::use( eVariants_e_1 );
+    eFileName_1_b_1 = bb_1;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_1;
+    refalrts::use( eFileName_1_e_1 );
+    eSource_1_b_1 = bb_3;
+    refalrts::use( eSource_1_b_1 );
+    eSource_1_e_1 = be_3;
+    refalrts::use( eSource_1_e_1 );
+    eOutput_1_b_1 = bb_2;
+    refalrts::use( eOutput_1_b_1 );
+    eOutput_1_e_1 = be_2;
+    refalrts::use( eOutput_1_e_1 );
+    eVariants_1_b_1 = bb_0;
+    refalrts::use( eVariants_1_b_1 );
+    eVariants_1_e_1 = be_0;
+    refalrts::use( eVariants_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Source, (void*) "Source"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eSource_b_1, & eSource_e_1},
+      {refalrts::icSpliceEVar, & eSource_1_b_1, & eSource_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eOutput_b_1, & eOutput_e_1},
+      {refalrts::icSpliceEVar, & eOutput_1_b_1, & eOutput_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -477,10 +477,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eOutput_b_1, eOutput_e_1 );
+    res = refalrts::splice_evar( res, eOutput_1_b_1, eOutput_1_e_1 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eSource_b_1, eSource_e_1 );
+    res = refalrts::splice_evar( res, eSource_1_b_1, eSource_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -496,19 +496,19 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eOutput_b_1;
-    refalrts::use( eOutput_b_1 );
-    static refalrts::Iter eOutput_e_1;
-    refalrts::use( eOutput_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eVariants_b_1;
-    refalrts::use( eVariants_b_1 );
-    static refalrts::Iter eVariants_e_1;
-    refalrts::use( eVariants_e_1 );
-    // (~1 e.FileName )~1 (~2 & Output e.Output )~2 e.Variants
+    static refalrts::Iter eOutput_1_b_1;
+    refalrts::use( eOutput_1_b_1 );
+    static refalrts::Iter eOutput_1_e_1;
+    refalrts::use( eOutput_1_e_1 );
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eVariants_1_b_1;
+    refalrts::use( eVariants_1_b_1 );
+    static refalrts::Iter eVariants_1_e_1;
+    refalrts::use( eVariants_1_e_1 );
+    // (~1 e.FileName1  )~1 (~2 & Output e.Output1  )~2 e.Variants1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -519,23 +519,23 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       break;
     if( ! refalrts::function_left( & Output, bb_2, be_2 ) )
       break;
-    eFileName_b_1 = bb_1;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_1;
-    refalrts::use( eFileName_e_1 );
-    eOutput_b_1 = bb_2;
-    refalrts::use( eOutput_b_1 );
-    eOutput_e_1 = be_2;
-    refalrts::use( eOutput_e_1 );
-    eVariants_b_1 = bb_0;
-    refalrts::use( eVariants_b_1 );
-    eVariants_e_1 = be_0;
-    refalrts::use( eVariants_e_1 );
+    eFileName_1_b_1 = bb_1;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_1;
+    refalrts::use( eFileName_1_e_1 );
+    eOutput_1_b_1 = bb_2;
+    refalrts::use( eOutput_1_b_1 );
+    eOutput_1_e_1 = be_2;
+    refalrts::use( eOutput_1_e_1 );
+    eVariants_1_b_1 = bb_0;
+    refalrts::use( eVariants_1_b_1 );
+    eVariants_1_e_1 = be_0;
+    refalrts::use( eVariants_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Output, (void*) "Output"},
-      {refalrts::icSpliceEVar, & eOutput_b_1, & eOutput_e_1},
+      {refalrts::icSpliceEVar, & eOutput_1_b_1, & eOutput_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -557,7 +557,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eOutput_b_1, eOutput_e_1 );
+    res = refalrts::splice_evar( res, eOutput_1_b_1, eOutput_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -572,19 +572,19 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eVariants_b_1;
-    refalrts::use( eVariants_b_1 );
-    static refalrts::Iter eVariants_e_1;
-    refalrts::use( eVariants_e_1 );
-    static refalrts::Iter eNotFoundPath_b_1;
-    refalrts::use( eNotFoundPath_b_1 );
-    static refalrts::Iter eNotFoundPath_e_1;
-    refalrts::use( eNotFoundPath_e_1 );
-    // (~1 e.FileName )~1 (~2 & NotFound e.NotFoundPath )~2 e.Variants
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eVariants_1_b_1;
+    refalrts::use( eVariants_1_b_1 );
+    static refalrts::Iter eVariants_1_e_1;
+    refalrts::use( eVariants_1_e_1 );
+    static refalrts::Iter eNotFoundPath_1_b_1;
+    refalrts::use( eNotFoundPath_1_b_1 );
+    static refalrts::Iter eNotFoundPath_1_e_1;
+    refalrts::use( eNotFoundPath_1_e_1 );
+    // (~1 e.FileName1  )~1 (~2 & NotFound e.NotFoundPath1  )~2 e.Variants1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -595,26 +595,26 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       break;
     if( ! refalrts::function_left( & NotFound, bb_2, be_2 ) )
       break;
-    eFileName_b_1 = bb_1;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_1;
-    refalrts::use( eFileName_e_1 );
-    eNotFoundPath_b_1 = bb_2;
-    refalrts::use( eNotFoundPath_b_1 );
-    eNotFoundPath_e_1 = be_2;
-    refalrts::use( eNotFoundPath_e_1 );
-    eVariants_b_1 = bb_0;
-    refalrts::use( eVariants_b_1 );
-    eVariants_e_1 = be_0;
-    refalrts::use( eVariants_e_1 );
+    eFileName_1_b_1 = bb_1;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_1;
+    refalrts::use( eFileName_1_e_1 );
+    eNotFoundPath_1_b_1 = bb_2;
+    refalrts::use( eNotFoundPath_1_b_1 );
+    eNotFoundPath_1_e_1 = be_2;
+    refalrts::use( eNotFoundPath_1_e_1 );
+    eVariants_1_b_1 = bb_0;
+    refalrts::use( eVariants_1_b_1 );
+    eVariants_1_e_1 = be_0;
+    refalrts::use( eVariants_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeFile_CheckNotFound, (void*) "AnalyzeFile_CheckNotFound"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eVariants_b_1, & eVariants_e_1},
+      {refalrts::icSpliceEVar, & eVariants_1_b_1, & eVariants_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -643,10 +643,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::push_stack( n4 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eVariants_b_1, eVariants_e_1 );
+    res = refalrts::splice_evar( res, eVariants_1_b_1, eVariants_1_e_1 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -662,26 +662,26 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.FileName )~1
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    // (~1 e.FileName1  )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
-    eFileName_b_1 = bb_1;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_1;
-    refalrts::use( eFileName_e_1 );
+    eFileName_1_b_1 = bb_1;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_1;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & NotFound, (void*) "NotFound"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -703,7 +703,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -737,26 +737,26 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eFileName_b_2;
-    refalrts::use( eFileName_b_2 );
-    static refalrts::Iter eFileName_e_2;
-    refalrts::use( eFileName_e_2 );
-    // e.FileName
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eFileName_1_b_2;
+    refalrts::use( eFileName_1_b_2 );
+    static refalrts::Iter eFileName_1_e_2;
+    refalrts::use( eFileName_1_e_2 );
+    // e.FileName1 
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & ExistFile, (void*) "ExistFile"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icCopyEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icEnd}
     };
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -766,7 +766,7 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+    if( ! refalrts::copy_evar( eFileName_1_b_2, eFileName_1_e_2, eFileName_1_b_1, eFileName_1_e_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -777,11 +777,11 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+    res = refalrts::splice_evar( res, eFileName_1_b_2, eFileName_1_e_2 );
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -803,11 +803,11 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // e.FileName '.sref'
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    // e.FileName1  '.sref'
     if( ! refalrts::char_right( 'f', bb_0, be_0 ) )
       break;
     if( ! refalrts::char_right( 'e', bb_0, be_0 ) )
@@ -818,17 +818,17 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       break;
     if( ! refalrts::char_right( '.', bb_0, be_0 ) )
       break;
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeSource_CheckExist, (void*) "AnalyzeSource_CheckExist"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & ExistFile_T, (void*) "ExistFile_T"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 's'},
       {refalrts::icChar, 0, 0, 'r'},
@@ -889,7 +889,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -906,11 +906,11 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // e.FileName '.cpp'
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    // e.FileName1  '.cpp'
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )
       break;
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )
@@ -919,17 +919,17 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       break;
     if( ! refalrts::char_right( '.', bb_0, be_0 ) )
       break;
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & AnalyzeOutput_CheckExist, (void*) "AnalyzeOutput_CheckExist"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & ExistFile_T, (void*) "ExistFile_T"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -985,7 +985,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -1002,19 +1002,19 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    static refalrts::Iter eFileName_b_2;
-    refalrts::use( eFileName_b_2 );
-    static refalrts::Iter eFileName_e_2;
-    refalrts::use( eFileName_e_2 );
-    // e.FileName
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    static refalrts::Iter eFileName_1_b_1;
+    refalrts::use( eFileName_1_b_1 );
+    static refalrts::Iter eFileName_1_e_1;
+    refalrts::use( eFileName_1_e_1 );
+    static refalrts::Iter eFileName_1_b_2;
+    refalrts::use( eFileName_1_b_2 );
+    static refalrts::Iter eFileName_1_e_2;
+    refalrts::use( eFileName_1_e_2 );
+    // e.FileName1 
+    eFileName_1_b_1 = bb_0;
+    refalrts::use( eFileName_1_b_1 );
+    eFileName_1_e_1 = be_0;
+    refalrts::use( eFileName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -1022,7 +1022,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & ExistFile_T, (void*) "ExistFile_T"},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icSpliceEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 's'},
       {refalrts::icChar, 0, 0, 'r'},
@@ -1032,7 +1032,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & ExistFile_T, (void*) "ExistFile_T"},
-      {refalrts::icCopyEVar, & eFileName_b_1, & eFileName_e_1},
+      {refalrts::icCopyEVar, & eFileName_1_b_1, & eFileName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -1048,7 +1048,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( eFileName_b_2, eFileName_e_2, eFileName_b_1, eFileName_e_1 ) )
+    if( ! refalrts::copy_evar( eFileName_1_b_2, eFileName_1_e_2, eFileName_1_b_1, eFileName_1_e_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -1120,7 +1120,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     res = refalrts::splice_elem( res, n16 );
     res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_elem( res, n14 );
-    res = refalrts::splice_evar( res, eFileName_b_2, eFileName_e_2 );
+    res = refalrts::splice_evar( res, eFileName_1_b_2, eFileName_1_e_2 );
     res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_elem( res, n12 );
     refalrts::link_brackets( n2, n11 );
@@ -1133,7 +1133,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, eFileName_1_b_1, eFileName_1_e_1 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
@@ -1158,15 +1158,15 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eUnitName_b_1;
-    refalrts::use( eUnitName_b_1 );
-    static refalrts::Iter eUnitName_e_1;
-    refalrts::use( eUnitName_e_1 );
-    static refalrts::Iter eUnitName_b_2;
-    refalrts::use( eUnitName_b_2 );
-    static refalrts::Iter eUnitName_e_2;
-    refalrts::use( eUnitName_e_2 );
-    // & True e.UnitName '.sref'
+    static refalrts::Iter eUnitName_1_b_1;
+    refalrts::use( eUnitName_1_b_1 );
+    static refalrts::Iter eUnitName_1_e_1;
+    refalrts::use( eUnitName_1_e_1 );
+    static refalrts::Iter eUnitName_1_b_2;
+    refalrts::use( eUnitName_1_b_2 );
+    static refalrts::Iter eUnitName_1_e_2;
+    refalrts::use( eUnitName_1_e_2 );
+    // & True e.UnitName1  '.sref'
     if( ! refalrts::function_left( & True, bb_0, be_0 ) )
       break;
     if( ! refalrts::char_right( 'f', bb_0, be_0 ) )
@@ -1179,23 +1179,23 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       break;
     if( ! refalrts::char_right( '.', bb_0, be_0 ) )
       break;
-    eUnitName_b_1 = bb_0;
-    refalrts::use( eUnitName_b_1 );
-    eUnitName_e_1 = be_0;
-    refalrts::use( eUnitName_e_1 );
+    eUnitName_1_b_1 = bb_0;
+    refalrts::use( eUnitName_1_b_1 );
+    eUnitName_1_e_1 = be_0;
+    refalrts::use( eUnitName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Source, (void*) "Source"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eUnitName_b_1, & eUnitName_e_1},
+      {refalrts::icSpliceEVar, & eUnitName_1_b_1, & eUnitName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 's'},
       {refalrts::icChar, 0, 0, 'r'},
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'f'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icCopyEVar, & eUnitName_b_1, & eUnitName_e_1},
+      {refalrts::icCopyEVar, & eUnitName_1_b_1, & eUnitName_1_e_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, 'c'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -1210,7 +1210,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( eUnitName_b_2, eUnitName_e_2, eUnitName_b_1, eUnitName_e_1 ) )
+    if( ! refalrts::copy_evar( eUnitName_1_b_2, eUnitName_1_e_2, eUnitName_1_b_1, eUnitName_1_e_1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_bracket( n0 ) )
@@ -1260,7 +1260,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     res = refalrts::splice_elem( res, n11 );
     res = refalrts::splice_elem( res, n10 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eUnitName_b_2, eUnitName_e_2 );
+    res = refalrts::splice_evar( res, eUnitName_1_b_2, eUnitName_1_e_2 );
     refalrts::link_brackets( n2, n8 );
     res = refalrts::splice_elem( res, n8 );
     res = refalrts::splice_elem( res, n7 );
@@ -1268,7 +1268,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eUnitName_b_1, eUnitName_e_1 );
+    res = refalrts::splice_evar( res, eUnitName_1_b_1, eUnitName_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1284,22 +1284,22 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eSourceName_b_1;
-    refalrts::use( eSourceName_b_1 );
-    static refalrts::Iter eSourceName_e_1;
-    refalrts::use( eSourceName_e_1 );
-    // & False e.SourceName
+    static refalrts::Iter eSourceName_1_b_1;
+    refalrts::use( eSourceName_1_b_1 );
+    static refalrts::Iter eSourceName_1_e_1;
+    refalrts::use( eSourceName_1_e_1 );
+    // & False e.SourceName1 
     if( ! refalrts::function_left( & False, bb_0, be_0 ) )
       break;
-    eSourceName_b_1 = bb_0;
-    refalrts::use( eSourceName_b_1 );
-    eSourceName_e_1 = be_0;
-    refalrts::use( eSourceName_e_1 );
+    eSourceName_1_b_1 = bb_0;
+    refalrts::use( eSourceName_1_b_1 );
+    eSourceName_1_e_1 = be_0;
+    refalrts::use( eSourceName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & NotFound, (void*) "NotFound"},
-      {refalrts::icSpliceEVar, & eSourceName_b_1, & eSourceName_e_1},
+      {refalrts::icSpliceEVar, & eSourceName_1_b_1, & eSourceName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1321,7 +1321,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eSourceName_b_1, eSourceName_e_1 );
+    res = refalrts::splice_evar( res, eSourceName_1_b_1, eSourceName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1343,22 +1343,22 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eOutName_b_1;
-    refalrts::use( eOutName_b_1 );
-    static refalrts::Iter eOutName_e_1;
-    refalrts::use( eOutName_e_1 );
-    // & True e.OutName
+    static refalrts::Iter eOutName_1_b_1;
+    refalrts::use( eOutName_1_b_1 );
+    static refalrts::Iter eOutName_1_e_1;
+    refalrts::use( eOutName_1_e_1 );
+    // & True e.OutName1 
     if( ! refalrts::function_left( & True, bb_0, be_0 ) )
       break;
-    eOutName_b_1 = bb_0;
-    refalrts::use( eOutName_b_1 );
-    eOutName_e_1 = be_0;
-    refalrts::use( eOutName_e_1 );
+    eOutName_1_b_1 = bb_0;
+    refalrts::use( eOutName_1_b_1 );
+    eOutName_1_e_1 = be_0;
+    refalrts::use( eOutName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Output, (void*) "Output"},
-      {refalrts::icSpliceEVar, & eOutName_b_1, & eOutName_e_1},
+      {refalrts::icSpliceEVar, & eOutName_1_b_1, & eOutName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1380,7 +1380,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eOutName_b_1, eOutName_e_1 );
+    res = refalrts::splice_evar( res, eOutName_1_b_1, eOutName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1395,22 +1395,22 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eOutName_b_1;
-    refalrts::use( eOutName_b_1 );
-    static refalrts::Iter eOutName_e_1;
-    refalrts::use( eOutName_e_1 );
-    // & False e.OutName
+    static refalrts::Iter eOutName_1_b_1;
+    refalrts::use( eOutName_1_b_1 );
+    static refalrts::Iter eOutName_1_e_1;
+    refalrts::use( eOutName_1_e_1 );
+    // & False e.OutName1 
     if( ! refalrts::function_left( & False, bb_0, be_0 ) )
       break;
-    eOutName_b_1 = bb_0;
-    refalrts::use( eOutName_b_1 );
-    eOutName_e_1 = be_0;
-    refalrts::use( eOutName_e_1 );
+    eOutName_1_b_1 = bb_0;
+    refalrts::use( eOutName_1_b_1 );
+    eOutName_1_e_1 = be_0;
+    refalrts::use( eOutName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & NotFound, (void*) "NotFound"},
-      {refalrts::icSpliceEVar, & eOutName_b_1, & eOutName_e_1},
+      {refalrts::icSpliceEVar, & eOutName_1_b_1, & eOutName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1432,7 +1432,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eOutName_b_1, eOutName_e_1 );
+    res = refalrts::splice_evar( res, eOutName_1_b_1, eOutName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1454,41 +1454,41 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eSourceName_b_1;
-    refalrts::use( eSourceName_b_1 );
-    static refalrts::Iter eSourceName_e_1;
-    refalrts::use( eSourceName_e_1 );
-    static refalrts::Iter eOutName_b_1;
-    refalrts::use( eOutName_b_1 );
-    static refalrts::Iter eOutName_e_1;
-    refalrts::use( eOutName_e_1 );
-    static refalrts::Iter sRes_1;
-    refalrts::use( sRes_1 );
-    // (~1 & True e.SourceName )~1 s.Res e.OutName
+    static refalrts::Iter eSourceName_1_b_1;
+    refalrts::use( eSourceName_1_b_1 );
+    static refalrts::Iter eSourceName_1_e_1;
+    refalrts::use( eSourceName_1_e_1 );
+    static refalrts::Iter eOutName_1_b_1;
+    refalrts::use( eOutName_1_b_1 );
+    static refalrts::Iter eOutName_1_e_1;
+    refalrts::use( eOutName_1_e_1 );
+    static refalrts::Iter sRes_1_1;
+    refalrts::use( sRes_1_1 );
+    // (~1 & True e.SourceName1  )~1 s.Res1  e.OutName1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::function_left( & True, bb_1, be_1 ) )
       break;
-    eSourceName_b_1 = bb_1;
-    refalrts::use( eSourceName_b_1 );
-    eSourceName_e_1 = be_1;
-    refalrts::use( eSourceName_e_1 );
-    if( ! refalrts::svar_left( sRes_1, bb_0, be_0 ) )
+    eSourceName_1_b_1 = bb_1;
+    refalrts::use( eSourceName_1_b_1 );
+    eSourceName_1_e_1 = be_1;
+    refalrts::use( eSourceName_1_e_1 );
+    if( ! refalrts::svar_left( sRes_1_1, bb_0, be_0 ) )
       break;
-    eOutName_b_1 = bb_0;
-    refalrts::use( eOutName_b_1 );
-    eOutName_e_1 = be_0;
-    refalrts::use( eOutName_e_1 );
+    eOutName_1_b_1 = bb_0;
+    refalrts::use( eOutName_1_b_1 );
+    eOutName_1_e_1 = be_0;
+    refalrts::use( eOutName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Source, (void*) "Source"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eSourceName_b_1, & eSourceName_e_1},
+      {refalrts::icSpliceEVar, & eSourceName_1_b_1, & eSourceName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eOutName_b_1, & eOutName_e_1},
+      {refalrts::icSpliceEVar, & eOutName_1_b_1, & eOutName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1516,10 +1516,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eOutName_b_1, eOutName_e_1 );
+    res = refalrts::splice_evar( res, eOutName_1_b_1, eOutName_1_e_1 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eSourceName_b_1, eSourceName_e_1 );
+    res = refalrts::splice_evar( res, eSourceName_1_b_1, eSourceName_1_e_1 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1535,15 +1535,15 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eOutName_b_1;
-    refalrts::use( eOutName_b_1 );
-    static refalrts::Iter eOutName_e_1;
-    refalrts::use( eOutName_e_1 );
-    static refalrts::Iter eSourceName_b_1;
-    refalrts::use( eSourceName_b_1 );
-    static refalrts::Iter eSourceName_e_1;
-    refalrts::use( eSourceName_e_1 );
-    // (~1 & False e.SourceName )~1 & True e.OutName
+    static refalrts::Iter eOutName_1_b_1;
+    refalrts::use( eOutName_1_b_1 );
+    static refalrts::Iter eOutName_1_e_1;
+    refalrts::use( eOutName_1_e_1 );
+    static refalrts::Iter eSourceName_1_b_1;
+    refalrts::use( eSourceName_1_b_1 );
+    static refalrts::Iter eSourceName_1_e_1;
+    refalrts::use( eSourceName_1_e_1 );
+    // (~1 & False e.SourceName1  )~1 & True e.OutName1 
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -1552,19 +1552,19 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       break;
     if( ! refalrts::function_left( & True, bb_0, be_0 ) )
       break;
-    eSourceName_b_1 = bb_1;
-    refalrts::use( eSourceName_b_1 );
-    eSourceName_e_1 = be_1;
-    refalrts::use( eSourceName_e_1 );
-    eOutName_b_1 = bb_0;
-    refalrts::use( eOutName_b_1 );
-    eOutName_e_1 = be_0;
-    refalrts::use( eOutName_e_1 );
+    eSourceName_1_b_1 = bb_1;
+    refalrts::use( eSourceName_1_b_1 );
+    eSourceName_1_e_1 = be_1;
+    refalrts::use( eSourceName_1_e_1 );
+    eOutName_1_b_1 = bb_0;
+    refalrts::use( eOutName_1_b_1 );
+    eOutName_1_e_1 = be_0;
+    refalrts::use( eOutName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & Output, (void*) "Output"},
-      {refalrts::icSpliceEVar, & eOutName_b_1, & eOutName_e_1},
+      {refalrts::icSpliceEVar, & eOutName_1_b_1, & eOutName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1586,7 +1586,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eOutName_b_1, eOutName_e_1 );
+    res = refalrts::splice_evar( res, eOutName_1_b_1, eOutName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1601,15 +1601,15 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eUnitName_b_1;
-    refalrts::use( eUnitName_b_1 );
-    static refalrts::Iter eUnitName_e_1;
-    refalrts::use( eUnitName_e_1 );
-    static refalrts::Iter eUnitName_b_2;
-    refalrts::use( eUnitName_b_2 );
-    static refalrts::Iter eUnitName_e_2;
-    refalrts::use( eUnitName_e_2 );
-    // (~1 & False e.UnitName '.sref )~1 & False e.UnitName '.cpp'
+    static refalrts::Iter eUnitName_1_b_1;
+    refalrts::use( eUnitName_1_b_1 );
+    static refalrts::Iter eUnitName_1_e_1;
+    refalrts::use( eUnitName_1_e_1 );
+    static refalrts::Iter eUnitName_1_b_2;
+    refalrts::use( eUnitName_1_b_2 );
+    static refalrts::Iter eUnitName_1_e_2;
+    refalrts::use( eUnitName_1_e_2 );
+    // (~1 & False e.UnitName1  '.sref )~1 & False e.UnitName1  '.cpp'
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )
       break;
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )
@@ -1636,11 +1636,11 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       break;
     if( ! refalrts::char_right( '.', bb_1, be_1 ) )
       break;
-    eUnitName_b_1 = bb_1;
-    refalrts::use( eUnitName_b_1 );
-    eUnitName_e_1 = be_1;
-    refalrts::use( eUnitName_e_1 );
-    if( ! refalrts::repeated_evar_left( eUnitName_b_2, eUnitName_e_2, eUnitName_b_1, eUnitName_e_1, bb_0, be_0 ) )
+    eUnitName_1_b_1 = bb_1;
+    refalrts::use( eUnitName_1_b_1 );
+    eUnitName_1_e_1 = be_1;
+    refalrts::use( eUnitName_1_e_1 );
+    if( ! refalrts::repeated_evar_left( eUnitName_1_b_2, eUnitName_1_e_2, eUnitName_1_b_1, eUnitName_1_e_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
@@ -1648,7 +1648,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icFunc, (void*) & NotFound, (void*) "NotFound"},
-      {refalrts::icSpliceEVar, & eUnitName_b_1, & eUnitName_e_1},
+      {refalrts::icSpliceEVar, & eUnitName_1_b_1, & eUnitName_1_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
@@ -1670,7 +1670,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eUnitName_b_1, eUnitName_e_1 );
+    res = refalrts::splice_evar( res, eUnitName_1_b_1, eUnitName_1_e_1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
