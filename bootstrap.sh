@@ -3,3 +3,4 @@
 ( cd srmake && ./make.sh )
 ( cd lexgen && ./make.sh )
 ( cd compiler && ./makeself.sh )
+( cd autotests && ./run.sh )
