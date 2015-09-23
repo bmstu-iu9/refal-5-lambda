@@ -544,6 +544,16 @@ $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
 
 $LABEL CSuccess, CInvalidMode, CAlreadyBounded;
 
+PatternBracket {
+  /*
+    ‘ункци€ используетс€ в ParsePattern дл€ корректного восстановлени€
+    после ошибок Ч интерпретаци€ < и > в образце как ( и ).
+  */
+  TkOpenCall = TkOpenBracket;
+  TkCloseCall = TkCloseBracket;
+  s.Bracket = s.Bracket;
+}
+
 ParsePattern {
   // ќбработка литералов атомов
 
@@ -746,9 +756,9 @@ ParsePattern {
       (e.Sentences) (s.BracketNumber e.MultiBracket)
       (
         e.Scanned
-        (s.OpenBracket s.InnerNumber)
+        (<PatternBracket s.OpenBracket> s.InnerNumber)
         e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
+        (<PatternBracket s.CloseBracket> s.InnerNumber)
       )
       e.Tail
     >;
@@ -774,9 +784,9 @@ ParsePattern {
       (e.Sentences) (s.BracketNumber e.MultiBracket)
       (
         e.Scanned
-        (s.OpenBracket s.InnerNumber)
+        (<PatternBracket s.OpenBracket> s.InnerNumber)
         e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
+        (<PatternBracket s.CloseBracket> s.InnerNumber)
       )
       (# CClose s.OtherCloseBracket s.LnNum) e.Tail
     >;
@@ -825,9 +835,9 @@ ParsePattern {
       t.SymTable t.Context
       (e.Sentences) (s.BracketNumber e.MultiBracket)
       (
-        (s.OpenBracket s.InnerNumber)
+        (<PatternBracket s.OpenBracket> s.InnerNumber)
         e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
+        (<PatternBracket s.CloseBracket> s.InnerNumber)
         e.Scanned
       )
       e.Tail
