@@ -1,7 +1,4 @@
 @echo off
-refgo ..\SRMake\srmake %1 %2 %3 %4 %5 %6 %7 %8 %9
-del *.mref
-del *.ref
-rem rmdir /s /q Info
-rmdir /s /q ROut
-rmdir /s /q Defs
+set FILES=SRMake.sref FileScanner.sref FindFile ParseCmdLine
+set FILES=%FILES% Library LibraryEx refalrts
+..\Compiler\srefc -c "g++ -I../SRLib -o srmake" -d ../SRLib -d ../Compiler %FILES%

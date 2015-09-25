@@ -3,5 +3,5 @@ Test {
 }
 
 $ENTRY Go {
-  = <Test ('er') ('super') ('super') ('abba' 'Y' 'super')>;
+  = <Test ('er') ('super') ('super') ('abba' 'X' 'super')>;
 }

@@ -8,7 +8,7 @@ LinearizeLine {
   (e.Line) = e.Line '\n';
 }
 
-$EXTERN NormalizeTokens, Root;
+$FORWARD NormalizeTokens, Root;
 
 $ENTRY LexFolding {
   e.FileName =
@@ -34,7 +34,7 @@ $EENUM
   TkUnexpected,
   TkVariable;
 
-$EENUM EEnum, Entry, Enum, Extern;
+$EENUM EEnum, Entry, Enum, Extern, Forward;
 
 StrDirective {
   EEnum = 'EENUM';  Entry = 'ENTRY'; Enum = 'ENUM'; Extern = 'EXTERN';
@@ -72,7 +72,7 @@ $ENUM
   TokenUnexpected,
   TokenUnexpectedEOF;
 
-$EXTERN ValidDirective, SwPunctuation;
+$FORWARD ValidDirective, SwPunctuation;
 
 NormalizeName {
   e.Name-B '-' e.Name-E =
@@ -119,6 +119,8 @@ NormalizeToken {
 ValidDirective {
   'ENUM' = (TkDirective Enum); 'EENUM' = (TkDirective EEnum);
   'ENTRY' = (TkDirective Entry); 'EXTERN' = (TkDirective Extern);
+  'FORWARD' = (TkDirective Forward);
+  e.Other = (TkError 'Unknown directive $' e.Other);
 }
 
 SwPunctuation {
@@ -146,7 +148,7 @@ NormalizeTokens {
     >;
 }
 
-$EXTERN Name, Number, VariableStart, Directive, StringLiteral-Start,
+$FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
   StartComment, VariableIndex, Punctuation, StringLiteral, DirectiveTail,
   DirectiveBody, StringLiteral-Escape, SL-E-C1, CComment, CppComment,
   VariableIndexTail, StringLiteral-Quote, CComment-CheckNested,
@@ -259,7 +261,7 @@ $EXTERN Name, Number, VariableStart, Directive, StringLiteral-Start,
             !"Unexpected EOF: unclosed comment"                           .
 
   CComment-CheckNested =
-    '*'     !"Nested comments is disabled"                                |
+    '*'     !"Nested comments is disabled"      CComment                  |
                                                 CComment                  .
 
   CComment-CheckEnd =
@@ -1055,7 +1057,8 @@ StringLiteral-Quote {
 }
 
 CComment-CheckNested {
-  (e.Accum) '*' = (TokenError 'Nested comments is disabled');
+  (e.Accum) '*' e.Text =
+    (TokenError 'Nested comments is disabled') <CComment () e.Text >;
   (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;

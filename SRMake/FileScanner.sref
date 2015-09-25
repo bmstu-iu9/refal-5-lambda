@@ -1,39 +1,53 @@
 //FROM LibraryEx
-$EXTERN LoadFile, Map;
+$EXTERN LoadFile, Map, Trim;
 
-$EXTERN LoadList;
+//FROM FindFile
+$EXTERN FindFiles, Source, Output, NotFound;
+
+$FORWARD LoadList, DoCreateFileList;
 
 $ENTRY CreateFileList {
-  (e.Modules) = e.Modules;
+  (e.Folders) e.Unit =
+    <DoCreateFileList
+      (e.Folders) () <FindFiles (e.Folders) (e.Unit)>
+    >;
+}
 
-  (e.Modules-B (e.NextModule) e.Modules-E)
+DoCreateFileList {
+  (e.Folders) (e.Modules) = e.Modules;
+
+  (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
   (e.NextModule) e.NotScanned =
-    <CreateFileList
-      (e.Modules-B (e.NextModule) e.Modules-E) e.NotScanned
+    <DoCreateFileList
+      (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
+      e.NotScanned
     >;
 
-  (e.Modules) (e.NextModule) e.NotScanned =
-    <CreateFileList
-      (e.Modules (e.NextModule))
-      <LoadList e.NextModule> e.NotScanned
+  (e.Folders) (e.Modules) (e.NextModule) e.NotScanned =
+    <DoCreateFileList
+      (e.Folders) (e.Modules (e.NextModule))
+      <LoadList (e.Folders) e.NextModule> e.NotScanned
     >;
 }
 
 FindImports {
-  ('//FROM ' e.Name) = (e.Name);
+  e.Folders ('//FROM ' e.Name) =
+    <FindFiles (e.Folders) (<Trim e.Name>)>;
 
   e.OtherLine = ;
 }
 
 LoadList {
-  // Пропускаем библиотечные файлы
-  'Library' = ;
-  
-  'LibraryEx' = ;
-
-  e.NextModule =
+  (e.Folders) Source (e.NextModule) e.Output =
     <Map
-      FindImports
-      <LoadFile e.NextModule '.sref'>
+      (FindImports e.Folders) <LoadFile e.NextModule>
     >;
+
+  (e.Folders) Output e.Output =
+    <Map
+      (FindImports e.Folders) <LoadFile e.Output>
+    >;
+
+
+  (e.Folders) NotFound e.Unit = ;
 }

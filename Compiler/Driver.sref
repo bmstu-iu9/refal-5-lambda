@@ -4,7 +4,7 @@ $EXTERN Success, Fails;
 //FROM Lexer
 $EXTERN LexFolding;
 
-$EXTERN ParseAndGenerate;
+$FORWARD ParseAndGenerate;
 
 /**
   <CompileFile (e.SrcName) e.OutputName>
@@ -37,6 +37,7 @@ $EXTERN FOpen, FClose, FWriteLine;
     '$ENUM' NameList |
     '$EENUM' NameList |
     '$EXTERN' NameList |
+    '$FORWARD' NameList |
     '$ENTRY' Function |
     Function .
 
@@ -69,7 +70,7 @@ $EXTERN ST-Create, ST-AddDeclared, ST-AddDefined;
 $EXTERN EL-Create, EL-AddError, EL-AddErrorAt, EL-Print, EL-IsEmpty,
   EL-AddUnexpected, EL-HasErrors, EL-NoErrors;
 
-$EXTERN ParseElements, WriteGenerated;
+$FORWARD ParseElements, WriteGenerated;
 
 /*
   TranslationUnit = Element* .
@@ -107,9 +108,9 @@ WriteGenerated {
 */
 
 //FROM Lexer
-$EXTERN TkDirective, Enum, EEnum, Extern, Entry, TkName, TkEOF;
+$EXTERN TkDirective, Enum, EEnum, Extern, Forward, Entry, TkName, TkEOF;
 
-$EXTERN ParseElement-SwDirective, ParseFunction;
+$FORWARD ParseElement-SwDirective, ParseFunction;
 
 //FROM Generator
 $EXTERN GN-Entry, GN-Local;
@@ -126,7 +127,7 @@ ParseElements {
   t.ErrorList t.SymTable (TkName s.LnNum e.Name) e.Tail =
     <ParseFunction
       GN-Local (e.Name)
-      <ST-AddDefined t.ErrorList t.SymTable s.LnNum e.Name>
+      <ST-AddDefined t.ErrorList t.SymTable GN-Local s.LnNum e.Name>
       e.Tail
     >;
 
@@ -138,21 +139,22 @@ ParseElements {
 }
 
 //FROM Generator
-$EXTERN GenEEnum, GenEnum, GenExtern;
+$EXTERN GenEEnum, GenEnum, GenExtern, GenForward;
 
-$EXTERN ParseNameList;
+$FORWARD ParseNameList;
 
 GenFunctionsFromDirective {
-  EEnum  = GenEEnum  ST-AddDefined;
-  Enum   = GenEnum   ST-AddDefined;
-  Extern = GenExtern ST-AddDeclared;
+  EEnum   = GenEEnum   ST-AddDefined  GN-Entry;
+  Enum    = GenEnum    ST-AddDefined  GN-Local;
+  Extern  = GenExtern  ST-AddDeclared GN-Entry;
+  Forward = GenForward ST-AddDeclared GN-Local;
 }
 
 ParseElement-SwDirective {
   t.ErrorList t.SymTable Entry (TkName s.LnNum e.Name) e.Tail =
     <ParseFunction
       GN-Entry (e.Name)
-      <ST-AddDefined t.ErrorList t.SymTable s.LnNum e.Name>
+      <ST-AddDefined t.ErrorList t.SymTable GN-Entry s.LnNum e.Name>
       e.Tail
     >;
 
@@ -177,19 +179,19 @@ ParseElement-SwDirective {
 //FROM Lexer
 $EXTERN TkComma, TkSemicolon;
 
-$EXTERN ParseNameList-Tail;
+$FORWARD ParseNameList-Tail;
 
 ParseNameList {
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc
+  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkName s.LnNum e.Name) e.Tail =
     <s.GenFunc e.Name>
     <ParseNameList-Tail
-      <s.TableChangeFunc t.ErrorList t.SymTable s.LnNum e.Name>
-      s.GenFunc s.TableChangeFunc
+      <s.TableChangeFunc t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name>
+      s.GenFunc s.TableChangeFunc s.ScopeClass
       e.Tail
     >;
 
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc
+  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
     <ParseElements
       <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
@@ -198,19 +200,19 @@ ParseNameList {
 }
 
 ParseNameList-Tail {
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc
+  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkComma s.LnNum) e.Tail =
     <ParseNameList
-      t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc e.Tail
+      t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass e.Tail
     >;
 
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc
+  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkSemicolon s.LnNum) e.Tail =
     <ParseElements
       t.ErrorList t.SymTable e.Tail
     >;
 
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc
+  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
     <ParseElements
       <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
@@ -228,7 +230,7 @@ $EXTERN TkOpenBlock, TkCloseBlock;
 //FROM Generator
 $EXTERN GenFnStart, GenSentence, GenFnEnd;
 
-$EXTERN ParseSentences;
+$FORWARD ParseSentences;
 
 ParseFunction {
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
@@ -246,7 +248,7 @@ ParseFunction {
     >;
 }
 
-$EXTERN ParsePattern, ParseSentences-Result;
+$FORWARD ParsePattern, ParseSentences-Result;
 
 /*
   Sentence = Pattern '=' Result ';' .
@@ -312,7 +314,7 @@ ParsePattern {
 //FROM Lexer
 $EXTERN TkReplace, TkOpenCall, TkCloseCall;
 
-$EXTERN ParseSentence-Finish, ParseResult;
+$FORWARD ParseSentence-Finish, ParseResult;
 
 ParseSentences-Result {
   t.ErrorList t.SymTable (e.Pattern) (TkReplace s.LnNum) e.Tail =
@@ -334,7 +336,7 @@ ParseSentences-Result {
     >;
 }
 
-$EXTERN ParseResult-Aux;
+$FORWARD ParseResult-Aux;
 
 /*
   Result = ResultTerm* .
@@ -369,7 +371,7 @@ ParseResult-Aux {
   (e.Result) e.Tail = (e.Result) e.Tail;
 }
 
-$EXTERN CheckAndGenerateSentence, CheckPaired;
+$FORWARD CheckAndGenerateSentence, CheckPaired;
 
 ParseSentence-Finish {
   t.ErrorList t.SymTable (e.Pattern) (e.Result)
@@ -515,7 +517,7 @@ CheckPaired {
     <DoCheckPaired t.ErrorList t.SymTable '$' (e.Expr)>;
 }
 
-$EXTERN CheckAndGenerateSentence-Aux, NumerateBrackets;
+$FORWARD CheckAndGenerateSentence-Aux, NumerateBrackets;
 
 CheckAndGenerateSentence {
   (e.Result) t.ErrorList t.SymTable (e.ScannedPattern) e.Tail =
@@ -529,7 +531,7 @@ CheckAndGenerateSentence {
 //FROM Algorithm
 $EXTERN MakeAlgorithm;
 
-$EXTERN GenerateSentenceAndContinue, CheckVariables;
+$FORWARD GenerateSentenceAndContinue, CheckVariables;
 
 CheckAndGenerateSentence-Aux {
   (e.NumeratedPattern) t.ErrorList t.SymTable (e.ScannedResult) e.Tail =
@@ -551,7 +553,7 @@ GenerateSentenceAndContinue {
     <ParseSentences t.ErrorList t.SymTable e.Tail>;
 }
 
-$EXTERN CheckVariables-Pattern, CheckVariables-Result;
+$FORWARD CheckVariables-Pattern, CheckVariables-Result;
 
 CheckVariables {
   t.ErrorList ( e.Pattern ) ( e.Result ) =
