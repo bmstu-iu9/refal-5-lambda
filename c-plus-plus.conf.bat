@@ -16,7 +16,7 @@ rem Если вы используете компилятор Borland C++ Compil
 rem Если вы используете компилятор MinGW (MinGW builds), установите в строке ниже
 rem правильный путь до каталога bin дистрибутива MinGW.
 :: set PATH=%PATH%;C:\Program Files\MinGW\bin
-:: set CPPLINE=g++ -Wall
+:: set CPPLINE=g++ -Wall -g
 
 if not "%CPPLINE%" == "" goto END
 echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
