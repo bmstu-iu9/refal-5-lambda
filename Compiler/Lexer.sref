@@ -21,27 +21,36 @@ $ENTRY LexFolding {
 
 $EENUM
   TkChar,
-  TkCloseCall, TkCloseBlock, TkCloseBracket,
+  TkCloseADT, TkCloseCall, TkCloseBlock, TkCloseBracket,
   TkComma,
   TkDirective,
   TkEOF,
   TkError,
+  TkIdentMarker,
   TkName,
   TkNumber,
-  TkOpenCall, TkOpenBlock, TkOpenBracket,
+  TkOpenADT, TkOpenCall, TkOpenBlock, TkOpenBracket,
   TkReplace,
   TkSemicolon,
   TkUnexpected,
   TkVariable;
 
-$EENUM EEnum, Entry, Enum, Extern, Forward;
+$EENUM EEnum, Entry, Enum, Extern, Forward, Swap, ESwap, Ident;
 
 StrDirective {
-  EEnum = 'EENUM';  Entry = 'ENTRY'; Enum = 'ENUM'; Extern = 'EXTERN';
+  EEnum = 'EENUM';
+  Entry = 'ENTRY';
+  Enum = 'ENUM';
+  Extern = 'EXTERN';
+  Forward = 'FORWARD';
+  Swap = 'SWAP';
+  ESwap = 'ESWAP';
+  Ident = 'LABEL';
 }
 
 $ENTRY StrFromToken {
   TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
+  TkCloseADT = '"]"';
   TkCloseCall = '">"';
   TkCloseBlock = '"}"';
   TkCloseBracket = '")"';
@@ -49,8 +58,10 @@ $ENTRY StrFromToken {
   TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
   TkEOF = 'end of file';
   TkError e.Message = 'LEXER ERROR: ' e.Message;
-  TkName e.Name = 'Identifier ' e.Name;
+  TkIdentMarker = '"#"';
+  TkName e.Name = 'Name ' e.Name;
   TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  TkOpenADT = '"["';
   TkOpenCall = '"<"';
   TkOpenBlock = '"{"';
   TkOpenBracket = '"("';
@@ -64,6 +75,7 @@ $ENUM
   TkLiteral-Char,
   TkLiteral-Code,
   TkLiteral-NewLine,
+  TkLiteral-CarriageReturn,
   TkLiteral-Tab,
   TkNewLine,
   TkPunctuation,
@@ -94,6 +106,8 @@ NormalizeToken {
 
   (TkLiteral-NewLine 'n') = (TkChar '\n');
 
+  (TkLiteral-CarriageReturn 'r') = (TkChar '\r');
+
   (TkLiteral-Tab 't') = (TkChar '\t');
 
   (TkName e.Name) = (TkName <NormalizeName e.Name>);
@@ -117,9 +131,14 @@ NormalizeToken {
 }
 
 ValidDirective {
-  'ENUM' = (TkDirective Enum); 'EENUM' = (TkDirective EEnum);
-  'ENTRY' = (TkDirective Entry); 'EXTERN' = (TkDirective Extern);
+  'ENUM' = (TkDirective Enum);
+  'EENUM' = (TkDirective EEnum);
+  'ENTRY' = (TkDirective Entry);
+  'EXTERN' = (TkDirective Extern);
   'FORWARD' = (TkDirective Forward);
+  'SWAP' = (TkDirective Swap);
+  'ESWAP' = (TkDirective ESwap);
+  'LABEL' = (TkDirective Ident);
   e.Other = (TkError 'Unknown directive $' e.Other);
 }
 
@@ -128,6 +147,8 @@ SwPunctuation {
   '{' = TkOpenBlock; '}' = TkCloseBlock;
   '(' = TkOpenBracket; ')' = TkCloseBracket;
   '=' = TkReplace; ',' = TkComma; ';' = TkSemicolon;
+  '[' = TkOpenADT; ']' = TkCloseADT;
+  '#' = TkIdentMarker;
 }
 
 AddLineNumber {
@@ -159,14 +180,14 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
   :UpLetter: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
   :LoLetter: = 'abcdefghijklmnopqrstuvwxyz'.
   :Digit: = '0123456789'.
-  :Punctuation: = '<>(){}=;,'.
+  :Punctuation: = '<>(){}[]=;,#'.
 
   :StartIdentifier: = :UpLetter:.
   :TailIdentifier: = :UpLetter: :LoLetter: :Digit: '_-'.
   :VarName: = :TailIdentifier:.
   :VarMode: = 'set'.
   :DirectiveBody: = :UpLetter:.
-  :Space: = ' \t'.
+  :Space: = ' \t\r'.
 
   :Other: = :Any:.
 
@@ -225,6 +246,7 @@ $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
 
   StringLiteral-Escape =
     'n'     !TkLiteral-NewLine                  StringLiteral             |
+    'r'     !TkLiteral-CarriageReturn           StringLiteral             |
     't'     !TkLiteral-Tab                      StringLiteral             |
     '\\'    !TkLiteral-Char                     StringLiteral             |
     '\''    !TkLiteral-Char                     StringLiteral             |
@@ -278,256 +300,134 @@ GEN:END*/
 Root {
   (e.Accum) ' ' e.Text = <Root () e.Text>;
   (e.Accum) '\t' e.Text = <Root () e.Text>;
-  (e.Accum) '<' e.Text =
-    (TkPunctuation e.Accum '<')
-    <Root () e.Text>;
-  (e.Accum) '>' e.Text =
-    (TkPunctuation e.Accum '>')
-    <Root () e.Text>;
-  (e.Accum) '(' e.Text =
-    (TkPunctuation e.Accum '(')
-    <Root () e.Text>;
-  (e.Accum) ')' e.Text =
-    (TkPunctuation e.Accum ')')
-    <Root () e.Text>;
-  (e.Accum) '{' e.Text =
-    (TkPunctuation e.Accum '{')
-    <Root () e.Text>;
-  (e.Accum) '}' e.Text =
-    (TkPunctuation e.Accum '}')
-    <Root () e.Text>;
-  (e.Accum) '=' e.Text =
-    (TkPunctuation e.Accum '=')
-    <Root () e.Text>;
-  (e.Accum) ';' e.Text =
-    (TkPunctuation e.Accum ';')
-    <Root () e.Text>;
-  (e.Accum) ',' e.Text =
-    (TkPunctuation e.Accum ',')
-    <Root () e.Text>;
-  (e.Accum) 'A' e.Text =
-    <Name (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <Name (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <Name (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <Name (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <Name (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <Name (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <Name (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <Name (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <Name (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <Name (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <Name (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <Name (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <Name (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <Name (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <Name (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <Name (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <Name (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <Name (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <Name (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <Name (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <Name (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <Name (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <Name (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <Name (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <Name (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <Name (e.Accum 'Z') e.Text>;
-  (e.Accum) 's' e.Text =
-    <VariableStart (e.Accum 's') e.Text>;
-  (e.Accum) 'e' e.Text =
-    <VariableStart (e.Accum 'e') e.Text>;
-  (e.Accum) 't' e.Text =
-    <VariableStart (e.Accum 't') e.Text>;
-  (e.Accum) '0' e.Text =
-    <Number (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <Number (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <Number (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <Number (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <Number (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <Number (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <Number (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <Number (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <Number (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <Number (e.Accum '9') e.Text>;
+  (e.Accum) '\r' e.Text = <Root () e.Text>;
+  (e.Accum) '<' e.Text = (TkPunctuation e.Accum '<') <Root () e.Text>;
+  (e.Accum) '>' e.Text = (TkPunctuation e.Accum '>') <Root () e.Text>;
+  (e.Accum) '(' e.Text = (TkPunctuation e.Accum '(') <Root () e.Text>;
+  (e.Accum) ')' e.Text = (TkPunctuation e.Accum ')') <Root () e.Text>;
+  (e.Accum) '{' e.Text = (TkPunctuation e.Accum '{') <Root () e.Text>;
+  (e.Accum) '}' e.Text = (TkPunctuation e.Accum '}') <Root () e.Text>;
+  (e.Accum) '[' e.Text = (TkPunctuation e.Accum '[') <Root () e.Text>;
+  (e.Accum) ']' e.Text = (TkPunctuation e.Accum ']') <Root () e.Text>;
+  (e.Accum) '=' e.Text = (TkPunctuation e.Accum '=') <Root () e.Text>;
+  (e.Accum) ';' e.Text = (TkPunctuation e.Accum ';') <Root () e.Text>;
+  (e.Accum) ',' e.Text = (TkPunctuation e.Accum ',') <Root () e.Text>;
+  (e.Accum) '#' e.Text = (TkPunctuation e.Accum '#') <Root () e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) 's' e.Text = <VariableStart (e.Accum 's') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableStart (e.Accum 'e') e.Text>;
+  (e.Accum) 't' e.Text = <VariableStart (e.Accum 't') e.Text>;
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
   (e.Accum) '$' e.Text = <Directive () e.Text>;
   (e.Accum) '\'' e.Text = <StringLiteral-Start () e.Text>;
-  (e.Accum) '/' e.Text =
-    <StartComment (e.Accum '/') e.Text>;
-  (e.Accum) '\n' e.Text =
-    (TkNewLine e.Accum '\n')
-    <Root () e.Text>;
+  (e.Accum) '/' e.Text = <StartComment (e.Accum '/') e.Text>;
+  (e.Accum) '\n' e.Text = (TkNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) =  (TkEOF e.Accum);
-  (e.Accum) s.Any e.Text =
-    (TkUnexpected e.Accum s.Any)
-    <Root () e.Text>;
+  (e.Accum) s.Any e.Text = (TkUnexpected e.Accum s.Any) <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 Name {
-  (e.Accum) '0' e.Text =
-    <Name (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <Name (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <Name (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <Name (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <Name (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <Name (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <Name (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <Name (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <Name (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <Name (e.Accum '9') e.Text>;
-  (e.Accum) 'a' e.Text =
-    <Name (e.Accum 'a') e.Text>;
-  (e.Accum) 'b' e.Text =
-    <Name (e.Accum 'b') e.Text>;
-  (e.Accum) 'c' e.Text =
-    <Name (e.Accum 'c') e.Text>;
-  (e.Accum) 'd' e.Text =
-    <Name (e.Accum 'd') e.Text>;
-  (e.Accum) 'e' e.Text =
-    <Name (e.Accum 'e') e.Text>;
-  (e.Accum) 'f' e.Text =
-    <Name (e.Accum 'f') e.Text>;
-  (e.Accum) 'g' e.Text =
-    <Name (e.Accum 'g') e.Text>;
-  (e.Accum) 'h' e.Text =
-    <Name (e.Accum 'h') e.Text>;
-  (e.Accum) 'i' e.Text =
-    <Name (e.Accum 'i') e.Text>;
-  (e.Accum) 'j' e.Text =
-    <Name (e.Accum 'j') e.Text>;
-  (e.Accum) 'k' e.Text =
-    <Name (e.Accum 'k') e.Text>;
-  (e.Accum) 'l' e.Text =
-    <Name (e.Accum 'l') e.Text>;
-  (e.Accum) 'm' e.Text =
-    <Name (e.Accum 'm') e.Text>;
-  (e.Accum) 'n' e.Text =
-    <Name (e.Accum 'n') e.Text>;
-  (e.Accum) 'o' e.Text =
-    <Name (e.Accum 'o') e.Text>;
-  (e.Accum) 'p' e.Text =
-    <Name (e.Accum 'p') e.Text>;
-  (e.Accum) 'q' e.Text =
-    <Name (e.Accum 'q') e.Text>;
-  (e.Accum) 'r' e.Text =
-    <Name (e.Accum 'r') e.Text>;
-  (e.Accum) 's' e.Text =
-    <Name (e.Accum 's') e.Text>;
-  (e.Accum) 't' e.Text =
-    <Name (e.Accum 't') e.Text>;
-  (e.Accum) 'u' e.Text =
-    <Name (e.Accum 'u') e.Text>;
-  (e.Accum) 'v' e.Text =
-    <Name (e.Accum 'v') e.Text>;
-  (e.Accum) 'w' e.Text =
-    <Name (e.Accum 'w') e.Text>;
-  (e.Accum) 'x' e.Text =
-    <Name (e.Accum 'x') e.Text>;
-  (e.Accum) 'y' e.Text =
-    <Name (e.Accum 'y') e.Text>;
-  (e.Accum) 'z' e.Text =
-    <Name (e.Accum 'z') e.Text>;
-  (e.Accum) 'A' e.Text =
-    <Name (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <Name (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <Name (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <Name (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <Name (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <Name (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <Name (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <Name (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <Name (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <Name (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <Name (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <Name (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <Name (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <Name (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <Name (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <Name (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <Name (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <Name (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <Name (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <Name (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <Name (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <Name (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <Name (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <Name (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <Name (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <Name (e.Accum 'Z') e.Text>;
-  (e.Accum) '_' e.Text =
-    <Name (e.Accum '_') e.Text>;
-  (e.Accum) '-' e.Text =
-    <Name (e.Accum '-') e.Text>;
+  (e.Accum) '0' e.Text = <Name (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Name (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Name (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Name (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Name (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Name (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Name (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Name (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Name (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Name (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <Name (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <Name (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <Name (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
   (e.Accum) e.Text =
     (TkName e.Accum) <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -536,36 +436,24 @@ Name {
 }
 
 VariableStart {
-  (e.Accum) '.' e.Text =
-    <VariableIndex (e.Accum '.') e.Text>;
-  (e.Accum) e.Text =
-    (TokenError 'Expected dot') <Root () e.Text>;
+  (e.Accum) '.' e.Text = <VariableIndex (e.Accum '.') e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected dot') <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 Number {
-  (e.Accum) '0' e.Text =
-    <Number (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <Number (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <Number (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <Number (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <Number (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <Number (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <Number (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <Number (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <Number (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <Number (e.Accum '9') e.Text>;
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
   (e.Accum) e.Text =
     (TkNumber e.Accum) <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -574,69 +462,40 @@ Number {
 }
 
 Directive {
-  (e.Accum) 'A' e.Text =
-    <DirectiveTail (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <DirectiveTail (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <DirectiveTail (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <DirectiveTail (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <DirectiveTail (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <DirectiveTail (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <DirectiveTail (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <DirectiveTail (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <DirectiveTail (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <DirectiveTail (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <DirectiveTail (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <DirectiveTail (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <DirectiveTail (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <DirectiveTail (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <DirectiveTail (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <DirectiveTail (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <DirectiveTail (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <DirectiveTail (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <DirectiveTail (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <DirectiveTail (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <DirectiveTail (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <DirectiveTail (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <DirectiveTail (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <DirectiveTail (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <DirectiveTail (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <DirectiveTail (e.Accum 'Z') e.Text>;
-  (e.Accum) e.Text =
-    (TokenError 'Expected directive name') <Root () e.Text>;
+  (e.Accum) 'A' e.Text = <DirectiveTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <DirectiveTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <DirectiveTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <DirectiveTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <DirectiveTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <DirectiveTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <DirectiveTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <DirectiveTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <DirectiveTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <DirectiveTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <DirectiveTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <DirectiveTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <DirectiveTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <DirectiveTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <DirectiveTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <DirectiveTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <DirectiveTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <DirectiveTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <DirectiveTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <DirectiveTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <DirectiveTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <DirectiveTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <DirectiveTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected directive name') <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 StringLiteral-Start {
-  (e.Accum) '\'' e.Text =
-    (TkLiteral-Char e.Accum '\'')
-    <Root () e.Text>;
+  (e.Accum) '\'' e.Text = (TkLiteral-Char e.Accum '\'') <Root () e.Text>;
   (e.Accum) e.Text = <StringLiteral (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
@@ -654,194 +513,103 @@ StartComment {
 }
 
 VariableIndex {
-  (e.Accum) '0' e.Text =
-    <VariableIndexTail (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <VariableIndexTail (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <VariableIndexTail (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <VariableIndexTail (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <VariableIndexTail (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <VariableIndexTail (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <VariableIndexTail (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <VariableIndexTail (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <VariableIndexTail (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <VariableIndexTail (e.Accum '9') e.Text>;
-  (e.Accum) 'a' e.Text =
-    <VariableIndexTail (e.Accum 'a') e.Text>;
-  (e.Accum) 'b' e.Text =
-    <VariableIndexTail (e.Accum 'b') e.Text>;
-  (e.Accum) 'c' e.Text =
-    <VariableIndexTail (e.Accum 'c') e.Text>;
-  (e.Accum) 'd' e.Text =
-    <VariableIndexTail (e.Accum 'd') e.Text>;
-  (e.Accum) 'e' e.Text =
-    <VariableIndexTail (e.Accum 'e') e.Text>;
-  (e.Accum) 'f' e.Text =
-    <VariableIndexTail (e.Accum 'f') e.Text>;
-  (e.Accum) 'g' e.Text =
-    <VariableIndexTail (e.Accum 'g') e.Text>;
-  (e.Accum) 'h' e.Text =
-    <VariableIndexTail (e.Accum 'h') e.Text>;
-  (e.Accum) 'i' e.Text =
-    <VariableIndexTail (e.Accum 'i') e.Text>;
-  (e.Accum) 'j' e.Text =
-    <VariableIndexTail (e.Accum 'j') e.Text>;
-  (e.Accum) 'k' e.Text =
-    <VariableIndexTail (e.Accum 'k') e.Text>;
-  (e.Accum) 'l' e.Text =
-    <VariableIndexTail (e.Accum 'l') e.Text>;
-  (e.Accum) 'm' e.Text =
-    <VariableIndexTail (e.Accum 'm') e.Text>;
-  (e.Accum) 'n' e.Text =
-    <VariableIndexTail (e.Accum 'n') e.Text>;
-  (e.Accum) 'o' e.Text =
-    <VariableIndexTail (e.Accum 'o') e.Text>;
-  (e.Accum) 'p' e.Text =
-    <VariableIndexTail (e.Accum 'p') e.Text>;
-  (e.Accum) 'q' e.Text =
-    <VariableIndexTail (e.Accum 'q') e.Text>;
-  (e.Accum) 'r' e.Text =
-    <VariableIndexTail (e.Accum 'r') e.Text>;
-  (e.Accum) 's' e.Text =
-    <VariableIndexTail (e.Accum 's') e.Text>;
-  (e.Accum) 't' e.Text =
-    <VariableIndexTail (e.Accum 't') e.Text>;
-  (e.Accum) 'u' e.Text =
-    <VariableIndexTail (e.Accum 'u') e.Text>;
-  (e.Accum) 'v' e.Text =
-    <VariableIndexTail (e.Accum 'v') e.Text>;
-  (e.Accum) 'w' e.Text =
-    <VariableIndexTail (e.Accum 'w') e.Text>;
-  (e.Accum) 'x' e.Text =
-    <VariableIndexTail (e.Accum 'x') e.Text>;
-  (e.Accum) 'y' e.Text =
-    <VariableIndexTail (e.Accum 'y') e.Text>;
-  (e.Accum) 'z' e.Text =
-    <VariableIndexTail (e.Accum 'z') e.Text>;
-  (e.Accum) 'A' e.Text =
-    <VariableIndexTail (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <VariableIndexTail (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <VariableIndexTail (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <VariableIndexTail (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <VariableIndexTail (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <VariableIndexTail (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <VariableIndexTail (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <VariableIndexTail (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <VariableIndexTail (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <VariableIndexTail (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <VariableIndexTail (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <VariableIndexTail (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <VariableIndexTail (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <VariableIndexTail (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <VariableIndexTail (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <VariableIndexTail (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <VariableIndexTail (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <VariableIndexTail (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <VariableIndexTail (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <VariableIndexTail (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <VariableIndexTail (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <VariableIndexTail (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <VariableIndexTail (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <VariableIndexTail (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <VariableIndexTail (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <VariableIndexTail (e.Accum 'Z') e.Text>;
-  (e.Accum) '_' e.Text =
-    <VariableIndexTail (e.Accum '_') e.Text>;
-  (e.Accum) '-' e.Text =
-    <VariableIndexTail (e.Accum '-') e.Text>;
-  (e.Accum) e.Text =
-    (TokenError 'Expected variable name') <Root () e.Text>;
+  (e.Accum) '0' e.Text = <VariableIndexTail (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <VariableIndexTail (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <VariableIndexTail (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <VariableIndexTail (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <VariableIndexTail (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <VariableIndexTail (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <VariableIndexTail (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <VariableIndexTail (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <VariableIndexTail (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <VariableIndexTail (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <VariableIndexTail (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <VariableIndexTail (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <VariableIndexTail (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <VariableIndexTail (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableIndexTail (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <VariableIndexTail (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <VariableIndexTail (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <VariableIndexTail (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <VariableIndexTail (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <VariableIndexTail (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <VariableIndexTail (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <VariableIndexTail (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <VariableIndexTail (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <VariableIndexTail (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <VariableIndexTail (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <VariableIndexTail (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <VariableIndexTail (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <VariableIndexTail (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <VariableIndexTail (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <VariableIndexTail (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <VariableIndexTail (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <VariableIndexTail (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <VariableIndexTail (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <VariableIndexTail (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <VariableIndexTail (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <VariableIndexTail (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <VariableIndexTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <VariableIndexTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <VariableIndexTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <VariableIndexTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <VariableIndexTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <VariableIndexTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <VariableIndexTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <VariableIndexTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <VariableIndexTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <VariableIndexTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <VariableIndexTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <VariableIndexTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <VariableIndexTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <VariableIndexTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <VariableIndexTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <VariableIndexTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <VariableIndexTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <VariableIndexTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <VariableIndexTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <VariableIndexTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <VariableIndexTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <VariableIndexTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <VariableIndexTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <VariableIndexTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <VariableIndexTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected variable name') <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 DirectiveTail {
-  (e.Accum) 'A' e.Text =
-    <DirectiveTail (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <DirectiveTail (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <DirectiveTail (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <DirectiveTail (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <DirectiveTail (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <DirectiveTail (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <DirectiveTail (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <DirectiveTail (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <DirectiveTail (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <DirectiveTail (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <DirectiveTail (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <DirectiveTail (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <DirectiveTail (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <DirectiveTail (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <DirectiveTail (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <DirectiveTail (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <DirectiveTail (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <DirectiveTail (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <DirectiveTail (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <DirectiveTail (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <DirectiveTail (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <DirectiveTail (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <DirectiveTail (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <DirectiveTail (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <DirectiveTail (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <DirectiveTail (e.Accum 'Z') e.Text>;
+  (e.Accum) 'A' e.Text = <DirectiveTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <DirectiveTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <DirectiveTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <DirectiveTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <DirectiveTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <DirectiveTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <DirectiveTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <DirectiveTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <DirectiveTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <DirectiveTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <DirectiveTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <DirectiveTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <DirectiveTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <DirectiveTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <DirectiveTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <DirectiveTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <DirectiveTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <DirectiveTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <DirectiveTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <DirectiveTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <DirectiveTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <DirectiveTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <DirectiveTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
   (e.Accum) e.Text =
     (TkDirective e.Accum) <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -852,12 +620,9 @@ DirectiveTail {
 StringLiteral {
   (e.Accum) '\\' e.Text = <StringLiteral-Escape () e.Text>;
   (e.Accum) '\'' e.Text = <StringLiteral-Quote () e.Text>;
-  (e.Accum) '\n' e.Text =
-    (TokenError 'Unclosed quote') <Root () e.Text >;
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Root () e.Text >;
   (e.Accum) = (TokenError 'Unexpected EOF in string literal');
-  (e.Accum) s.Any e.Text =
-    (TkLiteral-Char e.Accum s.Any)
-    <StringLiteral () e.Text>;
+  (e.Accum) s.Any e.Text = (TkLiteral-Char e.Accum s.Any) <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
@@ -866,9 +631,7 @@ StringLiteral {
 CComment {
   (e.Accum) '/' e.Text = <CComment-CheckNested () e.Text>;
   (e.Accum) '*' e.Text = <CComment-CheckEnd () e.Text>;
-  (e.Accum) '\n' e.Text =
-    (TkNewLine e.Accum '\n')
-    <CComment () e.Text>;
+  (e.Accum) '\n' e.Text = (TkNewLine e.Accum '\n') <CComment () e.Text>;
   (e.Accum) s.Any e.Text = <CComment () e.Text>;
   (e.Accum) = (TokenError 'Unexpected EOF: unclosed comment');
   (e.Accum) s.Unexpected e.Text = 
@@ -877,9 +640,7 @@ CComment {
 }
 
 CppComment {
-  (e.Accum) '\n' e.Text =
-    (TkNewLine e.Accum '\n')
-    <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (TkNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) =  (TkEOF e.Accum);
   (e.Accum) s.Any e.Text = <CppComment () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -888,134 +649,70 @@ CppComment {
 }
 
 VariableIndexTail {
-  (e.Accum) '0' e.Text =
-    <VariableIndexTail (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <VariableIndexTail (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <VariableIndexTail (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <VariableIndexTail (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <VariableIndexTail (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <VariableIndexTail (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <VariableIndexTail (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <VariableIndexTail (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <VariableIndexTail (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <VariableIndexTail (e.Accum '9') e.Text>;
-  (e.Accum) 'a' e.Text =
-    <VariableIndexTail (e.Accum 'a') e.Text>;
-  (e.Accum) 'b' e.Text =
-    <VariableIndexTail (e.Accum 'b') e.Text>;
-  (e.Accum) 'c' e.Text =
-    <VariableIndexTail (e.Accum 'c') e.Text>;
-  (e.Accum) 'd' e.Text =
-    <VariableIndexTail (e.Accum 'd') e.Text>;
-  (e.Accum) 'e' e.Text =
-    <VariableIndexTail (e.Accum 'e') e.Text>;
-  (e.Accum) 'f' e.Text =
-    <VariableIndexTail (e.Accum 'f') e.Text>;
-  (e.Accum) 'g' e.Text =
-    <VariableIndexTail (e.Accum 'g') e.Text>;
-  (e.Accum) 'h' e.Text =
-    <VariableIndexTail (e.Accum 'h') e.Text>;
-  (e.Accum) 'i' e.Text =
-    <VariableIndexTail (e.Accum 'i') e.Text>;
-  (e.Accum) 'j' e.Text =
-    <VariableIndexTail (e.Accum 'j') e.Text>;
-  (e.Accum) 'k' e.Text =
-    <VariableIndexTail (e.Accum 'k') e.Text>;
-  (e.Accum) 'l' e.Text =
-    <VariableIndexTail (e.Accum 'l') e.Text>;
-  (e.Accum) 'm' e.Text =
-    <VariableIndexTail (e.Accum 'm') e.Text>;
-  (e.Accum) 'n' e.Text =
-    <VariableIndexTail (e.Accum 'n') e.Text>;
-  (e.Accum) 'o' e.Text =
-    <VariableIndexTail (e.Accum 'o') e.Text>;
-  (e.Accum) 'p' e.Text =
-    <VariableIndexTail (e.Accum 'p') e.Text>;
-  (e.Accum) 'q' e.Text =
-    <VariableIndexTail (e.Accum 'q') e.Text>;
-  (e.Accum) 'r' e.Text =
-    <VariableIndexTail (e.Accum 'r') e.Text>;
-  (e.Accum) 's' e.Text =
-    <VariableIndexTail (e.Accum 's') e.Text>;
-  (e.Accum) 't' e.Text =
-    <VariableIndexTail (e.Accum 't') e.Text>;
-  (e.Accum) 'u' e.Text =
-    <VariableIndexTail (e.Accum 'u') e.Text>;
-  (e.Accum) 'v' e.Text =
-    <VariableIndexTail (e.Accum 'v') e.Text>;
-  (e.Accum) 'w' e.Text =
-    <VariableIndexTail (e.Accum 'w') e.Text>;
-  (e.Accum) 'x' e.Text =
-    <VariableIndexTail (e.Accum 'x') e.Text>;
-  (e.Accum) 'y' e.Text =
-    <VariableIndexTail (e.Accum 'y') e.Text>;
-  (e.Accum) 'z' e.Text =
-    <VariableIndexTail (e.Accum 'z') e.Text>;
-  (e.Accum) 'A' e.Text =
-    <VariableIndexTail (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text =
-    <VariableIndexTail (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text =
-    <VariableIndexTail (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text =
-    <VariableIndexTail (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text =
-    <VariableIndexTail (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text =
-    <VariableIndexTail (e.Accum 'F') e.Text>;
-  (e.Accum) 'G' e.Text =
-    <VariableIndexTail (e.Accum 'G') e.Text>;
-  (e.Accum) 'H' e.Text =
-    <VariableIndexTail (e.Accum 'H') e.Text>;
-  (e.Accum) 'I' e.Text =
-    <VariableIndexTail (e.Accum 'I') e.Text>;
-  (e.Accum) 'J' e.Text =
-    <VariableIndexTail (e.Accum 'J') e.Text>;
-  (e.Accum) 'K' e.Text =
-    <VariableIndexTail (e.Accum 'K') e.Text>;
-  (e.Accum) 'L' e.Text =
-    <VariableIndexTail (e.Accum 'L') e.Text>;
-  (e.Accum) 'M' e.Text =
-    <VariableIndexTail (e.Accum 'M') e.Text>;
-  (e.Accum) 'N' e.Text =
-    <VariableIndexTail (e.Accum 'N') e.Text>;
-  (e.Accum) 'O' e.Text =
-    <VariableIndexTail (e.Accum 'O') e.Text>;
-  (e.Accum) 'P' e.Text =
-    <VariableIndexTail (e.Accum 'P') e.Text>;
-  (e.Accum) 'Q' e.Text =
-    <VariableIndexTail (e.Accum 'Q') e.Text>;
-  (e.Accum) 'R' e.Text =
-    <VariableIndexTail (e.Accum 'R') e.Text>;
-  (e.Accum) 'S' e.Text =
-    <VariableIndexTail (e.Accum 'S') e.Text>;
-  (e.Accum) 'T' e.Text =
-    <VariableIndexTail (e.Accum 'T') e.Text>;
-  (e.Accum) 'U' e.Text =
-    <VariableIndexTail (e.Accum 'U') e.Text>;
-  (e.Accum) 'V' e.Text =
-    <VariableIndexTail (e.Accum 'V') e.Text>;
-  (e.Accum) 'W' e.Text =
-    <VariableIndexTail (e.Accum 'W') e.Text>;
-  (e.Accum) 'X' e.Text =
-    <VariableIndexTail (e.Accum 'X') e.Text>;
-  (e.Accum) 'Y' e.Text =
-    <VariableIndexTail (e.Accum 'Y') e.Text>;
-  (e.Accum) 'Z' e.Text =
-    <VariableIndexTail (e.Accum 'Z') e.Text>;
-  (e.Accum) '_' e.Text =
-    <VariableIndexTail (e.Accum '_') e.Text>;
-  (e.Accum) '-' e.Text =
-    <VariableIndexTail (e.Accum '-') e.Text>;
+  (e.Accum) '0' e.Text = <VariableIndexTail (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <VariableIndexTail (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <VariableIndexTail (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <VariableIndexTail (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <VariableIndexTail (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <VariableIndexTail (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <VariableIndexTail (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <VariableIndexTail (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <VariableIndexTail (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <VariableIndexTail (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <VariableIndexTail (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <VariableIndexTail (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <VariableIndexTail (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <VariableIndexTail (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableIndexTail (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <VariableIndexTail (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <VariableIndexTail (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <VariableIndexTail (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <VariableIndexTail (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <VariableIndexTail (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <VariableIndexTail (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <VariableIndexTail (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <VariableIndexTail (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <VariableIndexTail (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <VariableIndexTail (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <VariableIndexTail (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <VariableIndexTail (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <VariableIndexTail (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <VariableIndexTail (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <VariableIndexTail (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <VariableIndexTail (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <VariableIndexTail (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <VariableIndexTail (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <VariableIndexTail (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <VariableIndexTail (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <VariableIndexTail (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <VariableIndexTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <VariableIndexTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <VariableIndexTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <VariableIndexTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <VariableIndexTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <VariableIndexTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <VariableIndexTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <VariableIndexTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <VariableIndexTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <VariableIndexTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <VariableIndexTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <VariableIndexTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <VariableIndexTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <VariableIndexTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <VariableIndexTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <VariableIndexTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <VariableIndexTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <VariableIndexTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <VariableIndexTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <VariableIndexTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <VariableIndexTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <VariableIndexTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <VariableIndexTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <VariableIndexTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <VariableIndexTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
+  (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
+  (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
   (e.Accum) e.Text =
     (TkVariable e.Accum) <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -1024,32 +721,21 @@ VariableIndexTail {
 }
 
 StringLiteral-Escape {
-  (e.Accum) 'n' e.Text =
-    (TkLiteral-NewLine e.Accum 'n')
-    <StringLiteral () e.Text>;
-  (e.Accum) 't' e.Text =
-    (TkLiteral-Tab e.Accum 't')
-    <StringLiteral () e.Text>;
-  (e.Accum) '\\' e.Text =
-    (TkLiteral-Char e.Accum '\\')
-    <StringLiteral () e.Text>;
-  (e.Accum) '\'' e.Text =
-    (TkLiteral-Char e.Accum '\'')
-    <StringLiteral () e.Text>;
+  (e.Accum) 'n' e.Text = (TkLiteral-NewLine e.Accum 'n') <StringLiteral () e.Text>;
+  (e.Accum) 'r' e.Text = (TkLiteral-CarriageReturn e.Accum 'r') <StringLiteral () e.Text>;
+  (e.Accum) 't' e.Text = (TkLiteral-Tab e.Accum 't') <StringLiteral () e.Text>;
+  (e.Accum) '\\' e.Text = (TkLiteral-Char e.Accum '\\') <StringLiteral () e.Text>;
+  (e.Accum) '\'' e.Text = (TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
   (e.Accum) 'd' e.Text = <StringLiteral-Escape-Code () e.Text>;
-  (e.Accum) '\n' e.Text =
-    (TokenError 'Unclosed quote') <Root () e.Text >;
-  (e.Accum) e.Text =
-    (TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
+  (e.Accum) '\n' e.Text = (TokenError 'Unclosed quote') <Root () e.Text >;
+  (e.Accum) e.Text = (TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 StringLiteral-Quote {
-  (e.Accum) '\'' e.Text =
-    (TkLiteral-Char e.Accum '\'')
-    <StringLiteral () e.Text>;
+  (e.Accum) '\'' e.Text = (TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
   (e.Accum) e.Text = <Root (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
@@ -1057,8 +743,7 @@ StringLiteral-Quote {
 }
 
 CComment-CheckNested {
-  (e.Accum) '*' e.Text =
-    (TokenError 'Nested comments is disabled') <CComment () e.Text >;
+  (e.Accum) '*' e.Text = (TokenError 'Nested comments is disabled') <CComment () e.Text >;
   (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
@@ -1074,54 +759,33 @@ CComment-CheckEnd {
 }
 
 StringLiteral-Escape-Code {
-  (e.Accum) '0' e.Text =
-    <SL-E-C1 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <SL-E-C1 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <SL-E-C1 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <SL-E-C1 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <SL-E-C1 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <SL-E-C1 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <SL-E-C1 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <SL-E-C1 (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <SL-E-C1 (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <SL-E-C1 (e.Accum '9') e.Text>;
-  (e.Accum) e.Text =
-    (TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
+  (e.Accum) '0' e.Text = <SL-E-C1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-C1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-C1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-C1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-C1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-C1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-C1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-C1 (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <SL-E-C1 (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <SL-E-C1 (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (TokenError 'Expected decimal digit') <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
     (TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);
 }
 
 SL-E-C1 {
-  (e.Accum) '0' e.Text =
-    <SL-E-C2 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text =
-    <SL-E-C2 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text =
-    <SL-E-C2 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text =
-    <SL-E-C2 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text =
-    <SL-E-C2 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text =
-    <SL-E-C2 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text =
-    <SL-E-C2 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text =
-    <SL-E-C2 (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text =
-    <SL-E-C2 (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text =
-    <SL-E-C2 (e.Accum '9') e.Text>;
+  (e.Accum) '0' e.Text = <SL-E-C2 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SL-E-C2 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SL-E-C2 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SL-E-C2 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SL-E-C2 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SL-E-C2 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SL-E-C2 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SL-E-C2 (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <SL-E-C2 (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <SL-E-C2 (e.Accum '9') e.Text>;
   (e.Accum) e.Text =
     (TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 
@@ -1130,36 +794,16 @@ SL-E-C1 {
 }
 
 SL-E-C2 {
-  (e.Accum) '0' e.Text =
-    (TkLiteral-Code e.Accum '0')
-    <StringLiteral () e.Text>;
-  (e.Accum) '1' e.Text =
-    (TkLiteral-Code e.Accum '1')
-    <StringLiteral () e.Text>;
-  (e.Accum) '2' e.Text =
-    (TkLiteral-Code e.Accum '2')
-    <StringLiteral () e.Text>;
-  (e.Accum) '3' e.Text =
-    (TkLiteral-Code e.Accum '3')
-    <StringLiteral () e.Text>;
-  (e.Accum) '4' e.Text =
-    (TkLiteral-Code e.Accum '4')
-    <StringLiteral () e.Text>;
-  (e.Accum) '5' e.Text =
-    (TkLiteral-Code e.Accum '5')
-    <StringLiteral () e.Text>;
-  (e.Accum) '6' e.Text =
-    (TkLiteral-Code e.Accum '6')
-    <StringLiteral () e.Text>;
-  (e.Accum) '7' e.Text =
-    (TkLiteral-Code e.Accum '7')
-    <StringLiteral () e.Text>;
-  (e.Accum) '8' e.Text =
-    (TkLiteral-Code e.Accum '8')
-    <StringLiteral () e.Text>;
-  (e.Accum) '9' e.Text =
-    (TkLiteral-Code e.Accum '9')
-    <StringLiteral () e.Text>;
+  (e.Accum) '0' e.Text = (TkLiteral-Code e.Accum '0') <StringLiteral () e.Text>;
+  (e.Accum) '1' e.Text = (TkLiteral-Code e.Accum '1') <StringLiteral () e.Text>;
+  (e.Accum) '2' e.Text = (TkLiteral-Code e.Accum '2') <StringLiteral () e.Text>;
+  (e.Accum) '3' e.Text = (TkLiteral-Code e.Accum '3') <StringLiteral () e.Text>;
+  (e.Accum) '4' e.Text = (TkLiteral-Code e.Accum '4') <StringLiteral () e.Text>;
+  (e.Accum) '5' e.Text = (TkLiteral-Code e.Accum '5') <StringLiteral () e.Text>;
+  (e.Accum) '6' e.Text = (TkLiteral-Code e.Accum '6') <StringLiteral () e.Text>;
+  (e.Accum) '7' e.Text = (TkLiteral-Code e.Accum '7') <StringLiteral () e.Text>;
+  (e.Accum) '8' e.Text = (TkLiteral-Code e.Accum '8') <StringLiteral () e.Text>;
+  (e.Accum) '9' e.Text = (TkLiteral-Code e.Accum '9') <StringLiteral () e.Text>;
   (e.Accum) e.Text =
     (TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text = 

@@ -25,7 +25,9 @@ $ENTRY MakeAlgorithm {
 //==============================================================================
 
 //FROM Lexer
-$EXTERN TkOpenBracket, TkCloseBracket, TkName, TkNumber, TkVariable, TkChar;
+$EXTERN
+  TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
+  TkName, TkNumber, TkVariable, TkChar;
 
 //FROM LibraryEx
 $EXTERN Inc;
@@ -36,9 +38,18 @@ $ENUM LeftPtr, RightPtr;
 $EENUM AlgLeft, AlgRight;
 
 /*
+  Тип идентификатора следует сделать доступным
+  и из Driver'а, и из Generator'а.
+  Остаётся только импортировать отсюда.
+*/
+$EENUM TkIdentifier;
+
+/*
 Команды распознавания
   Литералы, формат (Cmd*** s.Direction s.BracketNum e.Literal)
   Скобки, формат (CmdBrackets s.Direction s.BracketNum s.InnerNum)
+  АТД, формат
+    (CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
   Пустые скобки, формат (CmdEmpty s.BracketNum)
   Переменные:
     повторные, формат
@@ -50,10 +61,10 @@ $EENUM AlgLeft, AlgRight;
   Комментарий, вносимый в исходный код (CmdComment e.Text)
 */
 $EENUM
-  CmdChar, CmdNumber, CmdName,
-  CmdBrackets, CmdEmpty,
+  CmdChar, CmdNumber, CmdName, CmdIdent,
+  CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
-  CmdComment;
+  CmdComment, CmdPrint;
 
 $FORWARD TextFromPattern, SaveBrackets;
 
@@ -80,6 +91,13 @@ GenPattern {
       (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
     >;
 
+  e.Pattern-B (LeftPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
+  (e.Vars) (e.Commands) =
+    <GenPattern
+      e.Pattern-B (TkIdentifier e.Name) (LeftPtr s.Num) e.Pattern-E
+      (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
+    >;
+
   e.Pattern-B (TkChar s.Char) (RightPtr s.Num) e.Pattern-E
   (e.Vars) (e.Commands) =
     <GenPattern
@@ -101,6 +119,13 @@ GenPattern {
       (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
     >;
 
+  e.Pattern-B (TkIdentifier e.Name) (RightPtr s.Num) e.Pattern-E
+  (e.Vars) (e.Commands) =
+    <GenPattern
+      e.Pattern-B (RightPtr s.Num) (TkIdentifier e.Name) e.Pattern-E
+      (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
+    >;
+
   // Распознавание скобок
   e.Pattern-B (LeftPtr s.Num) (TkOpenBracket s.Inner)
   e.Pattern-M (TkCloseBracket s.Inner) e.Pattern-E
@@ -120,6 +145,29 @@ GenPattern {
       (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
       (TkCloseBracket s.Inner) e.Pattern-E
       (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.Inner))
+    >;
+
+  // Распознавание АТД-скобок
+  e.Pattern-B (LeftPtr s.Num) (TkOpenADT s.Inner)
+  (TkName e.Name) e.Pattern-M (TkCloseADT s.Inner) e.Pattern-E
+  (e.Vars) (e.Commands) =
+    <GenPattern
+      e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name)
+      (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
+      (TkCloseADT s.Inner) (LeftPtr s.Num) e.Pattern-E
+      (e.Vars)
+      (e.Commands (CmdADT AlgLeft s.Num s.Inner e.Name))
+    >;
+
+  e.Pattern-B (TkOpenADT s.Inner) (TkName e.Name) e.Pattern-M
+  (TkCloseADT s.Inner) (RightPtr s.Num) e.Pattern-E
+  (e.Vars) (e.Commands) =
+    <GenPattern
+      e.Pattern-B (RightPtr s.Num) (TkOpenADT s.Inner)
+      (TkName e.Name) (LeftPtr s.Inner) e.Pattern-M (RightPtr s.Inner)
+      (TkCloseADT s.Inner) e.Pattern-E
+      (e.Vars)
+      (e.Commands (CmdADT AlgRight s.Num s.Inner e.Name))
     >;
 
   // Указатели аннигилируют при встрече
@@ -294,6 +342,12 @@ TextFromPattern {
   (TkCloseBracket s.Number) e.Tail =
     ' )~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
 
+  (TkOpenADT s.Number) e.Tail =
+    ' [~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
+
+  (TkCloseADT s.Number) e.Tail =
+    ' ]~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
+
   (TkChar s.Char) e.Tail =
     ' ' '' <TextFromPattern-Char (TkChar s.Char) e.Tail>;
 
@@ -301,16 +355,23 @@ TextFromPattern {
     ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
 
   (TkName e.Name) e.Tail =
-    ' &' e.Name <TextFromPattern e.Tail>;
+    ' & ' e.Name <TextFromPattern e.Tail>;
 
   (TkVariable s.Mode e.Index) e.Tail =
     ' ' s.Mode '.' e.Index <TextFromPattern e.Tail>;
+
+  (TkIdentifier e.Name) e.Tail =
+    ' # ' e.Name <TextFromPattern e.Tail>;
 
   = ;
 }
 
 Escape {
-  '\n' = '\\n'; '\t' = '\\t'; '\\' = '\\\\'; '' = '\\' '';
+  '\n' = '\\n';
+  '\r' = '\\r';
+  '\t' = '\\t';
+  '\\' = '\\\\';
+  '' = '\\' '';
   '"' = '\\"';
 
   s.Other = s.Other;
@@ -333,8 +394,9 @@ TextFromPattern-Char {
 $ENUM CtAlloc, CtInsert, CtBrackets, CtInsertVar;
 // Подтип команды
 $ENUM
-  StChar, StName, StNumber,
+  StChar, StName, StNumber, StIdent,
   StOpenBracket, StCloseBracket, StOpenCall, StCloseCall,
+  StOpenADT, StCloseADT,
   StLink, StStack;
 
 //FROM Lexer
@@ -374,6 +436,16 @@ GenResult {
       <Inc s.Counter> e.Result
     >;
 
+  (e.Vars) (e.Commands) s.Counter (TkIdentifier e.Name) e.Result =
+    <GenResult
+      (e.Vars)
+      (e.Commands
+        (CtAlloc StIdent s.Counter e.Name)
+        (CtInsert s.Counter)
+      )
+      <Inc s.Counter> e.Result
+    >;
+
   /*
     Обработка открывающих скобок обоих типов ничем не отличается
     от обработки литералов.
@@ -398,8 +470,19 @@ GenResult {
       <Inc s.Counter> e.Result
     >;
 
+  (e.Vars) (e.Commands) s.Counter (TkOpenADT s.Num) e.Result =
+    <GenResult
+      (e.Vars)
+      (e.Commands
+        (CtAlloc StOpenADT s.Counter s.Num)
+        (CtInsert s.Counter)
+      )
+      <Inc s.Counter> e.Result
+    >;
+
   /*
-    Закрывающие скобки надо обрабатывать особым образом. Круглые скобки --
+    Закрывающие скобки надо обрабатывать особым образом.
+    Круглые скобки и АТД --
     слинковать, угловые -- добавить в стек.
   */
   (e.Vars)
@@ -412,6 +495,22 @@ GenResult {
         (CtAlloc StOpenBracket s.OpenCounter s.Num)
         e.Commands-E
         (CtAlloc StCloseBracket s.Counter s.Num)
+        (CtInsert s.Counter)
+        (CtBrackets StLink s.OpenCounter s.Counter)
+      )
+      <Inc s.Counter> e.Result
+    >;
+
+  (e.Vars)
+  (e.Commands-B (CtAlloc StOpenADT s.OpenCounter s.Num) e.Commands-E)
+  s.Counter (TkCloseADT s.Num) e.Result =
+    <GenResult
+      (e.Vars)
+      (
+        e.Commands-B
+        (CtAlloc StOpenADT s.OpenCounter s.Num)
+        e.Commands-E
+        (CtAlloc StCloseADT s.Counter s.Num)
         (CtInsert s.Counter)
         (CtBrackets StLink s.OpenCounter s.Counter)
       )
@@ -457,7 +556,7 @@ GenResult {
 
   // Завершение просмотра
   (e.Vars) (e.Commands) s.Counter =
-    (e.Vars) ( <GenResult-Commands e.Commands> );
+    (e.Vars) ( e.Commands );
 }
 
 /*
@@ -519,14 +618,19 @@ $EENUM
 
 // Спецификаторы команд (элементы)
 $EENUM
-  ElChar, ElName, ElNumber,
-  ElOpenBracket, ElCloseBracket, ElOpenCall, ElCloseCall,
+  ElChar, ElName, ElNumber, ElIdent,
+  ElOpenADT, ElCloseADT,
+  ElOpenBracket, ElCloseBracket,
+  ElOpenCall, ElCloseCall,
   ElElem, ElSTVar;
 
 ElemType {
   StChar s.Char = ElChar s.Char;
   StName e.Name = ElName e.Name;
   StNumber s.Number = ElNumber s.Number;
+  StIdent e.Name = ElIdent e.Name;
+  StOpenADT s.Num = ElOpenADT;
+  StCloseADT s.Num = ElCloseADT;
   StOpenBracket s.Num = ElOpenBracket;
   StCloseBracket s.Num = ElCloseBracket;
   StOpenCall s.Num = ElOpenCall;
@@ -612,18 +716,34 @@ VarSetDifference {
   ( e.Set1 ) ( e.Set2 ) = e.Set1;
 }
 
-$FORWARD MakeDeclaration, MakeCopyVar;
+$FORWARD MakeDeclaration, MakeCopyVar, MakeInterpCommands,
+  GenerateResult-Interp;
 
-$EENUM CmdEmptyResult, CmdReturnResult;
+$EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
+  CmdInitRAA, CmdFinRAA;
 
 GeneralizeResult-CopyVars {
   ( e.CommonVars ) ( e.Pattern ) ( e.CopiedVars ) ( e.Result ) =
-    <Map MakeDeclaration e.CommonVars>
+    <GenerateResult-Interp
+      (<Map MakeDeclaration e.CommonVars> e.Pattern)
+      (e.CopiedVars)
+      (e.Result)
+    >;
+}
+
+GenerateResult-Interp {
+  (e.Pattern) (e.CopiedVars) (e.Result) =
     e.Pattern
+    (CmdIfDef)
+    (CmdInitRAA)
+    <Map (MakeInterpCommands e.CopiedVars) e.Result>
+    (CmdFinRAA)
+    (CmdElse)
     (CmdEmptyResult)
     <Map MakeCopyVar e.CopiedVars>
-    e.Result
-    (CmdReturnResult);
+    <GenResult-Commands e.Result>
+    (CmdReturnResult)
+    (CmdEndIf);
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
@@ -644,3 +764,50 @@ MakeCopyVar {
     (CmdCopyVar s.Usings s.Mode e.Index);
 }
 
+$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrIdent, CmdArrOB, CmdArrCB,
+  CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+
+MakeInterpCommands {
+  e.CopiedVars-B (s.Usings s.Mode e.Index) e.CopiedVars-E
+  (CtInsertVar s.Usings  s.Mode e.Index) =
+    (CmdArrCopy s.Mode e.Index);
+
+  e.CopiedVars (CtInsertVar s.Usings  s.Mode e.Index) =
+    (CmdArrSplice s.Usings s.Mode e.Index);
+
+  e.CopiedVars (CtBrackets e.CmdInfo) = ;
+  e.CopiedVars (CtInsert s.ElemNo) = ;
+
+  e.CopiedVars (CtAlloc StChar s.Counter s.Value) = 
+    (CmdArrChar s.Value);
+
+  e.CopiedVars (CtAlloc StName s.Counter e.Name) = 
+    (CmdArrFunc e.Name);
+
+  e.CopiedVars (CtAlloc StNumber s.Counter s.Number) = 
+    (CmdArrInt s.Number);
+
+  e.CopiedVars (CtAlloc StIdent s.Counter e.Name) = 
+    (CmdArrIdent e.Name);
+
+  e.CopiedVars (CtAlloc StOpenBracket s.Counter s.Num) = 
+    (CmdArrOB);
+
+  e.CopiedVars (CtAlloc StOpenADT s.Counter s.Num) = 
+    (CmdArrOADT);
+
+  e.CopiedVars (CtAlloc StOpenCall s.Counter s.Num) = 
+    (CmdArrOC);
+
+  e.CopiedVars (CtAlloc StCloseBracket s.Counter s.Num) = 
+    (CmdArrCB);
+
+  e.CopiedVars (CtAlloc StCloseADT s.Counter s.Num) = 
+    (CmdArrCADT);
+
+  e.CopiedVars (CtAlloc StCloseCall s.Counter s.Num) = 
+    (CmdArrCC);
+
+  e.CopiedVars (e.AnyCommand) =
+    (CmdComment e.AnyCommand ' ');
+}

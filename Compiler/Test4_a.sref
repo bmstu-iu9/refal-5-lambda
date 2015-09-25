@@ -1,0 +1,5 @@
+$LABEL Ident2;
+
+$ENTRY CreateIdent {
+  = # Ident2;
+}

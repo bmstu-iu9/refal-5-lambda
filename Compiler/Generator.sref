@@ -17,7 +17,8 @@ SwGenFnStart {
     (
       <TextFromMemoryClass s.MemoryClass>
       'refalrts::FnResult ' e.Name '(' <s.FnArguments> ') {'
-    );
+    )
+    ('  refalrts::this_is_generated_function();');
 }
 
 $ENTRY GenFnStart {
@@ -47,6 +48,60 @@ $ENTRY GenForward {
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
 }
 
+$FORWARD GenSwap-Aux;
+
+$ENTRY GenESwap {
+  e.Name =
+    ('//$ESWAP ' e.Name)
+    <GenSwap-Aux GN-Entry e.Name>;
+}
+
+$ENTRY GenSwap {
+  e.Name =
+    ('//$SWAP ' e.Name)
+    <GenSwap-Aux GN-Local e.Name>;
+}
+
+GenSwap-Aux {
+  s.MemoryClass e.Name =
+    <GenFnStart s.MemoryClass e.Name>
+    ('  refalrts::Iter func_name = arg_begin;')
+    ()
+    ('  refalrts::move_left( func_name, arg_end );')
+    ()
+    ('  refalrts::Iter info_b = func_name;')
+    ('  refalrts::Iter info_e = arg_end;')
+    ()
+    ('  refalrts::move_left( info_b, info_e );')
+    ('  refalrts::move_right( info_b, info_e );')
+    ()
+    ('  static refalrts::Iter s_head = refalrts::initialize_swap_head( func_name );')
+    ()
+    ('  refalrts::Iter saved_b;')
+    ('  refalrts::Iter saved_e;')
+    ()
+    ('  refalrts::swap_info_bounds( saved_b, saved_e, s_head );')
+    ('  refalrts::splice_evar( arg_begin, saved_b, saved_e );')
+    ('  refalrts::swap_save( s_head, info_b, info_e );')
+    ('  refalrts::splice_to_freelist( arg_begin, arg_end );')
+    ()
+    ('  return refalrts::cSuccess;')
+    ('}')
+    ();
+}
+
+$ENTRY GenIdent {
+  e.Name =
+    ('//$LABEL ' e.Name)
+    ('template <typename T>')
+    ('struct ' e.Name 'L_ {')
+    ('  static const char *name() {')
+    ('    return "' e.Name '";')
+    ('  }')
+    ('};')
+    ();
+}
+
 $ENTRY GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"') () ();
@@ -54,18 +109,26 @@ $ENTRY GenCommonHeaders {
 
 // Команды и их подтипы
 //FROM Algorithm
-$EXTERN CmdChar, CmdNumber, CmdName, CmdBrackets, CmdEmpty,
+$EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
+  CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdOpenedE, CmdClosedE,
   CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
   CmdInsertElem, CmdInsertEVar,
-  ElChar, ElName, ElNumber,
-  ElOpenBracket, ElCloseBracket, ElOpenCall, ElCloseCall,
+  ElChar, ElName, ElNumber, ElIdent,
+  ElOpenADT, ElCloseADT,
+  ElOpenBracket, ElCloseBracket,
+  ElOpenCall, ElCloseCall,
   ElElem, ElSTVar,
   CmdEmptyResult, CmdReturnResult,
+  CmdIfDef, CmdElse, CmdEndIf,
+  CmdInitRAA, CmdFinRAA,
   CmdDeclareEVar, CmdDeclareVar,
   CmdCopyEVar, CmdCopyVar,
   AlgLeft, AlgRight,
-  CmdComment;
+  CmdComment, CmdPrint,
+  CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
+  CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
+  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
 
 $FORWARD GenSentence-Aux, GenCommand, BracketsVar-B, BracketsVar-E;
 
@@ -73,10 +136,11 @@ $FORWARD GenSentence-Aux, GenCommand, BracketsVar-B, BracketsVar-E;
 $EXTERN Map, MapReduce;
 
 //FROM Library
-$EXTERN StrFromInt;
+$EXTERN StrFromInt, WriteLine;
 
 $ENTRY GenSentence {
   e.Algorithm =
+  //('  refalrts::ResultAction raa[')<CountLenght e.Algorithm>('];')
     ('  do {')
     ('    refalrts::Iter ' <BracketsVar-B 0> ' = arg_begin;')
     ('    refalrts::Iter ' <BracketsVar-E 0> ' = arg_end;')
@@ -117,12 +181,16 @@ BracketsVar-E {
 */
 
 $FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVar-OE,
+  PrintArrVar, PrintArrEVar-B, PrintArrEVar-E,
   PrintMatchChar, PrintMatchNumber, PrintMatchName,
-  PrintMatchBrackets, PrintMatchEmpty,
+  PrintMatchIdent,
+  PrintMatchADT,
+  PrintMatchBrackets,
+  PrintMatchEmpty,
   PrintMatchSTVar, PrintMatchRepeated,
   PrintAllocateElem, PrintElemVar;
 
-$FORWARD StringFromCommand;
+$FORWARD StringFromCommand, Escape;
 
 //FROM LibraryEx
 $EXTERN Dec;
@@ -155,15 +223,16 @@ BracketExcept {
 
 GenCommand {
   (e.Indent) (CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
+  (e.Indent) (CmdPrint e.Text) = (e.Indent) (e.Indent e.Text);
 
   (e.Indent) (CmdDeclareEVar e.VarInfo) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
-    (e.Indent 'refalrts::Iter ' <PrintEVar-E e.VarInfo> ';');
+    (e.Indent 'static refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
+    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';');
 
   (e.Indent) (CmdDeclareVar e.VarInfo) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <PrintVar e.VarInfo> ';');
+    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';');
 
   (e.Indent) (CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
@@ -177,11 +246,23 @@ GenCommand {
     (e.Indent)
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>;
 
+  (e.Indent) (CmdIdent s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>;
+
   (e.Indent) (CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
     (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>;
+
+  (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
+    (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    <PrintMatchADT
+      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
+    >;
 
   (e.Indent) (CmdEmpty s.BracketNumber) =
     (e.Indent)
@@ -320,18 +401,109 @@ GenCommand {
     (e.Indent 'refalrts::use( res );')
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     (e.Indent 'return refalrts::cSuccess;');
+
+  (e.Indent) (CmdIfDef) =
+    (e.Indent) ('#ifdef INTERPRET');
+
+  (e.Indent) (CmdElse) = 
+    (e.Indent) ('#else');
+
+  (e.Indent) (CmdEndIf) = 
+    (e.Indent) ('#endif');
+
+  (e.Indent) (CmdInitRAA) = 
+    (e.Indent)
+    (e.Indent 'static refalrts::ResultAction raa[] = {');
+
+  (e.Indent) (CmdFinRAA) = 
+    (e.Indent)
+    (e.Indent '  {refalrts::icEnd}')
+    (e.Indent '};')
+    (e.Indent
+              'refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );')
+    (e.Indent 'return res;');
+
+  (e.Indent) (CmdArrChar s.Value) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icChar, 0, 0, \'' <Escape s.Value> '\'},');
+
+  (e.Indent) (CmdArrFunc e.Name) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icFunc, & ' e.Name ', "' e.Name '"},');
+
+  (e.Indent) (CmdArrInt s.Number) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icInt, 0, 0, ' s.Number '},');
+
+  (e.Indent) (CmdArrIdent e.Name) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icIdent, & ' e.Name '<int>::name},');
+
+  (e.Indent) (CmdArrOB) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},');
+
+  (e.Indent) (CmdArrCB) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},');
+
+  (e.Indent) (CmdArrOADT) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibOpenADT},');
+
+  (e.Indent) (CmdArrCADT) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibCloseADT},');
+
+  (e.Indent) (CmdArrOC) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},');
+
+  (e.Indent) (CmdArrCC) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},');
+
+  (e.Indent) (CmdArrCopy 'e' e.Index) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icCopyEVar, & ' <PrintArrEVar-B 'e' e.Index> ', & '
+      <PrintArrEVar-E 'e' e.Index> '},');
+
+  (e.Indent) (CmdArrCopy s.Mode e.Index) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icCopySTVar, & ' <PrintArrVar s.Mode e.Index> '},');
+
+  (e.Indent) (CmdArrSplice s.Usings 'e' e.Index) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icSpliceEVar, & ' <PrintEVar-B s.Usings 'e' e.Index> ', & '
+      <PrintEVar-E s.Usings 'e' e.Index> '},');
+
+  (e.Indent) (CmdArrSplice s.Usings s.Mode e.Index) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icSpliceSTVar, & ' <PrintVar s.Usings s.Mode e.Index> '},');
 }
 
 PrintVar {
   s.Usings s.Mode e.Index = s.Mode e.Index '_' <StrFromInt s.Usings>;
 }
 
+PrintArrVar {
+  s.Mode e.Index = s.Mode e.Index '_1';
+}
+
 PrintEVar-B {
   s.Usings s.Mode e.Index = s.Mode e.Index '_b_' <StrFromInt s.Usings>;
 }
 
+PrintArrEVar-B {
+  s.Mode e.Index = s.Mode e.Index '_b_1';
+}
+
 PrintEVar-E {
   s.Usings s.Mode e.Index = s.Mode e.Index '_e_' <StrFromInt s.Usings>;
+}
+
+PrintArrEVar-E {
+  s.Mode e.Index = s.Mode e.Index '_e_1';
 }
 
 PrintEVar-OE {
@@ -341,7 +513,11 @@ PrintEVar-OE {
 $FORWARD PrintMatch;
 
 Escape {
-  '\n' = '\\n'; '\t' = '\\t'; '\\' = '\\\\'; '' = '\\' '';
+  '\n' = '\\n';
+  '\t' = '\\t';
+  '\r' = '\\r';
+  '\\' = '\\\\';
+  '' = '\\' '';
   s.Other = s.Other;
 }
 
@@ -369,12 +545,31 @@ PrintMatchName {
     >;
 }
 
+PrintMatchIdent {
+  (e.Indent) s.Direction s.BracketNumber e.Name =
+    <PrintMatch
+      (e.Indent) s.Direction s.BracketNumber
+      ('ident') ' & ' e.Name 'L_<int>::name'
+    >;
+}
+
 PrintMatchBrackets {
   (e.Indent) s.Direction s.BracketNumber s.InnerNum =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('brackets')
       <BracketsVar-B s.InnerNum> ', ' <BracketsVar-E s.InnerNum>
+    >;
+}
+
+PrintMatchADT {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
+    <PrintMatch
+      (e.Indent) s.Direction s.BracketNumber
+      ('adt')
+      <BracketsVar-B s.InnerNum> ', '
+      <BracketsVar-E s.InnerNum> ', '
+      '& ' e.Name
     >;
 }
 
@@ -461,11 +656,19 @@ PrintAllocate-Aux {
 }
 
 SwAllocator {
-  ElChar = 'alloc_char'; ElName = 'alloc_name'; ElNumber = 'alloc_number';
+  ElChar = 'alloc_char';
+  ElName = 'alloc_name';
+  ElNumber = 'alloc_number';
+  ElIdent = 'alloc_ident';
 
-  ElOpenBracket = 'alloc_open_bracket'; ElCloseBracket = 'alloc_close_bracket';
+  ElOpenADT = 'alloc_open_adt';
+  ElCloseADT = 'alloc_close_adt';
 
-  ElOpenCall = 'alloc_open_call'; ElCloseCall = 'alloc_close_call';
+  ElOpenBracket = 'alloc_open_bracket';
+  ElCloseBracket = 'alloc_close_bracket';
+
+  ElOpenCall = 'alloc_open_call';
+  ElCloseCall = 'alloc_close_call';
 }
 
 SwInfo {
@@ -474,6 +677,8 @@ SwInfo {
   ElName e.Name = ', & ' e.Name ', "' e.Name '"';
 
   ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
+
+  ElIdent e.Name = ', & ' e.Name 'L_<int>::name';
 
   // Остальное -- скобки
   s.Other = ;
@@ -488,18 +693,6 @@ GenCloseBrackets {
 
 ElemVarName {
   s.Num = 'h' <StrFromInt s.Num>;
-}
-
-AllocateCtor {
-  ElChar s.Char = '"' <Escape s.Char> '"';
-
-  ElName e.Name = '&' e.Name;
-
-  ElNumber s.Number = <StrFromInt s.Number>;
-
-  ElOpenBracket = '"("'; ElCloseBracket = '")"';
-
-  ElOpenCall = '"<"'; ElCloseCall = '">"';
 }
 
 InsertElem {

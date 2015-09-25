@@ -45,6 +45,7 @@ Directive {
   Program =  '$PROGRAM';
   End     =  '$END';
   Swap    =  '$SWAP';
+  From    =  '//FROM ';
 }
 
 $END MUnLexer.
