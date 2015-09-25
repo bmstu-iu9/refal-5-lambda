@@ -1,0 +1,57 @@
+v ROUT3 Module Refal 0.1
+r file ROut/MUnLexer.rout
+
+b Entry::MUnLexer::Write
+c $Entry::MUnLexer::Write$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::FileName$ ) e.$Index::Tokens$ =
+c 		<$Entry::FileIO::Save$ ( $ADT::__StructureBrackets$ e.$Index::FileName$ ) ( $ADT::__StructureBrackets$ <$Entry::MLambda::Map$ $Local::MUnLexer::TokenToText$ e.$Index::Tokens$ > ) > ;
+c }
+
+b Local::MUnLexer::TokenToText
+c $Local::MUnLexer::TokenToText$ {
+c 	( $ADT::__StructureBrackets$ s.$Index::Type$ ( $ADT::__StructureBrackets$ e.$Index::Space$ ) e.$Index::Value$ ) =
+c 		e.$Index::Space$ <$Local::MUnLexer::SwTokenToText$ s.$Index::Type$ e.$Index::Value$ > ;
+c }
+
+b Local::MUnLexer::SwTokenToText
+c $Local::MUnLexer::SwTokenToText$ {
+c 	$Ident::Number$ e.$Index::Digits$ =
+c 		e.$Index::Digits$ ;
+c 	$Ident::Name$ e.$Index::Name$ =
+c 		e.$Index::Name$ ;
+c 	$Ident::Punctuation$ s.$Index::Punctuation$ =
+c 		s.$Index::Punctuation$ ;
+c 	$Ident::Unexpected$ e.$Index::Unexpected$ =
+c 		'/*' e.$Index::Unexpected$ '*/' ;
+c 	$Ident::CppComment$ e.$Index::Comment$ =
+c 		'//' e.$Index::Comment$ '\n' ;
+c 	$Ident::CComment$ e.$Index::Comment$ =
+c 		'/*' e.$Index::Comment$ '*/' ;
+c 	$Ident::Literal$ e.$Index::Literal$ =
+c 		'\'' e.$Index::Literal$ '\'' ;
+c 	$Ident::Directive$ s.$Index::Directive$ =
+c 		<$Local::MUnLexer::Directive$ s.$Index::Directive$ > ;
+c 	$Ident::Var$ e.$Index::Var$ =
+c 		e.$Index::Var$ ;
+c 	$Ident::Nothing$ =
+c 		;
+c 	$Ident::EOF$ =
+c 		;
+c }
+
+b Local::MUnLexer::Directive
+c $Local::MUnLexer::Directive$ {
+c 	$Ident::Entry$ =
+c 		'$$ENTRY' ;
+c 	$Ident::Import$ =
+c 		'$$IMPORT' ;
+c 	$Ident::Module$ =
+c 		'$$MODULE' ;
+c 	$Ident::Program$ =
+c 		'$$PROGRAM' ;
+c 	$Ident::End$ =
+c 		'$$END' ;
+c 	$Ident::Swap$ =
+c 		'$$SWAP' ;
+c }
+

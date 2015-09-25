@@ -1,0 +1,39 @@
+//FROM LibraryEx
+$EXTERN LoadFile, Map;
+
+$EXTERN LoadList;
+
+$ENTRY CreateFileList {
+  (e.Modules) = e.Modules;
+
+  (e.Modules-B (e.NextModule) e.Modules-E)
+  (e.NextModule) e.NotScanned =
+    <CreateFileList
+      (e.Modules-B (e.NextModule) e.Modules-E) e.NotScanned
+    >;
+
+  (e.Modules) (e.NextModule) e.NotScanned =
+    <CreateFileList
+      (e.Modules (e.NextModule))
+      <LoadList e.NextModule> e.NotScanned
+    >;
+}
+
+FindImports {
+  ('//FROM ' e.Name) = (e.Name);
+
+  e.OtherLine = ;
+}
+
+LoadList {
+  // Пропускаем библиотечные файлы
+  'Library' = ;
+  
+  'LibraryEx' = ;
+
+  e.NextModule =
+    <Map
+      FindImports
+      <LoadFile e.NextModule '.sref'>
+    >;
+}

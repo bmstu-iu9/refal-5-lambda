@@ -1,0 +1,63 @@
+//FROM Library
+$EXTERN WriteLine, System;
+
+//FROM LibraryEx
+$EXTERN ArgList, Map;
+
+//FROM FileScanner
+$EXTERN CreateFileList;
+
+$EXTERN Make;
+
+Main {
+  (e.Program) (e.MainFile) =
+    <Make e.MainFile>;
+
+  (e.Program) e.Other =
+    <WriteLine 'Command line error'>;
+}
+
+$ENTRY Go { = <Main <ArgList>>; }
+
+DoUnExt {
+  e.Name '.' (e.Ext) = e.Name;
+
+  e.Name s.Last (e.Ext) =
+    <DoUnExt e.Name (s.Last e.Ext)>;
+
+  // ָלÿ פאיכא בוח נאסרטנוםטÿ
+  e.Name '\\' (e.Ext) = e.Name '\\' e.Ext;
+
+  e.Name '/' (e.Ext) = e.Name '/' e.Ext;
+
+  (e.Ext) = e.Ext;
+}
+
+UnExt {
+  e.Name = <DoUnExt e.Name ()>;
+}
+
+$EXTERN Make-Aux;
+
+Make {
+  e.MainFile =
+    <Make-Aux
+      <CreateFileList () (<UnExt e.MainFile>)>
+    >;
+}
+
+CheckName {
+  ('Library') = ;
+  ('LibraryEx') = '..\\SRLib\\LibraryEx.sref ';
+  (e.OtherModule) = e.OtherModule '.sref ';
+}
+
+Make-Aux {
+  e.Files =
+    <System 'copy ..\\SRLib\\Library.mref Library.mref'>
+    <System
+      'refgo ..\\srprep\\srprep '
+      <Map CheckName e.Files>
+    >;
+}
+

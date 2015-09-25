@@ -1,0 +1,10 @@
+
+
+* Starter
+$ENTRY Go{=<E>;}
+
+* Entry::Example::Go
+E{=<E0'Hello, World!'>;}
+
+* Entry::IOLib::Write
+E0{NF=NF;}

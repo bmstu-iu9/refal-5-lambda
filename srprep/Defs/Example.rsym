@@ -1,0 +1,7 @@
+$module Example;
+
+$import IOLib;
+
+$entry Go;
+
+$end Example.

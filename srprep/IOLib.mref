@@ -1,0 +1,16 @@
+$MODULE IOLib;/* Это как будто библиотека
+с функциями ввода-вывода и прочей лабудой */
+
+// Функции позже будут реализованы
+
+$ENTRY Write { }
+
+$ENTRY Read { }
+
+Read_Aux { 1 2 3 = 4 5 6; }
+
+ Compiled { } Linked { } Errors { }
+
+ $ENTRY Success { } $ENTRY Fails { }
+
+$END IOLib.

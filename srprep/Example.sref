@@ -1,0 +1,27 @@
+//FROM IOLib
+$EXTERN Write;
+
+$ENTRY Go {
+  = <Write 'Hello, World!'>;
+  //s.X = s.Y;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

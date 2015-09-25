@@ -1,0 +1,45 @@
+v ROUT3 Module Refal 0.1
+r file ROut/MSymTable.rout
+
+b Entry::MSymTable::Create
+c $Entry::MSymTable::Create$ {
+c 	=
+c 		( $ADT::MSymTable::SymTable$ ) ;
+c }
+
+b Entry::MSymTable::AddExport
+c $Entry::MSymTable::AddExport$ {
+c 	t.$Index::SymTable$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::ModuleName$ =
+c 		<$Local::MSymTable::SwAddDeclaration$ t.$Index::SymTable$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::ModuleName$ '.' e.$Index::Name$ > ;
+c }
+
+b Local::MSymTable::SwAddDeclaration
+c $Local::MSymTable::SwAddDeclaration$ {
+c 	( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Exported$ ) ) e.$Index::Names-E$ ) ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::Exported$ =
+c 		( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Exported$ ) ) e.$Index::Names-E$ ) $Ident::Success$ ;
+c 	( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Exported1$ ) ) e.$Index::Names-E$ ) ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::Exported2$ =
+c 		( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Exported1$ ) ) e.$Index::Names-E$ ) $Ident::Fails$ $Ident::IdentifierRedeclared$ ;
+c 	( $ADT::MSymTable::SymTable$ e.$Index::Names$ ) ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::Exported$ =
+c 		( $ADT::MSymTable::SymTable$ e.$Index::Names$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Exported$ ) ) ) $Ident::Success$ ;
+c }
+
+b Entry::MSymTable::AddForward
+c $Entry::MSymTable::AddForward$ {
+c 	t.$Index::SymTable$ e.$Index::Name$ =
+c 		<$Local::MSymTable::SwAddDeclaration$ t.$Index::SymTable$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::Name$ > ;
+c }
+
+b Entry::MSymTable::ConvertName
+c $Entry::MSymTable::ConvertName$ {
+c 	( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Rename$ ) ) e.$Index::Names-E$ ) e.$Index::Name$ =
+c 		( $ADT::MSymTable::SymTable$ e.$Index::Names-B$ ( $ADT::__StructureBrackets$ e.$Index::Name$ ( $ADT::__StructureBrackets$ e.$Index::Rename$ ) ) e.$Index::Names-E$ ) $Ident::Success$ '& ' e.$Index::Rename$ ;
+c 	t.$Index::SymTable$ e.$Index::Name$ =
+c 		t.$Index::SymTable$ $Ident::Fails$ $Ident::NoName$ ;
+c }
+
+b Entry::MSymTable::Destroy
+c $Entry::MSymTable::Destroy$ {
+c 	( $ADT::MSymTable::SymTable$ e.$Index::Names$ ) =
+c 		;
+c }
+

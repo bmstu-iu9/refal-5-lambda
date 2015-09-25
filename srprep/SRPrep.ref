@@ -1,0 +1,496 @@
+
+
+* Starter
+$ENTRY Go{=<E><E0><E1><E2>;}
+
+* Entry::FileIO::Init
+E{=<S 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18>;}
+
+* Swap::FileIO::G_Handles
+S{e.i=<Dg('::FileIO::G_Handles')><Br('::FileIO::G_Handles')
+'=' e.i>;}
+
+* Entry::MFileSystem::Init
+E0{=<E3'echo %random%>~suf.tmp'><S0<E4'TEMP'>'\\~dirlist_'
+<L<E5'~suf.tmp'>>'.tmp'><E3'del ~suf.tmp'>;}
+
+* Entry::MFileSystem::Final
+E2{=<E3'del '<L0>' >nul 2>nul'>;}
+
+* Entry::MOS::System
+E3{e.i0=<L1<E6 e.i0>>;}
+
+* Swap::MFileSystem::G_TempFileName
+S0{e.i=<Dg('::MFileSystem::G_TempFileName')><Br('::MFileSyst'
+'em::G_TempFileName')'=' e.i>;}
+
+* Entry::MOS::Env
+E4{e.i1=<E7 e.i1>;}
+
+* Local::MFileSystem::UnBracket
+L{(T e.i2)=e.i2;}
+
+* Entry::FileIO::Load
+E5{e.i3=<L2<E8<E9'r' e.i3>>>;}
+
+* Local::MFileSystem::TempName
+L0{=<EA S0>;}
+
+* Local::MOS::Nil
+L1{e.i4=;}
+
+* Entry::MRefalRTS::System
+E6{e.Command=<System e.Command>;}
+
+* Entry::MRefalRTS::Env
+E7{e.Name=<GetEnv e.Name>;}
+
+* Local::FileIO::DoLoad
+L2{t.i5 0=<EB t.i5>;t.i5 e.i6 0=(T e.i6)<EB t.i5>;t.i5 e.i6
+=(T e.i6)<L2<E8 t.i5>>;}
+
+* Entry::FileIO::ReadLine
+E8{(T0 s.i7 e.i3)=(T0 s.i7 e.i3)<EC s.i7>;}
+
+* Entry::FileIO::Open
+E9{'r' e.i3=<L3<ED e.i3>e.i3>;'w' e.i3=<L4<L5>'w' e.i3>
+;s.i8 e.i3=<EE s.i8' -- unknown open file mode (file \'' e.i3
+'\')'>;}
+
+* Entry::MSwapSupport::Read
+EA{s.i9=<L6 s.i9<Mu s.i9>>;}
+
+* Entry::FileIO::NulClose
+EB{(T0 s.i7 e.i3)=<EF'r' s.i7'nul'><L7 s.i7>;}
+
+* Entry::MRefalRTS::Get
+EC{s.Channel=<Get s.Channel>;}
+
+* Local::FileIO::CheckExistAndOpenForRead
+L3{W e.i3=<L4<L5>'r' e.i3>;W0 e.i3=<EE'Can\'t open f'
+'ile \'' e.i3'\' for reading'>;}
+
+* Entry::MRefalRTS::ExistFile
+ED{e.FileName=<L8 e.FileName>;}
+
+* Local::FileIO::SwOpen
+L4{W1 s.i7 s.iA e.i3=(T0 s.i7 e.i3)<EF s.iA s.i7 e.i3>
+;W2 s.iA e.i3=<EE'Can\'t open file ' e.i3': no free hand'
+'les'>;}
+
+* Local::FileIO::GetHandle
+L5{=<EG S>;}
+
+* Entry::MSelfDiag::Error
+EE{e.iB=<EH'INTERNAL ERROR: ' e.iB><EI'INTERNAL ERROR: ' e.iB
+><EJ 1>;}
+
+* Local::MSwapSupport::ReadAndReturn
+L6{s.i9 e.iC=<Mu s.i9 e.iC>e.iC;}
+
+* Entry::MRefalRTS::Open
+EF{s.Mode s.Channel e.FName=<Open s.Mode s.Channel e.FName>;}
+
+* Local::FileIO::ReleaseHandle
+L7{s.i7=<EK S s.i7>;}
+
+* Local::MRefalRTS::ExistFileAux
+L8{e.FileName=<L9<ExistFile e.FileName>>;}
+
+* Entry::MSwapSupport::PopFront
+EG{s.i9=<LA s.i9<Mu s.i9>>;}
+
+* Entry::MRefalRTS::Prout
+EH{e.Arg=<Prout e.Arg>;}
+
+* Entry::MSelfDiag::Log
+EI{e.iB=<LB><EL 19 e.iB>;}
+
+* Entry::MRefalRTS::Exit
+EJ{s.RetCode=<Exit s.RetCode>;}
+
+* Entry::MSwapSupport::PushFront
+EK{s.i9 t.iD=<Mu s.i9 t.iD<Mu s.i9>>;}
+
+* Local::MRefalRTS::SwExistFileAux
+L9{True=W;False=W0;}
+
+* Local::MSwapSupport::ReturnPopFront
+LA{s.i9 t.iE e.iF=<Mu s.i9 e.iF>W1 t.iE;s.i9=W2;}
+
+* Local::MSelfDiag::OpenLog
+LB{=<LC(T<S1 W3>)>;}
+
+* Entry::MRefalRTS::Putout
+EL{s.Channel e.Line=<Putout s.Channel e.Line>;}
+
+* Local::MSelfDiag::SwOpenLog
+LC{(T W3)=;(T)=<LD<E6'md Info>nul 2>nul'>><EF'w' 19
+'Info/Log.txt'>;}
+
+* Swap::MSelfDiag::G_LogOpened
+S1{e.i=<Dg('::MSelfDiag::G_LogOpened')><Br('::MSelfDiag::G_L'
+'ogOpened')'=' e.i>;}
+
+* Local::MSelfDiag::Nil
+LD{e.iG=;}
+
+* Entry::SRPrep::Go
+E1{=<LE<EM>>;}
+
+* Local::SRPrep::Main
+LE{(T e.iH)=<EN(T'Command line error')(T'Use: ' e.iH 
+' mainsrc [optsrc1 [optsrc2 ...]]')>;(T e.iH)(T e.iI)e.iJ=
+<EO EP e.iJ><EQ e.iI><E3'compile_mr '<ER e.iI>>;}
+
+* Entry::MOS::ArgList
+EM{=<LF 1<ES 0>>;}
+
+* Entry::InOut::WriteText
+EN{(T e.i6)e.iF=<ET e.i6><EN e.iF>;=;}
+
+* Entry::MLambda::Map
+EO{t.iK t.iL e.iF=<EU t.iK t.iL><EO t.iK e.iF>;t.iK=;}
+
+* Entry::MPreprocessor::Unit
+EP{(T e.i3)=<LG W4 e.i3>;}
+
+* Entry::MPreprocessor::Program
+EQ{e.i3=<LG W5 e.i3>;}
+
+* Entry::MLocation::OutName
+ER{e.i3=<EV e.i3>'.mref';}
+
+* Local::MOS::DoArgList
+LF{s.iM=;s.iM e.iN=(T e.iN)<LF<EW s.iM><ES s.iM>>;}
+
+* Entry::MOS::Arg
+ES{s.iO=<EX s.iO>;}
+
+* Entry::InOut::WriteLine
+ET{e.i6=<EH<EY<S2>e.i6>>;}
+
+* Entry::MLambda::Apply
+EU{(T1 t.iK e.iP)e.iN=<EU t.iK e.iP e.iN>;(T2 t.iK e.iQ
+)e.iN=<EU t.iK e.iN e.iQ>;s.iR e.iN=<Mu s.iR e.iN>;}
+
+* Local::MPreprocessor::CommonUnit
+LG{s.iS e.i3=<ET'SCAN FILE ' e.i3><EZ(T<ER e.i3>)<LH(
+T s.iS<EV e.i3>)<E10<E11 e.i3>>>>;}
+
+* Entry::MLocation::ModuleName
+EV{e.i3=<LI<E12 e.i3>>;}
+
+* Entry::Math::Inc
+EW{s.iO=<E13 s.iO 1>;}
+
+* Entry::MRefalRTS::Arg
+EX{s.Num=<Arg s.Num>;}
+
+* Entry::MDosWinRecoder::WinToDos
+EY{e.i6=<LJ(T<LK>)e.i6>;}
+
+* Swap::InOut::G_Buffer
+S2{e.i=<Dg('::InOut::G_Buffer')><Br('::InOut::G_Buffer')'=' e.i
+>;}
+
+* Entry::MUnLexer::Write
+EZ{(T e.i3)e.iT=<E14(T e.i3)(T<EO LL e.iT>)>;}
+
+* Local::MPreprocessor::Preprocess
+LH{(T s.iS e.iU)e.iT=(T W6(T)s.iS)(T W7(T' ')e.iU
+)(T W8(T)';')<LM e.iT>(T W6(T)W9)(T W7(T' ')e.iU
+)(T W8(T)'.');}
+
+* Entry::MLexer::Tokens
+E10{e.i3=<LN<LO<LP e.i3>>>;}
+
+* Entry::MLocation::SrcName
+E11{e.i3=<LQ<E12 e.i3>>;}
+
+* Local::MLocation::ModuleName-Aux
+LI{(T e.iV)e.i3(T e.iW)=e.i3;}
+
+* Entry::MFileSystem::ParseFileName
+E12{e.i3=<LR e.i3(T)>;}
+
+* Entry::Math::Add
+E13{e.i4=<E15 e.i4>;}
+
+* Local::MDosWinRecoder::DoWinToDos
+LJ{(T e.iX(T s.iY s.iZ)e.i10)s.iZ e.iF=s.iY<LJ(T e.iX
+(T s.iY s.iZ)e.i10)e.iF>;(T e.i11)s.iL e.iF=s.iL<LJ(T e.i11
+)e.iF>;(T e.i11)(T e.i12)e.iF=(T<LJ(T e.i11)e.i12>)<LJ(
+T e.i11)e.iF>;(T e.i11)=;}
+
+* Local::MDosWinRecoder::Table
+LK{=(T'Ä¿')(T'Å¡')(T'Ç¬')(T'É√')(T'Ñƒ')(T'Ö≈'
+)(T'®')(T'Ü∆')(T'á«')(T'à»')(T'â…')(T'ä ')(T 
+'ãÀ')(T'åÃ')(T'çÕ')(T'éŒ')(T'èœ')(T'ê–')(T'ë—'
+)(T'í“')(T'ì”')(T'î‘')(T'ï’')(T'ñ÷')(T'ó◊')(T 
+'òÿ')(T'ôŸ')(T'ö⁄')(T'õ€')(T'ú‹')(T'ù›')(T'ûﬁ'
+)(T'üﬂ')(T'†‡')(T'°·')(T'¢‚')(T'£„')(T'§‰')(T 
+'•Â')(T'Ò∏')(T'¶Ê')(T'ßÁ')(T'®Ë')(T'©È')(T'™Í'
+)(T'´Î')(T'¨Ï')(T'≠Ì')(T'ÆÓ')(T'ØÔ')(T'‡')(T 
+'·Ò')(T'‚Ú')(T'„Û')(T'‰Ù')(T'Âı')(T'Êˆ')(T'Á˜'
+)(T'Ë¯')(T'È˘')(T'Í˙')(T'Î˚')(T'Ï¸')(T'Ì˝')(T 
+'Ó˛')(T'Ôˇ');}
+
+* Entry::FileIO::Save
+E14{(T e.i3)e.iC=<LS<E9'w' e.i3>e.iC>;}
+
+* Local::MUnLexer::TokenToText
+LL{(T s.i13(T e.i14)e.iE)=e.i14<LT s.i13 e.iE>;}
+
+* Local::MPreprocessor::PreprocessBody
+LM{e.iT=<LU<E16>(T)e.iT>;}
+
+* Local::MLexer::ConcatFreeAndValue
+LN{(T WA e.i15)(T WA e.i16)e.iT=<LN(T WA e.i15 e.i16)
+e.iT>;(T WA e.i14)(T s.i17 e.iE)e.iT=(T s.i17(T e.i14)
+e.iE)<LN e.iT>;(T s.i17 e.iE)e.iT=(T s.i17(T)e.iE)<LN e.iT
+>;=;}
+
+* Local::MLexer::BaseTokens
+LO{=(T WB);e.i18=<LV(T<LW WC>(T<E17>)<E17>)(T<LW WA>
+(T' \n\t')' \n\t')(T<LW W8>(T'();{},=<>'))(T LX(T<E18
+>)<E18><E19><E17>'_-')(T LY(T'/'))(T LZ(T'\''))(T L10
+(T'$')<E18>)(T L11(T'set'))(T e.i18)>;}
+
+* Local::MLexer::LoadFile
+LP{e.i3=<EO L12<E5 e.i3>>;}
+
+* Local::MLocation::SrcName-Aux
+LQ{(T e.iV)e.i3(T)=<LQ(T e.iV)e.i3(T'sref')>;(T)
+e.i3(T e.iW)=e.i3'.' e.iW;(T e.iV)e.i3(T e.iW)=e.iV 
+'\\' e.i3'.' e.iW;}
+
+* Local::MFileSystem::DoParseExt
+LR{e.i3'.'(T e.iW)=<L13(T e.i3)>(T e.iW);e.i3'/'(T e.iW
+)=(T e.i3'/')e.iW(T);e.i3'\\'(T e.iW)=(T e.i3'\\'
+)e.iW(T);e.i3':'(T e.iW)=(T e.i3':')e.iW(T);(T e.iW
+)=(T)e.iW(T);e.i3 s.iL(T e.iW)=<LR e.i3(T s.iL e.iW
+)>;}
+
+* Entry::MRefalRTS::Add
+E15{e.Expr=<Add e.Expr>;}
+
+* Local::FileIO::DoSave
+LS{t.i5(T e.i19)e.iF=<LS<E1A t.i5 e.i19>e.iF>;t.i5=<EB t.i5
+>;}
+
+* Local::MUnLexer::SwTokenToText
+LT{WC e.i1A=e.i1A;W7 e.i1=e.i1;W8 s.i1B=s.i1B;WD e.i1C=
+'/*' e.i1C'*/';WE e.i1D='//' e.i1D'\n';WF e.i1D='/*' e.i1D
+'*/';WG e.i1E='\'' e.i1E'\'';W6 s.i1F=<L14 s.i1F>;WH e.i1G=e.i1G
+;WI=;WB=;}
+
+* Local::MPreprocessor::DoPreprocessBody
+LU{t.i1H t.i1I(T WD t.i14 e.i1C)e.iT=<E1B e.i1C>(T WI t.i14
+)<LU t.i1H t.i1I e.iT>;t.i1H(T e.i1J(T e.i1K)e.i1L)(T W6 t.i1M
+WJ)(T W7 t.i1N e.i1K)(T W6 t.i1O WK)e.iT=(T WI<L15 t.i1M
+t.i1N t.i1O>)<L16 t.i1H(T e.i1J(T e.i1K)e.i1L)(T e.i1K)e.iT>
+;t.i1H(T e.i1I)(T W6 t.i1M WJ)(T W7 t.i1N e.i1K)(T W6 t.i1O
+WK)e.iT=(T W6 t.i1M WL)(T W7 t.i1N e.i1K)(T W8(T)
+';')(T WI t.i1O)<L16 t.i1H(T e.i1I(T e.i1K))(T e.i1K)e.iT
+>;t.i1H t.i1I(T W6 t.i1O WK)e.iT=(T WI t.i1O)<L17 t.i1H t.i1I
+e.iT>;t.i1H t.i1I(T W6 t.i1P WM)e.iT=(T WI t.i1P)<L18 WN t.i1H
+t.i1I e.iT>;t.i1H t.i1I(T W6 t.i1P WO)e.iT=(T WI t.i1P)
+<L18 WP t.i1H t.i1I e.iT>;t.i1H t.i1I(T W7 t.i1N e.i1Q)(T W8
+t.i1R'{')e.iT=(T W7 t.i1N e.i1Q)(T W8 t.i1R'{')<L19<L1A t.i1H
+e.i1Q>t.i1I e.iT>;t.i1H t.i1I(T WB t.i1S)=<E1C t.i1H>(T WI t.i1S
+);t.i1H t.i1I=<E1C t.i1H>;t.i1H t.i1I t.i1T e.iT=t.i1T<LU t.i1H t.i1I
+e.iT>;}
+
+* Entry::MSymTable::Create
+E16{=(T3);}
+
+* Local::MLexer::SwBaseTokens
+LV{e.i1U(T t.i1V(T e.i1W s.iL e.i1X))e.i1Y(T s.iL e.i18)
+=<L1B<EU t.i1V(T s.iL)e.i18>>;e.i1U(T t.i1V(T e.i1W s.iL e.i1X
+)e.i1Z)e.i1Y(T s.iL e.i18)=<L1B<L1C t.i1V(T e.i1Z)(T s.iL)
+e.i18>>;e.i20(T s.iL e.i18)=<L1B(T WD s.iL)e.i18>;}
+
+* Local::MLexer::Default
+LW{s.i1=<E1D L1D s.i1>;}
+
+* Entry::Types::Digits
+E17{='01234567890';}
+
+* Local::MLexer::FinishName
+LX{(T e.i1)e.i18=(T W7<L1E e.i1>)e.i18;}
+
+* Entry::Types::UpAlph
+E18{='ABCDEFGHIJKLMNOPQRSTUVWXYZ';}
+
+* Entry::Types::LoAlph
+E19{='abcdefghijklmnopqrstuvwxyz';}
+
+* Local::MLexer::FinishComment
+LY{(T'/')'/' e.i21'\n' e.i18=<L1F(T e.i21)e.i18>;(T'/'
+)'/' e.i18=(T WE e.i18);(T'/')'*' e.i21'*/' e.i18=(T WF e.i21
+)e.i18;(T'/')'*' e.i18=(T WF e.i18);(T'/')e.i18=(T WD 
+'/')e.i18;}
+
+* Local::MLexer::FinishLiteral
+LZ{(T'\'')'\'' e.i18=(T WG'\\\'')e.i18;(T'\'')e.i18=<L1G
+(T)e.i18>;}
+
+* Local::MLexer::FinishDirective
+L10{(T'$ENTRY')e.i18=(T W6 WP)e.i18;(T'$EXTERN')e.i18=
+(T W6 WK)e.i18;(T'$ENUM')e.i18=(T W6 WM)e.i18;(T'$'
+'EENUM')e.i18=(T W6 WO)e.i18;(T'$SWAP')e.i18=(T W6 WQ)
+e.i18;(T e.i17)e.i18=(T WD e.i17)e.i18;}
+
+* Local::MLexer::FinishVariable
+L11{(T s.i13)'.' e.i18=<L1H(T s.i13'.')e.i18>;(T s.i13)e.i18
+=(T WD s.i13)e.i18;}
+
+* Local::MLexer::ToPlain
+L12{(T e.i6)=e.i6'\n';}
+
+* Local::MFileSystem::DoParseDirectory
+L13{(T e.iV'/')e.i1=(T e.iV'/')e.i1;(T e.iV'\\')e.i1
+=(T e.iV'\\')e.i1;(T e.iV':')e.i1=(T e.iV':')e.i1;
+(T)e.i1=(T)e.i1;(T e.iV s.iL)e.i1=<L13(T e.iV)s.iL e.i1
+>;}
+
+* Entry::FileIO::WriteLine
+E1A{(T0 s.i7 e.i3)e.i6=(T0 s.i7 e.i3)<EL s.i7 e.i6>;}
+
+* Local::MUnLexer::Directive
+L14{WP='$ENTRY';WL='$IMPORT';W4='$MODULE';W5='$PROGRAM';W9=
+'$END';WQ='$SWAP';}
+
+* Entry::MError::Unexpected
+E1B{e.i1C=<E1E'Unexpected <' e.i1C'>'>;}
+
+* Local::MPreprocessor::ConcatSpace
+L15{e.i22=<E1F L1I(T)e.i22>;}
+
+* Local::MPreprocessor::ExportFunctions
+L16{t.i1H t.i1I(T e.i1K)(T W7 t.i1N e.i1Q)(T W8 t.i23
+',')e.iT=(T WI<L15 t.i1N t.i23>)<L16<L1J t.i1H(T e.i1Q)e.i1K>
+t.i1I(T e.i1K)e.iT>;t.i1H t.i1I(T e.i1K)(T W7 t.i1N e.i1Q)
+(T W8 t.i24';')e.iT=(T WI<L15 t.i1N t.i24>)<LU<L1J t.i1H(
+T e.i1Q)e.i1K>t.i1I e.iT>;t.i1H t.i1I(T e.i1K)e.iT=<E1E
+'Expected comma-separated function names'><LU t.i1H t.i1I e.iT>
+;}
+
+* Local::MPreprocessor::ForwardFunctions
+L17{t.i1H t.i1I(T W7 t.i1N e.i1Q)(T W8 t.i23',')e.iT=(T WI
+<L15 t.i1N t.i23>)<L17<L1A t.i1H e.i1Q>t.i1I e.iT>;t.i1H t.i1I(
+T W7 t.i1N e.i1Q)(T W8 t.i24';')e.iT=(T WI<L15 t.i1N t.i24
+>)<LU<L1A t.i1H e.i1Q>t.i1I e.iT>;t.i1H t.i1I e.iT=<E1E'Exp'
+'ected comma-separated function names'><LU t.i1H t.i1I e.iT>;}
+
+* Local::MPreprocessor::EmptyFunctions
+L18{s.i25 t.i1H t.i1I(T W7 t.i1N e.i1Q)(T W8 t.i23',')e.iT=
+<L1K s.i25 t.i1N e.i1Q>(T WI t.i23)<L18 s.i25<L1A t.i1H e.i1Q>
+t.i1I e.iT>;s.i25 t.i1H t.i1I(T W7 t.i1N e.i1Q)(T W8 t.i24 
+';')e.iT=<L1K s.i25 t.i1N e.i1Q>(T WI t.i24)<LU<L1A t.i1H e.i1Q
+>t.i1I e.iT>;s.i25 t.i1H t.i1I e.iT=<E1E'Expected comma-sepa'
+'rated function names'><LU t.i1H t.i1I e.iT>;}
+
+* Local::MPreprocessor::ScanFunctionBody
+L19{t.i1H t.i1K(T W7 t.i1N e.i1)e.iT=<L1L(T<E1G t.i1H e.i1>
+)t.i1K(T W7 t.i1N e.i1)e.iT>;t.i1H t.i1K(T W8 t.i1R'}')
+e.iT=(T W8 t.i1R'}')<LU t.i1H t.i1K e.iT>;t.i1H t.i1K t.i1T e.iT
+=t.i1T<L19 t.i1H t.i1K e.iT>;t.i1H t.i1K=<LU t.i1H t.i1K>;}
+
+* Local::MPreprocessor::AddForward
+L1A{t.i1H e.i1=<L1M<E1H t.i1H e.i1>(T e.i1)>;}
+
+* Entry::MSymTable::Destroy
+E1C{(T3 e.i26)=;}
+
+* Local::MLexer::PrepareNextLoop
+L1B{t.i27 e.i18=t.i27<LO e.i18>;}
+
+* Local::MLexer::ScanTokenBody
+L1C{t.i1V(T e.i28 s.iL e.i29)(T e.i2A)s.iL e.i18=<L1C t.i1V(
+T e.i28 s.iL e.i29)(T e.i2A s.iL)e.i18>;t.i1V(T e.i2B)(T e.i2A
+)e.i18=<EU t.i1V(T e.i2A)e.i18>;}
+
+* Entry::MLambda::BindLeft
+E1D{(T1 t.iK e.i2C)e.i2D=(T1 t.iK e.i2C e.i2D);t.iK e.i2E=(
+T1 t.iK e.i2E);}
+
+* Local::MLexer::DefaultFinisher
+L1D{s.i2F(T e.i2G)e.i18=(T s.i2F e.i2G)e.i18;}
+
+* Local::MLexer::Replace-_
+L1E{e.i2H'-' e.i2I=e.i2H'_'<L1E e.i2I>;e.i6=e.i6;}
+
+* Local::MLexer::CppComment
+L1F{(T'FROM' e.i1)e.i18=(T W6 WJ)e.i1'\n' e.i18;(T e.i17
+)e.i18=(T WE e.i17)e.i18;}
+
+* Local::MLexer::DoScanLiteral
+L1G{(T e.i2G)'\\' s.i2J e.i18=<L1G(T e.i2G'\\' s.i2J)e.i18>
+;(T e.i2G)'\'\'' e.i18=<L1G(T e.i2G'\\\'')e.i18>;(T e.i2G)
+'\'' e.i18=(T WG e.i2G)e.i18;(T e.i2G)'\n' e.i18=(T WG e.i2G
+)e.i18;(T e.i2G)s.i17 e.i18=<L1G(T e.i2G s.i17)e.i18>;(T e.i2G
+)=(T WG e.i2G);}
+
+* Local::MLexer::ReadIndex
+L1H{(T e.i2K)e.i18=<L1N(T e.i2K)(T<E18><E19><E17>'-_')e.i18>
+;}
+
+* Entry::MError::Error
+E1E{e.i18=<ET' ERROR: ' e.i18>;}
+
+* Entry::MLambda::Reduce
+E1F{t.iK t.i2L t.iL e.iF=<E1F t.iK<L1O<EU t.iK t.i2L t.iL>
+>e.iF>;t.iK t.i2L=t.i2L;}
+
+* Local::MPreprocessor::ConcatSpace2
+L1I{(T e.i15)(T e.i16)=(T e.i15 e.i16);}
+
+* Local::MPreprocessor::AddExport
+L1J{t.i1H(T e.i1)e.i2M=<L1P<E1I t.i1H(T e.i1)e.i2M>(T e.i1
+)(T e.i2M)>;}
+
+* Local::MPreprocessor::GenerateEmpty
+L1K{WP t.i1N e.i1Q=(T W6 t.i1N WP)(T W7(T' ')e.i1Q)(T W8
+(T' ')'{')(T W8(T' ')'}');WN t.i1N e.i1Q=(T W7 t.i1N e.i1Q
+)(T W8(T' ')'{')(T W8(T' ')'}');}
+
+* Local::MPreprocessor::ScanFunctionBody-SwRename
+L1L{(T t.i1H W1 e.i2N)t.i1K(T W7 t.i1N e.i1)e.iT=(T W7 t.i1N
+e.i2N)<L19 t.i1H t.i1K e.iT>;(T t.i1H W2 WR)t.i1K(T W7 t.i1N
+e.i1)e.iT=(T W7 t.i1N e.i1)<E1E'Undeclared name ' e.i1><L19
+t.i1H t.i1K e.iT>;}
+
+* Entry::MSymTable::ConvertName
+E1G{(T3 e.i2O(T e.i1(T e.i2P))e.i2Q)e.i1=(T3 e.i2O(T e.i1
+(T e.i2P))e.i2Q)W1'& ' e.i2P;t.i1H e.i1=t.i1H W2 WR;}
+
+* Local::MPreprocessor::SwAddForward
+L1M{t.i1H W1(T e.i1)=t.i1H;t.i1H W2 WS(T e.i1)=<E1E'C'
+'an\'t declare name ' e.i1' -- identifier redeclared'>t.i1H;}
+
+* Entry::MSymTable::AddForward
+E1H{t.i1H e.i1=<L1Q t.i1H(T e.i1)e.i1>;}
+
+* Local::MLexer::DoReadIndex
+L1N{(T e.i2G)(T e.i2R s.iL e.i2S)s.iL e.i18=<L1N(T e.i2G s.iL
+)(T e.i2R s.iL e.i2S)e.i18>;(T e.i2G)(T e.i2T)e.i18=(T WH
+<L1E e.i2G>)e.i18;}
+
+* Local::MLambda::GuardTerm
+L1O{t.i2U=t.i2U;}
+
+* Local::MPreprocessor::SwAddExport
+L1P{t.i1H W1(T e.i1)(T e.i2M)=t.i1H;t.i1H W2 WS(T e.i1)
+(T e.i2M)=<E1E'Can\'t import names from ' e.i2M': identifie'
+'r ' e.i1' redeclared.'>t.i1H;}
+
+* Entry::MSymTable::AddExport
+E1I{t.i1H(T e.i1)e.iU=<L1Q t.i1H(T e.i1)e.iU'.' e.i1>;}
+
+* Local::MSymTable::SwAddDeclaration
+L1Q{(T3 e.i2O(T e.i1(T e.i2V))e.i2Q)(T e.i1)e.i2V=(T3 e.i2O
+(T e.i1(T e.i2V))e.i2Q)W1;(T3 e.i2O(T e.i1(T e.i2W))
+e.i2Q)(T e.i1)e.i2X=(T3 e.i2O(T e.i1(T e.i2W))e.i2Q)W2 WS
+;(T3 e.i26)(T e.i1)e.i2V=(T3 e.i26(T e.i1(T e.i2V)))W1;}

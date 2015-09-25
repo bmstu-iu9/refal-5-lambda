@@ -1,0 +1,175 @@
+v ROUT3 Module Refal 0.1
+r file ROut/MLexer.rout
+
+b Entry::MLexer::Tokens
+c $Entry::MLexer::Tokens$ {
+c 	e.$Index::FileName$ =
+c 		<$Local::MLexer::ConcatFreeAndValue$ <$Local::MLexer::BaseTokens$ <$Local::MLexer::LoadFile$ e.$Index::FileName$ > > > ;
+c }
+
+b Local::MLexer::ConcatFreeAndValue
+c $Local::MLexer::ConcatFreeAndValue$ {
+c 	( $ADT::__StructureBrackets$ $Ident::Space$ e.$Index::Space1$ ) ( $ADT::__StructureBrackets$ $Ident::Space$ e.$Index::Space2$ ) e.$Index::Tokens$ =
+c 		<$Local::MLexer::ConcatFreeAndValue$ ( $ADT::__StructureBrackets$ $Ident::Space$ e.$Index::Space1$ e.$Index::Space2$ ) e.$Index::Tokens$ > ;
+c 	( $ADT::__StructureBrackets$ $Ident::Space$ e.$Index::Space$ ) ( $ADT::__StructureBrackets$ s.$Index::Other$ e.$Index::Value$ ) e.$Index::Tokens$ =
+c 		( $ADT::__StructureBrackets$ s.$Index::Other$ ( $ADT::__StructureBrackets$ e.$Index::Space$ ) e.$Index::Value$ ) <$Local::MLexer::ConcatFreeAndValue$ e.$Index::Tokens$ > ;
+c 	( $ADT::__StructureBrackets$ s.$Index::Other$ e.$Index::Value$ ) e.$Index::Tokens$ =
+c 		( $ADT::__StructureBrackets$ s.$Index::Other$ ( $ADT::__StructureBrackets$ ) e.$Index::Value$ ) <$Local::MLexer::ConcatFreeAndValue$ e.$Index::Tokens$ > ;
+c 	=
+c 		;
+c }
+
+b Local::MLexer::LoadFile
+c $Local::MLexer::LoadFile$ {
+c 	e.$Index::FileName$ =
+c 		<$Entry::MLambda::Map$ $Local::MLexer::ToPlain$ <$Entry::FileIO::Load$ e.$Index::FileName$ > > ;
+c }
+
+b Local::MLexer::ToPlain
+c $Local::MLexer::ToPlain$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::Line$ ) =
+c 		e.$Index::Line$ '\n' ;
+c }
+
+b Local::MLexer::BaseTokens
+c $Local::MLexer::BaseTokens$ {
+c 	=
+c 		( $ADT::__StructureBrackets$ $Ident::EOF$ ) ;
+c 	e.$Index::Text$ =
+c 		<$Local::MLexer::SwBaseTokens$ ( $ADT::__StructureBrackets$ <$Local::MLexer::Default$ $Ident::Number$ > ( $ADT::__StructureBrackets$ <$Entry::Types::Digits$ > ) <$Entry::Types::Digits$ > ) ( $ADT::__StructureBrackets$ <$Local::MLexer::Default$ $Ident::Space$ > ( $ADT::__StructureBrackets$ ' \n\t' ) ' \n\t' ) ( $ADT::__StructureBrackets$ <$Local::MLexer::Default$ $Ident::Punctuation$ > ( $ADT::__StructureBrackets$ '();{},=<>' ) ) ( $ADT::__StructureBrackets$ $Local::MLexer::FinishName$ ( $ADT::__StructureBrackets$ <$Entry::Types::UpAlph$ > ) <$Entry::Types::UpAlph$ > <$Entry::Types::LoAlph$ > <$Entry::Types::Digits$ > '_-' ) ( $ADT::__StructureBrackets$ $Local::MLexer::FinishComment$ ( $ADT::__StructureBrackets$ '/' ) ) ( $ADT::__StructureBrackets$ $Local::MLexer::FinishLiteral$ ( $ADT::__StructureBrackets$ '\'' ) ) ( $ADT::__StructureBrackets$ $Local::MLexer::FinishDirective$ ( $ADT::__StructureBrackets$ '$$' ) <$Entry::Types::UpAlph$ > ) ( $ADT::__StructureBrackets$ $Local::MLexer::FinishVariable$ ( $ADT::__StructureBrackets$ 'set' ) ) ( $ADT::__StructureBrackets$ e.$Index::Text$ ) > ;
+c }
+
+b Local::MLexer::Default
+c $Local::MLexer::Default$ {
+c 	s.$Index::Name$ =
+c 		<$Entry::MLambda::BindLeft$ $Local::MLexer::DefaultFinisher$ s.$Index::Name$ > ;
+c }
+
+b Local::MLexer::DefaultFinisher
+c $Local::MLexer::DefaultFinisher$ {
+c 	s.$Index::L_Name$ ( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ s.$Index::L_Name$ e.$Index::Scanned$ ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::SwBaseTokens
+c $Local::MLexer::SwBaseTokens$ {
+c 	e.$Index::TokenMakers-B$ ( $ADT::__StructureBrackets$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::Start-B$ s.$Index::Next$ e.$Index::Start-E$ ) ) e.$Index::TokenMakers-E$ ( $ADT::__StructureBrackets$ s.$Index::Next$ e.$Index::Text$ ) =
+c 		<$Local::MLexer::PrepareNextLoop$ <$Entry::MLambda::Apply$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ s.$Index::Next$ ) e.$Index::Text$ > > ;
+c 	e.$Index::TokenMakers-B$ ( $ADT::__StructureBrackets$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::Start-B$ s.$Index::Next$ e.$Index::Start-E$ ) e.$Index::BodyToken$ ) e.$Index::TokenMakers-E$ ( $ADT::__StructureBrackets$ s.$Index::Next$ e.$Index::Text$ ) =
+c 		<$Local::MLexer::PrepareNextLoop$ <$Local::MLexer::ScanTokenBody$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::BodyToken$ ) ( $ADT::__StructureBrackets$ s.$Index::Next$ ) e.$Index::Text$ > > ;
+c 	e.$Index::TokenMakers$ ( $ADT::__StructureBrackets$ s.$Index::Next$ e.$Index::Text$ ) =
+c 		<$Local::MLexer::PrepareNextLoop$ ( $ADT::__StructureBrackets$ $Ident::Unexpected$ s.$Index::Next$ ) e.$Index::Text$ > ;
+c }
+
+b Local::MLexer::PrepareNextLoop
+c $Local::MLexer::PrepareNextLoop$ {
+c 	t.$Index::Token$ e.$Index::Text$ =
+c 		t.$Index::Token$ <$Local::MLexer::BaseTokens$ e.$Index::Text$ > ;
+c }
+
+b Local::MLexer::ScanTokenBody
+c $Local::MLexer::ScanTokenBody$ {
+c 	t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::BodySet-B$ s.$Index::Next$ e.$Index::BodySet-E$ ) ( $ADT::__StructureBrackets$ e.$Index::Body$ ) s.$Index::Next$ e.$Index::Text$ =
+c 		<$Local::MLexer::ScanTokenBody$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::BodySet-B$ s.$Index::Next$ e.$Index::BodySet-E$ ) ( $ADT::__StructureBrackets$ e.$Index::Body$ s.$Index::Next$ ) e.$Index::Text$ > ;
+c 	t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::BodySet$ ) ( $ADT::__StructureBrackets$ e.$Index::Body$ ) e.$Index::Text$ =
+c 		<$Entry::MLambda::Apply$ t.$Index::FnFinisher$ ( $ADT::__StructureBrackets$ e.$Index::Body$ ) e.$Index::Text$ > ;
+c }
+
+b Local::MLexer::FinishName
+c $Local::MLexer::FinishName$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::Name$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Name$ <$Local::MLexer::Replace-_$ e.$Index::Name$ > ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::Replace-_
+c $Local::MLexer::Replace-_$ {
+c 	e.$Index::Line-B$ '-' e.$Index::Line-E$ =
+c 		e.$Index::Line-B$ '_' <$Local::MLexer::Replace-_$ e.$Index::Line-E$ > ;
+c 	e.$Index::Line$ =
+c 		e.$Index::Line$ ;
+c }
+
+b Local::MLexer::FinishComment
+c $Local::MLexer::FinishComment$ {
+c 	( $ADT::__StructureBrackets$ '/' ) '/' e.$Index::InComment$ '\n' e.$Index::Text$ =
+c 		<$Local::MLexer::CppComment$ ( $ADT::__StructureBrackets$ e.$Index::InComment$ ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ '/' ) '/' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::CppComment$ e.$Index::Text$ ) ;
+c 	( $ADT::__StructureBrackets$ '/' ) '*' e.$Index::InComment$ '*/' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::CComment$ e.$Index::InComment$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '/' ) '*' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::CComment$ e.$Index::Text$ ) ;
+c 	( $ADT::__StructureBrackets$ '/' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Unexpected$ '/' ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::CppComment
+c $Local::MLexer::CppComment$ {
+c 	( $ADT::__StructureBrackets$ 'FROM' e.$Index::Name$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::From$ ) e.$Index::Name$ '\n' e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Other$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::CppComment$ e.$Index::Other$ ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::FinishLiteral
+c $Local::MLexer::FinishLiteral$ {
+c 	( $ADT::__StructureBrackets$ '\'' ) '\'' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Literal$ '\\\'' ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '\'' ) e.$Index::Text$ =
+c 		<$Local::MLexer::DoScanLiteral$ ( $ADT::__StructureBrackets$ ) e.$Index::Text$ > ;
+c }
+
+b Local::MLexer::DoScanLiteral
+c $Local::MLexer::DoScanLiteral$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) '\\' s.$Index::Hidden$ e.$Index::Text$ =
+c 		<$Local::MLexer::DoScanLiteral$ ( $ADT::__StructureBrackets$ e.$Index::Scanned$ '\\' s.$Index::Hidden$ ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) '\'\'' e.$Index::Text$ =
+c 		<$Local::MLexer::DoScanLiteral$ ( $ADT::__StructureBrackets$ e.$Index::Scanned$ '\\\'' ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) '\'' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Literal$ e.$Index::Scanned$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) '\n' e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Literal$ e.$Index::Scanned$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) s.$Index::Other$ e.$Index::Text$ =
+c 		<$Local::MLexer::DoScanLiteral$ ( $ADT::__StructureBrackets$ e.$Index::Scanned$ s.$Index::Other$ ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) =
+c 		( $ADT::__StructureBrackets$ $Ident::Literal$ e.$Index::Scanned$ ) ;
+c }
+
+b Local::MLexer::FinishDirective
+c $Local::MLexer::FinishDirective$ {
+c 	( $ADT::__StructureBrackets$ '$$ENTRY' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::Entry$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '$$EXTERN' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::Extern$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '$$ENUM' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::Enum$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '$$EENUM' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::EEnum$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ '$$SWAP' ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Directive$ $Ident::Swap$ ) e.$Index::Text$ ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Other$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Unexpected$ e.$Index::Other$ ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::FinishVariable
+c $Local::MLexer::FinishVariable$ {
+c 	( $ADT::__StructureBrackets$ s.$Index::Type$ ) '.' e.$Index::Text$ =
+c 		<$Local::MLexer::ReadIndex$ ( $ADT::__StructureBrackets$ s.$Index::Type$ '.' ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ s.$Index::Type$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Unexpected$ s.$Index::Type$ ) e.$Index::Text$ ;
+c }
+
+b Local::MLexer::ReadIndex
+c $Local::MLexer::ReadIndex$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::VarStart$ ) e.$Index::Text$ =
+c 		<$Local::MLexer::DoReadIndex$ ( $ADT::__StructureBrackets$ e.$Index::VarStart$ ) ( $ADT::__StructureBrackets$ <$Entry::Types::UpAlph$ > <$Entry::Types::LoAlph$ > <$Entry::Types::Digits$ > '-_' ) e.$Index::Text$ > ;
+c }
+
+b Local::MLexer::DoReadIndex
+c $Local::MLexer::DoReadIndex$ {
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) ( $ADT::__StructureBrackets$ e.$Index::Set-B$ s.$Index::Next$ e.$Index::Set-E$ ) s.$Index::Next$ e.$Index::Text$ =
+c 		<$Local::MLexer::DoReadIndex$ ( $ADT::__StructureBrackets$ e.$Index::Scanned$ s.$Index::Next$ ) ( $ADT::__StructureBrackets$ e.$Index::Set-B$ s.$Index::Next$ e.$Index::Set-E$ ) e.$Index::Text$ > ;
+c 	( $ADT::__StructureBrackets$ e.$Index::Scanned$ ) ( $ADT::__StructureBrackets$ e.$Index::Set$ ) e.$Index::Text$ =
+c 		( $ADT::__StructureBrackets$ $Ident::Var$ <$Local::MLexer::Replace-_$ e.$Index::Scanned$ > ) e.$Index::Text$ ;
+c }
+
