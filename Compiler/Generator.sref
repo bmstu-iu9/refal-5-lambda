@@ -317,7 +317,7 @@ GenCommand {
         <BracketsVar-E s.BracketNumber> '_stk;'
     )
     (e.Indent '  '
-      '! empty_seq( ' <PrintEVar-OE 1 'e' e.Index> ', '
+      '! refalrts::empty_seq( ' <PrintEVar-OE 1 'e' e.Index> ', '
       <BracketsVar-E s.BracketNumber> ' );'
     )
     <Map (PrintRecoverStackBracket e.Indent '  ') e.BracketsForSave>
@@ -608,7 +608,7 @@ BreakerFromIndent {
 PrintMatchEmpty {
   (e.Indent) s.BracketNumber =
     (e.Indent
-      'if( ! empty_seq( ' <BracketsVar-B s.BracketNumber> ', '
+      'if( ! refalrts::empty_seq( ' <BracketsVar-B s.BracketNumber> ', '
       <BracketsVar-E s.BracketNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);

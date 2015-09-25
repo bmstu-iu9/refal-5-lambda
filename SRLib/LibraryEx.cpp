@@ -229,7 +229,7 @@ refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // t.Fn
     if( ! refalrts::tvar_left( tFn_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -360,7 +360,7 @@ refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::tvar_left( tAcc_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -553,7 +553,7 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // s.Func
     if( ! refalrts::svar_left( sFunc_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -845,7 +845,7 @@ static refalrts::FnResult DoMapReduce(refalrts::Iter arg_begin, refalrts::Iter a
       break;
     if( ! refalrts::tvar_left( tAcc_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -958,7 +958,7 @@ refalrts::FnResult UnBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eExpr_b_1 = bb_1;
     refalrts::use( eExpr_b_1 );
@@ -1149,7 +1149,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
       break;
     if( ! refalrts::tvar_left( tFile_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1486,7 +1486,7 @@ static refalrts::FnResult WriteBracketLine(refalrts::Iter arg_begin, refalrts::I
     refalrts::use( eLine_e_1 );
     if( ! refalrts::tvar_left( tFile_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1546,7 +1546,7 @@ refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // s.Num
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1605,7 +1605,7 @@ refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // s.Num
     if( ! refalrts::svar_left( sNum_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1672,7 +1672,7 @@ static refalrts::FnResult FastIntFromStr_Guard(refalrts::Iter arg_begin, refalrt
       break;
     if( ! refalrts::svar_left( sNumber_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1782,7 +1782,7 @@ refalrts::FnResult ArgList(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1843,7 +1843,7 @@ static refalrts::FnResult DoArgList(refalrts::Iter arg_begin, refalrts::Iter arg
     // s.Next
     if( ! refalrts::svar_left( sNext_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -1935,7 +1935,7 @@ static refalrts::FnResult SwDoArgList(refalrts::Iter arg_begin, refalrts::Iter a
     // s.Next
     if( ! refalrts::svar_left( sNext_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2054,7 +2054,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2147,7 +2147,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::use( eLeft_e_1 );
     if( ! refalrts::svar_left( sRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2194,7 +2194,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::use( eRight_e_1 );
     if( ! refalrts::svar_left( sLeft_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2233,7 +2233,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2307,7 +2307,7 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     if( ! refalrts::tvar_left( tFirstLeft_1, bb_1, be_1 ) ) 
       break;
@@ -2417,11 +2417,11 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
-    if( ! empty_seq( bb_2, be_2 ) )
+    if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2464,9 +2464,9 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_1, be_1 ) )
+    if( ! refalrts::empty_seq( bb_1, be_1 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eRight_b_1 = bb_2;
     refalrts::use( eRight_b_1 );
@@ -2513,9 +2513,9 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_2, be_2 ) )
+    if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2573,7 +2573,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2630,7 +2630,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2725,7 +2725,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2787,7 +2787,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eLeft_b_1 = bb_1;
     refalrts::use( eLeft_b_1 );
@@ -2902,7 +2902,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::use( eLeft_e_1 );
     if( ! refalrts::svar_left( sRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2964,7 +2964,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::use( eRight_e_1 );
     if( ! refalrts::svar_left( sLeft_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -3022,7 +3022,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -3120,7 +3120,7 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedLeft_b_1 = bb_1;
     refalrts::use( eScannedLeft_b_1 );
@@ -3280,11 +3280,11 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_2, be_2 ) )
+    if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
-    if( ! empty_seq( bb_4, be_4 ) )
+    if( ! refalrts::empty_seq( bb_4, be_4 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedLeft_b_1 = bb_1;
     refalrts::use( eScannedLeft_b_1 );
@@ -3377,9 +3377,9 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_2, be_2 ) )
+    if( ! refalrts::empty_seq( bb_2, be_2 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedLeft_b_1 = bb_1;
     refalrts::use( eScannedLeft_b_1 );
@@ -3478,9 +3478,9 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_4, be_4 ) )
+    if( ! refalrts::empty_seq( bb_4, be_4 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedLeft_b_1 = bb_1;
     refalrts::use( eScannedLeft_b_1 );
@@ -3614,7 +3614,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
       break;
     if( ! refalrts::tvar_left( tNextRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -3737,7 +3737,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
       break;
     if( ! refalrts::tvar_left( tNextRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -3894,7 +3894,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
       break;
     if( ! refalrts::tvar_left( tNextRight_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -3979,7 +3979,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eInBracket_b_1 = bb_1;
     refalrts::use( eInBracket_b_1 );
@@ -4018,7 +4018,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // s.Symbol
     if( ! refalrts::svar_left( sSymbol_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -4195,7 +4195,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -4693,7 +4693,7 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // t.Func
     if( ! refalrts::tvar_left( tFunc_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -4794,7 +4794,7 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     //
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {

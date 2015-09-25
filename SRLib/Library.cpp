@@ -100,7 +100,7 @@ refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     if( sNumber1_1->tag != refalrts::cDataNumber )
@@ -139,7 +139,7 @@ refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     if( sNumber1_1->tag != refalrts::cDataNumber )
@@ -178,7 +178,7 @@ refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     if( sNumber1_1->tag != refalrts::cDataNumber )
@@ -217,7 +217,7 @@ refalrts::FnResult Div(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     if( sNumber1_1->tag != refalrts::cDataNumber )
@@ -256,7 +256,7 @@ refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     if( sNumber1_1->tag != refalrts::cDataNumber )
@@ -294,8 +294,8 @@ refalrts::FnResult write_to_stream(
 
   for(
     refalrts::Iter p = str_begin;
-    ! empty_seq( p, str_end );
-    move_left( p, str_end )
+    ! refalrts::empty_seq( p, str_end );
+    refalrts::move_left( p, str_end )
   ) {
     switch( p->tag ) {
       case refalrts::cDataChar: {
@@ -546,7 +546,7 @@ refalrts::FnResult ReadLine(
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
 
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::reset_allocator();
@@ -585,7 +585,7 @@ refalrts::FnResult FReadLine(
       break;
     if( sFileHandle_1->tag != refalrts::cDataFile )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::reset_allocator();
@@ -632,10 +632,10 @@ refalrts::FnResult string_from_seq(
   }
 
   /*
-    Çהוסü empty_seq( begin, end ) || (begin->tag != cDataChar).
+    Çהוסü refalrts::empty_seq( begin, end ) || (begin->tag != cDataChar).
   */
 
-  if( empty_seq( begin, end ) ) {
+  if( refalrts::empty_seq( begin, end ) ) {
     result.push_back( '\0' );
     string.swap( result );
     return refalrts::cSuccess;
@@ -722,7 +722,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( sFileHandle_1->tag != refalrts::cDataFile )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     int fclose_res =
@@ -766,7 +766,7 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( sParamNumber_1->tag != refalrts::cDataNumber )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::reset_allocator();
@@ -777,7 +777,7 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter res_end = 0;
 
     if( arg_number < g_argc ) {
-      if( ! alloc_string( res_begin, res_end, g_argv[arg_number] ) )
+      if( ! refalrts::alloc_string( res_begin, res_end, g_argv[arg_number] ) )
         return refalrts::cNoMemory;
 
       refalrts::splice_evar( arg_begin, res_begin, res_end );
@@ -908,7 +908,7 @@ refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( sCode_1->tag != refalrts::cDataNumber )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::set_return_code( sCode_1->number_info );
@@ -979,7 +979,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::use( eNumber_e_1 );
 
     bool start_is_digit =
-      !empty_seq( eNumber_b_1, eNumber_e_1 )
+      ! refalrts::empty_seq( eNumber_b_1, eNumber_e_1 )
       && (refalrts::cDataChar == eNumber_b_1->tag)
       && isdigit( eNumber_b_1->char_info );
 
@@ -997,7 +997,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       refalrts::RefalNumber acc = 0;
 
       for( ; ; ) {
-        if( empty_seq( eNumber_b_1, eNumber_e_1 ) ) {
+        if( refalrts::empty_seq( eNumber_b_1, eNumber_e_1 ) ) {
           break;
         } else if ( eNumber_b_1->tag != refalrts::cDataChar ) {
           break;
@@ -1007,7 +1007,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
           (acc *= 10) += eNumber_b_1->char_info - '0';
         }
 
-        move_left( eNumber_b_1, eNumber_e_1 );
+        refalrts::move_left( eNumber_b_1, eNumber_e_1 );
       }
 
       refalrts::Iter success_pos = 0;
@@ -1046,7 +1046,7 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       break;
     if( sNumber_1->tag != refalrts::cDataNumber )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::reset_allocator();
@@ -1104,7 +1104,7 @@ refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( sCode_1->tag != refalrts::cDataNumber )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     char result = static_cast<char>( sCode_1->number_info );
@@ -1137,7 +1137,7 @@ refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
     if( sChar_1->tag != refalrts::cDataChar )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     refalrts::RefalNumber result =
@@ -1186,7 +1186,7 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       break;
     if( ! refalrts::svar_left( sSymb2_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     char order;
@@ -1397,7 +1397,7 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // s.Num
     if( ! refalrts::svar_left( sSymb_1, bb_0, be_0 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
     const char *fnname = 0;

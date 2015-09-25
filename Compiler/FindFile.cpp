@@ -657,7 +657,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eFileName_b_1 = bb_1;
     refalrts::use( eFileName_b_1 );
@@ -1618,7 +1618,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::use( eUnitName_e_1 );
     if( ! refalrts::repeated_evar_left( eUnitName_b_2, eUnitName_e_2, eUnitName_b_1, eUnitName_e_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {

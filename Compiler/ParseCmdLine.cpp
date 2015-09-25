@@ -146,7 +146,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -275,9 +275,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::char_left( 'c', bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -623,7 +623,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -747,9 +747,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::char_left( 'd', bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -1032,7 +1032,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::char_left( '-', bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -1273,7 +1273,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter be_2 = 0;
     if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -1383,7 +1383,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -1712,7 +1712,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -1724,7 +1724,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::use( eFolders_e_1 );
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2066,7 +2066,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_4 = 0;
     if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -2194,7 +2194,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -2206,7 +2206,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::use( eFolders_e_1 );
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2485,7 +2485,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       break;
     if( ! refalrts::char_left( '-', bb_3, be_3 ) ) 
       break;
-    if( ! empty_seq( bb_3, be_3 ) )
+    if( ! refalrts::empty_seq( bb_3, be_3 ) )
       break;
     eScannedFiles_b_1 = bb_1;
     refalrts::use( eScannedFiles_b_1 );
@@ -2730,7 +2730,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::use( eFolders_e_1 );
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
@@ -2925,7 +2925,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::use( eFolders_e_1 );
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
-    if( ! empty_seq( bb_0, be_0 ) )
+    if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
