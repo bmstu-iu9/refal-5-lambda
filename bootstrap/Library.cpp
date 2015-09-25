@@ -1056,7 +1056,7 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     if( refalrts::RefalNumber num = sNumber_1->number_info ) {
       // Длина десятичного числа = 0,3 * длина двоичного числа,
       // т.к. lg(2) = 0,3. Хрен с ним, что много. Главное, что не мало.
-      enum { cMaxNumberLen = sizeof(refalrts::RefalNumber) * 3 / 10 + 2 };
+      enum { cMaxNumberLen = 8 * sizeof(refalrts::RefalNumber) * 3 / 10 + 2 };
 
       char buffer[cMaxNumberLen + 1] = { 0 };
       char *lim_digit = buffer + cMaxNumberLen;
