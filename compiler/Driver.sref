@@ -277,16 +277,81 @@ $EXTERN GenFnStart, GenSentence, GenFnEnd;
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
 
+//FROM LibraryEx
+$EXTERN Fetch;
+
 $FORWARD ParseBlock, ParseFunction-Aux;
+
+$FORWARD GenFunctionBody;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+CreateLambdaName {
+  e.Name s.Number =
+    'lambda_' e.Name '_' <StrFromInt s.Number>;
+}
+
+$LABEL CLambdaScope;
+
+//FROM Algorithm
+$EXTERN MakeAlgorithm;
+
+//FROM Lexer
+$EXTERN TkName;
+
+$LABEL CLambdaName;
 
 ParseFunction {
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
   (TkOpenBlock s.LnNum) e.Tail =
-    <ParseFunction-Aux
-      s.ScopeClass (e.Name)
+    <Fetch
       <ParseBlock
         (0) t.ErrorList t.SymTable <Cntx-Create> e.Tail
       >
+      {
+        (1 /* нет вложенных функций */ (0 e.Sentences))
+        t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
+          <GenFunctionBody
+            s.ScopeClass (e.Name) (e.Name) e.Sentences
+          >
+          <Cntx-Destroy t.Context>
+          <ParseElements t.ErrorList t.SymTable e.Tail>;
+
+        (s.NextNumber e.FunctionBodies t.MainBody)
+        t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
+          // ¬ложенные функции могут рекурсивно вызывать объемлющую
+          // функцию, поэтому перед их телами нужно дать предобъ€вление
+          // объемлющей функции.
+          <Fetch
+            s.ScopeClass
+            {
+              GN-Entry = <GenExtern e.Name>;
+              GN-Local = <GenForward e.Name>;
+            }
+          >
+          <Map
+            {
+              (s.Number e.Sentences) =
+                <GenFunctionBody
+                  GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
+                  e.Sentences
+                >;
+            }
+            e.FunctionBodies
+          >
+          <Fetch
+            t.MainBody
+            {
+              (s.Number e.Sentences) =
+                <GenFunctionBody
+                  s.ScopeClass (e.Name) (e.Name) e.Sentences
+                >;
+            }
+          >
+          <Cntx-Destroy t.Context>
+          <ParseElements t.ErrorList t.SymTable e.Tail>;
+      }
     >;
 
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
@@ -297,100 +362,36 @@ ParseFunction {
     >;
 }
 
-$FORWARD GenFunctionBody;
-
-$LABEL CLambdaScope;
-
-//FROM LibraryEx
-$EXTERN Fetch;
-
-ParseFunction-Aux {
-  s.ScopeClass (e.Name)
-  (s.NextNumber e.FunctionBodies t.MainBody)
-  t.ErrorList t.SymTable (t.Context) e.Tail =
-    <Fetch
-      e.FunctionBodies
-      {
-        = ;
-
-        e.FunctionBodies^ =
-          <Fetch
-            s.ScopeClass
-            {
-              GN-Entry = <GenExtern e.Name>;
-              GN-Local = <GenForward e.Name>;
-            }
-          >
-          <Map
-            (GenFunctionBody # CLambdaScope e.Name)
-            e.FunctionBodies
-          >;
-      }
-    >
-    <GenFunctionBody s.ScopeClass e.Name t.MainBody>
-    <Cntx-Destroy t.Context>
-    <ParseElements t.ErrorList t.SymTable e.Tail>;
-}
-
-$FORWARD CreateLambdaName, GenFunctionBody-Aux;
-
 GenFunctionBody {
-  # CLambdaScope e.Name (s.Number e.Sentences) =
-    <GenFunctionBody-Aux
-      GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
-      e.Sentences
-    >;
-
-  s.ScopeClass e.Name (s.Number e.Sentences) =
-    <GenFunctionBody-Aux
-      s.ScopeClass (e.Name) (e.Name) e.Sentences
-    >;
-}
-
-//FROM Library
-$EXTERN StrFromInt;
-
-CreateLambdaName {
-  e.Name s.Number =
-    'lambda_' e.Name '_' <StrFromInt s.Number>;
-}
-
-$FORWARD PrepareAndGenSentence;
-
-GenFunctionBody-Aux {
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
-    <Map
-      (PrepareAndGenSentence e.MainName) e.Sentences
+    <Fetch
+      e.Sentences
+      (Map {
+        ((e.Pattern) (e.Result)) =
+          <GenSentence
+            <MakeAlgorithm
+              (e.Pattern)
+              (
+                <Map
+                  {
+                    (TkName # CLambdaName s.Number) =
+                      (TkName <CreateLambdaName e.MainName s.Number>);
+
+                    t.OtherToken = t.OtherToken;
+                  }
+                  e.Result
+                >
+              )
+            >
+          >;
+      })
     >
     <GenFnEnd>;
 }
 
-//FROM Algorithm
-$EXTERN MakeAlgorithm;
-
-$FORWARD InsertMainName;
-
-PrepareAndGenSentence {
-  e.MainName ((e.Pattern) (e.Result)) =
-    <GenSentence
-      <MakeAlgorithm
-        (e.Pattern) (<Map (InsertMainName e.MainName) e.Result>)
-      >
-    >;
-}
-
 //FROM Lexer
-$EXTERN TkName, TkVariable;
-
-$LABEL CLambdaName;
-
-InsertMainName {
-  e.MainName (TkName # CLambdaName s.Number) =
-    (TkName <CreateLambdaName e.MainName s.Number>);
-
-  e.MainName t.OtherToken = t.OtherToken;
-}
+$EXTERN TkVariable;
 
 $FORWARD DoParseBlock, ParseBlock-SetContext;
 
@@ -526,7 +527,7 @@ ParseSentence {
 
 
 $FORWARD CoBracket, CheckAddVariable, StrFromBracket,
-  ParseResult, InvalidModeVariableError;
+  ParseResult;
 
 //FROM Lexer
 $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
@@ -869,7 +870,14 @@ CoBracket {
   TkCloseCall = TkOpenCall;
 }
 
-$FORWARD SwCheckAddVariable;
+InvalidModeVariableError {
+  t.ErrorList s.LnNum s.OldMode s.NewMode e.Index =
+    <EL-AddErrorAt
+      t.ErrorList s.LnNum
+      'Variables ' s.OldMode '.' e.Index ' and '
+      s.NewMode '.' e.Index ' has different modes'
+    >;
+}
 
 CheckAddVariable {
   t.ErrorList t.Context
@@ -894,15 +902,6 @@ CheckAddVariable {
           >
           t.Context s.Depth s.Mode;
       }
-    >;
-}
-
-InvalidModeVariableError {
-  t.ErrorList s.LnNum s.OldMode s.NewMode e.Index =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum
-      'Variables ' s.OldMode '.' e.Index ' and '
-      s.NewMode '.' e.Index ' has different modes'
     >;
 }
 
@@ -1098,14 +1097,12 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned) (TkOpenBlock s.LnNum) e.Tail =
-    <ParseResult
-      <ParseResult-Block
-        (e.Sentences) (e.Pattern) (e.MultiBracket)
-        (e.Scanned)
-        <ParseBlock
-          (e.Functions) t.ErrorList t.SymTable t.Context
-          e.Tail
-        >
+    <ParseResult-Block
+      (e.Sentences) (e.Pattern) (e.MultiBracket)
+      (e.Scanned)
+      <ParseBlock
+        (e.Functions) t.ErrorList t.SymTable t.Context
+        e.Tail
       >
     >;
 
@@ -1223,51 +1220,46 @@ CheckUseVariable {
 
 $FORWARD ParseResult-Block-Aux;
 
+$LABEL CCreateClosure;
+
 ParseResult-Block {
   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
   (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
   ( t.Context /* свободные переменные в функции отсутствуют */ )
   e.Tail =
-   (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-   (e.Scanned (TkName # CLambdaName <Dec s.NextNum>))
-   e.Tail;
+    <ParseResult
+      (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
+      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+      (e.Scanned (TkName # CLambdaName <Dec s.NextNum>))
+      e.Tail
+    >;
 
   (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
   (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
   ( t.Context e.FreeContext )
   e.Tail =
-    <ParseResult-Block-Aux
-      (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern)
-      (e.MultiBracket)
-      (e.Scanned)
+    <Fetch
       <Dec s.NextNum>
       (<MapReduce CreateContext s.BracketNumber e.FreeContext>)
-      e.Tail
+      {
+        s.FunctionNumber
+        (s.NextBracketNumber e.RealContext) =
+          <ParseResult
+            (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
+            (e.Sentences) (e.Pattern)
+            (<Inc s.NextBracketNumber> e.MultiBracket)
+            (
+              e.Scanned
+              (TkOpenCall s.NextBracketNumber)
+              (TkName # CCreateClosure)
+              (TkName # CLambdaName s.FunctionNumber)
+              e.RealContext
+              (TkCloseCall s.NextBracketNumber)
+            )
+            e.Tail
+          >;
+      }
     >;
-}
-
-$LABEL CCreateClosure;
-
-ParseResult-Block-Aux {
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) s.FunctionNumber
-  (s.NextBracketNumber e.RealContext)
-  e.Tail =
-    (e.Functions) t.ErrorList t.SymTable t.Context
-    (e.Sentences) (e.Pattern)
-    (<Inc s.NextBracketNumber> e.MultiBracket)
-    (
-      e.Scanned
-      (TkOpenCall s.NextBracketNumber)
-      (TkName # CCreateClosure)
-      (TkName # CLambdaName s.FunctionNumber)
-      e.RealContext
-      (TkCloseCall s.NextBracketNumber)
-    )
-    e.Tail;
 }
