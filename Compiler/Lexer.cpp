@@ -27,7 +27,9 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eLine_b_1;
+    refalrts::use( eLine_b_1 );
     static refalrts::Iter eLine_e_1;
+    refalrts::use( eLine_e_1 );
     // (~1 e.Line )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -40,12 +42,13 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
     eLine_e_1 = be_1;
     refalrts::use( eLine_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceEVar, & eLine_b_1, & eLine_e_1},
       {refalrts::icChar, 0, 0, '\n'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -78,25 +81,27 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eFileName_b_1;
+    refalrts::use( eFileName_b_1 );
     static refalrts::Iter eFileName_e_1;
+    refalrts::use( eFileName_e_1 );
     // e.FileName
     eFileName_b_1 = bb_0;
     refalrts::use( eFileName_b_1 );
     eFileName_e_1 = be_0;
     refalrts::use( eFileName_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & NormalizeTokens, "NormalizeTokens"},
+      {refalrts::icFunc, (void*) & NormalizeTokens, (void*) "NormalizeTokens"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Map, "Map"},
-      {refalrts::icFunc, & LinearizeLine, "LinearizeLine"},
+      {refalrts::icFunc, (void*) & Map, (void*) "Map"},
+      {refalrts::icFunc, (void*) & LinearizeLine, (void*) "LinearizeLine"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & LoadFile, "LoadFile"},
+      {refalrts::icFunc, (void*) & LoadFile, (void*) "LoadFile"},
       {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
@@ -104,7 +109,8 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -289,6 +295,11 @@ refalrts::FnResult TkVariable(refalrts::Iter, refalrts::Iter) {
   return refalrts::cRecognitionImpossible;
 }
 
+refalrts::FnResult TkRedefinition(refalrts::Iter, refalrts::Iter) {
+  refalrts::this_is_generated_function();
+  return refalrts::cRecognitionImpossible;
+}
+
 refalrts::FnResult EEnum(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::cRecognitionImpossible;
@@ -343,7 +354,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'N'},
@@ -351,7 +362,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'M'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -395,7 +407,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icChar, 0, 0, 'T'},
@@ -403,7 +415,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'Y'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -447,14 +460,15 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'M'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -494,7 +508,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'X'},
       {refalrts::icChar, 0, 0, 'T'},
@@ -503,7 +517,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -551,7 +566,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'F'},
       {refalrts::icChar, 0, 0, 'O'},
       {refalrts::icChar, 0, 0, 'R'},
@@ -561,7 +576,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'D'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -613,14 +629,15 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'S'},
       {refalrts::icChar, 0, 0, 'W'},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'P'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -660,7 +677,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'S'},
       {refalrts::icChar, 0, 0, 'W'},
@@ -668,7 +685,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'P'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -712,7 +730,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'L'},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'B'},
@@ -720,7 +738,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 0, 'L'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -764,6 +783,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sChar_1;
+    refalrts::use( sChar_1 );
     // & TkChar s.Char
     if( ! refalrts::function_left( & TkChar, bb_0, be_0 ) ) 
       break;
@@ -772,13 +792,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '\''},
       {refalrts::icSpliceSTVar, & sChar_1},
       {refalrts::icChar, 0, 0, '\''},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -811,13 +832,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, ']'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -853,13 +875,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '>'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -895,13 +918,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '}'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -937,13 +961,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, ')'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -979,13 +1004,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, ','},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1016,6 +1042,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sDirective_1;
+    refalrts::use( sDirective_1 );
     // & TkDirective s.Directive
     if( ! refalrts::function_left( & TkDirective, bb_0, be_0 ) ) 
       break;
@@ -1024,17 +1051,18 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '$'},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StrDirective, "StrDirective"},
+      {refalrts::icFunc, (void*) & StrDirective, (void*) "StrDirective"},
       {refalrts::icSpliceSTVar, & sDirective_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1085,7 +1113,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'd'},
@@ -1099,7 +1127,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1162,7 +1191,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eMessage_b_1;
+    refalrts::use( eMessage_b_1 );
     static refalrts::Iter eMessage_e_1;
+    refalrts::use( eMessage_e_1 );
     // & TkError e.Message
     if( ! refalrts::function_left( & TkError, bb_0, be_0 ) ) 
       break;
@@ -1171,7 +1202,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     eMessage_e_1 = be_0;
     refalrts::use( eMessage_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'L'},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'X'},
@@ -1188,7 +1219,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1265,13 +1297,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '#'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1302,7 +1335,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eName_b_1;
+    refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
+    refalrts::use( eName_e_1 );
     // & TkName e.Name
     if( ! refalrts::function_left( & TkName, bb_0, be_0 ) ) 
       break;
@@ -1311,7 +1346,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     eName_e_1 = be_0;
     refalrts::use( eName_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icChar, 0, 0, 'a'},
       {refalrts::icChar, 0, 0, 'm'},
@@ -1320,7 +1355,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1360,6 +1396,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sNumber_1;
+    refalrts::use( sNumber_1 );
     // & TkNumber s.Number
     if( ! refalrts::function_left( & TkNumber, bb_0, be_0 ) ) 
       break;
@@ -1368,7 +1405,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icChar, 0, 0, 'u'},
       {refalrts::icChar, 0, 0, 'm'},
@@ -1377,12 +1414,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       {refalrts::icChar, 0, 0, 'r'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StrFromInt, "StrFromInt"},
+      {refalrts::icFunc, (void*) & StrFromInt, (void*) "StrFromInt"},
       {refalrts::icSpliceSTVar, & sNumber_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1449,13 +1487,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '['},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1491,13 +1530,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1533,13 +1573,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '{'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1575,13 +1616,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '('},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1617,13 +1659,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, '='},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1659,13 +1702,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icChar, 0, 0, ';'},
       {refalrts::icChar, 0, 0, '"'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1696,7 +1740,9 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eUnexpected_b_1;
+    refalrts::use( eUnexpected_b_1 );
     static refalrts::Iter eUnexpected_e_1;
+    refalrts::use( eUnexpected_e_1 );
     // & TkUnexpected e.Unexpected
     if( ! refalrts::function_left( & TkUnexpected, bb_0, be_0 ) ) 
       break;
@@ -1705,7 +1751,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     eUnexpected_e_1 = be_0;
     refalrts::use( eUnexpected_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -1733,7 +1779,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       {refalrts::icChar, 0, 0, '>'},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1849,8 +1896,11 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sMode_1;
+    refalrts::use( sMode_1 );
     static refalrts::Iter eIndex_b_1;
+    refalrts::use( eIndex_b_1 );
     static refalrts::Iter eIndex_e_1;
+    refalrts::use( eIndex_e_1 );
     // & TkVariable s.Mode e.Index
     if( ! refalrts::function_left( & TkVariable, bb_0, be_0 ) ) 
       break;
@@ -1861,13 +1911,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     eIndex_e_1 = be_0;
     refalrts::use( eIndex_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & sMode_1},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icSpliceEVar, & eIndex_b_1, & eIndex_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1879,6 +1930,49 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     res = refalrts::splice_evar( res, eIndex_b_1, eIndex_e_1 );
     res = refalrts::splice_elem( res, n0 );
     res = refalrts::splice_stvar( res, sMode_1 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    // & TkRedefinition
+    if( ! refalrts::function_left( & TkRedefinition, bb_0, be_0 ) ) 
+      break;
+    if( ! empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icChar, 0, 0, '"'},
+      {refalrts::icChar, 0, 0, '^'},
+      {refalrts::icChar, 0, 0, '"'},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_char( n0, '"' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_char( n1, '^' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_char( n2, '"' ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -1956,9 +2050,13 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eName_B_b_1;
+    refalrts::use( eName_B_b_1 );
     static refalrts::Iter eName_B_e_1;
+    refalrts::use( eName_B_e_1 );
     static refalrts::Iter eName_E_b_1;
+    refalrts::use( eName_E_b_1 );
     static refalrts::Iter eName_E_e_1;
+    refalrts::use( eName_E_e_1 );
     // e.Name_B '- e.Name_E
     refalrts::Iter bb_0_stk = bb_0;
     refalrts::Iter be_0_stk = be_0;
@@ -1984,16 +2082,17 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
       eName_E_e_1 = be_0;
       refalrts::use( eName_E_e_1 );
 #ifdef INTERPRET
-      static refalrts::ResultAction raa[] = {
+      const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-        {refalrts::icFunc, & NormalizeName, "NormalizeName"},
+        {refalrts::icFunc, (void*) & NormalizeName, (void*) "NormalizeName"},
         {refalrts::icSpliceEVar, & eName_B_b_1, & eName_B_e_1},
         {refalrts::icChar, 0, 0, '_'},
         {refalrts::icSpliceEVar, & eName_E_b_1, & eName_E_e_1},
         {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
         {refalrts::icEnd}
       };
-      refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+      refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+      refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
       return res;
 #else
 
@@ -2033,18 +2132,21 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eName_b_1;
+    refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
+    refalrts::use( eName_e_1 );
     // e.Name
     eName_b_1 = bb_0;
     refalrts::use( eName_b_1 );
     eName_e_1 = be_0;
     refalrts::use( eName_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2069,7 +2171,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eDirective_b_1;
+    refalrts::use( eDirective_b_1 );
     static refalrts::Iter eDirective_e_1;
+    refalrts::use( eDirective_e_1 );
     // (~1 & TkDirective e.Directive )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2084,14 +2188,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eDirective_e_1 = be_1;
     refalrts::use( eDirective_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & ValidDirective, "ValidDirective"},
+      {refalrts::icFunc, (void*) & ValidDirective, (void*) "ValidDirective"},
       {refalrts::icSpliceEVar, & eDirective_b_1, & eDirective_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2136,13 +2241,14 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkEOF, "TkEOF"},
+      {refalrts::icFunc, (void*) & TkEOF, (void*) "TkEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2174,6 +2280,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sChar_1;
+    refalrts::use( sChar_1 );
     // (~1 & TkLiteral_Char s.Char )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2188,14 +2295,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkChar, "TkChar"},
+      {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
       {refalrts::icSpliceSTVar, & sChar_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2228,7 +2336,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eDecCode_b_1;
+    refalrts::use( eDecCode_b_1 );
     static refalrts::Iter eDecCode_e_1;
+    refalrts::use( eDecCode_e_1 );
     // (~1 & TkLiteral_Code e.DecCode )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2243,20 +2353,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eDecCode_e_1 = be_1;
     refalrts::use( eDecCode_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkChar, "TkChar"},
+      {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Chr, "Chr"},
+      {refalrts::icFunc, (void*) & Chr, (void*) "Chr"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & FastIntFromStr, "FastIntFromStr"},
+      {refalrts::icFunc, (void*) & FastIntFromStr, (void*) "FastIntFromStr"},
       {refalrts::icSpliceEVar, & eDecCode_b_1, & eDecCode_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2330,14 +2441,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkChar, "TkChar"},
+      {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
       {refalrts::icChar, 0, 0, '\n'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2386,14 +2498,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkChar, "TkChar"},
+      {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
       {refalrts::icChar, 0, 0, '\r'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2442,14 +2555,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkChar, "TkChar"},
+      {refalrts::icFunc, (void*) & TkChar, (void*) "TkChar"},
       {refalrts::icChar, 0, 0, '\t'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2485,7 +2599,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eName_b_1;
+    refalrts::use( eName_b_1 );
     static refalrts::Iter eName_e_1;
+    refalrts::use( eName_e_1 );
     // (~1 & TkName e.Name )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2500,17 +2616,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eName_e_1 = be_1;
     refalrts::use( eName_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkName, "TkName"},
+      {refalrts::icFunc, (void*) & TkName, (void*) "TkName"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & NormalizeName, "NormalizeName"},
+      {refalrts::icFunc, (void*) & NormalizeName, (void*) "NormalizeName"},
       {refalrts::icSpliceEVar, & eName_b_1, & eName_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2557,7 +2674,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccumulated_b_1;
+    refalrts::use( eAccumulated_b_1 );
     static refalrts::Iter eAccumulated_e_1;
+    refalrts::use( eAccumulated_e_1 );
     // (~1 & TkNewLine e.Accumulated )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2572,13 +2691,14 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eAccumulated_e_1 = be_1;
     refalrts::use( eAccumulated_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNewLine, "TkNewLine"},
+      {refalrts::icFunc, (void*) & TkNewLine, (void*) "TkNewLine"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2610,7 +2730,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eDigits_b_1;
+    refalrts::use( eDigits_b_1 );
     static refalrts::Iter eDigits_e_1;
+    refalrts::use( eDigits_e_1 );
     // (~1 & TkNumber e.Digits )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2625,17 +2747,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eDigits_e_1 = be_1;
     refalrts::use( eDigits_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNumber, "TkNumber"},
+      {refalrts::icFunc, (void*) & TkNumber, (void*) "TkNumber"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & FastIntFromStr, "FastIntFromStr"},
+      {refalrts::icFunc, (void*) & FastIntFromStr, (void*) "FastIntFromStr"},
       {refalrts::icSpliceEVar, & eDigits_b_1, & eDigits_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2682,6 +2805,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sPunctuation_1;
+    refalrts::use( sPunctuation_1 );
     // (~1 & TkPunctuation s.Punctuation )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2696,16 +2820,17 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_1, be_1 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SwPunctuation, "SwPunctuation"},
+      {refalrts::icFunc, (void*) & SwPunctuation, (void*) "SwPunctuation"},
       {refalrts::icSpliceSTVar, & sPunctuation_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2748,8 +2873,11 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sType_1;
+    refalrts::use( sType_1 );
     static refalrts::Iter eIndex_b_1;
+    refalrts::use( eIndex_b_1 );
     static refalrts::Iter eIndex_e_1;
+    refalrts::use( eIndex_e_1 );
     // (~1 & TkVariable s.Type '. e.Index )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2768,18 +2896,19 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eIndex_e_1 = be_1;
     refalrts::use( eIndex_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkVariable, "TkVariable"},
+      {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
       {refalrts::icSpliceSTVar, & sType_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & NormalizeName, "NormalizeName"},
+      {refalrts::icFunc, (void*) & NormalizeName, (void*) "NormalizeName"},
       {refalrts::icSpliceEVar, & eIndex_b_1, & eIndex_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2827,7 +2956,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eUnexpected_b_1;
+    refalrts::use( eUnexpected_b_1 );
     static refalrts::Iter eUnexpected_e_1;
+    refalrts::use( eUnexpected_e_1 );
     // (~1 & TkUnexpected e.Unexpected )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2842,14 +2973,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eUnexpected_e_1 = be_1;
     refalrts::use( eUnexpected_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkUnexpected, "TkUnexpected"},
+      {refalrts::icFunc, (void*) & TkUnexpected, (void*) "TkUnexpected"},
       {refalrts::icSpliceEVar, & eUnexpected_b_1, & eUnexpected_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2882,7 +3014,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eMessage_b_1;
+    refalrts::use( eMessage_b_1 );
     static refalrts::Iter eMessage_e_1;
+    refalrts::use( eMessage_e_1 );
     // (~1 & TokenError e.Message )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2897,14 +3031,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eMessage_e_1 = be_1;
     refalrts::use( eMessage_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkError, "TkError"},
+      {refalrts::icFunc, (void*) & TkError, (void*) "TkError"},
       {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2937,7 +3072,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eUnexpected_b_1;
+    refalrts::use( eUnexpected_b_1 );
     static refalrts::Iter eUnexpected_e_1;
+    refalrts::use( eUnexpected_e_1 );
     // (~1 & TokenUnexpected e.Unexpected )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -2952,14 +3089,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     eUnexpected_e_1 = be_1;
     refalrts::use( eUnexpected_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkUnexpected, "TkUnexpected"},
+      {refalrts::icFunc, (void*) & TkUnexpected, (void*) "TkUnexpected"},
       {refalrts::icSpliceEVar, & eUnexpected_b_1, & eUnexpected_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3003,9 +3141,9 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkError, "TkError"},
+      {refalrts::icFunc, (void*) & TkError, (void*) "TkError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -3023,7 +3161,8 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3127,14 +3266,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Enum, "Enum"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Enum, (void*) "Enum"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3183,14 +3323,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & EEnum, "EEnum"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & EEnum, (void*) "EEnum"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3239,14 +3380,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Entry, "Entry"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Entry, (void*) "Entry"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3297,14 +3439,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Extern, "Extern"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Extern, (void*) "Extern"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3357,14 +3500,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Forward, "Forward"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Forward, (void*) "Forward"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3411,14 +3555,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Swap, "Swap"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Swap, (void*) "Swap"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3467,14 +3612,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & ESwap, "ESwap"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & ESwap, (void*) "ESwap"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3523,14 +3669,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
-      {refalrts::icFunc, & Ident, "Ident"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
+      {refalrts::icFunc, (void*) & Ident, (void*) "Ident"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3566,16 +3713,18 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eOther_b_1;
+    refalrts::use( eOther_b_1 );
     static refalrts::Iter eOther_e_1;
+    refalrts::use( eOther_e_1 );
     // e.Other
     eOther_b_1 = bb_0;
     refalrts::use( eOther_b_1 );
     eOther_e_1 = be_0;
     refalrts::use( eOther_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkError, "TkError"},
+      {refalrts::icFunc, (void*) & TkError, (void*) "TkError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'k'},
@@ -3599,7 +3748,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3718,11 +3868,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkOpenCall, "TkOpenCall"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkOpenCall, (void*) "TkOpenCall"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3750,11 +3901,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkCloseCall, "TkCloseCall"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkCloseCall, (void*) "TkCloseCall"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3782,11 +3934,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkOpenBlock, "TkOpenBlock"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkOpenBlock, (void*) "TkOpenBlock"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3814,11 +3967,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkCloseBlock, "TkCloseBlock"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkCloseBlock, (void*) "TkCloseBlock"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3846,11 +4000,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkOpenBracket, "TkOpenBracket"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkOpenBracket, (void*) "TkOpenBracket"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3878,11 +4033,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkCloseBracket, "TkCloseBracket"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkCloseBracket, (void*) "TkCloseBracket"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3910,11 +4066,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkReplace, "TkReplace"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkReplace, (void*) "TkReplace"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3942,11 +4099,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkComma, "TkComma"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkComma, (void*) "TkComma"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -3974,11 +4132,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkSemicolon, "TkSemicolon"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkSemicolon, (void*) "TkSemicolon"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4006,11 +4165,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkOpenADT, "TkOpenADT"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkOpenADT, (void*) "TkOpenADT"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4038,11 +4198,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkCloseADT, "TkCloseADT"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkCloseADT, (void*) "TkCloseADT"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4070,11 +4231,12 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, & TkIdentMarker, "TkIdentMarker"},
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkIdentMarker, (void*) "TkIdentMarker"},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4082,6 +4244,39 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_name( n0, & TkIdentMarker, "TkIdentMarker" ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    // '^'
+    if( ! refalrts::char_left( '^', bb_0, be_0 ) ) 
+      break;
+    if( ! empty_seq( bb_0, be_0 ) )
+      break;
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icFunc, (void*) & TkRedefinition, (void*) "TkRedefinition"},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_name( n0, & TkRedefinition, "TkRedefinition" ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4102,6 +4297,7 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     // s.LineNumber (~1 & TkNewLine )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4116,14 +4312,15 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Inc, "Inc"},
+      {refalrts::icFunc, (void*) & Inc, (void*) "Inc"},
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4157,10 +4354,15 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sLineNumber_1;
+    refalrts::use( sLineNumber_1 );
     static refalrts::Iter sTokType_1;
+    refalrts::use( sTokType_1 );
     static refalrts::Iter eInfo_b_1;
+    refalrts::use( eInfo_b_1 );
     static refalrts::Iter eInfo_e_1;
+    refalrts::use( eInfo_e_1 );
     static refalrts::Iter sLineNumber_2;
+    refalrts::use( sLineNumber_2 );
     // s.LineNumber (~1 s.TokType e.Info )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4177,7 +4379,7 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     eInfo_e_1 = be_1;
     refalrts::use( eInfo_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & sLineNumber_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceSTVar, & sTokType_1},
@@ -4186,7 +4388,8 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4225,30 +4428,33 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eTokens_b_1;
+    refalrts::use( eTokens_b_1 );
     static refalrts::Iter eTokens_e_1;
+    refalrts::use( eTokens_e_1 );
     // e.Tokens
     eTokens_b_1 = bb_0;
     refalrts::use( eTokens_b_1 );
     eTokens_e_1 = be_0;
     refalrts::use( eTokens_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DelAccummulator, "DelAccummulator"},
+      {refalrts::icFunc, (void*) & DelAccummulator, (void*) "DelAccummulator"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & MapReduce, "MapReduce"},
-      {refalrts::icFunc, & AddLineNumber, "AddLineNumber"},
+      {refalrts::icFunc, (void*) & MapReduce, (void*) "MapReduce"},
+      {refalrts::icFunc, (void*) & AddLineNumber, (void*) "AddLineNumber"},
       {refalrts::icInt, 0, 0, 1 },
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Map, "Map"},
-      {refalrts::icFunc, & NormalizeToken, "NormalizeToken"},
+      {refalrts::icFunc, (void*) & Map, (void*) "Map"},
+      {refalrts::icFunc, (void*) & NormalizeToken, (void*) "NormalizeToken"},
       {refalrts::icSpliceEVar, & eTokens_b_1, & eTokens_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4332,13 +4538,9 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
 
 static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-static refalrts::FnResult Punctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DirectiveBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
@@ -4369,9 +4571,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '  e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4388,16 +4594,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4440,9 +4647,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\t e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4459,16 +4670,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4511,9 +4723,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4530,16 +4746,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4582,9 +4799,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '< e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4601,21 +4822,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4676,9 +4898,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '> e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4695,21 +4921,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '>'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4770,9 +4997,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '( e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4789,21 +5020,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '('},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4864,9 +5096,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 ') e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4883,21 +5119,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, ')'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -4958,9 +5195,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '{ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -4977,21 +5218,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '{'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5052,9 +5294,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '} e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5071,21 +5317,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '}'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5146,9 +5393,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '[ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5165,21 +5416,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '['},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5240,9 +5492,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '] e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5259,21 +5515,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, ']'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5334,9 +5591,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '= e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5353,21 +5614,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '='},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5428,9 +5690,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '; e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5447,21 +5713,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, ';'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5522,9 +5789,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 ', e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5541,21 +5812,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, ','},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5616,9 +5888,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '# e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5635,21 +5911,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkPunctuation, "TkPunctuation"},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '#'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5710,9 +5987,112 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
+    // (~1 e.Accum )~1 '^ e.Text
+    refalrts::Iter bb_1 = 0;
+    refalrts::Iter be_1 = 0;
+    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) ) 
+      break;
+    if( ! refalrts::char_left( '^', bb_0, be_0 ) ) 
+      break;
+    eAccum_b_1 = bb_1;
+    refalrts::use( eAccum_b_1 );
+    eAccum_e_1 = be_1;
+    refalrts::use( eAccum_e_1 );
+    eText_b_1 = bb_0;
+    refalrts::use( eText_b_1 );
+    eText_e_1 = be_0;
+    refalrts::use( eText_e_1 );
+#ifdef INTERPRET
+    const static refalrts::ResultAction raa[] = {
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icFunc, (void*) & TkPunctuation, (void*) "TkPunctuation"},
+      {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
+      {refalrts::icChar, 0, 0, '^'},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+      {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+      {refalrts::icEnd}
+    };
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
+    return res;
+#else
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_bracket( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & TkPunctuation, "TkPunctuation" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_char( n2, '^' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_open_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_name( n5, & Root, "Root" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_bracket( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_close_call( n8 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n8 );
+    refalrts::push_stack( n4 );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_evar( res, eText_b_1, eText_e_1 );
+    refalrts::link_brackets( n6, n7 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    refalrts::link_brackets( n0, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, eAccum_b_1, eAccum_e_1 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::Iter bb_0 = arg_begin;
+    refalrts::Iter be_0 = arg_end;
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_left( bb_0, be_0 );
+    refalrts::move_right( bb_0, be_0 );
+    static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
+    static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
+    static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
+    static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5729,9 +6109,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -5740,7 +6120,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5788,9 +6169,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5807,9 +6192,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -5818,7 +6203,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5866,9 +6252,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5885,9 +6275,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -5896,7 +6286,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -5944,9 +6335,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -5963,9 +6358,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -5974,7 +6369,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6022,9 +6418,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6041,9 +6441,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -6052,7 +6452,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6100,9 +6501,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6119,9 +6524,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -6130,7 +6535,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6178,9 +6584,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6197,9 +6607,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -6208,7 +6618,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6256,9 +6667,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6275,9 +6690,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -6286,7 +6701,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6334,9 +6750,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6353,9 +6773,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -6364,7 +6784,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6412,9 +6833,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6431,9 +6856,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -6442,7 +6867,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6490,9 +6916,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6509,9 +6939,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -6520,7 +6950,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6568,9 +6999,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6587,9 +7022,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -6598,7 +7033,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6646,9 +7082,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6665,9 +7105,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -6676,7 +7116,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6724,9 +7165,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6743,9 +7188,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -6754,7 +7199,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6802,9 +7248,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6821,9 +7271,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -6832,7 +7282,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6880,9 +7331,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6899,9 +7354,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -6910,7 +7365,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -6958,9 +7414,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -6977,9 +7437,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -6988,7 +7448,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7036,9 +7497,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7055,9 +7520,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -7066,7 +7531,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7114,9 +7580,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7133,9 +7603,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -7144,7 +7614,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7192,9 +7663,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7211,9 +7686,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -7222,7 +7697,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7270,9 +7746,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7289,9 +7769,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -7300,7 +7780,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7348,9 +7829,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7367,9 +7852,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -7378,7 +7863,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7426,9 +7912,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7445,9 +7935,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -7456,7 +7946,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7504,9 +7995,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7523,9 +8018,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -7534,7 +8029,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7582,9 +8078,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7601,9 +8101,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -7612,7 +8112,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7660,9 +8161,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7679,9 +8184,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -7690,7 +8195,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7738,9 +8244,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7757,9 +8267,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableStart, "VariableStart"},
+      {refalrts::icFunc, (void*) & VariableStart, (void*) "VariableStart"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 's'},
@@ -7768,7 +8278,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7816,9 +8327,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7835,9 +8350,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableStart, "VariableStart"},
+      {refalrts::icFunc, (void*) & VariableStart, (void*) "VariableStart"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'e'},
@@ -7846,7 +8361,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7894,9 +8410,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7913,9 +8433,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableStart, "VariableStart"},
+      {refalrts::icFunc, (void*) & VariableStart, (void*) "VariableStart"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 't'},
@@ -7924,7 +8444,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -7972,9 +8493,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -7991,9 +8516,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -8002,7 +8527,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8050,9 +8576,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8069,9 +8599,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -8080,7 +8610,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8128,9 +8659,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8147,9 +8682,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -8158,7 +8693,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8206,9 +8742,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8225,9 +8765,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -8236,7 +8776,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8284,9 +8825,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8303,9 +8848,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -8314,7 +8859,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8362,9 +8908,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8381,9 +8931,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -8392,7 +8942,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8440,9 +8991,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8459,9 +9014,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -8470,7 +9025,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8518,9 +9074,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8537,9 +9097,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -8548,7 +9108,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8596,9 +9157,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8615,9 +9180,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -8626,7 +9191,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8674,9 +9240,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8693,9 +9263,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -8704,7 +9274,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8752,9 +9323,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '$ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8771,16 +9346,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Directive, "Directive"},
+      {refalrts::icFunc, (void*) & Directive, (void*) "Directive"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8823,9 +9399,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8842,16 +9422,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral_Start, "StringLiteral_Start"},
+      {refalrts::icFunc, (void*) & StringLiteral_Start, (void*) "StringLiteral_Start"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8894,9 +9475,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8913,9 +9498,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StartComment, "StartComment"},
+      {refalrts::icFunc, (void*) & StartComment, (void*) "StartComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '/'},
@@ -8924,7 +9509,8 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -8972,9 +9558,13 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -8991,21 +9581,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNewLine, "TkNewLine"},
+      {refalrts::icFunc, (void*) & TkNewLine, (void*) "TkNewLine"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\n'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9066,7 +9657,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9079,14 +9672,15 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkEOF, "TkEOF"},
+      {refalrts::icFunc, (void*) & TkEOF, (void*) "TkEOF"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9119,10 +9713,15 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter sAny_1;
+    refalrts::use( sAny_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9139,21 +9738,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkUnexpected, "TkUnexpected"},
+      {refalrts::icFunc, (void*) & TkUnexpected, (void*) "TkUnexpected"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icSpliceSTVar, & sAny_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9211,10 +9811,15 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9231,20 +9836,21 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9301,7 +9907,9 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9314,17 +9922,18 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9375,9 +9984,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9394,9 +10007,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -9405,7 +10018,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9453,9 +10067,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9472,9 +10090,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -9483,7 +10101,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9531,9 +10150,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9550,9 +10173,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -9561,7 +10184,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9609,9 +10233,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9628,9 +10256,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -9639,7 +10267,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9687,9 +10316,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9706,9 +10339,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -9717,7 +10350,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9765,9 +10399,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9784,9 +10422,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -9795,7 +10433,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9843,9 +10482,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9862,9 +10505,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -9873,7 +10516,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9921,9 +10565,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -9940,9 +10588,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -9951,7 +10599,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -9999,9 +10648,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10018,9 +10671,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -10029,7 +10682,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10077,9 +10731,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10096,9 +10754,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -10107,7 +10765,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10155,9 +10814,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10174,9 +10837,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'a'},
@@ -10185,7 +10848,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10233,9 +10897,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10252,9 +10920,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'b'},
@@ -10263,7 +10931,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10311,9 +10980,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10330,9 +11003,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'c'},
@@ -10341,7 +11014,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10389,9 +11063,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10408,9 +11086,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'd'},
@@ -10419,7 +11097,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10467,9 +11146,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10486,9 +11169,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'e'},
@@ -10497,7 +11180,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10545,9 +11229,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10564,9 +11252,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'f'},
@@ -10575,7 +11263,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10623,9 +11312,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10642,9 +11335,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'g'},
@@ -10653,7 +11346,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10701,9 +11395,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10720,9 +11418,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'h'},
@@ -10731,7 +11429,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10779,9 +11478,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10798,9 +11501,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'i'},
@@ -10809,7 +11512,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10857,9 +11561,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10876,9 +11584,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'j'},
@@ -10887,7 +11595,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -10935,9 +11644,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -10954,9 +11667,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'k'},
@@ -10965,7 +11678,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11013,9 +11727,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11032,9 +11750,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'l'},
@@ -11043,7 +11761,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11091,9 +11810,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11110,9 +11833,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'm'},
@@ -11121,7 +11844,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11169,9 +11893,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11188,9 +11916,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'n'},
@@ -11199,7 +11927,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11247,9 +11976,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11266,9 +11999,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'o'},
@@ -11277,7 +12010,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11325,9 +12059,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11344,9 +12082,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'p'},
@@ -11355,7 +12093,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11403,9 +12142,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11422,9 +12165,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'q'},
@@ -11433,7 +12176,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11481,9 +12225,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11500,9 +12248,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'r'},
@@ -11511,7 +12259,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11559,9 +12308,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11578,9 +12331,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 's'},
@@ -11589,7 +12342,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11637,9 +12391,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11656,9 +12414,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 't'},
@@ -11667,7 +12425,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11715,9 +12474,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11734,9 +12497,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'u'},
@@ -11745,7 +12508,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11793,9 +12557,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11812,9 +12580,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'v'},
@@ -11823,7 +12591,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11871,9 +12640,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11890,9 +12663,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'w'},
@@ -11901,7 +12674,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -11949,9 +12723,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -11968,9 +12746,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'x'},
@@ -11979,7 +12757,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12027,9 +12806,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12046,9 +12829,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'y'},
@@ -12057,7 +12840,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12105,9 +12889,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12124,9 +12912,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'z'},
@@ -12135,7 +12923,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12183,9 +12972,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12202,9 +12995,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -12213,7 +13006,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12261,9 +13055,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12280,9 +13078,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -12291,7 +13089,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12339,9 +13138,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12358,9 +13161,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -12369,7 +13172,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12417,9 +13221,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12436,9 +13244,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -12447,7 +13255,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12495,9 +13304,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12514,9 +13327,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -12525,7 +13338,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12573,9 +13387,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12592,9 +13410,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -12603,7 +13421,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12651,9 +13470,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12670,9 +13493,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -12681,7 +13504,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12729,9 +13553,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12748,9 +13576,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -12759,7 +13587,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12807,9 +13636,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12826,9 +13659,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -12837,7 +13670,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12885,9 +13719,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12904,9 +13742,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -12915,7 +13753,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -12963,9 +13802,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -12982,9 +13825,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -12993,7 +13836,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13041,9 +13885,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13060,9 +13908,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -13071,7 +13919,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13119,9 +13968,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13138,9 +13991,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -13149,7 +14002,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13197,9 +14051,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13216,9 +14074,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -13227,7 +14085,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13275,9 +14134,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13294,9 +14157,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -13305,7 +14168,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13353,9 +14217,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13372,9 +14240,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -13383,7 +14251,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13431,9 +14300,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13450,9 +14323,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -13461,7 +14334,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13509,9 +14383,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13528,9 +14406,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -13539,7 +14417,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13587,9 +14466,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13606,9 +14489,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -13617,7 +14500,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13665,9 +14549,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13684,9 +14572,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -13695,7 +14583,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13743,9 +14632,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13762,9 +14655,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -13773,7 +14666,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13821,9 +14715,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13840,9 +14738,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -13851,7 +14749,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13899,9 +14798,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13918,9 +14821,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -13929,7 +14832,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -13977,9 +14881,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -13996,9 +14904,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -14007,7 +14915,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14055,9 +14964,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14074,9 +14987,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -14085,7 +14998,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14133,9 +15047,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14152,9 +15070,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -14163,7 +15081,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14211,9 +15130,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14230,9 +15153,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '_'},
@@ -14241,7 +15164,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14289,9 +15213,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14308,9 +15236,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Name, "Name"},
+      {refalrts::icFunc, (void*) & Name, (void*) "Name"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '-'},
@@ -14319,7 +15247,8 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14367,9 +15296,13 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14384,20 +15317,21 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkName, "TkName"},
+      {refalrts::icFunc, (void*) & TkName, (void*) "TkName"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14454,10 +15388,15 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14474,20 +15413,21 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14544,7 +15484,9 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14557,17 +15499,18 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14618,9 +15561,13 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '. e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14637,9 +15584,9 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndex, "VariableIndex"},
+      {refalrts::icFunc, (void*) & VariableIndex, (void*) "VariableIndex"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '.'},
@@ -14648,7 +15595,8 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14696,9 +15644,13 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14713,9 +15665,9 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'x'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -14730,14 +15682,15 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icChar, 0, 0, 't'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14841,10 +15794,15 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14861,20 +15819,21 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -14931,7 +15890,9 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -14944,17 +15905,18 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15005,9 +15967,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15024,9 +15990,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -15035,7 +16001,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15083,9 +16050,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15102,9 +16073,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -15113,7 +16084,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15161,9 +16133,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15180,9 +16156,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -15191,7 +16167,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15239,9 +16216,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15258,9 +16239,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -15269,7 +16250,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15317,9 +16299,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15336,9 +16322,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -15347,7 +16333,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15395,9 +16382,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15414,9 +16405,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -15425,7 +16416,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15473,9 +16465,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15492,9 +16488,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -15503,7 +16499,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15551,9 +16548,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15570,9 +16571,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -15581,7 +16582,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15629,9 +16631,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15648,9 +16654,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -15659,7 +16665,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15707,9 +16714,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15726,9 +16737,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Number, "Number"},
+      {refalrts::icFunc, (void*) & Number, (void*) "Number"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -15737,7 +16748,8 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15785,9 +16797,13 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15802,20 +16818,21 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNumber, "TkNumber"},
+      {refalrts::icFunc, (void*) & TkNumber, (void*) "TkNumber"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15872,10 +16889,15 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15892,20 +16914,21 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -15962,7 +16985,9 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -15975,17 +17000,18 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16036,9 +17062,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16055,9 +17085,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -16066,7 +17096,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16114,9 +17145,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16133,9 +17168,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -16144,7 +17179,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16192,9 +17228,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16211,9 +17251,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -16222,7 +17262,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16270,9 +17311,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16289,9 +17334,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -16300,7 +17345,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16348,9 +17394,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16367,9 +17417,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -16378,7 +17428,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16426,9 +17477,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16445,9 +17500,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -16456,7 +17511,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16504,9 +17560,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16523,9 +17583,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -16534,7 +17594,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16582,9 +17643,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16601,9 +17666,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -16612,7 +17677,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16660,9 +17726,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16679,9 +17749,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -16690,7 +17760,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16738,9 +17809,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16757,9 +17832,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -16768,7 +17843,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16816,9 +17892,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16835,9 +17915,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -16846,7 +17926,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16894,9 +17975,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16913,9 +17998,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -16924,7 +18009,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -16972,9 +18058,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -16991,9 +18081,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -17002,7 +18092,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17050,9 +18141,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17069,9 +18164,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -17080,7 +18175,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17128,9 +18224,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17147,9 +18247,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -17158,7 +18258,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17206,9 +18307,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17225,9 +18330,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -17236,7 +18341,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17284,9 +18390,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17303,9 +18413,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -17314,7 +18424,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17362,9 +18473,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17381,9 +18496,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -17392,7 +18507,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17440,9 +18556,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17459,9 +18579,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -17470,7 +18590,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17518,9 +18639,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17537,9 +18662,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -17548,7 +18673,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17596,9 +18722,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17615,9 +18745,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -17626,7 +18756,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17674,9 +18805,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17693,9 +18828,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -17704,7 +18839,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17752,9 +18888,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17771,9 +18911,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -17782,7 +18922,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17830,9 +18971,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17849,9 +18994,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -17860,7 +19005,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17908,9 +19054,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -17927,9 +19077,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -17938,7 +19088,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -17986,9 +19137,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18005,9 +19160,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -18016,7 +19171,8 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18064,9 +19220,13 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18081,9 +19241,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'x'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -18109,14 +19269,15 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18264,10 +19425,15 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18284,20 +19450,21 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18354,7 +19521,9 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18367,17 +19536,18 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18428,9 +19598,13 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18447,21 +19621,22 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Char, "TkLiteral_Char"},
+      {refalrts::icFunc, (void*) & TkLiteral_Char, (void*) "TkLiteral_Char"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\''},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18522,9 +19697,13 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18539,9 +19718,9 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -18549,7 +19728,8 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18593,10 +19773,15 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18613,20 +19798,21 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18683,7 +19869,9 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18696,17 +19884,18 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18757,9 +19946,13 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18776,16 +19969,17 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18828,9 +20022,13 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18847,16 +20045,17 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CppComment, "CppComment"},
+      {refalrts::icFunc, (void*) & CppComment, (void*) "CppComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18899,9 +20098,13 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -18916,20 +20119,21 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkUnexpected, "TkUnexpected"},
+      {refalrts::icFunc, (void*) & TkUnexpected, (void*) "TkUnexpected"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -18986,10 +20190,15 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19006,20 +20215,21 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19076,7 +20286,9 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19089,17 +20301,18 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19150,9 +20363,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19169,9 +20386,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -19180,7 +20397,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19228,9 +20446,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19247,9 +20469,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -19258,7 +20480,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19306,9 +20529,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19325,9 +20552,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -19336,7 +20563,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19384,9 +20612,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19403,9 +20635,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -19414,7 +20646,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19462,9 +20695,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19481,9 +20718,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -19492,7 +20729,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19540,9 +20778,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19559,9 +20801,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -19570,7 +20812,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19618,9 +20861,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19637,9 +20884,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -19648,7 +20895,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19696,9 +20944,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19715,9 +20967,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -19726,7 +20978,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19774,9 +21027,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19793,9 +21050,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -19804,7 +21061,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19852,9 +21110,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19871,9 +21133,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -19882,7 +21144,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -19930,9 +21193,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -19949,9 +21216,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'a'},
@@ -19960,7 +21227,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20008,9 +21276,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20027,9 +21299,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'b'},
@@ -20038,7 +21310,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20086,9 +21359,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20105,9 +21382,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'c'},
@@ -20116,7 +21393,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20164,9 +21442,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20183,9 +21465,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'd'},
@@ -20194,7 +21476,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20242,9 +21525,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20261,9 +21548,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'e'},
@@ -20272,7 +21559,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20320,9 +21608,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20339,9 +21631,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'f'},
@@ -20350,7 +21642,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20398,9 +21691,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20417,9 +21714,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'g'},
@@ -20428,7 +21725,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20476,9 +21774,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20495,9 +21797,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'h'},
@@ -20506,7 +21808,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20554,9 +21857,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20573,9 +21880,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'i'},
@@ -20584,7 +21891,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20632,9 +21940,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20651,9 +21963,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'j'},
@@ -20662,7 +21974,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20710,9 +22023,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20729,9 +22046,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'k'},
@@ -20740,7 +22057,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20788,9 +22106,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20807,9 +22129,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'l'},
@@ -20818,7 +22140,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20866,9 +22189,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20885,9 +22212,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'm'},
@@ -20896,7 +22223,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -20944,9 +22272,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -20963,9 +22295,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'n'},
@@ -20974,7 +22306,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21022,9 +22355,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21041,9 +22378,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'o'},
@@ -21052,7 +22389,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21100,9 +22438,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21119,9 +22461,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'p'},
@@ -21130,7 +22472,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21178,9 +22521,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21197,9 +22544,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'q'},
@@ -21208,7 +22555,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21256,9 +22604,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21275,9 +22627,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'r'},
@@ -21286,7 +22638,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21334,9 +22687,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21353,9 +22710,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 's'},
@@ -21364,7 +22721,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21412,9 +22770,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21431,9 +22793,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 't'},
@@ -21442,7 +22804,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21490,9 +22853,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21509,9 +22876,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'u'},
@@ -21520,7 +22887,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21568,9 +22936,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21587,9 +22959,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'v'},
@@ -21598,7 +22970,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21646,9 +23019,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21665,9 +23042,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'w'},
@@ -21676,7 +23053,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21724,9 +23102,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21743,9 +23125,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'x'},
@@ -21754,7 +23136,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21802,9 +23185,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21821,9 +23208,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'y'},
@@ -21832,7 +23219,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21880,9 +23268,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21899,9 +23291,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'z'},
@@ -21910,7 +23302,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -21958,9 +23351,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -21977,9 +23374,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -21988,7 +23385,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22036,9 +23434,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22055,9 +23457,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -22066,7 +23468,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22114,9 +23517,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22133,9 +23540,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -22144,7 +23551,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22192,9 +23600,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22211,9 +23623,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -22222,7 +23634,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22270,9 +23683,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22289,9 +23706,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -22300,7 +23717,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22348,9 +23766,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22367,9 +23789,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -22378,7 +23800,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22426,9 +23849,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22445,9 +23872,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -22456,7 +23883,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22504,9 +23932,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22523,9 +23955,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -22534,7 +23966,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22582,9 +24015,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22601,9 +24038,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -22612,7 +24049,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22660,9 +24098,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22679,9 +24121,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -22690,7 +24132,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22738,9 +24181,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22757,9 +24204,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -22768,7 +24215,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22816,9 +24264,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22835,9 +24287,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -22846,7 +24298,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22894,9 +24347,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22913,9 +24370,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -22924,7 +24381,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -22972,9 +24430,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -22991,9 +24453,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -23002,7 +24464,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23050,9 +24513,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23069,9 +24536,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -23080,7 +24547,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23128,9 +24596,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23147,9 +24619,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -23158,7 +24630,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23206,9 +24679,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23225,9 +24702,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -23236,7 +24713,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23284,9 +24762,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23303,9 +24785,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -23314,7 +24796,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23362,9 +24845,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23381,9 +24868,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -23392,7 +24879,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23440,9 +24928,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23459,9 +24951,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -23470,7 +24962,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23518,9 +25011,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23537,9 +25034,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -23548,7 +25045,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23596,9 +25094,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23615,9 +25117,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -23626,7 +25128,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23674,9 +25177,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23693,9 +25200,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -23704,7 +25211,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23752,9 +25260,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23771,9 +25283,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -23782,7 +25294,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23830,9 +25343,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23849,9 +25366,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -23860,7 +25377,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23908,9 +25426,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -23927,9 +25449,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -23938,7 +25460,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -23986,9 +25509,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24005,9 +25532,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '_'},
@@ -24016,7 +25543,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24064,9 +25592,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24083,9 +25615,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '-'},
@@ -24094,7 +25626,8 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24142,9 +25675,13 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24159,9 +25696,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'x'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -24186,14 +25723,15 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24337,10 +25875,15 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24357,20 +25900,21 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24427,7 +25971,9 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24440,17 +25986,18 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24501,9 +26048,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24520,9 +26071,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -24531,7 +26082,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24579,9 +26131,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24598,9 +26154,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -24609,7 +26165,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24657,9 +26214,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24676,9 +26237,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -24687,7 +26248,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24735,9 +26297,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24754,9 +26320,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -24765,7 +26331,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24813,9 +26380,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24832,9 +26403,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -24843,7 +26414,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24891,9 +26463,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24910,9 +26486,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -24921,7 +26497,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -24969,9 +26546,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -24988,9 +26569,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -24999,7 +26580,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25047,9 +26629,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25066,9 +26652,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -25077,7 +26663,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25125,9 +26712,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25144,9 +26735,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -25155,7 +26746,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25203,9 +26795,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25222,9 +26818,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -25233,7 +26829,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25281,9 +26878,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25300,9 +26901,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -25311,7 +26912,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25359,9 +26961,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25378,9 +26984,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -25389,7 +26995,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25437,9 +27044,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25456,9 +27067,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -25467,7 +27078,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25515,9 +27127,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25534,9 +27150,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -25545,7 +27161,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25593,9 +27210,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25612,9 +27233,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -25623,7 +27244,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25671,9 +27293,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25690,9 +27316,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -25701,7 +27327,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25749,9 +27376,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25768,9 +27399,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -25779,7 +27410,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25827,9 +27459,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25846,9 +27482,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -25857,7 +27493,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25905,9 +27542,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -25924,9 +27565,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -25935,7 +27576,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -25983,9 +27625,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26002,9 +27648,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -26013,7 +27659,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26061,9 +27708,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26080,9 +27731,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -26091,7 +27742,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26139,9 +27791,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26158,9 +27814,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -26169,7 +27825,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26217,9 +27874,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26236,9 +27897,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -26247,7 +27908,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26295,9 +27957,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26314,9 +27980,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -26325,7 +27991,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26373,9 +28040,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26392,9 +28063,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -26403,7 +28074,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26451,9 +28123,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26470,9 +28146,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DirectiveTail, "DirectiveTail"},
+      {refalrts::icFunc, (void*) & DirectiveTail, (void*) "DirectiveTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -26481,7 +28157,8 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26529,9 +28206,13 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26546,20 +28227,21 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkDirective, "TkDirective"},
+      {refalrts::icFunc, (void*) & TkDirective, (void*) "TkDirective"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26616,10 +28298,15 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26636,20 +28323,21 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26706,7 +28394,9 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26719,17 +28409,18 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26780,9 +28471,13 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\\ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26799,16 +28494,17 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral_Escape, "StringLiteral_Escape"},
+      {refalrts::icFunc, (void*) & StringLiteral_Escape, (void*) "StringLiteral_Escape"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26851,9 +28547,13 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26870,16 +28570,17 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral_Quote, "StringLiteral_Quote"},
+      {refalrts::icFunc, (void*) & StringLiteral_Quote, (void*) "StringLiteral_Quote"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -26922,9 +28623,13 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -26941,9 +28646,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'c'},
@@ -26960,14 +28665,15 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27079,7 +28785,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27092,9 +28800,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -27130,7 +28838,8 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27290,10 +28999,15 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter sAny_1;
+    refalrts::use( sAny_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27310,21 +29024,22 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Char, "TkLiteral_Char"},
+      {refalrts::icFunc, (void*) & TkLiteral_Char, (void*) "TkLiteral_Char"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icSpliceSTVar, & sAny_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27382,10 +29097,15 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27402,20 +29122,21 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27472,7 +29193,9 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27485,17 +29208,18 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27546,9 +29270,13 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27565,16 +29293,17 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment_CheckNested, "CComment_CheckNested"},
+      {refalrts::icFunc, (void*) & CComment_CheckNested, (void*) "CComment_CheckNested"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27617,9 +29346,13 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27636,16 +29369,17 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment_CheckEnd, "CComment_CheckEnd"},
+      {refalrts::icFunc, (void*) & CComment_CheckEnd, (void*) "CComment_CheckEnd"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27688,9 +29422,13 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27707,21 +29445,22 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNewLine, "TkNewLine"},
+      {refalrts::icFunc, (void*) & TkNewLine, (void*) "TkNewLine"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\n'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27782,10 +29521,15 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter sAny_1;
+    refalrts::use( sAny_1 );
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27802,16 +29546,17 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -27854,7 +29599,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -27867,9 +29614,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -27905,7 +29652,8 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28065,10 +29813,15 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28085,20 +29838,21 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28155,7 +29909,9 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28168,17 +29924,18 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28229,9 +29986,13 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28248,21 +30009,22 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkNewLine, "TkNewLine"},
+      {refalrts::icFunc, (void*) & TkNewLine, (void*) "TkNewLine"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\n'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28323,7 +30085,9 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28336,14 +30100,15 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkEOF, "TkEOF"},
+      {refalrts::icFunc, (void*) & TkEOF, (void*) "TkEOF"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28376,10 +30141,15 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter sAny_1;
+    refalrts::use( sAny_1 );
     // (~1 e.Accum )~1 s.Any e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28396,16 +30166,17 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CppComment, "CppComment"},
+      {refalrts::icFunc, (void*) & CppComment, (void*) "CppComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28448,10 +30219,15 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28468,20 +30244,21 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28538,7 +30315,9 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28551,17 +30330,18 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28612,9 +30392,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28631,9 +30415,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -28642,7 +30426,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28690,9 +30475,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28709,9 +30498,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -28720,7 +30509,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28768,9 +30558,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28787,9 +30581,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -28798,7 +30592,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28846,9 +30641,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28865,9 +30664,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -28876,7 +30675,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -28924,9 +30724,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -28943,9 +30747,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -28954,7 +30758,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29002,9 +30807,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29021,9 +30830,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -29032,7 +30841,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29080,9 +30890,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29099,9 +30913,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -29110,7 +30924,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29158,9 +30973,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29177,9 +30996,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -29188,7 +31007,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29236,9 +31056,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29255,9 +31079,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -29266,7 +31090,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29314,9 +31139,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29333,9 +31162,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -29344,7 +31173,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29392,9 +31222,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'a e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29411,9 +31245,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'a'},
@@ -29422,7 +31256,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29470,9 +31305,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'b e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29489,9 +31328,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'b'},
@@ -29500,7 +31339,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29548,9 +31388,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'c e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29567,9 +31411,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'c'},
@@ -29578,7 +31422,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29626,9 +31471,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29645,9 +31494,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'd'},
@@ -29656,7 +31505,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29704,9 +31554,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'e e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29723,9 +31577,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'e'},
@@ -29734,7 +31588,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29782,9 +31637,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'f e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29801,9 +31660,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'f'},
@@ -29812,7 +31671,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29860,9 +31720,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'g e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29879,9 +31743,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'g'},
@@ -29890,7 +31754,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -29938,9 +31803,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'h e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -29957,9 +31826,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'h'},
@@ -29968,7 +31837,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30016,9 +31886,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'i e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30035,9 +31909,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'i'},
@@ -30046,7 +31920,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30094,9 +31969,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'j e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30113,9 +31992,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'j'},
@@ -30124,7 +32003,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30172,9 +32052,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'k e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30191,9 +32075,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'k'},
@@ -30202,7 +32086,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30250,9 +32135,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'l e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30269,9 +32158,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'l'},
@@ -30280,7 +32169,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30328,9 +32218,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'm e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30347,9 +32241,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'm'},
@@ -30358,7 +32252,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30406,9 +32301,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30425,9 +32324,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'n'},
@@ -30436,7 +32335,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30484,9 +32384,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'o e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30503,9 +32407,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'o'},
@@ -30514,7 +32418,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30562,9 +32467,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'p e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30581,9 +32490,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'p'},
@@ -30592,7 +32501,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30640,9 +32550,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30659,9 +32573,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'q'},
@@ -30670,7 +32584,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30718,9 +32633,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30737,9 +32656,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'r'},
@@ -30748,7 +32667,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30796,9 +32716,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 's e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30815,9 +32739,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 's'},
@@ -30826,7 +32750,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30874,9 +32799,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30893,9 +32822,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 't'},
@@ -30904,7 +32833,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -30952,9 +32882,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'u e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -30971,9 +32905,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'u'},
@@ -30982,7 +32916,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31030,9 +32965,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'v e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31049,9 +32988,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'v'},
@@ -31060,7 +32999,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31108,9 +33048,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'w e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31127,9 +33071,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'w'},
@@ -31138,7 +33082,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31186,9 +33131,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'x e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31205,9 +33154,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'x'},
@@ -31216,7 +33165,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31264,9 +33214,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31283,9 +33237,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'y'},
@@ -31294,7 +33248,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31342,9 +33297,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31361,9 +33320,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'z'},
@@ -31372,7 +33331,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31420,9 +33380,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'A e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31439,9 +33403,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'A'},
@@ -31450,7 +33414,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31498,9 +33463,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'B e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31517,9 +33486,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'B'},
@@ -31528,7 +33497,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31576,9 +33546,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'C e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31595,9 +33569,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'C'},
@@ -31606,7 +33580,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31654,9 +33629,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'D e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31673,9 +33652,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'D'},
@@ -31684,7 +33663,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31732,9 +33712,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'E e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31751,9 +33735,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'E'},
@@ -31762,7 +33746,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31810,9 +33795,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'F e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31829,9 +33818,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'F'},
@@ -31840,7 +33829,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31888,9 +33878,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'G e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31907,9 +33901,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'G'},
@@ -31918,7 +33912,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -31966,9 +33961,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'H e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -31985,9 +33984,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'H'},
@@ -31996,7 +33995,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32044,9 +34044,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'I e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32063,9 +34067,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'I'},
@@ -32074,7 +34078,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32122,9 +34127,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'J e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32141,9 +34150,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'J'},
@@ -32152,7 +34161,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32200,9 +34210,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'K e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32219,9 +34233,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'K'},
@@ -32230,7 +34244,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32278,9 +34293,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'L e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32297,9 +34316,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'L'},
@@ -32308,7 +34327,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32356,9 +34376,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'M e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32375,9 +34399,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'M'},
@@ -32386,7 +34410,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32434,9 +34459,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'N e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32453,9 +34482,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'N'},
@@ -32464,7 +34493,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32512,9 +34542,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'O e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32531,9 +34565,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'O'},
@@ -32542,7 +34576,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32590,9 +34625,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'P e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32609,9 +34648,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'P'},
@@ -32620,7 +34659,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32668,9 +34708,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Q e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32687,9 +34731,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Q'},
@@ -32698,7 +34742,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32746,9 +34791,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'R e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32765,9 +34814,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'R'},
@@ -32776,7 +34825,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32824,9 +34874,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'S e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32843,9 +34897,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'S'},
@@ -32854,7 +34908,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32902,9 +34957,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'T e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32921,9 +34980,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'T'},
@@ -32932,7 +34991,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -32980,9 +35040,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'U e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -32999,9 +35063,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'U'},
@@ -33010,7 +35074,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33058,9 +35123,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'V e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33077,9 +35146,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'V'},
@@ -33088,7 +35157,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33136,9 +35206,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'W e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33155,9 +35229,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'W'},
@@ -33166,7 +35240,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33214,9 +35289,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'X e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33233,9 +35312,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'X'},
@@ -33244,7 +35323,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33292,9 +35372,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Y e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33311,9 +35395,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Y'},
@@ -33322,7 +35406,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33370,9 +35455,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'Z e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33389,9 +35478,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'Z'},
@@ -33400,7 +35489,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33448,9 +35538,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '_ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33467,9 +35561,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '_'},
@@ -33478,7 +35572,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33526,9 +35621,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '- e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33545,9 +35644,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & VariableIndexTail, "VariableIndexTail"},
+      {refalrts::icFunc, (void*) & VariableIndexTail, (void*) "VariableIndexTail"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '-'},
@@ -33556,7 +35655,8 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33604,9 +35704,13 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33621,20 +35725,21 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkVariable, "TkVariable"},
+      {refalrts::icFunc, (void*) & TkVariable, (void*) "TkVariable"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33691,10 +35796,15 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33711,20 +35821,21 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33781,7 +35892,9 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33794,17 +35907,18 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33855,9 +35969,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33874,21 +35992,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_NewLine, "TkLiteral_NewLine"},
+      {refalrts::icFunc, (void*) & TkLiteral_NewLine, (void*) "TkLiteral_NewLine"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -33949,9 +36068,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 'r e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -33968,21 +36091,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_CarriageReturn, "TkLiteral_CarriageReturn"},
+      {refalrts::icFunc, (void*) & TkLiteral_CarriageReturn, (void*) "TkLiteral_CarriageReturn"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 'r'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34043,9 +36167,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 't e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34062,21 +36190,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Tab, "TkLiteral_Tab"},
+      {refalrts::icFunc, (void*) & TkLiteral_Tab, (void*) "TkLiteral_Tab"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, 't'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34137,9 +36266,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\\ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34156,21 +36289,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Char, "TkLiteral_Char"},
+      {refalrts::icFunc, (void*) & TkLiteral_Char, (void*) "TkLiteral_Char"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\\'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34231,9 +36365,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34250,21 +36388,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Char, "TkLiteral_Char"},
+      {refalrts::icFunc, (void*) & TkLiteral_Char, (void*) "TkLiteral_Char"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\''},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34325,9 +36464,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 'd e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34344,16 +36487,17 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral_Escape_Code, "StringLiteral_Escape_Code"},
+      {refalrts::icFunc, (void*) & StringLiteral_Escape_Code, (void*) "StringLiteral_Escape_Code"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34396,9 +36540,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '\n e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34415,9 +36563,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'c'},
@@ -34434,14 +36582,15 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34553,9 +36702,13 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34570,9 +36723,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'U'},
       {refalrts::icChar, 0, 0, 'n'},
       {refalrts::icChar, 0, 0, 'e'},
@@ -34601,14 +36754,15 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34768,10 +36922,15 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34788,20 +36947,21 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34858,7 +37018,9 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34871,17 +37033,18 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -34932,9 +37095,13 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '\' e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -34951,21 +37118,22 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Char, "TkLiteral_Char"},
+      {refalrts::icFunc, (void*) & TkLiteral_Char, (void*) "TkLiteral_Char"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '\''},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35026,9 +37194,13 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35043,9 +37215,9 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -35053,7 +37225,8 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35097,10 +37270,15 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35117,20 +37295,21 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35187,7 +37366,9 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35200,17 +37381,18 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35261,9 +37443,13 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '* e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35280,9 +37466,9 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'N'},
       {refalrts::icChar, 0, 0, 'e'},
       {refalrts::icChar, 0, 0, 's'},
@@ -35312,14 +37498,15 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       {refalrts::icChar, 0, 0, 'd'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35483,9 +37670,13 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35500,9 +37691,9 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -35510,7 +37701,8 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35554,10 +37746,15 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35574,20 +37771,21 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35644,7 +37842,9 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35657,17 +37857,18 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35718,9 +37919,13 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 '/ e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35737,16 +37942,17 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35789,9 +37995,13 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35806,9 +38016,9 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & CComment, "CComment"},
+      {refalrts::icFunc, (void*) & CComment, (void*) "CComment"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -35816,7 +38026,8 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35860,10 +38071,15 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35880,20 +38096,21 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -35950,7 +38167,9 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -35963,17 +38182,18 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36024,9 +38244,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36043,9 +38267,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -36054,7 +38278,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36102,9 +38327,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36121,9 +38350,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -36132,7 +38361,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36180,9 +38410,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36199,9 +38433,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -36210,7 +38444,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36258,9 +38493,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36277,9 +38516,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -36288,7 +38527,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36336,9 +38576,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36355,9 +38599,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -36366,7 +38610,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36414,9 +38659,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36433,9 +38682,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -36444,7 +38693,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36492,9 +38742,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36511,9 +38765,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -36522,7 +38776,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36570,9 +38825,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36589,9 +38848,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -36600,7 +38859,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36648,9 +38908,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36667,9 +38931,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -36678,7 +38942,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36726,9 +38991,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36745,9 +39014,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C1, "SL_E_C1"},
+      {refalrts::icFunc, (void*) & SL_E_C1, (void*) "SL_E_C1"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -36756,7 +39025,8 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36804,9 +39074,13 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -36821,9 +39095,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenError, "TokenError"},
+      {refalrts::icFunc, (void*) & TokenError, (void*) "TokenError"},
       {refalrts::icChar, 0, 0, 'E'},
       {refalrts::icChar, 0, 0, 'x'},
       {refalrts::icChar, 0, 0, 'p'},
@@ -36848,14 +39122,15 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icChar, 0, 0, 't'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -36999,10 +39274,15 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37019,20 +39299,21 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37089,7 +39370,9 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37102,17 +39385,18 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37163,9 +39447,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37182,9 +39470,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
@@ -37193,7 +39481,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37241,9 +39530,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37260,9 +39553,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
@@ -37271,7 +39564,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37319,9 +39613,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37338,9 +39636,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
@@ -37349,7 +39647,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37397,9 +39696,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37416,9 +39719,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
@@ -37427,7 +39730,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37475,9 +39779,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37494,9 +39802,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
@@ -37505,7 +39813,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37553,9 +39862,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37572,9 +39885,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
@@ -37583,7 +39896,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37631,9 +39945,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37650,9 +39968,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
@@ -37661,7 +39979,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37709,9 +40028,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37728,9 +40051,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
@@ -37739,7 +40062,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37787,9 +40111,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37806,9 +40134,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
@@ -37817,7 +40145,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37865,9 +40194,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37884,9 +40217,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & SL_E_C2, "SL_E_C2"},
+      {refalrts::icFunc, (void*) & SL_E_C2, (void*) "SL_E_C2"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
@@ -37895,7 +40228,8 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -37943,9 +40277,13 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -37960,20 +40298,21 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38030,10 +40369,15 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38050,20 +40394,21 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38120,7 +40465,9 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38133,17 +40480,18 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38194,9 +40542,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '0 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38213,21 +40565,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '0'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38288,9 +40641,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38307,21 +40664,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '1'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38382,9 +40740,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '2 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38401,21 +40763,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '2'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38476,9 +40839,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '3 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38495,21 +40862,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '3'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38570,9 +40938,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '4 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38589,21 +40961,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '4'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38664,9 +41037,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '5 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38683,21 +41060,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '5'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38758,9 +41136,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '6 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38777,21 +41159,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '6'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38852,9 +41235,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '7 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38871,21 +41258,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '7'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -38946,9 +41334,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '8 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -38965,21 +41357,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '8'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -39040,9 +41433,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 '9 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -39059,21 +41456,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icChar, 0, 0, '9'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -39134,9 +41532,13 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     // (~1 e.Accum )~1 e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -39151,20 +41553,21 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TkLiteral_Code, "TkLiteral_Code"},
+      {refalrts::icFunc, (void*) & TkLiteral_Code, (void*) "TkLiteral_Code"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & StringLiteral, "StringLiteral"},
+      {refalrts::icFunc, (void*) & StringLiteral, (void*) "StringLiteral"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -39221,10 +41624,15 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter sUnexpected_1;
+    refalrts::use( sUnexpected_1 );
     static refalrts::Iter eText_b_1;
+    refalrts::use( eText_b_1 );
     static refalrts::Iter eText_e_1;
+    refalrts::use( eText_e_1 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1 s.Unexpected e.Text
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -39241,20 +41649,21 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eText_e_1 = be_0;
     refalrts::use( eText_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpected, "TokenUnexpected"},
+      {refalrts::icFunc, (void*) & TokenUnexpected, (void*) "TokenUnexpected"},
       {refalrts::icSpliceSTVar, & sUnexpected_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & Root, "Root"},
+      {refalrts::icFunc, (void*) & Root, (void*) "Root"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icSpliceEVar, & eText_b_1, & eText_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -39311,7 +41720,9 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eAccum_b_1;
+    refalrts::use( eAccum_b_1 );
     static refalrts::Iter eAccum_e_1;
+    refalrts::use( eAccum_e_1 );
     // (~1 e.Accum )~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -39324,17 +41735,18 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     eAccum_e_1 = be_1;
     refalrts::use( eAccum_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenAccum, "TokenAccum"},
+      {refalrts::icFunc, (void*) & TokenAccum, (void*) "TokenAccum"},
       {refalrts::icSpliceEVar, & eAccum_b_1, & eAccum_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & TokenUnexpectedEOF, "TokenUnexpectedEOF"},
+      {refalrts::icFunc, (void*) & TokenUnexpectedEOF, (void*) "TokenUnexpectedEOF"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -39376,3 +41788,5 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
   return refalrts::cRecognitionImpossible;
 }
 
+
+//End of file

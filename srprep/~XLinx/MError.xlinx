@@ -1,8 +1,0 @@
-((!(Module)(MError)('MError.mref',\d0321))(?(Module)(InOut)('ME
-rror.mref',\d0323))(?(Module)(MOS)('MError.mref',\d0324)))((!(E
-ntry)(MError::Fatal)('MError.mref',\d03214))(?(Entry)(InOut::Wr
-iteLine)('MError.mref',\d03216))(?(Entry)(MOS::Exit)('MError.mr
-ef',\d03217)))((!(Entry)(MError::Error)('MError.mref',\d03210))
-(?(Entry)(InOut::WriteLine)('MError.mref',\d03212)))((!(Entry)(
-MError::Unexpected)('MError.mref',\d0326))(?(Entry)(MError::Err
-or)('MError.mref',\d0328)))

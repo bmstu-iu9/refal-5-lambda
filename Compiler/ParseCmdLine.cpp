@@ -4,8 +4,6 @@
 
 static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -15,16 +13,18 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eArguments_b_1;
+    refalrts::use( eArguments_b_1 );
     static refalrts::Iter eArguments_e_1;
+    refalrts::use( eArguments_e_1 );
     // e.Arguments
     eArguments_b_1 = bb_0;
     refalrts::use( eArguments_b_1 );
     eArguments_e_1 = be_0;
     refalrts::use( eArguments_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseCommandLine, "DoParseCommandLine"},
+      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -33,7 +33,8 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -109,13 +110,21 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eCompileCommand_b_1;
+    refalrts::use( eCompileCommand_b_1 );
     static refalrts::Iter eCompileCommand_e_1;
+    refalrts::use( eCompileCommand_e_1 );
     static refalrts::Iter eFiles_b_1;
+    refalrts::use( eFiles_b_1 );
     static refalrts::Iter eFiles_e_1;
+    refalrts::use( eFiles_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-c )~3 (~4 e.CompileCommand )~4 e.Files
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -156,11 +165,11 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eFiles_e_1 = be_0;
     refalrts::use( eFiles_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNames, "DoParseFileNames"},
+      {refalrts::icFunc, (void*) & DoParseFileNames, (void*) "DoParseFileNames"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CompileCommand, "CompileCommand"},
+      {refalrts::icFunc, (void*) & CompileCommand, (void*) "CompileCommand"},
       {refalrts::icSpliceEVar, & eCompileCommand_b_1, & eCompileCommand_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -173,7 +182,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -241,9 +251,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-c )~3
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -274,9 +288,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eFolders_e_1 = be_2;
     refalrts::use( eFolders_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CmdLineError, "CmdLineError"},
+      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'f'},
       {refalrts::icChar, 0, 0, 't'},
@@ -332,7 +346,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -572,13 +587,21 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eDirectory_b_1;
+    refalrts::use( eDirectory_b_1 );
     static refalrts::Iter eDirectory_e_1;
+    refalrts::use( eDirectory_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-d )~3 (~4 e.Directory )~4 e.Options
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -619,9 +642,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseCommandLine, "DoParseCommandLine"},
+      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
@@ -635,7 +658,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -699,9 +723,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-d )~3
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -732,9 +760,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eFolders_e_1 = be_2;
     refalrts::use( eFolders_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CmdLineError, "CmdLineError"},
+      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'f'},
       {refalrts::icChar, 0, 0, 't'},
@@ -779,7 +807,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -975,11 +1004,17 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-- )~3 e.Options
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -1012,11 +1047,11 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNamesOnly, "DoParseFileNamesOnly"},
+      {refalrts::icFunc, (void*) & DoParseFileNamesOnly, (void*) "DoParseFileNamesOnly"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & NoCompile, "NoCompile"},
+      {refalrts::icFunc, (void*) & NoCompile, (void*) "NoCompile"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
@@ -1028,7 +1063,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1095,13 +1131,21 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eNextFileName_b_1;
+    refalrts::use( eNextFileName_b_1 );
     static refalrts::Iter eNextFileName_e_1;
+    refalrts::use( eNextFileName_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 e.NextFileName )~3 e.Options
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -1132,9 +1176,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseCommandLine, "DoParseCommandLine"},
+      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -1148,7 +1192,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1212,9 +1257,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     // (~1 e.ScannedFiles )~1 (~2 e.Folders )~2
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
@@ -1235,9 +1284,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     eFolders_e_1 = be_2;
     refalrts::use( eFolders_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & NoCompile, "NoCompile"},
+      {refalrts::icFunc, (void*) & NoCompile, (void*) "NoCompile"},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
@@ -1245,7 +1294,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1293,14 +1343,23 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eCompileCommand_b_1;
+    refalrts::use( eCompileCommand_b_1 );
     static refalrts::Iter eCompileCommand_e_1;
+    refalrts::use( eCompileCommand_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-c )~3 (~4 e.CompileCommand )~4 e.Options
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
@@ -1343,9 +1402,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CmdLineError, "CmdLineError"},
+      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
       {refalrts::icChar, 0, 0, 'M'},
       {refalrts::icChar, 0, 0, 'u'},
       {refalrts::icChar, 0, 0, 'l'},
@@ -1398,7 +1457,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1626,10 +1686,15 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-c )~3
     refalrts::Iter bb_3 = 0;
     refalrts::Iter be_3 = 0;
@@ -1662,9 +1727,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CmdLineError, "CmdLineError"},
+      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'f'},
       {refalrts::icChar, 0, 0, 't'},
@@ -1720,7 +1785,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -1960,14 +2026,23 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eDirectory_b_1;
+    refalrts::use( eDirectory_b_1 );
     static refalrts::Iter eDirectory_e_1;
+    refalrts::use( eDirectory_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-d )~3 (~4 e.Directory )~4 e.Options
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
@@ -2010,9 +2085,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNames, "DoParseFileNames"},
+      {refalrts::icFunc, (void*) & DoParseFileNames, (void*) "DoParseFileNames"},
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
@@ -2027,7 +2102,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2092,10 +2168,15 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-d )~3
     refalrts::Iter bb_3 = 0;
     refalrts::Iter be_3 = 0;
@@ -2128,9 +2209,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, & CmdLineError, "CmdLineError"},
+      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
       {refalrts::icChar, 0, 0, 'A'},
       {refalrts::icChar, 0, 0, 'f'},
       {refalrts::icChar, 0, 0, 't'},
@@ -2175,7 +2256,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2371,12 +2453,19 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eFiles_b_1;
+    refalrts::use( eFiles_b_1 );
     static refalrts::Iter eFiles_e_1;
+    refalrts::use( eFiles_e_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 '-- )~3 e.Files
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
@@ -2411,9 +2500,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     eFiles_e_1 = be_0;
     refalrts::use( eFiles_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNamesOnly, "DoParseFileNamesOnly"},
+      {refalrts::icFunc, (void*) & DoParseFileNamesOnly, (void*) "DoParseFileNamesOnly"},
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
@@ -2425,7 +2514,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2480,14 +2570,23 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter eNextFileName_b_1;
+    refalrts::use( eNextFileName_b_1 );
     static refalrts::Iter eNextFileName_e_1;
+    refalrts::use( eNextFileName_e_1 );
     static refalrts::Iter eOptions_b_1;
+    refalrts::use( eOptions_b_1 );
     static refalrts::Iter eOptions_e_1;
+    refalrts::use( eOptions_e_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 e.NextFileName )~3 e.Options
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
@@ -2520,9 +2619,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     eOptions_e_1 = be_0;
     refalrts::use( eOptions_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNames, "DoParseFileNames"},
+      {refalrts::icFunc, (void*) & DoParseFileNames, (void*) "DoParseFileNames"},
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
@@ -2537,7 +2636,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2602,10 +2702,15 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
@@ -2628,7 +2733,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
@@ -2636,7 +2741,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2672,14 +2778,23 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eNextFileName_b_1;
+    refalrts::use( eNextFileName_b_1 );
     static refalrts::Iter eNextFileName_e_1;
+    refalrts::use( eNextFileName_e_1 );
     static refalrts::Iter eFiles_b_1;
+    refalrts::use( eFiles_b_1 );
     static refalrts::Iter eFiles_e_1;
+    refalrts::use( eFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2 (~3 e.NextFileName )~3 e.Files
     if( ! refalrts::tvar_left( tCompiler_1, bb_0, be_0 ) ) 
       break;
@@ -2712,9 +2827,9 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     eFiles_e_1 = be_0;
     refalrts::use( eFiles_e_1 );
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, & DoParseFileNamesOnly, "DoParseFileNamesOnly"},
+      {refalrts::icFunc, (void*) & DoParseFileNamesOnly, (void*) "DoParseFileNamesOnly"},
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
@@ -2726,7 +2841,8 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2781,10 +2897,15 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eScannedFiles_b_1;
+    refalrts::use( eScannedFiles_b_1 );
     static refalrts::Iter eScannedFiles_e_1;
+    refalrts::use( eScannedFiles_e_1 );
     static refalrts::Iter eFolders_b_1;
+    refalrts::use( eFolders_b_1 );
     static refalrts::Iter eFolders_e_1;
+    refalrts::use( eFolders_e_1 );
     static refalrts::Iter tCompiler_1;
+    refalrts::use( tCompiler_1 );
     // t.Compiler (~1 e.ScannedFiles )~1 (~2 e.Folders )~2
     refalrts::Iter bb_2 = 0;
     refalrts::Iter be_2 = 0;
@@ -2807,7 +2928,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     if( ! empty_seq( bb_0, be_0 ) )
       break;
 #ifdef INTERPRET
-    static refalrts::ResultAction raa[] = {
+    const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & tCompiler_1},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
       {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
@@ -2815,7 +2936,8 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
       {refalrts::icSpliceEVar, & eScannedFiles_b_1, & eScannedFiles_e_1},
       {refalrts::icEnd}
     };
-    refalrts::FnResult res = refalrts::interpret_array( raa, arg_begin, arg_end );
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
     return res;
 #else
 
@@ -2842,3 +2964,5 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
   return refalrts::cRecognitionImpossible;
 }
 
+
+//End of file

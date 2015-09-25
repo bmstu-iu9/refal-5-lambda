@@ -1,0 +1,106 @@
+$ENUM IO;
+
+$ENTRY Return {
+  e.Value = [IO { s.IOFunc = <s.IOFunc e.Value>; }];
+}
+
+$FORWARD Bind-Aux;
+
+$ENTRY Bind {
+  t.M-Start = t.M-Start;
+
+  t.M-Start ';' t.M-Next e.Binds =
+    <Bind
+      <Bind-Aux t.M-Start { e.X = t.M-Next; } > e.Binds
+    >;
+
+  t.M-Start s.FnM-Bind e.Binds =
+    <Bind
+      <Bind-Aux t.M-Start s.FnM-Bind> e.Binds
+    >;
+}
+
+//FROM LibraryEx
+$EXTERN Fetch;
+
+UnIO { [IO s.Monad] = s.Monad; }
+
+Bind-Aux {
+  [IO s.M-Start] s.Fn-Bind =
+    [IO
+      {
+        s.Cont =
+          <s.M-Start
+            {
+              e.Value =
+                <Fetch
+                  <Bind <s.Fn-Bind e.Value>>
+                  {
+                    [IO s.Monad] =
+                      <s.Monad s.Cont>;
+                  }
+                >;
+            }
+          >;
+      }
+    ];
+}
+
+$LABEL PutLine, Then, NoOp, GetLine;
+
+/*
+  t.IOTree ::=
+    (# PutLine e.Line) |
+    (t.IOTree1 # Then t.IOTree2) |
+    (# NoOp)
+    (# GetLine s.FnGetLine)
+
+  <s.FnGetLine e.Line> == t.IOTree
+*/
+
+$ENTRY GetLine {
+  = [IO { s.IOFunc = (# GetLine s.IOFunc); }];
+}
+
+$ENTRY PutLine {
+  e.Line =
+    [IO
+      {
+        s.IOFunc = ((# PutLine e.Line) # Then <s.IOFunc>);
+      }
+    ];
+}
+
+$ENTRY Perform_ {
+  [IO s.IOFunc] = <s.IOFunc { = (# NoOp); }>;
+}
+
+//FROM LibraryEx
+$EXTERN Y;
+
+//FROM Library
+$EXTERN ReadLine, WriteLine;
+
+
+$FORWARD PerformLoop;
+
+$ENTRY Perform {
+  [IO s.IOFunc] =
+    <PerformLoop
+      <s.IOFunc { = (# NoOp); }>
+    >;
+}
+
+PerformLoop {
+  (# PutLine e.Line) = <WriteLine e.Line>;
+
+  (# NoOp) = ;
+
+  (# GetLine s.NextState) =
+    <PerformLoop
+      <s.NextState <ReadLine>>
+    >;
+
+  (t.IOTree1 # Then t.IOTree2) =
+    <PerformLoop t.IOTree1> <PerformLoop t.IOTree2>;
+}

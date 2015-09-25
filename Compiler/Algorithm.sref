@@ -566,7 +566,7 @@ GenResult {
   построение результата (в обратном порядке)
 */
 
-$FORWARD ConvertCommad, ConvertCommands-Separated;
+$FORWARD ConvertCommands-Separated;
 
 //FROM LibraryEx
 $EXTERN MapReduce, Map;

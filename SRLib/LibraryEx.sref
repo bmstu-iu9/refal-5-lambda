@@ -24,6 +24,15 @@ $ENTRY Reduce {
   t.Fn t.Acc = t.Acc;
 }
 
+$ENTRY Fetch {
+  e.Argument t.Function =
+    <Apply t.Function e.Argument>;
+}
+
+$ENTRY Y {
+  s.Func = { e.Arg = <<s.Func <Y s.Func>> e.Arg>; };
+}
+
 $FORWARD DoMapReduce;
 
 $ENTRY MapReduce {
@@ -260,4 +269,15 @@ Trim-R {
   e.Line ' ' = <Trim-R e.Line>;
   e.Line '\t' = <Trim-R e.Line>;
   e.Line = e.Line;
+}
+
+$ENTRY Seq {
+  t.Func = t.Func;
+
+  t.Func e.Funcs =
+    {
+      e.Arg = <Fetch <Apply t.Func> <Seq e.Funcs>>;
+    };
+
+  /* пусто */ = { e.Arg = e.Arg; };
 }
