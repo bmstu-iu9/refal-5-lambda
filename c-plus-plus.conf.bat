@@ -18,6 +18,11 @@ rem правильный путь до каталога bin дистрибути
 :: set PATH=%PATH%;C:\Program Files\MinGW\bin
 :: set CPPLINE=g++ -Wall -g
 
+rem Если вы используете компилятор Watcom, проверьте, что установлен правильный
+rem путь к файлу owsetenv.bat
+:: call C:\WATCOM\owsetenv.bat
+:: set CPPLINE=cl -nologo
+
 if not "%CPPLINE%" == "" goto END
 echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
 exit 1

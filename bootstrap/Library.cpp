@@ -628,6 +628,12 @@ refalrts::FnResult string_from_seq(
       break;
     }
 
+    // В текущей версии Open Watcom (и форка Open Watcom V2) есть ошибка
+    // в функции vector::insert, которая возникает в случае,
+    // если во время вставки вектор увеличивает свою ёмкость (capacity).
+    // Для обхода этой ошибки предварительно резервируем место.
+    result.reserve( result.size() + read + 1 );
+
     result.insert( result.end(), buffer, buffer + read );
   }
 
