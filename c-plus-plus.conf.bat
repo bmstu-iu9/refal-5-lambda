@@ -7,11 +7,11 @@ rem ниже. Убедитесь, что в ней задан правильны
 :: call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 :: call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86_amd64
 rem Не забудьте раскомментировать и эту строку
-:: set CPPLINE=cl /EHcs /W3 /wd4996 -I..\SRLib
+:: set CPPLINE=cl /EHcs /W3 /wd4996
 
 rem Если вы используете компилятор Borland C++ Compiler 5.5
- set PATH=%PATH%;C:\Borland\BCC55\bin
- set CPPLINE=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib
+:: set PATH=%PATH%;C:\Borland\BCC55\bin
+:: set CPPLINE=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib
 
 rem Если вы используете компилятор MinGW (MinGW builds), установите в строке ниже
 rem правильный путь до каталога bin дистрибутива MinGW.
