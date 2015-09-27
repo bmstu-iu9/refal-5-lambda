@@ -33,7 +33,7 @@ DoPlain {
       <Plain e.Units>;
 
   (SpecialComment t.SrcPos e.Text) e.Units
-    = ('*$' e.Text)
+    = ('*' e.Text)
       <Plain e.Units>;
 
   /* пусто */ = /* пусто */;
@@ -107,16 +107,42 @@ Sentences {
 }
 
 Sentence {
+  (s.Space e.Indent) Comment e.Text
+    = <PutComment (e.Indent) e.Text>;
+
+  (e.Indent) (e.Pattern) RETURN (e.Result)
+    , e.Indent <InlineExpr e.Pattern> ' = ' <InlineExpr e.Result> ';'
+    : e.OneLineSentence
+    , <LongLine e.OneLineSentence>: False
+    = (e.OneLineSentence);
+
   (e.Indent) (e.Pattern) e.Tail
     = <Expression (e.Indent) (e.Indent) e.Pattern>
       <Tail (e.Indent '  ') e.Tail>;
 }
 
+PutComment {
+  (e.Indent) e.Comment '\n' e.Tail
+    = ('*' e.Indent e.Comment) <PutComment (e.Indent) e.Tail>;
+
+  (e.Indent) e.Comment = ('*' e.Indent e.Comment);
+}
+
 Tail {
   (e.Indent) (Condition (e.Result) (e.Pattern)) e.Tail
-    = <Expression (e.Indent ', ') (e.Indent '  ') e.Result>
-      <Expression (e.Indent ': ') (e.Indent '  ') e.Pattern>
-      <Tail (e.Indent) e.Tail>;
+    , e.Indent ', ' <InlineExpr e.Result> ': ' <InlineExpr e.Pattern>
+    : e.OneLineCondition
+    , <LongLine e.OneLineCondition>
+    : {
+        True
+          = <Expression (e.Indent ', ') (e.Indent '  ') e.Result>
+            <Expression (e.Indent ': ') (e.Indent '  ') e.Pattern>
+            <Tail (e.Indent) e.Tail>;
+
+        False
+          = (e.OneLineCondition)
+            <Tail (e.Indent) e.Tail>;
+      };
 
   (e.Indent) RETURN (e.Result)
     = <Expression (e.Indent '= ') (e.Indent '  ') e.Result ';'>;
@@ -190,7 +216,8 @@ MultilineTerm {
     = <MultilineTerm-Prefix (e.Prefix) e.Indent t.Term (e.Suffix)>;
 
   NEXT (e.Prefix) e.Indent t.Term (e.Suffix)
-    = <MultilineTerm-Prefix (e.Indent) e.Indent t.Term (e.Suffix)>;
+    = (e.Prefix)
+      <MultilineTerm-Prefix (e.Indent) e.Indent t.Term (e.Suffix)>;
 }
 
 MultilineTerm-Prefix {
@@ -285,6 +312,8 @@ Brackets {
 }
 
 Call {
+  t.SrcPos (e.Function) /* пусто */ = '<' e.Function '>';
+
   t.SrcPos (e.Function) e.Expr = '<' e.Function ' ' <InlineExpr e.Expr> '>'
 }
 

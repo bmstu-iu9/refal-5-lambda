@@ -69,6 +69,9 @@ DoScan {
     (TkSpecComment '*$' e.Line)
     <DoScan (<Inc s.Line> 1 e.FileName) e.Lines>;
 
+  t.Pos ('*' e.Comment) e.Lines
+    = <DoScan <IncLine t.Pos> e.Lines>;
+
   t.Pos (s.StartIdent e.Line) e.Lines,
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
     <DoScan-Ident t.Pos (s.StartIdent) (e.Line) e.Lines>;
@@ -96,6 +99,10 @@ DoScan {
 
   t.Pos ('\"' e.Line) e.Lines =
     <DoScan-Compound t.Pos <IncCol t.Pos> () (e.Line) e.Lines>;
+
+  t.Pos (s.Other e.Line) e.Lines =
+    (TkError t.Pos 'Bad character \'' s.Other '\'')
+    <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 }
 
 IsVarType {
@@ -115,38 +122,27 @@ IsPunctuation {
 }
 
 DoScan-Keyword {
-  t.Pos ('EXTERN' e.Line) e.Lines =
-    (TkExtern t.Pos)
-    <DoScan <IncCol t.Pos Len '$EXTERN'> (e.Line) e.Lines>;
-
-  t.Pos ('EXTRN' e.Line) e.Lines =
-    (TkExtern t.Pos)
-    <DoScan <IncCol t.Pos Len '$EXTRN'> (e.Line) e.Lines>;
-
-  t.Pos ('EXTERNAL' e.Line) e.Lines =
-    (TkExtern t.Pos)
-    <DoScan <IncCol t.Pos Len '$EXTERNAL'> (e.Line) e.Lines>;
-
-  t.Pos ('ENTRY' e.Line) e.Lines =
-    (TkEntry t.Pos)
-    <DoScan <IncCol t.Pos Len '$ENTRY'> (e.Line) e.Lines>;
-
-  t.Pos (e.BadLine) e.Lines =
-    <DoScan-BadKeyword
-      t.Pos ('$') (e.BadLine) e.Lines
-    >;
+  t.Pos (e.Line) e.Lines
+    = <DoScan-BuildKeyword t.Pos ('$') (e.Line) e.Lines>;
 }
 
-DoScan-BadKeyword {
-  t.Pos (e.BadKeyword) (s.Next e.Line) e.Lines,
-      <Type s.Next>: 'L' s.SubType s.Next =
-    <DoScan-BadKeyword
-      t.Pos (e.BadKeyword s.Next) (e.Line) e.Lines
-    >;
+DoScan-BuildKeyword {
+  t.Pos (e.KeywordChars) (s.Next e.Line) e.Lines
+    , <Type s.Next>: 'L' s.SubType s.Next
+    = <DoScan-BuildKeyword
+        t.Pos (e.KeywordChars s.Next) (e.Line) e.Lines
+      >;
 
-  t.Pos (e.BadKeyword) (e.Line) e.Lines =
-    (TkError t.Pos 'Bad keyword \'' e.BadKeyword '\'')
-    <DoScan <IncCol t.Pos Len e.BadKeyword> (e.Line) e.Lines>;
+  t.Pos (e.KeywordChars) (e.Line) e.Lines
+    , (TkExtern '$EXTERN') (TkExtern '$EXTRN') (TkExtern '$EXTERNAL')
+      (TkEntry '$ENTRY')
+    : e.Keywords-B (s.Tag e.KeywordChars) e.Keywords-E
+    = (s.Tag t.Pos)
+      <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
+
+  t.Pos (e.KeywordChars) (e.Line) e.Lines =
+    (TkError t.Pos 'Bad keyword \'' e.KeywordChars '\'')
+    <DoScan <IncCol t.Pos Len e.KeywordChars> (e.Line) e.Lines>;
 }
 
 DoScan-Number {

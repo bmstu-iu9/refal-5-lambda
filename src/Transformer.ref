@@ -196,27 +196,347 @@ DoNewName {
 ScanFunction-Condition-Aux {
   t.Names t.Variables t.SrcPos (e.Name) s.Scope (e.Prefix)
   (e.ScannedFunctions) (e.ScannedSentences)
-  t.NextSentence t.Continuation (e.UnscannedFunctions)
-    = <ScanFunction
-        t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
-        (e.ScannedFunctions)
-        (
-          e.ScannedSentences
-          t.NextSentence
-          <LastSentence-Continuation t.Continuation>
-        )
-        /* кончились предложения */ (e.UnscannedFunctions)
+  (t.Pattern (Condition (e.CondResult) (e.CondPattern)) e.Tail)
+  t.Continuation (e.UnscannedFunctions)
+    , <PatternSteps t.Variables t.Pattern>
+    : {
+        (() (e.Pattern)) (t.PatternVars /* пусто */) t.NewUsedVars
+          /* частный случай — нет открытых переменных */
+          , <NewName t.Names e.Name>: t.RefilledNames e.ConditionCheckName
+          , <NewName t.NewUsedVars 'e' 'OTHER'>: t.RefilledVars e.eOTHER
+          = <ScanFunction
+              t.RefilledNames t.SrcPos (e.Name) s.Scope (e.Prefix)
+              (e.ScannedFunctions)
+              (
+                e.ScannedSentences
+                (
+                  t.Pattern
+                  RETURN (
+                    (Call
+                      () (e.ConditionCheckName) 
+                      <VariablesAsContext CONTEXT-RESULT t.PatternVars> e.CondResult
+                    )
+                  )
+                )
+                <GenContinuation t.Continuation eOTHER-Generator>
+              )
+              /* нет больше предложений, т.к. переход на континуацию */
+              (
+                (
+                  (e.ConditionCheckName)
+                  (
+                    (
+                      <VariablesAsContext CONTEXT-PATTERN t.PatternVars>
+                      e.CondPattern
+                    )
+                    <PropagateCopiesInTail t.PatternVars e.Tail>
+                  )
+                  <GenContinuation
+                    t.Continuation
+                    RestoreFromContext-Generator
+                    t.PatternVars (e.Pattern) e.eOTHER
+                  >
+                )
+                e.UnscannedFunctions
+              )
+            >;
+
+        e.PatternSteps t.NewUsedVars
+          = <ScanFunction
+              t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
+              (e.ScannedFunctions)
+              (
+                e.ScannedSentences
+                (Comment 'Before condition')
+                (t.Pattern (Condition (e.CondResult) (e.CondPattern)) e.Tail)
+                <DebugPrintPatternSteps e.PatternSteps>
+                (Comment 'After condition')
+                <GenContinuation t.Continuation eOTHER-Generator>
+              )
+              /* нет больше предложений, т.к. переход на континуацию */
+              (e.UnscannedFunctions)
+            >;
+      };
+}
+
+PatternSteps {
+  t.UsedVars (e.Pattern)
+    = (() (e.Pattern))
+      <DoPatternSteps t.UsedVars (/* pattern vars */) (e.Pattern)>
+}
+
+DoPatternSteps {
+  t.UsedVars t.PatternVars e.SubPatterns-B (t.Symbol e.Expr) e.SubPatterns-E
+    , <Symbol t.Symbol>: True
+    = <DoPatternSteps
+        t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr t.Symbol) e.SubPatterns-E
+    , <Symbol t.Symbol>: True
+    = <DoPatternSteps
+        t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars e.SubPatterns-B (t.Var e.Expr) e.SubPatterns-E
+    , <HardVariable t.PatternVars t.Var>: True s.Type e.Index
+    , <AddVariable t.UsedVars t.PatternVars s.Type e.Index>
+    : t.NewUsedVars t.NewPatternVars
+    = <DoPatternSteps
+        t.NewUsedVars t.NewPatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr t.Var) e.SubPatterns-E
+    , <HardVariable t.PatternVars t.Var>: True s.Type e.Index
+    , <AddVariable t.UsedVars t.PatternVars s.Type e.Index>
+    : t.NewUsedVars t.NewPatternVars
+    = <DoPatternSteps
+        t.NewUsedVars t.NewPatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars
+  e.SubPatterns-B ((Brackets e.SubExpr) e.Expr) e.SubPatterns-E
+    = <DoPatternSteps
+        t.UsedVars t.PatternVars
+        e.SubPatterns-B (e.SubExpr) (e.Expr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars
+  e.SubPatterns-B (e.Expr (Brackets e.SubExpr)) e.SubPatterns-E
+    = <DoPatternSteps
+        t.UsedVars t.PatternVars
+        e.SubPatterns-B (e.Expr) (e.SubExpr) e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars e.SubPatterns-B () e.SubPatterns-E
+    = <DoPatternSteps
+        t.UsedVars t.PatternVars e.SubPatterns-B e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars
+  e.SubPatterns-B ((Variable t.SrcPos 'e' e.Index)) e.SubPatterns-E
+    , <AddVariable t.UsedVars t.PatternVars 'e' e.Index>
+    : t.NewUsedVars e.NewPatternVars
+    = <DoPatternSteps
+        t.NewUsedVars e.NewPatternVars e.SubPatterns-B e.SubPatterns-E
+      >;
+
+  t.UsedVars t.PatternVars /* пусто */ =
+    (t.PatternVars /* пусто */) t.UsedVars;
+
+  /* Открытая e-переменная */
+  t.UsedVars t.PatternVars (t.Variable e.Expr) e.SubPatterns
+    , t.Variable: (Variable t.SrcPos 'e' e.Index)
+    , <AddVariable t.UsedVars t.PatternVars 'e' e.Index>
+    : t.NewUsedVars t.NewPatternVars
+    = (t.PatternVars (t.Variable e.Expr) e.SubPatterns)
+      <DoPatternSteps
+        t.NewUsedVars t.NewPatternVars (e.Expr) e.SubPatterns
       >;
 }
 
-LastSentence-Continuation {
-  LAST-SENTENCE = /* пусто */;
+Symbol {
+  (Compound e.Chars) = True;
+  (Number s.Number) = True;
+  (Char s.Char) = True;
+  t.Other = False;
+}
 
-  (e.FuncName) =
-    (
-      ((Variable () 'eOTHER'))
-      RETURN ((Call () (e.FuncName) (Variable () 'eOTHER')))
-    );
+HardVariable {
+  t.PatternVars (Variable t.SrcPos 's' e.Index) = True 's' e.Index;
+  t.PatternVars (Variable t.SrcPos 't' e.Index) = True 't' e.Index;
+
+  (e.PatternVars-B (s.Type (e.Index) e.Repeated) e.PatternVars-E)
+  (Variable t.SrcPos s.Type e.Index)
+    = True s.Type e.Index;
+
+  t.PatternVars t.Other = False;
+}
+
+AddVariable {
+  t.UsedVars (e.PatternVars-B (s.Type (e.Index) e.Repeated) e.PatternVars-E)
+  s.Type e.Index
+    , <NewName t.UsedVars s.Type e.Index>: t.NewUsedVars s.Type e.NewIndex
+    = t.NewUsedVars
+      (
+        e.PatternVars-B
+        (s.Type (e.Index) e.Repeated (e.NewIndex))
+        e.PatternVars-E
+      );
+
+  t.UsedVars (e.PatternVars) s.Type e.Index
+    = t.UsedVars (e.PatternVars (s.Type (e.Index)));
+}
+
+GenContinuation {
+  LAST-SENTENCE s.ContinuationGenerator e.Parameters = /* пусто */;
+
+  (e.FuncName) s.ContinuationGenerator e.Parameters
+    = <Mu s.ContinuationGenerator (e.FuncName) e.Parameters>;
+}
+
+eOTHER-Generator {
+  (e.FuncName)
+    = (
+        ((Variable () 'eOTHER'))
+        RETURN ((Call () (e.FuncName) (Variable () 'eOTHER')))
+      );
+}
+
+RestoreFromContext-Generator {
+  (e.FuncName) t.PatternVars (e.Pattern) e.eOTHER
+    = (
+        (<VariablesAsContext CONTEXT-PATTERN t.PatternVars> (Variable () e.eOTHER))
+        <PropagateCopiesInTail
+          t.PatternVars
+          RETURN (
+            (Call () (e.FuncName) e.Pattern)
+          )
+        >
+      )
+}
+
+VariablesAsContext {
+  s.Mode (e.Vars) = <DoVariablesAsContext s.Mode e.Vars>;
+}
+
+DoVariablesAsContext {
+  s.Mode (s.Type (e.Index) (e.NextIndex) e.Indexes) e.Vars
+    = <MakeVariableAsContext s.Type <Mu s.Mode (e.Index) e.NextIndex>>
+      <DoVariablesAsContext s.Mode (s.Type (e.Index) e.Indexes) e.Vars>;
+
+  s.Mode (s.Type (e.Index)) e.Vars
+    = <MakeVariableAsContext s.Type e.Index>
+      <DoVariablesAsContext s.Mode e.Vars>;
+
+  s.Mode /* пусто */ = /* пусто */;
+}
+
+CONTEXT-PATTERN {
+  (e.OrigIndex) e.RepeatedIndex = e.RepeatedIndex;
+}
+
+CONTEXT-RESULT {
+  (e.OrigIndex) e.RepeatedIndex = e.OrigIndex;
+}
+
+MakeVariableAsContext {
+  'e' e.Index = (Brackets (Variable () 'e' e.Index));
+  s.Type e.Index = (Variable () s.Type e.Index);
+}
+
+PropagateCopiesInTail {
+  ((s.Type (e.Index)) e.Vars) e.Tail
+    = <PropagateCopiesInTail (e.Vars) e.Tail>;
+
+  () e.Tail = e.Tail;
+
+  ((s.Type (e.OrigIndex) (e.CopyIndex) e.Indexes) e.Vars) e.Tail
+    = <PropagateCopiesInTail
+        ((s.Type (e.OrigIndex) e.Indexes) e.Vars)
+        <PropagateInTail s.Type (e.OrigIndex) (e.CopyIndex) e.Tail>
+      >;
+}
+
+PropagateInTail {
+  s.Type (e.OrigIndex) (e.CopyIndex) RETURN (e.Result)
+    = RETURN (<PropagateInExpr s.Type (e.OrigIndex) (e.CopyIndex) e.Result>);
+
+  s.Type (e.OrigIndex) (e.CopyIndex)
+  (Condition (e.CondResult) (e.CondPattern)) e.Tail
+    = (Condition
+        (<PropagateInExpr s.Type (e.OrigIndex) (e.CopyIndex) e.CondResult>)
+        (<PropagateInExpr s.Type (e.OrigIndex) (e.CopyIndex) e.CondPattern>)
+      )
+      <PropagateInTail s.Type (e.OrigIndex) (e.CopyIndex) e.Tail>;
+
+  s.Type (e.OrigIndex) (e.CopyIndex)
+  CALL-BLOCK (e.Result) e.Sentences =
+    CALL-BLOCK
+    (<PropagateInExpr s.Type (e.OrigIndex) (e.CopyIndex) e.Result>)
+    <PropagateInSentences s.Type (e.OrigIndex) (e.CopyIndex) e.Sentences>;
+}
+
+PropagateInSentences {
+  s.Type (e.OrigIndex) (e.CopyIndex) ((e.Pattern) e.Tail) e.Sentences
+    = (
+        (<PropagateInExpr s.Type (e.OrigIndex) (e.CopyIndex) e.Pattern>)
+        <PropagateInTail s.Type (e.OrigIndex) (e.CopyIndex) e.Tail>
+      )
+      <PropagateInSentences s.Type (e.OrigIndex) (e.CopyIndex) e.Sentences>;
+
+  s.Type (e.OrigIndex) (e.CopyIndex) /* пусто */ = /* пусто */;
+}
+
+PropagateInExpr {
+  s.Type (e.OrigIndex) (e.CopyIndex) e.Expr
+    = <DoPropagateInExpr
+        s.Type (e.OrigIndex) (e.CopyIndex) '$' (/* scanned */) e.Expr '$'
+      >;
+}
+
+DoPropagateInExpr {
+  s.Type (e.OrigIndex) (e.CopyIndex)
+  t.MB-Left (e.Scanned) t.NextTerm e.Expr t.MB-Right
+    , t.NextTerm
+    : {
+        (s.Symbol e.Value)
+          , Compound Number Char: e.Types-B s.Symbol e.Types-E
+          = <DoPropagateInExpr
+              s.Type (e.OrigIndex) (e.CopyIndex)
+              t.MB-Left (e.Scanned t.NextTerm) e.Expr t.MB-Right
+            >;
+
+        (Variable t.SrcPos s.Type e.OrigIndex)
+          = <DoPropagateInExpr-UnFold
+              t.MB-Left
+              e.Scanned (Variable t.SrcPos s.Type e.CopyIndex) e.Expr
+              t.MB-Right
+            >;
+
+         (Variable t.SrcPos s.OtherType e.OtherIndex)
+           = <DoPropagateInExpr
+               s.Type (e.OrigIndex) (e.CopyIndex)
+               t.MB-Left (e.Scanned t.NextTerm) e.Expr t.MB-Right
+             >;
+
+         (Brackets e.SubExpr)
+           = <DoPropagateInExpr
+               s.Type (e.OrigIndex) (e.CopyIndex)
+               (t.MB-Left (e.Scanned) Brackets)
+               (/* scanned */) e.SubExpr
+               (e.Expr t.MB-Right)
+             >;
+
+         (Call t.SrcPos (e.Function) e.SubExpr)
+           = <DoPropagateInExpr
+               s.Type (e.OrigIndex) (e.CopyIndex)
+               (t.MB-Left (e.Scanned) Call t.SrcPos (e.Function))
+               (/* scanned */) e.SubExpr
+               (e.Expr t.MB-Right)
+             >;
+       };
+
+  s.Type (e.OrigIndex) (e.CopyIndex)
+  (t.MB-Left (e.Scanned) e.BracketsPrefix)
+  (e.ScannedInner) /* пусто */
+  (e.Expr t.MB-Right)
+    = <DoPropagateInExpr
+        s.Type (e.OrigIndex) (e.CopyIndex)
+        t.MB-Left (e.Scanned (e.BracketsPrefix e.ScannedInner)) e.Expr t.MB-Right
+      >;
+
+  s.Type (e.OrigIndex) (e.CopyIndex) '$' (e.Scanned) /* пусто */ '$'
+    = e.Scanned;
+}
+
+DoPropagateInExpr-UnFold {
+  (t.MB-Left (e.Scanned) e.BracketsPrefix) e.SubExpr (e.Expr t.MB-Right)
+    = <DoPropagateInExpr-UnFold
+        t.MB-Left e.Scanned (e.BracketsPrefix e.SubExpr) e.Expr t.MB-Right
+      >;
+
+  '$' e.Expr '$' = e.Expr
 }
 
 ScanFunction-Block {
@@ -228,6 +548,70 @@ ScanFunction-Block {
         (e.ScannedFunctions) (e.ScannedSentences t.NextSentence)
         e.Sentences (e.UnscannedFunctions)
       >;
+}
+
+DebugPrintPatternSteps {
+  ((e.PatternVars) e.Pattern) e.Steps
+    = (Comment
+        <PrintPatternVars e.PatternVars>
+        '\n'
+        <PrintPattern e.Pattern>
+      )
+      <DebugPrintPatternSteps e.Steps>;
+
+  /* пусто */ = /* пусто */
+}
+
+PrintPatternVars {
+  (s.Type e.Indexes) t.NextVar e.Vars
+    = <PrintVar s.Type e.Indexes> '; ' <PrintPatternVars t.NextVar e.Vars>;
+
+  (s.Type e.Indexes) = <PrintVar s.Type e.Indexes>;
+
+  /* пусто */ = /* пусто */;
+}
+
+PrintVar {
+  s.Type (e.Index) (e.NextIndex) e.Indexes
+    = s.Type '.' e.Index ', ' <PrintVar s.Type (e.NextIndex) e.Indexes>;
+
+  s.Type (e.Index) = s.Type '.' e.Index;
+}
+
+PrintPattern {
+  (e.SubPattern) (e.NextSubPattern) e.SubPatterns
+    = <PrintExpr e.SubPattern> '| '
+      <PrintPattern (e.NextSubPattern) e.SubPatterns>;
+
+  (e.SubPattern) = <PrintExpr e.SubPattern>;
+
+  /* пусто */ = /* пусто */
+}
+
+PrintExpr {
+  t.Term e.Expr = <Concat (<PrintTerm t.Term>) <PrintExpr e.Expr>>;
+
+  /* пусто */ = /* пусто */;
+}
+
+PrintTerm {
+  (Compound e.Chars) = '\"' <Text e.Chars> '\"';
+  (Number s.Number) = <Symb s.Number>;
+  (Char s.Char) = '\'' <Text s.Char> '\'';
+  (Variable t.SrcPos s.Type e.Index) = s.Type '.' e.Index;
+  (Brackets e.Expr) = '(' <PrintExpr e.Expr> ')';
+}
+
+Concat {
+  (e.Term '\'') ('\'' e.Expr) = e.Term e.Expr;
+  (e.Term) = e.Term;
+  (e.Term) e.Expr = e.Term ' ' e.Expr;
+}
+
+Text {
+  '\n' e.Tail = '\\n' <Text e.Tail>;
+  s.Other e.Tail = s.Other <Text e.Tail>;
+  /* пусто */ = /* пусто */
 }
 
 /*
@@ -243,11 +627,11 @@ Intersect {
   (e.B1 s.1 e.E1) (e.B2 s.2 e.E2)
     = <Intersect1 ((e.B1) s.1 e.E1) ((e.B2) s.2 e.E2) (<Eq s.1 s.2>)>;
 
-  (e.OTHER) = <Intersect3 e.OTHER>;
+  e.OTHER = <Intersect3 e.OTHER>;
 }
 
 Intersect1 {
-  ((e.B1) s.1 e.E1) (e.B2 s.2 e.E2) (True)
+  ((e.B1) s.1 e.E1) ((e.B2) s.2 e.E2) (True)
     = s.1 <Intersect (e.E1) (e.B2 e.E2)>;
 
   ((e.B1) s.1 e.E1) ((e.B21) t.B2 e.B22 s.2 e.E2) (e.OTHER)
@@ -456,4 +840,42 @@ RepeatedNonsence2 {
     = <RepeatedNonsence1 (e.Repeated) e.Repeated1 e.Tail>;
 }
 
+
+KeyValue {
+  (e.Sample) e.Items-B (e.Key (e.Value)) e.Items-E
+    , <EqualNoCase (e.Sample) e.Key>: True = Found e.Value;
+
+  (e.Sample) e.Items = NotFound;
+}
+
+
+KeyValue {
+  (e.Sample) e.Items-B (e.Key (e.Value)) e.Items-E
+    = <KeyValue2
+        (e.Sample) (e.Items-B) (e.Key (e.Value)) e.Items-E
+        (<EqualNoCase (e.Sample) e.Key>)
+      >;
+
+  e.OTHER = <KeyValue1 e.OTHER>;
+}
+
+KeyValue1 {
+  (e.Sample) e.Items = NotFound;
+}
+
+KeyValue2 {
+  (e.Sample) (e.Items-B) (e.Key (e.Value)) e.Items-E (True)
+    = Found e.Value;
+
+  (e.Sample) (e.Items-B1) t.Items-B e.Items-B2 (e.Key (e.Value)) e.Items-E
+  (e.OTHER)
+    = <KeyValue2
+        (e.Sample) (e.Items-B1 t.Items-B e.Items-B2) (e.Key (e.Value)) e.Items-E
+        (<EqualNoCase (e.Sample) e.Key>)
+      >;
+
+
+  (e.Sample) (e.Items-B1) e.Items-B2
+    = <KeyValue1 (e.Sample) e.Items-B1 e.Items-B2>;
+}
 */
