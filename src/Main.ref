@@ -13,6 +13,9 @@ $EXTERN Transform;
 *$FROM Plainer;
 $EXTERN Plain;
 
+*$FROM Tests;
+$EXTERN RunTests;
+
 $ENTRY Go {
   = <Main <ArgList>>;
 }
@@ -39,6 +42,9 @@ Main {
           <FormatErrors e.Errors>
         >;
     };
+
+  (e.ProgName) ('_tests_')
+    = <RunTests>;
 
   (e.ProgName) e.Other =
     <PrintLines
