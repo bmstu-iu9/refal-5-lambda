@@ -214,14 +214,11 @@ GenCommand {
   (e.Indent) (CmdDeclareEVar e.VarInfo) =
     (e.Indent)
     (e.Indent 'static refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
-    (e.Indent 'refalrts::use( ' <PrintEVar-B e.VarInfo> ' );')
-    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';')
-    (e.Indent 'refalrts::use( ' <PrintEVar-E e.VarInfo> ' );');
+    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';');
 
   (e.Indent) (CmdDeclareVar e.VarInfo) =
     (e.Indent)
-    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';')
-    (e.Indent 'refalrts::use( ' <PrintVar e.VarInfo> ' );');
+    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';');
 
   (e.Indent) (CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
@@ -270,11 +267,9 @@ GenCommand {
     (e.Indent
       <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
     )
-    (e.Indent 'refalrts::use( ' <PrintEVar-B 1 'e' e.Index> ' );')
     (e.Indent
       <PrintEVar-E 1 'e' e.Index> ' = ' <BracketsVar-E s.BracketNumber> ';'
-    )
-    (e.Indent 'refalrts::use( ' <PrintEVar-E 1 'e' e.Index> ' );');
+    );
 
   (e.Indent)
   (CmdOpenedE-Start AlgLeft s.BracketNumber 'e' e.Index) =
