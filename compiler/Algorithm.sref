@@ -342,6 +342,9 @@ ExtractBrackets {
           (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
             s.BracketNum s.InnerNum;
 
+          (CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
+            s.BracketNum s.InnerNum;
+
           (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
         }
         e.Commands
