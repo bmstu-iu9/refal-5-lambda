@@ -785,43 +785,43 @@ $EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrIdent, CmdArrOB, CmdArrCB,
 
 MakeInterpCommands {
   e.CopiedVars-B (s.Usings s.Mode e.Index) e.CopiedVars-E
-  (CtInsertVar s.Usings  s.Mode e.Index) =
+  (CtInsertVar s.Usings s.Mode e.Index) =
     (CmdArrCopy s.Mode e.Index);
 
-  e.CopiedVars (CtInsertVar s.Usings  s.Mode e.Index) =
+  e.CopiedVars (CtInsertVar s.Usings s.Mode e.Index) =
     (CmdArrSplice s.Usings s.Mode e.Index);
 
   e.CopiedVars (CtBrackets e.CmdInfo) = ;
   e.CopiedVars (CtInsert s.ElemNo) = ;
 
-  e.CopiedVars (CtAlloc StChar s.Counter s.Value) = 
+  e.CopiedVars (CtAlloc StChar s.Counter s.Value) =
     (CmdArrChar s.Value);
 
-  e.CopiedVars (CtAlloc StName s.Counter e.Name) = 
+  e.CopiedVars (CtAlloc StName s.Counter e.Name) =
     (CmdArrFunc e.Name);
 
-  e.CopiedVars (CtAlloc StNumber s.Counter s.Number) = 
+  e.CopiedVars (CtAlloc StNumber s.Counter s.Number) =
     (CmdArrInt s.Number);
 
-  e.CopiedVars (CtAlloc StIdent s.Counter e.Name) = 
+  e.CopiedVars (CtAlloc StIdent s.Counter e.Name) =
     (CmdArrIdent e.Name);
 
-  e.CopiedVars (CtAlloc StOpenBracket s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StOpenBracket s.Counter s.Num) =
     (CmdArrOB);
 
-  e.CopiedVars (CtAlloc StOpenADT s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StOpenADT s.Counter s.Num) =
     (CmdArrOADT);
 
-  e.CopiedVars (CtAlloc StOpenCall s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StOpenCall s.Counter s.Num) =
     (CmdArrOC);
 
-  e.CopiedVars (CtAlloc StCloseBracket s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StCloseBracket s.Counter s.Num) =
     (CmdArrCB);
 
-  e.CopiedVars (CtAlloc StCloseADT s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StCloseADT s.Counter s.Num) =
     (CmdArrCADT);
 
-  e.CopiedVars (CtAlloc StCloseCall s.Counter s.Num) = 
+  e.CopiedVars (CtAlloc StCloseCall s.Counter s.Num) =
     (CmdArrCC);
 
   e.CopiedVars (e.AnyCommand) =
