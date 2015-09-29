@@ -690,15 +690,45 @@ ConvertCommand {
 // копирование повторных.
 //==============================================================================
 
-$FORWARD GeneralizeResult-Vars, ReplicateVars;
+$FORWARD ReplicateVars, VarSetUnion, VarSetDifference, MakeDeclaration,
+  GenerateResult-OpenELoops, MakeCopyVar, MakeInterpCommands;
+
+//FROM LibraryEx
+$EXTERN Seq;
+
+$EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
+  CmdInitRAA, CmdFinRAA;
 
 GeneralizeResult {
   (e.PatternVars) (e.PatternCommands)
   (e.ResultVars) (e.ResultCommands) =
-    <GeneralizeResult-Vars
-      ( <ReplicateVars e.PatternVars> )
-      ( <ReplicateVars e.ResultVars> )
-      (e.PatternCommands) (e.ResultCommands)
+    <Fetch
+      (<ReplicateVars e.PatternVars>)
+      (<ReplicateVars e.ResultVars>)
+      <Seq
+        {
+          (e.PatternVars^) (e.ResultVars^) =
+            (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
+            (<VarSetDifference (e.ResultVars) (e.PatternVars)>);
+        }
+        {
+          (e.CommonVars) (e.CopiedVars) =
+            <GenerateResult-OpenELoops
+              <Map MakeDeclaration e.CommonVars>
+              e.PatternCommands
+              (CmdIfDef)
+              (CmdInitRAA)
+              <Map (MakeInterpCommands e.CopiedVars) e.ResultCommands>
+              (CmdFinRAA)
+              (CmdElse)
+              (CmdEmptyResult)
+              <Map MakeCopyVar e.CopiedVars>
+              <GenResult-Commands e.ResultCommands>
+              (CmdReturnResult)
+              (CmdEndIf)
+            >;
+        }
+      >
     >;
 }
 
@@ -717,19 +747,6 @@ ReplicateVars {
   e.Vars = <Map ReplicateVar e.Vars>;
 }
 
-$FORWARD GeneralizeResult-CopyVars, VarSetUnion, VarSetDifference;
-
-GeneralizeResult-Vars {
-  ( e.PatternVars ) ( e.ResultVars )
-  ( e.PatternCommands ) ( e.ResultCommands ) =
-    <GeneralizeResult-CopyVars
-      ( <VarSetUnion (e.PatternVars) (e.ResultVars)> )
-      ( e.PatternCommands )
-      ( <VarSetDifference (e.ResultVars) (e.PatternVars)> )
-      ( e.ResultCommands )
-    >;
-}
-
 VarSetUnion {
   ( e.Set1-B t.Common e.Set1-E ) ( e.Set2-B t.Common e.Set2-E ) =
     t.Common
@@ -743,40 +760,6 @@ VarSetDifference {
     e.Set1-B <VarSetDifference (e.Set1-E) ( e.Set2-B e.Set2-E )>;
 
   ( e.Set1 ) ( e.Set2 ) = e.Set1;
-}
-
-$FORWARD MakeDeclaration, MakeCopyVar, MakeInterpCommands,
-  GenerateResult-Interp;
-
-$EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
-  CmdInitRAA, CmdFinRAA;
-
-GeneralizeResult-CopyVars {
-  ( e.CommonVars ) ( e.Pattern ) ( e.CopiedVars ) ( e.Result ) =
-    <GenerateResult-Interp
-      (<Map MakeDeclaration e.CommonVars> e.Pattern)
-      (e.CopiedVars)
-      (e.Result)
-    >;
-}
-
-$FORWARD GenerateResult-OpenELoops;
-
-GenerateResult-Interp {
-  (e.Pattern) (e.CopiedVars) (e.Result) =
-    <GenerateResult-OpenELoops
-      e.Pattern
-      (CmdIfDef)
-      (CmdInitRAA)
-      <Map (MakeInterpCommands e.CopiedVars) e.Result>
-      (CmdFinRAA)
-      (CmdElse)
-      (CmdEmptyResult)
-      <Map MakeCopyVar e.CopiedVars>
-      <GenResult-Commands e.Result>
-      (CmdReturnResult)
-      (CmdEndIf)
-    >;
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
