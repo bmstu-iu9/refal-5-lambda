@@ -386,8 +386,8 @@ TextFromPattern {
   (TkName e.Name) e.Tail =
     ' & ' e.Name <TextFromPattern e.Tail>;
 
-  (TkVariable s.Mode e.Index) e.Tail =
-    ' ' s.Mode '.' e.Index <TextFromPattern e.Tail>;
+  (TkVariable s.Mode e.Index s.Depth) e.Tail =
+    ' ' s.Mode '.' e.Index '#' <StrFromInt s.Depth> <TextFromPattern e.Tail>;
 
   (TkIdentifier e.Name) e.Tail =
     ' # ' e.Name <TextFromPattern e.Tail>;
@@ -690,7 +690,8 @@ ConvertCommand {
 // копирование повторных.
 //==============================================================================
 
-$FORWARD ReplicateVars, VarSetUnion, VarSetDifference, MakeDeclaration,
+$FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
+  ClosedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
   GenerateResult-OpenELoops, MakeCopyVar, MakeInterpCommands;
 
 //FROM LibraryEx
@@ -705,14 +706,22 @@ GeneralizeResult {
     <Fetch
       (<ReplicateVars e.PatternVars>)
       (<ReplicateVars e.ResultVars>)
+      <Map ClosedEVariables e.PatternCommands>
       <Seq
         {
-          (e.PatternVars^) (e.ResultVars^) =
+          (e.PatternVars^) (e.ResultVars^) e.ClosedEs =
             (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
-            (<VarSetDifference (e.ResultVars) (e.PatternVars)>);
+            (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
+            <VarSetDifference (e.ClosedEs) (e.ResultVars)>;
         }
         {
-          (e.CommonVars) (e.CopiedVars) =
+          (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
+            (<VarSetDifference (e.CommonVars) (e.UnusedClosedEs)>)
+            (e.CopiedVars)
+            <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
+        }
+        {
+          (e.CommonVars) (e.CopiedVars) e.PatternCommands^ =
             <GenerateResult-OpenELoops
               <Map MakeDeclaration e.CommonVars>
               e.PatternCommands
@@ -760,6 +769,22 @@ VarSetDifference {
     e.Set1-B <VarSetDifference (e.Set1-E) ( e.Set2-B e.Set2-E )>;
 
   ( e.Set1 ) ( e.Set2 ) = e.Set1;
+}
+
+ClosedEVariables {
+  (CmdClosedE AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
+
+  t.Other = /* игнорируем */;
+}
+
+FilterUnusedCmdClosedE {
+  e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
+  (CmdClosedE AlgLeft s.Num 'e' e.Index s.Depth) =
+    (CmdComment
+      ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth> '#1'
+    );
+
+  e.Unuseds t.OtherCommand = t.OtherCommand;
 }
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
