@@ -94,30 +94,18 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sOtherScopeClass_1_1;
-    refalrts::use( sOtherScopeClass_1_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.OtherScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.OtherScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -129,9 +117,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -146,9 +132,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
       if( ! refalrts::svar_left( sOtherScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
@@ -366,30 +350,18 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_2;
-    refalrts::use( sScopeClass_1_2 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -401,9 +373,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -422,9 +392,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -492,26 +460,16 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -523,9 +481,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -544,9 +500,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -808,26 +762,16 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -839,9 +783,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -860,9 +802,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -1124,20 +1064,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eNames_1_b_1;
-    refalrts::use( eNames_1_b_1 );
     static refalrts::Iter eNames_1_e_1;
-    refalrts::use( eNames_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1145,17 +1078,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_1_b_1 = bb_1;
-    refalrts::use( eNames_1_b_1 );
     eNames_1_e_1 = be_1;
-    refalrts::use( eNames_1_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -1227,30 +1156,18 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_2;
-    refalrts::use( sScopeClass_1_2 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1262,9 +1179,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -1283,9 +1198,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -1353,30 +1266,18 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_2;
-    refalrts::use( sScopeClass_1_2 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1388,9 +1289,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -1409,9 +1308,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -1479,26 +1376,16 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1510,9 +1397,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -1531,9 +1416,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -1795,26 +1678,16 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1826,9 +1699,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -1847,9 +1718,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -2111,26 +1980,16 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined & GN_Entry e.Name1  )~2 e.Names_E1  ]~1 & GN_Local s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2142,9 +2001,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -2163,9 +2020,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -2422,26 +2277,16 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined & GN_Local e.Name1  )~2 e.Names_E1  ]~1 & GN_Entry s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2453,9 +2298,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -2474,9 +2317,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -2733,20 +2574,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eNames_1_b_1;
-    refalrts::use( eNames_1_b_1 );
     static refalrts::Iter eNames_1_e_1;
-    refalrts::use( eNames_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2754,17 +2588,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_1_b_1 = bb_1;
-    refalrts::use( eNames_1_b_1 );
     eNames_1_e_1 = be_1;
-    refalrts::use( eNames_1_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -2836,30 +2666,18 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter sOtherScopeClass_1_1;
-    refalrts::use( sOtherScopeClass_1_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Identifier s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.OtherScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Identifier s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.OtherScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2871,9 +2689,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -2888,9 +2704,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
@@ -3113,20 +2927,13 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eNames_1_b_1;
-    refalrts::use( eNames_1_b_1 );
     static refalrts::Iter eNames_1_e_1;
-    refalrts::use( eNames_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
-    // t.ErrorList1  [~1 & TSymTable e.Names1  ]~1 s.ScopeClass1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3134,17 +2941,13 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
       break;
     eNames_1_b_1 = bb_1;
-    refalrts::use( eNames_1_b_1 );
     eNames_1_e_1 = be_1;
-    refalrts::use( eNames_1_e_1 );
     if( ! refalrts::svar_left( sScopeClass_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icSpliceSTVar, & tErrorList_1_1},
@@ -3216,28 +3019,17 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Declared s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3247,9 +3039,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -3264,9 +3054,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
@@ -3338,28 +3126,17 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3369,9 +3146,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -3386,9 +3161,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
@@ -3460,16 +3233,11 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter tSymTable_1_1;
-    refalrts::use( tSymTable_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
-    // t.ErrorList1  t.SymTable1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 t.SymTable#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::tvar_left( tSymTable_1_1, bb_0, be_0 ) )
@@ -3477,9 +3245,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -3646,28 +3412,17 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
     static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
     static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_2;
-    refalrts::use( eName_1_b_2 );
     static refalrts::Iter eName_1_e_2;
-    refalrts::use( eName_1_e_2 );
-    // t.ErrorList1  [~1 & TSymTable e.Names_B1  (~2 & Identifier s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1 s.LnNum1  e.Name1 
+    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Identifier s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3677,9 +3432,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
     eNames_B_1_b_1 = 0;
     eNames_B_1_e_1 = 0;
     do {
@@ -3694,9 +3447,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
       if( ! refalrts::repeated_evar_right( eName_1_b_2, eName_1_e_2, eName_1_b_1, eName_1_e_1, bb_2, be_2 ) )
         continue;
       eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
       eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       if( ! refalrts::empty_seq( bb_2, be_2 ) )
@@ -3768,16 +3519,11 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter tErrorList_1_1;
-    refalrts::use( tErrorList_1_1 );
     static refalrts::Iter tSymTable_1_1;
-    refalrts::use( tSymTable_1_1 );
     static refalrts::Iter sLnNum_1_1;
-    refalrts::use( sLnNum_1_1 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
-    // t.ErrorList1  t.SymTable1  s.LnNum1  e.Name1 
+    // t.ErrorList#1 t.SymTable#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     if( ! refalrts::tvar_left( tSymTable_1_1, bb_0, be_0 ) )
@@ -3785,9 +3531,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::svar_left( sLnNum_1_1, bb_0, be_0 ) )
       break;
     eName_1_b_1 = bb_0;
-    refalrts::use( eName_1_b_1 );
     eName_1_e_1 = be_0;
-    refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -3964,20 +3708,11 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eName_1_b_1;
-    refalrts::use( eName_1_b_1 );
     static refalrts::Iter eName_1_e_1;
-    refalrts::use( eName_1_e_1 );
     static refalrts::Iter eNames_B_1_b_1;
-    refalrts::use( eNames_B_1_b_1 );
     static refalrts::Iter eNames_B_1_e_1;
-    refalrts::use( eNames_B_1_e_1 );
-    static refalrts::Iter eNames_E_1_b_1;
-    refalrts::use( eNames_E_1_b_1 );
-    static refalrts::Iter eNames_E_1_e_1;
-    refalrts::use( eNames_E_1_e_1 );
     static refalrts::Iter sScopeClass_1_1;
-    refalrts::use( sScopeClass_1_1 );
-    // [~1 & TSymTable e.Names_B1  (~2 & Defined s.ScopeClass1  e.Name1  )~2 e.Names_E1  ]~1
+    // [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
@@ -3995,16 +3730,11 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      eNames_E_1_b_1 = bb_3;
-      refalrts::use( eNames_E_1_b_1 );
-      eNames_E_1_e_1 = be_3;
-      refalrts::use( eNames_E_1_e_1 );
+      // Unused closed variable e.Names_E#1#1
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       eName_1_b_1 = bb_2;
-      refalrts::use( eName_1_b_1 );
       eName_1_e_1 = be_2;
-      refalrts::use( eName_1_e_1 );
 #ifdef INTERPRET
       const static refalrts::ResultAction raa[] = {
         {refalrts::icSpliceEVar, & eName_1_b_1, & eName_1_e_1},
