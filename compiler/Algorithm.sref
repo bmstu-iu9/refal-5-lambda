@@ -66,7 +66,7 @@ $EENUM
 
 $ENUM CmdOpenedE;
 
-$FORWARD NumerateBrackets, DoGenPattern, TextFromPattern, SaveBrackets;
+$FORWARD DoGenPattern, TextFromPattern, SaveBrackets;
 
 //FROM LibraryEx
 $EXTERN Fetch;
@@ -74,21 +74,15 @@ $EXTERN Fetch;
 GenPattern {
   e.Pattern =
     <Fetch
-      <NumerateBrackets 1 e.Pattern>
+      <DoGenPattern
+        1 (0 e.Pattern) (/* vars */) (/* commands */)
+      >
       {
-        s.LastBracket e.Pattern^ =
-          <Fetch
-            <DoGenPattern
-              (0 e.Pattern) (/* vars */) (/* commands */)
-            >
-            {
-              (e.Vars) e.Commands =
-                (e.Vars)
-                ((CmdComment <TextFromPattern e.Pattern> )
-                  <SaveBrackets s.LastBracket e.Commands >
-                );
-            }
-          >;
+        s.NumRanges (e.Vars) e.Commands =
+          (e.Vars)
+          ((CmdComment <TextFromPattern e.Pattern> )
+            <SaveBrackets s.NumRanges e.Commands >
+          );
       }
     >;
 }
@@ -98,233 +92,181 @@ $EXTERN MapReduce;
 
 $LABEL Brackets, ADT-Brackets, CallBrackets;
 
-//FROM Lexer
-$EXTERN TkOpenCall, TkCloseCall;
-
-NumerateBrackets {
-  s.StartNumber e.Expr =
-    <MapReduce
-      {
-        s.CurrentNumber (#Brackets e.SubExpr) =
-          <Fetch
-            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
-            {
-              s.NextNumber e.SubExpr^ =
-                s.NextNumber
-                (TkOpenBracket s.CurrentNumber)
-                e.SubExpr
-                (TkCloseBracket s.CurrentNumber);
-            }
-          >;
-
-        s.CurrentNumber (#ADT-Brackets (e.Name) e.SubExpr) =
-          <Fetch
-            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
-            {
-              s.NextNumber e.SubExpr^ =
-                s.NextNumber
-                (TkOpenADT s.CurrentNumber)
-                (TkName e.Name)
-                e.SubExpr
-                (TkCloseADT s.CurrentNumber);
-            }
-          >;
-
-        s.CurrentNumber (#CallBrackets e.SubExpr) =
-          <Fetch
-            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
-            {
-              s.NextNumber e.SubExpr^ =
-                s.NextNumber
-                (TkOpenCall s.CurrentNumber)
-                e.SubExpr
-                (TkCloseCall s.CurrentNumber);
-            }
-          >;
-
-        s.CurrentNumber t.OtherToken = s.CurrentNumber t.OtherToken;
-      }
-      s.StartNumber e.Expr
-    >;
-}
-
 DoGenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
-  e.Ranges-B (s.Num (TkChar s.Char) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkChar s.Char) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdChar AlgLeft s.Num s.Char))
     >;
 
-  e.Ranges-B (s.Num (TkNumber s.Number) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkNumber s.Number) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdNumber AlgLeft s.Num s.Number))
     >;
 
-  e.Ranges-B (s.Num (TkName e.Name) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkName e.Name) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
     >;
 
-  e.Ranges-B (s.Num (TkIdentifier e.Name) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkIdentifier e.Name) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkChar s.Char)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkChar s.Char)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdChar AlgRight s.Num s.Char))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkNumber s.Number)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkNumber s.Number)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdNumber AlgRight s.Num s.Number))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkName e.Name)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkName e.Name)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkIdentifier e.Name)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkIdentifier e.Name)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
     >;
 
   // Распознавание скобок
-  e.Ranges-B
-  (s.Num (TkOpenBracket s.Inner) e.SubRange (TkCloseBracket s.Inner) e.Range)
+  s.NumRanges e.Ranges-B
+  (s.Num (#Brackets e.SubRange) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Inner e.SubRange) (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.Inner))
+      <Inc s.NumRanges>
+      e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
+      (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.NumRanges))
     >;
 
-  e.Ranges-B
-  (s.Num e.Range (TkOpenBracket s.Inner) e.SubRange (TkCloseBracket s.Inner))
+  s.NumRanges e.Ranges-B
+  (s.Num e.Range (#Brackets e.SubRange))
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) (s.Inner e.SubRange) e.Ranges-E
-      (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.Inner))
+      <Inc s.NumRanges>
+      e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
+      (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.NumRanges))
     >;
 
   // Распознавание АТД-скобок
-  e.Ranges-B
-  (s.Num
-    (TkOpenADT s.Inner) (TkName e.Name) e.SubRange (TkCloseADT s.Inner)
-    e.Range
-  )
+  s.NumRanges e.Ranges-B
+  (s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Inner e.SubRange) (s.Num e.Range) e.Ranges-E
+      <Inc s.NumRanges>
+      e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
       (e.Vars)
-      (e.Commands (CmdADT AlgLeft s.Num s.Inner e.Name))
+      (e.Commands (CmdADT AlgLeft s.Num s.NumRanges e.Name))
     >;
 
-  e.Ranges-B
-  (s.Num
-    e.Range
-    (TkOpenADT s.Inner) (TkName e.Name) e.SubRange (TkCloseADT s.Inner)
-  )
+  s.NumRanges e.Ranges-B
+  (s.Num e.Range (#ADT-Brackets (e.Name) e.SubRange))
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) (s.Inner e.SubRange) e.Ranges-E
+      <Inc s.NumRanges>
+      e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
       (e.Vars)
-      (e.Commands (CmdADT AlgRight s.Num s.Inner e.Name))
+      (e.Commands (CmdADT AlgRight s.Num s.NumRanges e.Name))
     >;
 
   // Пустой диапазон
-  e.Ranges-B (s.Num /* пусто */) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num /* пусто */) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B e.Ranges-E
+      s.NumRanges e.Ranges-B e.Ranges-E
       (e.Vars) (e.Commands (CmdEmpty AlgLeft s.Num))
     >;
 
   // Распознавание переменных
-  e.Ranges-B (s.Num (TkVariable s.Mode e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkVariable s.Mode e.Index) e.Range) e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
       (e.Commands (CmdRepeated AlgLeft s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkVariable s.Mode e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable s.Mode e.Index)) e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
       (e.Commands (CmdRepeated AlgRight s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
   // Диапазон с закрытой переменной
-  e.Ranges-B (s.Num (TkVariable 'e' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkVariable 'e' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B e.Ranges-E
+      s.NumRanges e.Ranges-B e.Ranges-E
       (e.Vars (1 'e' e.Index))
       (e.Commands (CmdClosedE AlgLeft s.Num 'e' e.Index))
     >;
 
-  e.Ranges-B (s.Num (TkVariable 's' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkVariable 's' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 's' e.Index))
     >;
 
-  e.Ranges-B (s.Num (TkVariable 't' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkVariable 't' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 't' e.Index))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkVariable 's' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable 's' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgRight s.Num 's' e.Index))
     >;
 
-  e.Ranges-B (s.Num e.Range (TkVariable 't' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable 't' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgRight s.Num 't' e.Index))
     >;
 
-  e.Ranges-B (s.Num (TkVariable 'e' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (TkVariable 'e' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      e.Ranges-B (s.Num e.Range) e.Ranges-E
+      s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 'e' e.Index))
       (e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index))
     >;
 
   // Завершение разбора.
-  /* пусто */ (e.Vars) (e.Commands) =
-    (e.Vars) e.Commands;
+  s.NumRanges /* пусто */ (e.Vars) (e.Commands) =
+    s.NumRanges (e.Vars) e.Commands;
 }
 
 $FORWARD DoSaveBrackets;
@@ -423,17 +365,11 @@ $EXTERN StrFromInt;
 $FORWARD TextFromPattern-Char;
 
 TextFromPattern {
-  (TkOpenBracket s.Number) e.Tail =
-    ' (~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
+  (#Brackets e.Inner) e.Tail =
+    ' (' <TextFromPattern e.Inner> ' )' <TextFromPattern e.Tail>;
 
-  (TkCloseBracket s.Number) e.Tail =
-    ' )~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
-
-  (TkOpenADT s.Number) e.Tail =
-    ' [~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
-
-  (TkCloseADT s.Number) e.Tail =
-    ' ]~' <StrFromInt s.Number> <TextFromPattern e.Tail>;
+  (#ADT-Brackets (e.Name) e.Inner) e.Tail =
+    ' [' e.Name ' ' <TextFromPattern e.Inner> ' ]' <TextFromPattern e.Tail>;
 
   (TkChar s.Char) e.Tail =
     ' ' '' <TextFromPattern-Char (TkChar s.Char) e.Tail>;
@@ -516,6 +452,8 @@ $EENUM
   построение результата (в обратном порядке)
 */
 
+$LABEL CloseCall;
+
 DoGenResult {
   // Создаём литералы
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkChar s.Value) e.Result =
@@ -570,7 +508,7 @@ DoGenResult {
       (e.Vars)
       (e.AllocCommands (CmdAllocateElem s.Counter ElOpenCall))
       ((CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (TkCloseCall s.Counter) e.Result
+      <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
@@ -614,7 +552,7 @@ DoGenResult {
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkCloseCall s.OpenCounter) e.Result =
+  s.Counter (#CloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
       (e.AllocCommands (CmdAllocateElem s.Counter ElCloseCall))
