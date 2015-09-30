@@ -691,7 +691,7 @@ ConvertCommand {
 //==============================================================================
 
 $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
-  ClosedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
+  ClosedEVariables, RepeatedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
   GenerateResult-OpenELoops, MakeCopyVar, MakeInterpCommands;
 
 //FROM LibraryEx
@@ -706,13 +706,14 @@ GeneralizeResult {
     <Fetch
       (<ReplicateVars e.PatternVars>)
       (<ReplicateVars e.ResultVars>)
+      (<Map RepeatedEVariables e.PatternCommands>)
       <Map ClosedEVariables e.PatternCommands>
       <Seq
         {
-          (e.PatternVars^) (e.ResultVars^) e.ClosedEs =
+          (e.PatternVars^) (e.ResultVars^) (e.RepeatedEs) e.ClosedEs =
             (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
             (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
-            <VarSetDifference (e.ClosedEs) (e.ResultVars)>;
+            <VarSetDifference (e.ClosedEs) (e.RepeatedEs e.ResultVars)>;
         }
         {
           (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
@@ -777,12 +778,16 @@ ClosedEVariables {
   t.Other = /* игнорируем */;
 }
 
+RepeatedEVariables {
+  (CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
+
+  t.Other = /* игнорируем */;
+}
+
 FilterUnusedCmdClosedE {
   e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
   (CmdClosedE AlgLeft s.Num 'e' e.Index s.Depth) =
-    (CmdComment
-      ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth> '#1'
-    );
+    (CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
 
   e.Unuseds t.OtherCommand = t.OtherCommand;
 }
