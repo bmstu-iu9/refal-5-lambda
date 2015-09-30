@@ -1,13 +1,10 @@
 $FORWARD GeneralizeResult, GenPattern, GenResult;
 
 $ENTRY MakeAlgorithm {
-  (s.LastBracket e.Pattern) (e.Result) =
+  (e.Pattern) (e.Result) =
     <GeneralizeResult
-      <GenPattern s.LastBracket e.Pattern>
-      <GenResult
-        (/* vars */) (/* commands */) 0 // счётчик новых элементов
-        e.Result
-      >
+      <GenPattern e.Pattern>
+      <GenResult e.Result>
     >;
 }
 
@@ -69,24 +66,85 @@ $EENUM
 
 $ENUM CmdOpenedE;
 
-$FORWARD DoGenPattern, TextFromPattern, SaveBrackets;
+$FORWARD NumerateBrackets, DoGenPattern, TextFromPattern, SaveBrackets;
 
 //FROM LibraryEx
 $EXTERN Fetch;
 
 GenPattern {
-  s.LastBracket e.Pattern =
+  e.Pattern =
     <Fetch
-      <DoGenPattern
-        (0 e.Pattern) (/* vars */) (/* commands */)
-      >
+      <NumerateBrackets 1 e.Pattern>
       {
-        (e.Vars) e.Commands =
-          (e.Vars)
-          ((CmdComment <TextFromPattern e.Pattern> )
-            <SaveBrackets s.LastBracket e.Commands >
-          );
+        s.LastBracket e.Pattern^ =
+          <Fetch
+            <DoGenPattern
+              (0 e.Pattern) (/* vars */) (/* commands */)
+            >
+            {
+              (e.Vars) e.Commands =
+                (e.Vars)
+                ((CmdComment <TextFromPattern e.Pattern> )
+                  <SaveBrackets s.LastBracket e.Commands >
+                );
+            }
+          >;
       }
+    >;
+}
+
+//FROM LibraryEx
+$EXTERN MapReduce;
+
+$LABEL Brackets, ADT-Brackets, CallBrackets;
+
+//FROM Lexer
+$EXTERN TkOpenCall, TkCloseCall;
+
+NumerateBrackets {
+  s.StartNumber e.Expr =
+    <MapReduce
+      {
+        s.CurrentNumber (#Brackets e.SubExpr) =
+          <Fetch
+            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
+            {
+              s.NextNumber e.SubExpr^ =
+                s.NextNumber
+                (TkOpenBracket s.CurrentNumber)
+                e.SubExpr
+                (TkCloseBracket s.CurrentNumber);
+            }
+          >;
+
+        s.CurrentNumber (#ADT-Brackets (e.Name) e.SubExpr) =
+          <Fetch
+            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
+            {
+              s.NextNumber e.SubExpr^ =
+                s.NextNumber
+                (TkOpenADT s.CurrentNumber)
+                (TkName e.Name)
+                e.SubExpr
+                (TkCloseADT s.CurrentNumber);
+            }
+          >;
+
+        s.CurrentNumber (#CallBrackets e.SubExpr) =
+          <Fetch
+            <NumerateBrackets <Inc s.CurrentNumber> e.SubExpr>
+            {
+              s.NextNumber e.SubExpr^ =
+                s.NextNumber
+                (TkOpenCall s.CurrentNumber)
+                e.SubExpr
+                (TkCloseCall s.CurrentNumber);
+            }
+          >;
+
+        s.CurrentNumber t.OtherToken = s.CurrentNumber t.OtherToken;
+      }
+      s.StartNumber e.Expr
     >;
 }
 
@@ -419,6 +477,22 @@ TextFromPattern-Char {
 // Генерация результата
 //==============================================================================
 
+$FORWARD DoGenResult;
+
+GenResult {
+  e.Result =
+    <Fetch
+      <NumerateBrackets 1 e.Result>
+      {
+        s.NextNumber e.Result^ =
+          <DoGenResult
+            (/* vars */) (/* commands */) 0 // счётчик новых элементов
+            e.Result
+          >;
+      }
+    >;
+}
+
 // Тип команды
 $ENUM CtAlloc, CtInsert, CtBrackets, CtInsertVar;
 // Подтип команды
@@ -428,15 +502,12 @@ $ENUM
   StOpenADT, StCloseADT,
   StLink, StStack;
 
-//FROM Lexer
-$EXTERN TkOpenCall, TkCloseCall;
-
 $FORWARD GenResult-Commands;
 
-GenResult {
+DoGenResult {
   // Создаём литералы
   (e.Vars) (e.Commands) s.Counter (TkChar s.Value) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StChar s.Counter s.Value)
@@ -446,7 +517,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkName e.Name) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StName s.Counter e.Name)
@@ -456,7 +527,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkNumber s.Number) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StNumber s.Counter s.Number)
@@ -466,7 +537,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkIdentifier e.Name) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StIdent s.Counter e.Name)
@@ -480,7 +551,7 @@ GenResult {
     от обработки литералов.
   */
   (e.Vars) (e.Commands) s.Counter (TkOpenBracket s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StOpenBracket s.Counter s.Num)
@@ -490,7 +561,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkOpenCall s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StOpenCall s.Counter s.Num)
@@ -500,7 +571,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkOpenADT s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (e.Commands
         (CtAlloc StOpenADT s.Counter s.Num)
@@ -517,7 +588,7 @@ GenResult {
   (e.Vars)
   (e.Commands-B (CtAlloc StOpenBracket s.OpenCounter s.Num) e.Commands-E)
   s.Counter (TkCloseBracket s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (
         e.Commands-B
@@ -533,7 +604,7 @@ GenResult {
   (e.Vars)
   (e.Commands-B (CtAlloc StOpenADT s.OpenCounter s.Num) e.Commands-E)
   s.Counter (TkCloseADT s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (
         e.Commands-B
@@ -549,7 +620,7 @@ GenResult {
   (e.Vars)
   (e.Commands-B (CtAlloc StOpenCall s.OpenCounter s.Num) e.Commands-E)
   s.Counter (TkCloseCall s.Num) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars)
       (
         e.Commands-B
@@ -566,7 +637,7 @@ GenResult {
   // Обработка переменных
   (e.Vars-B (s.Usings s.Mode e.Index) e.Vars-E)
   (e.Commands) s.Counter (TkVariable s.Mode e.Index) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars-B (<Inc s.Usings> s.Mode e.Index) e.Vars-E)
       (e.Commands
         (CtInsertVar <Inc s.Usings> s.Mode e.Index)
@@ -575,7 +646,7 @@ GenResult {
     >;
 
   (e.Vars) (e.Commands) s.Counter (TkVariable s.Mode e.Index) e.Result =
-    <GenResult
+    <DoGenResult
       (e.Vars (1 s.Mode e.Index))
       (e.Commands
         (CtInsertVar 1 s.Mode e.Index)
@@ -598,7 +669,7 @@ GenResult {
 $FORWARD ConvertCommands-Separated;
 
 //FROM LibraryEx
-$EXTERN MapReduce, Map;
+$EXTERN Map;
 
 SeparateAllocates {
   (e.Allocates) (CtAlloc e.Info) =

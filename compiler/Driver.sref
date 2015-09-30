@@ -5,7 +5,7 @@ $EXTERN Success, Fails;
 $EXTERN LexFolding;
 
 //FROM LibraryEx
-$EXTERN Map, MapReduce;
+$EXTERN Map;
 
 $FORWARD ParseAndGenerate, PrepareBracket;
 
@@ -280,7 +280,7 @@ $EXTERN Cntx-Create, Cntx-Destroy;
 //FROM LibraryEx
 $EXTERN Fetch;
 
-$FORWARD ParseBlock, ParseFunction-Aux;
+$FORWARD ParseBlock;
 
 $FORWARD GenFunctionBody;
 
@@ -362,6 +362,30 @@ ParseFunction {
     >;
 }
 
+$LABEL Brackets, ADT-Brackets, CallBrackets;
+
+ResolveLambdaName {
+  (e.MainName) e.Result =
+    <Map
+      {
+        (TkName #CLambdaName s.Number) =
+          (TkName <CreateLambdaName e.MainName s.Number>);
+
+        (#Brackets e.SubResult) =
+          (#Brackets <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        (#ADT-Brackets (e.Name) e.SubResult) =
+          (#ADT-Brackets (e.Name) <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        (#CallBrackets e.SubResult) =
+          (#CallBrackets <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        t.OtherTerm = t.OtherTerm;
+      }
+      e.Result
+    >;
+}
+
 GenFunctionBody {
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
@@ -371,18 +395,7 @@ GenFunctionBody {
         ((e.Pattern) (e.Result)) =
           <GenSentence
             <MakeAlgorithm
-              (e.Pattern)
-              (
-                <Map
-                  {
-                    (TkName # CLambdaName s.Number) =
-                      (TkName <CreateLambdaName e.MainName s.Number>);
-
-                    t.OtherToken = t.OtherToken;
-                  }
-                  e.Result
-                >
-              )
+              (e.Pattern) (<ResolveLambdaName (e.MainName) e.Result>)
             >
           >;
       })
@@ -487,10 +500,10 @@ ParseBlock-SetContext {
 $FORWARD CreateContext;
 
 AddContextToSentence {
-  e.Context ((s.LastBracket e.Pattern) (e.Result)) =
+  e.Context ((e.Pattern) (e.Result)) =
     (
       (
-        <MapReduce CreateContext s.LastBracket e.Context>
+        <CreateContext e.Context>
         e.Pattern
       )
       (e.Result)
@@ -498,14 +511,14 @@ AddContextToSentence {
 }
 
 CreateContext {
-  s.BracketNumber ('e' e.Index) =
-    <Inc s.BracketNumber>
-    (TkOpenBracket s.BracketNumber)
-    (TkVariable 'e' e.Index)
-    (TkCloseBracket s.BracketNumber);
-
-  s.BracketNumber (s.Mode e.Index) =
-    s.BracketNumber (TkVariable s.Mode e.Index);
+  e.Context =
+    <Map
+      {
+        ('e' e.Index) = (#Brackets (TkVariable 'e' e.Index));
+        (s.Mode e.Index) = (TkVariable s.Mode e.Index);
+      }
+      e.Context
+    >;
 }
 
 $FORWARD ParsePattern;
@@ -516,18 +529,14 @@ ParseSentence {
     <ParsePattern
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences)
-      (
-        1 /* номер следующей скобки */
-        /* пусто */ /* мультискобки */
-      )
+      ( /* мультискобки */ )
       ( /* просканировано */ )
       e.Tokens
     >;
 }
 
 
-$FORWARD CoBracket, CheckAddVariable, StrFromBracket,
-  ParseResult;
+$FORWARD CheckAddVariable, StrFromBracket, ParseResult;
 
 //FROM Lexer
 $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
@@ -544,16 +553,6 @@ $EXTERN ST-CheckDeclared, ST-CheckIdent, ST-GetAnyName;
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
 
 $LABEL CSuccess, CInvalidMode, CAlreadyBounded;
-
-PatternBracket {
-  /*
-    Функция используется в ParsePattern для корректного восстановления
-    после ошибок — интерпретация < и > в образце как ( и ).
-  */
-  TkOpenCall = TkOpenBracket;
-  TkCloseCall = TkCloseBracket;
-  s.Bracket = s.Bracket;
-}
 
 ParsePattern {
   // Обработка литералов атомов
@@ -673,21 +672,20 @@ ParsePattern {
   */
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.MultiBracket)
   (e.Scanned) (# COpen TkOpenBracket s.LnNum) e.Tail =
     <ParsePattern
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenBracket s.LnNum TkCloseBracket e.Scanned)
+        (#Brackets s.LnNum TkCloseBracket e.Scanned)
       )
       () e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.MultiBracket)
   (e.Scanned)
   (# COpen TkOpenADT s.LnNumBracket) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
@@ -696,15 +694,14 @@ ParsePattern {
       t.Context
       (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNumBracket TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNumBracket TkCloseADT e.Scanned)
       )
-      ((TkName e.Name)) e.Tail
+      ((e.Name)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.MultiBracket)
   (e.Scanned)
   (# COpen TkOpenADT s.LnNum) e.Tail =
     <ParsePattern
@@ -715,15 +712,14 @@ ParsePattern {
       t.SymTable t.Context
       (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNum TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNum TkCloseADT e.Scanned)
       )
-      ((TkName <ST-GetAnyName t.SymTable>)) e.Tail
+      ((<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.MultiBracket)
   (e.Scanned)
   (# COpen TkOpenCall s.LnNum) e.Tail =
     <ParsePattern
@@ -734,9 +730,8 @@ ParsePattern {
       t.SymTable t.Context
       (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenCall s.LnNum TkCloseCall e.Scanned)
+        (#Brackets s.LnNum TkCloseCall e.Scanned)
       )
       () e.Tail
     >;
@@ -744,56 +739,38 @@ ParsePattern {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
   (e.InnerScanned) (# CClose s.CloseBracket s.ClosedLnNum) e.Tail =
     <ParsePattern
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (<PatternBracket s.OpenBracket> s.InnerNumber)
-        e.InnerScanned
-        (<PatternBracket s.CloseBracket> s.InnerNumber)
-      )
+      (e.Sentences) (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
   (e.InnerScanned) (# CClose s.OtherCloseBracket s.LnNum) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.InnerLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (<PatternBracket s.OpenBracket> s.InnerNumber)
-        e.InnerScanned
-        (<PatternBracket s.CloseBracket> s.InnerNumber)
-      )
+      (e.Sentences) (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       (# CClose s.OtherCloseBracket s.LnNum) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
+  (e.Sentences) ()
   (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
     <ParsePattern
       (e.Functions)
@@ -802,50 +779,41 @@ ParsePattern {
         'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber)
+      (e.Sentences) ()
       (e.Scanned) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
+  (e.Sentences) ()
   (e.Scanned) (TkReplace s.LnNum) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.Scanned)
-      (1)
+      (e.Sentences) (e.Scanned)
+      ()
       () e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.InnerScanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.Scanned) e.Tail =
+  (e.InnerScanned) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.InnerLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        (<PatternBracket s.OpenBracket> s.InnerNumber)
-        e.InnerScanned
-        (<PatternBracket s.CloseBracket> s.InnerNumber)
-        e.Scanned
-      )
+      (e.Sentences) (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
+  (e.Sentences) ()
   (e.Scanned)
   (s.NextResultTerm s.LnNum e.Info) e.Tail =
     <ParseResult
@@ -855,19 +823,10 @@ ParsePattern {
         'Incorrect pattern termination'
       >
       t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.Scanned)
-      (1)
+      (e.Sentences) (e.Scanned)
+      ()
       () e.Tail
     >;
-}
-
-CoBracket {
-  TkOpenADT = TkCloseADT;
-  TkOpenBracket = TkCloseBracket;
-  TkOpenCall = TkCloseCall;
-  TkCloseADT = TkOpenADT;
-  TkCloseBracket = TkOpenBracket;
-  TkCloseCall = TkOpenCall;
 }
 
 InvalidModeVariableError {
@@ -909,6 +868,9 @@ StrFromBracket {
   TkOpenBracket = '('; TkCloseBracket = ')';
   TkOpenCall = '<'; TkCloseCall = '>';
   TkOpenADT = '['; TkCloseADT = ']';
+  #Brackets = '(';
+  #ADT-Brackets = '[';
+  #CallBrackets = '<';
 }
 
 //FROM Context
@@ -919,7 +881,7 @@ $FORWARD CheckUseVariable, ParseResult-Block;
 /*
   <ParseResult
     (e.Functions) t.ErrorList t.SymTable t.Context
-    (e.Sentences) (e.Pattern) (s.BracketNum e.MultiBracket)
+    (e.Sentences) (e.Pattern) (e.MultiBracket)
     (e.Scanned) e.Tail
   >
 */
@@ -1016,7 +978,7 @@ ParseResult {
   // Хитро обрабатываются АДТ-скобки, т.к. требуется, чтобы после них было имя.
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
   (# COpen TkOpenADT s.LnNumADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParseResult
@@ -1025,15 +987,14 @@ ParseResult {
       t.Context
       (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNumADT TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNumADT TkCloseADT e.Scanned)
       )
-      ((TkName e.Name)) e.Tail
+      ((e.Name)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
   (# COpen TkOpenADT s.LnNum) e.Tail =
     <ParseResult
@@ -1044,25 +1005,37 @@ ParseResult {
       t.SymTable t.Context
       (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNum TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNum TkCloseADT e.Scanned)
       )
-      ((TkName <ST-GetAnyName t.SymTable>)) e.Tail
+      ((<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
   // Структурные и угловые скобки обрабатываются одинаково
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned) (# COpen s.OpenBracket s.LnNum) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber
-          s.OpenBracket s.LnNum <CoBracket s.OpenBracket>
+        (
+          <Fetch
+            s.OpenBracket
+            {
+              TkOpenBracket = #Brackets;
+              TkOpenCall = #CallBrackets;
+            }
+          >
+          s.LnNum
+          <Fetch
+            s.OpenBracket
+            {
+              TkOpenBracket = TkCloseBracket;
+              TkOpenCall = TkCloseCall;
+            }
+          >
           e.Scanned
         )
       )
@@ -1073,23 +1046,14 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.OpenLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
   )
   (e.InnerScanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
-      )
+      (e.Sentences) (e.Pattern) (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
@@ -1110,33 +1074,24 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.OpenLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerBracket) e.Tail =
+  (e.InnerScanned) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.OpenLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerBracket
-        (s.CloseBracket s.InnerNumber)
-      )
+      (e.Sentences) (e.Pattern) (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
+  (e.Sentences) (e.Pattern) ()
   (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
     <ParseResult
       (e.Functions)
@@ -1145,12 +1100,12 @@ ParseResult {
         'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber)
+      (e.Sentences) (e.Pattern) ()
       (e.Scanned) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
+  (e.Sentences) (e.Pattern) ()
   (e.Result) (TkSemicolon s.LnNum) e.Tail =
     (e.Functions) t.ErrorList t.SymTable
     <Cntx-ResetAfterSentence t.Context>
@@ -1158,7 +1113,7 @@ ParseResult {
     e.Tail;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
+  (e.Sentences) (e.Pattern) ()
   (e.Result) (TkCloseBlock s.LnNum) e.Tail =
     (e.Functions)
     <EL-AddErrorAt
@@ -1170,7 +1125,7 @@ ParseResult {
     (TkCloseBlock s.LnNum) e.Tail;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
+  (e.Sentences) (e.Pattern) ()
   (e.Result) (TkEOF s.LnNum) e.Tail =
     (e.Functions)
     <EL-AddErrorAt
@@ -1182,13 +1137,13 @@ ParseResult {
     (TkCloseBlock s.LnNum) e.Tail;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
+  (e.Sentences) (e.Pattern) ()
   (e.Scanned) t.Unexpected e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddUnexpected t.ErrorList t.Unexpected 'pattern or result term'>
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber)
+      (e.Sentences) (e.Pattern) ()
       (e.Scanned) e.Tail
     >;
 }
@@ -1218,45 +1173,41 @@ CheckUseVariable {
     >;
 }
 
-$FORWARD ParseResult-Block-Aux;
-
 $LABEL CCreateClosure;
 
 ParseResult-Block {
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
   ( t.Context /* свободные переменные в функции отсутствуют */ )
   e.Tail =
     <ParseResult
       (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+      (e.Sentences) (e.Pattern) (e.MultiBracket)
       (e.Scanned (TkName # CLambdaName <Dec s.NextNum>))
       e.Tail
     >;
 
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
   ( t.Context e.FreeContext )
   e.Tail =
     <Fetch
-      <Dec s.NextNum>
-      (<MapReduce CreateContext s.BracketNumber e.FreeContext>)
+      <Dec s.NextNum> (<CreateContext e.FreeContext>)
       {
-        s.FunctionNumber
-        (s.NextBracketNumber e.RealContext) =
+        s.FunctionNumber (e.RealContext) =
           <ParseResult
             (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
             (e.Sentences) (e.Pattern)
-            (<Inc s.NextBracketNumber> e.MultiBracket)
+            (e.MultiBracket)
             (
               e.Scanned
-              (TkOpenCall s.NextBracketNumber)
-              (TkName # CCreateClosure)
-              (TkName # CLambdaName s.FunctionNumber)
-              e.RealContext
-              (TkCloseCall s.NextBracketNumber)
+              (#CallBrackets
+                (TkName # CCreateClosure)
+                (TkName # CLambdaName s.FunctionNumber)
+                e.RealContext
+              )
             )
             e.Tail
           >;
