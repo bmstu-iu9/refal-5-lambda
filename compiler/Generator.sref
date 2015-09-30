@@ -123,12 +123,11 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdRepeated, CmdVar, CmdClosedE,
   CmdOpenedE-Start, CmdOpenedE-End,
   CmdAllocateElem, CmdLinkBrackets, CmdPushStack,
-  CmdInsertElem, CmdInsertEVar,
+  CmdInsertElem, CmdInsertVar,
   ElChar, ElName, ElNumber, ElIdent,
   ElOpenADT, ElCloseADT,
   ElOpenBracket, ElCloseBracket,
   ElOpenCall, ElCloseCall,
-  ElElem, ElSTVar,
   CmdEmptyResult, CmdReturnResult,
   CmdIfDef, CmdElse, CmdEndIf,
   CmdInitRAA, CmdFinRAA,
@@ -337,24 +336,24 @@ GenCommand {
     (e.Indent)
     (e.Indent 'refalrts::push_stack( ' <PrintElemVar s.ElemNumber> ' );');
 
-  (e.Indent) (CmdInsertElem ElElem s.ElemNumber) =
+  (e.Indent) (CmdInsertElem s.ElemNumber) =
     (e.Indent)
     (e.Indent
       'res = refalrts::splice_elem( res, ' <PrintElemVar s.ElemNumber> ' );'
     );
 
-  (e.Indent) (CmdInsertElem ElSTVar s.Usings s.Mode e.Index) =
-    (e.Indent)
-    (e.Indent
-      'res = refalrts::splice_stvar( res, '
-      <PrintVar s.Usings s.Mode e.Index> ' );'
-    );
-
-  (e.Indent) (CmdInsertEVar s.Usings 'e' e.Index) =
+  (e.Indent) (CmdInsertVar s.Usings 'e' e.Index) =
     (e.Indent)
     (e.Indent
       'res = refalrts::splice_evar( res, '
       <PrintEVars s.Usings 'e' e.Index> ' );'
+    );
+
+  (e.Indent) (CmdInsertVar s.Usings s.Mode e.Index) =
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_stvar( res, '
+      <PrintVar s.Usings s.Mode e.Index> ' );'
     );
 
   (e.Indent) (CmdReturnResult) =
