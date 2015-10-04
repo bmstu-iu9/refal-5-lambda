@@ -50,7 +50,7 @@ StrDirective {
 }
 
 $ENTRY StrFromToken {
-  TkChar s.Char = '' s.Char ''; // èãíîðèðóåì ïðîáëåìó escape-ñèìâîëîâ
+  TkChar s.Char = '' s.Char ''; // Ð¸Ð³Ð½Ð¾Ñ€Ð¸Ñ€ÑƒÐµÐ¼ Ð¿Ñ€Ð¾Ð±Ð»ÐµÐ¼Ñƒ escape-ÑÐ¸Ð¼Ð²Ð¾Ð»Ð¾Ð²
   TkCloseADT = '"]"';
   TkCloseCall = '">"';
   TkCloseBlock = '"}"';

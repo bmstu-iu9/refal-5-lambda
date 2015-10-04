@@ -116,7 +116,7 @@ $ENTRY GenCommonTailer {
   = () ('//End of file');
 }
 
-// Команды и их подтипы
+// РљРѕРјР°РЅРґС‹ Рё РёС… РїРѕРґС‚РёРїС‹
 //FROM Algorithm
 $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
@@ -156,9 +156,9 @@ $ENTRY GenSentence {
     ('    refalrts::move_left( ' <BracketsVars 0> ' );')
     ('    refalrts::move_right( ' <BracketsVars 0> ' );')
     <Fetch
-      <MapReduce GenCommand ('    ' /* отступ */) e.Algorithm>
+      <MapReduce GenCommand ('    ' /* РѕС‚СЃС‚СѓРї */) e.Algorithm>
       {
-        ('    ') /* отступ должен остаться тем же */
+        ('    ') /* РѕС‚СЃС‚СѓРї РґРѕР»Р¶РµРЅ РѕСЃС‚Р°С‚СЊСЃСЏ С‚РµРј Р¶Рµ */
         e.Generated =
           e.Generated;
       }
@@ -181,8 +181,8 @@ BracketsVars {
 }
 
 /*
-  Величина отступа также определяет режим работы. Отступ в 4 пробела --
-  вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
+  Р’РµР»РёС‡РёРЅР° РѕС‚СЃС‚СѓРїР° С‚Р°РєР¶Рµ РѕРїСЂРµРґРµР»СЏРµС‚ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹. РћС‚СЃС‚СѓРї РІ 4 РїСЂРѕР±РµР»Р° --
+  РІРЅРµ С†РёРєР»Р° РїРѕ РѕС‚РєСЂС‹С‚РѕР№ e-РїРµСЂРµРјРµРЅРЅРѕР№, РѕС‚СЃС‚СѓРї Р±РѕР»СЊС€Рµ -- РІРЅСѓС‚СЂРё РѕРЅРѕРіРѕ С†РёРєР»Р°.
 */
 
 $FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVars,
@@ -647,6 +647,6 @@ SwInfo {
 
   ElIdent e.Name = ', & ' e.Name '<int>::name';
 
-  // Остальное -- скобки
+  // РћСЃС‚Р°Р»СЊРЅРѕРµ -- СЃРєРѕР±РєРё
   s.Other = ;
 }
