@@ -1,6 +1,6 @@
 #!/bin/bash
 
-run_test() {
+run_test_aux() {
   echo Passing $1...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
@@ -33,6 +33,34 @@ run_test() {
   [ -e dump.txt ] && rm dump.txt
 
   echo
+}
+
+run_test_aux.BAD-SYNTAX() {
+  echo Passing $1...
+  SREF=$1
+  CPP=${SREF%%.sref}.cpp
+  EXE=${SREF%%.sref}
+
+  ../compiler/srefc $SREF 2>__error.txt
+  if [ $? -gt 0 ]; then
+    echo COMPILER ON $SREF FAILS, SEE __error.txt
+    exit
+  fi
+  rm __error.txt
+  if [ -e $CPP ]; then
+    echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    rm $CPP
+    exit
+  fi
+
+  echo "Ok! Compiler didn't chash on invalid syntax"
+  echo
+}
+
+run_test() {
+  SREF=$1
+  SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
+  run_test_aux$SUFFIX $1
 }
 
 if [ -z "$1" ]; then
