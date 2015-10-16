@@ -29,14 +29,14 @@ $EXTERN TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
 $LABEL COpen, CClose;
 
 PrepareBracket {
-  (TkOpenBracket s.LnNum) = (# COpen TkOpenBracket s.LnNum);
-  (TkCloseBracket s.LnNum) = (# CClose TkCloseBracket s.LnNum);
+  (TkOpenBracket s.LnNum) = (# COpen s.LnNum TkOpenBracket);
+  (TkCloseBracket s.LnNum) = (# CClose s.LnNum TkCloseBracket);
 
-  (TkOpenADT s.LnNum) = (# COpen TkOpenADT s.LnNum);
-  (TkCloseADT s.LnNum) = (# CClose TkCloseADT s.LnNum);
+  (TkOpenADT s.LnNum) = (# COpen s.LnNum TkOpenADT);
+  (TkCloseADT s.LnNum) = (# CClose s.LnNum TkCloseADT);
 
-  (TkOpenCall s.LnNum) = (# COpen TkOpenCall s.LnNum);
-  (TkCloseCall s.LnNum) = (# CClose TkCloseCall s.LnNum);
+  (TkOpenCall s.LnNum) = (# COpen s.LnNum TkOpenCall);
+  (TkCloseCall s.LnNum) = (# CClose s.LnNum TkCloseCall);
 
   t.OtherToken = t.OtherToken;
 }
@@ -673,7 +673,7 @@ ParsePattern {
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.MultiBracket)
-  (e.Scanned) (# COpen TkOpenBracket s.LnNum) e.Tail =
+  (e.Scanned) (# COpen s.LnNum TkOpenBracket) e.Tail =
     <ParsePattern
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences)
@@ -687,7 +687,7 @@ ParsePattern {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNumBracket) (TkName s.LnNumName e.Name) e.Tail =
+  (# COpen s.LnNumBracket TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
       (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
@@ -703,7 +703,7 @@ ParsePattern {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNum) e.Tail =
+  (# COpen s.LnNum TkOpenADT) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
@@ -721,7 +721,7 @@ ParsePattern {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenCall s.LnNum) e.Tail =
+  (# COpen s.LnNum TkOpenCall) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
@@ -742,7 +742,7 @@ ParsePattern {
     e.MultiBracket
     (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.CloseBracket s.ClosedLnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.ClosedLnNum s.CloseBracket) e.Tail =
     <ParsePattern
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences) (e.MultiBracket)
@@ -756,7 +756,7 @@ ParsePattern {
     e.MultiBracket
     (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.OtherCloseBracket s.LnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.LnNum s.OtherCloseBracket) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
@@ -766,12 +766,12 @@ ParsePattern {
       t.SymTable t.Context
       (e.Sentences) (e.MultiBracket)
       (e.Scanned (s.BracketsSign e.InnerScanned))
-      (# CClose s.OtherCloseBracket s.LnNum) e.Tail
+      (# CClose s.LnNum s.OtherCloseBracket) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) ()
-  (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  (e.Scanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParsePattern
       (e.Functions)
       <EL-AddErrorAt
@@ -980,7 +980,7 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNumADT) (TkName s.LnNumName e.Name) e.Tail =
+  (# COpen s.LnNumADT TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParseResult
       (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
@@ -996,7 +996,7 @@ ParseResult {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNum) e.Tail =
+  (# COpen s.LnNum TkOpenADT) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
@@ -1014,7 +1014,7 @@ ParseResult {
   // Структурные и угловые скобки обрабатываются одинаково
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (# COpen s.OpenBracket s.LnNum) e.Tail =
+  (e.Scanned) (# COpen s.LnNum s.OpenBracket) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences) (e.Pattern)
@@ -1049,7 +1049,7 @@ ParseResult {
     e.MultiBracket
     (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
       (e.Sentences) (e.Pattern) (e.MultiBracket)
@@ -1092,7 +1092,7 @@ ParseResult {
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) ()
-  (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  (e.Scanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
