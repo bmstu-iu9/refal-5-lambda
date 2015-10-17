@@ -1134,7 +1134,7 @@ ParseResult {
     t.SymTable
     <Cntx-ResetAfterSentence t.Context>
     (e.Sentences ((e.Pattern) (e.Result)))
-    (TkCloseBlock s.LnNum) e.Tail;
+    (TkCloseBlock s.LnNum) (TkEOF s.LnNum) e.Tail;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) (e.Pattern) ()
