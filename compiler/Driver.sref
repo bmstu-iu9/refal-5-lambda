@@ -660,6 +660,7 @@ ParsePattern {
       <EL-AddErrorAt t.ErrorList s.LnNum 'Naked redefinition sign'>
       t.SymTable t.Context
       (e.Sentences) (e.MultiBracket)
+      (e.Scanned) e.Tail
     >;
 
   /*
