@@ -46,7 +46,7 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     static refalrts::Iter eFolders_1_e_1;
     static refalrts::Iter eFiles_1_b_1;
     static refalrts::Iter eFiles_1_e_1;
-    // (~1 e.Folders#1 )~1 e.Files#1
+    // ( e.Folders#1 ) e.Files#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -137,7 +137,7 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     static refalrts::Iter eFileName_1_e_1;
     static refalrts::Iter eFileName_1_b_2;
     static refalrts::Iter eFileName_1_e_2;
-    // e.Folders#1 (~1 e.FileName#1 )~1
+    // e.Folders#1 ( e.FileName#1 )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
@@ -300,7 +300,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     static refalrts::Iter eFileName_1_e_1;
     static refalrts::Iter eFolder_1_b_1;
     static refalrts::Iter eFolder_1_e_1;
-    // e.FileName#1 (~1 e.Folder#1 )~1
+    // e.FileName#1 ( e.Folder#1 )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
@@ -369,7 +369,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     static refalrts::Iter eSource_1_e_1;
     static refalrts::Iter eOutput_1_b_1;
     static refalrts::Iter eOutput_1_e_1;
-    // (~1 e.FileName#1 )~1 (~2 & Source (~3 e.Source#1 )~3 e.Output#1 )~2 e.Variants#1
+    // ( e.FileName#1 ) ( & Source ( e.Source#1 ) e.Output#1 ) e.Variants#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -384,12 +384,12 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter be_3 = 0;
     if( ! refalrts::brackets_left( bb_3, be_3, bb_2, be_2 ) )
       break;
-    // Unused closed variable e.FileName#1#1
+    // Unused closed variable e.FileName#1
     eSource_1_b_1 = bb_3;
     eSource_1_e_1 = be_3;
     eOutput_1_b_1 = bb_2;
     eOutput_1_e_1 = be_2;
-    // Unused closed variable e.Variants#1#1
+    // Unused closed variable e.Variants#1
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -446,7 +446,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eOutput_1_b_1;
     static refalrts::Iter eOutput_1_e_1;
-    // (~1 e.FileName#1 )~1 (~2 & Output e.Output#1 )~2 e.Variants#1
+    // ( e.FileName#1 ) ( & Output e.Output#1 ) e.Variants#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -457,10 +457,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       break;
     if( ! refalrts::function_left( & Output, bb_2, be_2 ) )
       break;
-    // Unused closed variable e.FileName#1#1
+    // Unused closed variable e.FileName#1
     eOutput_1_b_1 = bb_2;
     eOutput_1_e_1 = be_2;
-    // Unused closed variable e.Variants#1#1
+    // Unused closed variable e.Variants#1
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
@@ -506,7 +506,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     static refalrts::Iter eFileName_1_e_1;
     static refalrts::Iter eVariants_1_b_1;
     static refalrts::Iter eVariants_1_e_1;
-    // (~1 e.FileName#1 )~1 (~2 & NotFound e.NotFoundPath#1 )~2 e.Variants#1
+    // ( e.FileName#1 ) ( & NotFound e.NotFoundPath#1 ) e.Variants#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -519,7 +519,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       break;
     eFileName_1_b_1 = bb_1;
     eFileName_1_e_1 = be_1;
-    // Unused closed variable e.NotFoundPath#1#1
+    // Unused closed variable e.NotFoundPath#1
     eVariants_1_b_1 = bb_0;
     eVariants_1_e_1 = be_0;
 #ifdef INTERPRET
@@ -579,7 +579,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eFileName_1_b_1;
     static refalrts::Iter eFileName_1_e_1;
-    // (~1 e.FileName#1 )~1
+    // ( e.FileName#1 )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -1332,7 +1332,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     static refalrts::Iter eOutName_1_b_1;
     static refalrts::Iter eOutName_1_e_1;
     static refalrts::Iter sRes_1_1;
-    // (~1 & True e.SourceName#1 )~1 s.Res#1 e.OutName#1
+    // ( & True e.SourceName#1 ) s.Res#1 e.OutName#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -1401,7 +1401,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eOutName_1_b_1;
     static refalrts::Iter eOutName_1_e_1;
-    // (~1 & False e.SourceName#1 )~1 & True e.OutName#1
+    // ( & False e.SourceName#1 ) & True e.OutName#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -1410,7 +1410,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       break;
     if( ! refalrts::function_left( & True, bb_0, be_0 ) )
       break;
-    // Unused closed variable e.SourceName#1#1
+    // Unused closed variable e.SourceName#1
     eOutName_1_b_1 = bb_0;
     eOutName_1_e_1 = be_0;
 #ifdef INTERPRET
@@ -1458,7 +1458,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     static refalrts::Iter eUnitName_1_e_1;
     static refalrts::Iter eUnitName_1_b_2;
     static refalrts::Iter eUnitName_1_e_2;
-    // (~1 & False e.UnitName#1 '.sref )~1 & False e.UnitName#1 '.cpp'
+    // ( & False e.UnitName#1 '.sref' ) & False e.UnitName#1 '.cpp'
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )
       break;
     if( ! refalrts::char_right( 'p', bb_0, be_0 ) )

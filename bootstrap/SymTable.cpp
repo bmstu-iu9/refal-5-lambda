@@ -105,7 +105,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_E_1_e_1;
     static refalrts::Iter sOtherScopeClass_1_1;
     static refalrts::Iter sScopeClass_1_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.OtherScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Defined s.OtherScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -361,7 +361,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -469,7 +469,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared & GN_Entry e.Name#1 ) e.Names_E#1 ] & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -771,7 +771,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared & GN_Local e.Name#1 ) e.Names_E#1 ] & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1070,7 +1070,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eName_1_b_1;
     static refalrts::Iter eName_1_e_1;
     static refalrts::Iter sLnNum_1_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1167,7 +1167,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1277,7 +1277,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Defined s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1385,7 +1385,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared & GN_Entry e.Name#1 ) e.Names_E#1 ] & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1687,7 +1687,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared & GN_Local e.Name#1 ) e.Names_E#1 ] & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -1989,7 +1989,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined & GN_Entry e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Local s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Defined & GN_Entry e.Name#1 ) e.Names_E#1 ] & GN_Local s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2286,7 +2286,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter eNames_E_1_b_1;
     static refalrts::Iter eNames_E_1_e_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined & GN_Local e.Name#1 )~2 e.Names_E#1 ]~1 & GN_Entry s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Defined & GN_Local e.Name#1 ) e.Names_E#1 ] & GN_Entry s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2580,7 +2580,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::Iter eName_1_b_1;
     static refalrts::Iter eName_1_e_1;
     static refalrts::Iter sLnNum_1_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2677,7 +2677,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::Iter eNames_E_1_e_1;
     static refalrts::Iter sScopeClass_1_1;
     static refalrts::Iter sOtherScopeClass_1_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Identifier s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.OtherScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Identifier s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.OtherScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -2933,7 +2933,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::Iter eName_1_b_1;
     static refalrts::Iter eName_1_e_1;
     static refalrts::Iter sLnNum_1_1;
-    // t.ErrorList#1 [~1 & TSymTable e.Names#1 ]~1 s.ScopeClass#1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names#1 ] s.ScopeClass#1 s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3029,7 +3029,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Declared s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Declared s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3136,7 +3136,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Defined s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3422,7 +3422,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sLnNum_1_1;
     static refalrts::Iter eName_1_b_2;
     static refalrts::Iter eName_1_e_2;
-    // t.ErrorList#1 [~1 & TSymTable e.Names_B#1 (~2 & Identifier s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1 s.LnNum#1 e.Name#1
+    // t.ErrorList#1 [TSymTable  e.Names_B#1 ( & Identifier s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ] s.LnNum#1 e.Name#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -3712,7 +3712,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter eNames_B_1_b_1;
     static refalrts::Iter eNames_B_1_e_1;
     static refalrts::Iter sScopeClass_1_1;
-    // [~1 & TSymTable e.Names_B#1 (~2 & Defined s.ScopeClass#1 e.Name#1 )~2 e.Names_E#1 ]~1
+    // [TSymTable  e.Names_B#1 ( & Defined s.ScopeClass#1 e.Name#1 ) e.Names_E#1 ]
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::adt_left( bb_1, be_1, & TSymTable, bb_0, be_0 ) )
@@ -3730,7 +3730,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
         continue;
       if( ! refalrts::function_left( & Defined, bb_2, be_2 ) )
         continue;
-      // Unused closed variable e.Names_E#1#1
+      // Unused closed variable e.Names_E#1
       if( ! refalrts::svar_left( sScopeClass_1_1, bb_2, be_2 ) )
         continue;
       eName_1_b_1 = bb_2;

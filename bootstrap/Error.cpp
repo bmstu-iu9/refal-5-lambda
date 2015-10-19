@@ -70,7 +70,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::Iter eErrors_1_e_1;
     static refalrts::Iter eMessage_1_b_1;
     static refalrts::Iter eMessage_1_e_1;
-    // (~1 & ErrorList e.Errors#1 )~1 e.Message#1
+    // ( & ErrorList e.Errors#1 ) e.Message#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -194,7 +194,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::Iter sLineNumber_1_1;
     static refalrts::Iter eMessage_1_b_1;
     static refalrts::Iter eMessage_1_e_1;
-    // (~1 & ErrorList e.Errors#1 )~1 s.LineNumber#1 e.Message#1
+    // ( & ErrorList e.Errors#1 ) s.LineNumber#1 e.Message#1
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -362,7 +362,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter sLineNumber_1_1;
     static refalrts::Iter eMessage_1_b_1;
     static refalrts::Iter eMessage_1_e_1;
-    // t.ErrorList#1 (~1 & TkError s.LineNumber#1 e.Message#1 )~1 e.Expected#1
+    // t.ErrorList#1 ( & TkError s.LineNumber#1 e.Message#1 ) e.Expected#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -371,7 +371,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TkError, bb_1, be_1 ) )
       break;
-    // Unused closed variable e.Expected#1#1
+    // Unused closed variable e.Expected#1
     if( ! refalrts::svar_left( sLineNumber_1_1, bb_1, be_1 ) )
       break;
     eMessage_1_b_1 = bb_1;
@@ -426,7 +426,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter sLineNumber_1_1;
     static refalrts::Iter eUnexpected_1_b_1;
     static refalrts::Iter eUnexpected_1_e_1;
-    // t.ErrorList#1 (~1 & TkUnexpected s.LineNumber#1 e.Unexpected#1 )~1 e.Expected#1
+    // t.ErrorList#1 ( & TkUnexpected s.LineNumber#1 e.Unexpected#1 ) e.Expected#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -435,7 +435,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       break;
     if( ! refalrts::function_left( & TkUnexpected, bb_1, be_1 ) )
       break;
-    // Unused closed variable e.Expected#1#1
+    // Unused closed variable e.Expected#1
     if( ! refalrts::svar_left( sLineNumber_1_1, bb_1, be_1 ) )
       break;
     eUnexpected_1_b_1 = bb_1;
@@ -598,7 +598,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     static refalrts::Iter sLineNumber_1_1;
     static refalrts::Iter eInfo_1_b_1;
     static refalrts::Iter eInfo_1_e_1;
-    // t.ErrorList#1 (~1 s.Unexpected#1 s.LineNumber#1 e.Info#1 )~1 e.Expected#1
+    // t.ErrorList#1 ( s.Unexpected#1 s.LineNumber#1 e.Info#1 ) e.Expected#1
     if( ! refalrts::tvar_left( tErrorList_1_1, bb_0, be_0 ) )
       break;
     refalrts::Iter bb_1 = 0;
@@ -803,7 +803,7 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( bb_0, be_0 );
     static refalrts::Iter eLine_1_b_1;
     static refalrts::Iter eLine_1_e_1;
-    // (~1 e.Line#1 )~1
+    // ( e.Line#1 )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -865,7 +865,7 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     static refalrts::Iter eErrors_1_e_1;
     static refalrts::Iter eErrors_1_b_2;
     static refalrts::Iter eErrors_1_e_2;
-    // (~1 & ErrorList e.Errors#1 )~1
+    // ( & ErrorList e.Errors#1 )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
@@ -964,7 +964,7 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_left( bb_0, be_0 );
     refalrts::move_right( bb_0, be_0 );
-    // (~1 & ErrorList )~1
+    // ( & ErrorList )
     refalrts::Iter bb_1 = 0;
     refalrts::Iter be_1 = 0;
     if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
