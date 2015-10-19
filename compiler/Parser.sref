@@ -515,6 +515,9 @@ $EXTERN Seq;
 //FROM Lexer
 $EXTERN TkReplace;
 
+//FROM Context
+$EXTERN Cntx-ResetAfterSentence;
+
 $FORWARD ParsePattern, ParseResult;
 
 ParseSentence {
@@ -552,9 +555,30 @@ ParseSentence {
         {
           (e.Pattern)
           (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
-          (e.Result) e.Tokens^ =
-            (e.Functions) t.ErrorList t.SymTable t.Context
+          (e.Result) (TkSemicolon s.LnNum) e.Tokens^ =
+            (e.Functions) t.ErrorList t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
             (e.Sentences ((e.Pattern) (e.Result))) e.Tokens;
+
+          (e.Pattern)
+          (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
+          (e.Result) (TkCloseBlock s.LnNum) e.Tokens^ =
+            (e.Functions)
+            <EL-AddErrorAt t.ErrorList s.LnNum 'Missed semicolon'>
+            t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
+            (e.Sentences ((e.Pattern) (e.Result)))
+            (TkCloseBlock s.LnNum) e.Tokens;
+
+          (e.Pattern)
+          (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
+          (e.Result) t.Unexpected e.Tokens^ =
+            (e.Functions)
+            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+            t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
+            (e.Sentences ((e.Pattern) (e.Result)))
+            t.Unexpected e.Tokens;
         }
       >
     >;
@@ -835,7 +859,7 @@ StrFromBracket {
 }
 
 //FROM Context
-$EXTERN Cntx-CheckVariable, Cntx-ResetAfterSentence;
+$EXTERN Cntx-CheckVariable;
 
 $FORWARD CheckUseVariable, ParseResult-Block;
 
@@ -1040,42 +1064,9 @@ ParseResult {
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  () (e.Result) (TkSemicolon s.LnNum) e.Tail =
-    (e.Functions) t.ErrorList t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Result)
-    e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  () (e.Result) (TkCloseBlock s.LnNum) e.Tail =
-    (e.Functions)
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Missed semicolon'
-    >
-    t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Result)
-    (TkCloseBlock s.LnNum) e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  () (e.Result) (TkEOF s.LnNum) e.Tail =
-    (e.Functions)
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Unexpected EOF'
-    >
-    t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Result)
-    (TkCloseBlock s.LnNum) (TkEOF s.LnNum) e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  () (e.Scanned) t.Unexpected e.Tail =
-    <ParseResult
-      (e.Functions)
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'pattern or result term'>
-      t.SymTable t.Context
-      () (e.Scanned) e.Tail
-    >;
+  () (e.Result) e.Tail =
+    (e.Functions) t.ErrorList t.SymTable t.Context
+    (e.Result) e.Tail;
 }
 
 $LABEL CExistVariable, CNotFound;
