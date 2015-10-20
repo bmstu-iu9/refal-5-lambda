@@ -1,3 +1,4 @@
+#include <exception>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -560,9 +561,10 @@ bool equal_expressions(
   for(
     /* Пользуемся аргументами функции, инициализация не нужна */;
     // Порядок условий важен
-    !empty_seq( first1, last1 ) && ! empty_seq( first2, last2 )
+    ! refalrts::empty_seq( first1, last1 )
+      && ! refalrts::empty_seq( first2, last2 )
       && equal_nodes( first1, first2 );
-    move_left( first1, last1 ), move_left( first2, last2 )
+    refalrts::move_left( first1, last1 ), refalrts::move_left( first2, last2 )
   ) {
     continue;
   }
@@ -573,7 +575,9 @@ bool equal_expressions(
   */
 
   // Успешное завершение -- если мы достигли конца в обоих выражениях
-  if( empty_seq( first1, last1 ) && empty_seq( first2, last2 ) ) {
+  if(
+    refalrts::empty_seq( first1, last1 ) && refalrts::empty_seq( first2, last2 )
+  ) {
     return true;
   } else {
     // Любое другое завершение цикла свидетельствует о несовпадении
@@ -916,7 +920,7 @@ bool copy_nonempty_evar(
   refalrts::Iter prev_res_begin =
     prev( refalrts::allocator::free_ptr() );
 
-  while( ! empty_seq( evar_b_sample, evar_e_sample ) ) {
+  while( ! refalrts::empty_seq( evar_b_sample, evar_e_sample ) ) {
     if( ! copy_node( res, evar_b_sample ) ) {
       return false;
     }
@@ -929,10 +933,10 @@ bool copy_nonempty_evar(
 
       refalrts::Iter open_cobracket = bracket_stack;
       bracket_stack = bracket_stack->link_info;
-      link_brackets( open_cobracket, res );
+      refalrts::link_brackets( open_cobracket, res );
     }
 
-    move_left( evar_b_sample, evar_e_sample );
+    refalrts::move_left( evar_b_sample, evar_e_sample );
   }
 
   assert( bracket_stack == 0 );
@@ -1211,7 +1215,7 @@ refalrts::Iter list_splice(
   VALID_LINKED( end );
   VALID_LINKED( end->prev );
 
-  if( (res == begin) || empty_seq( begin, end ) ) {
+  if( (res == begin) || refalrts::empty_seq( begin, end ) ) {
 
     // Цель достигнута сама по себе
     return res;
@@ -1447,7 +1451,6 @@ extern refalrts::Node g_last_marker;
 refalrts::Node g_first_marker = { 0, & g_last_marker, refalrts::cDataIllegal };
 refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 
-const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
 namespace pool {
@@ -1556,11 +1559,11 @@ void refalrts::allocator::free_memory() {
 #ifndef DONT_PRINT_STATISTICS
   fprintf(
     stderr,
-    "Memory used %d nodes, %d * %d = %d bytes\n",
+    "Memory used %d nodes, %d * %lu = %lu bytes\n",
     g_memory_use,
     g_memory_use,
-    sizeof(Node),
-    g_memory_use * sizeof(Node)
+    static_cast<unsigned long>(sizeof(Node)),
+    static_cast<unsigned long>(g_memory_use * sizeof(Node))
   );
 #endif // DONT_PRINT_STATISTICS
 }
@@ -1981,7 +1984,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataNumber:
-            fprintf( output, "%d ", begin->number_info );
+            fprintf( output, "%ld ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
@@ -2069,7 +2072,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosureHead:
-            fprintf( output, "[%d] ", begin->number_info );
+            fprintf( output, "[%ld] ", begin->number_info );
             refalrts::move_left( begin, end );
             continue;
 
@@ -2432,12 +2435,15 @@ int main(int argc, char **argv) {
     res = refalrts::vm::main_loop();
     fflush(stderr);
     fflush(stdout);
-  } catch ( refalrts::UnexpectedTypeException ) {
+  } catch (refalrts::UnexpectedTypeException) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
     return 3;
+  } catch (std::exception& e) {
+    fprintf(stderr, "INTERNAL ERROR: std::exception %s\n", e.what());
+    return 4;
   } catch (...) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
-    return 4;
+    return 5;
   }
 
   refalrts::profiler::end_profiler();
