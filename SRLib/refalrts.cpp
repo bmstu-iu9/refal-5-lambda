@@ -550,6 +550,21 @@ bool equal_nodes(
   }
 }
 
+} // unnamed namespace
+
+namespace refalrts {
+
+namespace profiler {
+
+void add_match_repeated_tvar_time(clock_t duration);
+void add_match_repeated_evar_time(clock_t duration);
+
+}
+
+}
+
+namespace {
+
 bool equal_expressions(
   refalrts::Iter first1, refalrts::Iter last1,
   refalrts::Iter first2, refalrts::Iter last2
@@ -557,6 +572,8 @@ bool equal_expressions(
 {
   assert( (first1 == 0) == (last1 == 0) );
   assert( (first2 == 0) == (last2 == 0) );
+
+  clock_t start_match = clock();
 
   for(
     /* Пользуемся аргументами функции, инициализация не нужна */;
@@ -573,6 +590,8 @@ bool equal_expressions(
     Здесь empty_seq( first1, last1 ) || empty_seq( first2, last2 )
       || !equal_nodes( first1, first2 )
   */
+
+  refalrts::profiler::add_match_repeated_tvar_time(clock() - start_match);
 
   // Успешное завершение -- если мы достигли конца в обоих выражениях
   if(
@@ -596,7 +615,9 @@ bool refalrts::repeated_stvar_left(
   refalrts::Iter left_term = 0;
   refalrts::Iter copy_last = last;
 
-  if( tvar_left( left_term, first, last ) ) {
+  if( ! is_open_bracket( stvar_sample ) && svar_left( stvar, first, last ) ) {
+    return equal_nodes( stvar, stvar_sample );
+  } else if( tvar_left( left_term, first, last ) ) {
     refalrts::Iter left_term_e;
     refalrts::Iter stvar_sample_e;
 
@@ -638,7 +659,9 @@ bool refalrts::repeated_stvar_right(
   refalrts::Iter right_term = 0;
   refalrts::Iter old_last = last;
 
-  if( tvar_right( right_term, first, last ) ) {
+  if( ! is_open_bracket( stvar_sample ) && svar_right( stvar, first, last ) ) {
+    return equal_nodes( stvar, stvar_sample );
+  } else if( tvar_right( right_term, first, last ) ) {
     refalrts::Iter right_term_e = old_last;
     refalrts::Iter stvar_sample_e;
 
@@ -670,6 +693,7 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  clock_t start_match = clock();
   refalrts::Iter current = first;
   refalrts::Iter cur_sample = evar_b_sample;
   refalrts::Iter copy_last = last;
@@ -684,6 +708,8 @@ bool refalrts::repeated_evar_left(
   ) {
     continue;
   }
+
+  refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
     Здесь empty_seq( current, copy_last )
@@ -717,6 +743,7 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  clock_t start_match = clock();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
   refalrts::Iter copy_first = first;
@@ -731,6 +758,8 @@ bool refalrts::repeated_evar_right(
   ) {
     continue;
   }
+
+  refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
     Здесь empty_seq( copy_first, current )
@@ -906,6 +935,12 @@ void make_dump( refalrts::Iter begin, refalrts::Iter end );
 
 } // namespace vm
 
+namespace profiler {
+
+void add_copy_tevar_time(clock_t duration);
+
+} // namespace profiler
+
 } // namespace refalrts
 
 namespace {
@@ -914,6 +949,8 @@ bool copy_nonempty_evar(
   refalrts::Iter& evar_res_b, refalrts::Iter& evar_res_e,
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample
 ) {
+  clock_t start_copy_time = clock();
+
   refalrts::Iter res = 0;
   refalrts::Iter bracket_stack = 0;
 
@@ -943,6 +980,9 @@ bool copy_nonempty_evar(
 
   evar_res_b = next( prev_res_begin );
   evar_res_e = res;
+
+  refalrts::profiler::add_copy_tevar_time(clock() - start_copy_time);
+
   return true;
 }
 
@@ -966,17 +1006,15 @@ bool refalrts::copy_evar(
 bool refalrts::copy_stvar(
   refalrts::Iter& stvar_res, refalrts::Iter stvar_sample
 ) {
-  refalrts::Iter end_of_sample;
   if( is_open_bracket( stvar_sample ) ) {
-    end_of_sample = stvar_sample->link_info;
+    refalrts::Iter end_of_sample = stvar_sample->link_info;
+    refalrts::Iter end_of_res;
+    return copy_evar(
+      stvar_res, end_of_res, stvar_sample, end_of_sample
+    );
   } else {
-    end_of_sample = stvar_sample;
+    return copy_node(stvar_res, stvar_sample);
   }
-
-  refalrts::Iter end_of_res;
-  return copy_evar(
-    stvar_res, end_of_res, stvar_sample, end_of_sample
-  );
 }
 
 bool refalrts::alloc_copy_evar(
@@ -1400,6 +1438,9 @@ namespace refalrts {
 namespace profiler {
 
 extern void start_generated_function();
+extern void read_counters(unsigned long counters[]);
+extern void start_e_loop();
+extern void stop_e_loop();
 
 } // namespace profiler
 
@@ -1407,6 +1448,22 @@ extern void start_generated_function();
 
 void refalrts::this_is_generated_function() {
   refalrts::profiler::start_generated_function();
+}
+
+unsigned long refalrts::ticks_per_second() {
+  return CLOCKS_PER_SEC;
+}
+
+void refalrts::read_performance_counters(unsigned long counters[]) {
+  refalrts::profiler::read_counters(counters);
+}
+
+void refalrts::start_sentence() {
+  refalrts::profiler::stop_e_loop();
+}
+
+void refalrts::start_e_loop() {
+  refalrts::profiler::start_e_loop();
 }
 
 //------------------------------------------------------------------------------
@@ -1611,13 +1668,36 @@ clock_t g_start_pattern_match_time;
 clock_t g_total_pattern_match_time;
 clock_t g_start_building_result_time;
 clock_t g_total_building_result_time;
+clock_t g_total_copy_tevar_time;
+clock_t g_total_match_repeated_tvar_time;
+clock_t g_total_match_repeated_evar_time;
+clock_t g_start_e_loop;
+clock_t g_total_e_loop;
+clock_t g_total_match_repeated_tvar_time_outside_e;
+clock_t g_total_match_repeated_evar_time_outside_e;
 
 bool g_in_generated;
+int g_in_e_loop;
 
 void start_profiler();
 void end_profiler();
 void start_generated_function();
 void after_step();
+void read_counters(unsigned long counters[]);
+void add_copy_tevar_time(clock_t duration);
+void add_match_repeated_tvar_time(clock_t duration);
+void add_match_repeated_evar_time(clock_t duration);
+void start_e_loop();
+void stop_e_loop();
+
+#ifndef DONT_PRINT_STATISTICS
+struct TimeItem {
+  const char *name;
+  unsigned long counter;
+};
+
+int reverse_compare(const void *left_void, const void *right_void);
+#endif // DONT_PRINT_STATISTICS
 
 } // namespace profiler
 
@@ -1630,17 +1710,20 @@ void refalrts::profiler::start_profiler() {
 
 #ifndef DONT_PRINT_STATISTICS
 
-namespace {
+int refalrts::profiler::reverse_compare(
+  const void *left_void, const void *right_void
+) {
+  const TimeItem *left = static_cast<const TimeItem *>(left_void);
+  const TimeItem *right = static_cast<const TimeItem *>(right_void);
 
-inline double divide(double numerator, double denominator) {
-  if (denominator != 0.0) {
-    return numerator / denominator;
+  if (left->counter > right->counter) {
+    return -1;
+  } else if (left->counter < right->counter) {
+    return +1;
   } else {
-    return 0.0;
+    return 0;
   }
 }
-
-} // безымянное namespace
 
 #endif // DONT_PRINT_STATISTICS
 
@@ -1648,42 +1731,58 @@ void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
 #ifndef DONT_PRINT_STATISTICS
 
-  const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
+  unsigned long counters[cPerformanceCounter_COUNTERS_NUMBER];
+  read_counters(counters);
 
-  double full_time =
-    (clock() - g_start_program_time) / cfCLOCKS_PER_SEC;
-  double pattern_time = g_total_pattern_match_time / cfCLOCKS_PER_SEC;
-  double result_time = g_total_building_result_time / cfCLOCKS_PER_SEC;
-  double refal_time = pattern_time + result_time;
-  double io_time = full_time - refal_time;
+  TimeItem items[] = {
+    { "\nTotal program time", cPerformanceCounter_TotalTime },
+    { "Builtin time", cPerformanceCounter_BuiltInTime },
+    { "(Total refal time)", cPerformanceCounter_RefalTime },
+    { "Linear pattern time", cPerformanceCounter_LinearPatternTime },
+    { "Linear result time", cPerformanceCounter_LinearResultTime },
+    { "Open e-loop time (clear)", cPerformanceCounter_OpenELoopTimeClear },
+    {
+      "Repeated e-var match time (inside e-loops)",
+      cPerformanceCounter_RepeatEvarMatchTime
+    },
+    {
+      "Repeated e-var match time (outside e-loops)",
+      cPerformanceCounter_RepeatEvarMatchTimeOutsideECycle
+    },
+    {
+      "Repeated t-var match time (inside e-loops)",
+      cPerformanceCounter_RepeatTvarMatchTime
+    },
+    {
+      "Repeated t-var match time (outside e-loops)",
+      cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle
+    },
+    { "t- and e-var copy time", cPerformanceCounter_TEvarCopyTime }
+  };
 
-  double pattern_percent = 100 * divide(pattern_time, refal_time);
-  double pattern_clear_percent = 100 * divide(pattern_time, full_time);
-  double result_percent = 100 * divide(result_time, refal_time);
-  double result_clear_percent = 100 * divide(result_time, full_time);
-  double refal_persent = 100 * divide(refal_time, full_time);
+  enum { nItems = sizeof(items) / sizeof(items[0]) };
 
-  fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
-  fprintf(
-    stderr,
-    "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "p/r = %.2f.\n", pattern_time, pattern_percent,
-    pattern_clear_percent, divide(pattern_time, result_time)
-  );
-  fprintf(
-    stderr,
-    "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "r/p = %.2f.\n", result_time, result_percent,
-    result_clear_percent, divide(result_time, pattern_time)
-  );
-  fprintf(
-    stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
-    refal_time, refal_persent
-  );
-  fprintf(
-    stderr, "Builtin time: %.3f seconds (%1.1f%%).\n",
-    io_time, 100.0 - refal_persent
-  );
+  for (size_t i = 0; i < nItems; ++i) {
+    items[i].counter = counters[items[i].counter];
+  }
+
+  qsort(items, nItems, sizeof(items[0]), reverse_compare);
+
+  const double cfSECS_PER_CLOCK = 1.0 / CLOCKS_PER_SEC;
+  unsigned long total = counters[refalrts::cPerformanceCounter_TotalTime];
+
+  for (size_t i = 0; i < nItems; ++i) {
+    unsigned long value = items[i].counter;
+
+    if (value > 0) {
+      double percent = (total != 0) ? 100.0 * value / total : 0.0;
+      fprintf(
+        stderr, "%s: %.3f seconds (%.1f %%).\n",
+        items[i].name, value * cfSECS_PER_CLOCK, percent
+      );
+    }
+  }
+
 #endif // DONT_PRINT_STATISTICS
 }
 
@@ -1698,6 +1797,8 @@ void refalrts::profiler::start_building_result() {
     clock_t pattern_match =
       g_start_building_result_time - g_start_pattern_match_time;
     g_total_pattern_match_time += pattern_match;
+
+    stop_e_loop();
   }
 }
 
@@ -1707,7 +1808,94 @@ void refalrts::profiler::after_step() {
     g_total_building_result_time += building_result;
   }
 
+  assert(g_in_e_loop == 0);
+
   g_in_generated = false;
+  g_in_e_loop = 0;
+}
+
+namespace refalrts {
+
+namespace vm {
+
+extern unsigned g_step_counter;
+
+} // namespace vm
+
+} // namespace refalrts
+
+void refalrts::profiler::read_counters(unsigned long counters[]) {
+  clock_t full_time = clock() - g_start_program_time;
+  clock_t refal_time =
+    g_total_pattern_match_time + g_total_building_result_time;
+  clock_t pattern_time = g_total_pattern_match_time;
+  clock_t result_time = g_total_building_result_time;
+  counters[cPerformanceCounter_TotalTime] = full_time;
+  counters[cPerformanceCounter_BuiltInTime] = full_time - refal_time;
+  counters[cPerformanceCounter_RefalTime] = refal_time;
+  counters[cPerformanceCounter_PatternMatchTime] = pattern_time;
+  counters[cPerformanceCounter_BuildResultTime] = result_time;
+  counters[cPerformanceCounter_TotalSteps] = ::refalrts::vm::g_step_counter;
+  counters[cPerformanceCounter_HeapSize] =
+    static_cast<unsigned long>(
+      ::refalrts::allocator::g_memory_use * sizeof(Node)
+    );
+  counters[cPerformanceCounter_TEvarCopyTime] = g_total_copy_tevar_time;
+  refal_time -= g_total_copy_tevar_time;
+  result_time -= g_total_copy_tevar_time;
+  counters[cPerformanceCounter_RepeatTvarMatchTime] =
+    g_total_match_repeated_tvar_time;
+  counters[cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle] =
+    g_total_match_repeated_tvar_time_outside_e;
+  refal_time -= g_total_match_repeated_tvar_time_outside_e;
+  pattern_time -= g_total_match_repeated_tvar_time_outside_e;
+  counters[cPerformanceCounter_RepeatEvarMatchTime] =
+    g_total_match_repeated_evar_time;
+  counters[cPerformanceCounter_RepeatEvarMatchTimeOutsideECycle] =
+    g_total_match_repeated_evar_time_outside_e;
+  refal_time -= g_total_match_repeated_evar_time_outside_e;
+  pattern_time -= g_total_match_repeated_evar_time_outside_e;
+  counters[cPerformanceCounter_OpenELoopTime] = g_total_e_loop;
+  refal_time -= g_total_e_loop;
+  pattern_time -= g_total_e_loop;
+  counters[cPerformanceCounter_OpenELoopTimeClear] = g_total_e_loop
+    - (g_total_match_repeated_tvar_time + g_total_match_repeated_evar_time);
+  counters[cPerformanceCounter_LinearRefalTime] = refal_time;
+  counters[cPerformanceCounter_LinearPatternTime] = pattern_time;
+  counters[cPerformanceCounter_LinearResultTime] = result_time;
+}
+
+void refalrts::profiler::add_copy_tevar_time(clock_t duration) {
+  g_total_copy_tevar_time += duration;
+}
+
+void refalrts::profiler::add_match_repeated_tvar_time(clock_t duration) {
+  if (g_in_e_loop) {
+    g_total_match_repeated_tvar_time += duration;
+  } else {
+    g_total_match_repeated_tvar_time_outside_e += duration;
+  }
+}
+
+void refalrts::profiler::add_match_repeated_evar_time(clock_t duration) {
+  if (g_in_e_loop) {
+    g_total_match_repeated_evar_time += duration;
+  } else {
+    g_total_match_repeated_evar_time_outside_e += duration;
+  }
+}
+
+void refalrts::profiler::start_e_loop() {
+  if (g_in_e_loop++ == 0) {
+    g_start_e_loop = clock();
+  }
+}
+
+void refalrts::profiler::stop_e_loop() {
+  if (g_in_e_loop > 0) {
+    g_total_e_loop += (clock() - g_start_e_loop);
+    g_in_e_loop = 0;
+  }
 }
 
 //==============================================================================

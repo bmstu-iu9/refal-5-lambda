@@ -224,6 +224,32 @@ extern void swap_save( Iter head, Iter first, Iter last );
 // Профилирование
 
 extern void this_is_generated_function();
+extern void start_sentence();
+extern void start_e_loop();
+
+enum PerformanceCounters {
+  cPerformanceCounter_TotalTime,
+  cPerformanceCounter_BuiltInTime,
+  cPerformanceCounter_RefalTime,
+  cPerformanceCounter_PatternMatchTime,
+  cPerformanceCounter_BuildResultTime,
+  cPerformanceCounter_TotalSteps,
+  cPerformanceCounter_HeapSize,
+  cPerformanceCounter_TEvarCopyTime,
+  cPerformanceCounter_RepeatTvarMatchTime,
+  cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle,
+  cPerformanceCounter_RepeatEvarMatchTime,
+  cPerformanceCounter_RepeatEvarMatchTimeOutsideECycle,
+  cPerformanceCounter_OpenELoopTime,
+  cPerformanceCounter_OpenELoopTimeClear,
+  cPerformanceCounter_LinearRefalTime,
+  cPerformanceCounter_LinearPatternTime,
+  cPerformanceCounter_LinearResultTime,
+  cPerformanceCounter_COUNTERS_NUMBER
+};
+
+extern unsigned long ticks_per_second();
+extern void read_performance_counters(unsigned long counters[]);
 
 // Прочие функции
 
