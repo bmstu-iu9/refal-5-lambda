@@ -292,7 +292,7 @@ CharRep {
   s.Char
     , <Ord s.Char>: s.Ord
     , <Compare s.Ord 32>: '-'
-    = '\\x' <HexDigit </ s.Ord 16> <% s.Ord 16>>;
+    = '\\x' <HexDigit </ s.Ord 16>> <HexDigit <% s.Ord 16>>;
 
   s.Char = s.Char;
 }

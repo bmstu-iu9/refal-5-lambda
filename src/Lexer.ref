@@ -281,8 +281,8 @@ HexDigit {
   s.Digit, <Type s.Digit>:
     {
       'D0' s.Digit = <Numb s.Digit>;
-      'Lu' s.Digit = <DoHexDigit ('ABCDEF') 10 s.Digit>;
-      'Ll' s.Digit = <DoHexDigit ('abcdef') 10 s.Digit>;
+      'Lu' s.Digit = <DoHexDigit 'ABCDEF' 10 s.Digit>;
+      'Ll' s.Digit = <DoHexDigit 'abcdef' 10 s.Digit>;
 
       s.Other = /* пусто */;
     };
