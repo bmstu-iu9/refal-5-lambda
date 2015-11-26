@@ -1,0 +1,46 @@
+New interpret engine...
+debug: set bound to <0x815018, 0x815068>
+debug: bound move left
+debug: bound <0x815040, 0x815068>
+debug: bound move left
+debug: bound <0x815040, 0x815040>
+debug: bound move left
+debug: bound <0x815040, 0x815068>
+debug: bound move left
+debug: bound <(nil), (nil)>
+debug: bound move left
+debug: bound <(nil), (nil)>
+debug: bound move left
+debug: bound <0x815068, 0x815068>
+debug: bound move left
+debug: bound <(nil), (nil)>
+debug: bound move left
+debug: bound <(nil), (nil)>
+debug: icEmpty: 0
+New interpret engine...
+debug: set bound to <0x815090, 0x815388>
+debug: bound move left
+debug: bound <0x8150b8, 0x815388>
+debug: bound move left
+debug: bound <0x8150b8, 0x815360>
+debug: bound move left
+debug: bound <0x8150b8, 0x815388>
+debug: bound move left
+debug: bound <0x8150e0, 0x815360>
+debug: bound move left
+debug: bound <0x8150e0, 0x815338>
+debug: bound move left
+debug: bound <0x8150e0, 0x815388>
+debug: bound move left
+debug: bound <0x8150e0, 0x815310>
+debug: bound move left
+debug: bound <0x815108, 0x815388>
+debug: icBracketLeft
+debug: n, m <0x7ffc78eedad0, 0x7ffc78eedad0>
+debug: icBracketLeft
+debug: n, m <0x7ffc78eedad0, 0x7ffc78eedad0>
+debug: icEmpty: 0
+debug: icCopyEVar: alloc 0
+debug: icCopyEVar: alloc 2
+
+
