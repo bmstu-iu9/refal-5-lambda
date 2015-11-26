@@ -1,13 +1,17 @@
 #ifndef RefalRTS_H_
 #define RefalRTS_H_
 
+#include <stdio.h>
+//for debug only
+
 namespace refalrts {
 
 typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
-  cExit = 3
+  cExit = 3,
+  cEndErr = 4
 } FnResult;
 
 typedef struct Node Node;
@@ -69,6 +73,9 @@ typedef struct Node {
   };
 } Node;
 
+
+
+
 typedef enum iCmd {
   icChar,
   icInt,
@@ -80,7 +87,43 @@ typedef enum iCmd {
   icSpliceEVar,
   icCopySTVar,
   icCopyEVar,
-  icEnd
+  icEnd,
+  icBoundSet,
+  icBoundMoveLeft,
+  icBoundMoveRight,
+  icBoundEmptySeq,
+  icBracketLeft,
+  icBracketRight,
+  icEmpty,
+  icMoveLeft,
+  icMoveRight,
+  icEPush,
+  icContextSet,
+  icsVarRight,
+  icsVarLeft,
+  ictVarRight,
+  ictVarLeft,
+  icNumRight,
+  icNumLeft,
+  icIdentRight,
+  icIdentLeft,
+  icADTRight,
+  icADTLeft,
+  icPushFPtr,
+  icFuncRight,
+  icFuncLeft,
+  icCharRight,
+  icCharLeft,
+  iceRepeatRight,
+  iceRepeatLeft,
+  icsRepeatRight,
+  icsRepeatLeft,
+  ictRepeatRight,
+  ictRepeatLeft,
+  icSave,
+  icEStart,
+  icEStop,
+  icBreak
 } iCmd;
 
 typedef enum BracketType {
@@ -100,6 +143,8 @@ typedef struct ResultAction {
 } ResultAction;
 
 extern void use( Iter& );
+
+void zeros( Iter context[], int size );
 
 // Операции распознавания образца
 
@@ -281,6 +326,17 @@ extern FnResult interpret_array(
   Iter allocs[],
   Iter begin,
   Iter end
+);
+
+// extended interpret_array by rigth part
+
+extern FnResult new_interpret_array(
+  ResultAction raa[],
+  Iter allocs[],
+  Iter context[],
+  Iter begin,
+  Iter end,
+	unsigned long context_size
 );
 
 } //namespace refalrts

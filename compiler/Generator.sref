@@ -137,7 +137,15 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdComment, CmdSave,
   CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
   CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
-  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+  CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy, CmdIssueMem,
+  CmdSetBound, CmdBoundToLeft, CmdBoundToRight,
+  CmdBoundEmptySeq,
+  CmdiMoveLeft, CmdiMoveRigth,
+  CmdiContextSet, CmdiVar,
+  CmdiNum, CmdiIdent, CmdiADT,
+  CmdiName, CmdiChar, CmdiRepeat,
+  CmdiSave, CmdiEStart, CmdiEStop,
+  CmdiBracket, CmdiEmpty;
 
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
 
@@ -147,14 +155,19 @@ $EXTERN Map, MapReduce, Fetch;
 //FROM Library
 $EXTERN StrFromInt, WriteLine;
 
+$FORWARD GenBracketName;
+
 $ENTRY GenSentence {
   e.Algorithm =
     ('  do {')
     ('    refalrts::Iter ' <BracketsVar-B 0> ' = arg_begin;')
     ('    refalrts::Iter ' <BracketsVar-E 0> ' = arg_end;')
+    //('#ifndef INTERPRET')
     ('    refalrts::move_left( ' <BracketsVars 0> ' );')
     ('    refalrts::move_left( ' <BracketsVars 0> ' );')
     ('    refalrts::move_right( ' <BracketsVars 0> ' );')
+    //('#endif')
+    ('    //debug ?!')
     <Fetch
       <MapReduce GenCommand ('    ' /* отступ */) e.Algorithm>
       {
@@ -178,6 +191,12 @@ BracketsVar-E {
 BracketsVars {
   s.BracketNumber =
     <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>;
+}
+
+GenBracketName {
+  s.Number =
+    '__bracket_' s.Number
+  ;
 }
 
 /*
@@ -207,75 +226,194 @@ PrintName {
   e.Name = e.Name;
 }
 
+PrintDebug {
+  s.Usings s.Mode e.Index s.Depth =
+    'varInfo:: ' 'Mode[' s.Mode '] Index ['e.Index '] Depth[' <StrFromInt s.Depth> '] Usings[' <StrFromInt s.Usings> ']';
+}
+
+
+PrintVarShortcut {
+  s.Usings s.Mode e.Index s.Depth =
+    '__' s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
+}
+
+PrintLocFromShortcut {
+  s.Usings 'e' e.Index s.Depth = 'context[' <PrintVarShortcut s.Usings 'e' e.Index s.Depth> '], '
+                                 'context[' <PrintVarShortcut s.Usings 'e' e.Index s.Depth> ' + 1]';
+  s.Usings s.Mode e.Index s.Depth = 'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';                             
+}
+
+PrintELocShortcut-B {
+  s.Usings s.Mode e.Index s.Depth =
+    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
+}
+
+PrintELocShortcut-E {
+  s.Usings s.Mode e.Index s.Depth =
+    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ' + 1]';
+}
+
+PrintConstShortcutDecl {
+  s.Number e.VarInfo =
+    'const int ' <PrintVarShortcut e.VarInfo> ' = '
+    <StrFromInt s.Number> ';'
+  ;
+}
+
+PrintBracketsVarInit {
+  e.Indent s.InnerBrackets = 
+    (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
+    (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    ;
+}
+
+PrintDirection {
+  AlgLeft = 'Left';
+  AlgRight = 'Right';
+}
+
+PrintRepeatInterp {
+  (e.Indent) s.Direction s.BracketNumber s.Usings s.Mode e.Index =
+    (e.Indent '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
+              '(void*)' <PrintVarShortcut s.Usings s.Mode e.Index> ', '
+              '(void*)' <PrintVarShortcut <Dec s.Usings> s.Mode e.Index> ', 0},' 
+    )
+
+    ;
+}
+
 GenCommand {
   (e.Indent) (CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
-  (e.Indent) (CmdDeclareEVar e.VarInfo) =
+  (e.Indent) (CmdDeclareEVar s.Number e.VarInfo) =
     (e.Indent)
+    (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
     (e.Indent 'static refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
-    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';');
+    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';')
+    (e.Indent) (e.Indent '//' 'debug ::' <PrintDebug e.VarInfo>)
+    ;
 
-  (e.Indent) (CmdDeclareVar e.VarInfo) =
+  (e.Indent) (CmdDeclareVar s.Number e.VarInfo) =
     (e.Indent)
-    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';');
+    (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
+    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';')
+    (e.Indent) (e.Indent '//' 'debug ::' <PrintDebug e.VarInfo>)
+    ;
 
   (e.Indent) (CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
-    <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdNumber s.Direction s.BracketNumber s.Number) =
     (e.Indent)
-    <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdName s.Direction s.BracketNumber e.Name) =
     (e.Indent)
-    <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdIdent s.Direction s.BracketNumber e.Name) =
     (e.Indent)
-    <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
-    (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
-    <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>;
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    // (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
+    // (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
-    (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    (e.Indent)
+    // (e.Indent 'refalrts::Iter ' <BracketsVar-B s.InnerBrackets> ' = 0;')
+    // (e.Indent 'refalrts::Iter ' <BracketsVar-E s.InnerBrackets> ' = 0;')
+    (e.Indent '#ifndef INTERPRET')
     <PrintMatchADT
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
-    >;
+    >
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
-    <PrintMatchEmpty (e.Indent) s.BracketNumber>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchEmpty (e.Indent) s.BracketNumber>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
     (e.Indent)
-    <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode e.Info>;
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode e.Info>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
     (e.Indent)
-    <PrintMatchRepeated (e.Indent) s.Direction s.BracketNumber e.VarInfo>;
+    // in progress
+    (e.Indent '#ifndef INTERPRET')
+    <PrintMatchRepeated (e.Indent) s.Direction s.BracketNumber e.VarInfo>
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdClosedE AlgLeft s.BracketNumber 'e' e.Index) =
     (e.Indent)
+    (e.Indent '#ifndef INTERPRET')
     (e.Indent
       <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
     )
     (e.Indent
       <PrintEVar-E 1 'e' e.Index> ' = ' <BracketsVar-E s.BracketNumber> ';'
-    );
+    )
+    (e.Indent '#endif')
+    //new
+    // (e.Indent
+    //   <PrintELocShortcut-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
+    // )
+    // (e.Indent
+    //   <PrintELocShortcut-E 1 'e' e.Index> ' = ' <BracketsVar-E s.BracketNumber> ';'
+    // )
+    // brackets level
+    // (e.Indent
+    //   'const int ' <GenBracketName s.BracketNumber> ' = '
+    //   <PrintVarShortcut 1 'e' e.Index> ';'
+    // )
+    ;
+
+  (e.Indent) (CmdiContextSet s.BracketNumber 'e' e.Index) = 
+    (e.Indent)
+    (e.Indent '{refalrts::icContextSet, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', '
+              <PrintVarShortcut 1 'e' e.Index>
+              '},'
+    )
+    ;
 
   (e.Indent)
   (CmdOpenedE-Start AlgLeft s.BracketNumber 'e' e.Index) =
     (e.Indent '  ')
     (e.Indent <PrintEVar-B 1 'e' e.Index> ' = 0;')
     (e.Indent <PrintEVar-E 1 'e' e.Index> ' = 0;')
-    (e.Indent 'do {');
+    (e.Indent 'do {')
+    ;
 
   (e.Indent '  ')
   (CmdOpenedE-End AlgLeft s.BracketNumber 'e' e.Index) =
@@ -284,10 +422,12 @@ GenCommand {
       '} while ( refalrts::open_evar_advance( '
       <PrintEVars 1 'e' e.Index> ', ' <BracketsVars s.BracketNumber>
       ' ) );'
-    );
+    )
+    ;
 
   (e.Indent) (CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (e.Indent)
+    (e.Indent '#ifndef INTERPRET')
     (e.Indent
       'refalrts::Iter ' <BracketsVar-B s.NewBracketNumber>
       ' = ' <BracketsVar-B s.OldBracketNumber> ';'
@@ -295,7 +435,18 @@ GenCommand {
     (e.Indent
       'refalrts::Iter ' <BracketsVar-E s.NewBracketNumber>
       ' = ' <BracketsVar-E s.OldBracketNumber> ';'
-    );
+    )
+    (e.Indent '#else')
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-B s.NewBracketNumber>
+      ' = 0;'
+    )
+    (e.Indent
+      'refalrts::Iter ' <BracketsVar-E s.NewBracketNumber>
+      ' = 0;'
+    )
+    (e.Indent '#endif')
+    ;
 
   (e.Indent) (CmdEmptyResult) =
     (e.Indent)
@@ -362,6 +513,18 @@ GenCommand {
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     (e.Indent 'return refalrts::cSuccess;');
 
+  (e.Indent) (CmdIssueMem 0) =
+    (e.Indent) (e.Indent '// Warning - storage with 0 elems!')
+    (e.Indent) (e.Indent 'refalrts::Iter context[1];')
+    ;
+
+  (e.Indent) (CmdIssueMem s.Number) =
+    (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
+    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
+    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ');')
+    //(e.Indent) (e.Indent 'for (int i = 0; i < ' <StrFromInt s.Number> '; i++){ printf("context = %p\\n", context[i]);}')
+    ;
+
   (e.Indent) (CmdIfDef) =
     (e.Indent) ('#ifdef INTERPRET');
 
@@ -371,9 +534,137 @@ GenCommand {
   (e.Indent) (CmdEndIf) = 
     (e.Indent) ('#endif');
 
+  (e.Indent) (CmdSetBound) =
+    (e.Indent)
+    (e.Indent '{refalrts::icBoundSet, arg_begin, arg_end, 0},')
+    ;
+
+  (e.Indent) (CmdiMoveRigth s.Num) =
+    (e.Indent)
+    (e.Indent '{refalrts::icMoveRight, '
+              '&' <BracketsVar-B s.Num> ', '
+              '&' <BracketsVar-E s.Num> ', 0},'
+    )
+    ;
+
+  (e.Indent) (CmdiMoveLeft s.Num) =
+    (e.Indent)
+    (e.Indent '{refalrts::icMoveLeft, '
+              '&' <BracketsVar-B s.Num> ', '
+              '&' <BracketsVar-E s.Num> ', 0},'
+    )
+    ;
+
+  (e.Indent) (CmdiRepeat s.Direction s.BracketNumber e.VarInfo) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},' 
+    )
+    <PrintRepeatInterp (e.Indent) s.Direction s.BracketNumber e.VarInfo>
+    ;
+
+  (e.Indent) (CmdiEStop) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEStop, 0, 0, 0},')
+    ;
+
+  (e.Indent) (CmdiEStart s.BracketNumber 'e' e.Index) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},'
+    )
+    (e.Indent '{refalrts::icEStart, 0, 0, '
+              <PrintVarShortcut 1 'e' e.Index>
+              '},'
+    )
+    ;
+
+  (e.Indent) (CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},' 
+    )
+    (e.Indent '{refalrts::icPushFPtr, '
+              '(void*)&' e.Name ', 0, 0},' 
+    )
+    (e.Indent '{refalrts::icADT' <PrintDirection s.Direction> ', '
+              '&' <BracketsVar-B s.InnerBrackets> ', '
+              '&' <BracketsVar-E s.InnerBrackets> ', 0},' 
+    )
+    ;
+
+  (e.Indent) (CmdiSave s.OldBracketNumber s.NewBracketNumber) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.OldBracketNumber> ', '
+              '&' <BracketsVar-E s.OldBracketNumber> ', 0},' 
+    )
+    (e.Indent '{refalrts::icSave, '
+              '(void*)&' <BracketsVar-B s.NewBracketNumber> ', '
+              '(void*)&' <BracketsVar-E s.NewBracketNumber> ', 0},' 
+    )
+    ;
+
+  (e.Indent) (CmdiChar s.Direction s.BracketNumber s.Char) =
+    (e.Indent)
+    (e.Indent '{refalrts::icChar' <PrintDirection s.Direction> ', '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', (int)' '' <Escape s.Char> '' '},' 
+    )
+    ;
+
+  (e.Indent) (CmdiVar s.Direction s.BracketNumber s.Mode e.Info) = 
+    (e.Indent)
+    (e.Indent '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction>
+              ', &' <BracketsVar-B s.BracketNumber>
+              ', &' <BracketsVar-E s.BracketNumber>
+              ', '
+              <PrintVarShortcut 1 s.Mode e.Info>
+              '},'
+    )
+    ;
+
+  (e.Indent) (CmdiName s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    (e.Indent '{refalrts::icPushFPtr, '
+              '(void*)&' e.Name ', 0, 0},' 
+    )
+    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},' 
+    )
+  ;
+
+  (e.Indent) (CmdiIdent s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},' 
+    )
+    (e.Indent '{refalrts::icIdent' <PrintDirection s.Direction> ', '
+              'reinterpret_cast<void*>(& ' e.Name '<int>::name), '
+              '0, 0},'
+    )
+    ;
+
+  (e.Indent) (CmdiNum s.Direction s.BracketNumber s.Number) = 
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.BracketNumber> ', '
+              '&' <BracketsVar-E s.BracketNumber> ', 0},' 
+    )
+    (e.Indent '{refalrts::icNum' <PrintDirection s.Direction> ', '
+              '(void*)' s.Number ', '
+              '0, 0},'
+    )
+    ;
+
   (e.Indent) (CmdInitRAA) = 
     (e.Indent '  ')
-    (e.Indent 'const static refalrts::ResultAction raa[] = {');
+    (e.Indent 'static refalrts::ResultAction raa[] = {');
 
   (e.Indent '  ') (CmdFinRAA) = 
     (e.Indent)
@@ -382,9 +673,16 @@ GenCommand {
     (e.Indent
       'refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];'
     )
-    (e.Indent
+    (e.Indent '//'
       'refalrts::FnResult res = '
       'refalrts::interpret_array( raa, allocs, arg_begin, arg_end );'
+    )
+    (e.Indent '// new engine')
+    (e.Indent
+      'refalrts::FnResult res = '
+      'refalrts::new_interpret_array( '
+			'raa, allocs, context, arg_begin, arg_end, '
+			'sizeof(context)/sizeof(context[0]) );'
     )
     (e.Indent 'return res;');
 
@@ -399,6 +697,26 @@ GenCommand {
       '(void*) & ' <PrintName e.Name> ', '
       '(void*) "' <PrintName e.Name> '"},'
     );
+
+  (e.Indent) (CmdiBracket s.Direction s.Num s.NumRanges) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, '
+              '&' <BracketsVar-B s.Num> ', '
+              '&' <BracketsVar-E s.Num> ', 0},' 
+    )
+    (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
+              '&' <BracketsVar-B s.NumRanges> ', '
+              '&' <BracketsVar-E s.NumRanges> ', 0},'
+    )
+    ;
+
+  (e.Indent) (CmdiEmpty s.Num) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEmpty, '
+              '&' <BracketsVar-B s.Num> ', '
+              '&' <BracketsVar-E s.Num> ', 0},'
+    )
+    ;
 
   (e.Indent) (CmdArrInt s.Number) =
     (e.Indent)
@@ -432,32 +750,57 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icBracket, 0, 0, refalrts::ibCloseCall},');
 
+  // (e.Indent) (CmdArrCopy 'e' e.Index) =
+  //   (e.Indent)
+  //   (e.Indent
+  //     '{refalrts::icCopyEVar, '
+  //     '& ' <PrintEVar-B 1 'e' e.Index> ', '
+  //     '& ' <PrintEVar-E 1 'e' e.Index> '},'
+  //   );
+
   (e.Indent) (CmdArrCopy 'e' e.Index) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icCopyEVar, '
-      '& ' <PrintEVar-B 1 'e' e.Index> ', '
-      '& ' <PrintEVar-E 1 'e' e.Index> '},'
+      '{refalrts::icCopyEVar, 0, 0, '
+      <PrintVarShortcut 1 'e' e.Index>
+      '},'
     );
+
+  // (e.Indent) (CmdArrCopy s.Mode e.Index) =
+  //   (e.Indent)
+  //   (e.Indent
+  //     '{refalrts::icCopySTVar, & ' <PrintVar 1 s.Mode e.Index> '},'
+  //   );
 
   (e.Indent) (CmdArrCopy s.Mode e.Index) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icCopySTVar, & ' <PrintVar 1 s.Mode e.Index> '},'
+      '{refalrts::icCopySTVar, 0, 0, ' <PrintVarShortcut 1 s.Mode e.Index> '},'
     );
 
-  (e.Indent) (CmdArrSplice s.Usings 'e' e.Index) =
+  // (e.Indent) (CmdArrSplice s.Usings 'e' e.Index) =
+  //   (e.Indent)
+  //   (e.Indent
+  //     '{refalrts::icSpliceEVar, '
+  //     '& ' <PrintEVar-B s.Usings 'e' e.Index> ', '
+  //     '& ' <PrintEVar-E s.Usings 'e' e.Index> '},'
+  //   );
+
+    (e.Indent) (CmdArrSplice s.Usings 'e' e.Index) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icSpliceEVar, '
-      '& ' <PrintEVar-B s.Usings 'e' e.Index> ', '
-      '& ' <PrintEVar-E s.Usings 'e' e.Index> '},'
+      '{refalrts::icSpliceEVar, 0, 0, '
+      <PrintVarShortcut s.Usings 'e' e.Index> '},'
     );
 
   (e.Indent) (CmdArrSplice s.Usings s.Mode e.Index) =
-    (e.Indent)
+    // (e.Indent)
+    // (e.Indent
+    //   '{refalrts::icSpliceSTVar, & ' <PrintVar s.Usings s.Mode e.Index> '},'
+    // );
+  (e.Indent)
     (e.Indent
-      '{refalrts::icSpliceSTVar, & ' <PrintVar s.Usings s.Mode e.Index> '},'
+      '{refalrts::icSpliceSTVar, 0, 0, ' <PrintVarShortcut s.Usings s.Mode e.Index> '},'
     );
 }
 
@@ -568,6 +911,7 @@ PrintMatchSTVar {
   (e.Indent) s.Direction s.BracketNumber s.Mode e.Index =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
+      //<WriteLine 'Testing match STVAR: ' e.Index>
       (<VarMatchFunction s.Mode>) <PrintVar 1 s.Mode e.Index>
     >;
 }

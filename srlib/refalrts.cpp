@@ -35,19 +35,25 @@ void valid_linked_aux( const char *text, refalrts::Iter i ) {
 }
 
 //==============================================================================
-// Примитивные операции
+// РџСЂРёРјРёС‚РёРІРЅС‹Рµ РѕРїРµСЂР°С†РёРё
 //==============================================================================
 
-// Операции распознавания
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
 
 void refalrts::use( refalrts::Iter& ) {
-  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
-  компилятора о том, что переменная не используется */;
+  /* РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј. Р­С‚Р° С„СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ, С‡С‚РѕР±С‹ РїРѕРґР°РІРёС‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ
+  РєРѕРјРїРёР»СЏС‚РѕСЂР° Рѕ С‚РѕРј, С‡С‚Рѕ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ */;
+}
+
+void refalrts::zeros(refalrts::Iter context[], int size){
+  for (int i = 0; i < size; i++) {
+    context[i] = 0;
+  }
 }
 
 void refalrts::use_counter( unsigned& ) {
-  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
-  компилятора о том, что переменная не используется */;
+  /* РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј. Р­С‚Р° С„СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ, С‡С‚РѕР±С‹ РїРѕРґР°РІРёС‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ
+  РєРѕРјРїРёР»СЏС‚РѕСЂР° Рѕ С‚РѕРј, С‡С‚Рѕ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ */;
 }
 
 namespace {
@@ -106,6 +112,8 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   //assert( (first == 0) == (last == 0) );
   if( first == 0 ) assert (last == 0);
   if( first != 0 ) assert (last != 0);
+  //printf("debug: empty_seq: first = %p\n", first);
+  //printf("debug: empty_seq: last = %p\n", last);
 
   return (first == 0) && (last == 0);
 }
@@ -507,8 +515,8 @@ bool equal_nodes(
         // break;
 
       /*
-        Сведения о связях между скобками нужны для других целей, здесь
-        же нам важны только их одновременные появления.
+        РЎРІРµРґРµРЅРёСЏ Рѕ СЃРІСЏР·СЏС… РјРµР¶РґСѓ СЃРєРѕР±РєР°РјРё РЅСѓР¶РЅС‹ РґР»СЏ РґСЂСѓРіРёС… С†РµР»РµР№, Р·РґРµСЃСЊ
+        Р¶Рµ РЅР°Рј РІР°Р¶РЅС‹ С‚РѕР»СЊРєРѕ РёС… РѕРґРЅРѕРІСЂРµРјРµРЅРЅС‹Рµ РїРѕСЏРІР»РµРЅРёСЏ.
       */
       case refalrts::cDataOpenBracket:
       case refalrts::cDataCloseBracket:
@@ -526,15 +534,15 @@ bool equal_nodes(
         // break;
 
       /*
-        Данная функция предназначена только для использования функциями рас-
-        познавания образца. Поэтому других узлов мы тут не ожидаем.
+        Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° С‚РѕР»СЊРєРѕ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С„СѓРЅРєС†РёСЏРјРё СЂР°СЃ-
+        РїРѕР·РЅР°РІР°РЅРёСЏ РѕР±СЂР°Р·С†Р°. РџРѕСЌС‚РѕРјСѓ РґСЂСѓРіРёС… СѓР·Р»РѕРІ РјС‹ С‚СѓС‚ РЅРµ РѕР¶РёРґР°РµРј.
       */
       default:
         assert( SWITCH_DEFAULT_VIOLATION );
         throw refalrts::UnexpectedTypeException();
         // break;
     }
-    // Все ветви в case завершаются либо return, либо throw.
+    // Р’СЃРµ РІРµС‚РІРё РІ case Р·Р°РІРµСЂС€Р°СЋС‚СЃСЏ Р»РёР±Рѕ return, Р»РёР±Рѕ throw.
   }
 }
 
@@ -564,8 +572,8 @@ bool equal_expressions(
   clock_t start_match = clock();
 
   for(
-    /* Пользуемся аргументами функции, инициализация не нужна */;
-    // Порядок условий важен
+    /* РџРѕР»СЊР·СѓРµРјСЃСЏ Р°СЂРіСѓРјРµРЅС‚Р°РјРё С„СѓРЅРєС†РёРё, РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅРµ РЅСѓР¶РЅР° */;
+    // РџРѕСЂСЏРґРѕРє СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     ! refalrts::empty_seq( first1, last1 )
       && ! refalrts::empty_seq( first2, last2 )
       && equal_nodes( first1, first2 );
@@ -575,19 +583,19 @@ bool equal_expressions(
   }
 
   /*
-    Здесь empty_seq( first1, last1 ) || empty_seq( first2, last2 )
+    Р—РґРµСЃСЊ empty_seq( first1, last1 ) || empty_seq( first2, last2 )
       || !equal_nodes( first1, first2 )
   */
 
   refalrts::profiler::add_match_repeated_tvar_time(clock() - start_match);
 
-  // Успешное завершение -- если мы достигли конца в обоих выражениях
+  // РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ -- РµСЃР»Рё РјС‹ РґРѕСЃС‚РёРіР»Рё РєРѕРЅС†Р° РІ РѕР±РѕРёС… РІС‹СЂР°Р¶РµРЅРёСЏС…
   if(
     refalrts::empty_seq( first1, last1 ) && refalrts::empty_seq( first2, last2 )
   ) {
     return true;
   } else {
-    // Любое другое завершение цикла свидетельствует о несовпадении
+    // Р›СЋР±РѕРµ РґСЂСѓРіРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р° СЃРІРёРґРµС‚РµР»СЊСЃС‚РІСѓРµС‚ Рѕ РЅРµСЃРѕРІРїР°РґРµРЅРёРё
     return false;
   }
 }
@@ -687,8 +695,8 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter copy_last = last;
 
   for(
-    /* инициализация выше */;
-    // порядок условий важен
+    /* РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІС‹С€Рµ */;
+    // РїРѕСЂСЏРґРѕРє СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     !empty_seq( current, copy_last )
       && !empty_seq( cur_sample, evar_e_sample )
       && equal_nodes( current, cur_sample );
@@ -700,12 +708,12 @@ bool refalrts::repeated_evar_left(
   refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
-    Здесь empty_seq( current, copy_last )
+    Р—РґРµСЃСЊ empty_seq( current, copy_last )
       || empty_seq( cur_sample, evar_e_sample
       || ! equal_nodes( current, cur_sample )
   */
   if( empty_seq( cur_sample, evar_e_sample ) ) {
-    // Это нормальное завершение цикла -- вся образцовая переменная проверена
+    // Р­С‚Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р° -- РІСЃСЏ РѕР±СЂР°Р·С†РѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РїСЂРѕРІРµСЂРµРЅР°
 
     if( empty_seq( current, copy_last ) ) {
       evar_b = first;
@@ -731,14 +739,17 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
+  // printf("debug: repeated_evar_right: evar_b = %p evar_e = %p\n", evar_b, evar_e);
+  // printf("debug: repeated_evar_right: evar_b_sample = %p evar_e_sample = %p\n", evar_b_sample, evar_e_sample);
+  // printf("debug: repeated_evar_right: b = %p e = %p\n", first, last);
   clock_t start_match = clock();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
   refalrts::Iter copy_first = first;
 
   for(
-    /* инициализация выше */;
-    // порядок перечисления условий важен
+    /* РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІС‹С€Рµ */;
+    // РїРѕСЂСЏРґРѕРє РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     !empty_seq( copy_first, current )
       && !empty_seq( evar_b_sample, cur_sample )
       && equal_nodes( current, cur_sample );
@@ -750,13 +761,13 @@ bool refalrts::repeated_evar_right(
   refalrts::profiler::add_match_repeated_evar_time(clock() - start_match);
 
   /*
-    Здесь empty_seq( copy_first, current )
+    Р—РґРµСЃСЊ empty_seq( copy_first, current )
       || empty_seq( evar_b_sample, cur_sample )
       || ! equal_nodes( current, cur_sample )
   */
 
   if( empty_seq( evar_b_sample, cur_sample ) ) {
-    // Это нормальное завершение цикла: вся переменная-образец просмотрена
+    // Р­С‚Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р°: РІСЃСЏ РїРµСЂРµРјРµРЅРЅР°СЏ-РѕР±СЂР°Р·РµС† РїСЂРѕСЃРјРѕС‚СЂРµРЅР°
 
     if( empty_seq( copy_first, current ) ) {
       evar_b = first;
@@ -823,7 +834,7 @@ unsigned refalrts::read_chars(
 
 //------------------------------------------------------------------------------
 
-// Операции распределителя памяти
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїСЂРµРґРµР»РёС‚РµР»СЏ РїР°РјСЏС‚Рё
 
 namespace refalrts{
 
@@ -841,7 +852,7 @@ void splice_from_freelist( Iter pos );
 
 //------------------------------------------------------------------------------
 
-// Средства профилирования
+// РЎСЂРµРґСЃС‚РІР° РїСЂРѕС„РёР»РёСЂРѕРІР°РЅРёСЏ
 
 namespace refalrts {
 
@@ -855,7 +866,7 @@ extern void start_building_result();
 
 //------------------------------------------------------------------------------
 
-// Операции построения результата
+// РћРїРµСЂР°С†РёРё РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 
 void refalrts::reset_allocator() {
   profiler::start_building_result();
@@ -927,8 +938,8 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
     // break;
 
     /*
-      Копируем только объектное выражение -- никаких вызовов функций
-      быть не должно.
+      РљРѕРїРёСЂСѓРµРј С‚РѕР»СЊРєРѕ РѕР±СЉРµРєС‚РЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ -- РЅРёРєР°РєРёС… РІС‹Р·РѕРІРѕРІ С„СѓРЅРєС†РёР№
+      Р±С‹С‚СЊ РЅРµ РґРѕР»Р¶РЅРѕ.
     */
     default:
       assert( SWITCH_DEFAULT_VIOLATION );
@@ -1268,7 +1279,7 @@ refalrts::Iter list_splice(
 
   if( (res == begin) || refalrts::empty_seq( begin, end ) ) {
 
-    // Цель достигнута сама по себе
+    // Р¦РµР»СЊ РґРѕСЃС‚РёРіРЅСѓС‚Р° СЃР°РјР° РїРѕ СЃРµР±Рµ
     return res;
   } else {
     refalrts::Iter prev_res = prev( res );
@@ -1331,9 +1342,9 @@ refalrts::FnResult refalrts::create_closure(
   refalrts::Iter closure_b = begin;
   refalrts::Iter closure_e = end;
 
-  refalrts::move_left( closure_b, closure_e ); // пропуск <
-  refalrts::move_left( closure_b, closure_e ); // пропуск имени функции
-  refalrts::move_right( closure_b, closure_e ); // пропуск >
+  refalrts::move_left( closure_b, closure_e ); // РїСЂРѕРїСѓСЃРє <
+  refalrts::move_left( closure_b, closure_e ); // РїСЂРѕРїСѓСЃРє РёРјРµРЅРё С„СѓРЅРєС†РёРё
+  refalrts::move_right( closure_b, closure_e ); // РїСЂРѕРїСѓСЃРє >
 
   if( empty_seq( closure_b, closure_e ) )
     return refalrts::cRecognitionImpossible;
@@ -1353,13 +1364,13 @@ refalrts::FnResult refalrts::create_closure(
 }
 
 /*
-  Собственно замыкание (функция + контекст) определяется как
-  [next(head), prev(head)]. Т.к. замыкание создаётся только функцией
-  create_closure, которая гарантирует непустоту замыкания, то
+  РЎРѕР±СЃС‚РІРµРЅРЅРѕ Р·Р°РјС‹РєР°РЅРёРµ (С„СѓРЅРєС†РёСЏ + РєРѕРЅС‚РµРєСЃС‚) РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РєР°Рє
+  [next(head), prev(head)]. Рў.Рє. Р·Р°РјС‹РєР°РЅРёРµ СЃРѕР·РґР°С‘С‚СЃСЏ С‚РѕР»СЊРєРѕ С„СѓРЅРєС†РёРµР№
+  create_closure, РєРѕС‚РѕСЂР°СЏ РіР°СЂР°РЅС‚РёСЂСѓРµС‚ РЅРµРїСѓСЃС‚РѕС‚Сѓ Р·Р°РјС‹РєР°РЅРёСЏ, С‚Рѕ
   next(head) != head, prev(head) != head.
 */
 
-// Развернуть замыкание
+// Р Р°Р·РІРµСЂРЅСѓС‚СЊ Р·Р°РјС‹РєР°РЅРёРµ
 refalrts::Iter refalrts::unwrap_closure( refalrts::Iter closure ) {
   assert( closure->tag == refalrts::cDataClosure );
 
@@ -1378,7 +1389,7 @@ refalrts::Iter refalrts::unwrap_closure( refalrts::Iter closure ) {
   return prev(head);
 }
 
-// Свернуть замыкание
+// РЎРІРµСЂРЅСѓС‚СЊ Р·Р°РјС‹РєР°РЅРёРµ
 refalrts::Iter refalrts::wrap_closure( refalrts::Iter closure ) {
   assert( closure->tag == refalrts::cDataUnwrappedClosure );
 
@@ -1399,7 +1410,7 @@ refalrts::Iter refalrts::wrap_closure( refalrts::Iter closure ) {
 
 //------------------------------------------------------------------------------
 
-// Инициализация головного узла статического ящика
+// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РіРѕР»РѕРІРЅРѕРіРѕ СѓР·Р»Р° СЃС‚Р°С‚РёС‡РµСЃРєРѕРіРѕ СЏС‰РёРєР°
 
 namespace refalrts {
 
@@ -1444,7 +1455,7 @@ void refalrts::swap_save(
 
 //------------------------------------------------------------------------------
 
-// Средства профилирования
+// РЎСЂРµРґСЃС‚РІР° РїСЂРѕС„РёР»РёСЂРѕРІР°РЅРёСЏ
 
 namespace refalrts {
 
@@ -1481,7 +1492,7 @@ void refalrts::start_e_loop() {
 
 //------------------------------------------------------------------------------
 
-// Прочие операции
+// РџСЂРѕС‡РёРµ РѕРїРµСЂР°С†РёРё
 
 namespace refalrts {
 
@@ -1505,7 +1516,7 @@ void refalrts::debug_print_expr(
 }
 
 //==============================================================================
-// Распределитель памяти
+// Р Р°СЃРїСЂРµРґРµР»РёС‚РµР»СЊ РїР°РјСЏС‚Рё
 //==============================================================================
 
 namespace refalrts {
@@ -1564,7 +1575,7 @@ bool refalrts::allocator::alloc_node( refalrts::Iter& node ) {
 
       if( 0 == head->number_info ) {
         unwrap_closure( g_free_ptr );
-        // теперь перед g_free_ptr находится "развёрнутое" замыкание
+        // С‚РµРїРµСЂСЊ РїРµСЂРµРґ g_free_ptr РЅР°С…РѕРґРёС‚СЃСЏ "СЂР°Р·РІС‘СЂРЅСѓС‚РѕРµ" Р·Р°РјС‹РєР°РЅРёРµ
         g_free_ptr->tag = refalrts::cDataClosureHead;
         g_free_ptr->number_info = 407193; // :-)
 
@@ -1670,7 +1681,7 @@ void refalrts::allocator::pool::free() {
 }
 
 //==============================================================================
-// Упрощённый профилировщик
+// РЈРїСЂРѕС‰С‘РЅРЅС‹Р№ РїСЂРѕС„РёР»РёСЂРѕРІС‰РёРє
 //==============================================================================
 
 namespace refalrts {
@@ -1725,7 +1736,7 @@ inline double divide(double numerator, double denominator) {
   }
 }
 
-} // безымянное namespace
+} // Р±РµР·С‹РјСЏРЅРЅРѕРµ namespace
 
 #endif // DONT_PRINT_STATISTICS
 
@@ -1885,7 +1896,7 @@ void refalrts::profiler::stop_e_loop() {
 }
 
 //==============================================================================
-// Виртуальная машина
+// Р’РёСЂС‚СѓР°Р»СЊРЅР°СЏ РјР°С€РёРЅР°
 //==============================================================================
 
 #ifdef MODULE_REFAL
@@ -2048,10 +2059,10 @@ refalrts::FnResult refalrts::vm::execute_active(
 
     if( 1 == head->number_info ) {
       /*
-        Пользуемся тем, что при развёртке содержимое замыкания оказывается
-        в поле зрения между головой и (развёрнутым!) узлом замыкания.
-        Во избежание проблем, связанным с помещением развёрнутого замыкания
-        в список свободных блоков, проинициализируем его как голову замыкания.
+        РџРѕР»СЊР·СѓРµРјСЃСЏ С‚РµРј, С‡С‚Рѕ РїСЂРё СЂР°Р·РІС‘СЂС‚РєРµ СЃРѕРґРµСЂР¶РёРјРѕРµ Р·Р°РјС‹РєР°РЅРёСЏ РѕРєР°Р·С‹РІР°РµС‚СЃСЏ
+        РІ РїРѕР»Рµ Р·СЂРµРЅРёСЏ РјРµР¶РґСѓ РіРѕР»РѕРІРѕР№ Рё (СЂР°Р·РІС‘СЂРЅСѓС‚С‹Рј!) СѓР·Р»РѕРј Р·Р°РјС‹РєР°РЅРёСЏ.
+        Р’Рѕ РёР·Р±РµР¶Р°РЅРёРµ РїСЂРѕР±Р»РµРј, СЃРІСЏР·Р°РЅРЅС‹Рј СЃ РїРѕРјРµС‰РµРЅРёРµРј СЂР°Р·РІС‘СЂРЅСѓС‚РѕРіРѕ Р·Р°РјС‹РєР°РЅРёСЏ
+        РІ СЃРїРёСЃРѕРє СЃРІРѕР±РѕРґРЅС‹С… Р±Р»РѕРєРѕРІ, РїСЂРѕРёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РµРіРѕ РєР°Рє РіРѕР»РѕРІСѓ Р·Р°РјС‹РєР°РЅРёСЏ.
       */
       unwrap_closure( function );
       function->tag = cDataClosureHead;
@@ -2081,13 +2092,17 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 namespace {
 
-void print_indent(FILE *output, unsigned level)
+void print_indent(FILE *output, int level)
 {
   enum { cPERIOD = 4 };
   putc( '\n', output );
-  for( unsigned i = 0; i < level; ++i )
+	if (level < 0) {
+		putc( '!', output );
+		return;
+	}
+  for( int i = 0; i < level; ++i )
   {
-    // Каждые cPERIOD позиций вместо пробела ставим точку.
+    // РљР°Р¶РґС‹Рµ cPERIOD РїРѕР·РёС†РёР№ РІРјРµСЃС‚Рѕ РїСЂРѕР±РµР»Р° СЃС‚Р°РІРёРј С‚РѕС‡РєСѓ.
     bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
 
     const char cSpace =  ' ';
@@ -2108,7 +2123,7 @@ void refalrts::vm::print_seq(
     cStateFinish
   } state = cStateView;
 
-  unsigned indent = 0;
+  int indent = 0;
   bool after_bracket = false;
   bool reset_after_bracket = true;
 
@@ -2346,8 +2361,8 @@ FILE *refalrts::vm::dump_stream() {
   static FILE *dump_file = 0;
 
   if( dump_file == 0 ) {
-    // Необходимо открыть файл.
-    // Если файл не открывается, используем stderr
+    // РќРµРѕР±С…РѕРґРёРјРѕ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р».
+    // Р•СЃР»Рё С„Р°Р№Р» РЅРµ РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ, РёСЃРїРѕР»СЊР·СѓРµРј stderr
     dump_file = fopen( DUMP_FILE, "wt" );
 
     if( dump_file == 0 ) {
@@ -2373,7 +2388,7 @@ void refalrts::vm::free_view_field() {
     refalrts::allocator::splice_to_freelist( begin, end );
   } else {
     /*
-      Поле зрения пустое -- его не нужно освобождать.
+      РџРѕР»Рµ Р·СЂРµРЅРёСЏ РїСѓСЃС‚РѕРµ -- РµРіРѕ РЅРµ РЅСѓР¶РЅРѕ РѕСЃРІРѕР±РѕР¶РґР°С‚СЊ.
     */;
   }
 
@@ -2383,7 +2398,716 @@ void refalrts::vm::free_view_field() {
 }
 
 //==============================================================================
-// Интерпретатор
+// РРЅС‚РµСЂРїСЂРµС‚Р°С‚РѕСЂ
+//==============================================================================
+
+refalrts::FnResult refalrts::new_interpret_array(
+  refalrts::ResultAction raa[],
+  refalrts::Iter allocs[],
+  refalrts::Iter context[],
+  refalrts::Iter begin, refalrts::Iter end,
+	unsigned long context_size
+) {
+  printf("New interpret engine...\n");
+  printf("begin == %p\n", begin);
+  printf("end == %p\n", end);
+  int i = 0;
+  Iter stack_ptr = 0;
+  Iter res = begin;
+  Iter cobracket;
+  // РІРѕРѕР±С‰Рµ РїСЂРё СЂРµС„Р°РєС‚РѕСЂРµ Рё РІРЅРѕСЃРµ СЃРєРѕР±РѕРє РІРЅСѓС‚СЂСЊ РёРЅС‚РµСЂРїСЂРµС‚Р°С‚РѕСЂР°
+  // РЅР°РґРѕР±РЅРѕСЃС‚СЊ СѓР№РґРµС‚, С‚РѕР»СЊРєРѕ РёРЅРґРµРєСЃС‹ РЅСѓР¶РЅС‹ Р±СѓРґСѓС‚.
+  Iter *be = 0;
+  Iter *bb = 0;
+  unsigned int index;
+  RefalNumber refNum = 0;
+  refalrts::RefalFunctionPtr functionPtr = 0;
+  char chValue;
+
+  while(raa[i].cmd != icEnd)
+  {
+    // РРЅС‚РµСЂРїСЂРµС‚Р°С†РёСЏ РєРѕРјР°РЅРґ
+		printf("%i %i %li: ", i, raa[i].cmd, context_size);
+		for (unsigned long ci = 0; ci < context_size; ++ci) {
+			printf("%p%s", context[ci], ci == context_size - 1 ? "\n" : ", ");
+		}
+    switch(raa[i].cmd)
+    {
+      case icEPush:
+        bb = static_cast<Iter*>(raa[i].ptr_value1);
+        be = static_cast<Iter*>(raa[i].ptr_value2);
+        printf("debug: icEPush: %p %p\n", *bb, *be);
+        break;
+
+      case icMoveLeft:
+        printf("debug: bound move left\n");
+        printf("debug: from <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        move_left(*static_cast<Iter*>(raa[i].ptr_value1),
+                  *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        end;
+
+      case icMoveRight:
+        printf("debug: bound move right\n");
+        printf("debug: from <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        move_right(*static_cast<Iter*>(raa[i].ptr_value1),
+                   *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        end;
+
+      case icBracketLeft:
+        printf("debug: icBracketLeft\n");
+        printf("debug: icBracketLeft: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icBracketLeft: %p %p\n", *bb, *be);
+        
+        if( !refalrts::brackets_left( *static_cast<Iter*>(raa[i].ptr_value1),
+                                      *static_cast<Iter*>(raa[i].ptr_value2),
+                                      *bb,
+                                      *be ) 
+        )
+          return refalrts::cRecognitionImpossible;
+
+        break;
+
+      case icBracketRight:
+        printf("debug: icBracketRight\n");
+        printf("debug: icBracketRight: res %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icBracketRight: %p %p\n", *bb, *be);
+        
+        if( !refalrts::brackets_right( *static_cast<Iter*>(raa[i].ptr_value1),
+                                       *static_cast<Iter*>(raa[i].ptr_value2),
+                                       *bb,
+                                       *be ) 
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icBracketRight: new res %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        break;
+
+      case ictVarRight:
+        index = raa[i].value;
+        printf("debug: ictVarRight to %d\n", index);
+        
+        if( !refalrts::tvar_right( context[index],
+                                   *static_cast<Iter*>(raa[i].ptr_value1),
+                                   *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: ictVarRight: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: ictVarRight done...\n");
+        break;
+
+      case ictVarLeft:
+        index = raa[i].value;
+        printf("debug: ictVarLeft to %d\n", index);
+        
+        if( !refalrts::tvar_left( context[index],
+                                  *static_cast<Iter*>(raa[i].ptr_value1),
+                                  *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: ictVarLeft: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: ictVarLeft done...\n");
+        break;
+
+      case icsVarRight:
+        index = raa[i].value;
+        printf("debug: icsVarRight to %d\n", index);
+        
+        if( !refalrts::svar_right( context[index],
+                                   *static_cast<Iter*>(raa[i].ptr_value1),
+                                   *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icsVarRight done...\n");
+        break;
+
+      case icsVarLeft:
+        index = raa[i].value;
+        printf("debug: icsVarLeft to %d\n", index);
+        printf("debug: icsVarLeft: b = %p, e = %p\n",
+                *static_cast<Iter*>(raa[i].ptr_value1), 
+                *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        if( !refalrts::svar_left( context[index],
+                                  *static_cast<Iter*>(raa[i].ptr_value1),
+                                  *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: svar = first: %p\n", context[index]);
+        printf("debug: icsVarLeft: bb0 = %p, be0 = %p\n",
+                *static_cast<Iter*>(raa[i].ptr_value1), 
+                *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icsVarLeft done...\n");
+        break;
+
+      case icContextSet:
+        index = raa[i].value;
+        printf("debug: icContextSet: load context to %d\n", index);
+        
+        context[index] = *static_cast<Iter*>(raa[i].ptr_value1);
+        if (static_cast<Iter*>(raa[i].ptr_value2) != 0){
+          printf("debug: icContextSet: evar!\n");
+          context[index + 1] = *static_cast<Iter*>(raa[i].ptr_value2);
+        }
+        
+        printf("debug: icContextSet: context data [ %p, %p]\n", context[index], context[index + 1]);
+        break;
+
+
+      case icNumRight:
+        refNum = (RefalNumber)raa[i].ptr_value1;
+        printf("debug: icNumRight: %lu", refNum);
+        
+        if( ! refalrts::number_right( refNum, *bb, *be ) )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icNumRight done...");
+        break;
+
+      case icNumLeft:
+        refNum = (RefalNumber)raa[i].ptr_value1;
+        printf("debug: icNumLeft: %lu", refNum);
+        
+        if( ! refalrts::number_left( refNum, *bb, *be ) )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icNumLeft done...");
+        break;
+
+      case icIdentRight:
+        {
+          refalrts::RefalIdentifier rIdent;
+          rIdent = (refalrts::RefalIdentifier)(raa[i].ptr_value1);
+          printf("debug: icIdentRight\n");
+          
+          if( ! refalrts::ident_right( rIdent, *bb, *be ) )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: icIdentRight done...\n");
+        }
+        break;
+
+      case icIdentLeft:
+        {
+          refalrts::RefalIdentifier rIdent;
+          rIdent = (refalrts::RefalIdentifier)(raa[i].ptr_value1);
+          printf("debug: icIdentLeft\n");
+          
+          if( ! refalrts::ident_left( rIdent, *bb, *be ) )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: icIdentLeft done...\n");
+        }
+        break;
+
+      case icADTRight:
+        printf("debug: icADTRight\n");
+        
+        if( ! refalrts::adt_right( *static_cast<Iter*>(raa[i].ptr_value1),
+                                   *static_cast<Iter*>(raa[i].ptr_value2),
+                                   functionPtr,
+                                   *bb, *be)         
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icADTRight done...\n");
+        break;
+
+      case icADTLeft:
+        printf("debug: icADTLeft\n");
+        
+        if( ! refalrts::adt_left( *static_cast<Iter*>(raa[i].ptr_value1),
+                                  *static_cast<Iter*>(raa[i].ptr_value2),
+                                  functionPtr,
+                                  *bb, *be)        
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icADTLeft done...\n");
+        break;
+
+      case icPushFPtr:
+        printf("debug: icPushFPtr\n");
+        
+        functionPtr = (RefalFunctionPtr)(raa[i].ptr_value1);
+        
+        printf("debug: icPushFPtr pushed %p\n", functionPtr);
+        break;
+
+      case icFuncRight:
+        printf("debug: icFuncRight\n");
+        
+        if ( !function_right( functionPtr,
+                              *static_cast<Iter*>(raa[i].ptr_value1),
+                              *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icFuncRight done...\n");
+        break;
+
+      case icFuncLeft:
+        printf("debug: icFuncLeft\n");
+        
+        if ( !function_left( functionPtr,
+                             *static_cast<Iter*>(raa[i].ptr_value1),
+                             *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icFuncLeft done...\n");
+        break;
+
+      case icCharRight:
+        chValue = (char)raa[i].value;
+        printf("debug: icCharRight %d %c\n", chValue, chValue);
+        
+        if ( !char_right( chValue,
+                          *static_cast<Iter*>(raa[i].ptr_value1),
+                          *static_cast<Iter*>(raa[i].ptr_value2))
+          )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icCharRight done....\n");
+        break;
+
+      case icCharLeft:
+        chValue = (char)raa[i].value;
+        
+        printf("debug: icCharLeft %d %c\n", chValue, chValue);
+        
+        if ( !char_left( chValue,
+                         *static_cast<Iter*>(raa[i].ptr_value1),
+                         *static_cast<Iter*>(raa[i].ptr_value2))
+          )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icCharLeft done....\n");
+        break;
+
+      case iceRepeatRight:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          
+          printf("debug: iceRepeatRight: %d %d\n", ind1, ind2);
+          printf("debug: iceRepeatRight: b = %p e = %p\n", *bb, *be);
+          printf("debug: iceRepeatRight: evar_b = %p evar_e = %p\n", context[ind1], context[ind1 + 1]);
+          printf("debug: iceRepeatRight: evar_b_sample = %p evar_e_sample = %p\n", context[ind2], context[ind2 + 1]);
+          
+          if( ! refalrts::repeated_evar_right( context[ind1], context[ind1 + 1],
+                                               context[ind2], context[ind2 + 1],
+                                               *bb, *be)
+          )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: iceRepeatRight done ...\n");
+        }
+        break;
+
+      case iceRepeatLeft:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          
+          printf("debug: iceRepeatLeft %d %d\n", ind1, ind2);
+          printf("debug: iceRepeatLeft: b = %p, e = %p\n", *bb, *be);
+          
+          if( ! refalrts::repeated_evar_left( context[ind1], context[ind1 + 1],
+                                              context[ind2], context[ind2 + 1],
+                                              *bb, *be)
+          )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: iceRepeatLeft done ...\n");
+        }
+        break;
+
+      case icsRepeatRight:
+        printf("debug: icsRepeatRight\n");
+      case ictRepeatRight:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          
+          printf("debug: icstRepeatRight %d %d\n", ind1, ind2);
+          
+          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], *bb, *be) )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: icstRepeatRight done ...\n");
+        }
+        break;
+
+      case icsRepeatLeft:
+        printf("debug: icsRepeatLeft\n");
+      case ictRepeatLeft:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          
+          printf("debug: icstRepeatLeft %d %d\n", ind1, ind2);
+          printf("debug: icstRepeatLeft: b = %p, e = %p\n", *bb, *be);
+          
+          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], *bb, *be) )
+            return refalrts::cRecognitionImpossible;
+          
+          printf("debug: icstRepeatLeft done ...\n");
+        }
+        break;
+
+      case icSave:
+        printf("debug: icSave:\n");
+        printf("debug: icSave: from %p %p\n", *bb, *be);
+        printf("debug: icSave: to %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        
+        *static_cast<Iter*>(raa[i].ptr_value1) = *bb;
+        *static_cast<Iter*>(raa[i].ptr_value2) = *be;
+        
+        printf("debug: icSave: result %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        break;
+
+			case icBreak:
+					return cSuccess;
+				break;
+
+      case icEStart:
+        { 
+          int iter = 0;
+          int stopPos = 0;
+          int startPos = i;
+          ResultAction *subraa = &raa[startPos + 1];
+          FnResult subres;
+          index = raa[i].value;
+          printf("debug: icEStart for [%d]\n", index);
+
+          while (raa[i].cmd != icEnd)
+          {
+            if (raa[i].cmd == icEStop)
+            {
+              stopPos = i;
+              printf("debug: icEStart: can be stop pos = %d\n", i);
+            }
+            i ++;
+          }
+          i = startPos;
+          if (stopPos == 0)
+            return cEndErr;
+          printf("debug: icEStart: stop pos = %d\n", stopPos);
+          raa[stopPos].cmd = icBreak;
+
+          // Р·РґРµСЃСЊ РґРѕР»Р¶РЅС‹ РІС‹Р±СЂР°С‚СЊ РЅРѕРІС‹Р№ РјР°СЃСЃРёРІ РґРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ icEStop
+          // Р·Р°РјРµРЅСЏРµРј РµРіРѕ РЅР° icEnd
+          // РїРѕС‚РѕРј Р·Р°РїСѓСЃРєР°РµРј РІРёСЂС‚ РјР°С€РёРЅСѓ РІР»РѕР¶РµРЅРЅСѓСЋ
+
+					fprintf(refalrts::vm::dump_stream(), "\n==========before e-var");
+					refalrts::vm::make_dump(begin, end);
+          do {
+            printf("debug: icEStart for [%d] - step %d\n", index, iter);
+            subres = new_interpret_array(subraa, allocs, context, begin, end, context_size);
+            printf("debug: icEStart for [%d] - step %d | res = %d\n", index, iter, subres);
+            if (subres == refalrts::cSuccess) {
+							/*refalrts::reset_allocator();*/
+              //refalrts::Iter ires = begin;
+              //refalrts::use( ires );
+							/*refalrts::splice_to_freelist( begin, end );*/
+              break;
+            } else {
+              if (subres == refalrts::cRecognitionImpossible)
+                printf("debug: recognition imposible!\n");
+            }
+            iter ++;
+          } while ( open_evar_advance( context[index], context[index + 1], *bb, *be ) );
+					fprintf(refalrts::vm::dump_stream(), "\n=======after e-var");
+					refalrts::vm::make_dump(begin, end);
+
+          //recover opcode
+          raa[stopPos].cmd = icEStop;
+        }
+
+        break;
+
+      case icEStop:
+        printf("debug: icEStop\n");
+        break;
+
+      case icEmpty:
+        printf("debug: icEmpty: %d\n", raa[i].value);
+         
+        if ( !empty_seq( *static_cast<Iter*>(raa[i].ptr_value1),
+                         *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          return refalrts::cRecognitionImpossible;
+        
+        printf("debug: icEmpty: ok...\n");
+        break;
+
+      case icChar:
+        if(!alloc_char(*allocs, static_cast<char>(raa[i].value)))
+          return cNoMemory;
+        ++allocs;
+        break;
+
+      case icInt:
+        if(!alloc_number(*allocs, raa[i].value))
+          return cNoMemory;
+        ++allocs;
+        break;
+
+      case icFunc:
+        if(
+            !alloc_name(
+              *allocs,
+              (RefalFunctionPtr)(raa[i].ptr_value1),
+              (RefalFuncName)(raa[i].ptr_value2)
+            )
+        )
+          return cNoMemory;
+        ++allocs;
+        break;
+
+      case icIdent:
+        if(
+            !alloc_ident(
+              *allocs,
+              (RefalIdentifier)(raa[i].ptr_value1)
+            )
+        )
+          return cNoMemory;
+        ++allocs;
+        break;
+
+      case icBracket:
+        switch(raa[i].value)
+        {
+          case ibOpenADT:
+            if(!alloc_open_adt(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
+
+          case ibOpenBracket:
+            if(!alloc_open_bracket(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
+
+          case ibOpenCall:
+            if(!alloc_open_call(*allocs))
+              return cNoMemory;
+            (*allocs)->link_info = stack_ptr;
+            stack_ptr = *allocs;
+            ++allocs;
+            break;
+
+          case ibCloseADT:
+            if(!alloc_close_adt(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
+
+          case ibCloseBracket:
+            if(!alloc_close_bracket(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
+
+          case ibCloseCall:
+            if(!alloc_close_call(*allocs))
+              return cNoMemory;
+            cobracket = stack_ptr;
+            stack_ptr = stack_ptr->link_info;
+            link_brackets( *allocs, cobracket );
+            ++allocs;
+            break;
+
+          default:
+            throw UnexpectedTypeException();
+        }
+
+      case icSpliceSTVar:
+        break;
+
+      case icSpliceEVar:
+        break;
+
+      case icCopySTVar:
+        index = raa[i].value;
+        printf("debug: icCopySTVar to %d\n", index);
+        // if(!copy_stvar(*allocs, *static_cast<Iter*>(raa[i].ptr_value1)))
+        //   return cNoMemory;
+        if( !copy_stvar(*allocs, context[index]) )
+          return cNoMemory;
+        ++allocs;
+        printf("debug: icCopySTVar done.....\n");
+        break;
+
+      case icCopyEVar: {
+        refalrts::Iter& ebegin = *allocs;
+        ++allocs;
+        refalrts::Iter& eend = *allocs;
+        ++allocs;
+        index = raa[i].value;
+        printf("debug: icCopyEVar: alloc %u\n", index);
+        if(
+            !copy_evar(
+              ebegin,
+              eend,
+              context[index],
+              context[index + 1]
+              //*static_cast<Iter*>(raa[i].ptr_value1),
+              //*static_cast<Iter*>(raa[i].ptr_value2)
+            )
+          )
+          return cNoMemory;
+        break;
+      }
+
+      default:
+        throw UnexpectedTypeException();
+    }
+    i++;
+  }
+
+  while(i >= 0)
+  {
+    int index = 0;
+    //РљРѕРјРїРѕРЅРѕРІРєР° СЃС‚РµРєР°
+    switch(raa[i].cmd)
+    {
+      case icChar:
+      case icInt:
+      case icFunc:
+      case icIdent:
+        --allocs;
+        res = splice_elem(res, *allocs);
+        break;
+
+      //skip-case
+      case icMoveRight:
+      case icMoveLeft:
+      case icContextSet:
+      case icEPush:
+      case icsVarRight:
+      case icsVarLeft:
+      case ictVarRight:
+      case ictVarLeft:
+      case icNumRight:
+      case icNumLeft:
+      case icIdentRight:
+      case icIdentLeft:
+      case icADTLeft:
+      case icADTRight:
+      case icFuncRight:
+      case icFuncLeft:
+      case icCharRight:
+      case icCharLeft:
+      case iceRepeatRight:
+      case iceRepeatLeft:
+      case icsRepeatRight:
+      case icsRepeatLeft:
+      case ictRepeatRight:
+      case ictRepeatLeft:
+      case icSave:
+      case icEStart:
+      case icEStop:
+      case icBreak:
+        break;
+
+      case icBracketLeft:
+      case icBracketRight:
+      case icEmpty:
+        break;
+
+      case icSpliceSTVar:
+        index = raa[i].value;
+        //res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
+        res = splice_stvar(res, context[index]);
+        break;
+
+      case icSpliceEVar:
+        index = raa[i].value;
+
+				fprintf(refalrts::vm::dump_stream(),
+						"\n=====debug: icSpliceEvar{: %p %p\n", context[index], context[index + 1]);
+				refalrts::vm::make_dump(begin, end);
+
+        res = splice_evar(res, context[index], context[index + 1]);
+        //res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+				fprintf(refalrts::vm::dump_stream(),
+						"\n=====debug: icSpliceEvar}: %p %p\n", context[index], context[index + 1]);
+				refalrts::vm::make_dump(begin, end);
+        break;
+
+      case icBracket:
+        --allocs;
+        if( raa[i].value == ibCloseCall )
+        {
+          Iter open_call = (*allocs)->link_info;
+          push_stack(*allocs);
+          push_stack(open_call);
+        }
+        res = splice_elem( res, *allocs);
+        break;
+
+      case icCopyEVar: {
+        --allocs;
+        refalrts::Iter eend = *allocs;
+        --allocs;
+        refalrts::Iter ebegin = *allocs;
+        res = splice_evar(res, ebegin, eend);
+        break;
+      }
+
+      case icCopySTVar:
+        --allocs;
+        res = splice_stvar(res, *allocs);
+        break;
+
+      case icEnd:
+        printf("debug: icEnd ......\n");
+        break;
+
+      default:
+      printf("Error (%d)\n", raa[i].cmd);
+        throw UnexpectedTypeException();
+    }
+    i--;
+  }
+	fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor{\n");
+	refalrts::vm::make_dump(begin, end);
+  splice_to_freelist(begin, end);
+	fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor}\n");
+	refalrts::vm::make_dump(begin, end);
+
+  return cSuccess;
+}
+
+//==============================================================================
+// РћСЂРёРіРёРЅР°Р»СЊРЅС‹Р№
 //==============================================================================
 
 refalrts::FnResult refalrts::interpret_array(
@@ -2398,7 +3122,7 @@ refalrts::FnResult refalrts::interpret_array(
 
   while(raa[i].cmd != icEnd)
   {
-    //Выделение памяти
+    //Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё
     switch(raa[i].cmd)
     {
       case icChar:
@@ -2531,7 +3255,7 @@ refalrts::FnResult refalrts::interpret_array(
 
   while(i >= 0)
   {
-    //Компоновка стека
+    //РљРѕРјРїРѕРЅРѕРІРєР° СЃС‚РµРєР°
     switch(raa[i].cmd)
     {
       case icChar:
@@ -2576,6 +3300,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icEnd:
+        printf("debug: icEnd\n");
         break;
 
       default:
@@ -2590,7 +3315,7 @@ refalrts::FnResult refalrts::interpret_array(
 
 //==============================================================================
 
-// Используются в Library.cpp
+// РСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РІ Library.cpp
 
 char **g_argv = 0;
 int g_argc = 0;
@@ -2635,6 +3360,10 @@ int main(int argc, char **argv) {
 
     case refalrts::cExit:
       return refalrts::vm::g_ret_code;
+
+    case refalrts::cEndErr:
+      fprintf(stderr, "ERROR: check start-end commands in raa\n");
+      return  5;
 
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main");

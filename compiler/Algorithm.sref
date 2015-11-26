@@ -62,7 +62,17 @@ $EENUM
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdClosedE,
   CmdOpenedE-Start, CmdOpenedE-End,
-  CmdComment, CmdSave;
+  CmdComment, CmdSave, CmdIssueMem,
+  CmdSetBound, CmdBoundToLeft, CmdBoundToRight,
+  CmdBoundEmptySeq,
+  CmdiMoveLeft, CmdiMoveRigth,
+  CmdiContextSet, CmdiVar,
+  CmdiBracket,
+  CmdiNum, CmdiIdent, CmdiADT,
+  CmdiName, CmdiChar,
+  CmdiRepeat, CmdiSave,
+  CmdiEStart, CmdiEStop,
+  CmdiEmpty;
 
 $ENUM CmdOpenedE;
 
@@ -88,7 +98,7 @@ GenPattern {
 }
 
 //FROM LibraryEx
-$EXTERN MapReduce;
+$EXTERN MapReduce, DelAccumulator, Reduce, Map;
 
 $LABEL Brackets, ADT-Brackets, CallBrackets;
 
@@ -298,6 +308,9 @@ DoSaveBrackets {
 
   s.LastBracket (e.Scanned) e.Commands = e.Scanned e.Commands;
 }
+
+//From LibraryEx 
+$EXTERN WriteLine, StrFromInt;
 
 DoSaveBrackets-MakeSavers {
   s.LastBracket
@@ -601,8 +614,160 @@ $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
 //FROM LibraryEx
 $EXTERN Map, Seq;
 
+//From Library
+$EXTERN Add, Inc;
+
 $EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
   CmdInitRAA, CmdFinRAA;
+
+//FROM Library
+$EXTERN WriteLine;
+
+DebugVarInfo {
+  ( s.Usings 'e' e.Index ) =
+    <WriteLine 'Debug EVar Info: \n'
+               '\tUsings: ' s.Usings '\n'
+               '\tIndex: ' e.Index '\n'
+    >;
+  ( s.Usings s.Mode e.Index ) =
+    <WriteLine 'Debug Var Info: \n'
+               '\tUsings: ' s.Usings '\n'
+               '\tIndex: ' e.Index '\n'
+               '\tMode: ' s.Mode '\n'
+    >;
+}
+
+DebugNVarInfo {
+  ( s.Number s.Usings 'e' e.Index ) =
+    <WriteLine 'Debug EVar Info: \n'
+               '\tAlloc: ' <StrFromInt s.Number> '\n'
+               '\tUsings: ' s.Usings '\n'
+               '\tIndex: ' e.Index '\n'
+    >;
+  ( s.Number s.Usings s.Mode e.Index ) =
+    <WriteLine 'Debug Var Info: \n'
+               '\tAlloc: ' <StrFromInt s.Number> '\n'
+               '\tUsings: ' s.Usings '\n'
+               '\tIndex: ' e.Index '\n'
+               '\tMode: ' s.Mode '\n'
+    >;
+}
+
+NumerateVars {
+  s.Number ( s.Usings 'e' e.Index ) e.Etc =
+    (s.Number s.Usings 'e' e.Index) <NumerateVars <Add s.Number 2> e.Etc>
+  ;
+  s.Number ( s.Usings s.Mode e.Index ) e.Etc =
+    (s.Number s.Usings s.Mode e.Index) <NumerateVars <Inc s.Number> e.Etc>
+  ;
+
+  s.Number = (s.Number)
+  ;
+}
+
+IssueVars {
+  e.Variables (s.Number) =
+    (CmdIssueMem s.Number)
+    <Map MakeDeclaration e.Variables>
+  ;
+}
+
+FindAllocForCopiedVars {
+  (e.Set1-B (s.Number e.Common) e.Set1-E) (e.Set2-B (e.Common) e.Set2-E) =
+    //<DebugNVarInfo (s.Number e.Common)>
+    (s.Number e.Common)
+    <FindAllocForCopiedVars (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>
+  ;
+
+  (e.Set1) (e.Set2) = ;
+}
+
+GenBoundPrologue {
+  =
+    (CmdiMoveLeft 0)
+    (CmdiMoveLeft 0)
+    (CmdiMoveRigth 0);
+}
+
+
+GenInterpretPatternCommand {
+  (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc = 
+    (CmdiBracket s.Direction s.Num s.NumRanges)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdClosedE AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
+    (CmdiContextSet s.BracketNumber 'e' e.Index)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdNumber s.Direction s.BracketNumber s.Number) e.Etc =
+    (CmdiNum s.Direction s.BracketNumber s.Number)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdIdent s.Direction s.BracketNumber e.Name) e.Etc =
+    (CmdiIdent s.Direction s.BracketNumber e.Name)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdSave s.OldBracketNumber s.NewBracketNumber) e.Etc =
+    (CmdiSave s.OldBracketNumber s.NewBracketNumber)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index) e.Etc =
+    (CmdiEStart s.BracketNum 'e' e.Index)
+    <GenInterpretPatternCommand e.Etc>
+    (CmdiEStop)
+    ;
+
+  // (CmdOpenedE-End AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
+  //   (CmdiEStop s.BracketNumber 'e' e.Index)
+  //   <GenInterpretPatternCommand e.Etc>
+  //   ;
+
+  (CmdChar s.Direction s.BracketNumber s.Char) e.Etc =
+    (CmdiChar s.Direction s.BracketNumber s.Char)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdName s.Direction s.BracketNumber e.Name) e.Etc =
+    (CmdiName s.Direction s.BracketNumber e.Name)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) e.Etc =
+    (CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdRepeated s.Direction s.BracketNumber e.VarInfo) e.Etc =
+    (CmdiRepeat s.Direction s.BracketNumber e.VarInfo)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  //временный хак
+  (CmdEmpty AlgLeft s.BracketNumber) e.Etc = 
+    (CmdiEmpty s.BracketNumber)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
+    // <WriteLine 'Var: ' s.Direction ' :bn: ' s.BracketNumber
+    //   ' :mode: ' s.Mode ' :info: ' e.Info >
+    (CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
+  (CmdEmpty s.Direction s.BracketNumber) e.Etc = 
+    <WriteLine 'CmdEmpty: ' s.Direction ' : ' s.BracketNumber >
+    ;
+
+  (e.Command) e.PatternCommands = <GenInterpretPatternCommand e.PatternCommands>;
+   =;
+}
+
 
 GeneralizeResult {
   (e.PatternVars) (e.PatternCommands)
@@ -626,14 +791,29 @@ GeneralizeResult {
             <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
         }
         {
-          (e.CommonVars) (e.CopiedVars) e.PatternCommands^ =
+          (e.CommonVars) (e.CopiedVars) e.Etc =
+            (<NumerateVars 0 e.CommonVars>) (e.CopiedVars) e.Etc;
+        }
+        {
+          (e.NCommonVars) (e.CopiedVars) e.Etc =
+            (e.NCommonVars)
+            (<FindAllocForCopiedVars (e.NCommonVars) (e.CopiedVars)>)
+            (e.CopiedVars)
+            e.Etc;
+        }
+        {
+          (e.NCommonVars) (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
             <GenerateResult-OpenELoops
-              <Map MakeDeclaration e.CommonVars>
+
+              <IssueVars e.NCommonVars>
+
               e.PatternCommands
               (CmdIfDef)
               (CmdInitRAA)
+              //<GenBoundPrologue>
+              <GenInterpretPatternCommand e.PatternCommands>
               <Map
-                (MakeInterpCommands e.CopiedVars)
+                (MakeInterpCommands e.MCopiedVars)
                 <FoldAllocCommands
                   (e.ResultAllocCommands)
                   e.ResultCommands
@@ -705,11 +885,15 @@ FilterUnusedCmdClosedE {
 
 $EENUM CmdDeclareEVar, CmdDeclareVar;
 
-MakeDeclaration {
-  ( s.Usings 'e' e.Index ) = (CmdDeclareEVar s.Usings 'e' e.Index);
+//FROM Library
+$EXTERN WriteLine;
 
-  ( s.Usings s.Mode e.Index ) =
-    (CmdDeclareVar s.Usings s.Mode e.Index);
+MakeDeclaration {
+  ( s.Number s.Usings 'e' e.Index ) =
+    (CmdDeclareEVar s.Number s.Usings 'e' e.Index);
+
+  ( s.Number s.Usings s.Mode e.Index ) =
+    (CmdDeclareVar s.Number s.Usings s.Mode e.Index);
 }
 
 $EENUM CmdCopyEVar, CmdCopyVar;
@@ -752,11 +936,15 @@ FoldAllocCommands {
 }
 
 MakeInterpCommands {
-  e.CopiedVars-B (s.Usings s.Mode e.Index) e.CopiedVars-E
+  e.CopiedVars-B (s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
   (CmdInsertVar s.Usings s.Mode e.Index) =
+    //<WriteLine 'Debug 1 index '>
+    //<DebugNVarInfo (s.Number s.Usings s.Mode e.Index)>
     (CmdArrCopy s.Mode e.Index);
 
   e.CopiedVars (CmdInsertVar s.Usings s.Mode e.Index) =
+    //<WriteLine 'Debug 2 index'>
+    //<DebugVarInfo (s.Usings s.Mode e.Index)>
     (CmdArrSplice s.Usings s.Mode e.Index);
 
   e.CopiedVars (CmdInsertElem ElChar s.Counter s.Value) =
@@ -795,7 +983,8 @@ GenerateResult-OpenELoops {
     e.Commands-B
     (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
     <GenerateResult-OpenELoops e.Commands-E>
-    (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index);
+    (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index)
+    ;
 
   e.Commands = e.Commands;
 }
