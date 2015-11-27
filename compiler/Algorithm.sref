@@ -13,7 +13,7 @@ $ENTRY MakeAlgorithm {
 */
 
 //==============================================================================
-// Генерация образца
+// Р“РµРЅРµСЂР°С†РёСЏ РѕР±СЂР°Р·С†Р°
 //==============================================================================
 
 //FROM Lexer
@@ -24,38 +24,38 @@ $EXTERN
 //FROM LibraryEx
 $EXTERN Inc;
 
-// Направление распознавания
+// РќР°РїСЂР°РІР»РµРЅРёРµ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
 $EENUM AlgLeft, AlgRight;
 
 /*
-  Тип идентификатора следует сделать доступным
-  и из Driver'а, и из Generator'а.
-  Остаётся только импортировать отсюда.
+  РўРёРї РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° СЃР»РµРґСѓРµС‚ СЃРґРµР»Р°С‚СЊ РґРѕСЃС‚СѓРїРЅС‹Рј
+  Рё РёР· Driver'Р°, Рё РёР· Generator'Р°.
+  РћСЃС‚Р°С‘С‚СЃСЏ С‚РѕР»СЊРєРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ РѕС‚СЃСЋРґР°.
 */
 $EENUM TkIdentifier;
 
 /*
-Команды распознавания
-  Литералы, формат (Cmd*** s.Direction s.BracketNum e.Literal)
-  Скобки, формат (CmdBrackets s.Direction s.BracketNum s.InnerNum)
-  АТД, формат
+РљРѕРјР°РЅРґС‹ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
+  Р›РёС‚РµСЂР°Р»С‹, С„РѕСЂРјР°С‚ (Cmd*** s.Direction s.BracketNum e.Literal)
+  РЎРєРѕР±РєРё, С„РѕСЂРјР°С‚ (CmdBrackets s.Direction s.BracketNum s.InnerNum)
+  РђРўР”, С„РѕСЂРјР°С‚
     (CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (CmdEmpty AlgLeft s.BracketNum),
-    направление добавлено для единнобразия, генератором не используется
-  Переменные:
-    повторные, формат
+  РџСѓСЃС‚С‹Рµ СЃРєРѕР±РєРё, С„РѕСЂРјР°С‚ (CmdEmpty AlgLeft s.BracketNum),
+    РЅР°РїСЂР°РІР»РµРЅРёРµ РґРѕР±Р°РІР»РµРЅРѕ РґР»СЏ РµРґРёРЅРЅРѕР±СЂР°Р·РёСЏ, РіРµРЅРµСЂР°С‚РѕСЂРѕРј РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
+  РџРµСЂРµРјРµРЅРЅС‹Рµ:
+    РїРѕРІС‚РѕСЂРЅС‹Рµ, С„РѕСЂРјР°С‚
       (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
-    новые s и t, формат (CmdVar s.Direction s.BracketNum s.Mode e.Index)
-    открытые e:
-      первоначальный формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
-      после обработки:
+    РЅРѕРІС‹Рµ s Рё t, С„РѕСЂРјР°С‚ (CmdVar s.Direction s.BracketNum s.Mode e.Index)
+    РѕС‚РєСЂС‹С‚С‹Рµ e:
+      РїРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅС‹Р№ С„РѕСЂРјР°С‚ (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
+      РїРѕСЃР»Рµ РѕР±СЂР°Р±РѕС‚РєРё:
         (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
         (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index)
-    закрытые e, формат
+    Р·Р°РєСЂС‹С‚С‹Рµ e, С„РѕСЂРјР°С‚
       (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
-  Команды сохранения скобок
+  РљРѕРјР°РЅРґС‹ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРєРѕР±РѕРє
     (CmdSave s.OldNumber e.NewNumber)
-  Комментарий, вносимый в исходный код (CmdComment e.Text)
+  РљРѕРјРјРµРЅС‚Р°СЂРёР№, РІРЅРѕСЃРёРјС‹Р№ РІ РёСЃС…РѕРґРЅС‹Р№ РєРѕРґ (CmdComment e.Text)
 */
 $EENUM
   CmdChar, CmdNumber, CmdName, CmdIdent,
@@ -93,7 +93,7 @@ $EXTERN MapReduce;
 $LABEL Brackets, ADT-Brackets, CallBrackets;
 
 DoGenPattern {
-  // Распознавание литералов (символьных, целочисленных, имён)
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ Р»РёС‚РµСЂР°Р»РѕРІ (СЃРёРјРІРѕР»СЊРЅС‹С…, С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹С…, РёРјС‘РЅ)
   s.NumRanges e.Ranges-B (s.Num (TkChar s.Char) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
@@ -150,7 +150,7 @@ DoGenPattern {
       (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
     >;
 
-  // Распознавание скобок
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ СЃРєРѕР±РѕРє
   s.NumRanges e.Ranges-B
   (s.Num (#Brackets e.SubRange) e.Range)
   e.Ranges-E
@@ -171,7 +171,7 @@ DoGenPattern {
       (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.NumRanges))
     >;
 
-  // Распознавание АТД-скобок
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ РђРўР”-СЃРєРѕР±РѕРє
   s.NumRanges e.Ranges-B
   (s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
   e.Ranges-E
@@ -194,15 +194,15 @@ DoGenPattern {
       (e.Commands (CmdADT AlgRight s.Num s.NumRanges e.Name))
     >;
 
-  // Пустой диапазон
-  s.NumRanges e.Ranges-B (s.Num /* пусто */) e.Ranges-E
+  // РџСѓСЃС‚РѕР№ РґРёР°РїР°Р·РѕРЅ
+  s.NumRanges e.Ranges-B (s.Num /* РїСѓСЃС‚Рѕ */) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B e.Ranges-E
       (e.Vars) (e.Commands (CmdEmpty AlgLeft s.Num))
     >;
 
-  // Распознавание переменных
+  // Р Р°СЃРїРѕР·РЅР°РІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…
   s.NumRanges e.Ranges-B (s.Num (TkVariable s.Mode e.Index) e.Range) e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
@@ -219,7 +219,7 @@ DoGenPattern {
       (e.Commands (CmdRepeated AlgRight s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  // Диапазон с закрытой переменной
+  // Р”РёР°РїР°Р·РѕРЅ СЃ Р·Р°РєСЂС‹С‚РѕР№ РїРµСЂРµРјРµРЅРЅРѕР№
   s.NumRanges e.Ranges-B (s.Num (TkVariable 'e' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
@@ -264,8 +264,8 @@ DoGenPattern {
       (e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index))
     >;
 
-  // Завершение разбора.
-  s.NumRanges /* пусто */ (e.Vars) (e.Commands) =
+  // Р—Р°РІРµСЂС€РµРЅРёРµ СЂР°Р·Р±РѕСЂР°.
+  s.NumRanges /* РїСѓСЃС‚Рѕ */ (e.Vars) (e.Commands) =
     s.NumRanges (e.Vars) e.Commands;
 }
 
@@ -311,8 +311,8 @@ DoSaveBrackets-MakeSavers {
       <Map
         {
           /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
+            Р’СЃРµ РєРѕРјР°РЅРґС‹ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ СЃРѕРґРµСЂР¶Р°С‚ РЅРѕРјРµСЂ СЃРєРѕР±РѕРє С‚СЂРµС‚СЊРёРј С‚РµСЂРјРѕРј,
+            РѕР±С‰РёР№ С„РѕСЂРјР°С‚ (s.Command s.Direction s.BracketNum e.Info)
           */
           (s.Command^ s.Direction^ s.Num e.Info^) =
             (s.Command s.Direction s.LastBracket e.Info);
@@ -336,8 +336,8 @@ ExtractBrackets {
       <Map
         {
           /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
+            Р’СЃРµ РєРѕРјР°РЅРґС‹ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ СЃРѕРґРµСЂР¶Р°С‚ РЅРѕРјРµСЂ СЃРєРѕР±РѕРє С‚СЂРµС‚СЊРёРј С‚РµСЂРјРѕРј,
+            РѕР±С‰РёР№ С„РѕСЂРјР°С‚ (s.Command s.Direction s.BracketNum e.Info)
           */
           (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
             s.BracketNum s.InnerNum;
@@ -410,7 +410,7 @@ TextFromPattern-Char {
 }
 
 //==============================================================================
-// Генерация результата
+// Р“РµРЅРµСЂР°С†РёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 //==============================================================================
 
 $FORWARD DoGenResult;
@@ -420,12 +420,12 @@ GenResult {
     <DoGenResult
       (/* vars */)
       (/* alloc commands */) (/* other commands */)
-      0 // счётчик новых элементов
+      0 // СЃС‡С‘С‚С‡РёРє РЅРѕРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ
       e.Result
     >;
 }
 
-// Основные команды работы с образцом
+// РћСЃРЅРѕРІРЅС‹Рµ РєРѕРјР°РЅРґС‹ СЂР°Р±РѕС‚С‹ СЃ РѕР±СЂР°Р·С†РѕРј
 //  (CmdAllocateElem s.Number s.ElType e.Info)
 //  (CmdLinkBrackets s.Left s.Right)
 //  (CmdPushStack s.Number)
@@ -438,7 +438,7 @@ $EENUM
   CmdInsertElem,
   CmdInsertVar;
 
-// Спецификаторы команд (элементы)
+// РЎРїРµС†РёС„РёРєР°С‚РѕСЂС‹ РєРѕРјР°РЅРґ (СЌР»РµРјРµРЅС‚С‹)
 $EENUM
   ElChar, ElName, ElNumber, ElIdent,
   ElOpenADT, ElCloseADT,
@@ -446,16 +446,16 @@ $EENUM
   ElOpenCall, ElCloseCall;
 
 /*
-  Порядок выполнения команд.
-  1. Все выделения памяти (в порядке перечисления)
-  2. Связывание крулых и угловых скобок и
-  построение результата (в обратном порядке)
+  РџРѕСЂСЏРґРѕРє РІС‹РїРѕР»РЅРµРЅРёСЏ РєРѕРјР°РЅРґ.
+  1. Р’СЃРµ РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё (РІ РїРѕСЂСЏРґРєРµ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ)
+  2. РЎРІСЏР·С‹РІР°РЅРёРµ РєСЂСѓР»С‹С… Рё СѓРіР»РѕРІС‹С… СЃРєРѕР±РѕРє Рё
+  РїРѕСЃС‚СЂРѕРµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚Р° (РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ)
 */
 
 $LABEL CloseCall;
 
 DoGenResult {
-  // Создаём литералы
+  // РЎРѕР·РґР°С‘Рј Р»РёС‚РµСЂР°Р»С‹
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkChar s.Value) e.Result =
     <DoGenResult
       (e.Vars)
@@ -491,7 +491,7 @@ DoGenResult {
     >;
 
   /*
-    Обработка открывающих скобок всех трёх типов осуществляется похоже.
+    РћР±СЂР°Р±РѕС‚РєР° РѕС‚РєСЂС‹РІР°СЋС‰РёС… СЃРєРѕР±РѕРє РІСЃРµС… С‚СЂС‘С… С‚РёРїРѕРІ РѕСЃСѓС‰РµСЃС‚РІР»СЏРµС‚СЃСЏ РїРѕС…РѕР¶Рµ.
   */
   (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (#Brackets e.InBrackets) e.Result =
@@ -522,8 +522,8 @@ DoGenResult {
     >;
 
   /*
-    Закрывающие скобки надо обрабатывать особым образом.
-    Круглые скобки и АТД -- слинковать, угловые -- добавить в стек.
+    Р—Р°РєСЂС‹РІР°СЋС‰РёРµ СЃРєРѕР±РєРё РЅР°РґРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РѕСЃРѕР±С‹Рј РѕР±СЂР°Р·РѕРј.
+    РљСЂСѓРіР»С‹Рµ СЃРєРѕР±РєРё Рё РђРўР” -- СЃР»РёРЅРєРѕРІР°С‚СЊ, СѓРіР»РѕРІС‹Рµ -- РґРѕР±Р°РІРёС‚СЊ РІ СЃС‚РµРє.
   */
   (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (TkCloseBracket s.OpenCounter) e.Result =
@@ -565,7 +565,7 @@ DoGenResult {
       <Inc s.Counter> e.Result
     >;
 
-  // Обработка переменных
+  // РћР±СЂР°Р±РѕС‚РєР° РїРµСЂРµРјРµРЅРЅС‹С…
   (e.Vars-B (s.Usings s.Mode e.Index) e.Vars-E) (e.AllocCommands) (e.Commands)
   s.Counter (TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
@@ -584,14 +584,14 @@ DoGenResult {
       s.Counter e.Result
     >;
 
-  // Завершение просмотра
+  // Р—Р°РІРµСЂС€РµРЅРёРµ РїСЂРѕСЃРјРѕС‚СЂР°
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
     (e.Vars) (e.AllocCommands) (e.Commands);
 }
 
 //==============================================================================
-// Обобщение информации -- уничтожение ненужных переменных,
-// копирование повторных.
+// РћР±РѕР±С‰РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё -- СѓРЅРёС‡С‚РѕР¶РµРЅРёРµ РЅРµРЅСѓР¶РЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С…,
+// РєРѕРїРёСЂРѕРІР°РЅРёРµ РїРѕРІС‚РѕСЂРЅС‹С….
 //==============================================================================
 
 $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
@@ -686,13 +686,13 @@ VarSetDifference {
 ClosedEVariables {
   (CmdClosedE AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
 
-  t.Other = /* игнорируем */;
+  t.Other = /* РёРіРЅРѕСЂРёСЂСѓРµРј */;
 }
 
 RepeatedEVariables {
   (CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
 
-  t.Other = /* игнорируем */;
+  t.Other = /* РёРіРЅРѕСЂРёСЂСѓРµРј */;
 }
 
 FilterUnusedCmdClosedE {
@@ -748,7 +748,7 @@ FoldAllocCommands {
   (CmdPushStack e.CmdInfo) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>;
 
-  (/* должно быть пусто */) /* пусто */ = /* пусто */;
+  (/* РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РїСѓСЃС‚Рѕ */) /* РїСѓСЃС‚Рѕ */ = /* РїСѓСЃС‚Рѕ */;
 }
 
 MakeInterpCommands {
