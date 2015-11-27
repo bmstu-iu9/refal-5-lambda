@@ -2411,6 +2411,7 @@ refalrts::FnResult refalrts::new_interpret_array(
   printf("New interpret engine...\n");
   printf("begin == %p\n", begin);
   printf("end == %p\n", end);
+  printf("raa interpret = %p\n", raa);
   int i = 0;
   Iter stack_ptr = 0;
   Iter res = begin;
@@ -2447,7 +2448,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                   *static_cast<Iter*>(raa[i].ptr_value2));
         
         printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        end;
+        break;
 
       case icMoveRight:
         printf("debug: bound move right\n");
@@ -2457,7 +2458,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                    *static_cast<Iter*>(raa[i].ptr_value2));
         
         printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        end;
+        break;
 
       case icBracketLeft:
         printf("debug: icBracketLeft\n");
@@ -2810,7 +2811,7 @@ refalrts::FnResult refalrts::new_interpret_array(
           raa[stopPos].cmd = icBreak;
 
           // здесь должны выбрать новый массив до максимального icEStop
-          // заменяем его на icEnd
+          // заменяем его на icBreak
           // потом запускаем вирт машину вложенную
 
 					fprintf(refalrts::vm::dump_stream(), "\n==========before e-var");
@@ -3035,6 +3036,7 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icEStart:
       case icEStop:
       case icBreak:
+      case icPushFPtr:
         break;
 
       case icBracketLeft:
