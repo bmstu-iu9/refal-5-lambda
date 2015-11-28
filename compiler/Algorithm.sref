@@ -667,8 +667,8 @@ NumerateVars {
 }
 
 IssueVars {
-  e.Variables (s.Number) =
-    (CmdIssueMem s.Number)
+  s.BracketNum e.Variables (s.Number) =
+    (CmdIssueMem s.Number s.BracketNum)
     <Map MakeDeclaration e.Variables>
   ;
 }
@@ -769,6 +769,25 @@ GenInterpretPatternCommand {
    =;
 }
 
+GetBracketsNum {
+  s.Num (CmdBrackets e.Any) e.Etc =
+    <GetBracketsNum <Inc s.Num> e.Etc>
+    ;
+
+  s.Num (CmdADT e.Any) e.Etc =
+    <GetBracketsNum <Inc s.Num> e.Etc>
+    ;
+ 
+  s.Num (CmdSave e.Any) e.Etc =
+    <GetBracketsNum <Inc s.Num> e.Etc>
+    ;
+
+  s.Num (e.Any) e.Etc =
+    <GetBracketsNum s.Num e.Etc>
+    ;
+
+  s.Num = s.Num;
+}
 
 GeneralizeResult {
   (e.PatternVars) (e.PatternCommands)
@@ -805,8 +824,8 @@ GeneralizeResult {
         {
           (e.NCommonVars) (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
             <GenerateResult-OpenELoops
-
-              <IssueVars e.NCommonVars>
+              //<WriteLine 'Boooo: ' <StrFromInt <GetBracketsNum 0 e.PatternCommands>>>
+              <IssueVars <GetBracketsNum 1 e.PatternCommands> e.NCommonVars>
 
               e.PatternCommands
               (CmdIfDef)

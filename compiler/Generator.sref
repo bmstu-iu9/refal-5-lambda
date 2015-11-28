@@ -151,7 +151,7 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
 
 //FROM LibraryEx
-$EXTERN Map, MapReduce, Fetch;
+$EXTERN Map, MapReduce, Fetch, Add;
 
 //FROM Library
 $EXTERN StrFromInt, WriteLine;
@@ -280,6 +280,30 @@ PrintRepeatInterp {
               '(void*)' <PrintVarShortcut <Dec s.Usings> s.Mode e.Index> ', 0},' 
     )
 
+    ;
+}
+
+PrintContextInit {
+  (e.Indent) 0 =
+    (e.Indent) (e.Indent '// Warning - storage with 0 elems!')
+    (e.Indent) (e.Indent 'refalrts::Iter context[1];')
+    ;
+
+  (e.Indent) s.Number =
+    (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
+    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
+    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
+    ;
+}
+
+PrintBracketsInit {
+  (e.Indent) 0 =
+    (e.Indent) (e.Indent '// Warning - no any brackets!')
+    ;
+
+  (e.Indent) s.Number =
+    (e.Indent) (e.Indent '// brakcets start index = ' <StrFromInt s.Number> ' in context')
+    (e.Indent 'const int brackets_start = ' <StrFromInt s.Number> ';')
     ;
 }
 
@@ -514,15 +538,21 @@ GenCommand {
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     (e.Indent 'return refalrts::cSuccess;');
 
-  (e.Indent) (CmdIssueMem 0) =
-    (e.Indent) (e.Indent '// Warning - storage with 0 elems!')
-    (e.Indent) (e.Indent 'refalrts::Iter context[1];')
-    ;
+  // (e.Indent) (CmdIssueMem 0) =
+  //   (e.Indent) (e.Indent '// Warning - storage with 0 elems!')
+  //   (e.Indent) (e.Indent 'refalrts::Iter context[1];')
+  //   ;
 
-  (e.Indent) (CmdIssueMem s.Number) =
-    (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
-    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
-    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
+  (e.Indent) (CmdIssueMem s.Number s.BracketNumber) =
+    <PrintBracketsInit (e.Indent) s.Number>
+    (e.Indent '// brackets count = ' <StrFromInt s.BracketNumber>)
+    (e.Indent '// including b0')
+    <PrintContextInit (e.Indent)
+      <Add <Add s.Number s.BracketNumber> s.BracketNumber>
+    >
+    //(e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
+    //(e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
+    //(e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
     //(e.Indent) (e.Indent 'for (int i = 0; i < ' <StrFromInt s.Number> '; i++){ printf("context = %p\\n", context[i]);}')
     ;
 
