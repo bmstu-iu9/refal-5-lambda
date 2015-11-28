@@ -11,7 +11,8 @@ typedef enum FnResult {
   cNoMemory = 1,
   cSuccess = 2,
   cExit = 3,
-  cEndErr = 4
+  cEndErr = 4,
+  cPatternMismatch = 5
 } FnResult;
 
 typedef struct Node Node;
@@ -123,7 +124,9 @@ typedef enum iCmd {
   icSave,
   icEStart,
   icEStop,
-  icBreak
+  icBreak,
+  icPattern,
+  icResult
 } iCmd;
 
 typedef enum BracketType {

@@ -145,6 +145,7 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdiNum, CmdiIdent, CmdiADT,
   CmdiName, CmdiChar, CmdiRepeat,
   CmdiSave, CmdiEStart, CmdiEStop,
+  CmdiResult, CmdiPattern,
   CmdiBracket, CmdiEmpty;
 
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
@@ -521,7 +522,7 @@ GenCommand {
   (e.Indent) (CmdIssueMem s.Number) =
     (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
     (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
-    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ');')
+    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
     //(e.Indent) (e.Indent 'for (int i = 0; i < ' <StrFromInt s.Number> '; i++){ printf("context = %p\\n", context[i]);}')
     ;
 
@@ -537,6 +538,16 @@ GenCommand {
   (e.Indent) (CmdSetBound) =
     (e.Indent)
     (e.Indent '{refalrts::icBoundSet, arg_begin, arg_end, 0},')
+    ;
+
+  (e.Indent) (CmdiPattern) =
+    (e.Indent)
+    (e.Indent '{refalrts::icPattern, 0, 0, 0},')
+    ;
+
+  (e.Indent) (CmdiResult) =
+    (e.Indent)
+    (e.Indent '{refalrts::icResult, 0, 0, 0},')
     ;
 
   (e.Indent) (CmdiMoveRigth s.Num) =
@@ -684,7 +695,10 @@ GenCommand {
 			'raa, allocs, context, arg_begin, arg_end, '
 			'sizeof(context)/sizeof(context[0]) );'
     )
-    (e.Indent 'return res;');
+    (e.Indent 'if ( res == refalrts::cPatternMismatch )')
+    (e.Indent '  break;')
+    (e.Indent 'else')
+    (e.Indent '  return res;');
 
   (e.Indent) (CmdArrChar s.Value) =
     (e.Indent)
