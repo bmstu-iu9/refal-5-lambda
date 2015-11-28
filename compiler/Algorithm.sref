@@ -72,6 +72,7 @@ $EENUM
   CmdiName, CmdiChar,
   CmdiRepeat, CmdiSave,
   CmdiEStart, CmdiEStop,
+  CmdiResult, CmdiPattern,
   CmdiEmpty;
 
 $ENUM CmdOpenedE;
@@ -810,8 +811,9 @@ GeneralizeResult {
               e.PatternCommands
               (CmdIfDef)
               (CmdInitRAA)
-              //<GenBoundPrologue>
+              (CmdiPattern)
               <GenInterpretPatternCommand e.PatternCommands>
+              (CmdiResult)
               <Map
                 (MakeInterpCommands e.MCopiedVars)
                 <FoldAllocCommands
