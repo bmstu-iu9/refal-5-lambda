@@ -22,7 +22,7 @@ $EXTERN
   TkName, TkNumber, TkVariable, TkChar;
 
 //FROM LibraryEx
-$EXTERN Inc;
+$EXTERN Inc, Add;
 
 // Направление распознавания
 $EENUM AlgLeft, AlgRight;
@@ -58,6 +58,7 @@ $EENUM TkIdentifier;
   Комментарий, вносимый в исходный код (CmdComment e.Text)
 */
 $EENUM
+  CmdInitB0,
   CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdClosedE,
@@ -80,21 +81,26 @@ $ENUM CmdOpenedE;
 $FORWARD DoGenPattern, TextFromPattern, SaveBrackets;
 
 //FROM LibraryEx
-$EXTERN Fetch;
+$EXTERN Fetch, Seq;
 
 GenPattern {
   e.Pattern =
     <Fetch
       <DoGenPattern
-        1 (0 e.Pattern) (/* vars */) (/* commands */)
+        2 (0 e.Pattern) (/* vars */) (/* commands */)
       >
-      {
-        s.NumRanges (e.Vars) e.Commands =
-          (e.Vars)
-          ((CmdComment <TextFromPattern e.Pattern> )
-            <SaveBrackets s.NumRanges e.Commands >
-          );
-      }
+      <Seq
+        {
+          s.NumRanges (e.Vars) e.Commands =
+            (e.Vars) <SaveBrackets s.NumRanges e.Commands>;
+        }
+        {
+          (e.Vars) s.NumRanges e.Commands =
+            (e.Vars)
+            s.NumRanges
+            ((CmdComment <TextFromPattern e.Pattern> ) e.Commands);
+        }
+      >
     >;
 }
 
@@ -102,6 +108,10 @@ GenPattern {
 $EXTERN MapReduce, DelAccumulator, Reduce, Map;
 
 $LABEL Brackets, ADT-Brackets, CallBrackets;
+
+Inc2 {
+  s.Num = <Add 2 s.Num>;
+}
 
 DoGenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
@@ -167,7 +177,7 @@ DoGenPattern {
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc s.NumRanges>
+      <Inc2 s.NumRanges>
       e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.NumRanges))
     >;
@@ -177,7 +187,7 @@ DoGenPattern {
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc s.NumRanges>
+      <Inc2 s.NumRanges>
       e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
       (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.NumRanges))
     >;
@@ -188,7 +198,7 @@ DoGenPattern {
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc s.NumRanges>
+      <Inc2 s.NumRanges>
       e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
       (e.Vars)
       (e.Commands (CmdADT AlgLeft s.Num s.NumRanges e.Name))
@@ -199,7 +209,7 @@ DoGenPattern {
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc s.NumRanges>
+      <Inc2 s.NumRanges>
       e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
       (e.Vars)
       (e.Commands (CmdADT AlgRight s.Num s.NumRanges e.Name))
@@ -307,7 +317,7 @@ DoSaveBrackets {
       }
     >;
 
-  s.LastBracket (e.Scanned) e.Commands = e.Scanned e.Commands;
+  s.LastBracket (e.Scanned) e.Commands = s.LastBracket e.Scanned e.Commands;
 }
 
 //From LibraryEx 
@@ -319,7 +329,7 @@ DoSaveBrackets-MakeSavers {
   (e.Scanned)
   e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E =
     <DoSaveBrackets-MakeSavers
-      <Inc s.LastBracket>
+      <Inc2 s.LastBracket>
       (e.BoundedBrackets-B e.BoundedBrackets-E)
       (e.Scanned (CmdSave s.Num s.LastBracket))
       <Map
@@ -667,8 +677,8 @@ NumerateVars {
 }
 
 IssueVars {
-  s.BracketNum e.Variables (s.Number) =
-    (CmdIssueMem s.Number s.BracketNum)
+  e.Variables (s.Number) =
+    (CmdIssueMem s.Number)
     <Map MakeDeclaration e.Variables>
   ;
 }
@@ -769,28 +779,8 @@ GenInterpretPatternCommand {
    =;
 }
 
-GetBracketsNum {
-  s.Num (CmdBrackets e.Any) e.Etc =
-    <GetBracketsNum <Inc s.Num> e.Etc>
-    ;
-
-  s.Num (CmdADT e.Any) e.Etc =
-    <GetBracketsNum <Inc s.Num> e.Etc>
-    ;
- 
-  s.Num (CmdSave e.Any) e.Etc =
-    <GetBracketsNum <Inc s.Num> e.Etc>
-    ;
-
-  s.Num (e.Any) e.Etc =
-    <GetBracketsNum s.Num e.Etc>
-    ;
-
-  s.Num = s.Num;
-}
-
 GeneralizeResult {
-  (e.PatternVars) (e.PatternCommands)
+  (e.PatternVars) s.NumBrackets (e.PatternCommands)
   (e.ResultVars) (e.ResultAllocCommands) (e.ResultCommands) =
     <Fetch
       (<ReplicateVars e.PatternVars>)
@@ -812,7 +802,7 @@ GeneralizeResult {
         }
         {
           (e.CommonVars) (e.CopiedVars) e.Etc =
-            (<NumerateVars 0 e.CommonVars>) (e.CopiedVars) e.Etc;
+            (<NumerateVars s.NumBrackets e.CommonVars>) (e.CopiedVars) e.Etc;
         }
         {
           (e.NCommonVars) (e.CopiedVars) e.Etc =
@@ -824,9 +814,9 @@ GeneralizeResult {
         {
           (e.NCommonVars) (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
             <GenerateResult-OpenELoops
-              //<WriteLine 'Boooo: ' <StrFromInt <GetBracketsNum 0 e.PatternCommands>>>
-              <IssueVars <GetBracketsNum 1 e.PatternCommands> e.NCommonVars>
+              <IssueVars e.NCommonVars>
 
+              (CmdInitB0)
               e.PatternCommands
               (CmdIfDef)
               (CmdInitRAA)
