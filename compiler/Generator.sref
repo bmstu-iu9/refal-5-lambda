@@ -684,7 +684,7 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icEPush, 0, 0, ' <StrFromInt s.Num> '},')
     (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
-              <BracketsVarsRefs s.NumRanges> ', 0},'
+              '0, 0, ' <StrFromInt s.NumRanges> '},'
     )
     ;
 
