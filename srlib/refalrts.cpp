@@ -2479,11 +2479,11 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icBracketLeft:
         printf("debug: icBracketLeft\n");
-        printf("debug: icBracketLeft: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icBracketLeft: %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
         printf("debug: icBracketLeft: %p %p\n", *bb, *be);
         
-        if( !refalrts::brackets_left( *static_cast<Iter*>(raa[i].ptr_value1),
-                                      *static_cast<Iter*>(raa[i].ptr_value2),
+        if( !refalrts::brackets_left( context[raa[i].value],
+                                      context[raa[i].value + 1],
                                       *bb,
                                       *be ) 
         )
@@ -2493,17 +2493,17 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icBracketRight:
         printf("debug: icBracketRight\n");
-        printf("debug: icBracketRight: res %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icBracketRight: res %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
         printf("debug: icBracketRight: %p %p\n", *bb, *be);
         
-        if( !refalrts::brackets_right( *static_cast<Iter*>(raa[i].ptr_value1),
-                                       *static_cast<Iter*>(raa[i].ptr_value2),
+        if( !refalrts::brackets_right( context[raa[i].value],
+                                       context[raa[i].value + 1],
                                        *bb,
                                        *be ) 
         )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
-        printf("debug: icBracketRight: new res %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        printf("debug: icBracketRight: new res %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
         break;
 
       case ictVarRight:
