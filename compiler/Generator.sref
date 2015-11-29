@@ -690,7 +690,7 @@ GenCommand {
 
   (e.Indent) (CmdiEmpty s.Num) =
     (e.Indent)
-    (e.Indent '{refalrts::icEmpty, ' <BracketsVarsRefs s.Num> ', 0},')
+    (e.Indent '{refalrts::icEmpty, 0, 0, ' <StrFromInt s.Num> '},')
     ;
 
   (e.Indent) (CmdArrInt s.Number) =
