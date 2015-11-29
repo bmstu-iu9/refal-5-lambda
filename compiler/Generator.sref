@@ -593,7 +593,7 @@ GenCommand {
               <BracketsVarsRefs s.OldBracketNumber> ', 0},' 
     )
     (e.Indent '{refalrts::icSave, '
-              <BracketsVars s.NewBracketNumber> ', 0},' 
+              <BracketsVarsRefs s.NewBracketNumber> ', 0},' 
     )
     ;
 
