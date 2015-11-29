@@ -110,7 +110,6 @@ typedef enum iCmd {
   icIdentLeft,
   icADTRight,
   icADTLeft,
-  icPushFPtr,
   icFuncRight,
   icFuncLeft,
   icCharRight,
@@ -340,7 +339,9 @@ extern FnResult new_interpret_array(
   Iter context[],
   Iter begin,
   Iter end,
-	unsigned long context_size
+  unsigned long context_size,
+  const RefalFunction functions[],
+  const RefalIdentifier labels[]
 );
 
 } //namespace refalrts

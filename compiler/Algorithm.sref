@@ -73,7 +73,8 @@ $EENUM
   CmdiRepeat, CmdiSave,
   CmdiEStart, CmdiEStop,
   CmdiResult, CmdiPattern,
-  CmdiEmpty;
+  CmdiEmpty,
+  CmdiFuncArray, CmdiLabelArray;
 
 $ENUM CmdOpenedE;
 
@@ -619,7 +620,8 @@ DoGenResult {
 
 $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
   ClosedEVariables, RepeatedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
-  GenerateResult-OpenELoops, MakeCopyVar, FoldAllocCommands, MakeInterpCommands;
+  GenerateResult-OpenELoops, MakeCopyVar, FoldAllocCommands, MakeInterpCommands,
+  OutlineConstants;
 
 //FROM LibraryEx
 $EXTERN Map, Seq;
@@ -803,18 +805,21 @@ GeneralizeResult {
             (CmdInitB0)
             // Интерпретируемый код
             (CmdIfDef)
-            (CmdInitRAA)
-            (CmdiPattern)
-            <GenInterpretPatternCommand e.PatternCommands>
-            (CmdiResult)
-            <Map
-              (MakeInterpCommands e.MCopiedVars)
-              <FoldAllocCommands
-                (e.ResultAllocCommands)
-                e.ResultCommands
+            <OutlineConstants
+              (0 /* функции */) (0 /* метки */)
+              (CmdInitRAA)
+              (CmdiPattern)
+              <GenInterpretPatternCommand e.PatternCommands>
+              (CmdiResult)
+              <Map
+                (MakeInterpCommands e.MCopiedVars)
+                <FoldAllocCommands
+                  (e.ResultAllocCommands)
+                  e.ResultCommands
+                >
               >
+              (CmdFinRAA)
             >
-            (CmdFinRAA)
             // Компилируемый код
             (CmdElse)
             <GenerateResult-OpenELoops
@@ -974,6 +979,111 @@ MakeInterpCommands {
 
   e.CopiedVars (CmdInsertElem ElCloseCall s.Counter) =
     (CmdArrCC);
+}
+
+RemoveNumber { (s.Number e.Name) = (e.Name); }
+
+OutlineConstants {
+  (s.NextFunc e.Funcs) (s.NextLabel e.Labels)
+  /* пусто */ =
+    (CmdiFuncArray <Map RemoveNumber e.Funcs>)
+    (CmdiLabelArray <Map RemoveNumber e.Labels>);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+  e.Commands
+  (CmdiName s.Direction s.BracketNum e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+      e.Commands
+    >
+    (CmdiName s.Direction s.BracketNum s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels)
+  e.Commands
+  (CmdiName s.Direction s.BracketNum e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels)
+      e.Commands
+    >
+    (CmdiName s.Direction s.BracketNum s.NextFunc);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+  e.Commands
+  (CmdArrFunc e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+      e.Commands
+    >
+    (CmdArrFunc s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels)
+  e.Commands
+  (CmdArrFunc e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels)
+      e.Commands
+    >
+    (CmdArrFunc s.NextFunc);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+  e.Commands
+  (CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels)
+      e.Commands
+    >
+    (CmdiADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels)
+  e.Commands
+  (CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels)
+      e.Commands
+    >
+    (CmdiADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+
+  (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E)
+  e.Commands
+  (CmdiIdent s.Direction s.BracketNum e.Label) =
+    <OutlineConstants
+      (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E)
+      e.Commands
+    >
+    (CmdiIdent s.Direction s.BracketNum s.Num);
+
+  (e.Funcs) (s.NextLabel e.Labels)
+  e.Commands
+  (CmdiIdent s.Direction s.BracketNum e.Label) =
+    <OutlineConstants
+      (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label))
+      e.Commands
+    >
+    (CmdiIdent s.Direction s.BracketNum s.NextLabel);
+
+  (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E)
+  e.Commands
+  (CmdArrIdent e.Label) =
+    <OutlineConstants
+      (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E)
+      e.Commands
+    >
+    (CmdArrIdent s.Num);
+
+  (e.Funcs) (s.NextLabel e.Labels)
+  e.Commands
+  (CmdArrIdent e.Label) =
+    <OutlineConstants
+      (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label))
+      e.Commands
+    >
+    (CmdArrIdent s.NextLabel);
+
+  (e.Funcs) (e.Labels)
+  e.Commands
+  t.OtherCommand =
+    <OutlineConstants (e.Funcs) (e.Labels) e.Commands>
+    t.OtherCommand;
 }
 
 GenerateResult-OpenELoops {
