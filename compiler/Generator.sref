@@ -618,8 +618,8 @@ GenCommand {
     (e.Indent '{refalrts::icPushFPtr, '
               '(void*)&' e.Name ', 0, 0},'
     )
-    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', '
-              <BracketsVarsRefs s.BracketNumber> ', 0},'
+    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', 0, 0, '
+              <StrFromInt s.BracketNumber> '},'
     )
   ;
 

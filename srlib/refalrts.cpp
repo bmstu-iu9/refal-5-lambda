@@ -2665,8 +2665,8 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icFuncRight\n");
         
         if ( !function_right( functionPtr,
-                              *static_cast<Iter*>(raa[i].ptr_value1),
-                              *static_cast<Iter*>(raa[i].ptr_value2))
+                              context[raa[i].value],
+                              context[raa[i].value + 1])
         )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
@@ -2677,8 +2677,8 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icFuncLeft\n");
         
         if ( !function_left( functionPtr,
-                             *static_cast<Iter*>(raa[i].ptr_value1),
-                             *static_cast<Iter*>(raa[i].ptr_value2))
+                             context[raa[i].value],
+                             context[raa[i].value + 1])
         )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
