@@ -2452,8 +2452,8 @@ refalrts::FnResult refalrts::new_interpret_array(
         break;
 
       case icEPush:
-        bb = static_cast<Iter*>(raa[i].ptr_value1);
-        be = static_cast<Iter*>(raa[i].ptr_value2);
+        bb = & context[raa[i].value];
+        be = & context[raa[i].value + 1];
         printf("debug: icEPush: %p %p\n", *bb, *be);
         break;
 
