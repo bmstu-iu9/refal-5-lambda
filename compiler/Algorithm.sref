@@ -320,7 +320,7 @@ DoSaveBrackets {
   s.LastBracket (e.Scanned) e.Commands = s.LastBracket e.Scanned e.Commands;
 }
 
-//From LibraryEx 
+//From LibraryEx
 $EXTERN WriteLine, StrFromInt;
 
 DoSaveBrackets-MakeSavers {
@@ -702,7 +702,7 @@ GenBoundPrologue {
 
 
 GenInterpretPatternCommand {
-  (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc = 
+  (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
     (CmdiBracket s.Direction s.Num s.NumRanges)
     <GenInterpretPatternCommand e.Etc>
     ;
@@ -759,7 +759,7 @@ GenInterpretPatternCommand {
     ;
 
   //временный хак
-  (CmdEmpty AlgLeft s.BracketNumber) e.Etc = 
+  (CmdEmpty AlgLeft s.BracketNumber) e.Etc =
     (CmdiEmpty s.BracketNumber)
     <GenInterpretPatternCommand e.Etc>
     ;
@@ -771,7 +771,7 @@ GenInterpretPatternCommand {
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdEmpty s.Direction s.BracketNumber) e.Etc = 
+  (CmdEmpty s.Direction s.BracketNumber) e.Etc =
     <WriteLine 'CmdEmpty: ' s.Direction ' : ' s.BracketNumber >
     ;
 
