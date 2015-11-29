@@ -607,7 +607,7 @@ GenCommand {
 
   (e.Indent) (CmdiVar s.Direction s.BracketNumber s.Mode e.Info) = 
     (e.Indent)
-    (e.Indent '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction>
+    (e.Indent '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> ', '
               <BracketsVarsRefs s.BracketNumber>
               ', '
               <PrintVarShortcut 1 s.Mode e.Info>
