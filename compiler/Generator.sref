@@ -147,7 +147,8 @@ $EXTERN
   CmdiName, CmdiChar, CmdiRepeat,
   CmdiSave, CmdiEStart, CmdiEStop,
   CmdiResult, CmdiPattern,
-  CmdiBracket, CmdiEmpty;
+  CmdiBracket, CmdiEmpty,
+  CmdiFuncArray, CmdiLabelArray;
 
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
 
@@ -508,6 +509,33 @@ GenCommand {
     (e.Indent '{refalrts::icBoundSet, arg_begin, arg_end, 0},')
     ;
 
+  (e.Indent) (CmdiFuncArray e.FuncNames) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::RefalFunction functions[] = {')
+    <Map
+      {
+        (e.Name) =
+          (e.Indent
+            '  { & ' <PrintName e.Name> ', "' <PrintName e.Name> '" },'
+          );
+      }
+      e.FuncNames
+    >
+    (e.Indent '  { 0, 0 }')
+    (e.Indent '};');
+
+  (e.Indent) (CmdiLabelArray e.LabelNames) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::RefalIdentifier labels[] = {')
+    <Map
+      {
+        (e.Name) = (e.Indent '  & ' e.Name '<int>::name,');
+      }
+      e.LabelNames
+    >
+    (e.Indent '  0')
+    (e.Indent '};');
+
   (e.Indent) (CmdiPattern) =
     (e.Indent)
     (e.Indent '{refalrts::icPattern, 0, 0, 0, 0},')
@@ -537,14 +565,13 @@ GenCommand {
     )
     ;
 
-  (e.Indent) (CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+  (e.Indent) (CmdiADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
-    (e.Indent '{refalrts::icPushFPtr, '
-              '(void*)&' e.Name ', 0, 0, 0},'
-    )
     (e.Indent '{refalrts::icADT' <PrintDirection s.Direction> ', '
-              <BracketsVars s.InnerBrackets> ', 0},'
+              '0, 0, '
+              '(' <StrFromInt s.NameId> ' << 16) | '
+                <StrFromInt s.InnerBrackets> ', '
+              <StrFromInt s.BracketNumber> '},'
     )
     ;
 
@@ -574,22 +601,20 @@ GenCommand {
     )
     ;
 
-  (e.Indent) (CmdiName s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (CmdiName s.Direction s.BracketNumber s.NameId) =
     (e.Indent)
-    (e.Indent '{refalrts::icPushFPtr, '
-              '(void*)&' e.Name ', 0, 0, 0},'
-    )
-    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', 0, 0, 0, '
+    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', 0, 0, '
+              <StrFromInt s.NameId> ', '
               <StrFromInt s.BracketNumber> '},'
     )
   ;
 
-  (e.Indent) (CmdiIdent s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (CmdiIdent s.Direction s.BracketNumber s.NameId) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
     (e.Indent '{refalrts::icIdent' <PrintDirection s.Direction> ', '
-              'reinterpret_cast<void*>(& ' e.Name '<int>::name), '
-              '0, 0},'
+              '0, 0, '
+              <StrFromInt s.NameId> ', '
+              <StrFromInt s.BracketNumber> '},'
     )
     ;
 
@@ -621,8 +646,9 @@ GenCommand {
     (e.Indent
       'refalrts::FnResult res = '
       'refalrts::new_interpret_array( '
-			'raa, allocs, context, arg_begin, arg_end, '
-			'sizeof(context)/sizeof(context[0]) );'
+      'raa, allocs, context, arg_begin, arg_end, '
+      'sizeof(context)/sizeof(context[0]), '
+      'functions, labels );'
     )
     (e.Indent 'if ( res == refalrts::cPatternMismatch )')
     (e.Indent '  break;')
@@ -633,13 +659,9 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icChar, 0, 0, \'' <Escape s.Value> '\', 0},');
 
-  (e.Indent) (CmdArrFunc e.Name) =
+  (e.Indent) (CmdArrFunc s.NameId) =
     (e.Indent)
-    (e.Indent
-      '{refalrts::icFunc, '
-      '(void*) & ' <PrintName e.Name> ', '
-      '(void*) "' <PrintName e.Name> '", 0},'
-    );
+    (e.Indent '{refalrts::icFunc, 0, 0, ' <StrFromInt s.NameId> ', 0},');
 
   (e.Indent) (CmdiBracket s.Direction s.Num s.NumRanges) =
     (e.Indent)
@@ -657,9 +679,9 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icInt, 0, 0, ' s.Number ', 0},');
 
-  (e.Indent) (CmdArrIdent e.Name) =
+  (e.Indent) (CmdArrIdent s.NameId) =
     (e.Indent)
-    (e.Indent '{refalrts::icIdent, (void*) & ' e.Name '<int>::name, 0},');
+    (e.Indent '{refalrts::icIdent, 0, 0, ' <StrFromInt s.NameId> ', 0},');
 
   (e.Indent) (CmdArrOB) =
     (e.Indent)

@@ -2414,7 +2414,9 @@ refalrts::FnResult refalrts::new_interpret_array(
   refalrts::Iter allocs[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
-	unsigned long context_size
+  unsigned long context_size,
+  const RefalFunction functions[],
+  const RefalIdentifier labels[]
 ) {
   printf("New interpret engine...\n");
   printf("begin == %p\n", begin);
@@ -2430,7 +2432,6 @@ refalrts::FnResult refalrts::new_interpret_array(
   Iter *bb = 0;
   unsigned int index;
   RefalNumber refNum = 0;
-  refalrts::RefalFunctionPtr functionPtr = 0;
   char chValue;
   bool inPattern = false;
 
@@ -2604,11 +2605,9 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icIdentRight:
         {
-          refalrts::RefalIdentifier rIdent;
-          rIdent = (refalrts::RefalIdentifier)(raa[i].ptr_value1);
           printf("debug: icIdentRight\n");
           
-          if( ! refalrts::ident_right( rIdent, *bb, *be ) )
+          if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
             return filtered_result( refalrts::cRecognitionImpossible, inPattern );
           
           printf("debug: icIdentRight done...\n");
@@ -2617,11 +2616,9 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icIdentLeft:
         {
-          refalrts::RefalIdentifier rIdent;
-          rIdent = (refalrts::RefalIdentifier)(raa[i].ptr_value1);
           printf("debug: icIdentLeft\n");
           
-          if( ! refalrts::ident_left( rIdent, *bb, *be ) )
+          if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
             return filtered_result( refalrts::cRecognitionImpossible, inPattern );
           
           printf("debug: icIdentLeft done...\n");
@@ -2630,11 +2627,10 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icADTRight:
         printf("debug: icADTRight\n");
-        
-        if( ! refalrts::adt_right( *static_cast<Iter*>(raa[i].ptr_value1),
-                                   *static_cast<Iter*>(raa[i].ptr_value2),
-                                   functionPtr,
-                                   *bb, *be)         
+        if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
+                                   context[(raa[i].value & 0xFFFF) + 1],
+                                   functions[raa[i].value >> 16].ptr,
+                                   bb_, be_)         
         )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
@@ -2643,29 +2639,20 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icADTLeft:
         printf("debug: icADTLeft\n");
-        
-        if( ! refalrts::adt_left( *static_cast<Iter*>(raa[i].ptr_value1),
-                                  *static_cast<Iter*>(raa[i].ptr_value2),
-                                  functionPtr,
-                                  *bb, *be)        
+        if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
+                                  context[(raa[i].value & 0xFFFF) + 1],
+                                  functions[raa[i].value >> 16].ptr,
+                                  bb_, be_)        
         )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
         printf("debug: icADTLeft done...\n");
         break;
 
-      case icPushFPtr:
-        printf("debug: icPushFPtr\n");
-        
-        functionPtr = (RefalFunctionPtr)(raa[i].ptr_value1);
-        
-        printf("debug: icPushFPtr pushed %p\n", functionPtr);
-        break;
-
       case icFuncRight:
         printf("debug: icFuncRight\n");
         
-        if ( !function_right( functionPtr, bb_, be_ ) )
+        if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
         printf("debug: icFuncRight done...\n");
@@ -2674,7 +2661,7 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icFuncLeft:
         printf("debug: icFuncLeft\n");
         
-        if ( !function_left( functionPtr, bb_, be_ ) )
+        if ( !function_left( functions[raa[i].value].ptr, bb_, be_ ) )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
         printf("debug: icFuncLeft done...\n");
@@ -2830,7 +2817,10 @@ refalrts::FnResult refalrts::new_interpret_array(
 					refalrts::vm::make_dump(begin, end);
           do {
             printf("debug: icEStart for [%d] - step %d\n", index, iter);
-            subres = new_interpret_array(subraa, allocs, context, begin, end, context_size);
+            subres = new_interpret_array(
+              subraa, allocs, context, begin, end, context_size,
+              functions, labels
+            );
             printf("debug: icEStart for [%d] - step %d | res = %d\n", index, iter, subres);
             if (subres == refalrts::cSuccess) {
 							/*refalrts::reset_allocator();*/
@@ -2882,8 +2872,8 @@ refalrts::FnResult refalrts::new_interpret_array(
         if(
             !alloc_name(
               *allocs,
-              (RefalFunctionPtr)(raa[i].ptr_value1),
-              (RefalFuncName)(raa[i].ptr_value2)
+              functions[raa[i].value].ptr,
+              functions[raa[i].value].name
             )
         )
           return cNoMemory;
@@ -2891,12 +2881,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         break;
 
       case icIdent:
-        if(
-            !alloc_ident(
-              *allocs,
-              (RefalIdentifier)(raa[i].ptr_value1)
-            )
-        )
+        if( !alloc_ident( *allocs, labels[raa[i].value] ) )
           return cNoMemory;
         ++allocs;
         break;
@@ -3046,7 +3031,6 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icEStart:
       case icEStop:
       case icBreak:
-      case icPushFPtr:
       case icResult:
       case icPattern:
         break;
