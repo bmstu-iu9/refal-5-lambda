@@ -2865,9 +2865,7 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icEmpty:
         printf("debug: icEmpty: %d\n", raa[i].value);
          
-        if ( !empty_seq( *static_cast<Iter*>(raa[i].ptr_value1),
-                         *static_cast<Iter*>(raa[i].ptr_value2))
-        )
+        if ( !empty_seq( context[raa[i].value], context[raa[i].value + 1]) )
           return filtered_result( refalrts::cRecognitionImpossible, inPattern );
         
         printf("debug: icEmpty: ok...\n");
