@@ -143,6 +143,7 @@ typedef struct ResultAction {
     void *ptr_value1;
     void *ptr_value2;
     int value;
+    int bracket;
 } ResultAction;
 
 extern void use( Iter& );

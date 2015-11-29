@@ -66,7 +66,6 @@ $EENUM
   CmdComment, CmdSave, CmdIssueMem,
   CmdSetBound, CmdBoundToLeft, CmdBoundToRight,
   CmdBoundEmptySeq,
-  CmdiMoveLeft, CmdiMoveRigth,
   CmdiContextSet, CmdiVar,
   CmdiBracket,
   CmdiNum, CmdiIdent, CmdiADT,
@@ -686,14 +685,6 @@ FindAllocForCopiedVars {
   (e.Set1) (e.Set2) = ;
 }
 
-GenBoundPrologue {
-  =
-    (CmdiMoveLeft 0)
-    (CmdiMoveLeft 0)
-    (CmdiMoveRigth 0);
-}
-
-
 GenInterpretPatternCommand {
   (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
     (CmdiBracket s.Direction s.Num s.NumRanges)
@@ -809,6 +800,7 @@ GeneralizeResult {
           (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
             (CmdIssueMem s.Number)
             <Map MakeDeclaration e.NCommonVars>
+            (CmdInitB0)
             // Интерпретируемый код
             (CmdIfDef)
             (CmdInitRAA)
@@ -826,7 +818,6 @@ GeneralizeResult {
             // Компилируемый код
             (CmdElse)
             <GenerateResult-OpenELoops
-              (CmdInitB0)
               e.PatternCommands
               (CmdEmptyResult)
               <Map MakeCopyVar e.CopiedVars>
