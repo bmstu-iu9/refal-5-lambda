@@ -314,82 +314,62 @@ GenCommand {
 
   (e.Indent) (CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdNumber s.Direction s.BracketNumber s.Number) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdName s.Direction s.BracketNumber e.Name) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdIdent s.Direction s.BracketNumber e.Name) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchADT
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
     >
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchEmpty (e.Indent) s.BracketNumber>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode e.Info>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
     (e.Indent)
     // in progress
-    (e.Indent '#ifndef INTERPRET')
     <PrintMatchRepeated (e.Indent) s.Direction s.BracketNumber e.VarInfo>
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdClosedE AlgLeft s.BracketNumber 'e' e.Index) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     (e.Indent
       <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
     )
     (e.Indent
       <PrintEVar-E 1 'e' e.Index> ' = ' <BracketsVar-E s.BracketNumber> ';'
     )
-    (e.Indent '#endif')
     //new
     // (e.Indent
     //   <PrintELocShortcut-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
@@ -433,7 +413,6 @@ GenCommand {
 
   (e.Indent) (CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (e.Indent)
-    (e.Indent '#ifndef INTERPRET')
     (e.Indent
       <BracketsVar-B s.NewBracketNumber>
       ' = ' <BracketsVar-B s.OldBracketNumber> ';'
@@ -442,10 +421,6 @@ GenCommand {
       <BracketsVar-E s.NewBracketNumber>
       ' = ' <BracketsVar-E s.OldBracketNumber> ';'
     )
-    (e.Indent '#else')
-    (e.Indent <BracketsVar-B s.NewBracketNumber> ' = 0;')
-    (e.Indent <BracketsVar-E s.NewBracketNumber> ' = 0;')
-    (e.Indent '#endif')
     ;
 
   (e.Indent) (CmdEmptyResult) =

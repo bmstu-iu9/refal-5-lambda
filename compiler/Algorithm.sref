@@ -676,13 +676,6 @@ NumerateVars {
   ;
 }
 
-IssueVars {
-  e.Variables (s.Number) =
-    (CmdIssueMem s.Number)
-    <Map MakeDeclaration e.Variables>
-  ;
-}
-
 FindAllocForCopiedVars {
   (e.Set1-B (s.Number e.Common) e.Set1-E) (e.Set2-B (e.Common) e.Set2-E) =
     //<DebugNVarInfo (s.Number e.Common)>
@@ -805,40 +798,43 @@ GeneralizeResult {
             (<NumerateVars s.NumBrackets e.CommonVars>) (e.CopiedVars) e.Etc;
         }
         {
-          (e.NCommonVars) (e.CopiedVars) e.Etc =
-            (e.NCommonVars)
+          (e.NCommonVars (s.Number)) (e.CopiedVars) e.Etc =
+            (e.NCommonVars) s.Number
             (<FindAllocForCopiedVars (e.NCommonVars) (e.CopiedVars)>)
             (e.CopiedVars)
             e.Etc;
         }
         {
-          (e.NCommonVars) (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
+          (e.NCommonVars) s.Number
+          (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
+            (CmdIssueMem s.Number)
+            <Map MakeDeclaration e.NCommonVars>
+            // Интерпретируемый код
+            (CmdIfDef)
+            (CmdInitRAA)
+            (CmdiPattern)
+            <GenInterpretPatternCommand e.PatternCommands>
+            (CmdiResult)
+            <Map
+              (MakeInterpCommands e.MCopiedVars)
+              <FoldAllocCommands
+                (e.ResultAllocCommands)
+                e.ResultCommands
+              >
+            >
+            (CmdFinRAA)
+            // Компилируемый код
+            (CmdElse)
             <GenerateResult-OpenELoops
-              <IssueVars e.NCommonVars>
-
               (CmdInitB0)
               e.PatternCommands
-              (CmdIfDef)
-              (CmdInitRAA)
-              (CmdiPattern)
-              <GenInterpretPatternCommand e.PatternCommands>
-              (CmdiResult)
-              <Map
-                (MakeInterpCommands e.MCopiedVars)
-                <FoldAllocCommands
-                  (e.ResultAllocCommands)
-                  e.ResultCommands
-                >
-              >
-              (CmdFinRAA)
-              (CmdElse)
               (CmdEmptyResult)
               <Map MakeCopyVar e.CopiedVars>
               e.ResultAllocCommands
               e.ResultCommands
               (CmdReturnResult)
-              (CmdEndIf)
-            >;
+            >
+            (CmdEndIf);
         }
       >
     >;
