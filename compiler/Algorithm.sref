@@ -71,8 +71,7 @@ $EENUM
   CmdiNum, CmdiIdent, CmdiADT,
   CmdiName, CmdiChar,
   CmdiRepeat, CmdiSave,
-  CmdiEStart, CmdiEStop,
-  CmdiResult, CmdiPattern,
+  CmdiEPrepare, CmdiEStart,
   CmdiEmpty,
   CmdiFuncArray, CmdiLabelArray;
 
@@ -621,7 +620,7 @@ DoGenResult {
 $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
   ClosedEVariables, RepeatedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
   GenerateResult-OpenELoops, MakeCopyVar, FoldAllocCommands, MakeInterpCommands,
-  OutlineConstants;
+  OutlineConstants, PrepareOpenEStack;
 
 //FROM LibraryEx
 $EXTERN Map, Seq;
@@ -630,7 +629,7 @@ $EXTERN Map, Seq;
 $EXTERN Add, Inc;
 
 $EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
-  CmdInitRAA, CmdFinRAA;
+  CmdInitRAA, CmdFinRAA, CmdiRunInterpret, CmdiReserveStack;
 
 //FROM Library
 $EXTERN WriteLine;
@@ -714,15 +713,10 @@ GenInterpretPatternCommand {
     ;
 
   (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index) e.Etc =
+    (CmdiEPrepare s.BracketNum 'e' e.Index)
     (CmdiEStart s.BracketNum 'e' e.Index)
     <GenInterpretPatternCommand e.Etc>
-    (CmdiEStop)
     ;
-
-  // (CmdOpenedE-End AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
-  //   (CmdiEStop s.BracketNumber 'e' e.Index)
-  //   <GenInterpretPatternCommand e.Etc>
-  //   ;
 
   (CmdChar s.Direction s.BracketNumber s.Char) e.Etc =
     (CmdiChar s.Direction s.BracketNumber s.Char)
@@ -805,21 +799,23 @@ GeneralizeResult {
             (CmdInitB0)
             // Интерпретируемый код
             (CmdIfDef)
-            <OutlineConstants
-              (0 /* функции */) (0 /* метки */)
-              (CmdInitRAA)
-              (CmdiPattern)
-              <GenInterpretPatternCommand e.PatternCommands>
-              (CmdiResult)
-              <Map
-                (MakeInterpCommands e.MCopiedVars)
-                <FoldAllocCommands
-                  (e.ResultAllocCommands)
-                  e.ResultCommands
+            <PrepareOpenEStack
+              <OutlineConstants
+                (0 /* функции */) (0 /* метки */)
+                (CmdInitRAA)
+                <GenInterpretPatternCommand e.PatternCommands>
+                <Map
+                  (MakeInterpCommands e.MCopiedVars)
+                  <FoldAllocCommands
+                    (e.ResultAllocCommands)
+                    e.ResultCommands
+                  >
                 >
+                (CmdFinRAA)
               >
-              (CmdFinRAA)
+              0 /* начальная глубина */
             >
+            (CmdiRunInterpret)
             // Компилируемый код
             (CmdElse)
             <GenerateResult-OpenELoops
@@ -1084,6 +1080,15 @@ OutlineConstants {
   t.OtherCommand =
     <OutlineConstants (e.Funcs) (e.Labels) e.Commands>
     t.OtherCommand;
+}
+
+PrepareOpenEStack {
+  e.Commands-B (CmdiEStart e.VarInfo) e.Commands-E s.Depth =
+    e.Commands-B (CmdiEStart e.VarInfo)
+    <PrepareOpenEStack e.Commands-E <Inc s.Depth>>;
+
+  e.Commands s.Depth =
+    e.Commands (CmdiReserveStack s.Depth);
 }
 
 GenerateResult-OpenELoops {

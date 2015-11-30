@@ -2401,14 +2401,6 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
-refalrts::FnResult filtered_result(refalrts::FnResult res, bool inPattern)
-{
-  if ((res != refalrts::cSuccess) && inPattern )
-    return refalrts::cPatternMismatch;
-  else
-    return res;
-}
-
 refalrts::FnResult refalrts::new_interpret_array(
   refalrts::ResultAction raa[],
   refalrts::Iter allocs[],
@@ -2416,7 +2408,8 @@ refalrts::FnResult refalrts::new_interpret_array(
   refalrts::Iter begin, refalrts::Iter end,
   unsigned long context_size,
   const RefalFunction functions[],
-  const RefalIdentifier labels[]
+  const RefalIdentifier labels[],
+  int open_e_stack[]
 ) {
   printf("New interpret engine...\n");
   printf("begin == %p\n", begin);
@@ -2433,28 +2426,30 @@ refalrts::FnResult refalrts::new_interpret_array(
   unsigned int index;
   RefalNumber refNum = 0;
   char chValue;
-  bool inPattern = false;
+  int stack_top = 0;
+
+#define MATCH_FAIL \
+  { \
+    if (stack_top == 0) \
+      return refalrts::cRecognitionImpossible; \
+    else { \
+      i = open_e_stack[--stack_top]; \
+      continue; \
+    } \
+  }
 
   while(raa[i].cmd != icEnd)
   {
     // Интерпретация команд
-		printf("%i %i %li: ", i, raa[i].cmd, context_size);
-		for (unsigned long ci = 0; ci < context_size; ++ci) {
-			printf("%p%s", context[ci], ci == context_size - 1 ? "\n" : ", ");
-		}
+    printf("%i %i %li: ", i, raa[i].cmd, context_size);
+    //for (unsigned long ci = 0; ci < context_size; ++ci) {
+    //  printf("%p%s", context[ci], ci == context_size - 1 ? "\n" : ", ");
+    //}
     // Для ряда команд эти переменные могут не иметь смысла
     Iter &bb_ = context[raa[i].bracket];
     Iter &be_ = context[raa[i].bracket + 1];
     switch(raa[i].cmd)
     {
-      case icPattern:
-        inPattern = true;
-        break;
-
-      case icResult:
-        inPattern = false;
-        break;
-
       case icEPush:
         bb = & bb_;
         be = & be_;
@@ -2491,7 +2486,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                       bb_,
                                       be_ )
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern);
+          MATCH_FAIL
 
         break;
 
@@ -2505,7 +2500,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                        bb_,
                                        be_ )
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icBracketRight: new res %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
         break;
@@ -2518,7 +2513,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                    *static_cast<Iter*>(raa[i].ptr_value1),
                                    *static_cast<Iter*>(raa[i].ptr_value2))
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: ictVarRight: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         printf("debug: ictVarRight done...\n");
@@ -2532,7 +2527,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                   *static_cast<Iter*>(raa[i].ptr_value1),
                                   *static_cast<Iter*>(raa[i].ptr_value2))
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern);
+          MATCH_FAIL
         
         printf("debug: ictVarLeft: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         printf("debug: ictVarLeft done...\n");
@@ -2546,7 +2541,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                    *static_cast<Iter*>(raa[i].ptr_value1),
                                    *static_cast<Iter*>(raa[i].ptr_value2))
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icsVarRight done...\n");
         break;
@@ -2562,7 +2557,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                   *static_cast<Iter*>(raa[i].ptr_value1),
                                   *static_cast<Iter*>(raa[i].ptr_value2))
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: svar = first: %p\n", context[index]);
         printf("debug: icsVarLeft: bb0 = %p, be0 = %p\n",
@@ -2588,7 +2583,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icNumRight: %lu", refNum);
         
         if( ! refalrts::number_right( refNum, *bb, *be ) )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icNumRight done...");
         break;
@@ -2598,7 +2593,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icNumLeft: %lu", refNum);
         
         if( ! refalrts::number_left( refNum, *bb, *be ) )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icNumLeft done...");
         break;
@@ -2608,7 +2603,7 @@ refalrts::FnResult refalrts::new_interpret_array(
           printf("debug: icIdentRight\n");
           
           if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+            MATCH_FAIL
           
           printf("debug: icIdentRight done...\n");
         }
@@ -2619,7 +2614,7 @@ refalrts::FnResult refalrts::new_interpret_array(
           printf("debug: icIdentLeft\n");
           
           if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+            MATCH_FAIL
           
           printf("debug: icIdentLeft done...\n");
         }
@@ -2632,7 +2627,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                    functions[raa[i].value >> 16].ptr,
                                    bb_, be_)         
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icADTRight done...\n");
         break;
@@ -2644,7 +2639,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                   functions[raa[i].value >> 16].ptr,
                                   bb_, be_)        
         )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icADTLeft done...\n");
         break;
@@ -2653,7 +2648,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icFuncRight\n");
         
         if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icFuncRight done...\n");
         break;
@@ -2662,7 +2657,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icFuncLeft\n");
         
         if ( !function_left( functions[raa[i].value].ptr, bb_, be_ ) )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icFuncLeft done...\n");
         break;
@@ -2675,7 +2670,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                           *static_cast<Iter*>(raa[i].ptr_value1),
                           *static_cast<Iter*>(raa[i].ptr_value2))
           )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icCharRight done....\n");
         break;
@@ -2689,7 +2684,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                          *static_cast<Iter*>(raa[i].ptr_value1),
                          *static_cast<Iter*>(raa[i].ptr_value2))
           )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icCharLeft done....\n");
         break;
@@ -2709,7 +2704,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                                context[ind2], context[ind2 + 1],
                                                bb_, be_)
           )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+            MATCH_FAIL
           
           printf("debug: iceRepeatRight done ...\n");
         }
@@ -2728,7 +2723,7 @@ refalrts::FnResult refalrts::new_interpret_array(
                                               context[ind2], context[ind2 + 1],
                                               bb_, be_)
           )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+            MATCH_FAIL
           
           printf("debug: iceRepeatLeft done ...\n");
         }
@@ -2745,7 +2740,7 @@ refalrts::FnResult refalrts::new_interpret_array(
           printf("debug: icstRepeatRight %d %d\n", ind1, ind2);
           
           if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb_, be_) )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern);
+            MATCH_FAIL
           
           printf("debug: icstRepeatRight done ...\n");
         }
@@ -2760,10 +2755,10 @@ refalrts::FnResult refalrts::new_interpret_array(
           ind2 = (long)raa[i].ptr_value2;
           
           printf("debug: icstRepeatLeft %d %d\n", ind1, ind2);
-          printf("debug: icstRepeatLeft: b = %p, e = %p\n", *bb, *be);
+          printf("debug: icstRepeatLeft: b = %p, e = %p\n", bb_, be_);
           
           if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb_, be_) )
-            return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+            MATCH_FAIL
           
           printf("debug: icstRepeatLeft done ...\n");
         }
@@ -2780,78 +2775,31 @@ refalrts::FnResult refalrts::new_interpret_array(
         printf("debug: icSave: result %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         break;
 
-			case icBreak:
-					return cSuccess;
-				break;
-
-      case icEStart:
-        { 
-          int iter = 0;
-          int stopPos = 0;
-          int startPos = i;
-          ResultAction *subraa = &raa[startPos + 1];
-          FnResult subres;
-          index = raa[i].value;
-          printf("debug: icEStart for [%d]\n", index);
-
-          while (raa[i].cmd != icEnd)
-          {
-            if (raa[i].cmd == icEStop)
-            {
-              stopPos = i;
-              printf("debug: icEStart: can be stop pos = %d\n", i);
-            }
-            i ++;
-          }
-          i = startPos;
-          if (stopPos == 0)
-            return cEndErr;
-          printf("debug: icEStart: stop pos = %d\n", stopPos);
-          raa[stopPos].cmd = icBreak;
-
-          // здесь должны выбрать новый массив до максимального icEStop
-          // заменяем его на icBreak
-          // потом запускаем вирт машину вложенную
-
-					fprintf(refalrts::vm::dump_stream(), "\n==========before e-var");
-					refalrts::vm::make_dump(begin, end);
-          do {
-            printf("debug: icEStart for [%d] - step %d\n", index, iter);
-            subres = new_interpret_array(
-              subraa, allocs, context, begin, end, context_size,
-              functions, labels
-            );
-            printf("debug: icEStart for [%d] - step %d | res = %d\n", index, iter, subres);
-            if (subres == refalrts::cSuccess) {
-							/*refalrts::reset_allocator();*/
-              //refalrts::Iter ires = begin;
-              //refalrts::use( ires );
-							/*refalrts::splice_to_freelist( begin, end );*/
-              break;
-            } else {
-              if (subres == refalrts::cRecognitionImpossible)
-                printf("debug: recognition imposible!\n");
-            }
-            iter ++;
-          } while ( open_evar_advance( context[index], context[index + 1], *bb, *be ) );
-					fprintf(refalrts::vm::dump_stream(), "\n=======after e-var");
-					refalrts::vm::make_dump(begin, end);
-
-          //recover opcode
-          raa[stopPos].cmd = icEStop;
-        }
-
+      case icEPrepare:
+        printf("debug: icEPrepare\n");
+        context[raa[i].value] = 0;
+        context[raa[i].value + 1] = 0;
+        open_e_stack[stack_top++] = ++i;
         break;
 
-      case icEStop:
-        printf("debug: icEStop\n");
+      case icEStart:
+        printf("debug: icEStart\n");
+        {
+          bool advance = open_evar_advance(
+            context[raa[i].value], context[raa[i].value + 1], bb_, be_
+          );
+          if ( ! advance ) {
+            MATCH_FAIL
+          }
+          open_e_stack[stack_top++] = i;
+        }
         break;
 
       case icEmpty:
         printf("debug: icEmpty: %d\n", raa[i].value);
          
         if ( !empty_seq( bb_, be_ ) )
-          return filtered_result( refalrts::cRecognitionImpossible, inPattern );
+          MATCH_FAIL
         
         printf("debug: icEmpty: ok...\n");
         break;
@@ -3028,11 +2976,8 @@ refalrts::FnResult refalrts::new_interpret_array(
       case ictRepeatRight:
       case ictRepeatLeft:
       case icSave:
+      case icEPrepare:
       case icEStart:
-      case icEStop:
-      case icBreak:
-      case icResult:
-      case icPattern:
         break;
 
       case icBracketLeft:
@@ -3049,15 +2994,15 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icSpliceEVar:
         index = raa[i].value;
 
-				fprintf(refalrts::vm::dump_stream(),
-						"\n=====debug: icSpliceEvar{: %p %p\n", context[index], context[index + 1]);
-				refalrts::vm::make_dump(begin, end);
+        fprintf(refalrts::vm::dump_stream(),
+            "\n=====debug: icSpliceEvar{: %p %p\n", context[index], context[index + 1]);
+        //refalrts::vm::make_dump(begin, end);
 
         res = splice_evar(res, context[index], context[index + 1]);
         //res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-				fprintf(refalrts::vm::dump_stream(),
-						"\n=====debug: icSpliceEvar}: %p %p\n", context[index], context[index + 1]);
-				refalrts::vm::make_dump(begin, end);
+        fprintf(refalrts::vm::dump_stream(),
+            "\n=====debug: icSpliceEvar}: %p %p\n", context[index], context[index + 1]);
+        //refalrts::vm::make_dump(begin, end);
         break;
 
       case icBracket:
@@ -3095,11 +3040,11 @@ refalrts::FnResult refalrts::new_interpret_array(
     }
     i--;
   }
-	fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor{\n");
-	refalrts::vm::make_dump(begin, end);
+  fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor{\n");
+  //refalrts::vm::make_dump(begin, end);
   splice_to_freelist(begin, end);
-	fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor}\n");
-	refalrts::vm::make_dump(begin, end);
+  fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor}\n");
+  //refalrts::vm::make_dump(begin, end);
 
   return cSuccess;
 }

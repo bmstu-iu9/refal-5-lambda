@@ -133,6 +133,7 @@ $EXTERN
   CmdEmptyResult, CmdReturnResult,
   CmdIfDef, CmdElse, CmdEndIf,
   CmdInitRAA, CmdFinRAA,
+  CmdiReserveStack, CmdiRunInterpret,
   CmdDeclareEVar, CmdDeclareVar,
   CmdCopyEVar, CmdCopyVar,
   AlgLeft, AlgRight,
@@ -145,8 +146,7 @@ $EXTERN
   CmdiContextSet, CmdiVar,
   CmdiNum, CmdiIdent, CmdiADT,
   CmdiName, CmdiChar, CmdiRepeat,
-  CmdiSave, CmdiEStart, CmdiEStop,
-  CmdiResult, CmdiPattern,
+  CmdiSave, CmdiEPrepare, CmdiEStart,
   CmdiBracket, CmdiEmpty,
   CmdiFuncArray, CmdiLabelArray;
 
@@ -536,32 +536,24 @@ GenCommand {
     (e.Indent '  0')
     (e.Indent '};');
 
-  (e.Indent) (CmdiPattern) =
-    (e.Indent)
-    (e.Indent '{refalrts::icPattern, 0, 0, 0, 0},')
-    ;
-
-  (e.Indent) (CmdiResult) =
-    (e.Indent)
-    (e.Indent '{refalrts::icResult, 0, 0, 0, 0},')
-    ;
-
   (e.Indent) (CmdiRepeat s.Direction s.BracketNumber e.VarInfo) =
     (e.Indent)
     <PrintRepeatInterp (e.Indent) s.Direction s.BracketNumber e.VarInfo>
     ;
 
-  (e.Indent) (CmdiEStop) =
+  (e.Indent) (CmdiEPrepare s.BracketNumber 'e' e.Index) =
     (e.Indent)
-    (e.Indent '{refalrts::icEStop, 0, 0, 0, 0},')
+    (e.Indent '{refalrts::icEPrepare, 0, 0, '
+              <PrintVarShortcut 1 'e' e.Index>
+              ', ' <StrFromInt s.BracketNumber> '},'
+    )
     ;
 
   (e.Indent) (CmdiEStart s.BracketNumber 'e' e.Index) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
     (e.Indent '{refalrts::icEStart, 0, 0, '
               <PrintVarShortcut 1 'e' e.Index>
-              ', 0},'
+              ', ' <StrFromInt s.BracketNumber> '},'
     )
     ;
 
@@ -634,7 +626,18 @@ GenCommand {
   (e.Indent '  ') (CmdFinRAA) =
     (e.Indent)
     (e.Indent '  {refalrts::icEnd}')
-    (e.Indent '};')
+    (e.Indent '};');
+
+  (e.Indent) (CmdiReserveStack 0) =
+    (e.Indent)
+    (e.Indent 'int open_e_stack[1];');
+
+  (e.Indent) (CmdiReserveStack s.Depth) =
+    (e.Indent)
+    (e.Indent 'int open_e_stack[' <StrFromInt s.Depth> '];');
+
+  (e.Indent) (CmdiRunInterpret) =
+    (e.Indent)
     (e.Indent
       'refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];'
     )
@@ -648,9 +651,9 @@ GenCommand {
       'refalrts::new_interpret_array( '
       'raa, allocs, context, arg_begin, arg_end, '
       'sizeof(context)/sizeof(context[0]), '
-      'functions, labels );'
+      'functions, labels, open_e_stack );'
     )
-    (e.Indent 'if ( res == refalrts::cPatternMismatch )')
+    (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
     (e.Indent '  break;')
     (e.Indent 'else')
     (e.Indent '  return res;');
