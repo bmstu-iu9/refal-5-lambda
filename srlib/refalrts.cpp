@@ -2411,10 +2411,6 @@ refalrts::FnResult refalrts::new_interpret_array(
   const RefalIdentifier labels[],
   int open_e_stack[]
 ) {
-  printf("New interpret engine...\n");
-  printf("begin == %p\n", begin);
-  printf("end == %p\n", end);
-  printf("raa interpret = %p\n", raa);
   int i = 0;
   Iter stack_ptr = 0;
   Iter res = begin;
@@ -2441,10 +2437,6 @@ refalrts::FnResult refalrts::new_interpret_array(
   while(raa[i].cmd != icEnd)
   {
     // Интерпретация команд
-    printf("%i %i %li: ", i, raa[i].cmd, context_size);
-    //for (unsigned long ci = 0; ci < context_size; ++ci) {
-    //  printf("%p%s", context[ci], ci == context_size - 1 ? "\n" : ", ");
-    //}
     // Для ряда команд эти переменные могут не иметь смысла
     Iter &bb_ = context[raa[i].bracket];
     Iter &be_ = context[raa[i].bracket + 1];
@@ -2453,240 +2445,145 @@ refalrts::FnResult refalrts::new_interpret_array(
       case icEPush:
         bb = & bb_;
         be = & be_;
-        printf("debug: icEPush: %p %p\n", *bb, *be);
         break;
 
       case icMoveLeft:
-        printf("debug: bound move left\n");
-        printf("debug: from <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        
         move_left(*static_cast<Iter*>(raa[i].ptr_value1),
                   *static_cast<Iter*>(raa[i].ptr_value2));
-        
-        printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         break;
 
       case icMoveRight:
-        printf("debug: bound move right\n");
-        printf("debug: from <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        
         move_right(*static_cast<Iter*>(raa[i].ptr_value1),
                    *static_cast<Iter*>(raa[i].ptr_value2));
-        
-        printf("debug: to <%p, %p>\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         break;
 
-      case icBracketLeft:
-        printf("debug: icBracketLeft\n");
-        printf("debug: icBracketLeft: %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
-        printf("debug: icBracketLeft: %p %p\n", bb_, be_);
-        
+      case icBracketLeft: 
         if( !refalrts::brackets_left( context[raa[i].value],
                                       context[raa[i].value + 1],
                                       bb_,
                                       be_ )
         )
           MATCH_FAIL
-
         break;
 
       case icBracketRight:
-        printf("debug: icBracketRight\n");
-        printf("debug: icBracketRight: res %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
-        printf("debug: icBracketRight: %p %p\n", bb_, be_);
-        
         if( !refalrts::brackets_right( context[raa[i].value],
                                        context[raa[i].value + 1],
                                        bb_,
                                        be_ )
         )
           MATCH_FAIL
-        
-        printf("debug: icBracketRight: new res %p %p\n", context[raa[i].value], context[raa[i].value + 1]);
         break;
 
       case ictVarRight:
         index = raa[i].value;
-        printf("debug: ictVarRight to %d\n", index);
-        
         if( !refalrts::tvar_right( context[index],
                                    *static_cast<Iter*>(raa[i].ptr_value1),
                                    *static_cast<Iter*>(raa[i].ptr_value2))
         )
           MATCH_FAIL
-        
-        printf("debug: ictVarRight: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        printf("debug: ictVarRight done...\n");
-        break;
+       break;
 
       case ictVarLeft:
-        index = raa[i].value;
-        printf("debug: ictVarLeft to %d\n", index);
-        
+        index = raa[i].value;       
         if( !refalrts::tvar_left( context[index],
                                   *static_cast<Iter*>(raa[i].ptr_value1),
                                   *static_cast<Iter*>(raa[i].ptr_value2))
         )
           MATCH_FAIL
-        
-        printf("debug: ictVarLeft: %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        printf("debug: ictVarLeft done...\n");
         break;
 
       case icsVarRight:
         index = raa[i].value;
-        printf("debug: icsVarRight to %d\n", index);
-        
         if( !refalrts::svar_right( context[index],
                                    *static_cast<Iter*>(raa[i].ptr_value1),
                                    *static_cast<Iter*>(raa[i].ptr_value2))
         )
           MATCH_FAIL
-        
-        printf("debug: icsVarRight done...\n");
         break;
 
       case icsVarLeft:
         index = raa[i].value;
-        printf("debug: icsVarLeft to %d\n", index);
-        printf("debug: icsVarLeft: b = %p, e = %p\n",
-                *static_cast<Iter*>(raa[i].ptr_value1), 
-                *static_cast<Iter*>(raa[i].ptr_value2));
-        
         if( !refalrts::svar_left( context[index],
                                   *static_cast<Iter*>(raa[i].ptr_value1),
                                   *static_cast<Iter*>(raa[i].ptr_value2))
         )
           MATCH_FAIL
-        
-        printf("debug: svar = first: %p\n", context[index]);
-        printf("debug: icsVarLeft: bb0 = %p, be0 = %p\n",
-                *static_cast<Iter*>(raa[i].ptr_value1), 
-                *static_cast<Iter*>(raa[i].ptr_value2));
-        printf("debug: icsVarLeft done...\n");
         break;
 
       case icContextSet:
         index = raa[i].value;
-        printf("debug: icContextSet: load context to %d\n", index);
-        
-        printf("debug: icContextSet: evar!\n");
         context[index] = bb_;
         context[index + 1] = be_;
-        
-        printf("debug: icContextSet: context data [ %p, %p]\n", context[index], context[index + 1]);
         break;
 
 
       case icNumRight:
         refNum = (RefalNumber)raa[i].ptr_value1;
-        printf("debug: icNumRight: %lu", refNum);
-        
         if( ! refalrts::number_right( refNum, *bb, *be ) )
           MATCH_FAIL
-        
-        printf("debug: icNumRight done...");
-        break;
+       break;
 
       case icNumLeft:
         refNum = (RefalNumber)raa[i].ptr_value1;
-        printf("debug: icNumLeft: %lu", refNum);
-        
         if( ! refalrts::number_left( refNum, *bb, *be ) )
           MATCH_FAIL
-        
-        printf("debug: icNumLeft done...");
         break;
 
       case icIdentRight:
-        {
-          printf("debug: icIdentRight\n");
-          
-          if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
-            MATCH_FAIL
-          
-          printf("debug: icIdentRight done...\n");
-        }
+        if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
+          MATCH_FAIL
         break;
 
       case icIdentLeft:
-        {
-          printf("debug: icIdentLeft\n");
-          
-          if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
-            MATCH_FAIL
-          
-          printf("debug: icIdentLeft done...\n");
-        }
+        if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
+          MATCH_FAIL
         break;
 
       case icADTRight:
-        printf("debug: icADTRight\n");
         if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
                                    context[(raa[i].value & 0xFFFF) + 1],
                                    functions[raa[i].value >> 16].ptr,
                                    bb_, be_)         
         )
           MATCH_FAIL
-        
-        printf("debug: icADTRight done...\n");
         break;
 
       case icADTLeft:
-        printf("debug: icADTLeft\n");
         if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
                                   context[(raa[i].value & 0xFFFF) + 1],
                                   functions[raa[i].value >> 16].ptr,
                                   bb_, be_)        
         )
           MATCH_FAIL
-        
-        printf("debug: icADTLeft done...\n");
         break;
 
-      case icFuncRight:
-        printf("debug: icFuncRight\n");
-        
+      case icFuncRight:       
         if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
           MATCH_FAIL
-        
-        printf("debug: icFuncRight done...\n");
         break;
 
       case icFuncLeft:
-        printf("debug: icFuncLeft\n");
-        
         if ( !function_left( functions[raa[i].value].ptr, bb_, be_ ) )
           MATCH_FAIL
-        
-        printf("debug: icFuncLeft done...\n");
         break;
 
       case icCharRight:
         chValue = (char)raa[i].value;
-        printf("debug: icCharRight %d %c\n", chValue, chValue);
-        
         if ( !char_right( chValue,
                           *static_cast<Iter*>(raa[i].ptr_value1),
                           *static_cast<Iter*>(raa[i].ptr_value2))
           )
           MATCH_FAIL
-        
-        printf("debug: icCharRight done....\n");
         break;
 
       case icCharLeft:
         chValue = (char)raa[i].value;
-        
-        printf("debug: icCharLeft %d %c\n", chValue, chValue);
-        
         if ( !char_left( chValue,
                          *static_cast<Iter*>(raa[i].ptr_value1),
                          *static_cast<Iter*>(raa[i].ptr_value2))
           )
           MATCH_FAIL
-        
-        printf("debug: icCharLeft done....\n");
         break;
 
       case iceRepeatRight:
@@ -2694,19 +2591,11 @@ refalrts::FnResult refalrts::new_interpret_array(
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          
-          printf("debug: iceRepeatRight: %d %d\n", ind1, ind2);
-          printf("debug: iceRepeatRight: b = %p e = %p\n", bb_, be_);
-          printf("debug: iceRepeatRight: evar_b = %p evar_e = %p\n", context[ind1], context[ind1 + 1]);
-          printf("debug: iceRepeatRight: evar_b_sample = %p evar_e_sample = %p\n", context[ind2], context[ind2 + 1]);
-          
           if( ! refalrts::repeated_evar_right( context[ind1], context[ind1 + 1],
                                                context[ind2], context[ind2 + 1],
                                                bb_, be_)
           )
             MATCH_FAIL
-          
-          printf("debug: iceRepeatRight done ...\n");
         }
         break;
 
@@ -2715,75 +2604,48 @@ refalrts::FnResult refalrts::new_interpret_array(
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          
-          printf("debug: iceRepeatLeft %d %d\n", ind1, ind2);
-          printf("debug: iceRepeatLeft: b = %p, e = %p\n", bb_, be_);
-          
           if( ! refalrts::repeated_evar_left( context[ind1], context[ind1 + 1],
                                               context[ind2], context[ind2 + 1],
                                               bb_, be_)
           )
             MATCH_FAIL
-          
-          printf("debug: iceRepeatLeft done ...\n");
         }
         break;
 
       case icsRepeatRight:
-        printf("debug: icsRepeatRight\n");
       case ictRepeatRight:
         {
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          
-          printf("debug: icstRepeatRight %d %d\n", ind1, ind2);
-          
           if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb_, be_) )
             MATCH_FAIL
-          
-          printf("debug: icstRepeatRight done ...\n");
         }
         break;
 
       case icsRepeatLeft:
-        printf("debug: icsRepeatLeft\n");
       case ictRepeatLeft:
         {
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          
-          printf("debug: icstRepeatLeft %d %d\n", ind1, ind2);
-          printf("debug: icstRepeatLeft: b = %p, e = %p\n", bb_, be_);
-          
           if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb_, be_) )
             MATCH_FAIL
-          
-          printf("debug: icstRepeatLeft done ...\n");
         }
         break;
 
       case icSave:
-        printf("debug: icSave:\n");
-        printf("debug: icSave: from %p %p\n", *bb, *be);
-        printf("debug: icSave: to %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        
         *static_cast<Iter*>(raa[i].ptr_value1) = *bb;
         *static_cast<Iter*>(raa[i].ptr_value2) = *be;
-        
-        printf("debug: icSave: result %p %p\n", *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
         break;
 
       case icEPrepare:
-        printf("debug: icEPrepare\n");
         context[raa[i].value] = 0;
         context[raa[i].value + 1] = 0;
         open_e_stack[stack_top++] = ++i;
         break;
 
       case icEStart:
-        printf("debug: icEStart\n");
         {
           bool advance = open_evar_advance(
             context[raa[i].value], context[raa[i].value + 1], bb_, be_
@@ -2796,12 +2658,8 @@ refalrts::FnResult refalrts::new_interpret_array(
         break;
 
       case icEmpty:
-        printf("debug: icEmpty: %d\n", raa[i].value);
-         
         if ( !empty_seq( bb_, be_ ) )
           MATCH_FAIL
-        
-        printf("debug: icEmpty: ok...\n");
         break;
 
       case icChar:
@@ -2900,13 +2758,9 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icCopySTVar:
         index = raa[i].value;
-        printf("debug: icCopySTVar to %d\n", index);
-        // if(!copy_stvar(*allocs, *static_cast<Iter*>(raa[i].ptr_value1)))
-        //   return cNoMemory;
         if( !copy_stvar(*allocs, context[index]) )
           return cNoMemory;
         ++allocs;
-        printf("debug: icCopySTVar done.....\n");
         break;
 
       case icCopyEVar: {
@@ -2915,15 +2769,12 @@ refalrts::FnResult refalrts::new_interpret_array(
         refalrts::Iter& eend = *allocs;
         ++allocs;
         index = raa[i].value;
-        printf("debug: icCopyEVar: alloc %u\n", index);
         if(
             !copy_evar(
               ebegin,
               eend,
               context[index],
               context[index + 1]
-              //*static_cast<Iter*>(raa[i].ptr_value1),
-              //*static_cast<Iter*>(raa[i].ptr_value2)
             )
           )
           return cNoMemory;
@@ -2987,22 +2838,12 @@ refalrts::FnResult refalrts::new_interpret_array(
 
       case icSpliceSTVar:
         index = raa[i].value;
-        //res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
         res = splice_stvar(res, context[index]);
         break;
 
       case icSpliceEVar:
         index = raa[i].value;
-
-        fprintf(refalrts::vm::dump_stream(),
-            "\n=====debug: icSpliceEvar{: %p %p\n", context[index], context[index + 1]);
-        //refalrts::vm::make_dump(begin, end);
-
         res = splice_evar(res, context[index], context[index + 1]);
-        //res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
-        fprintf(refalrts::vm::dump_stream(),
-            "\n=====debug: icSpliceEvar}: %p %p\n", context[index], context[index + 1]);
-        //refalrts::vm::make_dump(begin, end);
         break;
 
       case icBracket:
@@ -3031,7 +2872,7 @@ refalrts::FnResult refalrts::new_interpret_array(
         break;
 
       case icEnd:
-        printf("debug: icEnd ......\n");
+        // printf("debug: icEnd ......\n");
         break;
 
       default:
@@ -3040,11 +2881,7 @@ refalrts::FnResult refalrts::new_interpret_array(
     }
     i--;
   }
-  fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor{\n");
-  //refalrts::vm::make_dump(begin, end);
   splice_to_freelist(begin, end);
-  fprintf(refalrts::vm::dump_stream(), "\n=====debug: musor}\n");
-  //refalrts::vm::make_dump(begin, end);
 
   return cSuccess;
 }
@@ -3243,7 +3080,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icEnd:
-        printf("debug: icEnd\n");
+        // printf("debug: icEnd\n");
         break;
 
       default:
