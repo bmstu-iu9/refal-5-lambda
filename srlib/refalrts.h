@@ -336,7 +336,6 @@ extern FnResult new_interpret_array(
   Iter context[],
   Iter begin,
   Iter end,
-  unsigned long context_size,
   const RefalFunction functions[],
   const RefalIdentifier labels[],
   int open_e_stack[]

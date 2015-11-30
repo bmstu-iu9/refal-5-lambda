@@ -651,7 +651,6 @@ GenCommand {
       'refalrts::FnResult res = '
       'refalrts::new_interpret_array( '
       'raa, allocs, context, arg_begin, arg_end, '
-      'sizeof(context)/sizeof(context[0]), '
       'functions, labels, open_e_stack );'
     )
     (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
