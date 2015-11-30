@@ -2408,7 +2408,6 @@ refalrts::FnResult refalrts::new_interpret_array(
   refalrts::Iter allocs[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
-  unsigned long context_size,
   const RefalFunction functions[],
   const RefalIdentifier labels[],
   int open_e_stack[]
