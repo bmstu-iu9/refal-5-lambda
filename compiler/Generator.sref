@@ -622,7 +622,7 @@ GenCommand {
 
   (e.Indent) (CmdInitRAA) =
     (e.Indent '  ')
-    (e.Indent 'static refalrts::ResultAction raa[] = {');
+    (e.Indent 'static refalrts::RASLCommand raa[] = {');
 
   (e.Indent '  ') (CmdFinRAA) =
     (e.Indent)
@@ -646,10 +646,9 @@ GenCommand {
       'refalrts::FnResult res = '
       'refalrts::interpret_array( raa, allocs, arg_begin, arg_end );'
     )
-    (e.Indent '// new engine')
     (e.Indent
       'refalrts::FnResult res = '
-      'refalrts::new_interpret_array( '
+      'refalrts::interpret_array( '
       'raa, allocs, context, arg_begin, arg_end, '
       'functions, labels, open_e_stack );'
     )

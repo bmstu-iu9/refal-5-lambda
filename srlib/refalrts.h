@@ -134,13 +134,15 @@ typedef enum BracketType {
   ibCloseCall
 } BracketType;
 
-typedef struct ResultAction {
+typedef struct RASLCommand {
     iCmd cmd;
     void *ptr_value1;
     void *ptr_value2;
     int value;
     int bracket;
-} ResultAction;
+} RASLCommand;
+
+typedef RASLCommand ResultAction;
 
 extern void use( Iter& );
 
@@ -319,19 +321,8 @@ inline void set_return_code( RefalNumber retcode ) {
 */
 void debug_print_expr(void *file, Iter first, Iter last);
 
-// Интерпретатор
-
 extern FnResult interpret_array(
-  const ResultAction raa[],
-  Iter allocs[],
-  Iter begin,
-  Iter end
-);
-
-// extended interpret_array by rigth part
-
-extern FnResult new_interpret_array(
-  ResultAction raa[],
+  RASLCommand raa[],
   Iter allocs[],
   Iter context[],
   Iter begin,
