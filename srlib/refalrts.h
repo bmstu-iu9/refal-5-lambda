@@ -142,8 +142,6 @@ typedef struct RASLCommand {
     int bracket;
 } RASLCommand;
 
-typedef RASLCommand ResultAction;
-
 extern void use( Iter& );
 
 void zeros( Iter context[], int size );
