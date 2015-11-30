@@ -121,11 +121,8 @@ typedef enum iCmd {
   ictRepeatRight,
   ictRepeatLeft,
   icSave,
-  icEStart,
-  icEStop,
-  icBreak,
-  icPattern,
-  icResult
+  icEPrepare,
+  icEStart
 } iCmd;
 
 typedef enum BracketType {
@@ -341,7 +338,8 @@ extern FnResult new_interpret_array(
   Iter end,
   unsigned long context_size,
   const RefalFunction functions[],
-  const RefalIdentifier labels[]
+  const RefalIdentifier labels[],
+  int open_e_stack[]
 );
 
 } //namespace refalrts
