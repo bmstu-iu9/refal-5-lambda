@@ -301,15 +301,16 @@ GenCommand {
   (e.Indent) (CmdDeclareEVar s.Number e.VarInfo) =
     (e.Indent)
     (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
-    (e.Indent 'static refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
-    (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';')
+    (e.Indent '//for removing')
+    // (e.Indent 'static refalrts::Iter ' <PrintEVar-B e.VarInfo> ';')
+    // (e.Indent 'static refalrts::Iter ' <PrintEVar-E e.VarInfo> ';')
     (e.Indent) (e.Indent '//' 'debug ::' <PrintDebug e.VarInfo>)
     ;
 
   (e.Indent) (CmdDeclareVar s.Number e.VarInfo) =
     (e.Indent)
     (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
-    (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';')
+    // (e.Indent 'static refalrts::Iter ' <PrintVar e.VarInfo> ';')
     (e.Indent) (e.Indent '//' 'debug ::' <PrintDebug e.VarInfo>)
     ;
 
@@ -766,17 +767,20 @@ GenCommand {
 
 PrintVar {
   s.Usings s.Mode e.Index s.Depth =
-    s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
+  'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
+    // s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
 }
 
 PrintEVar-B {
   s.Usings s.Mode e.Index s.Depth =
-    s.Mode e.Index '_' <StrFromInt s.Depth> '_b_' <StrFromInt s.Usings>;
+    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
+  //  s.Mode e.Index '_' <StrFromInt s.Depth> '_b_' <StrFromInt s.Usings>;
 }
 
 PrintEVar-E {
   s.Usings s.Mode e.Index s.Depth =
-    s.Mode e.Index '_' <StrFromInt s.Depth> '_e_' <StrFromInt s.Usings>;
+    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ' + 1]';
+    // s.Mode e.Index '_' <StrFromInt s.Depth> '_e_' <StrFromInt s.Usings>;
 }
 
 PrintEVars {
