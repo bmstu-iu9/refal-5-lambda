@@ -1532,7 +1532,9 @@ extern refalrts::Node g_last_marker;
 refalrts::Node g_first_marker = { 0, & g_last_marker, refalrts::cDataIllegal };
 refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 
+#ifndef INTERPRET
 const refalrts::NodePtr g_end_list = & g_last_marker;
+#endif
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
 namespace pool {
