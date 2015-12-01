@@ -622,9 +622,11 @@ $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
   GenerateResult-OpenELoops, MakeCopyVar, FoldAllocCommands, MakeInterpCommands,
   OutlineConstants, PrepareOpenEStack;
 
+
 //FROM LibraryEx
 $EXTERN Map, Seq;
 
+<<<<<<< HEAD
 //From Library
 $EXTERN Add, Inc;
 
@@ -678,7 +680,6 @@ NumerateVars {
 
 FindAllocForCopiedVars {
   (e.Set1-B (s.Number e.Common) e.Set1-E) (e.Set2-B (e.Common) e.Set2-E) =
-    //<DebugNVarInfo (s.Number e.Common)>
     (s.Number e.Common)
     <FindAllocForCopiedVars (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>
   ;
@@ -738,15 +739,12 @@ GenInterpretPatternCommand {
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  //временный хак
   (CmdEmpty AlgLeft s.BracketNumber) e.Etc =
     (CmdiEmpty s.BracketNumber)
     <GenInterpretPatternCommand e.Etc>
     ;
 
   (CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
-    // <WriteLine 'Var: ' s.Direction ' :bn: ' s.BracketNumber
-    //   ' :mode: ' s.Mode ' :info: ' e.Info >
     (CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
     <GenInterpretPatternCommand e.Etc>
     ;
@@ -756,7 +754,7 @@ GenInterpretPatternCommand {
     ;
 
   (e.Command) e.PatternCommands = <GenInterpretPatternCommand e.PatternCommands>;
-   =;
+   = /* Пусто */;
 }
 
 GeneralizeResult {
@@ -937,13 +935,9 @@ FoldAllocCommands {
 MakeInterpCommands {
   e.CopiedVars-B (s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
   (CmdInsertVar s.Usings s.Mode e.Index) =
-    //<WriteLine 'Debug 1 index '>
-    //<DebugNVarInfo (s.Number s.Usings s.Mode e.Index)>
     (CmdArrCopy s.Mode e.Index);
 
   e.CopiedVars (CmdInsertVar s.Usings s.Mode e.Index) =
-    //<WriteLine 'Debug 2 index'>
-    //<DebugVarInfo (s.Usings s.Mode e.Index)>
     (CmdArrSplice s.Usings s.Mode e.Index);
 
   e.CopiedVars (CmdInsertElem ElChar s.Counter s.Value) =
