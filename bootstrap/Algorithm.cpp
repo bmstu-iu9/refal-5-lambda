@@ -37,6 +37,7 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __ePattern_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -464,6 +465,7 @@ static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eVars_2_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommands_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVars_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -565,6 +567,7 @@ static refalrts::FnResult lambda_GenPattern_1(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, 0, __eVars_2_1, 4},
       {refalrts::icsVarLeft, & context[0], & context[1], __sNumRanges_2_1, 0},
       {refalrts::icContextSet, 0, 0, __eCommands_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVars_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -698,6 +701,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __ePattern_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -919,6 +923,7 @@ static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, & context[0], & context[1], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icInt, 0, 0, 2 , 0},
@@ -1022,6 +1027,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
       {refalrts::icsVarLeft, & context[8], & context[9], __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -1221,6 +1227,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -1419,6 +1426,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icFuncLeft, 0, 0, 3, 8},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -1615,6 +1623,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icFuncLeft, 0, 0, 3, 8},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -1812,6 +1821,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
       {refalrts::icsVarLeft, & context[8], & context[9], __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -2011,6 +2021,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -2209,6 +2220,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -2405,6 +2417,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -2604,6 +2617,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icIdentLeft, 0, 0, 0, 8},
       {refalrts::icContextSet, 0, 0, __eSubRange_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -2839,6 +2853,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3077,6 +3092,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eName_1_1, 10},
       {refalrts::icContextSet, 0, 0, __eSubRange_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3323,6 +3339,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 12},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3556,6 +3573,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 8},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -3744,6 +3762,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eVars_E_1_1, 16},
       {refalrts::icsVarLeft, & context[10], & context[11], __sCount_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -4040,6 +4059,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eVars_E_1_1, 16},
       {refalrts::icsVarLeft, & context[10], & context[11], __sCount_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -4317,6 +4337,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -4530,6 +4551,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icCharLeft, & context[8], & context[9], (int)'s', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -4760,6 +4782,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icCharLeft, & context[8], & context[9], (int)'t', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -4990,6 +5013,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -5220,6 +5244,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eRanges_E_1_1, 10},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -5450,6 +5475,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icCharLeft, & context[8], & context[9], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eRange_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
@@ -5658,6 +5684,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 2},
       {refalrts::icsVarLeft, & context[0], & context[1], __sNumRanges_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumRanges_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVars_1_1, 0},
@@ -5743,6 +5770,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, & context[0], & context[1], __sLastBracket_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sLastBracket_1_1, 0},
@@ -5842,6 +5870,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refa
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eCommands_E_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommandsBeforeEMatch_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sLastBracket_1_1, 0},
@@ -5988,6 +6017,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icsVarLeft, & context[4], & context[5], __sNum_1_1, 0},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icSpliceEVar, 0, 0, __eScanned_1_1, 0},
@@ -6151,6 +6181,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eScanned_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sLastBracket_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eScanned_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
@@ -6232,6 +6263,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_2_1, 0},
       {refalrts::icsRepeatLeft, (void*)__sNum_1_2, (void*)__sNum_1_1, 0, 2},
       {refalrts::icContextSet, 0, 0, __eInfo_2_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sCommand_2_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_2_1, 0},
@@ -6321,6 +6353,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sOtherNum_2_1, 0},
       {refalrts::icContextSet, 0, 0, __eInfo_2_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sCommand_2_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_2_1, 0},
@@ -6445,6 +6478,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
       {refalrts::icsVarLeft, & context[6], & context[7], __sDirection_1_1, 0},
       {refalrts::icsRepeatLeft, (void*)__sNum_1_2, (void*)__sNum_1_1, 0, 6},
       {refalrts::icContextSet, 0, 0, __eArgs_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -6692,6 +6726,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icContextSet, 0, 0, __eScanned_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sLastBracket_1_1, 0},
@@ -6801,6 +6836,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNum_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sInnerNum_2_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_2_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sInnerNum_2_1, 0},
       {refalrts::icEnd}
@@ -6869,6 +6905,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNum_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sInnerNum_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_2_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sInnerNum_2_1, 0},
       {refalrts::icEnd}
@@ -6934,6 +6971,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
       {refalrts::icsVarLeft, & context[2], & context[3], __sCommand_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_2_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNum_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_2_1, 0},
       {refalrts::icEnd}
     };
@@ -6999,6 +7037,7 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -7104,6 +7143,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icSave, & context[4], & context[5], 0},
       {refalrts::icsRepeatLeft, (void*)__sRepeated_1_2, (void*)__sRepeated_1_1, 0, 4},
       {refalrts::icContextSet, 0, 0, __eRest_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eUnique_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -7187,6 +7227,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eUnique_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eUnique_1_1, 0},
       {refalrts::icEnd}
     };
@@ -7248,6 +7289,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icIdentLeft, 0, 0, 0, 2},
       {refalrts::icContextSet, 0, 0, __eInner_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icChar, 0, 0, '(', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -7365,6 +7407,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icContextSet, 0, 0, __eName_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eInner_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icChar, 0, 0, '[', 0},
       {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
@@ -7493,6 +7536,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icChar, 0, 0, '\'', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -7600,6 +7644,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
@@ -7701,6 +7746,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icChar, 0, 0, '&', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
@@ -7798,6 +7844,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icsVarRight, & context[2], & context[3], __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icSpliceSTVar, 0, 0, __sMode_1_1, 0},
       {refalrts::icChar, 0, 0, '.', 0},
@@ -7915,6 +7962,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icChar, 0, 0, '#', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
@@ -8000,6 +8048,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8049,6 +8098,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'\n', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, 'n', 0},
       {refalrts::icEnd}
@@ -8103,6 +8153,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'\r', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, 'r', 0},
       {refalrts::icEnd}
@@ -8157,6 +8208,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'\t', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, 't', 0},
       {refalrts::icEnd}
@@ -8211,6 +8263,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'\\', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icEnd}
@@ -8265,6 +8318,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'\'', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, '\'', 0},
       {refalrts::icEnd}
@@ -8319,6 +8373,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, & context[0], & context[1], (int)'"', 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\\', 0},
       {refalrts::icChar, 0, 0, '"', 0},
       {refalrts::icEnd}
@@ -8374,6 +8429,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, & context[0], & context[1], __sOther_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sOther_1_1, 0},
       {refalrts::icEnd}
     };
@@ -8435,6 +8491,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sChar_1_1, 0},
@@ -8524,6 +8581,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '\'', 0},
       {refalrts::icEnd}
     };
@@ -8572,6 +8630,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eOther_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eOther_1_1, 0},
@@ -8643,6 +8702,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -8886,6 +8946,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sValue_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -9105,6 +9166,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icFuncLeft, 0, 0, 5, 8},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -9323,6 +9385,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -9542,6 +9605,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icFuncLeft, 0, 0, 5, 8},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -9761,6 +9825,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icIdentLeft, 0, 0, 0, 8},
       {refalrts::icContextSet, 0, 0, __eInBrackets_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10000,6 +10065,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icIdentLeft, 0, 0, 1, 8},
       {refalrts::icContextSet, 0, 0, __eInBrackets_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 4, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10243,6 +10309,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eName_1_1, 10},
       {refalrts::icContextSet, 0, 0, __eInBrackets_1_1, 8},
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 6, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10507,6 +10574,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sOpenCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10749,6 +10817,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sOpenCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10991,6 +11060,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sOpenCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 5, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -11258,6 +11328,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eVars_E_1_1, 12},
       {refalrts::icsVarLeft, & context[10], & context[11], __sUsings_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -11507,6 +11578,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eResult_1_1, 0},
       {refalrts::icsVarLeft, & context[8], & context[9], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -11698,6 +11770,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 6},
       {refalrts::icsVarLeft, & context[0], & context[1], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVars_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -11882,6 +11955,13 @@ refalrts::FnResult CmdiReserveStack(refalrts::Iter, refalrts::Iter) {
   );
 }
 
+refalrts::FnResult CmdiEmptyResult(refalrts::Iter, refalrts::Iter) {
+  refalrts::this_is_generated_function();
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
 extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult DebugVarInfo(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -11911,6 +11991,7 @@ static refalrts::FnResult DebugVarInfo(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'D', 0},
@@ -12176,6 +12257,7 @@ static refalrts::FnResult DebugVarInfo(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'D', 0},
@@ -12487,6 +12569,7 @@ static refalrts::FnResult DebugNVarInfo(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icChar, 0, 0, 'D', 0},
@@ -12821,6 +12904,7 @@ static refalrts::FnResult DebugNVarInfo(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icChar, 0, 0, 'D', 0},
@@ -13200,6 +13284,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sUsings_1_1, 0},
@@ -13333,6 +13418,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sUsings_1_1, 0},
@@ -13447,6 +13533,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -13538,6 +13625,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
       {refalrts::iceRepeatLeft, (void*)__eCommon_1_2, (void*)__eCommon_1_1, 0, 8},
       {refalrts::icEmpty, 0, 0, 0, 8},
       {refalrts::icContextSet, 0, 0, __eSet2_E_1_1, 14},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommon_1_1, 0},
@@ -13685,6 +13773,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13756,6 +13845,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sNum_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumRanges_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -13865,6 +13955,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
@@ -13977,6 +14068,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14085,6 +14177,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14190,6 +14283,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sOldBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNewBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sOldBracketNumber_1_1, 0},
@@ -14298,6 +14392,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNum_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_1_1, 0},
@@ -14439,6 +14534,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14547,6 +14643,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14655,6 +14752,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sInnerBrackets_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14765,6 +14863,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -14870,6 +14969,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, 0, __eEtc_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
@@ -14974,6 +15074,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
@@ -15080,6 +15181,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'C', 0},
@@ -15221,6 +15323,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __ePatternCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __ePatternCommands_1_1, 0},
@@ -15286,6 +15389,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15351,6 +15455,7 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, 0, __eResultVars_2_1, 4},
       {refalrts::icContextSet, 0, 0, __eRepeatedEs_2_1, 6},
       {refalrts::icContextSet, 0, 0, __eClosedEs_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
@@ -15590,6 +15695,7 @@ static refalrts::FnResult lambda_GeneralizeResult_1(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, 0, __eCommonVars_2_1, 4},
       {refalrts::icContextSet, 0, 0, __eCopiedVars_2_1, 6},
       {refalrts::icContextSet, 0, 0, __eUnusedClosedEs_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
@@ -15772,6 +15878,7 @@ static refalrts::FnResult lambda_GeneralizeResult_2(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, 0, __eCommonVars_2_1, 2},
       {refalrts::icContextSet, 0, 0, __eCopiedVars_2_1, 4},
       {refalrts::icContextSet, 0, 0, __eEtc_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -15895,6 +16002,7 @@ static refalrts::FnResult lambda_GeneralizeResult_3(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, 0, __eEtc_2_1, 0},
       {refalrts::icsVarLeft, & context[6], & context[7], __sNumber_2_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eNCommonVars_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -16065,6 +16173,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
       { & CmdFinRAA, "CmdFinRAA" },
       { & FoldAllocCommands, "FoldAllocCommands" },
       { & MakeInterpCommands, "MakeInterpCommands" },
+      { & CmdiEmptyResult, "CmdiEmptyResult" },
       { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
       { & CmdInitRAA, "CmdInitRAA" },
       { & OutlineConstants, "OutlineConstants" },
@@ -16091,38 +16200,42 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, 0, __eMCopiedVars_2_1, 8},
       {refalrts::icContextSet, 0, 0, __eCopiedVars_2_1, 10},
       {refalrts::icContextSet, 0, 0, __ePatternCommands_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 18, 0},
+      {refalrts::icFunc, 0, 0, 19, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
-      {refalrts::icFunc, 0, 0, 17, 0},
+      {refalrts::icFunc, 0, 0, 18, 0},
       {refalrts::icSpliceEVar, 0, 0, __eNCommonVars_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 17, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 16, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 15, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 14, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icInt, 0, 0, 0 , 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icInt, 0, 0, 0 , 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 13, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icInt, 0, 0, 0 , 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icInt, 0, 0, 0 , 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 12, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 11, 0},
+      {refalrts::icFunc, 0, 0, 12, 0},
       {refalrts::icSpliceEVar, 0, 0, __ePatternCommands_2_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 11, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -16312,185 +16425,198 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_close_call( n28 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_open_call( n29 ) )
+    if( ! refalrts::alloc_open_bracket( n29 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_name( n30, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n30, & CmdiEmptyResult, "CmdiEmptyResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_open_bracket( n31 ) )
+    if( ! refalrts::alloc_close_bracket( n31 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_name( n32, & MakeInterpCommands, "MakeInterpCommands" ) )
+    if( ! refalrts::alloc_open_call( n32 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_close_bracket( n33 ) )
+    if( ! refalrts::alloc_name( n33, & Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_open_call( n34 ) )
+    if( ! refalrts::alloc_open_bracket( n34 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_name( n35, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n35, & MakeInterpCommands, "MakeInterpCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_open_bracket( n36 ) )
+    if( ! refalrts::alloc_close_bracket( n36 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_close_bracket( n37 ) )
+    if( ! refalrts::alloc_open_call( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_close_call( n38 ) )
+    if( ! refalrts::alloc_name( n38, & FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_close_call( n39 ) )
+    if( ! refalrts::alloc_open_bracket( n39 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
-    if( ! refalrts::alloc_open_bracket( n40 ) )
+    if( ! refalrts::alloc_close_bracket( n40 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_name( n41, & CmdFinRAA, "CmdFinRAA" ) )
+    if( ! refalrts::alloc_close_call( n41 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_close_bracket( n42 ) )
+    if( ! refalrts::alloc_close_call( n42 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
-    if( ! refalrts::alloc_close_call( n43 ) )
+    if( ! refalrts::alloc_open_bracket( n43 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n44 = 0;
-    if( ! refalrts::alloc_number( n44, 0UL ) )
+    if( ! refalrts::alloc_name( n44, & CmdFinRAA, "CmdFinRAA" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n45 = 0;
-    if( ! refalrts::alloc_close_call( n45 ) )
+    if( ! refalrts::alloc_close_bracket( n45 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n46 = 0;
-    if( ! refalrts::alloc_open_bracket( n46 ) )
+    if( ! refalrts::alloc_close_call( n46 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n47 = 0;
-    if( ! refalrts::alloc_name( n47, & CmdiRunInterpret, "CmdiRunInterpret" ) )
+    if( ! refalrts::alloc_number( n47, 0UL ) )
       return refalrts::cNoMemory;
     refalrts::Iter n48 = 0;
-    if( ! refalrts::alloc_close_bracket( n48 ) )
+    if( ! refalrts::alloc_close_call( n48 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n49 = 0;
     if( ! refalrts::alloc_open_bracket( n49 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n50 = 0;
-    if( ! refalrts::alloc_name( n50, & CmdElse, "CmdElse" ) )
+    if( ! refalrts::alloc_name( n50, & CmdiRunInterpret, "CmdiRunInterpret" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n51 = 0;
     if( ! refalrts::alloc_close_bracket( n51 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n52 = 0;
-    if( ! refalrts::alloc_open_call( n52 ) )
+    if( ! refalrts::alloc_open_bracket( n52 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n53 = 0;
-    if( ! refalrts::alloc_name( n53, & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
+    if( ! refalrts::alloc_name( n53, & CmdElse, "CmdElse" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n54 = 0;
-    if( ! refalrts::alloc_open_bracket( n54 ) )
+    if( ! refalrts::alloc_close_bracket( n54 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n55 = 0;
-    if( ! refalrts::alloc_name( n55, & CmdEmptyResult, "CmdEmptyResult" ) )
+    if( ! refalrts::alloc_open_call( n55 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n56 = 0;
-    if( ! refalrts::alloc_close_bracket( n56 ) )
+    if( ! refalrts::alloc_name( n56, & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n57 = 0;
-    if( ! refalrts::alloc_open_call( n57 ) )
+    if( ! refalrts::alloc_open_bracket( n57 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n58 = 0;
-    if( ! refalrts::alloc_name( n58, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n58, & CmdEmptyResult, "CmdEmptyResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n59 = 0;
-    if( ! refalrts::alloc_name( n59, & MakeCopyVar, "MakeCopyVar" ) )
+    if( ! refalrts::alloc_close_bracket( n59 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n60 = 0;
-    if( ! refalrts::alloc_close_call( n60 ) )
+    if( ! refalrts::alloc_open_call( n60 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n61 = 0;
-    if( ! refalrts::alloc_open_bracket( n61 ) )
+    if( ! refalrts::alloc_name( n61, & Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n62 = 0;
-    if( ! refalrts::alloc_name( n62, & CmdReturnResult, "CmdReturnResult" ) )
+    if( ! refalrts::alloc_name( n62, & MakeCopyVar, "MakeCopyVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n63 = 0;
-    if( ! refalrts::alloc_close_bracket( n63 ) )
+    if( ! refalrts::alloc_close_call( n63 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n64 = 0;
-    if( ! refalrts::alloc_close_call( n64 ) )
+    if( ! refalrts::alloc_open_bracket( n64 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n65 = 0;
-    if( ! refalrts::alloc_open_bracket( n65 ) )
+    if( ! refalrts::alloc_name( n65, & CmdReturnResult, "CmdReturnResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n66 = 0;
-    if( ! refalrts::alloc_name( n66, & CmdEndIf, "CmdEndIf" ) )
+    if( ! refalrts::alloc_close_bracket( n66 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n67 = 0;
-    if( ! refalrts::alloc_close_bracket( n67 ) )
+    if( ! refalrts::alloc_close_call( n67 ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n65, n67 );
+    refalrts::Iter n68 = 0;
+    if( ! refalrts::alloc_open_bracket( n68 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n69 = 0;
+    if( ! refalrts::alloc_name( n69, & CmdEndIf, "CmdEndIf" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n70 = 0;
+    if( ! refalrts::alloc_close_bracket( n70 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n68, n70 );
+    res = refalrts::splice_elem( res, n70 );
+    res = refalrts::splice_elem( res, n69 );
+    res = refalrts::splice_elem( res, n68 );
+    refalrts::push_stack( n67 );
+    refalrts::push_stack( n55 );
     res = refalrts::splice_elem( res, n67 );
+    refalrts::link_brackets( n64, n66 );
     res = refalrts::splice_elem( res, n66 );
     res = refalrts::splice_elem( res, n65 );
-    refalrts::push_stack( n64 );
-    refalrts::push_stack( n52 );
     res = refalrts::splice_elem( res, n64 );
-    refalrts::link_brackets( n61, n63 );
-    res = refalrts::splice_elem( res, n63 );
-    res = refalrts::splice_elem( res, n62 );
-    res = refalrts::splice_elem( res, n61 );
     res = refalrts::splice_evar( res, context[__eResultCommands_1_2], context[__eResultCommands_1_2 + 1] );
     res = refalrts::splice_evar( res, context[__eResultAllocCommands_1_2], context[__eResultAllocCommands_1_2 + 1] );
+    refalrts::push_stack( n63 );
     refalrts::push_stack( n60 );
-    refalrts::push_stack( n57 );
-    res = refalrts::splice_elem( res, n60 );
+    res = refalrts::splice_elem( res, n63 );
     res = refalrts::splice_evar( res, context[__eCopiedVars_2_1], context[__eCopiedVars_2_1 + 1] );
+    res = refalrts::splice_elem( res, n62 );
+    res = refalrts::splice_elem( res, n61 );
+    res = refalrts::splice_elem( res, n60 );
+    refalrts::link_brackets( n57, n59 );
     res = refalrts::splice_elem( res, n59 );
     res = refalrts::splice_elem( res, n58 );
     res = refalrts::splice_elem( res, n57 );
-    refalrts::link_brackets( n54, n56 );
+    res = refalrts::splice_evar( res, context[__ePatternCommands_2_2], context[__ePatternCommands_2_2 + 1] );
     res = refalrts::splice_elem( res, n56 );
     res = refalrts::splice_elem( res, n55 );
+    refalrts::link_brackets( n52, n54 );
     res = refalrts::splice_elem( res, n54 );
-    res = refalrts::splice_evar( res, context[__ePatternCommands_2_2], context[__ePatternCommands_2_2 + 1] );
     res = refalrts::splice_elem( res, n53 );
     res = refalrts::splice_elem( res, n52 );
     refalrts::link_brackets( n49, n51 );
     res = refalrts::splice_elem( res, n51 );
     res = refalrts::splice_elem( res, n50 );
     res = refalrts::splice_elem( res, n49 );
-    refalrts::link_brackets( n46, n48 );
+    refalrts::push_stack( n48 );
+    refalrts::push_stack( n13 );
     res = refalrts::splice_elem( res, n48 );
     res = refalrts::splice_elem( res, n47 );
+    refalrts::push_stack( n46 );
+    refalrts::push_stack( n15 );
     res = refalrts::splice_elem( res, n46 );
-    refalrts::push_stack( n45 );
-    refalrts::push_stack( n13 );
+    refalrts::link_brackets( n43, n45 );
     res = refalrts::splice_elem( res, n45 );
     res = refalrts::splice_elem( res, n44 );
-    refalrts::push_stack( n43 );
-    refalrts::push_stack( n15 );
     res = refalrts::splice_elem( res, n43 );
-    refalrts::link_brackets( n40, n42 );
+    refalrts::push_stack( n42 );
+    refalrts::push_stack( n32 );
     res = refalrts::splice_elem( res, n42 );
+    refalrts::push_stack( n41 );
+    refalrts::push_stack( n37 );
     res = refalrts::splice_elem( res, n41 );
-    res = refalrts::splice_elem( res, n40 );
-    refalrts::push_stack( n39 );
-    refalrts::push_stack( n29 );
-    res = refalrts::splice_elem( res, n39 );
-    refalrts::push_stack( n38 );
-    refalrts::push_stack( n34 );
-    res = refalrts::splice_elem( res, n38 );
     res = refalrts::splice_evar( res, context[__eResultCommands_1_1], context[__eResultCommands_1_1 + 1] );
-    refalrts::link_brackets( n36, n37 );
-    res = refalrts::splice_elem( res, n37 );
+    refalrts::link_brackets( n39, n40 );
+    res = refalrts::splice_elem( res, n40 );
     res = refalrts::splice_evar( res, context[__eResultAllocCommands_1_1], context[__eResultAllocCommands_1_1 + 1] );
+    res = refalrts::splice_elem( res, n39 );
+    res = refalrts::splice_elem( res, n38 );
+    res = refalrts::splice_elem( res, n37 );
+    refalrts::link_brackets( n34, n36 );
     res = refalrts::splice_elem( res, n36 );
+    res = refalrts::splice_evar( res, context[__eMCopiedVars_2_1], context[__eMCopiedVars_2_1 + 1] );
     res = refalrts::splice_elem( res, n35 );
     res = refalrts::splice_elem( res, n34 );
-    refalrts::link_brackets( n31, n33 );
     res = refalrts::splice_elem( res, n33 );
-    res = refalrts::splice_evar( res, context[__eMCopiedVars_2_1], context[__eMCopiedVars_2_1 + 1] );
     res = refalrts::splice_elem( res, n32 );
+    refalrts::link_brackets( n29, n31 );
     res = refalrts::splice_elem( res, n31 );
     res = refalrts::splice_elem( res, n30 );
     res = refalrts::splice_elem( res, n29 );
@@ -16598,6 +16724,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eResultCommands_1_1, 4},
       {refalrts::icsVarLeft, & context[0], & context[1], __sNumBrackets_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 11, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -16961,6 +17088,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icInt, 0, 0, 1 , 0},
       {refalrts::icSpliceSTVar, 0, 0, __sMode_1_1, 0},
@@ -17044,6 +17172,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsing_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -17179,6 +17308,7 @@ static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eVars_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -17274,6 +17404,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icSave, & context[10], & context[11], 0},
       {refalrts::ictRepeatLeft, (void*)__tCommon_1_2, (void*)__tCommon_1_1, 0, 10},
       {refalrts::icContextSet, 0, 0, __eSet2_E_1_1, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tCommon_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -17400,6 +17531,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eSet1_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eSet2_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eSet1_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eSet2_1_1, 0},
       {refalrts::icEnd}
@@ -17487,6 +17619,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icSave, & context[10], & context[11], 0},
       {refalrts::ictRepeatLeft, (void*)__tCommon_1_2, (void*)__tCommon_1_1, 0, 10},
       {refalrts::icContextSet, 0, 0, __eSet2_E_1_1, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eSet1_B_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -17609,6 +17742,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eSet1_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eSet1_1_1, 0},
       {refalrts::icEnd}
     };
@@ -17680,6 +17814,7 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icsVarLeft, & context[2], & context[3], __sNum_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icInt, 0, 0, 1 , 0},
       {refalrts::icChar, 0, 0, 'e', 0},
@@ -17760,6 +17895,7 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, & context[0], & context[1], __tOther_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17822,6 +17958,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
       {refalrts::icsVarLeft, & context[2], & context[3], __sCount_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icInt, 0, 0, 1 , 0},
       {refalrts::icChar, 0, 0, 'e', 0},
@@ -17904,6 +18041,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, & context[0], & context[1], __tOther_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17981,6 +18119,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
       {refalrts::icsRepeatLeft, (void*)__sDepth_1_2, (void*)__sDepth_1_1, 0, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icChar, 0, 0, ' ', 0},
@@ -18230,6 +18369,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarRight, & context[0], & context[1], __tOtherCommand_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tOtherCommand_1_1, 0},
       {refalrts::icEnd}
     };
@@ -18306,6 +18446,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
@@ -18396,6 +18537,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
@@ -18501,6 +18643,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sUsings_1_1, 0},
@@ -18585,6 +18728,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sUsings_1_1, 0},
@@ -18774,6 +18918,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, 0, __eAllocs_E_1_1, 8},
       {refalrts::icsVarLeft, & context[6], & context[7], __sType_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eValue_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -18919,6 +19064,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -19046,6 +19192,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -19167,6 +19314,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icContextSet, 0, 0, __eAllocs_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -19261,6 +19409,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icContextSet, 0, 0, __eAllocs_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -19349,6 +19498,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19427,6 +19577,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icsRepeatRight, (void*)__sUsings_1_2, (void*)__sUsings_1_1, 0, 4},
       {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sMode_1_1, 0},
@@ -19528,6 +19679,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icsVarLeft, & context[2], & context[3], __sUsings_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sUsings_1_1, 0},
@@ -19612,6 +19764,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sValue_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sValue_1_1, 0},
@@ -19693,6 +19846,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
@@ -19773,6 +19927,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
@@ -19854,6 +20009,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
@@ -19932,6 +20088,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20008,6 +20165,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20084,6 +20242,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20160,6 +20319,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20236,6 +20396,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20312,6 +20473,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20392,6 +20554,7 @@ static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -20475,6 +20638,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
       {refalrts::icsVarLeft, & context[4], & context[5], __sNextLabel_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -20643,6 +20807,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eFuncs_E_1_1, 10},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -20836,6 +21001,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icsVarLeft, & context[6], & context[7], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[6], & context[7], __sBracketNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFunc_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21035,6 +21201,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eFuncs_E_1_1, 10},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21216,6 +21383,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eFunc_1_1, 6},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNextFunc_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21413,6 +21581,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eFuncs_E_1_1, 10},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21612,6 +21781,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icsVarLeft, & context[6], & context[7], __sBracketNum_1_1, 0},
       {refalrts::icsVarLeft, & context[6], & context[7], __sInnerBrackets_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFunc_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21819,6 +21989,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eLabels_E_1_1, 10},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22012,6 +22183,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icsVarLeft, & context[6], & context[7], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[6], & context[7], __sBracketNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eLabel_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22211,6 +22383,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eLabels_E_1_1, 10},
       {refalrts::icsVarLeft, & context[8], & context[9], __sNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22392,6 +22565,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eLabel_1_1, 6},
       {refalrts::icsVarLeft, & context[4], & context[5], __sNextLabel_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22566,6 +22740,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
       {refalrts::ictVarRight, & context[0], & context[1], __tOtherCommand_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22690,6 +22865,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
       {refalrts::icFuncLeft, 0, 0, 2, 2},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eCommands_E_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommands_B_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
@@ -22809,6 +22985,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -22900,6 +23077,7 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNum_1_1, 0},
       {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommands_B_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
@@ -23047,6 +23225,7 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
       {refalrts::icEnd}
     };

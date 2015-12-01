@@ -30,6 +30,7 @@ refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -100,6 +101,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icFuncLeft, 0, 0, 0, 2},
       {refalrts::icContextSet, 0, 0, __eErrors_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eMessage_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eErrors_1_1, 0},
@@ -243,6 +245,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icContextSet, 0, 0, __eErrors_1_1, 2},
       {refalrts::icsVarLeft, & context[0], & context[1], __sLineNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eMessage_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eErrors_1_1, 0},
@@ -431,6 +434,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tErrorList_1_1, 0},
@@ -515,6 +519,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eUnexpected_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tErrorList_1_1, 0},
@@ -707,6 +712,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icsVarLeft, & context[2], & context[3], __sUnexpected_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tErrorList_1_1, 0},
@@ -929,6 +935,7 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eLine_1_1, 0},
@@ -1010,6 +1017,7 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icFuncLeft, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eErrors_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
@@ -1129,6 +1137,7 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
@@ -1186,6 +1195,7 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, & context[0], & context[1], __tErrorList_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
