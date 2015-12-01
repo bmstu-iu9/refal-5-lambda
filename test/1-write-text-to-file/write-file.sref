@@ -1,0 +1,28 @@
+$EXTERN WriteLine;
+$EXTERN FOpen, FClose, FWriteLine;
+
+$FORWARD WriteToHandle;
+
+Func {
+	(e.FilePath) (e.Text) =
+		<WriteLine e.FilePath>
+		<WriteLine e.Text>
+		<WriteToHandle <FOpen 'w' e.FilePath> e.Text>
+		 ;
+}
+
+TT {
+ e.X e.Y  = <WriteLine (e.X e.Y)>;
+}
+
+WriteToHandle {
+	t.File e.Line =
+		<WriteLine 'Writing...'>
+		<FWriteLine t.File e.Line>
+		<FClose t.File>
+		;
+}
+
+$ENTRY Go {
+ = <Func ('test.txt') ('Test!')>;
+}

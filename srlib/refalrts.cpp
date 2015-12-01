@@ -45,6 +45,12 @@ void refalrts::use( refalrts::Iter& ) {
   компилятора о том, что переменная не используется */;
 }
 
+void refalrts::zeros(refalrts::Iter context[], int size){
+  for (int i = 0; i < size; i++) {
+    context[i] = 0;
+  }
+}
+
 void refalrts::use_counter( unsigned& ) {
   /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
   компилятора о том, что переменная не используется */;
@@ -1521,6 +1527,7 @@ extern refalrts::Node g_last_marker;
 refalrts::Node g_first_marker = { 0, & g_last_marker, refalrts::cDataIllegal };
 refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
 
+//const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
 namespace pool {
@@ -2080,11 +2087,15 @@ refalrts::FnResult refalrts::vm::execute_active(
 
 namespace {
 
-void print_indent(FILE *output, unsigned level)
+void print_indent(FILE *output, int level)
 {
   enum { cPERIOD = 4 };
   putc( '\n', output );
-  for( unsigned i = 0; i < level; ++i )
+  if (level < 0) {
+    putc( '!', output );
+    return;
+  }
+  for( int i = 0; i < level; ++i )
   {
     // Каждые cPERIOD позиций вместо пробела ставим точку.
     bool put_marker = ((i % cPERIOD) == (cPERIOD - 1));
@@ -2107,7 +2118,7 @@ void refalrts::vm::print_seq(
     cStateFinish
   } state = cStateView;
 
-  unsigned indent = 0;
+  int indent = 0;
   bool after_bracket = false;
   bool reset_after_bracket = true;
 
@@ -2386,20 +2397,263 @@ void refalrts::vm::free_view_field() {
 //==============================================================================
 
 refalrts::FnResult refalrts::interpret_array(
-  const refalrts::ResultAction raa[],
+  refalrts::RASLCommand raa[],
   refalrts::Iter allocs[],
-  refalrts::Iter begin, refalrts::Iter end
+  refalrts::Iter context[],
+  refalrts::Iter begin, refalrts::Iter end,
+  const RefalFunction functions[],
+  const RefalIdentifier labels[],
+  int open_e_stack[]
 ) {
   int i = 0;
   Iter stack_ptr = 0;
   Iter res = begin;
   Iter cobracket;
+  Iter *be = 0;
+  Iter *bb = 0;
+  unsigned int index;
+  RefalNumber refNum = 0;
+  char chValue;
+  int stack_top = 0;
+
+#define MATCH_FAIL \
+  { \
+    if (stack_top == 0) \
+      return refalrts::cRecognitionImpossible; \
+    else { \
+      i = open_e_stack[--stack_top]; \
+      continue; \
+    } \
+  }
 
   while(raa[i].cmd != icEnd)
   {
-    //Выделение памяти
+    // Интерпретация команд
+    // Для ряда команд эти переменные могут не иметь смысла
+    Iter &bb_ = context[raa[i].bracket];
+    Iter &be_ = context[raa[i].bracket + 1];
     switch(raa[i].cmd)
     {
+      case icEPush:
+        bb = & bb_;
+        be = & be_;
+        break;
+
+      case icMoveLeft:
+        move_left(*static_cast<Iter*>(raa[i].ptr_value1),
+                  *static_cast<Iter*>(raa[i].ptr_value2));
+        break;
+
+      case icMoveRight:
+        move_right(*static_cast<Iter*>(raa[i].ptr_value1),
+                   *static_cast<Iter*>(raa[i].ptr_value2));
+        break;
+
+      case icBracketLeft:
+        if( !refalrts::brackets_left( context[raa[i].value],
+                                      context[raa[i].value + 1],
+                                      bb_,
+                                      be_ )
+        )
+          MATCH_FAIL
+        break;
+
+      case icBracketRight:
+        if( !refalrts::brackets_right( context[raa[i].value],
+                                       context[raa[i].value + 1],
+                                       bb_,
+                                       be_ )
+        )
+          MATCH_FAIL
+        break;
+
+      case ictVarRight:
+        index = raa[i].value;
+        if( !refalrts::tvar_right( context[index],
+                                   *static_cast<Iter*>(raa[i].ptr_value1),
+                                   *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          MATCH_FAIL
+       break;
+
+      case ictVarLeft:
+        index = raa[i].value;
+        if( !refalrts::tvar_left( context[index],
+                                  *static_cast<Iter*>(raa[i].ptr_value1),
+                                  *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          MATCH_FAIL
+        break;
+
+      case icsVarRight:
+        index = raa[i].value;
+        if( !refalrts::svar_right( context[index],
+                                   *static_cast<Iter*>(raa[i].ptr_value1),
+                                   *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          MATCH_FAIL
+        break;
+
+      case icsVarLeft:
+        index = raa[i].value;
+        if( !refalrts::svar_left( context[index],
+                                  *static_cast<Iter*>(raa[i].ptr_value1),
+                                  *static_cast<Iter*>(raa[i].ptr_value2))
+        )
+          MATCH_FAIL
+        break;
+
+      case icContextSet:
+        index = raa[i].value;
+        context[index] = bb_;
+        context[index + 1] = be_;
+        break;
+
+
+      case icNumRight:
+        refNum = (RefalNumber)raa[i].ptr_value1;
+        if( ! refalrts::number_right( refNum, *bb, *be ) )
+          MATCH_FAIL
+       break;
+
+      case icNumLeft:
+        refNum = (RefalNumber)raa[i].ptr_value1;
+        if( ! refalrts::number_left( refNum, *bb, *be ) )
+          MATCH_FAIL
+        break;
+
+      case icIdentRight:
+        if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
+          MATCH_FAIL
+        break;
+
+      case icIdentLeft:
+        if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
+          MATCH_FAIL
+        break;
+
+      case icADTRight:
+        if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
+                                   context[(raa[i].value & 0xFFFF) + 1],
+                                   functions[raa[i].value >> 16].ptr,
+                                   bb_, be_)
+        )
+          MATCH_FAIL
+        break;
+
+      case icADTLeft:
+        if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
+                                  context[(raa[i].value & 0xFFFF) + 1],
+                                  functions[raa[i].value >> 16].ptr,
+                                  bb_, be_)
+        )
+          MATCH_FAIL
+        break;
+
+      case icFuncRight:
+        if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
+          MATCH_FAIL
+        break;
+
+      case icFuncLeft:
+        if ( !function_left( functions[raa[i].value].ptr, bb_, be_ ) )
+          MATCH_FAIL
+        break;
+
+      case icCharRight:
+        chValue = (char)raa[i].value;
+        if ( !char_right( chValue,
+                          *static_cast<Iter*>(raa[i].ptr_value1),
+                          *static_cast<Iter*>(raa[i].ptr_value2))
+          )
+          MATCH_FAIL
+        break;
+
+      case icCharLeft:
+        chValue = (char)raa[i].value;
+        if ( !char_left( chValue,
+                         *static_cast<Iter*>(raa[i].ptr_value1),
+                         *static_cast<Iter*>(raa[i].ptr_value2))
+          )
+          MATCH_FAIL
+        break;
+
+      case iceRepeatRight:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          if( ! refalrts::repeated_evar_right( context[ind1], context[ind1 + 1],
+                                               context[ind2], context[ind2 + 1],
+                                               bb_, be_)
+          )
+            MATCH_FAIL
+        }
+        break;
+
+      case iceRepeatLeft:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          if( ! refalrts::repeated_evar_left( context[ind1], context[ind1 + 1],
+                                              context[ind2], context[ind2 + 1],
+                                              bb_, be_)
+          )
+            MATCH_FAIL
+        }
+        break;
+
+      case icsRepeatRight:
+      case ictRepeatRight:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb_, be_) )
+            MATCH_FAIL
+        }
+        break;
+
+      case icsRepeatLeft:
+      case ictRepeatLeft:
+        {
+          int ind1, ind2;
+          ind1 =(long)raa[i].ptr_value1;
+          ind2 = (long)raa[i].ptr_value2;
+          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb_, be_) )
+            MATCH_FAIL
+        }
+        break;
+
+      case icSave:
+        *static_cast<Iter*>(raa[i].ptr_value1) = *bb;
+        *static_cast<Iter*>(raa[i].ptr_value2) = *be;
+        break;
+
+      case icEPrepare:
+        context[raa[i].value] = 0;
+        context[raa[i].value + 1] = 0;
+        open_e_stack[stack_top++] = ++i;
+        break;
+
+      case icEStart:
+        {
+          bool advance = open_evar_advance(
+            context[raa[i].value], context[raa[i].value + 1], bb_, be_
+          );
+          if ( ! advance ) {
+            MATCH_FAIL
+          }
+          open_e_stack[stack_top++] = i;
+        }
+        break;
+
+      case icEmpty:
+        if ( !empty_seq( bb_, be_ ) )
+          MATCH_FAIL
+        break;
+
       case icChar:
         if(!alloc_char(*allocs, static_cast<char>(raa[i].value)))
           return cNoMemory;
@@ -2416,8 +2670,8 @@ refalrts::FnResult refalrts::interpret_array(
         if(
             !alloc_name(
               *allocs,
-              (RefalFunctionPtr)(raa[i].ptr_value1),
-              (RefalFuncName)(raa[i].ptr_value2)
+              functions[raa[i].value].ptr,
+              functions[raa[i].value].name
             )
         )
           return cNoMemory;
@@ -2425,12 +2679,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icIdent:
-        if(
-            !alloc_ident(
-              *allocs,
-              (RefalIdentifier)(raa[i].ptr_value1)
-            )
-        )
+        if( !alloc_ident( *allocs, labels[raa[i].value] ) )
           return cNoMemory;
         ++allocs;
         break;
@@ -2500,7 +2749,8 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icCopySTVar:
-        if(!copy_stvar(*allocs, *static_cast<Iter*>(raa[i].ptr_value1)))
+        index = raa[i].value;
+        if( !copy_stvar(*allocs, context[index]) )
           return cNoMemory;
         ++allocs;
         break;
@@ -2510,12 +2760,13 @@ refalrts::FnResult refalrts::interpret_array(
         ++allocs;
         refalrts::Iter& eend = *allocs;
         ++allocs;
+        index = raa[i].value;
         if(
             !copy_evar(
               ebegin,
               eend,
-              *static_cast<Iter*>(raa[i].ptr_value1),
-              *static_cast<Iter*>(raa[i].ptr_value2)
+              context[index],
+              context[index + 1]
             )
           )
           return cNoMemory;
@@ -2530,6 +2781,7 @@ refalrts::FnResult refalrts::interpret_array(
 
   while(i >= 0)
   {
+    int index = 0;
     //Компоновка стека
     switch(raa[i].cmd)
     {
@@ -2541,12 +2793,47 @@ refalrts::FnResult refalrts::interpret_array(
         res = splice_elem(res, *allocs);
         break;
 
+      //skip-case
+      case icMoveRight:
+      case icMoveLeft:
+      case icContextSet:
+      case icEPush:
+      case icsVarRight:
+      case icsVarLeft:
+      case ictVarRight:
+      case ictVarLeft:
+      case icNumRight:
+      case icNumLeft:
+      case icIdentRight:
+      case icIdentLeft:
+      case icADTLeft:
+      case icADTRight:
+      case icFuncRight:
+      case icFuncLeft:
+      case icCharRight:
+      case icCharLeft:
+      case iceRepeatRight:
+      case iceRepeatLeft:
+      case icsRepeatRight:
+      case icsRepeatLeft:
+      case ictRepeatRight:
+      case ictRepeatLeft:
+      case icSave:
+      case icEPrepare:
+      case icEStart:
+      case icBracketLeft:
+      case icBracketRight:
+      case icEmpty:
+        break;
+
       case icSpliceSTVar:
-        res = splice_stvar(res, *static_cast<Iter*>(raa[i].ptr_value1));
+        index = raa[i].value;
+        res = splice_stvar(res, context[index]);
         break;
 
       case icSpliceEVar:
-        res = splice_evar(res, *static_cast<Iter*>(raa[i].ptr_value1), *static_cast<Iter*>(raa[i].ptr_value2));
+        index = raa[i].value;
+        res = splice_evar(res, context[index], context[index + 1]);
         break;
 
       case icBracket:
@@ -2634,6 +2921,10 @@ int main(int argc, char **argv) {
 
     case refalrts::cExit:
       return refalrts::vm::g_ret_code;
+
+    case refalrts::cEndErr:
+      fprintf(stderr, "ERROR: check start-end commands in raa\n");
+      return  5;
 
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main");

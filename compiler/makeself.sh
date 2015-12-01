@@ -7,7 +7,8 @@
 cp srefc srefc_
 ../bin/lexgen Lexer.sref
 ../bin/srmake -s ./srefc_ -c "g++ -I../srlib -osrefc" -d ../srlib srefc
-mv *.cpp ../bootstrap
+#rm ../bootstrap/*.cpp
+cp *.cpp ../bootstrap
 mv ../srlib/LibraryEx.cpp ../bootstrap
 cp ../srlib/*.cpp ../bootstrap
 cp srefc ../bin

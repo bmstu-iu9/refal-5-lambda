@@ -7,7 +7,9 @@ typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
-  cExit = 3
+  cExit = 3,
+  cEndErr = 4,
+  cPatternMismatch = 5
 } FnResult;
 
 typedef struct Node Node;
@@ -80,7 +82,41 @@ typedef enum iCmd {
   icSpliceEVar,
   icCopySTVar,
   icCopyEVar,
-  icEnd
+  icEnd,
+  icBoundSet,
+  icBoundMoveLeft,
+  icBoundMoveRight,
+  icBoundEmptySeq,
+  icBracketLeft,
+  icBracketRight,
+  icEmpty,
+  icMoveLeft,
+  icMoveRight,
+  icEPush,
+  icContextSet,
+  icsVarRight,
+  icsVarLeft,
+  ictVarRight,
+  ictVarLeft,
+  icNumRight,
+  icNumLeft,
+  icIdentRight,
+  icIdentLeft,
+  icADTRight,
+  icADTLeft,
+  icFuncRight,
+  icFuncLeft,
+  icCharRight,
+  icCharLeft,
+  iceRepeatRight,
+  iceRepeatLeft,
+  icsRepeatRight,
+  icsRepeatLeft,
+  ictRepeatRight,
+  ictRepeatLeft,
+  icSave,
+  icEPrepare,
+  icEStart
 } iCmd;
 
 typedef enum BracketType {
@@ -92,14 +128,28 @@ typedef enum BracketType {
   ibCloseCall
 } BracketType;
 
-typedef struct ResultAction {
-    iCmd cmd;
-    void *ptr_value1;
-    void *ptr_value2;
-    int value;
-} ResultAction;
+/*
+   Заготовка:
+   Для эффективной обработки на современных процессорах
+   команду выровляли по размеру в 4 байта.
+   И получили ограничение на индексацию в 255.
+   Анологичное ограничение присуствует в Рефал-5.
+ */
+typedef struct RASLCommand {
+  iCmd cmd;
+  void *ptr_value1;
+  void *ptr_value2;
+  int value;
+  int bracket;
+  // unsigned char cmd;
+  // unsigned char val1;
+  // unsigned char val2;
+  // unsigned char bracket;
+} RASLCommand;
 
 extern void use( Iter& );
+
+void zeros( Iter context[], int size );
 
 // Операции распознавания образца
 
@@ -266,7 +316,6 @@ inline void set_return_code( RefalNumber retcode ) {
 /*
   Функция производит печать рефал-выражения в поток file
   в том же формате, как и при отладочном дампе памяти.
-
   Переменная file представляет собой стандартный файловый
   поток FILE* из stdio.h. Сделана она была void* только
   для того, чтобы не включать сюда лишние заголовочные файлы
@@ -275,12 +324,15 @@ inline void set_return_code( RefalNumber retcode ) {
 void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
-
 extern FnResult interpret_array(
-  const ResultAction raa[],
+  RASLCommand raa[],
   Iter allocs[],
+  Iter context[],
   Iter begin,
-  Iter end
+  Iter end,
+  const RefalFunction functions[],
+  const RefalIdentifier labels[],
+  int open_e_stack[]
 );
 
 } //namespace refalrts

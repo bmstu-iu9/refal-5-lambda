@@ -37,7 +37,7 @@ setlocal
     exit
   )
 
-  %CPPLINE% -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../srlib/refalrts.cpp
+  %CPPLINE% -I../srlib -DINTERPRET -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit
@@ -56,6 +56,7 @@ setlocal
   if exist dump.txt erase dump.txt
   echo.
 endlocal
+
 goto :EOF
 
 :RUN_TEST_AUX.BAD-SYNTAX
@@ -75,7 +76,7 @@ setlocal
     erase %CPP%
     exit
   )
-  echo Ok! Compiler didn't chash on invalid syntax
+  echo Ok! Compiler didn't crash on invalid syntax
   echo.
 endlocal
 goto :EOF

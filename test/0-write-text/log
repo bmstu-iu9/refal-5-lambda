@@ -1,0 +1,5 @@
+*Compiling write-text.sref:
+*Compiling ../../srlib//LibraryEx.sref:
++Linking ../../srlib//Library.cpp
++Linking ../../srlib//refalrts.cpp
+** Compilation successed **
