@@ -116,7 +116,8 @@ typedef enum iCmd {
   ictRepeatLeft,
   icSave,
   icEPrepare,
-  icEStart
+  icEStart,
+  icEmptyResult
 } iCmd;
 
 typedef enum BracketType {

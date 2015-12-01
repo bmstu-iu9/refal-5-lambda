@@ -147,7 +147,7 @@ $EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdiName, CmdiChar, CmdiRepeat,
   CmdiSave, CmdiEPrepare, CmdiEStart,
   CmdiBracket, CmdiEmpty,
-  CmdiFuncArray, CmdiLabelArray;
+  CmdiFuncArray, CmdiLabelArray, CmdiEmptyResult;
 
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
 
@@ -636,6 +636,10 @@ GenCommand {
     (e.Indent '  break;')
     (e.Indent 'else')
     (e.Indent '  return res;');
+
+  (e.Indent) (CmdiEmptyResult) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEmptyResult, 0, 0, 0, 0},');
 
   (e.Indent) (CmdArrChar s.Value) =
     (e.Indent)

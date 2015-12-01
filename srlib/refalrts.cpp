@@ -2773,6 +2773,10 @@ refalrts::FnResult refalrts::interpret_array(
         break;
       }
 
+      case icEmptyResult:
+        reset_allocator();
+        break;
+
       default:
         throw UnexpectedTypeException();
     }
@@ -2824,6 +2828,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icBracketLeft:
       case icBracketRight:
       case icEmpty:
+      case icEmptyResult:
         break;
 
       case icSpliceSTVar:

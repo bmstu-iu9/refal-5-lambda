@@ -630,7 +630,8 @@ $EXTERN Map, Seq;
 $EXTERN Add, Inc;
 
 $EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
-  CmdInitRAA, CmdFinRAA, CmdiRunInterpret, CmdiReserveStack;
+  CmdInitRAA, CmdFinRAA, CmdiRunInterpret, CmdiReserveStack,
+  CmdiEmptyResult;
 
 //FROM Library
 $EXTERN WriteLine;
@@ -801,6 +802,7 @@ GeneralizeResult {
                 (0 /* функции */) (0 /* метки */)
                 (CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
+                (CmdiEmptyResult)
                 <Map
                   (MakeInterpCommands e.MCopiedVars)
                   <FoldAllocCommands
