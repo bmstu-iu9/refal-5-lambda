@@ -41,13 +41,7 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eFolders_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eFiles_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Files] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -154,17 +148,8 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eFolders_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eFileName_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     enum { __eFileName_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -296,9 +281,6 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eFileName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -365,13 +347,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eFileName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     enum { __eFolder_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folder] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -456,13 +432,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eSource_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Source] Depth[1] Usings[1]
     enum { __eOutput_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Output] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -560,9 +530,6 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eOutput_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Output] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -639,13 +606,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eFileName_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     enum { __eVariants_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Variants] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -739,9 +700,6 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eFileName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -830,13 +788,7 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eFileName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     enum { __eFileName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -910,9 +862,6 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eFileName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1033,9 +982,6 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eFileName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1148,13 +1094,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eFileName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[1]
     enum { __eFileName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FileName] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1319,13 +1259,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eUnitName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [UnitName] Depth[1] Usings[1]
     enum { __eUnitName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [UnitName] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1466,9 +1400,6 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eSourceName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [SourceName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1541,9 +1472,6 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eOutName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [OutName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1609,9 +1537,6 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eOutName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [OutName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1684,16 +1609,8 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __eSourceName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [SourceName] Depth[1] Usings[1]
     enum { __eOutName_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [OutName] Depth[1] Usings[1]
     enum { __sRes_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Res] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1783,9 +1700,6 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eOutName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [OutName] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1861,13 +1775,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eUnitName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [UnitName] Depth[1] Usings[1]
     enum { __eUnitName_1_2 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [UnitName] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );

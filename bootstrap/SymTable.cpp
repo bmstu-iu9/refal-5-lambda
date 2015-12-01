@@ -108,33 +108,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sOtherScopeClass_1_1 = 18 };
-    
-    //debug ::varInfo:: Mode[s] Index [OtherScopeClass] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 19 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -412,33 +392,13 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_2 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[2]
     enum { __sLnNum_1_1 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 18 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -570,27 +530,11 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -919,27 +863,11 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1268,22 +1196,10 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eNames_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1392,33 +1308,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_2 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[2]
     enum { __sLnNum_1_1 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 18 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1549,33 +1445,13 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_2 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[2]
     enum { __sLnNum_1_1 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 18 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1706,27 +1582,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2054,27 +1914,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2402,27 +2246,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2745,27 +2573,11 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3088,22 +2900,10 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eNames_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3212,33 +3012,13 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eNames_B_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 18 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __sOtherScopeClass_1_1 = 19 };
-    
-    //debug ::varInfo:: Mode[s] Index [OtherScopeClass] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3521,22 +3301,10 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eNames_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3645,30 +3413,12 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[19];
     refalrts::zeros( context, 19 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eName_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3796,30 +3546,12 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[19];
     refalrts::zeros( context, 19 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eName_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3947,18 +3679,9 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __tErrorList_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __tSymTable_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[t] Index [SymTable] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -4153,30 +3876,12 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[19];
     refalrts::zeros( context, 19 );
     enum { __tErrorList_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eName_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __eNames_E_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_E] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_2 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -4304,18 +4009,9 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __tErrorList_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __tSymTable_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[t] Index [SymTable] Depth[1] Usings[1]
     enum { __sLnNum_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [LnNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -4520,16 +4216,8 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eNames_B_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Names_B] Depth[1] Usings[1]
     enum { __sScopeClass_1_1 = 12 };
-    
-    //debug ::varInfo:: Mode[s] Index [ScopeClass] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );

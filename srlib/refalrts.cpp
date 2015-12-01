@@ -112,8 +112,6 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   //assert( (first == 0) == (last == 0) );
   if( first == 0 ) assert (last == 0);
   if( first != 0 ) assert (last != 0);
-  //printf("debug: empty_seq: first = %p\n", first);
-  //printf("debug: empty_seq: last = %p\n", last);
 
   return (first == 0) && (last == 0);
 }
@@ -739,9 +737,6 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter evar_b_sample, refalrts::Iter evar_e_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
-  // printf("debug: repeated_evar_right: evar_b = %p evar_e = %p\n", evar_b, evar_e);
-  // printf("debug: repeated_evar_right: evar_b_sample = %p evar_e_sample = %p\n", evar_b_sample, evar_e_sample);
-  // printf("debug: repeated_evar_right: b = %p e = %p\n", first, last);
   clock_t start_match = clock();
   refalrts::Iter current = last;
   refalrts::Iter cur_sample = evar_e_sample;
@@ -2826,8 +2821,6 @@ refalrts::FnResult refalrts::interpret_array(
       case icSave:
       case icEPrepare:
       case icEStart:
-        break;
-
       case icBracketLeft:
       case icBracketRight:
       case icEmpty:
@@ -2869,11 +2862,9 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icEnd:
-        // printf("debug: icEnd ......\n");
         break;
 
       default:
-      printf("Error (%d)\n", raa[i].cmd);
         throw UnexpectedTypeException();
     }
     i--;

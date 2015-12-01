@@ -641,15 +641,8 @@ static refalrts::FnResult SwGenFnStart(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __sMemoryClass_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [MemoryClass] Depth[1] Usings[1]
     enum { __sFnArguments_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [FnArguments] Depth[1] Usings[1]
     enum { __eName_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1083,12 +1076,7 @@ refalrts::FnResult GenFnStart(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
     enum { __sMemoryClass_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [MemoryClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 3 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1707,9 +1695,6 @@ refalrts::FnResult GenEEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1809,9 +1794,6 @@ refalrts::FnResult GenEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1911,9 +1893,6 @@ refalrts::FnResult GenExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2150,9 +2129,6 @@ refalrts::FnResult GenForward(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2391,13 +2367,7 @@ refalrts::FnResult GenESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2533,13 +2503,7 @@ refalrts::FnResult GenSwap(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2670,12 +2634,7 @@ static refalrts::FnResult GenSwap_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
     enum { __sMemoryClass_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [MemoryClass] Depth[1] Usings[1]
     enum { __eName_1_1 = 3 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -6018,17 +5977,8 @@ refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     enum { __eName_1_3 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -7341,9 +7291,6 @@ static refalrts::FnResult lambda_GenSentence_0(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eGenerated_2_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Generated] Depth[2] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -7415,9 +7362,6 @@ refalrts::FnResult GenSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eAlgorithm_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Algorithm] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -7691,8 +7635,6 @@ static refalrts::FnResult BracketsVar_B(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sBracketNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -7812,8 +7754,6 @@ static refalrts::FnResult BracketsVar_E(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sBracketNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -7949,11 +7889,7 @@ static refalrts::FnResult BracketsVars(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __sBracketNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sBracketNumber_1_2 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -8058,11 +7994,7 @@ static refalrts::FnResult BracketsVarsRefs(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __sBracketNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sBracketNumber_1_2 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -8187,8 +8119,6 @@ static refalrts::FnResult GenBracketName(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -8500,9 +8430,6 @@ static refalrts::FnResult PrintName(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -8554,18 +8481,9 @@ static refalrts::FnResult PrintDebug(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -8877,18 +8795,9 @@ static refalrts::FnResult PrintVarShortcut(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9010,25 +8919,11 @@ static refalrts::FnResult PrintLocFromShortcut(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sUsings_1_2 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 7 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     enum { __sDepth_1_2 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9263,18 +9158,9 @@ static refalrts::FnResult PrintLocFromShortcut(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9404,18 +9290,9 @@ static refalrts::FnResult PrintELocShortcut_B(refalrts::Iter arg_begin, refalrts
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9545,18 +9422,9 @@ static refalrts::FnResult PrintELocShortcut_E(refalrts::Iter arg_begin, refalrts
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9706,12 +9574,7 @@ static refalrts::FnResult PrintConstShortcutDecl(refalrts::Iter arg_begin, refal
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
     enum { __sNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eVarInfo_1_1 = 3 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -9869,19 +9732,9 @@ static refalrts::FnResult PrintBracketsVarInit(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __sInnerBrackets_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[1]
     enum { __eIndent_1_1 = 3 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __sInnerBrackets_1_2 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -10196,38 +10049,15 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter context[17];
     refalrts::zeros( context, 17 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sMode_1_2 = 12 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     enum { __sMode_1_3 = 13 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[3]
     enum { __sUsings_1_2 = 14 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -10647,17 +10477,8 @@ static refalrts::FnResult lambda_GenCommand_0(refalrts::Iter arg_begin, refalrts
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eName_2_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[2] Usings[1]
     enum { __eName_2_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[2] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -10842,13 +10663,7 @@ static refalrts::FnResult lambda_GenCommand_1(refalrts::Iter arg_begin, refalrts
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eName_2_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[2] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -11009,17 +10824,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eText_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Text] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -11122,29 +10928,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __eIndent_1_5 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[5]
     enum { __eIndent_1_6 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[6]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -11889,40 +11677,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 21 elems
-    refalrts::Iter context[21];
-    refalrts::zeros( context, 21 );
+    // issue here memory for vars with 13 elems
+    refalrts::Iter context[13];
+    refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eVarInfo_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
-    enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
-    enum { __eIndent_1_4 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
-    enum { __eIndent_1_5 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[5]
-    enum { __eVarInfo_1_2 = 19 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -11930,7 +11691,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & PrintDebug, "PrintDebug" },
       { & PrintConstShortcutDecl, "PrintConstShortcutDecl" },
       { & CmdDeclareEVar, "CmdDeclareEVar" },
       { 0, 0 }
@@ -11941,7 +11701,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icFuncLeft, 0, 0, 2, 4},
+      {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
       {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
@@ -11952,46 +11712,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVarInfo_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icCopyEVar, 0, 0, __eVarInfo_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -12029,14 +11752,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter res = arg_begin;
     if( ! refalrts::copy_evar( context[__eIndent_1_2], context[__eIndent_1_2 + 1], context[__eIndent_1_1], context[__eIndent_1_1 + 1] ) )
       return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eIndent_1_3], context[__eIndent_1_3 + 1], context[__eIndent_1_2], context[__eIndent_1_2 + 1] ) )
-      return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eIndent_1_4], context[__eIndent_1_4 + 1], context[__eIndent_1_3], context[__eIndent_1_3 + 1] ) )
-      return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eIndent_1_5], context[__eIndent_1_5 + 1], context[__eIndent_1_4], context[__eIndent_1_4 + 1] ) )
-      return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eVarInfo_1_2], context[__eVarInfo_1_2 + 1], context[__eVarInfo_1_1], context[__eVarInfo_1_1 + 1] ) )
-      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
@@ -12058,147 +11773,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_bracket( n6 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_open_bracket( n7 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_char( n9, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, 'f' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, 'o' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, 'r' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, ' ' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, 'r' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, 'e' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'm' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, 'o' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, 'v' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_char( n19, 'i' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_char( n20, 'n' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, 'g' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_close_bracket( n22 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_open_bracket( n23 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_close_bracket( n24 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_open_bracket( n25 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, 'd' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, 'e' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_char( n30, 'b' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_char( n31, 'u' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_char( n32, 'g' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_char( n33, ' ' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, ':' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_char( n35, ':' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_open_call( n36 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_name( n37, & PrintDebug, "PrintDebug" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_close_call( n38 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_close_bracket( n39 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n25, n39 );
-    res = refalrts::splice_elem( res, n39 );
-    refalrts::push_stack( n38 );
-    refalrts::push_stack( n36 );
-    res = refalrts::splice_elem( res, n38 );
-    res = refalrts::splice_evar( res, context[__eVarInfo_1_2], context[__eVarInfo_1_2 + 1] );
-    res = refalrts::splice_elem( res, n37 );
-    res = refalrts::splice_elem( res, n36 );
-    res = refalrts::splice_elem( res, n35 );
-    res = refalrts::splice_elem( res, n34 );
-    res = refalrts::splice_elem( res, n33 );
-    res = refalrts::splice_elem( res, n32 );
-    res = refalrts::splice_elem( res, n31 );
-    res = refalrts::splice_elem( res, n30 );
-    res = refalrts::splice_elem( res, n29 );
-    res = refalrts::splice_elem( res, n28 );
-    res = refalrts::splice_elem( res, n27 );
-    res = refalrts::splice_elem( res, n26 );
-    res = refalrts::splice_evar( res, context[__eIndent_1_5], context[__eIndent_1_5 + 1] );
-    res = refalrts::splice_elem( res, n25 );
-    refalrts::link_brackets( n23, n24 );
-    res = refalrts::splice_elem( res, n24 );
-    res = refalrts::splice_evar( res, context[__eIndent_1_4], context[__eIndent_1_4 + 1] );
-    res = refalrts::splice_elem( res, n23 );
-    refalrts::link_brackets( n7, n22 );
-    res = refalrts::splice_elem( res, n22 );
-    res = refalrts::splice_elem( res, n21 );
-    res = refalrts::splice_elem( res, n20 );
-    res = refalrts::splice_elem( res, n19 );
-    res = refalrts::splice_elem( res, n18 );
-    res = refalrts::splice_elem( res, n17 );
-    res = refalrts::splice_elem( res, n16 );
-    res = refalrts::splice_elem( res, n15 );
-    res = refalrts::splice_elem( res, n14 );
-    res = refalrts::splice_elem( res, n13 );
-    res = refalrts::splice_elem( res, n12 );
-    res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, context[__eIndent_1_3], context[__eIndent_1_3 + 1] );
-    res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n2, n6 );
     res = refalrts::splice_elem( res, n6 );
     refalrts::push_stack( n5 );
@@ -12221,36 +11795,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 19 elems
-    refalrts::Iter context[19];
-    refalrts::zeros( context, 19 );
+    // issue here memory for vars with 13 elems
+    refalrts::Iter context[13];
+    refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eVarInfo_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
-    enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
-    enum { __eIndent_1_4 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
-    enum { __eVarInfo_1_2 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -12258,7 +11809,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & PrintDebug, "PrintDebug" },
       { & PrintConstShortcutDecl, "PrintConstShortcutDecl" },
       { & CmdDeclareVar, "CmdDeclareVar" },
       { 0, 0 }
@@ -12269,7 +11819,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icFuncLeft, 0, 0, 2, 4},
+      {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
       {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
@@ -12280,29 +11830,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVarInfo_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icCopyEVar, 0, 0, __eIndent_1_1, 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icCopyEVar, 0, 0, __eVarInfo_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -12340,12 +11870,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter res = arg_begin;
     if( ! refalrts::copy_evar( context[__eIndent_1_2], context[__eIndent_1_2 + 1], context[__eIndent_1_1], context[__eIndent_1_1 + 1] ) )
       return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eIndent_1_3], context[__eIndent_1_3 + 1], context[__eIndent_1_2], context[__eIndent_1_2 + 1] ) )
-      return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eIndent_1_4], context[__eIndent_1_4 + 1], context[__eIndent_1_3], context[__eIndent_1_3 + 1] ) )
-      return refalrts::cNoMemory;
-    if( ! refalrts::copy_evar( context[__eVarInfo_1_2], context[__eVarInfo_1_2 + 1], context[__eVarInfo_1_1], context[__eVarInfo_1_1 + 1] ) )
-      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
@@ -12367,81 +11891,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_bracket( n6 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_open_bracket( n7 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_close_bracket( n8 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_open_bracket( n9 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, '/' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, 'd' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, 'e' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, 'b' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, 'u' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'g' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, ' ' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, ':' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_char( n19, ':' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_open_call( n20 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_name( n21, & PrintDebug, "PrintDebug" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_close_call( n22 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_close_bracket( n23 ) )
-      return refalrts::cNoMemory;
-    refalrts::link_brackets( n9, n23 );
-    res = refalrts::splice_elem( res, n23 );
-    refalrts::push_stack( n22 );
-    refalrts::push_stack( n20 );
-    res = refalrts::splice_elem( res, n22 );
-    res = refalrts::splice_evar( res, context[__eVarInfo_1_2], context[__eVarInfo_1_2 + 1] );
-    res = refalrts::splice_elem( res, n21 );
-    res = refalrts::splice_elem( res, n20 );
-    res = refalrts::splice_elem( res, n19 );
-    res = refalrts::splice_elem( res, n18 );
-    res = refalrts::splice_elem( res, n17 );
-    res = refalrts::splice_elem( res, n16 );
-    res = refalrts::splice_elem( res, n15 );
-    res = refalrts::splice_elem( res, n14 );
-    res = refalrts::splice_elem( res, n13 );
-    res = refalrts::splice_elem( res, n12 );
-    res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_evar( res, context[__eIndent_1_4], context[__eIndent_1_4 + 1] );
-    res = refalrts::splice_elem( res, n9 );
-    refalrts::link_brackets( n7, n8 );
-    res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, context[__eIndent_1_3], context[__eIndent_1_3 + 1] );
-    res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n2, n6 );
     res = refalrts::splice_elem( res, n6 );
     refalrts::push_stack( n5 );
@@ -12468,22 +11917,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sChar_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Char] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -12607,22 +12044,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -12746,23 +12171,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -12883,23 +12295,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eName_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13020,29 +12419,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sInnerBrackets_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sInnerBrackets_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13192,33 +12574,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sInnerBrackets_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[1]
     enum { __eName_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sInnerBrackets_1_2 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13370,19 +12732,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13499,26 +12851,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[15];
     refalrts::zeros( context, 15 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sMode_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eInfo_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Info] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13644,23 +12981,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eVarInfo_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -13781,31 +13105,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndex_1_2 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     enum { __sBracketNumber_1_2 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -14065,20 +13370,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -14400,32 +13694,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[19];
     refalrts::zeros( context, 19 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __eIndex_1_2 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -14698,20 +13972,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -15098,29 +14361,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sOldBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [OldBracketNumber] Depth[1] Usings[1]
     enum { __sNewBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [NewBracketNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sNewBracketNumber_1_2 = 14 };
-    
-    //debug ::varInfo:: Mode[s] Index [NewBracketNumber] Depth[1] Usings[2]
     enum { __sOldBracketNumber_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [OldBracketNumber] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -15354,17 +14600,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -15776,31 +15013,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sUsings_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -16297,37 +15515,14 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sUsings_1_2 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __sMode_1_2 = 17 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 18 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -16825,27 +16020,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sElemNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[1]
     enum { __eElemInfo_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ElemInfo] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __sElemNumber_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -17098,19 +16277,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sLeft_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Left] Depth[1] Usings[1]
     enum { __sRight_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Right] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -17396,16 +16565,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sElemNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -17644,16 +16805,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sElemNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -17952,20 +17105,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -18274,23 +17416,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -18601,21 +17730,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -19226,30 +18343,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[17];
     refalrts::zeros( context, 17 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __sNumber_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[2]
     enum { __sNumber_1_3 = 16 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -19910,9 +19009,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -20079,9 +19175,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -20193,9 +19286,6 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -20312,13 +19402,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -20639,29 +19723,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eFuncNames_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [FuncNames] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __eIndent_1_5 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[5]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -21161,29 +20227,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eLabelNames_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [LabelNames] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __eIndent_1_5 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[5]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -21643,23 +20691,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eVarInfo_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [VarInfo] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -21780,20 +20815,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -22105,20 +21129,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -22420,25 +21433,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sInnerBrackets_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerBrackets] Depth[1] Usings[1]
     enum { __sNameId_1_1 = 11 };
-    
-    //debug ::varInfo:: Mode[s] Index [NameId] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -22814,23 +21813,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sOldBracketNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [OldBracketNumber] Depth[1] Usings[1]
     enum { __sNewBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [NewBracketNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -23257,22 +22243,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sChar_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Char] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -23597,29 +22571,12 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sMode_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eInfo_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Info] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __sMode_1_2 = 15 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -23915,22 +22872,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sNameId_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [NameId] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -24234,22 +23179,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sNameId_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [NameId] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -24558,26 +23491,11 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[15];
     refalrts::zeros( context, 15 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25054,13 +23972,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25351,17 +24263,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25578,13 +24481,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25779,16 +24676,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25997,37 +24886,13 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[22];
     refalrts::zeros( context, 22 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     enum { __eIndent_1_4 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[4]
     enum { __eIndent_1_5 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[5]
     enum { __eIndent_1_6 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[6]
     enum { __eIndent_1_7 = 18 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[7]
     enum { __eIndent_1_8 = 20 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[8]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -27903,16 +26768,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sValue_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Value] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -28186,16 +27043,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNameId_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [NameId] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -28459,22 +27308,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sNum_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Num] Depth[1] Usings[1]
     enum { __sNumRanges_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[s] Index [NumRanges] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -28793,16 +27630,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNum_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Num] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -29071,16 +27900,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -29321,16 +28142,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sNameId_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [NameId] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -29599,13 +28412,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -29976,13 +28783,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -30358,13 +29159,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -30715,13 +29510,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -31077,13 +29866,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -31439,13 +30222,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -31806,17 +30583,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -32110,20 +30878,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sMode_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -32419,20 +31176,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -32736,23 +31482,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33065,18 +31798,9 @@ static refalrts::FnResult PrintVar(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33206,18 +31930,9 @@ static refalrts::FnResult PrintEVar_B(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33347,18 +32062,9 @@ static refalrts::FnResult PrintEVar_E(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __sDepth_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[s] Index [Depth] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33508,25 +32214,11 @@ static refalrts::FnResult PrintEVars(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __sUsings_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 3 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sUsings_1_2 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __sMode_1_2 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33918,8 +32610,6 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sOther_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Other] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -33974,18 +32664,9 @@ static refalrts::FnResult PrintMatchChar(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sChar_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Char] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -34148,18 +32829,9 @@ static refalrts::FnResult PrintMatchNumber(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -34332,19 +33004,9 @@ static refalrts::FnResult PrintMatchName(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -34506,19 +33168,9 @@ static refalrts::FnResult PrintMatchIdent(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eName_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -34725,18 +33377,9 @@ static refalrts::FnResult PrintMatchBrackets(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sInnerNum_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerNum] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -34909,22 +33552,10 @@ static refalrts::FnResult PrintMatchADT(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sInnerNum_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [InnerNum] Depth[1] Usings[1]
     enum { __eName_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -35268,20 +33899,9 @@ static refalrts::FnResult PrintMatchEmpty(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 7 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -35854,25 +34474,11 @@ static refalrts::FnResult PrintMatchSTVar(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sMode_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sMode_1_2 = 11 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -36034,29 +34640,12 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sUsings_1_2 = 11 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -36315,35 +34904,14 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __sUsings_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[1]
     enum { __sMode_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[1]
     enum { __eIndex_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[1]
     enum { __sUsings_1_2 = 12 };
-    
-    //debug ::varInfo:: Mode[s] Index [Usings] Depth[1] Usings[2]
     enum { __sMode_1_2 = 13 };
-    
-    //debug ::varInfo:: Mode[s] Index [Mode] Depth[1] Usings[2]
     enum { __eIndex_1_2 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Index] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -36610,31 +35178,12 @@ static refalrts::FnResult PrintMatch(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eIndent_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sDirection_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [Direction] Depth[1] Usings[1]
     enum { __sBracketNumber_1_1 = 9 };
-    
-    //debug ::varInfo:: Mode[s] Index [BracketNumber] Depth[1] Usings[1]
     enum { __eFunction_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Function] Depth[1] Usings[1]
     enum { __eTextRep_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [TextRep] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __eIndent_1_3 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[3]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -36935,8 +35484,6 @@ static refalrts::FnResult PrintElemVar(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -37020,26 +35567,11 @@ static refalrts::FnResult PrintAllocateElem(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
     enum { __eIndent_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __sElemNumber_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[1]
     enum { __sElementType_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElementType] Depth[1] Usings[1]
     enum { __eInfo_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Info] Depth[1] Usings[1]
     enum { __eIndent_1_2 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[2]
     enum { __sElementType_1_2 = 12 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElementType] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -37362,20 +35894,9 @@ static refalrts::FnResult PrintAllocate_Aux(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter context[15];
     refalrts::zeros( context, 15 );
     enum { __eIndent_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Indent] Depth[1] Usings[1]
     enum { __eConstructor_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Constructor] Depth[1] Usings[1]
     enum { __eValue_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Value] Depth[1] Usings[1]
     enum { __sElemNumber_1_1 = 14 };
-    
-    //debug ::varInfo:: Mode[s] Index [ElemNumber] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -38756,8 +37277,6 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sChar_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Char] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -38847,13 +37366,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     enum { __eName_1_2 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -38981,8 +37494,6 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sNumber_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Number] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -39072,9 +37583,6 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eName_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Name] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -39198,8 +37706,6 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __sOther_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[s] Index [Other] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );

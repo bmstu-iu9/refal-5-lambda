@@ -49,6 +49,11 @@ StrDirective {
   Ident = 'LABEL';
 }
 
+<<<<<<< HEAD
+=======
+$LABEL COpen, CClose;
+
+>>>>>>> master
 $ENTRY StrFromToken {
   TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
   TkCloseADT = '"]"';
@@ -71,6 +76,12 @@ $ENTRY StrFromToken {
   TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
   TkVariable s.Mode e.Index = s.Mode '.' e.Index;
   TkRedefinition = '"^"';
+<<<<<<< HEAD
+=======
+
+  # COpen s.OpenBracket = <StrFromToken s.OpenBracket>;
+  # CClose s.CloseBracket = <StrFromToken s.CloseBracket>;
+>>>>>>> master
 }
 
 $ENUM
