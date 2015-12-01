@@ -626,7 +626,6 @@ $FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
 //FROM LibraryEx
 $EXTERN Map, Seq;
 
-<<<<<<< HEAD
 //From Library
 $EXTERN Add, Inc;
 
