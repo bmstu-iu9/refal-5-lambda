@@ -118,6 +118,7 @@ $ENTRY GenCommonTailer {
 
 // Команды и их подтипы
 //FROM Algorithm
+$EXTERN CmdChar, CmdNumber, CmdName, CmdIdent,
   CmdInitB0,
   CmdBrackets, CmdADT, CmdEmpty,
   CmdRepeated, CmdVar, CmdClosedE,
