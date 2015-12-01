@@ -23,6 +23,16 @@ rem путь к файлу owsetenv.bat
 :: call C:\WATCOM\owsetenv.bat
 :: set CPPLINE=cl -nologo
 
+
+rem Если вы используете компилятор Clang, раскомментируйте все три строчки ниже
+rem и установите в первых двух строчках правильный путь к каталогам bin
+rem дистрибутивов MinGW и LLVM.
+rem Примечание. Разрядность (32 или 64) дистрибутивов MinGW и LLVM должна быть
+rem одинаковой.
+:: set PATH=%PATH%;C:\Program Files\MinGW\bin
+:: set PATH=%PATH%;C:\Program Files\LLVM\bin
+:: set CPPLINE=clang++ -Wall -g
+
 if not "%CPPLINE%" == "" goto END
 echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
 exit 1

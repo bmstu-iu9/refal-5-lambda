@@ -71,9 +71,6 @@ typedef struct Node {
   };
 } Node;
 
-
-
-
 typedef enum iCmd {
   icChar,
   icInt,
@@ -326,6 +323,7 @@ inline void set_return_code( RefalNumber retcode ) {
 */
 void debug_print_expr(void *file, Iter first, Iter last);
 
+// Интерпретатор
 extern FnResult interpret_array(
   RASLCommand raa[],
   Iter allocs[],

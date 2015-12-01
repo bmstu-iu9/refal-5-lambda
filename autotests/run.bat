@@ -15,6 +15,12 @@ goto :EOF
 
 :RUN_TEST
 setlocal
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+endlocal
+goto :EOF
+
+:RUN_TEST_AUX
+setlocal
   echo Passing %1...
   set SREF=%1
   set CPP=%~n1.cpp
@@ -48,6 +54,29 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist dump.txt erase dump.txt
+  echo.
+endlocal
+
+goto :EOF
+
+:RUN_TEST_AUX.BAD-SYNTAX
+setlocal
+  echo Passing %1 (syntax error recovering)...
+  set SREF=%1
+  set CPP=%~n1.cpp
+
+  ..\compiler\srefc %1 2> __error.txt
+  if errorlevel 1 (
+    echo COMPILER ON %1 FAILS, SEE __error.txt
+    exit
+  )
+  erase __error.txt
+  if exist %CPP% (
+    echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    erase %CPP%
+    exit
+  )
+  echo Ok! Compiler didn't crash on invalid syntax
   echo.
 endlocal
 goto :EOF

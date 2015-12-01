@@ -81,13 +81,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eErrors_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Errors] Depth[1] Usings[1]
     enum { __eMessage_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Message] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -227,16 +221,8 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __eErrors_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Errors] Depth[1] Usings[1]
     enum { __sLineNumber_1_1 = 6 };
-    
-    //debug ::varInfo:: Mode[s] Index [LineNumber] Depth[1] Usings[1]
     enum { __eMessage_1_1 = 7 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Message] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -423,15 +409,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLineNumber_1_1 = 5 };
-    
-    //debug ::varInfo:: Mode[s] Index [LineNumber] Depth[1] Usings[1]
     enum { __eMessage_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Message] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -514,15 +493,8 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __sLineNumber_1_1 = 5 };
-    
-    //debug ::varInfo:: Mode[s] Index [LineNumber] Depth[1] Usings[1]
     enum { __eUnexpected_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Unexpected] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -710,22 +682,10 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __tErrorList_1_1 = 4 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     enum { __eExpected_1_1 = 5 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Expected] Depth[1] Usings[1]
     enum { __sUnexpected_1_1 = 7 };
-    
-    //debug ::varInfo:: Mode[s] Index [Unexpected] Depth[1] Usings[1]
     enum { __sLineNumber_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[s] Index [LineNumber] Depth[1] Usings[1]
     enum { __eInfo_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Info] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -952,9 +912,6 @@ static refalrts::FnResult PrintError(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
     enum { __eLine_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Line] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1032,13 +989,7 @@ refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eErrors_1_1 = 4 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Errors] Depth[1] Usings[1]
     enum { __eErrors_1_2 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Errors] Depth[1] Usings[2]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1219,8 +1170,6 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
     enum { __tErrorList_1_1 = 2 };
-    
-    //debug ::varInfo:: Mode[t] Index [ErrorList] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );

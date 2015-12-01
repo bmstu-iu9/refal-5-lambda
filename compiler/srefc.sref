@@ -1,4 +1,4 @@
-//FROM Driver
+//FROM Parser
 $EXTERN CompileFile;
 
 //FROM LibraryEx

@@ -11,9 +11,6 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
     enum { __eArguments_1_1 = 2 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Arguments] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -130,21 +127,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eScannedFiles_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eCompileCommand_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [CompileCommand] Depth[1] Usings[1]
     enum { __eFiles_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Files] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -634,21 +619,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[18];
     refalrts::zeros( context, 18 );
     enum { __eScannedFiles_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eDirectory_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Directory] Depth[1] Usings[1]
     enum { __eOptions_1_1 = 16 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Options] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1077,17 +1050,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[14];
     refalrts::zeros( context, 14 );
     enum { __eScannedFiles_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eOptions_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Options] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1223,21 +1187,9 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[16];
     refalrts::zeros( context, 16 );
     enum { __eScannedFiles_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 10 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eNextFileName_1_1 = 12 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [NextFileName] Depth[1] Usings[1]
     enum { __eOptions_1_1 = 14 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Options] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1363,13 +1315,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
     enum { __eScannedFiles_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1467,8 +1413,6 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __tCompiler_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1806,8 +1750,6 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __tCompiler_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2156,24 +2098,10 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[19];
     refalrts::zeros( context, 19 );
     enum { __tCompiler_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     enum { __eScannedFiles_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eDirectory_1_1 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Directory] Depth[1] Usings[1]
     enum { __eOptions_1_1 = 17 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Options] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2318,8 +2246,6 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
     enum { __tCompiler_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2613,20 +2539,9 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[15];
     refalrts::zeros( context, 15 );
     enum { __tCompiler_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     enum { __eScannedFiles_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eFiles_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Files] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2750,24 +2665,10 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[17];
     refalrts::zeros( context, 17 );
     enum { __tCompiler_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     enum { __eScannedFiles_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __eNextFileName_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [NextFileName] Depth[1] Usings[1]
     enum { __eOptions_1_1 = 15 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Options] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2898,16 +2799,8 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eScannedFiles_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __tCompiler_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2993,20 +2886,9 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[15];
     refalrts::zeros( context, 15 );
     enum { __tCompiler_1_1 = 8 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     enum { __eScannedFiles_1_1 = 9 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eNextFileName_1_1 = 11 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [NextFileName] Depth[1] Usings[1]
     enum { __eFiles_1_1 = 13 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Files] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3122,16 +3004,8 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::Iter context[11];
     refalrts::zeros( context, 11 );
     enum { __eScannedFiles_1_1 = 6 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [ScannedFiles] Depth[1] Usings[1]
     enum { __eFolders_1_1 = 8 };
-    //for removing
-    
-    //debug ::varInfo:: Mode[e] Index [Folders] Depth[1] Usings[1]
     enum { __tCompiler_1_1 = 10 };
-    
-    //debug ::varInfo:: Mode[t] Index [Compiler] Depth[1] Usings[1]
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
