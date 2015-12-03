@@ -35,12 +35,12 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eLine_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eLine_1_1, 0},
-      {refalrts::icChar, 0, 0, '\n', 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eLine_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eLine_1_1, 0},
+      {refalrts::icChar, 0, '\n', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -109,24 +109,24 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 4, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 3, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 2, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eFileName_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icContextSet, 0, __eFileName_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -448,14 +448,14 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'M', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -519,14 +519,14 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'Y', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -590,13 +590,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'M', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -656,15 +656,15 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'N', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -732,16 +732,16 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'D', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -813,13 +813,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'P', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -879,14 +879,14 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'P', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -950,14 +950,14 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'L', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1045,13 +1045,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '\'', 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sChar_1_1, 0},
-      {refalrts::icChar, 0, 0, '\'', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icSpliceSTVar, 0, __sChar_1_1, 0},
+      {refalrts::icChar, 0, '\'', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1106,12 +1106,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, ']', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, ']', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1167,12 +1167,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '>', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '>', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1228,12 +1228,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '}', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '}', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1289,12 +1289,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, ')', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, ')', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1350,12 +1350,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, ',', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, ',', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1413,17 +1413,17 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icsVarLeft, 0, 0, __sDirective_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '$', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sDirective_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 1, 0},
+      {refalrts::icsVarLeft, 0, __sDirective_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '$', 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sDirective_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1496,20 +1496,20 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1598,23 +1598,23 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eMessage_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eMessage_1_1, 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icChar, 0, ':', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1711,12 +1711,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '#', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '#', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1773,15 +1773,15 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eName_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1848,21 +1848,21 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFuncLeft, 0, 1, 0},
+      {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1951,12 +1951,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '[', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '[', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2012,12 +2012,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '<', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '<', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2073,12 +2073,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '{', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '{', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2134,12 +2134,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '(', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '(', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2195,12 +2195,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '=', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '=', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2256,12 +2256,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, ';', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, ';', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2318,34 +2318,34 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eUnexpected_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'h', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '<', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eUnexpected_1_1, 0},
-      {refalrts::icChar, 0, 0, '>', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eUnexpected_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'h', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, '<', 0},
+      {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
+      {refalrts::icChar, 0, '>', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2488,13 +2488,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sMode_1_1, 0},
-      {refalrts::icChar, 0, 0, '.', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eIndex_1_1, 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sMode_1_1, 0},
+      {refalrts::icContextSet, 0, __eIndex_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sMode_1_1, 0},
+      {refalrts::icChar, 0, '.', 0},
+      {refalrts::icSpliceEVar, 0, __eIndex_1_1, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2546,12 +2546,12 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '"', 0},
-      {refalrts::icChar, 0, 0, '^', 0},
-      {refalrts::icChar, 0, 0, '"', 0},
+      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '^', 0},
+      {refalrts::icChar, 0, '"', 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2610,14 +2610,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icIdentLeft, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sOpenBracket_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sOpenBracket_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sOpenBracket_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sOpenBracket_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2681,14 +2681,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icIdentLeft, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sCloseBracket_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sCloseBracket_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sCloseBracket_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCloseBracket_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2839,18 +2839,18 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icEPrepare, 0, 0, __eName_B_1_1, 0},
-      {refalrts::icEStart, 0, 0, __eName_B_1_1, 0},
-      {refalrts::icSave, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'-', 2},
-      {refalrts::icContextSet, 0, 0, __eName_E_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eName_B_1_1, 0},
-      {refalrts::icChar, 0, 0, '_', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eName_E_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEPrepare, 0, __eName_B_1_1, 0},
+      {refalrts::icEStart, 0, __eName_B_1_1, 0},
+      {refalrts::icSave, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icContextSet, 0, __eName_E_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eName_B_1_1, 0},
+      {refalrts::icChar, 0, '_', 0},
+      {refalrts::icSpliceEVar, 0, __eName_E_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2919,9 +2919,9 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
+      {refalrts::icContextSet, 0, __eName_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2973,15 +2973,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eDirective_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eDirective_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eDirective_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eDirective_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3046,14 +3046,14 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3118,16 +3118,16 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sChar_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sChar_1_1, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sChar_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3197,21 +3197,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 3, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eDecCode_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 2, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eDecCode_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 3, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eDecCode_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eDecCode_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3304,16 +3304,16 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icCharLeft, 0, 0, (int)'n', 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '\n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icCharLeft, 0, (int)'n', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, '\n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3383,16 +3383,16 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icCharLeft, 0, 0, (int)'r', 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '\r', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icCharLeft, 0, (int)'r', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, '\r', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3462,16 +3462,16 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, '\t', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icCharLeft, 0, (int)'t', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, '\t', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3542,18 +3542,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eName_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eName_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eName_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3631,13 +3631,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3701,18 +3701,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eDigits_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eDigits_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eDigits_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eDigits_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3792,18 +3792,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sPunctuation_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sPunctuation_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sPunctuation_1_1, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sPunctuation_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3882,21 +3882,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sType_1_1, 2},
-      {refalrts::icCharLeft, 0, 0, (int)'.', 2},
-      {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sType_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eIndex_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sType_1_1, 2},
+      {refalrts::icCharLeft, 0, (int)'.', 2},
+      {refalrts::icContextSet, 0, __eIndex_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sType_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eIndex_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3980,15 +3980,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eUnexpected_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eUnexpected_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4054,15 +4054,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eMessage_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eMessage_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4128,15 +4128,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eUnexpected_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eUnexpected_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4201,28 +4201,28 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4349,16 +4349,16 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4426,17 +4426,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4506,17 +4506,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4586,18 +4586,18 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4669,19 +4669,19 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4755,16 +4755,16 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4832,17 +4832,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4912,17 +4912,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4992,31 +4992,31 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icContextSet, 0, 0, __eOther_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'k', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'w', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '$', 0},
-      {refalrts::icSpliceEVar, 0, 0, __eOther_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icContextSet, 0, __eOther_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'k', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'w', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, '$', 0},
+      {refalrts::icSpliceEVar, 0, __eOther_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5155,10 +5155,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'<', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'<', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5206,10 +5206,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'>', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'>', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5257,10 +5257,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'{', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'{', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5308,10 +5308,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'}', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'}', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5359,10 +5359,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'(', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'(', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5410,10 +5410,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)')', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)')', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5461,10 +5461,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'=', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'=', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5512,10 +5512,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)',', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)',', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5563,10 +5563,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)';', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)';', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5614,10 +5614,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'[', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'[', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5665,10 +5665,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)']', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)']', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5716,10 +5716,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'#', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'#', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5767,10 +5767,10 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, 0, (int)'^', 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCharLeft, 0, (int)'^', 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5827,16 +5827,16 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketRight, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sLineNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sLineNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sLineNumber_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5905,18 +5905,18 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketRight, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, 0, __sTokType_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eInfo_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sLineNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sTokType_1_1, 0},
-      {refalrts::icCopySTVar, 0, 0, __sLineNumber_1_1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eInfo_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sLineNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icsVarLeft, 0, __sTokType_1_1, 2},
+      {refalrts::icContextSet, 0, __eInfo_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sLineNumber_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceSTVar, 0, __sTokType_1_1, 0},
+      {refalrts::icCopySTVar, 0, __sLineNumber_1_1, 0},
+      {refalrts::icSpliceEVar, 0, __eInfo_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -5995,21 +5995,21 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icContextSet, 0, 0, __eTokens_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 4, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 3, 0},
-      {refalrts::icFunc, 0, 0, 2, 0},
-      {refalrts::icInt, 0, 0, 1 , 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eTokens_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icContextSet, 0, __eTokens_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icInt, 0, 1 , 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eTokens_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6152,16 +6152,16 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)' ', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)' ', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6235,16 +6235,16 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\t', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\t', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6318,16 +6318,16 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\r', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\r', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6403,22 +6403,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'<', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '<', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'<', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '<', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6513,22 +6513,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'>', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '>', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'>', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '>', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6623,22 +6623,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'(', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '(', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'(', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '(', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6733,22 +6733,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)')', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, ')', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)')', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, ')', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6843,22 +6843,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'{', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '{', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'{', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '{', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6953,22 +6953,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'}', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '}', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'}', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '}', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7063,22 +7063,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'[', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '[', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'[', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '[', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7173,22 +7173,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)']', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, ']', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)']', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, ']', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7283,22 +7283,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'=', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '=', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'=', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '=', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7393,22 +7393,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)';', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, ';', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)';', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, ';', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7503,22 +7503,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)',', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, ',', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)',', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, ',', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7613,22 +7613,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'#', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '#', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'#', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '#', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7723,22 +7723,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'^', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '^', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'^', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '^', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7832,19 +7832,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7925,19 +7925,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8018,19 +8018,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8111,19 +8111,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8204,19 +8204,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8297,19 +8297,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8390,19 +8390,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8483,19 +8483,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8576,19 +8576,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8669,19 +8669,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8762,19 +8762,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8855,19 +8855,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8948,19 +8948,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9041,19 +9041,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9134,19 +9134,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9227,19 +9227,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9320,19 +9320,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9413,19 +9413,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9506,19 +9506,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9599,19 +9599,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9692,19 +9692,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9785,19 +9785,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9878,19 +9878,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -9971,19 +9971,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10064,19 +10064,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10157,19 +10157,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10250,19 +10250,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'s', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10343,19 +10343,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'e', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10436,19 +10436,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10529,19 +10529,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10622,19 +10622,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10715,19 +10715,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10808,19 +10808,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10901,19 +10901,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -10994,19 +10994,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11087,19 +11087,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11180,19 +11180,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11273,19 +11273,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11366,19 +11366,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11458,16 +11458,16 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'$', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'$', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11541,16 +11541,16 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\'', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11625,19 +11625,19 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'/', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '/', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '/', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11719,22 +11719,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11827,14 +11827,14 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -11900,22 +11900,22 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icsVarLeft, 0, 0, __sAny_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sAny_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icsVarLeft, 0, __sAny_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __sAny_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12007,20 +12007,20 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12109,17 +12109,17 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12203,19 +12203,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12296,19 +12296,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12389,19 +12389,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12482,19 +12482,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12575,19 +12575,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12668,19 +12668,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12761,19 +12761,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12854,19 +12854,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -12947,19 +12947,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13040,19 +13040,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13133,19 +13133,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'a', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13226,19 +13226,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'b', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13319,19 +13319,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'c', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13412,19 +13412,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'d', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13505,19 +13505,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'e', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13598,19 +13598,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'f', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13691,19 +13691,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'g', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13784,19 +13784,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'h', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'h', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'h', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13877,19 +13877,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'i', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -13970,19 +13970,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'j', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'j', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'j', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14063,19 +14063,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'k', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'k', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'k', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14156,19 +14156,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'l', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14249,19 +14249,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'m', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14342,19 +14342,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14435,19 +14435,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'o', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14528,19 +14528,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'p', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14621,19 +14621,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14714,19 +14714,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'r', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14807,19 +14807,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'s', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14900,19 +14900,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -14993,19 +14993,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'u', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15086,19 +15086,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'v', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15179,19 +15179,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'w', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'w', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'w', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15272,19 +15272,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'x', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15365,19 +15365,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15458,19 +15458,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15551,19 +15551,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15644,19 +15644,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15737,19 +15737,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15830,19 +15830,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -15923,19 +15923,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16016,19 +16016,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16109,19 +16109,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16202,19 +16202,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16295,19 +16295,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16388,19 +16388,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16481,19 +16481,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16574,19 +16574,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16667,19 +16667,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16760,19 +16760,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16853,19 +16853,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -16946,19 +16946,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17039,19 +17039,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17132,19 +17132,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17225,19 +17225,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17318,19 +17318,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17411,19 +17411,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17504,19 +17504,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17597,19 +17597,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17690,19 +17690,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17783,19 +17783,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17876,19 +17876,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -17969,19 +17969,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'_', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '_', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '_', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18062,19 +18062,19 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'-', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '-', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18156,20 +18156,20 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18258,20 +18258,20 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18360,17 +18360,17 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18454,19 +18454,19 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'.', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '.', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'.', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '.', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18547,30 +18547,30 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18705,20 +18705,20 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18807,17 +18807,17 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18901,19 +18901,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -18994,19 +18994,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19087,19 +19087,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19180,19 +19180,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19273,19 +19273,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19366,19 +19366,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19459,19 +19459,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19552,19 +19552,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19645,19 +19645,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19738,19 +19738,19 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19832,20 +19832,20 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19934,20 +19934,20 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20036,17 +20036,17 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20130,19 +20130,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20223,19 +20223,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20316,19 +20316,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20409,19 +20409,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20502,19 +20502,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20595,19 +20595,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20688,19 +20688,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20781,19 +20781,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20874,19 +20874,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -20967,19 +20967,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21060,19 +21060,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21153,19 +21153,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21246,19 +21246,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21339,19 +21339,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21432,19 +21432,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21525,19 +21525,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21618,19 +21618,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21711,19 +21711,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21804,19 +21804,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21897,19 +21897,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -21990,19 +21990,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22083,19 +22083,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22176,19 +22176,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22269,19 +22269,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22362,19 +22362,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22455,19 +22455,19 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22548,41 +22548,41 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22761,20 +22761,20 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22863,17 +22863,17 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -22958,22 +22958,22 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\'', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\'', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23067,17 +23067,17 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23153,20 +23153,20 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23255,17 +23255,17 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23348,16 +23348,16 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'*', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23431,16 +23431,16 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'/', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23516,20 +23516,20 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23618,20 +23618,20 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23720,17 +23720,17 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23814,19 +23814,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -23907,19 +23907,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24000,19 +24000,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24093,19 +24093,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24186,19 +24186,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24279,19 +24279,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24372,19 +24372,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24465,19 +24465,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24558,19 +24558,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24651,19 +24651,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24744,19 +24744,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'a', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24837,19 +24837,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'b', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -24930,19 +24930,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'c', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25023,19 +25023,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'d', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25116,19 +25116,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'e', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25209,19 +25209,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'f', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25302,19 +25302,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'g', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25395,19 +25395,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'h', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'h', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'h', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25488,19 +25488,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'i', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25581,19 +25581,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'j', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'j', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'j', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25674,19 +25674,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'k', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'k', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'k', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25767,19 +25767,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'l', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25860,19 +25860,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'m', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -25953,19 +25953,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26046,19 +26046,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'o', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26139,19 +26139,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'p', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26232,19 +26232,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26325,19 +26325,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'r', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26418,19 +26418,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'s', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26511,19 +26511,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26604,19 +26604,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'u', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26697,19 +26697,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'v', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26790,19 +26790,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'w', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'w', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'w', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26883,19 +26883,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'x', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -26976,19 +26976,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27069,19 +27069,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27162,19 +27162,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27255,19 +27255,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27348,19 +27348,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27441,19 +27441,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27534,19 +27534,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27627,19 +27627,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27720,19 +27720,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27813,19 +27813,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27906,19 +27906,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -27999,19 +27999,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28092,19 +28092,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28185,19 +28185,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28278,19 +28278,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28371,19 +28371,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28464,19 +28464,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28557,19 +28557,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28650,19 +28650,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28743,19 +28743,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28836,19 +28836,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -28929,19 +28929,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29022,19 +29022,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29115,19 +29115,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29208,19 +29208,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29301,19 +29301,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29394,19 +29394,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29487,19 +29487,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29580,19 +29580,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'_', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '_', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '_', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29673,19 +29673,19 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'-', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '-', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29766,40 +29766,40 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -29974,20 +29974,20 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30076,17 +30076,17 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30170,19 +30170,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30263,19 +30263,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30356,19 +30356,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30449,19 +30449,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30542,19 +30542,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30635,19 +30635,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30728,19 +30728,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30821,19 +30821,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -30914,19 +30914,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31007,19 +31007,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31100,19 +31100,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31193,19 +31193,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31286,19 +31286,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31379,19 +31379,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31472,19 +31472,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31565,19 +31565,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31658,19 +31658,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31751,19 +31751,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31844,19 +31844,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -31937,19 +31937,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32030,19 +32030,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32123,19 +32123,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32216,19 +32216,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32309,19 +32309,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32402,19 +32402,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32495,19 +32495,19 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32589,20 +32589,20 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32691,20 +32691,20 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32793,17 +32793,17 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32886,16 +32886,16 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\\', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\\', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -32969,16 +32969,16 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\'', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33053,33 +33053,33 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33221,44 +33221,44 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33450,22 +33450,22 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icsVarLeft, 0, 0, __sAny_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sAny_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icsVarLeft, 0, __sAny_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __sAny_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33557,20 +33557,20 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33659,17 +33659,17 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33752,16 +33752,16 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'/', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33835,16 +33835,16 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'*', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -33920,22 +33920,22 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34029,16 +34029,16 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sAny_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sAny_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34111,44 +34111,44 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icChar, 0, 0, ':', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icChar, 0, ':', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34339,20 +34339,20 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34441,17 +34441,17 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34536,22 +34536,22 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34644,14 +34644,14 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34715,16 +34715,16 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sAny_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sAny_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34800,20 +34800,20 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34902,17 +34902,17 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -34996,19 +34996,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35089,19 +35089,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35182,19 +35182,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35275,19 +35275,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35368,19 +35368,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35461,19 +35461,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35554,19 +35554,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35647,19 +35647,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35740,19 +35740,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35833,19 +35833,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -35926,19 +35926,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'a', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36019,19 +36019,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'b', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36112,19 +36112,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'c', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36205,19 +36205,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'d', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36298,19 +36298,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'e', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36391,19 +36391,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'f', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'f', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36484,19 +36484,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'g', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36577,19 +36577,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'h', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'h', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'h', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36670,19 +36670,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'i', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36763,19 +36763,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'j', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'j', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'j', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36856,19 +36856,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'k', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'k', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'k', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -36949,19 +36949,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'l', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37042,19 +37042,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'m', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37135,19 +37135,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37228,19 +37228,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'o', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37321,19 +37321,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'p', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37414,19 +37414,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37507,19 +37507,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'r', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37600,19 +37600,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'s', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37693,19 +37693,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37786,19 +37786,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'u', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37879,19 +37879,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'v', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'v', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'v', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -37972,19 +37972,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'w', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'w', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'w', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38065,19 +38065,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'x', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38158,19 +38158,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38251,19 +38251,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38344,19 +38344,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'A', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'A', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38437,19 +38437,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'B', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'B', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'B', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38530,19 +38530,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'C', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'C', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38623,19 +38623,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'D', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'D', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'D', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38716,19 +38716,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'E', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38809,19 +38809,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'F', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'F', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'F', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38902,19 +38902,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'G', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'G', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'G', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -38995,19 +38995,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'H', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'H', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'H', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39088,19 +39088,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'I', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'I', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'I', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39181,19 +39181,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'J', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'J', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'J', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39274,19 +39274,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'K', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'K', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'K', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39367,19 +39367,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'L', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'L', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'L', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39460,19 +39460,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'M', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'M', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39553,19 +39553,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'N', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39646,19 +39646,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'O', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'O', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'O', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39739,19 +39739,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'P', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'P', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'P', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39832,19 +39832,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Q', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Q', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Q', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -39925,19 +39925,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'R', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'R', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'R', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40018,19 +40018,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'S', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'S', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'S', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40111,19 +40111,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'T', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'T', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'T', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40204,19 +40204,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'U', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40297,19 +40297,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'V', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'V', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'V', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40390,19 +40390,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'W', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'W', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'W', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40483,19 +40483,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'X', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'X', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'X', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40576,19 +40576,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Y', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Y', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40669,19 +40669,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'Z', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'Z', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'Z', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40762,19 +40762,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'_', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '_', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '_', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40855,19 +40855,19 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'-', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '-', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -40949,20 +40949,20 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41051,20 +41051,20 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41153,17 +41153,17 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41248,22 +41248,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'n', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41358,22 +41358,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'r', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 'r', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41468,22 +41468,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'t', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41578,22 +41578,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\\', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\\', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\\', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\\', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41688,22 +41688,22 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\'', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\'', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41796,16 +41796,16 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'d', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -41880,33 +41880,33 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42050,44 +42050,44 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'U', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'q', 0},
-      {refalrts::icChar, 0, 0, 'u', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'U', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'q', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42278,20 +42278,20 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42380,17 +42380,17 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42475,22 +42475,22 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'\'', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '\'', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42584,17 +42584,17 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42670,20 +42670,20 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42772,17 +42772,17 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -42866,46 +42866,46 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'*', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'N', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'o', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'n', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 's', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'b', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'N', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 's', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'b', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43101,17 +43101,17 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43187,20 +43187,20 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43289,17 +43289,17 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43382,16 +43382,16 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'/', 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43466,17 +43466,17 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43552,20 +43552,20 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43654,17 +43654,17 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43748,19 +43748,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43841,19 +43841,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -43934,19 +43934,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44027,19 +44027,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44120,19 +44120,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44213,19 +44213,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44306,19 +44306,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44399,19 +44399,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44492,19 +44492,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44585,19 +44585,19 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44678,40 +44678,40 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icChar, 0, 0, 'E', 0},
-      {refalrts::icChar, 0, 0, 'x', 0},
-      {refalrts::icChar, 0, 0, 'p', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'e', 0},
-      {refalrts::icChar, 0, 0, 'c', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'm', 0},
-      {refalrts::icChar, 0, 0, 'a', 0},
-      {refalrts::icChar, 0, 0, 'l', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, 'd', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 'g', 0},
-      {refalrts::icChar, 0, 0, 'i', 0},
-      {refalrts::icChar, 0, 0, 't', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icChar, 0, 'E', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44886,20 +44886,20 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -44988,17 +44988,17 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45082,19 +45082,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45175,19 +45175,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45268,19 +45268,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45361,19 +45361,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45454,19 +45454,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45547,19 +45547,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45640,19 +45640,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45733,19 +45733,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45826,19 +45826,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -45919,19 +45919,19 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46013,20 +46013,20 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46115,20 +46115,20 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46217,17 +46217,17 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46312,22 +46312,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'0', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '0', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '0', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46422,22 +46422,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'1', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '1', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '1', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46532,22 +46532,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'2', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '2', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '2', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46642,22 +46642,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'3', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '3', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '3', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46752,22 +46752,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'4', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '4', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '4', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46862,22 +46862,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'5', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '5', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '5', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -46972,22 +46972,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'6', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '6', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '6', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47082,22 +47082,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'7', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '7', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '7', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47192,22 +47192,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'8', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '8', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '8', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47302,22 +47302,22 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, 0, 0, (int)'9', 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icChar, 0, 0, '9', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icChar, 0, '9', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47412,20 +47412,20 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47514,20 +47514,20 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icContextSet, 0, 0, __eText_1_1, 0},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sUnexpected_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eText_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icsVarLeft, 0, __sUnexpected_1_1, 0},
+      {refalrts::icContextSet, 0, __eText_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eText_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -47616,17 +47616,17 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icContextSet, 0, 0, __eAccum_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceEVar, 0, 0, __eAccum_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eAccum_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];

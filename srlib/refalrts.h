@@ -130,7 +130,6 @@ typedef enum BracketType {
 } BracketType;
 
 /*
-   Заготовка:
    Для эффективной обработки на современных процессорах
    команду выровляли по размеру в 4 байта.
    И получили ограничение на индексацию в 255.
@@ -139,7 +138,6 @@ typedef enum BracketType {
 typedef struct RASLCommand {
   unsigned char cmd;
   unsigned char val1;
-  unsigned char del_me;
   unsigned char val2;
   unsigned char bracket;
 } RASLCommand;
