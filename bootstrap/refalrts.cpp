@@ -2412,7 +2412,7 @@ refalrts::FnResult refalrts::interpret_array(
   Iter *be = 0;
   Iter *bb = 0;
   unsigned int index;
-  RefalNumber refNum = 0;
+  RefalNumber refNum;
   char chValue;
   int stack_top = 0;
 
@@ -2785,7 +2785,7 @@ refalrts::FnResult refalrts::interpret_array(
 
   while(i >= 0)
   {
-    int index = 0;
+    int index;
     //Компоновка стека
     switch(raa[i].cmd)
     {
