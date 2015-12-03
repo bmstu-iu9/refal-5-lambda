@@ -17293,7 +17293,6 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icEPush, 0, 0, 0, 2},
       {refalrts::icNumLeft, 0, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
@@ -18312,7 +18311,6 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       {refalrts::icEStart, 0, 0, __eUnuseds_B_1_1, 0},
       {refalrts::icSave, 0, 0, 6, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 6},
-      {refalrts::icEPush, 0, 0, 0, 4},
       {refalrts::icNumLeft, 0, 0, 1, 4},
       {refalrts::icCharLeft, 0, 0, (int)'e', 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},

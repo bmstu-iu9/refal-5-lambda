@@ -2410,8 +2410,6 @@ refalrts::FnResult refalrts::interpret_array(
   Iter stack_ptr = 0;
   Iter res = begin;
   Iter cobracket;
-  Iter *be = 0;
-  Iter *bb = 0;
   unsigned int index;
   RefalNumber refNum;
   char chValue;
@@ -2431,20 +2429,14 @@ refalrts::FnResult refalrts::interpret_array(
   {
     // Интерпретация команд
     // Для ряда команд эти переменные могут не иметь смысла
-    Iter &bb_ = context[raa[i].bracket];
-    Iter &be_ = context[raa[i].bracket + 1];
+    Iter &bb = context[raa[i].bracket];
+    Iter &be = context[raa[i].bracket + 1];
     switch(raa[i].cmd)
     {
-      case icEPush:
-        bb = & bb_;
-        be = & be_;
-        break;
-
       case icBracketLeft:
         if( !refalrts::brackets_left( context[raa[i].value],
                                       context[raa[i].value + 1],
-                                      bb_,
-                                      be_ )
+                                      bb, be )
         )
           MATCH_FAIL
         break;
@@ -2452,74 +2444,73 @@ refalrts::FnResult refalrts::interpret_array(
       case icBracketRight:
         if( !refalrts::brackets_right( context[raa[i].value],
                                        context[raa[i].value + 1],
-                                       bb_,
-                                       be_ )
+                                       bb, be )
         )
           MATCH_FAIL
         break;
 
       case ictVarRight:
         index = raa[i].value;
-        if( !refalrts::tvar_right( context[index], bb_, be_) )
+        if( !refalrts::tvar_right( context[index], bb, be) )
           MATCH_FAIL
        break;
 
       case ictVarLeft:
         index = raa[i].value;
-        if( !refalrts::tvar_left( context[index], bb_, be_) )
+        if( !refalrts::tvar_left( context[index], bb, be) )
           MATCH_FAIL
         break;
 
       case icsVarRight:
         index = raa[i].value;
-        if( !refalrts::svar_right( context[index], bb_, be_) )
+        if( !refalrts::svar_right( context[index], bb, be) )
           MATCH_FAIL
         break;
 
       case icsVarLeft:
         index = raa[i].value;
-        if( !refalrts::svar_left( context[index], bb_, be_) )
+        if( !refalrts::svar_left( context[index], bb, be) )
           MATCH_FAIL
         break;
 
       case icContextSet:
         index = raa[i].value;
-        context[index] = bb_;
-        context[index + 1] = be_;
+        context[index] = bb;
+        context[index + 1] = be;
         break;
 
 
       case icNumRight:
         if( ! refalrts::number_right(
-          static_cast<RefalNumber>(raa[i].value), bb_, be_ )
+          static_cast<RefalNumber>(raa[i].value), bb, be )
         )
           MATCH_FAIL
        break;
 
       case icHugeNumRight:
-        if( ! refalrts::number_right( numbers[raa[i].value], bb_, be_ ) )
+        if( ! refalrts::number_right( numbers[raa[i].value], bb, be ) )
           MATCH_FAIL
        break;
 
       case icNumLeft:
         if( ! refalrts::number_left(
-          static_cast<RefalNumber>(raa[i].value), bb_, be_ )
+          static_cast<RefalNumber>(raa[i].value), bb, be )
         )
           MATCH_FAIL
        break;
 
       case icHugeNumLeft:
-        if( ! refalrts::number_left( numbers[raa[i].value], bb_, be_ ) )
+        if( ! refalrts::number_left( numbers[raa[i].value], bb, be ) )
           MATCH_FAIL
         break;
 
       case icIdentRight:
-        if( ! refalrts::ident_right( labels[raa[i].value], bb_, be_ ) )
+        if( ! refalrts::ident_right( labels[raa[i].value], bb, be ) )
           MATCH_FAIL
         break;
 
       case icIdentLeft:
-        if( ! refalrts::ident_left( labels[raa[i].value], bb_, be_ ) )
+        if( ! refalrts::ident_left( labels[raa[i].value], bb, be ) )
           MATCH_FAIL
         break;
 
@@ -2527,7 +2518,7 @@ refalrts::FnResult refalrts::interpret_array(
         if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
                                    context[(raa[i].value & 0xFFFF) + 1],
                                    functions[raa[i].value >> 16].ptr,
-                                   bb_, be_)
+                                   bb, be)
         )
           MATCH_FAIL
         break;
@@ -2536,30 +2527,30 @@ refalrts::FnResult refalrts::interpret_array(
         if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
                                   context[(raa[i].value & 0xFFFF) + 1],
                                   functions[raa[i].value >> 16].ptr,
-                                  bb_, be_)
+                                  bb, be)
         )
           MATCH_FAIL
         break;
 
       case icFuncRight:
-        if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
+        if ( !function_right( functions[raa[i].value].ptr, bb, be ) )
           MATCH_FAIL
         break;
 
       case icFuncLeft:
-        if ( !function_left( functions[raa[i].value].ptr, bb_, be_ ) )
+        if ( !function_left( functions[raa[i].value].ptr, bb, be ) )
           MATCH_FAIL
         break;
 
       case icCharRight:
         chValue = (char)raa[i].value;
-        if ( !char_right( chValue, bb_, be_) )
+        if ( !char_right( chValue, bb, be) )
           MATCH_FAIL
         break;
 
       case icCharLeft:
         chValue = (char)raa[i].value;
-        if ( !char_left( chValue, bb_, be_) )
+        if ( !char_left( chValue, bb, be) )
           MATCH_FAIL
         break;
 
@@ -2570,7 +2561,7 @@ refalrts::FnResult refalrts::interpret_array(
           ind2 = (long)raa[i].ptr_value2;
           if( ! refalrts::repeated_evar_right( context[ind1], context[ind1 + 1],
                                                context[ind2], context[ind2 + 1],
-                                               bb_, be_)
+                                               bb, be)
           )
             MATCH_FAIL
         }
@@ -2583,7 +2574,7 @@ refalrts::FnResult refalrts::interpret_array(
           ind2 = (long)raa[i].ptr_value2;
           if( ! refalrts::repeated_evar_left( context[ind1], context[ind1 + 1],
                                               context[ind2], context[ind2 + 1],
-                                              bb_, be_)
+                                              bb, be)
           )
             MATCH_FAIL
         }
@@ -2595,7 +2586,7 @@ refalrts::FnResult refalrts::interpret_array(
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb_, be_) )
+          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb, be) )
             MATCH_FAIL
         }
         break;
@@ -2606,14 +2597,14 @@ refalrts::FnResult refalrts::interpret_array(
           int ind1, ind2;
           ind1 =(long)raa[i].ptr_value1;
           ind2 = (long)raa[i].ptr_value2;
-          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb_, be_) )
+          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb, be) )
             MATCH_FAIL
         }
         break;
 
       case icSave:
-        context[raa[i].value] = bb_;
-        context[raa[i].value + 1] = be_;
+        context[raa[i].value] = bb;
+        context[raa[i].value + 1] = be;
         break;
 
       case icEPrepare:
@@ -2625,7 +2616,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icEStart:
         {
           bool advance = open_evar_advance(
-            context[raa[i].value], context[raa[i].value + 1], bb_, be_
+            context[raa[i].value], context[raa[i].value + 1], bb, be
           );
           if ( ! advance ) {
             MATCH_FAIL
@@ -2635,7 +2626,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icEmpty:
-        if ( !empty_seq( bb_, be_ ) )
+        if ( !empty_seq( bb, be ) )
           MATCH_FAIL
         break;
 
@@ -2791,7 +2782,6 @@ refalrts::FnResult refalrts::interpret_array(
 
       //skip-case
       case icContextSet:
-      case icEPush:
       case icsVarRight:
       case icsVarLeft:
       case ictVarRight:
