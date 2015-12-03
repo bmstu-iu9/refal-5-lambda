@@ -280,8 +280,8 @@ PrintDirection {
 PrintRepeatInterp {
   (e.Indent) s.Direction s.BracketNumber s.Usings s.Mode e.Index =
     (e.Indent '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
-              <PrintVarShortcut s.Usings s.Mode e.Index> ', '
-              <PrintVarShortcut <Dec s.Usings> s.Mode e.Index> ', 0, '
+              <PrintVarShortcut s.Usings s.Mode e.Index> ', 0, '
+              <PrintVarShortcut <Dec s.Usings> s.Mode e.Index> ', '
               <StrFromInt s.BracketNumber> '},'
     )
     ;

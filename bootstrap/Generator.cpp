@@ -10152,6 +10152,9 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
+      {refalrts::icChar, 0, 0, '0', 0},
+      {refalrts::icChar, 0, 0, ',', 0},
+      {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -10161,9 +10164,6 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
       {refalrts::icCopySTVar, 0, 0, __sMode_1_1, 0},
       {refalrts::icCopyEVar, 0, 0, __eIndex_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, 0, ',', 0},
-      {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '0', 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -10305,31 +10305,31 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_char( n29, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_open_call( n30 ) )
+    if( ! refalrts::alloc_char( n30, '0' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_name( n31, & PrintVarShortcut, "PrintVarShortcut" ) )
+    if( ! refalrts::alloc_char( n31, ',' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_open_call( n32 ) )
+    if( ! refalrts::alloc_char( n32, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_name( n33, & Dec, "Dec" ) )
+    if( ! refalrts::alloc_open_call( n33 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_close_call( n34 ) )
+    if( ! refalrts::alloc_name( n34, & PrintVarShortcut, "PrintVarShortcut" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_close_call( n35 ) )
+    if( ! refalrts::alloc_open_call( n35 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, ',' ) )
+    if( ! refalrts::alloc_name( n36, & Dec, "Dec" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, ' ' ) )
+    if( ! refalrts::alloc_close_call( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_char( n38, '0' ) )
+    if( ! refalrts::alloc_close_call( n38 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
     if( ! refalrts::alloc_char( n39, ',' ) )
@@ -10367,18 +10367,18 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
     res = refalrts::splice_elem( res, n41 );
     res = refalrts::splice_elem( res, n40 );
     res = refalrts::splice_elem( res, n39 );
+    refalrts::push_stack( n38 );
+    refalrts::push_stack( n33 );
     res = refalrts::splice_elem( res, n38 );
-    res = refalrts::splice_elem( res, n37 );
-    res = refalrts::splice_elem( res, n36 );
-    refalrts::push_stack( n35 );
-    refalrts::push_stack( n30 );
-    res = refalrts::splice_elem( res, n35 );
     res = refalrts::splice_evar( res, context[__eIndex_1_2], context[__eIndex_1_2 + 1] );
     res = refalrts::splice_stvar( res, context[__sMode_1_3] );
-    refalrts::push_stack( n34 );
-    refalrts::push_stack( n32 );
-    res = refalrts::splice_elem( res, n34 );
+    refalrts::push_stack( n37 );
+    refalrts::push_stack( n35 );
+    res = refalrts::splice_elem( res, n37 );
     res = refalrts::splice_stvar( res, context[__sUsings_1_2] );
+    res = refalrts::splice_elem( res, n36 );
+    res = refalrts::splice_elem( res, n35 );
+    res = refalrts::splice_elem( res, n34 );
     res = refalrts::splice_elem( res, n33 );
     res = refalrts::splice_elem( res, n32 );
     res = refalrts::splice_elem( res, n31 );

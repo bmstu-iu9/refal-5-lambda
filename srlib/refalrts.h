@@ -139,8 +139,8 @@ typedef enum BracketType {
 typedef struct RASLCommand {
   unsigned char cmd;
   unsigned char val1;
+  unsigned char del_me;
   unsigned char val2;
-  unsigned char value;
   unsigned char bracket;
 } RASLCommand;
 
