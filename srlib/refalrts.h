@@ -74,6 +74,7 @@ typedef struct Node {
 typedef enum iCmd {
   icChar,
   icInt,
+  icHugeInt,
   icFunc,
   icIdent,
   icString,
@@ -100,6 +101,8 @@ typedef enum iCmd {
   ictVarLeft,
   icNumRight,
   icNumLeft,
+  icHugeNumRight,
+  icHugeNumLeft,
   icIdentRight,
   icIdentLeft,
   icADTRight,

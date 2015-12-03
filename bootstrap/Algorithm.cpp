@@ -342,6 +342,13 @@ refalrts::FnResult CmdiNum(refalrts::Iter, refalrts::Iter) {
   );
 }
 
+refalrts::FnResult CmdiHugeNum(refalrts::Iter, refalrts::Iter) {
+  refalrts::this_is_generated_function();
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
 refalrts::FnResult CmdiIdent(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::FnResult(
@@ -13811,6 +13818,178 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
   );
 }
 
+extern refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    // issue here memory for vars with 5 elems
+    refalrts::Iter context[5];
+    refalrts::zeros( context, 5 );
+    enum { __sDirection_1_1 = 2 };
+    enum { __sBracketNumber_1_1 = 3 };
+    enum { __sNumber_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdiNum, "CmdiNum" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icCharRight, & context[0], & context[1], (int)'<', 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // s.Direction#1 s.BracketNumber#1 s.Number#1 '<'
+    if( ! refalrts::char_right( '<', context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sDirection_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sBracketNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_bracket( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & CmdiNum, "CmdiNum" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n2 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sDirection_1_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __sDirection_1_1 = 2 };
+    enum { __sBracketNumber_1_1 = 3 };
+    enum { __sNumber_1_1 = 4 };
+    enum { __sOther_2_1 = 5 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdiHugeNum, "CmdiHugeNum" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sOther_2_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // s.Direction#1 s.BracketNumber#1 s.Number#1 s.Other#2
+    if( ! refalrts::svar_left( context[__sDirection_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sBracketNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sOther_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_bracket( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & CmdiHugeNum, "CmdiHugeNum" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n2 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sDirection_1_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
 static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -14037,13 +14216,14 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 9 elems
-    refalrts::Iter context[9];
-    refalrts::zeros( context, 9 );
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
     enum { __eEtc_1_1 = 4 };
     enum { __sDirection_1_1 = 6 };
     enum { __sBracketNumber_1_1 = 7 };
     enum { __sNumber_1_1 = 8 };
+    enum { __sNumber_1_2 = 9 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -14052,26 +14232,40 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiNum, "CmdiNum" },
+      { & lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" },
+      { & refalrts::create_closure, "refalrts::create_closure" },
+      { & Compare, "Compare" },
+      { & Fetch, "Fetch" },
       { & CmdNumber, "CmdNumber" }
     };
     using refalrts::labels;
-    using refalrts::numbers;
+    static const refalrts::RefalNumber numbers[] = {
+      256UL
+    };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2, 2},
+      {refalrts::icFuncLeft, 0, 0, 5, 2},
       {refalrts::icContextSet, 0, 0, __eEtc_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sDirection_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sBracketNumber_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 4, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 3, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icHugeInt, 0, 0, 0 , 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eEtc_1_1, 0},
@@ -14109,35 +14303,75 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( context[__sNumber_1_2], context[__sNumber_1_1] ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_bracket( n0 ) )
+    if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiNum, "CmdiNum" ) )
+    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_bracket( n2 ) )
+    if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_open_call( n3 ) )
+    if( ! refalrts::alloc_name( n3, & Compare, "Compare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_number( n4, 256UL ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n5 );
-    refalrts::push_stack( n3 );
-    res = refalrts::splice_elem( res, n5 );
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_call( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_name( n7, & refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, & lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_close_call( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_open_call( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_name( n12, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_close_call( n13 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n13 );
+    refalrts::push_stack( n11 );
+    res = refalrts::splice_elem( res, n13 );
     res = refalrts::splice_evar( res, context[__eEtc_1_1], context[__eEtc_1_1 + 1] );
-    res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_elem( res, n3 );
-    refalrts::link_brackets( n0, n2 );
-    res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_elem( res, n12 );
+    res = refalrts::splice_elem( res, n11 );
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n10 );
+    refalrts::push_stack( n9 );
+    refalrts::push_stack( n6 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_2] );
     res = refalrts::splice_stvar( res, context[__sBracketNumber_1_1] );
     res = refalrts::splice_stvar( res, context[__sDirection_1_1] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::push_stack( n5 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -17095,7 +17329,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icEPush, 0, 0, 0, 2},
-      {refalrts::icNumLeft, (void*)1 , 0, 0},
+      {refalrts::icNumLeft, 0, 0, 1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
@@ -18121,7 +18355,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       {refalrts::icSave, & context[6], & context[7], 0},
       {refalrts::icBracketLeft, 0, 0, 4, 6},
       {refalrts::icEPush, 0, 0, 0, 4},
-      {refalrts::icNumLeft, (void*)1 , 0, 0},
+      {refalrts::icNumLeft, 0, 0, 1, 0},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
       {refalrts::icsRepeatLeft, (void*)__sDepth_1_2, (void*)__sDepth_1_1, 0, 4},
@@ -18812,6 +19046,13 @@ refalrts::FnResult CmdArrFunc(refalrts::Iter, refalrts::Iter) {
 }
 
 refalrts::FnResult CmdArrInt(refalrts::Iter, refalrts::Iter) {
+  refalrts::this_is_generated_function();
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+refalrts::FnResult CmdArrHugeInt(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::FnResult(
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
@@ -19540,6 +19781,152 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
   );
 }
 
+static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    // issue here memory for vars with 3 elems
+    refalrts::Iter context[3];
+    refalrts::zeros( context, 3 );
+    enum { __sNumber_1_1 = 2 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdArrInt, "CmdArrInt" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icCharRight, & context[0], & context[1], (int)'<', 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // s.Number#1 '<'
+    if( ! refalrts::char_right( '<', context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_bracket( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & CmdArrInt, "CmdArrInt" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n2 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    enum { __sNumber_1_1 = 2 };
+    enum { __sOther_2_1 = 3 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdArrHugeInt, "CmdArrHugeInt" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, & context[0], & context[1], __sOther_2_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // s.Number#1 s.Other#2
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sOther_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_bracket( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n2 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
 static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -19907,11 +20294,12 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 6 elems
-    refalrts::Iter context[6];
-    refalrts::zeros( context, 6 );
+    // issue here memory for vars with 7 elems
+    refalrts::Iter context[7];
+    refalrts::zeros( context, 7 );
     enum { __sNumber_1_1 = 4 };
     enum { __sCounter_1_1 = 5 };
+    enum { __sNumber_1_2 = 6 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -19919,24 +20307,38 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrInt, "CmdArrInt" },
+      { & lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" },
+      { & refalrts::create_closure, "refalrts::create_closure" },
+      { & Compare, "Compare" },
+      { & Fetch, "Fetch" },
       { & ElNumber, "ElNumber" },
       { & CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
-    using refalrts::numbers;
+    static const refalrts::RefalNumber numbers[] = {
+      256UL
+    };
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2, 2},
-      {refalrts::icFuncLeft, 0, 0, 1, 2},
+      {refalrts::icFuncLeft, 0, 0, 5, 2},
+      {refalrts::icFuncLeft, 0, 0, 4, 2},
       {refalrts::icsVarLeft, & context[2], & context[3], __sCounter_1_1, 0},
       {refalrts::icsVarLeft, & context[2], & context[3], __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 3, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icHugeInt, 0, 0, 0 , 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -19969,18 +20371,58 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( context[__sNumber_1_2], context[__sNumber_1_1] ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_bracket( n0 ) )
+    if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrInt, "CmdArrInt" ) )
+    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_bracket( n2 ) )
+    if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n2 );
-    res = refalrts::splice_elem( res, n2 );
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_name( n3, & Compare, "Compare" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_number( n4, 256UL ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_close_call( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_call( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_name( n7, & refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, & lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_close_call( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n10 );
+    refalrts::push_stack( n9 );
+    refalrts::push_stack( n6 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_2] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::push_stack( n5 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -23048,6 +23490,878 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     res = refalrts::splice_stvar( res, context[__sNextLabel_1_1] );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eFuncs_1_1], context[__eFuncs_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 31 elems
+    refalrts::Iter context[31];
+    refalrts::zeros( context, 31 );
+    enum { __eFuncs_1_1 = 14 };
+    enum { __eLabels_1_1 = 16 };
+    enum { __eCommands_1_1 = 18 };
+    enum { __sNextNumId_1_1 = 20 };
+    enum { __sDirection_1_1 = 21 };
+    enum { __sBracketNum_1_1 = 22 };
+    enum { __sNumber_1_1 = 23 };
+    enum { __eNumbers_B_1_1 = 24 };
+    enum { __eNumbers_E_1_1 = 26 };
+    enum { __sId_1_1 = 28 };
+    enum { __sNumber_1_2 = 29 };
+    enum { __sId_1_2 = 30 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdiHugeNum, "CmdiHugeNum" },
+      { & OutlineConstants, "OutlineConstants" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 0, 6, 0},
+      {refalrts::icBracketRight, 0, 0, 8, 0},
+      {refalrts::icFuncLeft, 0, 0, 0, 8},
+      {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
+      {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icsVarLeft, & context[6], & context[7], __sNextNumId_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sBracketNum_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEPrepare, 0, 0, __eNumbers_B_1_1, 6},
+      {refalrts::icEStart, 0, 0, __eNumbers_B_1_1, 6},
+      {refalrts::icEPush, 0, 0, 0, 6},
+      {refalrts::icSave, & context[12], & context[13], 0},
+      {refalrts::icBracketLeft, 0, 0, 10, 12},
+      {refalrts::icsRepeatRight, (void*)__sNumber_1_2, (void*)__sNumber_1_1, 0, 10},
+      {refalrts::icContextSet, 0, 0, __eNumbers_E_1_1, 12},
+      {refalrts::icsVarLeft, & context[10], & context[11], __sId_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eFuncs_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eLabels_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_B_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sId_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_E_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_1_1, 0},
+      {refalrts::icCopySTVar, 0, 0, __sId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.Funcs#1 ) ( e.Labels#1 ) ( s.NextNumId#1 e.Numbers_B#1 ( s.Id#1 s.Number#1 ) e.Numbers_E#1 ) e.Commands#1 ( & CmdiHugeNum s.Direction#1 s.BracketNum#1 s.Number#1 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( & CmdiHugeNum, context[8], context[9] ) )
+      break;
+    context[__eFuncs_1_1] = context[2];
+    context[__eFuncs_1_1 + 1] = context[3];
+    context[__eLabels_1_1] = context[4];
+    context[__eLabels_1_1 + 1] = context[5];
+    context[__eCommands_1_1] = context[0];
+    context[__eCommands_1_1 + 1] = context[1];
+    if( ! refalrts::svar_left( context[__sNextNumId_1_1], context[6], context[7] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sDirection_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sBracketNum_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::empty_seq( context[8], context[9] ) )
+      break;
+    context[__eNumbers_B_1_1] = 0;
+    context[__eNumbers_B_1_1 + 1] = 0;
+    do {
+      context[12] = context[6];
+      context[13] = context[7];
+      context[10] = 0;
+      context[11] = 0;
+      if( ! refalrts::brackets_left( context[10], context[11], context[12], context[13] ) )
+        continue;
+      if( ! refalrts::repeated_stvar_right( context[__sNumber_1_2], context[__sNumber_1_1], context[10], context[11] ) )
+        continue;
+      context[__eNumbers_E_1_1] = context[12];
+      context[__eNumbers_E_1_1 + 1] = context[13];
+      if( ! refalrts::svar_left( context[__sId_1_1], context[10], context[11] ) )
+        continue;
+      if( ! refalrts::empty_seq( context[10], context[11] ) )
+        continue;
+
+      refalrts::reset_allocator();
+      refalrts::Iter res = arg_begin;
+      if( ! refalrts::copy_stvar( context[__sId_1_2], context[__sId_1_1] ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n0 = 0;
+      if( ! refalrts::alloc_open_call( n0 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n1 = 0;
+      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n2 = 0;
+      if( ! refalrts::alloc_open_bracket( n2 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n3 = 0;
+      if( ! refalrts::alloc_close_bracket( n3 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n4 = 0;
+      if( ! refalrts::alloc_open_bracket( n4 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n5 = 0;
+      if( ! refalrts::alloc_close_bracket( n5 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_open_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_open_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n8 = 0;
+      if( ! refalrts::alloc_close_bracket( n8 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n9 = 0;
+      if( ! refalrts::alloc_close_bracket( n9 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_close_call( n10 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n11 = 0;
+      if( ! refalrts::alloc_open_bracket( n11 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n12 = 0;
+      if( ! refalrts::alloc_name( n12, & CmdiHugeNum, "CmdiHugeNum" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n13 = 0;
+      if( ! refalrts::alloc_close_bracket( n13 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n11, n13 );
+      res = refalrts::splice_elem( res, n13 );
+      res = refalrts::splice_stvar( res, context[__sId_1_2] );
+      res = refalrts::splice_stvar( res, context[__sBracketNum_1_1] );
+      res = refalrts::splice_stvar( res, context[__sDirection_1_1] );
+      res = refalrts::splice_elem( res, n12 );
+      res = refalrts::splice_elem( res, n11 );
+      refalrts::push_stack( n10 );
+      refalrts::push_stack( n0 );
+      res = refalrts::splice_elem( res, n10 );
+      res = refalrts::splice_evar( res, context[__eCommands_1_1], context[__eCommands_1_1 + 1] );
+      refalrts::link_brackets( n6, n9 );
+      res = refalrts::splice_elem( res, n9 );
+      res = refalrts::splice_evar( res, context[__eNumbers_E_1_1], context[__eNumbers_E_1_1 + 1] );
+      refalrts::link_brackets( n7, n8 );
+      res = refalrts::splice_elem( res, n8 );
+      res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+      res = refalrts::splice_stvar( res, context[__sId_1_1] );
+      res = refalrts::splice_elem( res, n7 );
+      res = refalrts::splice_evar( res, context[__eNumbers_B_1_1], context[__eNumbers_B_1_1 + 1] );
+      res = refalrts::splice_stvar( res, context[__sNextNumId_1_1] );
+      res = refalrts::splice_elem( res, n6 );
+      refalrts::link_brackets( n4, n5 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_evar( res, context[__eLabels_1_1], context[__eLabels_1_1 + 1] );
+      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, context[__eFuncs_1_1], context[__eFuncs_1_1 + 1] );
+      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n1 );
+      res = refalrts::splice_elem( res, n0 );
+      refalrts::use( res );
+      refalrts::splice_to_freelist( arg_begin, arg_end );
+      return refalrts::cSuccess;
+    } while ( refalrts::open_evar_advance( context[__eNumbers_B_1_1], context[__eNumbers_B_1_1 + 1], context[6], context[7] ) );
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 24 elems
+    refalrts::Iter context[24];
+    refalrts::zeros( context, 24 );
+    enum { __eFuncs_1_1 = 10 };
+    enum { __eLabels_1_1 = 12 };
+    enum { __eCommands_1_1 = 14 };
+    enum { __sNextNumId_1_1 = 16 };
+    enum { __eNumbers_1_1 = 17 };
+    enum { __sDirection_1_1 = 19 };
+    enum { __sBracketNum_1_1 = 20 };
+    enum { __sNumber_1_1 = 21 };
+    enum { __sNextNumId_1_2 = 22 };
+    enum { __sNextNumId_1_3 = 23 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdiHugeNum, "CmdiHugeNum" },
+      { & Inc, "Inc" },
+      { & OutlineConstants, "OutlineConstants" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 0, 6, 0},
+      {refalrts::icBracketRight, 0, 0, 8, 0},
+      {refalrts::icFuncLeft, 0, 0, 0, 8},
+      {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
+      {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icsVarLeft, & context[6], & context[7], __sNextNumId_1_1, 0},
+      {refalrts::icContextSet, 0, 0, __eNumbers_1_1, 6},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sBracketNum_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 2, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eFuncs_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eLabels_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sBracketNum_1_1, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.Funcs#1 ) ( e.Labels#1 ) ( s.NextNumId#1 e.Numbers#1 ) e.Commands#1 ( & CmdiHugeNum s.Direction#1 s.BracketNum#1 s.Number#1 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( & CmdiHugeNum, context[8], context[9] ) )
+      break;
+    context[__eFuncs_1_1] = context[2];
+    context[__eFuncs_1_1 + 1] = context[3];
+    context[__eLabels_1_1] = context[4];
+    context[__eLabels_1_1 + 1] = context[5];
+    context[__eCommands_1_1] = context[0];
+    context[__eCommands_1_1 + 1] = context[1];
+    if( ! refalrts::svar_left( context[__sNextNumId_1_1], context[6], context[7] ) )
+      break;
+    context[__eNumbers_1_1] = context[6];
+    context[__eNumbers_1_1 + 1] = context[7];
+    if( ! refalrts::svar_left( context[__sDirection_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sBracketNum_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::empty_seq( context[8], context[9] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( context[__sNextNumId_1_2], context[__sNextNumId_1_1] ) )
+      return refalrts::cNoMemory;
+    if( ! refalrts::copy_stvar( context[__sNextNumId_1_3], context[__sNextNumId_1_2] ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_open_bracket( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_close_bracket( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_open_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, & Inc, "Inc" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_open_bracket( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_close_bracket( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_close_bracket( n12 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_close_call( n13 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_open_bracket( n14 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_name( n15, & CmdiHugeNum, "CmdiHugeNum" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_close_bracket( n16 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n14, n16 );
+    res = refalrts::splice_elem( res, n16 );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_3] );
+    res = refalrts::splice_stvar( res, context[__sBracketNum_1_1] );
+    res = refalrts::splice_stvar( res, context[__sDirection_1_1] );
+    res = refalrts::splice_elem( res, n15 );
+    res = refalrts::splice_elem( res, n14 );
+    refalrts::push_stack( n13 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n13 );
+    res = refalrts::splice_evar( res, context[__eCommands_1_1], context[__eCommands_1_1 + 1] );
+    refalrts::link_brackets( n6, n12 );
+    res = refalrts::splice_elem( res, n12 );
+    refalrts::link_brackets( n10, n11 );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_2] );
+    res = refalrts::splice_elem( res, n10 );
+    res = refalrts::splice_evar( res, context[__eNumbers_1_1], context[__eNumbers_1_1 + 1] );
+    refalrts::push_stack( n9 );
+    refalrts::push_stack( n7 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_1] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::link_brackets( n4, n5 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_evar( res, context[__eLabels_1_1], context[__eLabels_1_1 + 1] );
+    res = refalrts::splice_elem( res, n4 );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eFuncs_1_1], context[__eFuncs_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 29 elems
+    refalrts::Iter context[29];
+    refalrts::zeros( context, 29 );
+    enum { __eFuncs_1_1 = 14 };
+    enum { __eLabels_1_1 = 16 };
+    enum { __eCommands_1_1 = 18 };
+    enum { __sNextNumId_1_1 = 20 };
+    enum { __sNumber_1_1 = 21 };
+    enum { __eNumbers_B_1_1 = 22 };
+    enum { __eNumbers_E_1_1 = 24 };
+    enum { __sId_1_1 = 26 };
+    enum { __sNumber_1_2 = 27 };
+    enum { __sId_1_2 = 28 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdArrHugeInt, "CmdArrHugeInt" },
+      { & OutlineConstants, "OutlineConstants" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 0, 6, 0},
+      {refalrts::icBracketRight, 0, 0, 8, 0},
+      {refalrts::icFuncLeft, 0, 0, 0, 8},
+      {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
+      {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icsVarLeft, & context[6], & context[7], __sNextNumId_1_1, 0},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEPrepare, 0, 0, __eNumbers_B_1_1, 6},
+      {refalrts::icEStart, 0, 0, __eNumbers_B_1_1, 6},
+      {refalrts::icEPush, 0, 0, 0, 6},
+      {refalrts::icSave, & context[12], & context[13], 0},
+      {refalrts::icBracketLeft, 0, 0, 10, 12},
+      {refalrts::icsRepeatRight, (void*)__sNumber_1_2, (void*)__sNumber_1_1, 0, 10},
+      {refalrts::icContextSet, 0, 0, __eNumbers_E_1_1, 12},
+      {refalrts::icsVarLeft, & context[10], & context[11], __sId_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 10},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eFuncs_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eLabels_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_B_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sId_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_E_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCopySTVar, 0, 0, __sId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.Funcs#1 ) ( e.Labels#1 ) ( s.NextNumId#1 e.Numbers_B#1 ( s.Id#1 s.Number#1 ) e.Numbers_E#1 ) e.Commands#1 ( & CmdArrHugeInt s.Number#1 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( & CmdArrHugeInt, context[8], context[9] ) )
+      break;
+    context[__eFuncs_1_1] = context[2];
+    context[__eFuncs_1_1 + 1] = context[3];
+    context[__eLabels_1_1] = context[4];
+    context[__eLabels_1_1 + 1] = context[5];
+    context[__eCommands_1_1] = context[0];
+    context[__eCommands_1_1 + 1] = context[1];
+    if( ! refalrts::svar_left( context[__sNextNumId_1_1], context[6], context[7] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::empty_seq( context[8], context[9] ) )
+      break;
+    context[__eNumbers_B_1_1] = 0;
+    context[__eNumbers_B_1_1 + 1] = 0;
+    do {
+      context[12] = context[6];
+      context[13] = context[7];
+      context[10] = 0;
+      context[11] = 0;
+      if( ! refalrts::brackets_left( context[10], context[11], context[12], context[13] ) )
+        continue;
+      if( ! refalrts::repeated_stvar_right( context[__sNumber_1_2], context[__sNumber_1_1], context[10], context[11] ) )
+        continue;
+      context[__eNumbers_E_1_1] = context[12];
+      context[__eNumbers_E_1_1 + 1] = context[13];
+      if( ! refalrts::svar_left( context[__sId_1_1], context[10], context[11] ) )
+        continue;
+      if( ! refalrts::empty_seq( context[10], context[11] ) )
+        continue;
+
+      refalrts::reset_allocator();
+      refalrts::Iter res = arg_begin;
+      if( ! refalrts::copy_stvar( context[__sId_1_2], context[__sId_1_1] ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n0 = 0;
+      if( ! refalrts::alloc_open_call( n0 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n1 = 0;
+      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n2 = 0;
+      if( ! refalrts::alloc_open_bracket( n2 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n3 = 0;
+      if( ! refalrts::alloc_close_bracket( n3 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n4 = 0;
+      if( ! refalrts::alloc_open_bracket( n4 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n5 = 0;
+      if( ! refalrts::alloc_close_bracket( n5 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n6 = 0;
+      if( ! refalrts::alloc_open_bracket( n6 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n7 = 0;
+      if( ! refalrts::alloc_open_bracket( n7 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n8 = 0;
+      if( ! refalrts::alloc_close_bracket( n8 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n9 = 0;
+      if( ! refalrts::alloc_close_bracket( n9 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n10 = 0;
+      if( ! refalrts::alloc_close_call( n10 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n11 = 0;
+      if( ! refalrts::alloc_open_bracket( n11 ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n12 = 0;
+      if( ! refalrts::alloc_name( n12, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+        return refalrts::cNoMemory;
+      refalrts::Iter n13 = 0;
+      if( ! refalrts::alloc_close_bracket( n13 ) )
+        return refalrts::cNoMemory;
+      refalrts::link_brackets( n11, n13 );
+      res = refalrts::splice_elem( res, n13 );
+      res = refalrts::splice_stvar( res, context[__sId_1_2] );
+      res = refalrts::splice_elem( res, n12 );
+      res = refalrts::splice_elem( res, n11 );
+      refalrts::push_stack( n10 );
+      refalrts::push_stack( n0 );
+      res = refalrts::splice_elem( res, n10 );
+      res = refalrts::splice_evar( res, context[__eCommands_1_1], context[__eCommands_1_1 + 1] );
+      refalrts::link_brackets( n6, n9 );
+      res = refalrts::splice_elem( res, n9 );
+      res = refalrts::splice_evar( res, context[__eNumbers_E_1_1], context[__eNumbers_E_1_1 + 1] );
+      refalrts::link_brackets( n7, n8 );
+      res = refalrts::splice_elem( res, n8 );
+      res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+      res = refalrts::splice_stvar( res, context[__sId_1_1] );
+      res = refalrts::splice_elem( res, n7 );
+      res = refalrts::splice_evar( res, context[__eNumbers_B_1_1], context[__eNumbers_B_1_1 + 1] );
+      res = refalrts::splice_stvar( res, context[__sNextNumId_1_1] );
+      res = refalrts::splice_elem( res, n6 );
+      refalrts::link_brackets( n4, n5 );
+      res = refalrts::splice_elem( res, n5 );
+      res = refalrts::splice_evar( res, context[__eLabels_1_1], context[__eLabels_1_1 + 1] );
+      res = refalrts::splice_elem( res, n4 );
+      refalrts::link_brackets( n2, n3 );
+      res = refalrts::splice_elem( res, n3 );
+      res = refalrts::splice_evar( res, context[__eFuncs_1_1], context[__eFuncs_1_1 + 1] );
+      res = refalrts::splice_elem( res, n2 );
+      res = refalrts::splice_elem( res, n1 );
+      res = refalrts::splice_elem( res, n0 );
+      refalrts::use( res );
+      refalrts::splice_to_freelist( arg_begin, arg_end );
+      return refalrts::cSuccess;
+    } while ( refalrts::open_evar_advance( context[__eNumbers_B_1_1], context[__eNumbers_B_1_1 + 1], context[6], context[7] ) );
+#endif
+  } while ( 0 );
+
+  do {
+    // issue here memory for vars with 22 elems
+    refalrts::Iter context[22];
+    refalrts::zeros( context, 22 );
+    enum { __eFuncs_1_1 = 10 };
+    enum { __eLabels_1_1 = 12 };
+    enum { __eCommands_1_1 = 14 };
+    enum { __sNextNumId_1_1 = 16 };
+    enum { __eNumbers_1_1 = 17 };
+    enum { __sNumber_1_1 = 19 };
+    enum { __sNextNumId_1_2 = 20 };
+    enum { __sNextNumId_1_3 = 21 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { & CmdArrHugeInt, "CmdArrHugeInt" },
+      { & Inc, "Inc" },
+      { & OutlineConstants, "OutlineConstants" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 0, 6, 0},
+      {refalrts::icBracketRight, 0, 0, 8, 0},
+      {refalrts::icFuncLeft, 0, 0, 0, 8},
+      {refalrts::icContextSet, 0, 0, __eFuncs_1_1, 2},
+      {refalrts::icContextSet, 0, 0, __eLabels_1_1, 4},
+      {refalrts::icContextSet, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icsVarLeft, & context[6], & context[7], __sNextNumId_1_1, 0},
+      {refalrts::icContextSet, 0, 0, __eNumbers_1_1, 6},
+      {refalrts::icsVarLeft, & context[8], & context[9], __sNumber_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0, 8},
+      {refalrts::icEmptyResult, 0, 0, 0, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 2, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eFuncs_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eLabels_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eNumbers_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, 0, __eCommands_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCopySTVar, 0, 0, __sNextNumId_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.Funcs#1 ) ( e.Labels#1 ) ( s.NextNumId#1 e.Numbers#1 ) e.Commands#1 ( & CmdArrHugeInt s.Number#1 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( & CmdArrHugeInt, context[8], context[9] ) )
+      break;
+    context[__eFuncs_1_1] = context[2];
+    context[__eFuncs_1_1 + 1] = context[3];
+    context[__eLabels_1_1] = context[4];
+    context[__eLabels_1_1 + 1] = context[5];
+    context[__eCommands_1_1] = context[0];
+    context[__eCommands_1_1 + 1] = context[1];
+    if( ! refalrts::svar_left( context[__sNextNumId_1_1], context[6], context[7] ) )
+      break;
+    context[__eNumbers_1_1] = context[6];
+    context[__eNumbers_1_1 + 1] = context[7];
+    if( ! refalrts::svar_left( context[__sNumber_1_1], context[8], context[9] ) )
+      break;
+    if( ! refalrts::empty_seq( context[8], context[9] ) )
+      break;
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( context[__sNextNumId_1_2], context[__sNextNumId_1_1] ) )
+      return refalrts::cNoMemory;
+    if( ! refalrts::copy_stvar( context[__sNextNumId_1_3], context[__sNextNumId_1_2] ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_open_bracket( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_close_bracket( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_open_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_open_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, & Inc, "Inc" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_open_bracket( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_close_bracket( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_close_bracket( n12 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_close_call( n13 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_open_bracket( n14 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_name( n15, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_close_bracket( n16 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n14, n16 );
+    res = refalrts::splice_elem( res, n16 );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_3] );
+    res = refalrts::splice_elem( res, n15 );
+    res = refalrts::splice_elem( res, n14 );
+    refalrts::push_stack( n13 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n13 );
+    res = refalrts::splice_evar( res, context[__eCommands_1_1], context[__eCommands_1_1 + 1] );
+    refalrts::link_brackets( n6, n12 );
+    res = refalrts::splice_elem( res, n12 );
+    refalrts::link_brackets( n10, n11 );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_stvar( res, context[__sNumber_1_1] );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_2] );
+    res = refalrts::splice_elem( res, n10 );
+    res = refalrts::splice_evar( res, context[__eNumbers_1_1], context[__eNumbers_1_1 + 1] );
+    refalrts::push_stack( n9 );
+    refalrts::push_stack( n7 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_stvar( res, context[__sNextNumId_1_1] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::link_brackets( n4, n5 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_evar( res, context[__eLabels_1_1], context[__eLabels_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );

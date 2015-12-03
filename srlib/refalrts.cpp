@@ -2512,14 +2512,26 @@ refalrts::FnResult refalrts::interpret_array(
 
 
       case icNumRight:
-        refNum = (RefalNumber)raa[i].ptr_value1;
-        if( ! refalrts::number_right( refNum, *bb, *be ) )
+        if( ! refalrts::number_right(
+          static_cast<RefalNumber>(raa[i].value), *bb, *be )
+        )
+          MATCH_FAIL
+       break;
+
+      case icHugeNumRight:
+        if( ! refalrts::number_right( numbers[raa[i].value], *bb, *be ) )
           MATCH_FAIL
        break;
 
       case icNumLeft:
-        refNum = (RefalNumber)raa[i].ptr_value1;
-        if( ! refalrts::number_left( refNum, *bb, *be ) )
+        if( ! refalrts::number_left(
+          static_cast<RefalNumber>(raa[i].value), *bb, *be )
+        )
+          MATCH_FAIL
+       break;
+
+      case icHugeNumLeft:
+        if( ! refalrts::number_left( numbers[raa[i].value], *bb, *be ) )
           MATCH_FAIL
         break;
 
@@ -2662,7 +2674,13 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icInt:
-        if(!alloc_number(*allocs, raa[i].value))
+        if(!alloc_number(*allocs, static_cast<RefalNumber>(raa[i].value)))
+          return cNoMemory;
+        ++allocs;
+        break;
+
+      case icHugeInt:
+        if(!alloc_number(*allocs, numbers[raa[i].value]))
           return cNoMemory;
         ++allocs;
         break;
@@ -2792,6 +2810,7 @@ refalrts::FnResult refalrts::interpret_array(
     {
       case icChar:
       case icInt:
+      case icHugeInt:
       case icFunc:
       case icIdent:
         --allocs;
@@ -2808,7 +2827,9 @@ refalrts::FnResult refalrts::interpret_array(
       case ictVarRight:
       case ictVarLeft:
       case icNumRight:
+      case icHugeNumRight:
       case icNumLeft:
+      case icHugeNumLeft:
       case icIdentRight:
       case icIdentLeft:
       case icADTLeft:

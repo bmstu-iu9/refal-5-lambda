@@ -138,13 +138,13 @@ $EXTERN
   CmdCopyEVar, CmdCopyVar,
   AlgLeft, AlgRight,
   CmdComment, CmdSave,
-  CmdArrChar, CmdArrInt, CmdArrFunc, CmdArrIdent,
+  CmdArrChar, CmdArrInt, CmdArrHugeInt, CmdArrFunc, CmdArrIdent,
   CmdArrOB, CmdArrCB, CmdArrOADT, CmdArrCADT,
   CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy, CmdIssueMem,
   CmdSetBound, CmdBoundToLeft, CmdBoundToRight,
   CmdBoundEmptySeq,
   CmdiContextSet, CmdiVar,
-  CmdiNum, CmdiIdent, CmdiADT,
+  CmdiNum, CmdiHugeNum, CmdiIdent, CmdiADT,
   CmdiName, CmdiChar, CmdiRepeat,
   CmdiSave, CmdiEPrepare, CmdiEStart,
   CmdiBracket, CmdiEmpty,
@@ -540,6 +540,7 @@ GenCommand {
       {
         s.Number = (e.Indent '  ' <StrFromInt s.Number> 'UL,');
       }
+      e.Numbers
     >
     (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
     (e.Indent '};');
@@ -622,8 +623,15 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
     (e.Indent '{refalrts::icNum' <PrintDirection s.Direction> ', '
-              '(void*)' s.Number ', '
-              '0, 0},'
+              '0, 0, ' <StrFromInt s.Number> ', 0},'
+    )
+    ;
+
+  (e.Indent) (CmdiHugeNum s.Direction s.BracketNumber s.Number) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
+    (e.Indent '{refalrts::icHugeNum' <PrintDirection s.Direction> ', '
+              '0, 0, ' <StrFromInt s.Number> ', 0},'
     )
     ;
 
@@ -685,6 +693,10 @@ GenCommand {
   (e.Indent) (CmdArrInt s.Number) =
     (e.Indent)
     (e.Indent '{refalrts::icInt, 0, 0, ' s.Number ', 0},');
+
+  (e.Indent) (CmdArrHugeInt s.Number) =
+    (e.Indent)
+    (e.Indent '{refalrts::icHugeInt, 0, 0, ' s.Number ', 0},');
 
   (e.Indent) (CmdArrIdent s.NameId) =
     (e.Indent)

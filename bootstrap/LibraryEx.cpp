@@ -1369,7 +1369,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPush, 0, 0, 0, 0},
-      {refalrts::icNumRight, (void*)0 , 0, 0},
+      {refalrts::icNumRight, 0, 0, 0, 0},
       {refalrts::ictVarLeft, & context[0], & context[1], __tFile_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -1440,7 +1440,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPush, 0, 0, 0, 0},
-      {refalrts::icNumRight, (void*)0 , 0, 0},
+      {refalrts::icNumRight, 0, 0, 0, 0},
       {refalrts::ictVarLeft, & context[0], & context[1], __tFile_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},

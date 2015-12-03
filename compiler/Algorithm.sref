@@ -68,7 +68,7 @@ $EENUM
   CmdBoundEmptySeq,
   CmdiContextSet, CmdiVar,
   CmdiBracket,
-  CmdiNum, CmdiIdent, CmdiADT,
+  CmdiNum, CmdiHugeNum, CmdiIdent, CmdiADT,
   CmdiName, CmdiChar,
   CmdiRepeat, CmdiSave,
   CmdiEPrepare, CmdiEStart,
@@ -687,6 +687,9 @@ FindAllocForCopiedVars {
   (e.Set1) (e.Set2) = ;
 }
 
+//FROM LibraryEx
+$EXTERN Compare;
+
 GenInterpretPatternCommand {
   (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
     (CmdiBracket s.Direction s.Num s.NumRanges)
@@ -699,7 +702,13 @@ GenInterpretPatternCommand {
     ;
 
   (CmdNumber s.Direction s.BracketNumber s.Number) e.Etc =
-    (CmdiNum s.Direction s.BracketNumber s.Number)
+    <Fetch
+      <Compare s.Number 256> {
+        '<' = (CmdiNum s.Direction s.BracketNumber s.Number);
+
+        s.Other = (CmdiHugeNum s.Direction s.BracketNumber s.Number);
+      }
+    >
     <GenInterpretPatternCommand e.Etc>
     ;
 
@@ -905,8 +914,9 @@ MakeCopyVar {
     (CmdCopyVar s.Usings s.Mode e.Index);
 }
 
-$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrIdent, CmdArrOB, CmdArrCB,
-  CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice, CmdArrCopy;
+$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrHugeInt, CmdArrIdent, CmdArrOB,
+  CmdArrCB, CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice,
+  CmdArrCopy;
 
 FoldAllocCommands {
   (e.Allocs-B (CmdAllocateElem s.ElemNo s.Type e.Value) e.Allocs-E)
@@ -950,7 +960,12 @@ MakeInterpCommands {
     (CmdArrFunc e.Name);
 
   e.CopiedVars (CmdInsertElem ElNumber s.Counter s.Number) =
-    (CmdArrInt s.Number);
+    <Fetch
+      <Compare s.Number 256> {
+        '<' = (CmdArrInt s.Number);
+        s.Other = (CmdArrHugeInt s.Number);
+      }
+    >;
 
   e.CopiedVars (CmdInsertElem ElIdent s.Counter e.Name) =
     (CmdArrIdent e.Name);
@@ -1074,6 +1089,42 @@ OutlineConstants {
       e.Commands
     >
     (CmdArrIdent s.NextLabel);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+  e.Commands
+  (CmdiHugeNum s.Direction s.BracketNum s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+      e.Commands
+    >
+    (CmdiHugeNum s.Direction s.BracketNum s.Id);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
+  e.Commands
+  (CmdiHugeNum s.Direction s.BracketNum s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
+      e.Commands
+    >
+    (CmdiHugeNum s.Direction s.BracketNum s.NextNumId);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+  e.Commands
+  (CmdArrHugeInt s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+      e.Commands
+    >
+    (CmdArrHugeInt s.Id);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
+  e.Commands
+  (CmdArrHugeInt s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
+      e.Commands
+    >
+    (CmdArrHugeInt s.NextNumId);
 
   (e.Funcs) (e.Labels) (e.Numbers)
   e.Commands
