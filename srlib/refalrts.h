@@ -137,15 +137,11 @@ typedef enum BracketType {
    Анологичное ограничение присуствует в Рефал-5.
  */
 typedef struct RASLCommand {
-  iCmd cmd;
-  void *ptr_value1;
-  void *ptr_value2;
+  unsigned char cmd;
+  unsigned char val1;
+  unsigned char val2;
   int value;
-  int bracket;
-  // unsigned char cmd;
-  // unsigned char val1;
-  // unsigned char val2;
-  // unsigned char bracket;
+  unsigned char bracket;
 } RASLCommand;
 
 extern void use( Iter& );

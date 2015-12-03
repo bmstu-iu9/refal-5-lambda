@@ -2557,8 +2557,8 @@ refalrts::FnResult refalrts::interpret_array(
       case iceRepeatRight:
         {
           int ind1, ind2;
-          ind1 =(long)raa[i].ptr_value1;
-          ind2 = (long)raa[i].ptr_value2;
+          ind1 = raa[i].val1;
+          ind2 = raa[i].val2;
           if( ! refalrts::repeated_evar_right( context[ind1], context[ind1 + 1],
                                                context[ind2], context[ind2 + 1],
                                                bb, be)
@@ -2570,8 +2570,8 @@ refalrts::FnResult refalrts::interpret_array(
       case iceRepeatLeft:
         {
           int ind1, ind2;
-          ind1 =(long)raa[i].ptr_value1;
-          ind2 = (long)raa[i].ptr_value2;
+          ind1 = raa[i].val1;
+          ind2 = raa[i].val2;
           if( ! refalrts::repeated_evar_left( context[ind1], context[ind1 + 1],
                                               context[ind2], context[ind2 + 1],
                                               bb, be)
@@ -2584,8 +2584,8 @@ refalrts::FnResult refalrts::interpret_array(
       case ictRepeatRight:
         {
           int ind1, ind2;
-          ind1 =(long)raa[i].ptr_value1;
-          ind2 = (long)raa[i].ptr_value2;
+          ind1 = raa[i].val1;
+          ind2 = raa[i].val2;
           if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb, be) )
             MATCH_FAIL
         }
@@ -2595,8 +2595,8 @@ refalrts::FnResult refalrts::interpret_array(
       case ictRepeatLeft:
         {
           int ind1, ind2;
-          ind1 =(long)raa[i].ptr_value1;
-          ind2 = (long)raa[i].ptr_value2;
+          ind1 = raa[i].val1;
+          ind2 = raa[i].val2;
           if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb, be) )
             MATCH_FAIL
         }
