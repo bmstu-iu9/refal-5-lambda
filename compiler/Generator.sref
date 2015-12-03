@@ -569,9 +569,8 @@ GenCommand {
   (e.Indent) (CmdiADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
     (e.Indent)
     (e.Indent '{refalrts::icADT' <PrintDirection s.Direction> ', '
-              '0, 0, '
-              '(' <StrFromInt s.NameId> ' << 16) | '
-                <StrFromInt s.InnerBrackets> ', '
+              <StrFromInt s.NameId> ', 0, '
+              <StrFromInt s.InnerBrackets> ', '
               <StrFromInt s.BracketNumber> '},'
     )
     ;

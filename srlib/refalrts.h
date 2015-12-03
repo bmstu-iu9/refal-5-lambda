@@ -140,7 +140,7 @@ typedef struct RASLCommand {
   unsigned char cmd;
   unsigned char val1;
   unsigned char val2;
-  int value;
+  unsigned char value;
   unsigned char bracket;
 } RASLCommand;
 

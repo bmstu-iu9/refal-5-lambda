@@ -2515,18 +2515,18 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icADTRight:
-        if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
-                                   context[(raa[i].value & 0xFFFF) + 1],
-                                   functions[raa[i].value >> 16].ptr,
+        if( ! refalrts::adt_right( context[raa[i].value],
+                                   context[raa[i].value + 1],
+                                   functions[raa[i].val1].ptr,
                                    bb, be)
         )
           MATCH_FAIL
         break;
 
       case icADTLeft:
-        if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
-                                  context[(raa[i].value & 0xFFFF) + 1],
-                                  functions[raa[i].value >> 16].ptr,
+        if( ! refalrts::adt_left( context[raa[i].value],
+                                  context[raa[i].value + 1],
+                                  functions[raa[i].val1].ptr,
                                   bb, be)
         )
           MATCH_FAIL

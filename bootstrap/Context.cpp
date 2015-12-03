@@ -112,7 +112,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
+      {refalrts::icADTLeft, 0, 0, 2, 0},
       {refalrts::icNumLeft, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
@@ -204,7 +204,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
@@ -383,7 +383,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
+      {refalrts::icADTLeft, 0, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sNewMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
@@ -526,7 +526,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
+      {refalrts::icADTLeft, 0, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
@@ -1775,7 +1775,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (5 << 16) | 2, 0},
+      {refalrts::icADTLeft, 5, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
@@ -1996,7 +1996,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
@@ -2174,7 +2174,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
+      {refalrts::icADTLeft, 0, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sNewMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
@@ -2315,7 +2315,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
+      {refalrts::icADTLeft, 0, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
@@ -2412,7 +2412,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (3 << 16) | 2, 0},
+      {refalrts::icADTLeft, 3, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icEPrepare, 0, 0, __eLocals_1_1, 2},
@@ -2734,7 +2734,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (3 << 16) | 2, 0},
+      {refalrts::icADTLeft, 3, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
@@ -2870,7 +2870,7 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icBracketLeft, 0, 0, 4, 2},

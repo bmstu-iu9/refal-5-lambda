@@ -131,7 +131,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -415,7 +415,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -554,7 +554,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 5, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -887,7 +887,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 5, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -1215,7 +1215,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eNames_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
@@ -1331,7 +1331,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -1468,7 +1468,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -1606,7 +1606,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 4, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -1938,7 +1938,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 4, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -2270,7 +2270,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 4, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -2597,7 +2597,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (2 << 16) | 2, 0},
+      {refalrts::icADTLeft, 2, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 4, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -2920,7 +2920,7 @@ refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eNames_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
@@ -3037,7 +3037,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sOtherScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
@@ -3322,7 +3322,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eNames_1_1, 2},
       {refalrts::icsVarLeft, 0, 0, __sScopeClass_1_1, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
@@ -3437,7 +3437,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eNames_B_1_1, 2},
@@ -3570,7 +3570,7 @@ refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eNames_B_1_1, 2},
@@ -3901,7 +3901,7 @@ refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icsVarLeft, 0, 0, __sLnNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eNames_B_1_1, 2},
@@ -4237,7 +4237,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
+      {refalrts::icADTLeft, 1, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEPrepare, 0, 0, __eNames_B_1_1, 2},
       {refalrts::icEStart, 0, 0, __eNames_B_1_1, 2},
