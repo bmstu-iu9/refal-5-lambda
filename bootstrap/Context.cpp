@@ -206,8 +206,8 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 2},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 2},
@@ -217,7 +217,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icsRepeatLeft, (void*)__sMode_1_2, (void*)__sMode_1_1, 0, 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
       {refalrts::icContextSet, 0, 0, __eVariables_E_1_1, 6},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sVarDepth_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -386,8 +386,8 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNewMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sNewMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 2},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 2},
@@ -395,9 +395,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icSave, & context[6], & context[7], 0},
       {refalrts::icBracketLeft, 0, 0, 4, 6},
       {refalrts::icContextSet, 0, 0, __eVariables_E_1_1, 6},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sOldMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOldMode_1_1, 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sVarDepth_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -530,9 +530,9 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -660,8 +660,8 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[2], & context[3], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
+      {refalrts::icsVarRight, 0, 0, __sVarDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 0},
@@ -888,8 +888,8 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[2], & context[3], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
+      {refalrts::icsVarRight, 0, 0, __sVarDepth_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVariables_1_1, 0},
       {refalrts::icEnd}
@@ -957,8 +957,8 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[2], & context[3], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
+      {refalrts::icsVarRight, 0, 0, __sVarDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 0},
@@ -1065,8 +1065,8 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[2], & context[3], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
+      {refalrts::icsVarRight, 0, 0, __sVarDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eVariables_1_1, 0},
@@ -1174,8 +1174,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -1192,7 +1192,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icsRepeatLeft, (void*)__sMode_1_2, (void*)__sMode_1_1, 0, 10},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 10},
       {refalrts::icContextSet, 0, 0, __eLocalVars_E_2_1, 12},
-      {refalrts::icsVarLeft, & context[10], & context[11], __sDepth_2_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDepth_2_1, 10},
       {refalrts::icEmpty, 0, 0, 0, 10},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -1385,8 +1385,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -1401,9 +1401,9 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icSave, & context[12], & context[13], 0},
       {refalrts::icBracketLeft, 0, 0, 10, 12},
       {refalrts::icContextSet, 0, 0, __eLocalVars_E_2_1, 12},
-      {refalrts::icsVarLeft, & context[10], & context[11], __sOldMode_2_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOldMode_2_1, 10},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 10},
-      {refalrts::icsVarLeft, & context[10], & context[11], __sVarDepth_2_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sVarDepth_2_1, 10},
       {refalrts::icEmpty, 0, 0, 0, 10},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -1596,8 +1596,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -1783,8 +1783,8 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (5 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eLocalVars_1_1, 2},
       {refalrts::icEStart, 0, 0, __eLocalVars_1_1, 2},
@@ -2005,8 +2005,8 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 2},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 2},
@@ -2016,7 +2016,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icsRepeatLeft, (void*)__sMode_1_2, (void*)__sMode_1_1, 0, 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
       {refalrts::icContextSet, 0, 0, __eVariables_E_1_1, 6},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sVarDepth_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -2184,8 +2184,8 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNewMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sNewMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eVariables_B_1_1, 2},
       {refalrts::icEStart, 0, 0, __eVariables_B_1_1, 2},
@@ -2193,9 +2193,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icSave, & context[6], & context[7], 0},
       {refalrts::icBracketLeft, 0, 0, 4, 6},
       {refalrts::icContextSet, 0, 0, __eVariables_E_1_1, 6},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sOldMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOldMode_1_1, 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sVarDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sVarDepth_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -2326,9 +2326,9 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -2424,7 +2424,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (3 << 16) | 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icEPrepare, 0, 0, __eLocals_1_1, 2},
       {refalrts::icEStart, 0, 0, __eLocals_1_1, 2},
       {refalrts::icEPush, 0, 0, 0, 2},
@@ -2597,7 +2597,7 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icEStart, 0, 0, __eBegin_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
       {refalrts::icSave, & context[2], & context[3], 0},
-      {refalrts::ictVarLeft, & context[2], & context[3], __tCopy_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCopy_1_1, 2},
       {refalrts::icEPrepare, 0, 0, __eMiddle_1_1, 2},
       {refalrts::icEStart, 0, 0, __eMiddle_1_1, 2},
       {refalrts::icEPush, 0, 0, 0, 2},
@@ -2749,7 +2749,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (3 << 16) | 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eVariables_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenADT, 0},
@@ -2885,7 +2885,7 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (1 << 16) | 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sStackDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sStackDepth_1_1, 2},
       {refalrts::icBracketLeft, 0, 0, 4, 2},
       {refalrts::icFuncLeft, 0, 0, 3, 4},
       {refalrts::icBracketLeft, 0, 0, 6, 2},

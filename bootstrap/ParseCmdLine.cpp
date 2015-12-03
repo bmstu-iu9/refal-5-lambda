@@ -1433,7 +1433,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -1777,7 +1777,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracketRight, 0, 0, 4, 0},
       {refalrts::icBracketRight, 0, 0, 6, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -2124,7 +2124,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -2275,7 +2275,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracketRight, 0, 0, 4, 0},
       {refalrts::icBracketRight, 0, 0, 6, 0},
       {refalrts::icEmpty, 0, 0, 0, 2},
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -2566,7 +2566,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -2694,7 +2694,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -2829,7 +2829,7 @@ static refalrts::FnResult DoParseFileNames(refalrts::Iter arg_begin, refalrts::I
       {refalrts::icBracketRight, 0, 0, 4, 0},
       {refalrts::icContextSet, 0, 0, __eScannedFiles_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eFolders_1_1, 2},
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tCompiler_1_1, 0},
@@ -2915,7 +2915,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 0, 6, 0},
@@ -3035,7 +3035,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
       {refalrts::icBracketRight, 0, 0, 4, 0},
       {refalrts::icContextSet, 0, 0, __eScannedFiles_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eFolders_1_1, 2},
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tCompiler_1_1, 0},

@@ -91,8 +91,6 @@ typedef enum iCmd {
   icBracketLeft,
   icBracketRight,
   icEmpty,
-  icMoveLeft,
-  icMoveRight,
   icEPush,
   icContextSet,
   icsVarRight,

@@ -657,8 +657,8 @@ static refalrts::FnResult SwGenFnStart(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMemoryClass_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sFnArguments_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMemoryClass_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sFnArguments_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -1093,7 +1093,7 @@ refalrts::FnResult GenFnStart(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMemoryClass_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMemoryClass_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -2657,7 +2657,7 @@ static refalrts::FnResult GenSwap_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMemoryClass_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMemoryClass_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -7667,7 +7667,7 @@ static refalrts::FnResult BracketsVar_B(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -7788,7 +7788,7 @@ static refalrts::FnResult BracketsVar_E(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -7925,7 +7925,7 @@ static refalrts::FnResult BracketsVars(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -8031,7 +8031,7 @@ static refalrts::FnResult BracketsVarsRefs(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '&', 0},
@@ -8153,7 +8153,7 @@ static refalrts::FnResult GenBracketName(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '_', 0},
@@ -8521,9 +8521,9 @@ static refalrts::FnResult PrintDebug(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'v', 0},
@@ -8836,9 +8836,9 @@ static refalrts::FnResult PrintVarShortcut(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, '_', 0},
@@ -8963,9 +8963,9 @@ static refalrts::FnResult PrintLocFromShortcut(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[0], & context[1], (int)'e', 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -9201,9 +9201,9 @@ static refalrts::FnResult PrintLocFromShortcut(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -9334,9 +9334,9 @@ static refalrts::FnResult PrintELocShortcut_B(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -9467,9 +9467,9 @@ static refalrts::FnResult PrintELocShortcut_E(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -9619,7 +9619,7 @@ static refalrts::FnResult PrintConstShortcutDecl(refalrts::Iter arg_begin, refal
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'e', 0},
@@ -9780,7 +9780,7 @@ static refalrts::FnResult PrintBracketsVarInit(refalrts::Iter arg_begin, refalrt
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarRight, & context[0], & context[1], __sInnerBrackets_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sInnerBrackets_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10110,10 +10110,10 @@ static refalrts::FnResult PrintRepeatInterp(refalrts::Iter arg_begin, refalrts::
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -10876,7 +10876,7 @@ static refalrts::FnResult lambda_GenCommand_2(refalrts::Iter arg_begin, refalrts
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_2_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_2_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -11861,7 +11861,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -11980,7 +11980,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12100,9 +12100,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12228,9 +12228,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12356,8 +12356,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12481,8 +12481,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12609,9 +12609,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sInnerBrackets_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sInnerBrackets_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12766,9 +12766,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sInnerBrackets_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sInnerBrackets_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -12920,8 +12920,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -13042,9 +13042,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -13172,8 +13172,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -13304,7 +13304,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 4, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -13563,7 +13563,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -13893,7 +13893,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -14171,7 +14171,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -14560,8 +14560,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sOldBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNewBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOldBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNewBracketNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -15214,7 +15214,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -15719,8 +15719,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -16222,7 +16222,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sElemNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElemNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eElemInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -16477,8 +16477,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sLeft_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sRight_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLeft_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sRight_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -16765,7 +16765,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sElemNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElemNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -17006,7 +17006,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sElemNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElemNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -17308,7 +17308,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -17621,8 +17621,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -18552,7 +18552,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -21683,7 +21683,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 4, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarRight, & context[4], & context[5], __sLastNumber_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sLastNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eNumbers_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22157,8 +22157,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eVarInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -22282,7 +22282,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -22597,7 +22597,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -22904,10 +22904,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sInnerBrackets_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNameId_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sInnerBrackets_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNameId_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -23284,8 +23284,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sOldBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNewBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOldBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNewBracketNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -23716,9 +23716,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 3, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -24034,8 +24034,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
+      { & StrFromInt, "StrFromInt" },
       { & PrintVarShortcut, "PrintVarShortcut" },
-      { & BracketsVarsRefs, "BracketsVarsRefs" },
       { & PrintDirection, "PrintDirection" },
       { & CmdiVar, "CmdiVar" }
     };
@@ -24047,9 +24047,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 3, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -24080,21 +24080,24 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icChar, 0, 0, '0', 0},
+      {refalrts::icChar, 0, 0, ',', 0},
+      {refalrts::icChar, 0, 0, ' ', 0},
+      {refalrts::icChar, 0, 0, '0', 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 1, 0},
       {refalrts::icInt, 0, 0, 1 , 0},
       {refalrts::icCopySTVar, 0, 0, __sMode_1_1, 0},
       {refalrts::icSpliceEVar, 0, 0, __eInfo_1_1, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '0', 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, '}', 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -24214,71 +24217,83 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_char( n23, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_open_call( n24 ) )
+    if( ! refalrts::alloc_char( n24, '0' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_name( n25, & BracketsVarsRefs, "BracketsVarsRefs" ) )
+    if( ! refalrts::alloc_char( n25, ',' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_close_call( n26 ) )
+    if( ! refalrts::alloc_char( n26, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, ',' ) )
+    if( ! refalrts::alloc_char( n27, '0' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, ' ' ) )
+    if( ! refalrts::alloc_char( n28, ',' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_open_call( n29 ) )
+    if( ! refalrts::alloc_char( n29, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_name( n30, & PrintVarShortcut, "PrintVarShortcut" ) )
+    if( ! refalrts::alloc_open_call( n30 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_number( n31, 1UL ) )
+    if( ! refalrts::alloc_name( n31, & PrintVarShortcut, "PrintVarShortcut" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_close_call( n32 ) )
+    if( ! refalrts::alloc_number( n32, 1UL ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_char( n33, ',' ) )
+    if( ! refalrts::alloc_close_call( n33 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, ' ' ) )
+    if( ! refalrts::alloc_char( n34, ',' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_char( n35, '0' ) )
+    if( ! refalrts::alloc_char( n35, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, '}' ) )
+    if( ! refalrts::alloc_open_call( n36 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, ',' ) )
+    if( ! refalrts::alloc_name( n37, & StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_close_bracket( n38 ) )
+    if( ! refalrts::alloc_close_call( n38 ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n2, n38 );
+    refalrts::Iter n39 = 0;
+    if( ! refalrts::alloc_char( n39, '}' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n40 = 0;
+    if( ! refalrts::alloc_char( n40, ',' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n41 = 0;
+    if( ! refalrts::alloc_close_bracket( n41 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n2, n41 );
+    res = refalrts::splice_elem( res, n41 );
+    res = refalrts::splice_elem( res, n40 );
+    res = refalrts::splice_elem( res, n39 );
+    refalrts::push_stack( n38 );
+    refalrts::push_stack( n36 );
     res = refalrts::splice_elem( res, n38 );
+    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_1] );
     res = refalrts::splice_elem( res, n37 );
     res = refalrts::splice_elem( res, n36 );
     res = refalrts::splice_elem( res, n35 );
     res = refalrts::splice_elem( res, n34 );
+    refalrts::push_stack( n33 );
+    refalrts::push_stack( n30 );
     res = refalrts::splice_elem( res, n33 );
-    refalrts::push_stack( n32 );
-    refalrts::push_stack( n29 );
-    res = refalrts::splice_elem( res, n32 );
     res = refalrts::splice_evar( res, context[__eInfo_1_1], context[__eInfo_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__sMode_1_2] );
+    res = refalrts::splice_elem( res, n32 );
     res = refalrts::splice_elem( res, n31 );
     res = refalrts::splice_elem( res, n30 );
     res = refalrts::splice_elem( res, n29 );
     res = refalrts::splice_elem( res, n28 );
     res = refalrts::splice_elem( res, n27 );
-    refalrts::push_stack( n26 );
-    refalrts::push_stack( n24 );
     res = refalrts::splice_elem( res, n26 );
-    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_1] );
     res = refalrts::splice_elem( res, n25 );
     res = refalrts::splice_elem( res, n24 );
     res = refalrts::splice_elem( res, n23 );
@@ -24346,9 +24361,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNameId_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNameId_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -24654,9 +24669,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNameId_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNameId_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -24968,9 +24983,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -25447,9 +25462,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -26649,7 +26664,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDepth_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -28672,7 +28687,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sValue_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sValue_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -28948,7 +28963,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNameId_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNameId_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -29217,9 +29232,9 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 2, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNum_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumRanges_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNum_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sNumRanges_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -29537,7 +29552,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNum_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNum_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -29807,7 +29822,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 0, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -30050,7 +30065,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 0, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -30314,7 +30329,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sNameId_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNameId_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -33059,7 +33074,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -33358,7 +33373,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
       {refalrts::icCharLeft, & context[4], & context[5], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -33666,8 +33681,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[4], & context[5], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 4},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -33976,9 +33991,9 @@ static refalrts::FnResult PrintVar(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -34109,9 +34124,9 @@ static refalrts::FnResult PrintEVar_B(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -34242,9 +34257,9 @@ static refalrts::FnResult PrintEVar_E(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sDepth_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sDepth_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'c', 0},
@@ -34398,8 +34413,8 @@ static refalrts::FnResult PrintEVars(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -34787,7 +34802,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sOther_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOther_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sOther_1_1, 0},
@@ -34849,9 +34864,9 @@ static refalrts::FnResult PrintMatchChar(refalrts::Iter arg_begin, refalrts::Ite
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -35015,9 +35030,9 @@ static refalrts::FnResult PrintMatchNumber(refalrts::Iter arg_begin, refalrts::I
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -35190,8 +35205,8 @@ static refalrts::FnResult PrintMatchName(refalrts::Iter arg_begin, refalrts::Ite
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -35355,8 +35370,8 @@ static refalrts::FnResult PrintMatchIdent(refalrts::Iter arg_begin, refalrts::It
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -35566,9 +35581,9 @@ static refalrts::FnResult PrintMatchBrackets(refalrts::Iter arg_begin, refalrts:
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sInnerNum_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sInnerNum_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -35743,9 +35758,9 @@ static refalrts::FnResult PrintMatchADT(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sInnerNum_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sInnerNum_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -36090,7 +36105,7 @@ static refalrts::FnResult PrintMatchEmpty(refalrts::Iter arg_begin, refalrts::It
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -36671,9 +36686,9 @@ static refalrts::FnResult PrintMatchSTVar(refalrts::Iter arg_begin, refalrts::It
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -36839,9 +36854,9 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
       {refalrts::icCharLeft, & context[0], & context[1], (int)'e', 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -37106,10 +37121,10 @@ static refalrts::FnResult PrintMatchRepeated(refalrts::Iter arg_begin, refalrts:
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUsings_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sMode_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUsings_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -37379,8 +37394,8 @@ static refalrts::FnResult PrintMatch(refalrts::Iter arg_begin, refalrts::Iter ar
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sDirection_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sBracketNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sDirection_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sBracketNumber_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icContextSet, 0, 0, __eFunction_1_1, 4},
       {refalrts::icContextSet, 0, 0, __eTextRep_1_1, 0},
@@ -37676,7 +37691,7 @@ static refalrts::FnResult PrintElemVar(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, 'n', 0},
@@ -37769,8 +37784,8 @@ static refalrts::FnResult PrintAllocateElem(refalrts::Iter arg_begin, refalrts::
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sElemNumber_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sElementType_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElemNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElementType_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -38097,7 +38112,7 @@ static refalrts::FnResult PrintAllocate_Aux(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eConstructor_1_1, 6},
       {refalrts::icContextSet, 0, 0, __eValue_1_1, 4},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sElemNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sElemNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -39484,7 +39499,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ',', 0},
@@ -39703,7 +39718,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icChar, 0, 0, ',', 0},
@@ -39913,7 +39928,7 @@ static refalrts::FnResult SwInfo(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sOther_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sOther_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}

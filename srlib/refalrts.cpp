@@ -2440,16 +2440,6 @@ refalrts::FnResult refalrts::interpret_array(
         be = & be_;
         break;
 
-      case icMoveLeft:
-        move_left(*static_cast<Iter*>(raa[i].ptr_value1),
-                  *static_cast<Iter*>(raa[i].ptr_value2));
-        break;
-
-      case icMoveRight:
-        move_right(*static_cast<Iter*>(raa[i].ptr_value1),
-                   *static_cast<Iter*>(raa[i].ptr_value2));
-        break;
-
       case icBracketLeft:
         if( !refalrts::brackets_left( context[raa[i].value],
                                       context[raa[i].value + 1],
@@ -2470,37 +2460,25 @@ refalrts::FnResult refalrts::interpret_array(
 
       case ictVarRight:
         index = raa[i].value;
-        if( !refalrts::tvar_right( context[index],
-                                   *static_cast<Iter*>(raa[i].ptr_value1),
-                                   *static_cast<Iter*>(raa[i].ptr_value2))
-        )
+        if( !refalrts::tvar_right( context[index], bb_, be_) )
           MATCH_FAIL
        break;
 
       case ictVarLeft:
         index = raa[i].value;
-        if( !refalrts::tvar_left( context[index],
-                                  *static_cast<Iter*>(raa[i].ptr_value1),
-                                  *static_cast<Iter*>(raa[i].ptr_value2))
-        )
+        if( !refalrts::tvar_left( context[index], bb_, be_) )
           MATCH_FAIL
         break;
 
       case icsVarRight:
         index = raa[i].value;
-        if( !refalrts::svar_right( context[index],
-                                   *static_cast<Iter*>(raa[i].ptr_value1),
-                                   *static_cast<Iter*>(raa[i].ptr_value2))
-        )
+        if( !refalrts::svar_right( context[index], bb_, be_) )
           MATCH_FAIL
         break;
 
       case icsVarLeft:
         index = raa[i].value;
-        if( !refalrts::svar_left( context[index],
-                                  *static_cast<Iter*>(raa[i].ptr_value1),
-                                  *static_cast<Iter*>(raa[i].ptr_value2))
-        )
+        if( !refalrts::svar_left( context[index], bb_, be_) )
           MATCH_FAIL
         break;
 
@@ -2818,8 +2796,6 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       //skip-case
-      case icMoveRight:
-      case icMoveLeft:
       case icContextSet:
       case icEPush:
       case icsVarRight:

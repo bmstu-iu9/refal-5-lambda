@@ -241,7 +241,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icContextSet, 0, 0, __eErrors_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sLineNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eMessage_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -427,10 +427,10 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eMessage_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -512,10 +512,10 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eUnexpected_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -704,11 +704,11 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eExpected_1_1, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sUnexpected_1_1, 0},
-      {refalrts::icsVarLeft, & context[2], & context[3], __sLineNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUnexpected_1_1, 2},
+      {refalrts::icsVarLeft, 0, 0, __sLineNumber_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eInfo_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1191,7 +1191,7 @@ refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tErrorList_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icFunc, 0, 0, 0, 0},

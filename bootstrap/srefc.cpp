@@ -366,7 +366,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompilers_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompilers_1_1, 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eFolders_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eFiles_1_1, 0},
@@ -731,7 +731,7 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
@@ -844,7 +844,7 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFiles_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1735,7 +1735,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarRight, & context[0], & context[1], __sLast_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sLast_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1870,7 +1870,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -2203,9 +2203,9 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUpper_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUpper_1_1, 0},
       {refalrts::icsRepeatLeft, (void*)__sUpper_1_2, (void*)__sUpper_1_1, 0, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sLower_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLower_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sLower_1_1, 0},
       {refalrts::icEnd}
@@ -2259,9 +2259,9 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sChar_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sUpper_1_1, 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sLower_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sUpper_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sLower_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -2331,7 +2331,7 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, & context[0], & context[1], __sChar_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sChar_1_1, 0},
@@ -2400,7 +2400,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
@@ -2834,13 +2834,13 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
       {refalrts::icSave, & context[8], & context[9], 0},
       {refalrts::icBracketLeft, 0, 0, 2, 8},
-      {refalrts::ictVarRight, & context[2], & context[3], __tLocation_1_1, 0},
+      {refalrts::ictVarRight, 0, 0, __tLocation_1_1, 2},
       {refalrts::icEPush, 0, 0, 0, 2},
       {refalrts::icNumRight, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 2},
@@ -3094,7 +3094,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
@@ -3115,7 +3115,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEPush, 0, 0, 0, 6},
       {refalrts::icNumLeft, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eFiles_E_1_1, 10},
-      {refalrts::ictVarLeft, & context[6], & context[7], __tLocation_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tLocation_1_1, 6},
       {refalrts::icEmpty, 0, 0, 0, 6},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3353,13 +3353,13 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icEPrepare, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eFiles_B_1_1, 0},
       {refalrts::icEPush, 0, 0, 0, 0},
       {refalrts::icSave, & context[6], & context[7], 0},
       {refalrts::icBracketLeft, 0, 0, 2, 6},
-      {refalrts::ictVarRight, & context[2], & context[3], __tLocation1_1_1, 0},
+      {refalrts::ictVarRight, 0, 0, __tLocation1_1_1, 2},
       {refalrts::icEPush, 0, 0, 0, 2},
       {refalrts::icNumRight, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 2},
@@ -3372,7 +3372,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEPush, 0, 0, 0, 4},
       {refalrts::icNumLeft, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eFiles_E_1_1, 8},
-      {refalrts::ictVarLeft, & context[4], & context[5], __tLocation2_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tLocation2_1_1, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3580,7 +3580,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, & context[0], & context[1], __tCompiler_1_1, 0},
+      {refalrts::ictVarLeft, 0, 0, __tCompiler_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFiles_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3695,7 +3695,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::iceRepeatLeft, (void*)__eFileName_1_2, (void*)__eFileName_1_1, 0, 0},
       {refalrts::icContextSet, 0, 0, __eSource_1_1, 6},
       {refalrts::icContextSet, 0, 0, __eOutput_1_1, 4},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNextNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNextNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -3832,8 +3832,8 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarRight, & context[0], & context[1], __tNextFile_1_1, 0},
-      {refalrts::icsVarRight, & context[0], & context[1], __sNextNumber_1_1, 0},
+      {refalrts::ictVarRight, 0, 0, __tNextFile_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sNextNumber_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, 0, __sNextNumber_1_1, 0},
       {refalrts::icSpliceSTVar, 0, 0, __tNextFile_1_1, 0},
@@ -3903,7 +3903,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icFuncLeft, 0, 0, 1, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eOutputName_1_1, 4},
-      {refalrts::icsVarRight, & context[2], & context[3], __sNum_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sNum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0, 0},
@@ -4055,7 +4055,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eSource_1_1, 6},
       {refalrts::icContextSet, 0, 0, __eOutput_1_1, 4},
-      {refalrts::icsVarRight, & context[2], & context[3], __sNum_1_1, 0},
+      {refalrts::icsVarRight, 0, 0, __sNum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 3, 0},
@@ -4331,7 +4331,7 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'c', 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sNumber_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFile_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, 0, __eFile_1_1, 0},

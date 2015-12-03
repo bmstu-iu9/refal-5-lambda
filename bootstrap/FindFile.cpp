@@ -1643,7 +1643,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icContextSet, 0, 0, __eSourceName_1_1, 2},
-      {refalrts::icsVarLeft, & context[0], & context[1], __sRes_1_1, 0},
+      {refalrts::icsVarLeft, 0, 0, __sRes_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eOutName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
