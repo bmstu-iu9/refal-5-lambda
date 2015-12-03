@@ -2612,8 +2612,8 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icSave:
-        *static_cast<Iter*>(raa[i].ptr_value1) = *bb;
-        *static_cast<Iter*>(raa[i].ptr_value2) = *be;
+        context[raa[i].value] = bb_;
+        context[raa[i].value + 1] = be_;
         break;
 
       case icEPrepare:

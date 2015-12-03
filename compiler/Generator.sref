@@ -578,9 +578,9 @@ GenCommand {
 
   (e.Indent) (CmdiSave s.OldBracketNumber s.NewBracketNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.OldBracketNumber> '},')
-    (e.Indent '{refalrts::icSave, '
-              <BracketsVarsRefs s.NewBracketNumber> ', 0},'
+    (e.Indent '{refalrts::icSave, 0, 0, '
+              <StrFromInt s.NewBracketNumber> ', '
+              <StrFromInt s.OldBracketNumber> '},'
     )
     ;
 

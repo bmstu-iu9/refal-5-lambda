@@ -2841,8 +2841,7 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, 0, __eName_B_1_1, 0},
       {refalrts::icEStart, 0, 0, __eName_B_1_1, 0},
-      {refalrts::icEPush, 0, 0, 0, 0},
-      {refalrts::icSave, & context[2], & context[3], 0},
+      {refalrts::icSave, 0, 0, 2, 0},
       {refalrts::icCharLeft, 0, 0, (int)'-', 2},
       {refalrts::icContextSet, 0, 0, __eName_E_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
