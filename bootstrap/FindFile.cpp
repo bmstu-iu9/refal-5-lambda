@@ -884,11 +884,11 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'f', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'e', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'r', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'s', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'f', 0},
+      {refalrts::icCharRight, 0, 0, (int)'e', 0},
+      {refalrts::icCharRight, 0, 0, (int)'r', 0},
+      {refalrts::icCharRight, 0, 0, (int)'s', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1005,10 +1005,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'c', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'c', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1286,11 +1286,11 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'f', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'e', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'r', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'s', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'f', 0},
+      {refalrts::icCharRight, 0, 0, (int)'e', 0},
+      {refalrts::icCharRight, 0, 0, (int)'r', 0},
+      {refalrts::icCharRight, 0, 0, (int)'s', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icContextSet, 0, 0, __eUnitName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket, 0},
@@ -1807,18 +1807,18 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'c', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'c', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
       {refalrts::icFuncLeft, 0, 0, 1, 0},
-      {refalrts::icCharRight, & context[2], & context[3], (int)'f', 0},
-      {refalrts::icCharRight, & context[2], & context[3], (int)'e', 0},
-      {refalrts::icCharRight, & context[2], & context[3], (int)'r', 0},
-      {refalrts::icCharRight, & context[2], & context[3], (int)'s', 0},
-      {refalrts::icCharRight, & context[2], & context[3], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'f', 2},
+      {refalrts::icCharRight, 0, 0, (int)'e', 2},
+      {refalrts::icCharRight, 0, 0, (int)'r', 2},
+      {refalrts::icCharRight, 0, 0, (int)'s', 2},
+      {refalrts::icCharRight, 0, 0, (int)'.', 2},
       {refalrts::icContextSet, 0, 0, __eUnitName_1_1, 2},
       {refalrts::iceRepeatLeft, (void*)__eUnitName_1_2, (void*)__eUnitName_1_1, 0, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},

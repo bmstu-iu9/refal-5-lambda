@@ -140,7 +140,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icCharLeft, & context[4], & context[5], (int)'@', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'@', 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eProgName_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eConfig_1_1, 4},
@@ -1565,10 +1565,10 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'c', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'c', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -1646,7 +1646,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'/', 0},
+      {refalrts::icCharRight, 0, 0, (int)'/', 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
@@ -1688,7 +1688,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'\\', 0},
+      {refalrts::icCharRight, 0, 0, (int)'\\', 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icEnd}
     };
@@ -4327,10 +4327,10 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'c', 0},
-      {refalrts::icCharRight, & context[0], & context[1], (int)'.', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'p', 0},
+      {refalrts::icCharRight, 0, 0, (int)'c', 0},
+      {refalrts::icCharRight, 0, 0, (int)'.', 0},
       {refalrts::icsVarLeft, 0, 0, __sNumber_1_1, 0},
       {refalrts::icContextSet, 0, 0, __eFile_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},

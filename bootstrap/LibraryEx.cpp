@@ -3099,7 +3099,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'<', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'<', 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
@@ -3164,7 +3164,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'=', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'=', 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
@@ -3267,7 +3267,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'>', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'>', 0},
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
@@ -4219,7 +4219,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'<', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'<', 0},
       {refalrts::icBracketRight, 0, 0, 6, 0},
       {refalrts::icBracketRight, 0, 0, 8, 0},
       {refalrts::icContextSet, 0, 0, __eScannedLeft_1_1, 2},
@@ -4348,7 +4348,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'=', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'=', 0},
       {refalrts::icBracketRight, 0, 0, 6, 0},
       {refalrts::icBracketRight, 0, 0, 8, 0},
       {refalrts::icContextSet, 0, 0, __eScannedLeft_1_1, 2},
@@ -4509,7 +4509,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'>', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'>', 0},
       {refalrts::icBracketRight, 0, 0, 6, 0},
       {refalrts::icBracketRight, 0, 0, 8, 0},
       {refalrts::icContextSet, 0, 0, __eScannedLeft_1_1, 2},
@@ -4976,7 +4976,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)' ', 0},
+      {refalrts::icCharLeft, 0, 0, (int)' ', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5042,7 +5042,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'\t', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'\t', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5108,7 +5108,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'\r', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'\r', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5174,7 +5174,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, & context[0], & context[1], (int)'\n', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'\n', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5310,7 +5310,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)' ', 0},
+      {refalrts::icCharRight, 0, 0, (int)' ', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5376,7 +5376,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'\t', 0},
+      {refalrts::icCharRight, 0, 0, (int)'\t', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5442,7 +5442,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'\r', 0},
+      {refalrts::icCharRight, 0, 0, (int)'\r', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
@@ -5508,7 +5508,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharRight, & context[0], & context[1], (int)'\n', 0},
+      {refalrts::icCharRight, 0, 0, (int)'\n', 0},
       {refalrts::icContextSet, 0, 0, __eLine_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},

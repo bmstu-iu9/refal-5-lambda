@@ -587,8 +587,8 @@ GenCommand {
   (e.Indent) (CmdiChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
     (e.Indent '{refalrts::icChar' <PrintDirection s.Direction> ', '
-              <BracketsVarsRefs s.BracketNumber>
-              ', (int)' '' <Escape s.Char> '' ', 0},'
+              '0, 0, (int)' '' <Escape s.Char> '' ', '
+              <StrFromInt s.BracketNumber> '},'
     )
     ;
 

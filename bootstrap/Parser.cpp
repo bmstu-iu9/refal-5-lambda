@@ -7169,7 +7169,7 @@ static refalrts::FnResult lambda_CreateContext_0(refalrts::Iter arg_begin, refal
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
-      {refalrts::icCharLeft, & context[2], & context[3], (int)'e', 0},
+      {refalrts::icCharLeft, 0, 0, (int)'e', 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndex_2_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0, 0},

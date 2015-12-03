@@ -2553,19 +2553,13 @@ refalrts::FnResult refalrts::interpret_array(
 
       case icCharRight:
         chValue = (char)raa[i].value;
-        if ( !char_right( chValue,
-                          *static_cast<Iter*>(raa[i].ptr_value1),
-                          *static_cast<Iter*>(raa[i].ptr_value2))
-          )
+        if ( !char_right( chValue, bb_, be_) )
           MATCH_FAIL
         break;
 
       case icCharLeft:
         chValue = (char)raa[i].value;
-        if ( !char_left( chValue,
-                         *static_cast<Iter*>(raa[i].ptr_value1),
-                         *static_cast<Iter*>(raa[i].ptr_value2))
-          )
+        if ( !char_left( chValue, bb_, be_) )
           MATCH_FAIL
         break;
 
