@@ -333,8 +333,13 @@ extern FnResult interpret_array(
   Iter end,
   const RefalFunction functions[],
   const RefalIdentifier labels[],
+  const RefalNumber numbers[],
   int open_e_stack[]
 );
+
+extern const RefalFunction functions[];
+extern const RefalIdentifier labels[];
+extern const RefalNumber numbers[];
 
 } //namespace refalrts
 

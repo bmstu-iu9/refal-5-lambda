@@ -148,7 +148,8 @@ $EXTERN
   CmdiName, CmdiChar, CmdiRepeat,
   CmdiSave, CmdiEPrepare, CmdiEStart,
   CmdiBracket, CmdiEmpty,
-  CmdiFuncArray, CmdiLabelArray, CmdiEmptyResult;
+  CmdiFuncArray, CmdiLabelArray, CmdiNumberArray,
+  CmdiEmptyResult;
 
 $FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
 
@@ -491,7 +492,11 @@ GenCommand {
     (e.Indent '{refalrts::icBoundSet, arg_begin, arg_end, 0},')
     ;
 
-  (e.Indent) (CmdiFuncArray e.FuncNames) =
+  (e.Indent) (CmdiFuncArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::functions;');
+
+  (e.Indent) (CmdiFuncArray e.FuncNames (e.LastName)) =
     (e.Indent)
     (e.Indent 'static const refalrts::RefalFunction functions[] = {')
     <Map
@@ -503,10 +508,16 @@ GenCommand {
       }
       e.FuncNames
     >
-    (e.Indent '  { 0, 0 }')
+    (e.Indent
+      '  { & ' <PrintName e.LastName> ', "' <PrintName e.LastName> '" }'
+    )
     (e.Indent '};');
 
-  (e.Indent) (CmdiLabelArray e.LabelNames) =
+  (e.Indent) (CmdiLabelArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::labels;');
+
+  (e.Indent) (CmdiLabelArray e.LabelNames (e.LastName)) =
     (e.Indent)
     (e.Indent 'static const refalrts::RefalIdentifier labels[] = {')
     <Map
@@ -515,7 +526,22 @@ GenCommand {
       }
       e.LabelNames
     >
-    (e.Indent '  0')
+    (e.Indent '  & ' e.LastName '<int>::name')
+    (e.Indent '};');
+
+  (e.Indent) (CmdiNumberArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::numbers;');
+
+  (e.Indent) (CmdiNumberArray e.Numbers s.LastNumber) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::RefalNumber numbers[] = {')
+    <Map
+      {
+        s.Number = (e.Indent '  ' <StrFromInt s.Number> 'UL,');
+      }
+    >
+    (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
     (e.Indent '};');
 
   (e.Indent) (CmdiRepeat s.Direction s.BracketNumber e.VarInfo) =
@@ -623,16 +649,10 @@ GenCommand {
     (e.Indent
       'refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];'
     )
-    (e.Indent '//'
-      'refalrts::FnResult res = '
-      'refalrts::interpret_array( raa, allocs, arg_begin, arg_end );'
-    )
-    (e.Indent
-      'refalrts::FnResult res = '
-      'refalrts::interpret_array( '
-      'raa, allocs, context, arg_begin, arg_end, '
-      'functions, labels, open_e_stack );'
-    )
+    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array( ')
+    (e.Indent '  raa, allocs, context, arg_begin, arg_end,')
+    (e.Indent '  functions, labels, numbers, open_e_stack')
+    (e.Indent ');')
     (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
     (e.Indent '  break;')
     (e.Indent 'else')

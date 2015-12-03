@@ -2403,6 +2403,7 @@ refalrts::FnResult refalrts::interpret_array(
   refalrts::Iter begin, refalrts::Iter end,
   const RefalFunction functions[],
   const RefalIdentifier labels[],
+  const RefalNumber numbers[],
   int open_e_stack[]
 ) {
   int i = 0;
@@ -2878,6 +2879,12 @@ refalrts::FnResult refalrts::interpret_array(
 
   return cSuccess;
 }
+
+
+const refalrts::RefalFunction refalrts::functions[] = { 0, 0 };
+const refalrts::RefalIdentifier refalrts::labels[] = { 0 };
+const refalrts::RefalNumber refalrts::numbers[] = { 0 };
+
 
 //==============================================================================
 
