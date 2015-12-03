@@ -51,12 +51,10 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     static const refalrts::RefalFunction functions[] = {
       { & Current, "Current" },
       { & AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" },
-      { & Map, "Map" },
-      { 0, 0 }
+      { & Map, "Map" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eFolders_1_1, 2},
@@ -75,8 +73,10 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -160,12 +160,10 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     static const refalrts::RefalFunction functions[] = {
       { & AnalyzeInFolder, "AnalyzeInFolder" },
       { & Map, "Map" },
-      { & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" },
-      { 0, 0 }
+      { & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eFolders_1_1, 0},
@@ -189,8 +187,10 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -291,12 +291,10 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & AnalyzeFile, "AnalyzeFile" },
-      { & Current, "Current" },
-      { 0, 0 }
+      { & Current, "Current" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncRight, 0, 0, 1, 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
@@ -309,8 +307,10 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -358,12 +358,10 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AnalyzeFile, "AnalyzeFile" },
-      { 0, 0 }
+      { & AnalyzeFile, "AnalyzeFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 0, 2, 0},
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
@@ -379,8 +377,10 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -444,12 +444,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" },
-      { 0, 0 }
+      { & Source, "Source" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
@@ -469,8 +467,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -542,12 +542,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" },
-      { 0, 0 }
+      { & Output, "Output" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
@@ -562,8 +560,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -621,12 +621,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" },
-      { & NotFound, "NotFound" },
-      { 0, 0 }
+      { & NotFound, "NotFound" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 0},
@@ -645,8 +643,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -714,12 +714,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" },
-      { 0, 0 }
+      { & NotFound, "NotFound" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0, 0},
@@ -733,8 +731,10 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -804,12 +804,10 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExistFile, "ExistFile" },
-      { 0, 0 }
+      { & ExistFile, "ExistFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -822,8 +820,10 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -879,12 +879,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" },
-      { 0, 0 }
+      { & AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, & context[0], & context[1], (int)'f', 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'e', 0},
@@ -909,8 +907,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1000,12 +1000,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" },
-      { 0, 0 }
+      { & AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
@@ -1028,8 +1026,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1114,12 +1114,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" },
-      { 0, 0 }
+      { & AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, 0, __eFileName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},
@@ -1149,8 +1147,10 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1280,12 +1280,10 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & Source, "Source" },
-      { & True, "True" },
-      { 0, 0 }
+      { & True, "True" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'f', 0},
@@ -1315,8 +1313,10 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1421,12 +1421,10 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & NotFound, "NotFound" },
-      { & False, "False" },
-      { 0, 0 }
+      { & False, "False" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
       {refalrts::icContextSet, 0, 0, __eSourceName_1_1, 0},
@@ -1439,8 +1437,10 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1494,12 +1494,10 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & Output, "Output" },
-      { & True, "True" },
-      { 0, 0 }
+      { & True, "True" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
       {refalrts::icContextSet, 0, 0, __eOutName_1_1, 0},
@@ -1512,8 +1510,10 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1560,12 +1560,10 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & NotFound, "NotFound" },
-      { & False, "False" },
-      { 0, 0 }
+      { & False, "False" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 1, 0},
       {refalrts::icContextSet, 0, 0, __eOutName_1_1, 0},
@@ -1578,8 +1576,10 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1635,12 +1635,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & Source, "Source" },
-      { & True, "True" },
-      { 0, 0 }
+      { & True, "True" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 1, 2},
@@ -1659,8 +1657,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1726,12 +1726,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     static const refalrts::RefalFunction functions[] = {
       { & Output, "Output" },
       { & True, "True" },
-      { & False, "False" },
-      { 0, 0 }
+      { & False, "False" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icFuncLeft, 0, 0, 2, 2},
@@ -1746,8 +1744,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else
@@ -1802,12 +1802,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { & NotFound, "NotFound" },
-      { & False, "False" },
-      { 0, 0 }
+      { & False, "False" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      0
-    };
+    using refalrts::labels;
+    using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
       {refalrts::icCharRight, & context[0], & context[1], (int)'p', 0},
@@ -1833,8 +1831,10 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    //refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, context, arg_begin, arg_end, functions, labels, open_e_stack );
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
     if ( res == refalrts::cRecognitionImpossible )
       break;
     else

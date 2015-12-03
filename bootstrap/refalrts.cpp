@@ -2091,10 +2091,10 @@ void print_indent(FILE *output, int level)
 {
   enum { cPERIOD = 4 };
   putc( '\n', output );
-	if (level < 0) {
-		putc( '!', output );
-		return;
-	}
+  if (level < 0) {
+    putc( '!', output );
+    return;
+  }
   for( int i = 0; i < level; ++i )
   {
     // Каждые cPERIOD позиций вместо пробела ставим точку.
@@ -2403,6 +2403,7 @@ refalrts::FnResult refalrts::interpret_array(
   refalrts::Iter begin, refalrts::Iter end,
   const RefalFunction functions[],
   const RefalIdentifier labels[],
+  const RefalNumber numbers[],
   int open_e_stack[]
 ) {
   int i = 0;
@@ -2449,7 +2450,7 @@ refalrts::FnResult refalrts::interpret_array(
                    *static_cast<Iter*>(raa[i].ptr_value2));
         break;
 
-      case icBracketLeft: 
+      case icBracketLeft:
         if( !refalrts::brackets_left( context[raa[i].value],
                                       context[raa[i].value + 1],
                                       bb_,
@@ -2477,7 +2478,7 @@ refalrts::FnResult refalrts::interpret_array(
        break;
 
       case ictVarLeft:
-        index = raa[i].value;       
+        index = raa[i].value;
         if( !refalrts::tvar_left( context[index],
                                   *static_cast<Iter*>(raa[i].ptr_value1),
                                   *static_cast<Iter*>(raa[i].ptr_value2))
@@ -2536,7 +2537,7 @@ refalrts::FnResult refalrts::interpret_array(
         if( ! refalrts::adt_right( context[(raa[i].value & 0xFFFF)],
                                    context[(raa[i].value & 0xFFFF) + 1],
                                    functions[raa[i].value >> 16].ptr,
-                                   bb_, be_)         
+                                   bb_, be_)
         )
           MATCH_FAIL
         break;
@@ -2545,12 +2546,12 @@ refalrts::FnResult refalrts::interpret_array(
         if( ! refalrts::adt_left( context[(raa[i].value & 0xFFFF)],
                                   context[(raa[i].value & 0xFFFF) + 1],
                                   functions[raa[i].value >> 16].ptr,
-                                  bb_, be_)        
+                                  bb_, be_)
         )
           MATCH_FAIL
         break;
 
-      case icFuncRight:       
+      case icFuncRight:
         if ( !function_right( functions[raa[i].value].ptr, bb_, be_ ) )
           MATCH_FAIL
         break;
@@ -2878,6 +2879,12 @@ refalrts::FnResult refalrts::interpret_array(
 
   return cSuccess;
 }
+
+
+const refalrts::RefalFunction refalrts::functions[] = { 0, 0 };
+const refalrts::RefalIdentifier refalrts::labels[] = { 0 };
+const refalrts::RefalNumber refalrts::numbers[] = { 0 };
+
 
 //==============================================================================
 
