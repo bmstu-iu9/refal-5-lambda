@@ -114,7 +114,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 0, (0 << 16) | 2, 0},
       {refalrts::icEPush, 0, 0, 0, 2},
-      {refalrts::icNumLeft, 0, 0, 0, 0},
+      {refalrts::icNumLeft, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0, 0},

@@ -620,17 +620,17 @@ GenCommand {
 
   (e.Indent) (CmdiNum s.Direction s.BracketNumber s.Number) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
     (e.Indent '{refalrts::icNum' <PrintDirection s.Direction> ', '
-              '0, 0, ' <StrFromInt s.Number> ', 0},'
+              '0, 0, ' <StrFromInt s.Number> ', '
+              <StrFromInt s.BracketNumber> '},'
     )
     ;
 
   (e.Indent) (CmdiHugeNum s.Direction s.BracketNumber s.Number) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPush, 0, 0, 0, ' <StrFromInt s.BracketNumber> '},')
     (e.Indent '{refalrts::icHugeNum' <PrintDirection s.Direction> ', '
-              '0, 0, ' <StrFromInt s.Number> ', 0},'
+              '0, 0, ' <StrFromInt s.Number> ', '
+              <StrFromInt s.BracketNumber> '},'
     )
     ;
 

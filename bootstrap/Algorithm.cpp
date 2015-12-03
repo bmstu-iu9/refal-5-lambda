@@ -17294,7 +17294,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 0, 2, 0},
       {refalrts::icEPush, 0, 0, 0, 2},
-      {refalrts::icNumLeft, 0, 0, 1, 0},
+      {refalrts::icNumLeft, 0, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icsVarLeft, 0, 0, __sMode_1_1, 2},
       {refalrts::icContextSet, 0, 0, __eIndex_1_1, 2},
@@ -18313,7 +18313,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       {refalrts::icSave, 0, 0, 6, 0},
       {refalrts::icBracketLeft, 0, 0, 4, 6},
       {refalrts::icEPush, 0, 0, 0, 4},
-      {refalrts::icNumLeft, 0, 0, 1, 0},
+      {refalrts::icNumLeft, 0, 0, 1, 4},
       {refalrts::icCharLeft, 0, 0, (int)'e', 4},
       {refalrts::iceRepeatLeft, (void*)__eIndex_1_2, (void*)__eIndex_1_1, 0, 4},
       {refalrts::icsRepeatLeft, (void*)__sDepth_1_2, (void*)__sDepth_1_1, 0, 4},

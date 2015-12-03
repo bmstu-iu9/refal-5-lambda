@@ -2491,25 +2491,25 @@ refalrts::FnResult refalrts::interpret_array(
 
       case icNumRight:
         if( ! refalrts::number_right(
-          static_cast<RefalNumber>(raa[i].value), *bb, *be )
+          static_cast<RefalNumber>(raa[i].value), bb_, be_ )
         )
           MATCH_FAIL
        break;
 
       case icHugeNumRight:
-        if( ! refalrts::number_right( numbers[raa[i].value], *bb, *be ) )
+        if( ! refalrts::number_right( numbers[raa[i].value], bb_, be_ ) )
           MATCH_FAIL
        break;
 
       case icNumLeft:
         if( ! refalrts::number_left(
-          static_cast<RefalNumber>(raa[i].value), *bb, *be )
+          static_cast<RefalNumber>(raa[i].value), bb_, be_ )
         )
           MATCH_FAIL
        break;
 
       case icHugeNumLeft:
-        if( ! refalrts::number_left( numbers[raa[i].value], *bb, *be ) )
+        if( ! refalrts::number_left( numbers[raa[i].value], bb_, be_ ) )
           MATCH_FAIL
         break;
 

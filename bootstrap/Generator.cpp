@@ -24823,15 +24823,16 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 15 elems
-    refalrts::Iter context[15];
-    refalrts::zeros( context, 15 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
     enum { __sDirection_1_1 = 8 };
     enum { __sBracketNumber_1_1 = 9 };
     enum { __sNumber_1_1 = 10 };
     enum { __eIndent_1_2 = 11 };
     enum { __eIndent_1_3 = 13 };
+    enum { __sBracketNumber_1_2 = 15 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -24933,7 +24934,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '0', 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCopySTVar, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, '}', 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -24979,6 +24983,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::copy_evar( context[__eIndent_1_2], context[__eIndent_1_2 + 1], context[__eIndent_1_1], context[__eIndent_1_1 + 1] ) )
       return refalrts::cNoMemory;
     if( ! refalrts::copy_evar( context[__eIndent_1_3], context[__eIndent_1_3 + 1], context[__eIndent_1_2], context[__eIndent_1_2 + 1] ) )
+      return refalrts::cNoMemory;
+    if( ! refalrts::copy_stvar( context[__sBracketNumber_1_2], context[__sBracketNumber_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_bracket( n0 ) )
@@ -25194,20 +25200,31 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_char( n70, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n71 = 0;
-    if( ! refalrts::alloc_char( n71, '0' ) )
+    if( ! refalrts::alloc_open_call( n71 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n72 = 0;
-    if( ! refalrts::alloc_char( n72, '}' ) )
+    if( ! refalrts::alloc_name( n72, & StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n73 = 0;
-    if( ! refalrts::alloc_char( n73, ',' ) )
+    if( ! refalrts::alloc_close_call( n73 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n74 = 0;
-    if( ! refalrts::alloc_close_bracket( n74 ) )
+    if( ! refalrts::alloc_char( n74, '}' ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n38, n74 );
+    refalrts::Iter n75 = 0;
+    if( ! refalrts::alloc_char( n75, ',' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n76 = 0;
+    if( ! refalrts::alloc_close_bracket( n76 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n38, n76 );
+    res = refalrts::splice_elem( res, n76 );
+    res = refalrts::splice_elem( res, n75 );
     res = refalrts::splice_elem( res, n74 );
+    refalrts::push_stack( n73 );
+    refalrts::push_stack( n71 );
     res = refalrts::splice_elem( res, n73 );
+    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_2] );
     res = refalrts::splice_elem( res, n72 );
     res = refalrts::splice_elem( res, n71 );
     res = refalrts::splice_elem( res, n70 );
@@ -25302,15 +25319,16 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
   } while ( 0 );
 
   do {
-    // issue here memory for vars with 15 elems
-    refalrts::Iter context[15];
-    refalrts::zeros( context, 15 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
     enum { __eIndent_1_1 = 6 };
     enum { __sDirection_1_1 = 8 };
     enum { __sBracketNumber_1_1 = 9 };
     enum { __sNumber_1_1 = 10 };
     enum { __eIndent_1_2 = 11 };
     enum { __eIndent_1_3 = 13 };
+    enum { __sBracketNumber_1_2 = 15 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -25416,7 +25434,10 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icChar, 0, 0, ' ', 0},
-      {refalrts::icChar, 0, 0, '0', 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0, 0},
+      {refalrts::icCopySTVar, 0, 0, __sBracketNumber_1_1, 0},
+      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall, 0},
       {refalrts::icChar, 0, 0, '}', 0},
       {refalrts::icChar, 0, 0, ',', 0},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket, 0},
@@ -25462,6 +25483,8 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::copy_evar( context[__eIndent_1_2], context[__eIndent_1_2 + 1], context[__eIndent_1_1], context[__eIndent_1_1 + 1] ) )
       return refalrts::cNoMemory;
     if( ! refalrts::copy_evar( context[__eIndent_1_3], context[__eIndent_1_3 + 1], context[__eIndent_1_2], context[__eIndent_1_2 + 1] ) )
+      return refalrts::cNoMemory;
+    if( ! refalrts::copy_stvar( context[__sBracketNumber_1_2], context[__sBracketNumber_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_bracket( n0 ) )
@@ -25689,20 +25712,31 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_char( n74, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n75 = 0;
-    if( ! refalrts::alloc_char( n75, '0' ) )
+    if( ! refalrts::alloc_open_call( n75 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n76 = 0;
-    if( ! refalrts::alloc_char( n76, '}' ) )
+    if( ! refalrts::alloc_name( n76, & StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n77 = 0;
-    if( ! refalrts::alloc_char( n77, ',' ) )
+    if( ! refalrts::alloc_close_call( n77 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n78 = 0;
-    if( ! refalrts::alloc_close_bracket( n78 ) )
+    if( ! refalrts::alloc_char( n78, '}' ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n38, n78 );
+    refalrts::Iter n79 = 0;
+    if( ! refalrts::alloc_char( n79, ',' ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n80 = 0;
+    if( ! refalrts::alloc_close_bracket( n80 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n38, n80 );
+    res = refalrts::splice_elem( res, n80 );
+    res = refalrts::splice_elem( res, n79 );
     res = refalrts::splice_elem( res, n78 );
+    refalrts::push_stack( n77 );
+    refalrts::push_stack( n75 );
     res = refalrts::splice_elem( res, n77 );
+    res = refalrts::splice_stvar( res, context[__sBracketNumber_1_2] );
     res = refalrts::splice_elem( res, n76 );
     res = refalrts::splice_elem( res, n75 );
     res = refalrts::splice_elem( res, n74 );
@@ -26333,7 +26367,7 @@ static refalrts::FnResult GenCommand(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icBracketLeft, 0, 0, 4, 0},
       {refalrts::icFuncLeft, 0, 0, 0, 4},
       {refalrts::icEPush, 0, 0, 0, 4},
-      {refalrts::icNumLeft, 0, 0, 0, 0},
+      {refalrts::icNumLeft, 0, 0, 0, 4},
       {refalrts::icEmpty, 0, 0, 0, 4},
       {refalrts::icEmpty, 0, 0, 0, 0},
       {refalrts::icContextSet, 0, 0, __eIndent_1_1, 2},
