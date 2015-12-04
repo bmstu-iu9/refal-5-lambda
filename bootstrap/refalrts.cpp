@@ -2411,7 +2411,6 @@ refalrts::FnResult refalrts::interpret_array(
   Iter res = begin;
   Iter cobracket;
   unsigned int index;
-  RefalNumber refNum;
   char chValue;
   int stack_top = 0;
 
