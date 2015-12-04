@@ -2861,7 +2861,7 @@ refalrts::FnResult refalrts::interpret_array(
 }
 
 
-const refalrts::RefalFunction refalrts::functions[] = { 0, 0 };
+const refalrts::RefalFunction refalrts::functions[] = { { 0, 0 } };
 const refalrts::RefalIdentifier refalrts::labels[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 
