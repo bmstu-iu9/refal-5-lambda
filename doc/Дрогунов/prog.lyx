@@ -197,7 +197,7 @@ reference "alg:NumerateVars"
  приведён код функции, осуществляющей нумерацию переменных в порядке возрастания.
  Здесь же, разбирается тип переменной.
  Все переменные, кроме e-переменных должны занимать 1 слот, а e-переменные
- - 2.
+ --- 2.
 \end_layout
 
 \begin_layout Standard
@@ -739,10 +739,7 @@ ibCloseCall --- закрытая функциональная скобка.
  RASL-представление данной группы схоже с первой группой, только в качестве
  аргумента всегда используется положение сущности в хранилище сущностей
  context.
- 
-Представление - 
-\lang russian
-
+ Представление --- 
 \begin_inset listings
 lstparams "language=C,basicstyle={\ttfamily},tabsize=2"
 inline true
@@ -782,7 +779,7 @@ status open
 Рассмотрим команды, отвечающие за образцовую часть предложения.
  Многие команды имеют суффикс Left
 \backslash
-Right - обозначающий направление сопоставления.
+Right --- обозначающий направление сопоставления.
  Большая часть команд соответствуют RASL-представлению
 \begin_inset Newline linebreak
 \end_inset
@@ -909,16 +906,13 @@ key "key-2"
 \end_layout
 
 \begin_layout Standard
-Теперь, перейдем к описанию последней группы RASL-команд - сопоставление
+Теперь, перейдем к описанию последней группы RASL-команд --- сопоставление
  повторных переменных iceRepeatRight, iceRepeatLeft, icsRepeatRight, ictRepeatRi
 ght, icsRepeatLeft, ictRepeatLeft.
  Им соответвует RASL-представление: 
-
 \begin_inset Newline linebreak
 \end_inset
 
-
-\lang russian
 
 \begin_inset listings
 lstparams "language=C,basicstyle={\ttfamily},tabsize=2"
