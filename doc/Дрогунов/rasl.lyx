@@ -157,13 +157,44 @@ RASL Рефал-2
 \end_layout
 
 \begin_layout Itemize
-код операции вызова С-функции ( код = '
-\backslash
-122', размер --- 1 байт);
+коды операций (диапазон принимаемых значений маркирующего байта команды
+ - 
+\begin_inset Formula $0..81$
+\end_inset
+
+ (
+\begin_inset Formula $0_{8}..121_{8}$
+\end_inset
+
+)).
+\end_layout
+
+\begin_layout Standard
+Для работы со внешней функцией на Си порождается специальный адаптер:
 \end_layout
 
 \begin_layout Itemize
-указатель на тело функции.
+имя функции в формате записи ASCII;
+\end_layout
+
+\begin_layout Itemize
+длина имени функции (1 байт);
+\end_layout
+
+\begin_layout Itemize
+код операции вызова С-функции ( код = 
+\begin_inset Formula $82$
+\end_inset
+
+ (
+\begin_inset Formula $122_{8}$
+\end_inset
+
+), размер --- 1 байт);
+\end_layout
+
+\begin_layout Itemize
+указатель на тело функции внешней Си-функции.
 \end_layout
 
 \begin_layout Standard
