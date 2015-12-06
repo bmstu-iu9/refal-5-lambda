@@ -1113,5 +1113,637 @@ const static refalrts::ResultAction raa[] = {
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+3.
+ Исходный текст скрипта для тестирования
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:test-script"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+addcontentsline{toc}{subsection}{3.
+ Исходный текст скрипта для тестирования}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+bootstrap/benchmark.bat
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+setlocal
+\end_layout
+
+\begin_layout Plain Layout
+
+  call ..
+\backslash
+c-plus-plus.conf.bat
+\end_layout
+
+\begin_layout Plain Layout
+
+  del int-%1 comp-%1
+\end_layout
+
+\begin_layout Plain Layout
+
+  set FILES=srefc Algorithm Context Error FindFile Generator Lexer ParseCmdLine
+ Parser^
+\end_layout
+
+\begin_layout Plain Layout
+
+    SymTable refalrts Library LibraryEx
+\end_layout
+
+\begin_layout Plain Layout
+
+  for /L %%i in (1, 1, 9) do (
+\end_layout
+
+\begin_layout Plain Layout
+
+    echo Interpret %%i
+\end_layout
+
+\begin_layout Plain Layout
+
+    ..
+\backslash
+compiler
+\backslash
+srefc -c "%CPPLINE% -I../srlib -DINTERPRET" %FILES% 2>> int-%1
+\end_layout
+
+\begin_layout Plain Layout
+
+  )
+\end_layout
+
+\begin_layout Plain Layout
+
+  for /L %%i in (1, 1, 9) do (
+\end_layout
+
+\begin_layout Plain Layout
+
+    echo Compile %%i
+\end_layout
+
+\begin_layout Plain Layout
+
+    ..
+\backslash
+compiler
+\backslash
+srefc -c "%CPPLINE% -I../srlib" %FILES% 2>> comp-%1
+\end_layout
+
+\begin_layout Plain Layout
+
+  )
+\end_layout
+
+\begin_layout Plain Layout
+
+  del *.exe
+\end_layout
+
+\begin_layout Plain Layout
+
+  if exist *.obj del *.obj
+\end_layout
+
+\begin_layout Plain Layout
+
+  if exist *.o del *.o
+\end_layout
+
+\begin_layout Plain Layout
+
+  if exist *.tds del *.tds endlocal
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+compiler/benchmark.bat
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+del %1
+\end_layout
+
+\begin_layout Plain Layout
+
+for /L %%i in (1, 1, 9) do echo %%i & ..
+\backslash
+compiler
+\backslash
+srefc @benchmark_data.lst 2>> %1
+\end_layout
+
+\begin_layout Plain Layout
+
+del *.cpp
+\end_layout
+
+\begin_layout Plain Layout
+
+echo.>> %1
+\end_layout
+
+\begin_layout Plain Layout
+
+echo.>> %1
+\end_layout
+
+\begin_layout Plain Layout
+
+for %%f in (srefc.exe) do
+\end_layout
+
+\begin_layout Plain Layout
+
+  echo File size %%~zf bytes >> %1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+compiler/benchmark_data.lst
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+Algorithm Context Error
+\end_layout
+
+\begin_layout Plain Layout
+
+FindFile Generator Lexer
+\end_layout
+
+\begin_layout Plain Layout
+
+ParseCmdLine Parser srefc
+\end_layout
+
+\begin_layout Plain Layout
+
+SymTable Algorithm Context
+\end_layout
+
+\begin_layout Plain Layout
+
+Error FindFile Generator
+\end_layout
+
+\begin_layout Plain Layout
+
+Lexer ParseCmdLine Parser
+\end_layout
+
+\begin_layout Plain Layout
+
+srefc SymTable Algorithm
+\end_layout
+
+\begin_layout Plain Layout
+
+Context Error FindFile
+\end_layout
+
+\begin_layout Plain Layout
+
+Generator Lexer ParseCmdLine
+\end_layout
+
+\begin_layout Plain Layout
+
+Parser srefc SymTable
+\end_layout
+
+\begin_layout Plain Layout
+
+Algorithm Context Error
+\end_layout
+
+\begin_layout Plain Layout
+
+FindFile Generator Lexer
+\end_layout
+
+\begin_layout Plain Layout
+
+ParseCmdLine Parser srefc
+\end_layout
+
+\begin_layout Plain Layout
+
+SymTable Algorithm Context
+\end_layout
+
+\begin_layout Plain Layout
+
+Error FindFile Generator
+\end_layout
+
+\begin_layout Plain Layout
+
+Lexer ParseCmdLine Parser
+\end_layout
+
+\begin_layout Plain Layout
+
+srefc SymTable
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+compiler/mean.awk
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+  key = FILENAME " ||";
+\end_layout
+
+\begin_layout Plain Layout
+
+  for (i = 1; i < NF; ++i) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    n = i+1;
+\end_layout
+
+\begin_layout Plain Layout
+
+    if ($n ~ /seconds/) { 
+\end_layout
+
+\begin_layout Plain Layout
+
+     metric[key] += $i;
+\end_layout
+
+\begin_layout Plain Layout
+
+     count[key] += 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+     squares[key] += $i * $i;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    key = key " " $i;
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+/^File size/ {   filesize[FILENAME] = $3; }
+\end_layout
+
+\begin_layout Plain Layout
+
+function size_format(bytes) {
+\end_layout
+
+\begin_layout Plain Layout
+
+  return bytes / 1024.0 " Kb" 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+END {
+\end_layout
+
+\begin_layout Plain Layout
+
+  print " PARAM || interpreted || compiled || %";
+\end_layout
+
+\begin_layout Plain Layout
+
+  for (key in metric) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    mean = metric[key] / count[key];
+\end_layout
+
+\begin_layout Plain Layout
+
+    mean_sq = squares[key] / count[key];
+\end_layout
+
+\begin_layout Plain Layout
+
+    sq_mean = mean * mean;
+\end_layout
+
+\begin_layout Plain Layout
+
+    suf = ""
+\end_layout
+
+\begin_layout Plain Layout
+
+    if (key ~ /int/) {
+\end_layout
+
+\begin_layout Plain Layout
+
+      comp_key = key
+\end_layout
+
+\begin_layout Plain Layout
+
+      gsub("int", "comp", comp_key);
+\end_layout
+
+\begin_layout Plain Layout
+
+      if (count[comp_key] ) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        mean_comp = metric[comp_key] / count[comp_key];
+\end_layout
+
+\begin_layout Plain Layout
+
+        mean_sq_comp = squares[comp_key] / count[comp_key];
+\end_layout
+
+\begin_layout Plain Layout
+
+        sq_mean_comp = mean_comp * mean_comp;
+\end_layout
+
+\begin_layout Plain Layout
+
+        if (mean_comp) {
+\end_layout
+
+\begin_layout Plain Layout
+
+          suf = " || " (100.0 * mean / mean_comp - 100.0) " %" 
+\end_layout
+
+\begin_layout Plain Layout
+
+       }
+\end_layout
+
+\begin_layout Plain Layout
+
+        line_int = mean " +- " sqrt(mean_sq - sq_mean);
+\end_layout
+
+\begin_layout Plain Layout
+
+        line_comp = mean_comp " +- " sqrt(mean_sq_comp - sq_mean_comp);
+\end_layout
+
+\begin_layout Plain Layout
+
+        printf("%s = %s | %s %s
+\backslash
+n", key, line_int, line_comp, suf);
+\end_layout
+
+\begin_layout Plain Layout
+
+      }
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+  for (mode_int in filesize) {
+\end_layout
+
+\begin_layout Plain Layout
+
+    if (mode_int ~ /int/) {
+\end_layout
+
+\begin_layout Plain Layout
+
+      mode_comp = mode_int;
+\end_layout
+
+\begin_layout Plain Layout
+
+      gsub("int", "comp", mode_comp);
+\end_layout
+
+\begin_layout Plain Layout
+
+      if (filesize[mode_comp]) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        int_sz = filesize[mode_int]
+\end_layout
+
+\begin_layout Plain Layout
+
+        comp_sz = filesize[mode_comp]
+\end_layout
+
+\begin_layout Plain Layout
+
+        percent = 100.0 * int_sz / comp_sz;
+\end_layout
+
+\begin_layout Plain Layout
+
+        ratio = 100.0 / percent
+\end_layout
+
+\begin_layout Plain Layout
+
+        int_sz_fmt = size_format(int_sz);
+\end_layout
+
+\begin_layout Plain Layout
+
+        comp_sz_fmt = size_format(comp_sz);
+\end_layout
+
+\begin_layout Plain Layout
+
+        print "zFILE SIZE " mode_int " || " int_sz_fmt " | " comp_sz_fmt
+ " || " percent - 100 " %, " ratio 
+\end_layout
+
+\begin_layout Plain Layout
+
+     }
+\end_layout
+
+\begin_layout Plain Layout
+
+   } 
+\end_layout
+
+\begin_layout Plain Layout
+
+ }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+compiler/mean.bat
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=bash,basicstyle={\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+@echo off "c:
+\backslash
+Program Files (x86)
+\backslash
+Git
+\backslash
+bin
+\backslash
+gawk.exe" -f ../compiler/mean.awk *.txt | sort
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \end_body
 \end_document
