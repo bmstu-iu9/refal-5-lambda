@@ -503,6 +503,17 @@ status open
 \end_layout
 
 \begin_layout Standard
+Подробную информацию можно найти в 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-7"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float algorithm
 placement H
 wide false

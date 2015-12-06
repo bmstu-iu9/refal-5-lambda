@@ -488,7 +488,14 @@ reference "sub:test-script"
  Таким образом, можно определить, на сколько быстрее целевой компилятор
  обрабатывает инициализацию массива кодов операций языка сборки по сравнению
  с построением в режиме компиляции.
- Используемые компиляторы:
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+Используемые компиляторы:
 \end_layout
 
 \begin_layout Itemize
@@ -1220,11 +1227,11 @@ name "tab:mmx-table"
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="3">
-<features rotate="0" tabularvalignment="middle">
-<column alignment="left" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
+<lyxtabular version="3" rows="6" columns="3">
+<features rotate="0" tabularvalignment="middle" tabularwidth="80page%">
+<column alignment="left" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
 <row>
 <cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
@@ -1264,7 +1271,7 @@ name "tab:mmx-table"
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1273,7 +1280,7 @@ name "tab:mmx-table"
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1284,7 +1291,7 @@ name "tab:mmx-table"
 </cell>
 </row>
 <row>
-<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+<cell multirow="3" alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1293,27 +1300,56 @@ MinGW x86
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-319.175/118.377/102.719/221.096/98.079 
+319.175/118.377/
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-370.841/145.55/132.023/277.573/93.268 
+370.841/145.55/ 
 \end_layout
 
 \end_inset
 </cell>
 </row>
 <row>
-<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+102.719/221.096/98.079 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+132.023/277.573/93.268
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1322,20 +1358,49 @@ Borland C++ 5.5
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-235.086/79.515/86.176/165.691/69.395 
+235.086/79.515/
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-258.958/95.062/101.382/196.444/62.514 
+258.958/95.062/
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+86.176/165.691/69.395 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+101.382/196.444/62.514 
 \end_layout
 
 \end_inset
@@ -1904,9 +1969,12 @@ Clang 3.5.0 x86-64
 
 \begin_layout Standard
 На тестовой машине №2 проводилось тестирование на операционной системе Gnu
- Linux Opensuse 13.2 с выбором в качестве целевых компиляторов GCC 4.8.3 (g++
- (SUSE Linux) 4.8.3 20140627 [gcc-4_8-branch revision 212064]) и clang version
- 3.5.0 (tags/RELEASE_350/final 216961).
+ Linux Opensuse 13.2 с выбором в качестве целевых компиляторов
+\begin_inset Newline linebreak
+\end_inset
+
+ GCC 4.8.3 (g++ (SUSE Linux) 4.8.3 20140627 [gcc-4_8-branch revision 212064])
+ и clang version 3.5.0 (tags/RELEASE_350/final 216961).
  В качестве целевых платформ использовались платформы x86 и x86-64.
 \end_layout
 
