@@ -141,7 +141,7 @@ RASL Рефал-2
  языка С.
  При этом, для обеспечения правильной работы интерпретатора необходимо использов
 ать при компиляции С-функций ключ выравнивания указателей и целых на границу
- байта, чтобы описательная часть Си-функции размещалась в памяти непрерывно.
+ байта для непрерывного размещения в памяти.
 \end_layout
 
 \begin_layout Standard
@@ -212,8 +212,8 @@ reference "alg:Рефал2-rasl"
 
 \end_inset
 
- приведён пример сгенерированого представления функции для последующей линковки
- со средой выполнения.
+ приведён пример сгенерированого представления внешней функции для последующей
+ линковки со средой выполнения.
 \end_layout
 
 \begin_layout Standard
@@ -231,7 +231,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Пример генерации функции и её описания для RASL языка Рефал-2.
+Пример генерации адаптера внешней функции и её описания для RASL языка Рефал-2.
 \begin_inset CommandInset label
 LatexCommand label
 name "alg:Рефал2-rasl"
@@ -325,8 +325,8 @@ key "key-6"
 
 \end_inset
 
-, на благодаря которой все rsl-сборки для языка Рефал-5 могут быть запущены
- в данной среде.
+.
+ Все rsl-сборки для языка Рефал-5 могут быть запущены в данной среде.
 \end_layout
 
 \begin_layout Standard
@@ -345,7 +345,18 @@ key "key-5"
 \begin_layout Standard
 Структура .rsl-файла состоит из заголовка, служебной информации и байт-кода.
  Порядок байт --- little-endian.
- Представление заголовка:
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Представление заголовка:
 \end_layout
 
 \begin_layout Itemize
@@ -419,6 +430,76 @@ reference "alg:Factorial-refal-6+rcode"
 
 ), вычисляющей факториал (верхний блок) и её R-код представление (нижний
  блок).
+\end_layout
+
+\begin_layout Standard
+Каждый модуль начинается с ключевого слова START, за которым следует имя
+ модуля с приписанным расширением 
+\begin_inset Quotes fld
+\end_inset
+
+.rex
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Затем, тело модуля заключается теги 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockBegin>
+\end_layout
+
+\end_inset
+
+ и 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockEnd>
+\end_layout
+
+\end_inset
+
+.
+ В атрибутах тега 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockBegin>
+\end_layout
+
+\end_inset
+
+ описываются имена всех сущностей, которые определяются в данном модуле,
+ или же должны быть подгружены из других.
+ Внутри описанных тегов располагаются последовательно определения функций
+ в виде 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+*{ИмяФункции}=F{Длина R-кода}({Последовательность команд})
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -708,9 +789,11 @@ typedef struct ResultAction {
 \end_layout
 
 \begin_layout Standard
-При построении результата из переменных образца и элементов осуществляется
- при помощи операций над двусвязными списками, не нарушающими инвариант
- двузвязного списка (не возникает усечек фрагментов и список правильно связан).
+Построении результата из переменных образца и элементов осуществляется при
+ помощи операций над двусвязными списками.
+ Набор таких операций не должен нарушать инвариант двусвязного списка (то
+ есть, не должно возникать усечения фрагментов и список должен оставаться
+ правильно связан).
  Поэтому, появляется необходимость в переносе части цепочки из одного места
  в другое с исключением из исходного местоположения (splicing).
  Операции icSpliceSTVar и icSpliceEVar осуществляют перенос для s,t-перменных
@@ -731,7 +814,7 @@ reference "sub:attach-Func-master"
  позволяет в удобном виде наблюдать и изучать изменение генерируемого кода.
  Данный способ разделения на интерпретируемую и компилируемую часть кодогенераци
 и будет оставлен и в улучшенной версии компилятора, написание которого и
- является данная работа.
+ является результат данной работы.
 \end_layout
 
 \begin_layout Standard
