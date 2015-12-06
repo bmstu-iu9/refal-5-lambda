@@ -2282,7 +2282,8 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Статистика размера компилятора srefc на различных конфигурациях и платформах
+Статистика размера в байтах компилятора srefc на различных конфигурациях
+ и платформах
 \begin_inset CommandInset label
 LatexCommand label
 name "tab:Статистика-размера-компилятора"
