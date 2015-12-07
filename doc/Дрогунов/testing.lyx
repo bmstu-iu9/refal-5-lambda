@@ -1677,7 +1677,7 @@ GCC 4.8.3 x86
 \begin_inset Text
 
 \begin_layout Plain Layout
-16.768/5.061/6.475/13.088/4.798 
+15.904/6.051/4.974/11.025/4.879
 \end_layout
 
 \end_inset
@@ -1686,7 +1686,7 @@ GCC 4.8.3 x86
 \begin_inset Text
 
 \begin_layout Plain Layout
-19.870/6.091/8.359/15.232/5.394
+18.057/7.716/5.505/13.221/4.836
 \end_layout
 
 \end_inset
@@ -1706,7 +1706,7 @@ GCC 4.8.3 x86-64
 \begin_inset Text
 
 \begin_layout Plain Layout
-17.123/4.885/6.382/13.952/5.088
+16.293/6.162/4.925/11.087/5.206
 \end_layout
 
 \end_inset
@@ -1715,7 +1715,7 @@ GCC 4.8.3 x86-64
 \begin_inset Text
 
 \begin_layout Plain Layout
-20.652/6.128/8.514/16.651/5.425
+18.464/7.298/6.310/13.608/4.856
 \end_layout
 
 \end_inset
@@ -1735,7 +1735,7 @@ Clang 3.5.0 x86
 \begin_inset Text
 
 \begin_layout Plain Layout
-18.538/5.671/7.355/13.422/5.581
+18.664/7.019/6.642/13.661/5.003
 \end_layout
 
 \end_inset
@@ -1744,7 +1744,7 @@ Clang 3.5.0 x86
 \begin_inset Text
 
 \begin_layout Plain Layout
-21.442/6.955/9.716/16.289/6.181
+20.814/8.696/6.951/15.647/5.167
 \end_layout
 
 \end_inset
@@ -1764,7 +1764,7 @@ Clang 3.5.0 x86-64
 \begin_inset Text
 
 \begin_layout Plain Layout
-18.665/6.104/7.489/14.109/5.791 
+18.771/7.5844/5.983/13.567/5.204
 \end_layout
 
 \end_inset
@@ -1773,7 +1773,7 @@ Clang 3.5.0 x86-64
 \begin_inset Text
 
 \begin_layout Plain Layout
-22.115/7.475/9.519/17.314/6.560
+20.803/8.545/7.450/15.995/4.808
 \end_layout
 
 \end_inset
