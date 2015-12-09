@@ -17,7 +17,9 @@ run_test_aux() {
     exit
   fi
 
-  g++ -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE $CPP ../srlib/refalrts.cpp
+  #g++ -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE $CPP ../srlib/refalrts.cpp
+  g++ -Wall -DINTERPRET -g -DDUMP_FREE_LIST -DSHOW_DEBUG=1 -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE $CPP ../srlib/refalrts.cpp
+
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
     exit
@@ -53,7 +55,7 @@ run_test_aux.BAD-SYNTAX() {
     exit
   fi
 
-  echo "Ok! Compiler didn't chash on invalid syntax"
+  echo "Ok! Compiler didn't crash on invalid syntax"
   echo
 }
 

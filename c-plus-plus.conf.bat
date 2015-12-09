@@ -23,6 +23,7 @@ rem путь к файлу owsetenv.bat
 :: call C:\WATCOM\owsetenv.bat
 :: set CPPLINE=cl -nologo
 
+
 rem Если вы используете компилятор Clang, раскомментируйте все три строчки ниже
 rem и установите в первых двух строчках правильный путь к каталогам bin
 rem дистрибутивов MinGW и LLVM.

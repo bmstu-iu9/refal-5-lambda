@@ -459,7 +459,7 @@ WriteFunction {
     ()
     (e.NextRule ' {')
     <Map WriteAlternative e.Alternatives>
-    ('  (e.Accum) s.Unexpected e.Text = ')
+    ('  (e.Accum) s.Unexpected e.Text =')
     ('    (TokenUnexpected s.Unexpected) <Root () e.Text>;')
     ('  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);')
     ('}');
@@ -1056,7 +1056,7 @@ Literal-DecCode-SwDigit {
 
 NameFail {
   () s.Next e.Tail =
-    (TError 'Unexpected chararcter ' s.Next) <LoTokens e.Tail>;
+    (TError 'Unexpected character ' s.Next) <LoTokens e.Tail>;
 }
 
 NameTailFail {

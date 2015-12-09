@@ -1459,4 +1459,3 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
   return refalrts::cRecognitionImpossible;
 }
-
