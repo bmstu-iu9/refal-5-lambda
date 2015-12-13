@@ -1,5 +1,0 @@
-../../bin/srefc write-file.sref -d ../../srlib/ LibraryEx
-*Compiling write-file.sref:
-*Compiling ../../srlib//LibraryEx.sref:
-g++ -I ../../srlib/ ../../srlib/*.cpp write-file.cpp -o out -DINTERPRET
-Makefile:8: ошибка выполнения рецепта для цели «all»
