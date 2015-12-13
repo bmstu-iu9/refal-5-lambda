@@ -116,14 +116,20 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   return (first == 0) && (last == 0);
 }
 
+#ifndef MODULE_REFAL
 bool refalrts::function_term(
-  refalrts::RefalFunctionPtr func, refalrts::Iter pos
+  const refalrts::RefalFunction *func, refalrts::Iter pos
 ) {
-  return (pos->tag == cDataFunction) && (pos->function_info.ptr == func);
+  return (pos->tag == cDataFunction) && (pos->function_info == func);
 }
+#endif
 
 refalrts::Iter refalrts::function_left(
+#ifdef MODULE_REFAL
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
+#else
+  const refalrts::RefalFunction *fn, refalrts::Iter& first, refalrts::Iter& last
+#endif
 ) {
   assert( (first == 0) == (last == 0) );
 
@@ -131,7 +137,11 @@ refalrts::Iter refalrts::function_left(
     return 0;
   } else if( first->tag != cDataFunction ) {
     return 0;
+#ifdef MODULE_REFAL
   } else if ( first->function_info.ptr != fn ) {
+#else
+  } else if ( first->function_info != fn ) {
+#endif
     return 0;
   } else {
     Iter func_pos = first;
@@ -141,7 +151,11 @@ refalrts::Iter refalrts::function_left(
 }
 
 refalrts::Iter refalrts::function_right(
+#ifdef MODULE_REFAL
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
+#else
+  const refalrts::RefalFunction *fn, refalrts::Iter& first, refalrts::Iter& last
+#endif
 ) {
   assert( (first == 0) == (last == 0) );
 
@@ -149,7 +163,11 @@ refalrts::Iter refalrts::function_right(
     return 0;
   } else if ( cDataFunction != last->tag ) {
     return 0;
+#ifdef MODULE_REFAL
   } else if ( last->function_info.ptr != fn ) {
+#else
+  } else if ( last->function_info != fn ) {
+#endif
     return 0;
   } else {
     Iter func_pos = last;
@@ -377,9 +395,10 @@ void refalrts::bracket_pointers(
   right_bracket = left_bracket->link_info;
 }
 
+#ifndef MODULE_REFAL
 refalrts::Iter refalrts::adt_term(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
-  refalrts::RefalFunctionPtr tag,
+  const refalrts::RefalFunction *tag,
   refalrts::Iter pos
 ) {
   if (pos->tag != cDataOpenADT) {
@@ -389,7 +408,7 @@ refalrts::Iter refalrts::adt_term(
   refalrts::Iter adt_tag = next(pos);
   
   assert (adt_tag->tag == cDataFunction);
-  if (adt_tag->function_info.ptr != tag) {
+  if (adt_tag->function_info != tag) {
     return 0;
   }
   
@@ -405,10 +424,15 @@ refalrts::Iter refalrts::adt_term(
   
   return adt_tag;
 }
+#endif
 
 refalrts::Iter refalrts::adt_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
+#ifdef MODULE_REFAL
   refalrts::RefalFunctionPtr tag,
+#else
+  const refalrts::RefalFunction *tag,
+#endif
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
@@ -426,7 +450,11 @@ refalrts::Iter refalrts::adt_left(
       return 0;
     } else if( cDataFunction != pnext->tag ) {
       return 0;
+#ifdef MODULE_REFAL
     } else if( pnext->function_info.ptr != tag ) {
+#else
+    } else if( pnext->function_info != tag ) {
+#endif
       return 0;
     } else {
       if( next( pnext ) != right_bracket ) {
@@ -451,7 +479,11 @@ refalrts::Iter refalrts::adt_left(
 
 refalrts::Iter refalrts::adt_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
+#ifdef MODULE_REFAL
   refalrts::RefalFunctionPtr tag,
+#else
+  const refalrts::RefalFunction *tag,
+#endif
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
@@ -469,7 +501,11 @@ refalrts::Iter refalrts::adt_right(
       return 0;
     } else if( cDataFunction != pnext->tag ) {
       return 0;
+#ifdef MODULE_REFAL
     } else if( pnext->function_info.ptr != tag ) {
+#else
+    } else if( pnext->function_info != tag ) {
+#endif
       return 0;
     } else {
       if( next( pnext ) != right_bracket ) {
@@ -645,7 +681,11 @@ bool equal_nodes(
         // break;
 
       case refalrts::cDataFunction:
+#ifdef MODULE_REFAL
         return (node1->function_info.ptr == node2->function_info.ptr);
+#else
+        return (node1->function_info == node2->function_info);
+#endif
         // break;
 
       case refalrts::cDataIdentifier:
@@ -1040,9 +1080,13 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       // break;
 
     case refalrts::cDataFunction:
+#ifdef MODULE_REFAL
       return refalrts::alloc_name(
         res, sample->function_info.ptr, sample->function_info.name
       );
+#else
+      return refalrts::alloc_name(res, sample->function_info);
+#endif
       // break;
 
     case refalrts::cDataIdentifier:
@@ -1247,17 +1291,25 @@ const char *unknown = "@unknown";
 
 bool refalrts::alloc_name(
   refalrts::Iter& res,
+#ifdef MODULE_REFAL
   refalrts::RefalFunctionPtr fn,
   refalrts::RefalFuncName name
+#else
+  const refalrts::RefalFunction *fn
+#endif
 ) {
   if( allocator::alloc_node( res ) ) {
     res->tag = cDataFunction;
+#ifdef MODULE_REFAL
     res->function_info.ptr = fn;
     if( name != 0 ) {
       res->function_info.name = name;
     } else {
       res->function_info.name = unknown;
     }
+#else
+    res->function_info = fn;
+#endif
     return true;
   } else {
     return false;
@@ -1459,6 +1511,7 @@ refalrts::Iter list_splice(
 
 } // unnamed namespace
 
+#ifndef MODULE_REFAL
 void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
   res->tag = sample->tag;
 
@@ -1522,24 +1575,19 @@ void refalrts::update_number(
   res->number_info  = num;
 }
 
-
 void refalrts::reinit_name(
   refalrts::Iter res,
-  refalrts::RefalFunctionPtr func,
-  refalrts::RefalFuncName name
+  const refalrts::RefalFunction *func
 ) {
   res->tag = cDataFunction;
-  res->function_info.ptr  = func;
-  res->function_info.name  = name;
+  res->function_info = func;
 }
 
 void refalrts::update_name(
   refalrts::Iter res,
-  refalrts::RefalFunctionPtr func,
-  refalrts::RefalFuncName name
+  const refalrts::RefalFunction *func
 ) {
-  res->function_info.ptr  = func;
-  res->function_info.name  = name;
+  res->function_info = func;
 }
 
 void refalrts::reinit_ident(
@@ -1585,15 +1633,12 @@ void refalrts::reinit_open_call(
   res->tag = cDataOpenCall;
 }
 
-
 void refalrts::reinit_close_call(
   refalrts::Iter res
 ) {
   res->tag = cDataCloseCall;
 }
-
-
-
+#endif
 
 refalrts::Iter refalrts::splice_elem(
   refalrts::Iter res, refalrts::Iter elem
@@ -1636,7 +1681,9 @@ void refalrts::splice_from_freelist( refalrts::Iter pos ) {
   allocator::splice_from_freelist( pos );
 }
 
-refalrts::FnResult refalrts::create_closure(
+namespace {
+
+refalrts::FnResult func_create_closure(
   refalrts::Iter begin, refalrts::Iter end
 ) {
   refalrts::Iter closure_b = begin;
@@ -1662,6 +1709,14 @@ refalrts::FnResult refalrts::create_closure(
 
   return refalrts::cSuccess;
 }
+
+}
+
+#ifndef MODULE_REFAL
+refalrts::RefalFunction refalrts::create_closure = {
+  func_create_closure, "@create_closure@"
+};
+#endif
 
 /*
   Собственно замыкание (функция + контекст) определяется как
@@ -1722,14 +1777,30 @@ extern NodePtr g_left_swap_ptr;
 
 } // namespace refalrts
 
+#ifdef MODULE_REFAL
 refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
+#else
+refalrts::Iter refalrts::initialize_swap_head(
+  refalrts::Iter head, refalrts::RefalSwapHead *holder
+) {
+#endif
   assert( cDataFunction == head->tag );
 
+#ifdef MODULE_REFAL
   splice_elem( vm::g_left_swap_ptr, head );
   refalrts::RefalFuncName name = head->function_info.name;
   head->tag = cDataSwapHead;
   head->swap_info.next_head = vm::g_left_swap_ptr;
   head->swap_info.name = name;
+#else
+  holder->next_head = vm::g_left_swap_ptr;
+  holder->name = head->function_info->name;
+
+  splice_elem( vm::g_left_swap_ptr, head );
+  head->tag = cDataSwapHead;
+  head->swap_info = holder;
+#endif
+
   vm::g_left_swap_ptr = head;
   return vm::g_left_swap_ptr;
 }
@@ -1740,7 +1811,11 @@ void refalrts::swap_info_bounds(
   assert( cDataSwapHead == head->tag );
 
   first = head;
+#ifdef MODULE_REFAL
   last = head->swap_info.next_head;
+#else
+  last = head->swap_info->next_head;
+#endif
   move_left( first, last );
   move_right( first, last );
 }
@@ -1750,7 +1825,11 @@ void refalrts::swap_save(
 ) {
   assert( cDataSwapHead == head->tag );
 
+#ifdef MODULE_REFAL
   list_splice( head->swap_info.next_head, first, last );
+#else
+  list_splice( head->swap_info->next_head, first, last );
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -2231,16 +2310,6 @@ void refalrts::profiler::stop_e_loop() {
 // Виртуальная машина
 //==============================================================================
 
-#ifdef MODULE_REFAL
-#define GO_START_FUNCTION Entry_Go
-#else
-#define GO_START_FUNCTION Go
-#endif
-
-extern refalrts::FnResult GO_START_FUNCTION(
-  refalrts::Iter, refalrts::Iter
-);
-
 namespace refalrts {
 
 namespace vm {
@@ -2296,6 +2365,9 @@ bool refalrts::vm::empty_stack() {
 }
 
 #ifdef MODULE_REFAL
+
+extern refalrts::FnResult Entry_Go(refalrts::Iter, refalrts::Iter);
+
 //$LABEL Go
 template <typename T>
 struct GoL_ {
@@ -2303,9 +2375,11 @@ struct GoL_ {
     return "Go";
   }
 };
-#define GO_NAME GoL_<int>::name
+
 #else
-#define GO_NAME "Go"
+
+extern refalrts::RefalFunction Go;
+
 #endif
 
 bool refalrts::vm::init_view_field() {
@@ -2315,7 +2389,11 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, GO_START_FUNCTION, GO_NAME ) )
+#ifdef MODULE_REFAL
+  if( ! refalrts::alloc_name( n1, & Entry_Go, GoL_<int>::name ) )
+#else
+  if( ! refalrts::alloc_name( n1, & Go ) )
+#endif
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )
@@ -2382,9 +2460,15 @@ refalrts::FnResult refalrts::vm::execute_active(
 
   refalrts::Iter function = next( begin );
   if( cDataFunction == function->tag ) {
+#ifdef MODULE_REFAL
     return refalrts::FnResult(
       (function->function_info.ptr)( begin, end ) & 0xFFU
     );
+#else
+    return refalrts::FnResult(
+      (function->function_info->ptr)( begin, end ) & 0xFFU
+    );
+#endif
   } else if( cDataClosure == function->tag ) {
     refalrts::Iter head = function->link_info;
 
@@ -2489,7 +2573,7 @@ void refalrts::vm::print_seq(
 #ifdef MODULE_REFAL
             fprintf( output, "\n\n*Swap %s:\n", (begin->swap_info.name)() );
 #else
-            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info.name );
+            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info->name );
 #endif
             refalrts::move_left( begin, end );
             continue;
@@ -2508,11 +2592,7 @@ void refalrts::vm::print_seq(
 #ifdef MODULE_REFAL
             fprintf( output, "&%s ", (begin->function_info.name)() );
 #else
-            if( begin->function_info.name[0] != 0 ) {
-              fprintf( output, "&%s ", begin->function_info.name );
-            } else {
-              fprintf( output, "&%p ", begin->function_info.ptr );
-            }
+            fprintf( output, "&%s ", begin->function_info->name );
 #endif
             refalrts::move_left( begin, end );
             continue;
@@ -2740,11 +2820,12 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
+#ifndef MODULE_REFAL
 refalrts::FnResult refalrts::interpret_array(
   const refalrts::RASLCommand raa[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
-  const RefalFunction functions[],
+  const RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
   const StringItem strings[],
@@ -2884,28 +2965,28 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icFuncLeft:
-        if ( !function_left( functions[raa[i].val2].ptr, bb, be ) )
+        if ( !function_left( functions[raa[i].val2], bb, be ) )
           MATCH_FAIL
         break;
 
       case icFuncRight:
-        if ( !function_right( functions[raa[i].val2].ptr, bb, be ) )
+        if ( !function_right( functions[raa[i].val2], bb, be ) )
           MATCH_FAIL
         break;
 
       case icFuncTerm:
-        if ( !function_term( functions[raa[i].val2].ptr, bb ) )
+        if ( !function_term( functions[raa[i].val2], bb ) )
           MATCH_FAIL
         break;
 
       case icFuncLeftSave:
-        save_pos = function_left( functions[raa[i].val2].ptr, bb, be );
+        save_pos = function_left( functions[raa[i].val2], bb, be );
         if (! save_pos)
           MATCH_FAIL
         break;
 
       case icFuncRightSave:
-        save_pos = function_right( functions[raa[i].val2].ptr, bb, be );
+        save_pos = function_right( functions[raa[i].val2], bb, be );
         if (! save_pos)
           MATCH_FAIL
         break;
@@ -2986,7 +3067,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTLeft:
         if( ! refalrts::adt_left( context[raa[i].val2],
                                   context[raa[i].val2 + 1],
-                                  functions[raa[i].val1].ptr,
+                                  functions[raa[i].val1],
                                   bb, be)
         )
           MATCH_FAIL
@@ -2995,7 +3076,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTRight:
         if( ! refalrts::adt_right( context[raa[i].val2],
                                    context[raa[i].val2 + 1],
-                                   functions[raa[i].val1].ptr,
+                                   functions[raa[i].val1],
                                    bb, be)
         )
           MATCH_FAIL
@@ -3004,7 +3085,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTTerm:
         if( ! refalrts::adt_term( context[raa[i].val2],
                                   context[raa[i].val2 + 1],
-                                  functions[raa[i].val1].ptr,
+                                  functions[raa[i].val1],
                                   bb )
         )
           MATCH_FAIL
@@ -3013,7 +3094,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTLeftSave:
         {
           int inner = raa[i].val2;
-          RefalFunctionPtr tag = functions[raa[i].val1].ptr;
+          const RefalFunction *tag = functions[raa[i].val1];
           context[inner + 2] =
             adt_left(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2])
@@ -3025,7 +3106,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTRightSave:
         {
           int inner = raa[i].val2;
-          RefalFunctionPtr tag = functions[raa[i].val1].ptr;
+          const RefalFunction *tag = functions[raa[i].val1];
           context[inner + 2] =
             adt_right(context[inner], context[inner + 1], tag, bb, be);
           if (! context[inner + 2])
@@ -3037,7 +3118,7 @@ refalrts::FnResult refalrts::interpret_array(
       case icADTTermSave:
         {
           int inner = raa[i].val2;
-          RefalFunctionPtr tag = functions[raa[i].val1].ptr;
+          const RefalFunction *tag = functions[raa[i].val1];
           context[inner + 2] =
             adt_term(context[inner], context[inner + 1], tag, bb);
           if (! context[inner + 2])
@@ -3246,13 +3327,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icAllocFunc:
-        if(
-            !alloc_name(
-              elem,
-              functions[raa[i].val2].ptr,
-              functions[raa[i].val2].name
-            )
-        )
+        if(!alloc_name(elem, functions[raa[i].val2]))
           return cNoMemory;
         break;
 
@@ -3326,9 +3401,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icReinitFunc:
-        reinit_name(
-          elem, functions[raa[i].val2].ptr, functions[raa[i].val2].name
-        );
+        reinit_name(elem, functions[raa[i].val2]);
         break;
 
       case icReinitInt:
@@ -3379,9 +3452,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icUpdateFunc:
-        update_name(
-          elem, functions[raa[i].val2].ptr, functions[raa[i].val2].name
-        );
+        update_name(elem, functions[raa[i].val2]);
         break;
 
       case icUpdateInt:
@@ -3452,9 +3523,10 @@ refalrts::FnResult refalrts::interpret_array(
 
   return cSuccess;
 }
+#endif
 
 
-const refalrts::RefalFunction refalrts::functions[] = { { 0, 0 } };
+const refalrts::RefalFunction *refalrts::functions[] = { 0 };
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 const refalrts::StringItem refalrts::strings[] = { { "", 0 } };

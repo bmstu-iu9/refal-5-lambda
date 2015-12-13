@@ -309,12 +309,7 @@ refalrts::FnResult write_to_stream(
       }
 
       case refalrts::cDataFunction: {
-        if( p->function_info.name[0] != '\0' ) {
-          printf_res = fprintf( out, "%s ", p->function_info.name );
-        } else {
-          printf_res = fprintf( out, "&%p ", p->function_info.ptr );
-        }
-
+        printf_res = fprintf( out, "%s ", p->function_info->name );
         if( printf_res < 0 ) {
           return refalrts::cRecognitionImpossible;
         } else {
@@ -1299,8 +1294,8 @@ $ENTRY SymbCompare {
           {
             int cmpres =
               strcmp(
-                sSymb1_1->function_info.name,
-                sSymb2_1->function_info.name
+                sSymb1_1->function_info->name,
+                sSymb2_1->function_info->name
               );
 
             if( cmpres < 0 ) {
@@ -1310,8 +1305,8 @@ $ENTRY SymbCompare {
             } else {
               order =
                 compare_char(
-                  sSymb1_1->function_info.ptr,
-                  sSymb2_1->function_info.ptr
+                  sSymb1_1->function_info->ptr,
+                  sSymb2_1->function_info->ptr
                 );
             }
           }

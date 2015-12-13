@@ -61,11 +61,19 @@ typedef struct Node {
   union {
     char char_info;
     RefalNumber number_info;
+#ifdef MODULE_REFAL
     RefalFunction function_info;
+#else
+    const RefalFunction *function_info;
+#endif
     RefalIdentifier ident_info;
     NodePtr link_info;
     void *file_info;
+#ifdef MODULE_REFAL
     RefalSwapHead swap_info;
+#else
+    RefalSwapHead *swap_info;
+#endif
   };
 } Node;
 
@@ -203,13 +211,14 @@ void zeros( Iter context[], int size );
 
 //операции реинициализации
 
+#ifndef MODULE_REFAL
 extern void reinit_svar(Iter res, Iter sample);
 extern void reinit_char(Iter res, char ch);
 extern void update_char(Iter res, char ch);
 extern void reinit_number(Iter res, RefalNumber num);
 extern void update_number(Iter res, RefalNumber num);
-extern void reinit_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
-extern void update_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
+extern void reinit_name(Iter res, const RefalFunction *func);
+extern void update_name(Iter res, const RefalFunction *func);
 extern void reinit_ident(Iter res, RefalIdentifier ident);
 extern void update_ident(Iter res, RefalIdentifier ident);
 
@@ -221,6 +230,7 @@ extern void reinit_close_adt(Iter res);
 
 extern void reinit_open_call(Iter res);
 extern void reinit_close_call(Iter res);
+#endif
 
 
 //операции
@@ -232,9 +242,14 @@ extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
 extern bool empty_seq( Iter begin, Iter end );
 
-extern bool function_term( RefalFunctionPtr func, Iter pos );
+#ifdef MODULE_REFAL
 extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
 extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
+#else
+extern bool function_term( const RefalFunction *func, Iter pos );
+extern Iter function_left( const RefalFunction *func, Iter& first, Iter& last );
+extern Iter function_right( const RefalFunction *func, Iter& first, Iter& last );
+#endif
 
 extern bool char_term(char ch, Iter& pos );
 extern Iter char_left( char ch, Iter& first, Iter& last );
@@ -248,12 +263,7 @@ extern bool ident_term( RefalIdentifier ident, Iter& pos );
 extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
 extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
 
-extern Iter adt_term(
-  Iter& res_first, Iter& res_last,
-  RefalFunctionPtr tag,
-  Iter pos
-);
-
+#ifdef MODULE_REFAL
 extern Iter adt_left(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
@@ -264,6 +274,23 @@ extern Iter adt_right(
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
+#else
+extern Iter adt_term(
+  Iter& res_first, Iter& res_last,
+  const RefalFunction *tag,
+  Iter pos
+);
+extern Iter adt_left(
+  Iter& res_first, Iter& res_last,
+  const RefalFunction *tag,
+  Iter& first, Iter &last
+);
+extern Iter adt_right(
+  Iter& res_first, Iter& res_last,
+  const RefalFunction *tag,
+  Iter& first, Iter &last
+);
+#endif
 
 extern Iter call_left(
   Iter& res_first, Iter& res_last,
@@ -323,9 +350,13 @@ extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
 
 extern bool alloc_char( Iter& res, char ch );
 extern bool alloc_number( Iter& res, RefalNumber num );
+#ifdef MODULE_REFAL
 extern bool alloc_name(
   Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
 );
+#else
+extern bool alloc_name(Iter& res, const RefalFunction *func);
+#endif
 extern bool alloc_ident( Iter& res, RefalIdentifier ident );
 extern bool alloc_open_adt( Iter& res );
 extern bool alloc_close_adt( Iter& res );
@@ -362,13 +393,19 @@ extern void splice_to_freelist( Iter first, Iter last );
 extern void splice_to_freelist_open( Iter before_first, Iter after_last );
 extern void splice_from_freelist( Iter pos );
 
-extern FnResult create_closure( Iter begin, Iter end );
+#ifndef MODULE_REFAL
+extern RefalFunction create_closure;
+#endif
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание
 Iter wrap_closure( Iter closure ); // Свернуть замыкание
 
 // Работа со статическими ящиками
 
+#ifdef MODULE_REFAL
 extern Iter initialize_swap_head( Iter head );
+#else
+extern Iter initialize_swap_head( Iter head, RefalSwapHead *holder );
+#endif
 extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
 extern void swap_save( Iter head, Iter first, Iter last );
 
@@ -424,19 +461,21 @@ void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
 
+#ifndef MODULE_REFAL
 extern FnResult interpret_array(
   const RASLCommand raa[],
   Iter context[],
   Iter begin,
   Iter end,
-  const RefalFunction functions[],
+  const RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
   const StringItem strings[],
   int open_e_stack[]
 );
+#endif
 
-extern const RefalFunction functions[];
+extern const RefalFunction *functions[];
 extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
 extern const StringItem strings[];
