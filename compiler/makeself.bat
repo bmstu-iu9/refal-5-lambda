@@ -5,7 +5,7 @@ setlocal
   if not exist srefc-s.exe copy ..\bin\srefc.exe srefc-s.exe
   copy srefc.exe srefc_.exe >NUL
   ..\bin\lexgen Lexer.sref
-  ..\bin\srmake -s srefc_ -c "%CPPLINE% -I..\srlib -DINTERPRET" -d ..\srlib srefc
+  ..\bin\srmake -s srefc_ -c "%CPPLINE% -I..\srlib" -d ..\srlib srefc
   if exist a.exe move a.exe srefc.exe
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds

@@ -159,8 +159,6 @@ $EXTERN Map, MapReduce, Fetch, Add;
 //FROM Library
 $EXTERN StrFromInt, WriteLine;
 
-$FORWARD GenBracketName;
-
 $ENTRY GenSentence {
   e.Algorithm =
     ('  do {')
@@ -192,18 +190,6 @@ BracketsVars {
     <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>;
 }
 
-BracketsVarsRefs {
-  s.BracketNumber =
-    '& ' <BracketsVar-B s.BracketNumber> ', '
-    '& ' <BracketsVar-E s.BracketNumber>;
-}
-
-GenBracketName {
-  s.Number =
-    '__bracket_' s.Number
-  ;
-}
-
 /*
   Величина отступа также определяет режим работы. Отступ в 4 пробела --
   вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
@@ -231,31 +217,9 @@ PrintName {
   e.Name = e.Name;
 }
 
-PrintDebug {
-  s.Usings s.Mode e.Index s.Depth =
-    'varInfo:: ' 'Mode[' s.Mode '] Index ['e.Index '] Depth[' <StrFromInt s.Depth> '] Usings[' <StrFromInt s.Usings> ']';
-}
-
-
 PrintVarShortcut {
   s.Usings s.Mode e.Index s.Depth =
     '__' s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
-}
-
-PrintLocFromShortcut {
-  s.Usings 'e' e.Index s.Depth = 'context[' <PrintVarShortcut s.Usings 'e' e.Index s.Depth> '], '
-                                 'context[' <PrintVarShortcut s.Usings 'e' e.Index s.Depth> ' + 1]';
-  s.Usings s.Mode e.Index s.Depth = 'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
-}
-
-PrintELocShortcut-B {
-  s.Usings s.Mode e.Index s.Depth =
-    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
-}
-
-PrintELocShortcut-E {
-  s.Usings s.Mode e.Index s.Depth =
-    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ' + 1]';
 }
 
 PrintConstShortcutDecl {

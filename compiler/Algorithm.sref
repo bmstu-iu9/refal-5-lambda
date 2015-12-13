@@ -636,36 +636,6 @@ $EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
 //FROM Library
 $EXTERN WriteLine;
 
-DebugVarInfo {
-  ( s.Usings 'e' e.Index ) =
-    <WriteLine 'Debug EVar Info: \n'
-               '\tUsings: ' s.Usings '\n'
-               '\tIndex: ' e.Index '\n'
-    >;
-  ( s.Usings s.Mode e.Index ) =
-    <WriteLine 'Debug Var Info: \n'
-               '\tUsings: ' s.Usings '\n'
-               '\tIndex: ' e.Index '\n'
-               '\tMode: ' s.Mode '\n'
-    >;
-}
-
-DebugNVarInfo {
-  ( s.Number s.Usings 'e' e.Index ) =
-    <WriteLine 'Debug EVar Info: \n'
-               '\tAlloc: ' <StrFromInt s.Number> '\n'
-               '\tUsings: ' s.Usings '\n'
-               '\tIndex: ' e.Index '\n'
-    >;
-  ( s.Number s.Usings s.Mode e.Index ) =
-    <WriteLine 'Debug Var Info: \n'
-               '\tAlloc: ' <StrFromInt s.Number> '\n'
-               '\tUsings: ' s.Usings '\n'
-               '\tIndex: ' e.Index '\n'
-               '\tMode: ' s.Mode '\n'
-    >;
-}
-
 NumerateVars {
   s.Number ( s.Usings 'e' e.Index ) e.Etc =
     (s.Number s.Usings 'e' e.Index) <NumerateVars <Add s.Number 2> e.Etc>

@@ -37,7 +37,7 @@ setlocal
     exit
   )
 
-  %CPPLINE% -I../srlib -DINTERPRET -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../srlib/refalrts.cpp
+  %CPPLINE% -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit
