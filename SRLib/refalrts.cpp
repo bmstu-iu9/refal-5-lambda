@@ -793,19 +793,15 @@ unsigned refalrts::read_chars(
   char buffer[], unsigned buflen, refalrts::Iter& first, refalrts::Iter& last
 ) {
   unsigned read = 0;
-  for( ; ; ) {
-    if( read == buflen ) {
-      return read;
-    } else if( empty_seq(first, last) ) {
-      return read;
-    } else if( first->tag != refalrts::cDataChar ) {
-      return read;
-    } else {
-      buffer[read] = first->char_info;
-      ++ read;
-      move_left( first, last );
-    }
+  while (
+    read != buflen && ! empty_seq(first, last)
+      && first->tag == refalrts::cDataChar
+  ) {
+    buffer[read] = first->char_info;
+    ++ read;
+    move_left( first, last );
   }
+  return read;
 }
 
 //------------------------------------------------------------------------------
