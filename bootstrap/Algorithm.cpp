@@ -23,9 +23,9 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenResult, "GenResult" },
-      { & GenPattern, "GenPattern" },
-      { & GeneralizeResult, "GeneralizeResult" }
+      { GenResult, "GenResult" },
+      { GenPattern, "GenPattern" },
+      { GeneralizeResult, "GeneralizeResult" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -82,13 +82,13 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & GeneralizeResult, "GeneralizeResult" ) )
+    if( ! refalrts::alloc_name( n1, GeneralizeResult, "GeneralizeResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & GenPattern, "GenPattern" ) )
+    if( ! refalrts::alloc_name( n3, GenPattern, "GenPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -97,7 +97,7 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & GenResult, "GenResult" ) )
+    if( ! refalrts::alloc_name( n6, GenResult, "GenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -468,7 +468,7 @@ static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & SaveBrackets, "SaveBrackets" }
+      { SaveBrackets, "SaveBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -523,7 +523,7 @@ static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & SaveBrackets, "SaveBrackets" ) )
+    if( ! refalrts::alloc_name( n3, SaveBrackets, "SaveBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -567,8 +567,8 @@ static refalrts::FnResult lambda_GenPattern_1(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" },
-      { & CmdComment, "CmdComment" }
+      { TextFromPattern, "TextFromPattern" },
+      { CmdComment, "CmdComment" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -640,13 +640,13 @@ static refalrts::FnResult lambda_GenPattern_1(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & CmdComment, "CmdComment" ) )
+    if( ! refalrts::alloc_name( n4, CmdComment, "CmdComment" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n6, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -702,12 +702,12 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_GenPattern_1, "lambda_GenPattern_1" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & lambda_GenPattern_0, "lambda_GenPattern_0" },
-      { & Seq, "Seq" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & Fetch, "Fetch" }
+      { lambda_GenPattern_1, "lambda_GenPattern_1" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { lambda_GenPattern_0, "lambda_GenPattern_0" },
+      { Seq, "Seq" },
+      { DoGenPattern, "DoGenPattern" },
+      { Fetch, "Fetch" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -765,13 +765,13 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & DoGenPattern, "DoGenPattern" ) )
+    if( ! refalrts::alloc_name( n3, DoGenPattern, "DoGenPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_number( n4, 2UL ) )
@@ -804,19 +804,19 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_name( n14, & Seq, "Seq" ) )
+    if( ! refalrts::alloc_name( n14, Seq, "Seq" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & lambda_GenPattern_0, "lambda_GenPattern_0" ) )
+    if( ! refalrts::alloc_name( n15, lambda_GenPattern_0, "lambda_GenPattern_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_open_call( n16 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_name( n17, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n17, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_name( n18, & lambda_GenPattern_1, "lambda_GenPattern_1" ) )
+    if( ! refalrts::alloc_name( n18, lambda_GenPattern_1, "lambda_GenPattern_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
     if( ! refalrts::alloc_open_bracket( n19 ) )
@@ -928,7 +928,7 @@ static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Add, "Add" }
+      { Add, "Add" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -966,7 +966,7 @@ static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Add, "Add" ) )
+    if( ! refalrts::alloc_name( n1, Add, "Add" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_number( n2, 2UL ) )
@@ -1014,10 +1014,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdChar, "CmdChar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkChar, "TkChar" }
+      { AlgLeft, "AlgLeft" },
+      { CmdChar, "CmdChar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkChar, "TkChar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1106,7 +1106,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkChar, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkChar, context[8], context[9] ) )
         continue;
       context[__eRange_1_1] = context[6];
       context[__eRange_1_1 + 1] = context[7];
@@ -1123,7 +1123,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1144,10 +1144,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdChar, "CmdChar" ) )
+      if( ! refalrts::alloc_name( n8, CmdChar, "CmdChar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n9, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -1213,10 +1213,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdNumber, "CmdNumber" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkNumber, "TkNumber" }
+      { AlgLeft, "AlgLeft" },
+      { CmdNumber, "CmdNumber" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkNumber, "TkNumber" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1305,7 +1305,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkNumber, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkNumber, context[8], context[9] ) )
         continue;
       context[__eRange_1_1] = context[6];
       context[__eRange_1_1 + 1] = context[7];
@@ -1322,7 +1322,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1343,10 +1343,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdNumber, "CmdNumber" ) )
+      if( ! refalrts::alloc_name( n8, CmdNumber, "CmdNumber" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n9, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -1412,10 +1412,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdName, "CmdName" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkName, "TkName" }
+      { AlgLeft, "AlgLeft" },
+      { CmdName, "CmdName" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkName, "TkName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1503,7 +1503,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkName, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkName, context[8], context[9] ) )
         continue;
       context[__eName_1_1] = context[8];
       context[__eName_1_1 + 1] = context[9];
@@ -1518,7 +1518,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1539,10 +1539,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdName, "CmdName" ) )
+      if( ! refalrts::alloc_name( n8, CmdName, "CmdName" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n9, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -1608,10 +1608,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdIdent, "CmdIdent" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkIdentifier, "TkIdentifier" }
+      { AlgLeft, "AlgLeft" },
+      { CmdIdent, "CmdIdent" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkIdentifier, "TkIdentifier" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1699,7 +1699,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkIdentifier, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkIdentifier, context[8], context[9] ) )
         continue;
       context[__eName_1_1] = context[8];
       context[__eName_1_1 + 1] = context[9];
@@ -1714,7 +1714,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1735,10 +1735,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdIdent, "CmdIdent" ) )
+      if( ! refalrts::alloc_name( n8, CmdIdent, "CmdIdent" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n9, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -1804,10 +1804,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdChar, "CmdChar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkChar, "TkChar" }
+      { AlgRight, "AlgRight" },
+      { CmdChar, "CmdChar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkChar, "TkChar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1892,7 +1892,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkChar, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkChar, context[8], context[9] ) )
         continue;
       context[__eRanges_E_1_1] = context[10];
       context[__eRanges_E_1_1 + 1] = context[11];
@@ -1913,7 +1913,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1934,10 +1934,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdChar, "CmdChar" ) )
+      if( ! refalrts::alloc_name( n8, CmdChar, "CmdChar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n9, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -2003,10 +2003,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdNumber, "CmdNumber" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkNumber, "TkNumber" }
+      { AlgRight, "AlgRight" },
+      { CmdNumber, "CmdNumber" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkNumber, "TkNumber" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2091,7 +2091,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkNumber, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkNumber, context[8], context[9] ) )
         continue;
       context[__eRanges_E_1_1] = context[10];
       context[__eRanges_E_1_1 + 1] = context[11];
@@ -2112,7 +2112,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2133,10 +2133,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdNumber, "CmdNumber" ) )
+      if( ! refalrts::alloc_name( n8, CmdNumber, "CmdNumber" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n9, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -2202,10 +2202,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdName, "CmdName" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkName, "TkName" }
+      { AlgRight, "AlgRight" },
+      { CmdName, "CmdName" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkName, "TkName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2289,7 +2289,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkName, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkName, context[8], context[9] ) )
         continue;
       context[__eName_1_1] = context[8];
       context[__eName_1_1 + 1] = context[9];
@@ -2308,7 +2308,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2329,10 +2329,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdName, "CmdName" ) )
+      if( ! refalrts::alloc_name( n8, CmdName, "CmdName" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n9, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -2398,10 +2398,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdIdent, "CmdIdent" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkIdentifier, "TkIdentifier" }
+      { AlgRight, "AlgRight" },
+      { CmdIdent, "CmdIdent" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkIdentifier, "TkIdentifier" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2485,7 +2485,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkIdentifier, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkIdentifier, context[8], context[9] ) )
         continue;
       context[__eName_1_1] = context[8];
       context[__eName_1_1 + 1] = context[9];
@@ -2504,7 +2504,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2525,10 +2525,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & CmdIdent, "CmdIdent" ) )
+      if( ! refalrts::alloc_name( n8, CmdIdent, "CmdIdent" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n9, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -2596,10 +2596,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdBrackets, "CmdBrackets" },
-      { & Inc2, "Inc2" },
-      { & DoGenPattern, "DoGenPattern" }
+      { AlgLeft, "AlgLeft" },
+      { CmdBrackets, "CmdBrackets" },
+      { Inc2, "Inc2" },
+      { DoGenPattern, "DoGenPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & Brackets<int>::name
@@ -2715,13 +2715,13 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Inc2, "Inc2" ) )
+      if( ! refalrts::alloc_name( n3, Inc2, "Inc2" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -2751,10 +2751,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n12 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & CmdBrackets, "CmdBrackets" ) )
+      if( ! refalrts::alloc_name( n13, CmdBrackets, "CmdBrackets" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
-      if( ! refalrts::alloc_name( n14, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n14, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n15 = 0;
       if( ! refalrts::alloc_close_bracket( n15 ) )
@@ -2832,10 +2832,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdBrackets, "CmdBrackets" },
-      { & Inc2, "Inc2" },
-      { & DoGenPattern, "DoGenPattern" }
+      { AlgRight, "AlgRight" },
+      { CmdBrackets, "CmdBrackets" },
+      { Inc2, "Inc2" },
+      { DoGenPattern, "DoGenPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & Brackets<int>::name
@@ -2951,13 +2951,13 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Inc2, "Inc2" ) )
+      if( ! refalrts::alloc_name( n3, Inc2, "Inc2" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -2987,10 +2987,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n12 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & CmdBrackets, "CmdBrackets" ) )
+      if( ! refalrts::alloc_name( n13, CmdBrackets, "CmdBrackets" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
-      if( ! refalrts::alloc_name( n14, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n14, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n15 = 0;
       if( ! refalrts::alloc_close_bracket( n15 ) )
@@ -3069,10 +3069,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdADT, "CmdADT" },
-      { & Inc2, "Inc2" },
-      { & DoGenPattern, "DoGenPattern" }
+      { AlgLeft, "AlgLeft" },
+      { CmdADT, "CmdADT" },
+      { Inc2, "Inc2" },
+      { DoGenPattern, "DoGenPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & ADT_Brackets<int>::name
@@ -3197,13 +3197,13 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Inc2, "Inc2" ) )
+      if( ! refalrts::alloc_name( n3, Inc2, "Inc2" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -3233,10 +3233,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n12 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & CmdADT, "CmdADT" ) )
+      if( ! refalrts::alloc_name( n13, CmdADT, "CmdADT" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
-      if( ! refalrts::alloc_name( n14, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n14, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n15 = 0;
       if( ! refalrts::alloc_close_bracket( n15 ) )
@@ -3316,10 +3316,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdADT, "CmdADT" },
-      { & Inc2, "Inc2" },
-      { & DoGenPattern, "DoGenPattern" }
+      { AlgRight, "AlgRight" },
+      { CmdADT, "CmdADT" },
+      { Inc2, "Inc2" },
+      { DoGenPattern, "DoGenPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & ADT_Brackets<int>::name
@@ -3444,13 +3444,13 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & Inc2, "Inc2" ) )
+      if( ! refalrts::alloc_name( n3, Inc2, "Inc2" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -3480,10 +3480,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n12 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & CmdADT, "CmdADT" ) )
+      if( ! refalrts::alloc_name( n13, CmdADT, "CmdADT" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
-      if( ! refalrts::alloc_name( n14, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n14, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n15 = 0;
       if( ! refalrts::alloc_close_bracket( n15 ) )
@@ -3557,9 +3557,9 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdEmpty, "CmdEmpty" },
-      { & DoGenPattern, "DoGenPattern" }
+      { AlgLeft, "AlgLeft" },
+      { CmdEmpty, "CmdEmpty" },
+      { DoGenPattern, "DoGenPattern" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3644,7 +3644,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3659,10 +3659,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n5 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
-      if( ! refalrts::alloc_name( n6, & CmdEmpty, "CmdEmpty" ) )
+      if( ! refalrts::alloc_name( n6, CmdEmpty, "CmdEmpty" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
-      if( ! refalrts::alloc_name( n7, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n7, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
       if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -3728,11 +3728,11 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdRepeated, "CmdRepeated" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { Inc, "Inc" },
+      { AlgLeft, "AlgLeft" },
+      { CmdRepeated, "CmdRepeated" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3844,7 +3844,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       context[__eRange_1_1] = context[6];
       context[__eRange_1_1 + 1] = context[7];
@@ -3882,7 +3882,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+        if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3900,7 +3900,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_call( n6 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n7 = 0;
-        if( ! refalrts::alloc_name( n7, & Inc, "Inc" ) )
+        if( ! refalrts::alloc_name( n7, Inc, "Inc" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n8 = 0;
         if( ! refalrts::alloc_close_call( n8 ) )
@@ -3918,16 +3918,16 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_bracket( n12 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
-        if( ! refalrts::alloc_name( n13, & CmdRepeated, "CmdRepeated" ) )
+        if( ! refalrts::alloc_name( n13, CmdRepeated, "CmdRepeated" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
-        if( ! refalrts::alloc_name( n14, & AlgLeft, "AlgLeft" ) )
+        if( ! refalrts::alloc_name( n14, AlgLeft, "AlgLeft" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n15 = 0;
         if( ! refalrts::alloc_open_call( n15 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n16 = 0;
-        if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+        if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n17 = 0;
         if( ! refalrts::alloc_close_call( n17 ) )
@@ -4022,11 +4022,11 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & AlgRight, "AlgRight" },
-      { & CmdRepeated, "CmdRepeated" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { Inc, "Inc" },
+      { AlgRight, "AlgRight" },
+      { CmdRepeated, "CmdRepeated" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4134,7 +4134,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       context[__eRanges_E_1_1] = context[12];
       context[__eRanges_E_1_1 + 1] = context[13];
@@ -4176,7 +4176,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+        if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4194,7 +4194,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_call( n6 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n7 = 0;
-        if( ! refalrts::alloc_name( n7, & Inc, "Inc" ) )
+        if( ! refalrts::alloc_name( n7, Inc, "Inc" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n8 = 0;
         if( ! refalrts::alloc_close_call( n8 ) )
@@ -4212,16 +4212,16 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_bracket( n12 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
-        if( ! refalrts::alloc_name( n13, & CmdRepeated, "CmdRepeated" ) )
+        if( ! refalrts::alloc_name( n13, CmdRepeated, "CmdRepeated" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
-        if( ! refalrts::alloc_name( n14, & AlgRight, "AlgRight" ) )
+        if( ! refalrts::alloc_name( n14, AlgRight, "AlgRight" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n15 = 0;
         if( ! refalrts::alloc_open_call( n15 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n16 = 0;
-        if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+        if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n17 = 0;
         if( ! refalrts::alloc_close_call( n17 ) )
@@ -4309,10 +4309,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdClosedE, "CmdClosedE" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgLeft, "AlgLeft" },
+      { CmdClosedE, "CmdClosedE" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4399,7 +4399,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 'e', context[8], context[9] ) )
         continue;
@@ -4420,7 +4420,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4447,10 +4447,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_name( n10, & CmdClosedE, "CmdClosedE" ) )
+      if( ! refalrts::alloc_name( n10, CmdClosedE, "CmdClosedE" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_name( n11, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n11, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
       if( ! refalrts::alloc_char( n12, 'e' ) )
@@ -4522,10 +4522,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdVar, "CmdVar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgLeft, "AlgLeft" },
+      { CmdVar, "CmdVar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4620,7 +4620,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 's', context[8], context[9] ) )
         continue;
@@ -4639,7 +4639,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4672,10 +4672,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdVar, "CmdVar" ) )
+      if( ! refalrts::alloc_name( n12, CmdVar, "CmdVar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n13, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_char( n14, 's' ) )
@@ -4752,10 +4752,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdVar, "CmdVar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgLeft, "AlgLeft" },
+      { CmdVar, "CmdVar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4850,7 +4850,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 't', context[8], context[9] ) )
         continue;
@@ -4869,7 +4869,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4902,10 +4902,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdVar, "CmdVar" ) )
+      if( ! refalrts::alloc_name( n12, CmdVar, "CmdVar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n13, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_char( n14, 't' ) )
@@ -4982,10 +4982,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdVar, "CmdVar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgRight, "AlgRight" },
+      { CmdVar, "CmdVar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5076,7 +5076,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 's', context[8], context[9] ) )
         continue;
@@ -5099,7 +5099,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5132,10 +5132,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdVar, "CmdVar" ) )
+      if( ! refalrts::alloc_name( n12, CmdVar, "CmdVar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n13, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_char( n14, 's' ) )
@@ -5212,10 +5212,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgRight, "AlgRight" },
-      { & CmdVar, "CmdVar" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgRight, "AlgRight" },
+      { CmdVar, "CmdVar" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5306,7 +5306,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 't', context[8], context[9] ) )
         continue;
@@ -5329,7 +5329,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5362,10 +5362,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdVar, "CmdVar" ) )
+      if( ! refalrts::alloc_name( n12, CmdVar, "CmdVar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & AlgRight, "AlgRight" ) )
+      if( ! refalrts::alloc_name( n13, AlgRight, "AlgRight" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_char( n14, 't' ) )
@@ -5442,10 +5442,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdOpenedE, "CmdOpenedE" },
-      { & DoGenPattern, "DoGenPattern" },
-      { & TkVariable, "TkVariable" }
+      { AlgLeft, "AlgLeft" },
+      { CmdOpenedE, "CmdOpenedE" },
+      { DoGenPattern, "DoGenPattern" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5540,7 +5540,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+      if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
         continue;
       if( ! refalrts::char_left( 'e', context[8], context[9] ) )
         continue;
@@ -5559,7 +5559,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenPattern, "DoGenPattern" ) )
+      if( ! refalrts::alloc_name( n1, DoGenPattern, "DoGenPattern" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5592,10 +5592,10 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdOpenedE, "CmdOpenedE" ) )
+      if( ! refalrts::alloc_name( n12, CmdOpenedE, "CmdOpenedE" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n13, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_char( n14, 'e' ) )
@@ -5753,7 +5753,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoSaveBrackets, "DoSaveBrackets" }
+      { DoSaveBrackets, "DoSaveBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5793,7 +5793,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoSaveBrackets, "DoSaveBrackets" ) )
+    if( ! refalrts::alloc_name( n1, DoSaveBrackets, "DoSaveBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5850,8 +5850,8 @@ static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refa
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExtractBrackets, "ExtractBrackets" },
-      { & DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
+      { ExtractBrackets, "ExtractBrackets" },
+      { DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5908,7 +5908,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refa
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" ) )
+    if( ! refalrts::alloc_name( n1, DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5917,7 +5917,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refa
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & ExtractBrackets, "ExtractBrackets" ) )
+    if( ! refalrts::alloc_name( n4, ExtractBrackets, "ExtractBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -5984,11 +5984,11 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_DoSaveBrackets_0, "lambda_DoSaveBrackets_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdOpenedE, "CmdOpenedE" },
-      { & Fetch, "Fetch" }
+      { lambda_DoSaveBrackets_0, "lambda_DoSaveBrackets_0" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { AlgLeft, "AlgLeft" },
+      { CmdOpenedE, "CmdOpenedE" },
+      { Fetch, "Fetch" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -6058,9 +6058,9 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       context[5] = 0;
       if( ! refalrts::brackets_left( context[4], context[5], context[6], context[7] ) )
         continue;
-      if( ! refalrts::function_left( & CmdOpenedE, context[4], context[5] ) )
+      if( ! refalrts::function_left( CmdOpenedE, context[4], context[5] ) )
         continue;
-      if( ! refalrts::function_left( & AlgLeft, context[4], context[5] ) )
+      if( ! refalrts::function_left( AlgLeft, context[4], context[5] ) )
         continue;
       context[__eCommands_E_1_1] = context[6];
       context[__eCommands_E_1_1 + 1] = context[7];
@@ -6077,16 +6077,16 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+      if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, & CmdOpenedE, "CmdOpenedE" ) )
+      if( ! refalrts::alloc_name( n3, CmdOpenedE, "CmdOpenedE" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_name( n4, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n4, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
       if( ! refalrts::alloc_char( n5, 'e' ) )
@@ -6098,10 +6098,10 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       if( ! refalrts::alloc_open_call( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, & refalrts::create_closure, "refalrts::create_closure" ) )
+      if( ! refalrts::alloc_name( n8, refalrts::create_closure, "refalrts::create_closure" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & lambda_DoSaveBrackets_0, "lambda_DoSaveBrackets_0" ) )
+      if( ! refalrts::alloc_name( n9, lambda_DoSaveBrackets_0, "lambda_DoSaveBrackets_0" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
       if( ! refalrts::alloc_open_bracket( n10 ) )
@@ -6432,12 +6432,12 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_DoSaveBrackets_MakeSavers_0, "lambda_DoSaveBrackets_MakeSavers_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & Map, "Map" },
-      { & CmdSave, "CmdSave" },
-      { & Inc2, "Inc2" },
-      { & DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
+      { lambda_DoSaveBrackets_MakeSavers_0, "lambda_DoSaveBrackets_MakeSavers_0" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { Map, "Map" },
+      { CmdSave, "CmdSave" },
+      { Inc2, "Inc2" },
+      { DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -6567,13 +6567,13 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" ) )
+        if( ! refalrts::alloc_name( n1, DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_call( n2 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n3 = 0;
-        if( ! refalrts::alloc_name( n3, & Inc2, "Inc2" ) )
+        if( ! refalrts::alloc_name( n3, Inc2, "Inc2" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n4 = 0;
         if( ! refalrts::alloc_close_call( n4 ) )
@@ -6591,7 +6591,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
         if( ! refalrts::alloc_open_bracket( n8 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n9 = 0;
-        if( ! refalrts::alloc_name( n9, & CmdSave, "CmdSave" ) )
+        if( ! refalrts::alloc_name( n9, CmdSave, "CmdSave" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n10 = 0;
         if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -6603,16 +6603,16 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
         if( ! refalrts::alloc_open_call( n12 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
-        if( ! refalrts::alloc_name( n13, & Map, "Map" ) )
+        if( ! refalrts::alloc_name( n13, Map, "Map" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
         if( ! refalrts::alloc_open_call( n14 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n15 = 0;
-        if( ! refalrts::alloc_name( n15, & refalrts::create_closure, "refalrts::create_closure" ) )
+        if( ! refalrts::alloc_name( n15, refalrts::create_closure, "refalrts::create_closure" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n16 = 0;
-        if( ! refalrts::alloc_name( n16, & lambda_DoSaveBrackets_MakeSavers_0, "lambda_DoSaveBrackets_MakeSavers_0" ) )
+        if( ! refalrts::alloc_name( n16, lambda_DoSaveBrackets_MakeSavers_0, "lambda_DoSaveBrackets_MakeSavers_0" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n17 = 0;
         if( ! refalrts::alloc_close_call( n17 ) )
@@ -6699,7 +6699,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoSaveBrackets, "DoSaveBrackets" }
+      { DoSaveBrackets, "DoSaveBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -6754,7 +6754,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoSaveBrackets, "DoSaveBrackets" ) )
+    if( ! refalrts::alloc_name( n1, DoSaveBrackets, "DoSaveBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -6807,7 +6807,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdBrackets, "CmdBrackets" }
+      { CmdBrackets, "CmdBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -6840,7 +6840,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdBrackets, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdBrackets, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -6877,7 +6877,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdADT, "CmdADT" }
+      { CmdADT, "CmdADT" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -6909,7 +6909,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdADT, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdADT, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -7011,9 +7011,9 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_ExtractBrackets_0, "lambda_ExtractBrackets_0" },
-      { & Map, "Map" },
-      { & Brackets_Set, "Brackets_Set" }
+      { lambda_ExtractBrackets_0, "lambda_ExtractBrackets_0" },
+      { Map, "Map" },
+      { Brackets_Set, "Brackets_Set" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7051,16 +7051,16 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Brackets_Set, "Brackets_Set" ) )
+    if( ! refalrts::alloc_name( n1, Brackets_Set, "Brackets_Set" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n3, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & lambda_ExtractBrackets_0, "lambda_ExtractBrackets_0" ) )
+    if( ! refalrts::alloc_name( n4, lambda_ExtractBrackets_0, "lambda_ExtractBrackets_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -7109,7 +7109,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Brackets_Set, "Brackets_Set" }
+      { Brackets_Set, "Brackets_Set" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7168,7 +7168,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & Brackets_Set, "Brackets_Set" ) )
+        if( ! refalrts::alloc_name( n1, Brackets_Set, "Brackets_Set" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_close_call( n2 ) )
@@ -7258,7 +7258,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" }
+      { TextFromPattern, "TextFromPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & Brackets<int>::name
@@ -7319,7 +7319,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n3, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -7334,7 +7334,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n8, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_call( n9 ) )
@@ -7375,7 +7375,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" }
+      { TextFromPattern, "TextFromPattern" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & ADT_Brackets<int>::name
@@ -7449,7 +7449,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n4, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -7464,7 +7464,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_name( n9, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n9, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
     if( ! refalrts::alloc_close_call( n10 ) )
@@ -7506,8 +7506,8 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TkChar, "TkChar" },
-      { & TextFromPattern_Char, "TextFromPattern_Char" }
+      { TkChar, "TkChar" },
+      { TextFromPattern_Char, "TextFromPattern_Char" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7546,7 +7546,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkChar, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkChar, context[2], context[3] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
@@ -7567,13 +7567,13 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & TextFromPattern_Char, "TextFromPattern_Char" ) )
+    if( ! refalrts::alloc_name( n3, TextFromPattern_Char, "TextFromPattern_Char" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_name( n5, TkChar, "TkChar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -7613,9 +7613,9 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" },
-      { & StrFromInt, "StrFromInt" },
-      { & TkNumber, "TkNumber" }
+      { TextFromPattern, "TextFromPattern" },
+      { StrFromInt, "StrFromInt" },
+      { TkNumber, "TkNumber" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7653,7 +7653,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkNumber, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkNumber, context[2], context[3] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
@@ -7671,7 +7671,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & StrFromInt, "StrFromInt" ) )
+    if( ! refalrts::alloc_name( n2, StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -7680,7 +7680,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n5, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -7717,8 +7717,8 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" },
-      { & TkName, "TkName" }
+      { TextFromPattern, "TextFromPattern" },
+      { TkName, "TkName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7754,7 +7754,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkName, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkName, context[2], context[3] ) )
       break;
     context[__eName_1_1] = context[2];
     context[__eName_1_1 + 1] = context[3];
@@ -7776,7 +7776,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n4, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -7812,9 +7812,9 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" },
-      { & StrFromInt, "StrFromInt" },
-      { & TkVariable, "TkVariable" }
+      { TextFromPattern, "TextFromPattern" },
+      { StrFromInt, "StrFromInt" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7857,7 +7857,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkVariable, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkVariable, context[2], context[3] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
@@ -7883,7 +7883,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & StrFromInt, "StrFromInt" ) )
+    if( ! refalrts::alloc_name( n4, StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -7892,7 +7892,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n7, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_call( n8 ) )
@@ -7933,8 +7933,8 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" },
-      { & TkIdentifier, "TkIdentifier" }
+      { TextFromPattern, "TextFromPattern" },
+      { TkIdentifier, "TkIdentifier" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -7970,7 +7970,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkIdentifier, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkIdentifier, context[2], context[3] ) )
       break;
     context[__eName_1_1] = context[2];
     context[__eName_1_1 + 1] = context[3];
@@ -7992,7 +7992,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n4, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -8452,9 +8452,9 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern_Char, "TextFromPattern_Char" },
-      { & Escape, "Escape" },
-      { & TkChar, "TkChar" }
+      { TextFromPattern_Char, "TextFromPattern_Char" },
+      { Escape, "Escape" },
+      { TkChar, "TkChar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -8491,7 +8491,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkChar, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkChar, context[2], context[3] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
@@ -8506,7 +8506,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Escape, "Escape" ) )
+    if( ! refalrts::alloc_name( n1, Escape, "Escape" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -8515,7 +8515,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & TextFromPattern_Char, "TextFromPattern_Char" ) )
+    if( ! refalrts::alloc_name( n4, TextFromPattern_Char, "TextFromPattern_Char" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -8596,7 +8596,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TextFromPattern, "TextFromPattern" }
+      { TextFromPattern, "TextFromPattern" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -8630,7 +8630,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & TextFromPattern, "TextFromPattern" ) )
+    if( ! refalrts::alloc_name( n1, TextFromPattern, "TextFromPattern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -8668,7 +8668,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoGenResult, "DoGenResult" }
+      { DoGenResult, "DoGenResult" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -8709,7 +8709,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -8896,12 +8896,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElChar, "ElChar" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkChar, "TkChar" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElChar, "ElChar" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkChar, "TkChar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -8984,7 +8984,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkChar, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkChar, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -9003,7 +9003,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -9018,10 +9018,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElChar, "ElChar" ) )
+    if( ! refalrts::alloc_name( n7, ElChar, "ElChar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -9036,7 +9036,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -9048,7 +9048,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -9117,12 +9117,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElName, "ElName" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkName, "TkName" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElName, "ElName" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkName, "TkName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -9204,7 +9204,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkName, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkName, context[8], context[9] ) )
       break;
     context[__eName_1_1] = context[8];
     context[__eName_1_1 + 1] = context[9];
@@ -9221,7 +9221,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -9236,10 +9236,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElName, "ElName" ) )
+    if( ! refalrts::alloc_name( n7, ElName, "ElName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -9254,7 +9254,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -9266,7 +9266,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -9335,12 +9335,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElNumber, "ElNumber" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkNumber, "TkNumber" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElNumber, "ElNumber" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkNumber, "TkNumber" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -9423,7 +9423,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkNumber, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkNumber, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -9442,7 +9442,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -9457,10 +9457,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElNumber, "ElNumber" ) )
+    if( ! refalrts::alloc_name( n7, ElNumber, "ElNumber" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -9475,7 +9475,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -9487,7 +9487,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -9556,12 +9556,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElIdent, "ElIdent" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkIdentifier, "TkIdentifier" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElIdent, "ElIdent" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkIdentifier, "TkIdentifier" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -9643,7 +9643,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkIdentifier, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkIdentifier, context[8], context[9] ) )
       break;
     context[__eName_1_1] = context[8];
     context[__eName_1_1 + 1] = context[9];
@@ -9660,7 +9660,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -9675,10 +9675,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElIdent, "ElIdent" ) )
+    if( ! refalrts::alloc_name( n7, ElIdent, "ElIdent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -9693,7 +9693,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -9705,7 +9705,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -9775,12 +9775,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TkCloseBracket, "TkCloseBracket" },
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElOpenBracket, "ElOpenBracket" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" }
+      { TkCloseBracket, "TkCloseBracket" },
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElOpenBracket, "ElOpenBracket" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & Brackets<int>::name
@@ -9887,7 +9887,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -9902,10 +9902,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElOpenBracket, "ElOpenBracket" ) )
+    if( ! refalrts::alloc_name( n7, ElOpenBracket, "ElOpenBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -9920,7 +9920,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -9932,7 +9932,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -9941,7 +9941,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & TkCloseBracket, "TkCloseBracket" ) )
+    if( ! refalrts::alloc_name( n19, TkCloseBracket, "TkCloseBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_close_bracket( n20 ) )
@@ -10016,11 +10016,11 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElOpenCall, "ElOpenCall" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElOpenCall, "ElOpenCall" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & CloseCall<int>::name,
@@ -10128,7 +10128,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -10143,10 +10143,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElOpenCall, "ElOpenCall" ) )
+    if( ! refalrts::alloc_name( n7, ElOpenCall, "ElOpenCall" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -10161,7 +10161,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -10173,7 +10173,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -10258,13 +10258,13 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TkCloseADT, "TkCloseADT" },
-      { & TkName, "TkName" },
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & ElOpenADT, "ElOpenADT" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" }
+      { TkCloseADT, "TkCloseADT" },
+      { TkName, "TkName" },
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { ElOpenADT, "ElOpenADT" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & ADT_Brackets<int>::name
@@ -10383,7 +10383,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -10398,10 +10398,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElOpenADT, "ElOpenADT" ) )
+    if( ! refalrts::alloc_name( n7, ElOpenADT, "ElOpenADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -10416,7 +10416,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n12, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -10428,7 +10428,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n16, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
@@ -10437,7 +10437,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & TkName, "TkName" ) )
+    if( ! refalrts::alloc_name( n19, TkName, "TkName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_close_bracket( n20 ) )
@@ -10446,7 +10446,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n21 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_name( n22, & TkCloseADT, "TkCloseADT" ) )
+    if( ! refalrts::alloc_name( n22, TkCloseADT, "TkCloseADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
     if( ! refalrts::alloc_close_bracket( n23 ) )
@@ -10526,13 +10526,13 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & CmdLinkBrackets, "CmdLinkBrackets" },
-      { & ElCloseBracket, "ElCloseBracket" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkCloseBracket, "TkCloseBracket" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { CmdLinkBrackets, "CmdLinkBrackets" },
+      { ElCloseBracket, "ElCloseBracket" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkCloseBracket, "TkCloseBracket" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -10619,7 +10619,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkCloseBracket, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkCloseBracket, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -10640,7 +10640,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -10655,10 +10655,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElCloseBracket, "ElCloseBracket" ) )
+    if( ! refalrts::alloc_name( n7, ElCloseBracket, "ElCloseBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -10673,7 +10673,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdLinkBrackets, "CmdLinkBrackets" ) )
+    if( ! refalrts::alloc_name( n12, CmdLinkBrackets, "CmdLinkBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -10682,7 +10682,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n15, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -10694,7 +10694,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n19, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_close_call( n20 ) )
@@ -10769,13 +10769,13 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & CmdLinkBrackets, "CmdLinkBrackets" },
-      { & ElCloseADT, "ElCloseADT" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkCloseADT, "TkCloseADT" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { CmdLinkBrackets, "CmdLinkBrackets" },
+      { ElCloseADT, "ElCloseADT" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" },
+      { TkCloseADT, "TkCloseADT" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -10862,7 +10862,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkCloseADT, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkCloseADT, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -10883,7 +10883,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -10898,10 +10898,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElCloseADT, "ElCloseADT" ) )
+    if( ! refalrts::alloc_name( n7, ElCloseADT, "ElCloseADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -10916,7 +10916,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdLinkBrackets, "CmdLinkBrackets" ) )
+    if( ! refalrts::alloc_name( n12, CmdLinkBrackets, "CmdLinkBrackets" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -10925,7 +10925,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n15, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -10937,7 +10937,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n19, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_close_call( n20 ) )
@@ -11012,12 +11012,12 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & CmdPushStack, "CmdPushStack" },
-      { & ElCloseCall, "ElCloseCall" },
-      { & CmdAllocateElem, "CmdAllocateElem" },
-      { & DoGenResult, "DoGenResult" }
+      { Inc, "Inc" },
+      { CmdInsertElem, "CmdInsertElem" },
+      { CmdPushStack, "CmdPushStack" },
+      { ElCloseCall, "ElCloseCall" },
+      { CmdAllocateElem, "CmdAllocateElem" },
+      { DoGenResult, "DoGenResult" }
     };
     static const refalrts::RefalIdentifier labels[] = {
       & CloseCall<int>::name
@@ -11130,7 +11130,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -11145,10 +11145,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdAllocateElem, "CmdAllocateElem" ) )
+    if( ! refalrts::alloc_name( n6, CmdAllocateElem, "CmdAllocateElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & ElCloseCall, "ElCloseCall" ) )
+    if( ! refalrts::alloc_name( n7, ElCloseCall, "ElCloseCall" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -11163,7 +11163,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & CmdPushStack, "CmdPushStack" ) )
+    if( ! refalrts::alloc_name( n12, CmdPushStack, "CmdPushStack" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -11172,7 +11172,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdPushStack, "CmdPushStack" ) )
+    if( ! refalrts::alloc_name( n15, CmdPushStack, "CmdPushStack" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -11181,7 +11181,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n17 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_name( n18, & CmdInsertElem, "CmdInsertElem" ) )
+    if( ! refalrts::alloc_name( n18, CmdInsertElem, "CmdInsertElem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
     if( ! refalrts::alloc_close_bracket( n19 ) )
@@ -11193,7 +11193,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n21 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_name( n22, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n22, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
     if( ! refalrts::alloc_close_call( n23 ) )
@@ -11275,10 +11275,10 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & CmdInsertVar, "CmdInsertVar" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkVariable, "TkVariable" }
+      { Inc, "Inc" },
+      { CmdInsertVar, "CmdInsertVar" },
+      { DoGenResult, "DoGenResult" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -11372,7 +11372,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -11408,7 +11408,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+      if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -11420,7 +11420,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_open_call( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_name( n5, & Inc, "Inc" ) )
+      if( ! refalrts::alloc_name( n5, Inc, "Inc" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
       if( ! refalrts::alloc_close_call( n6 ) )
@@ -11444,13 +11444,13 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_open_bracket( n12 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
-      if( ! refalrts::alloc_name( n13, & CmdInsertVar, "CmdInsertVar" ) )
+      if( ! refalrts::alloc_name( n13, CmdInsertVar, "CmdInsertVar" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n14 = 0;
       if( ! refalrts::alloc_open_call( n14 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n15 = 0;
-      if( ! refalrts::alloc_name( n15, & Inc, "Inc" ) )
+      if( ! refalrts::alloc_name( n15, Inc, "Inc" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n16 = 0;
       if( ! refalrts::alloc_close_call( n16 ) )
@@ -11534,9 +11534,9 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdInsertVar, "CmdInsertVar" },
-      { & DoGenResult, "DoGenResult" },
-      { & TkVariable, "TkVariable" }
+      { CmdInsertVar, "CmdInsertVar" },
+      { DoGenResult, "DoGenResult" },
+      { TkVariable, "TkVariable" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -11617,7 +11617,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & TkVariable, context[8], context[9] ) )
+    if( ! refalrts::function_left( TkVariable, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -11636,7 +11636,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGenResult, "DoGenResult" ) )
+    if( ! refalrts::alloc_name( n1, DoGenResult, "DoGenResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -11666,7 +11666,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_name( n11, & CmdInsertVar, "CmdInsertVar" ) )
+    if( ! refalrts::alloc_name( n11, CmdInsertVar, "CmdInsertVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
     if( ! refalrts::alloc_number( n12, 1UL ) )
@@ -11958,8 +11958,8 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Add, "Add" },
-      { & NumerateVars, "NumerateVars" }
+      { Add, "Add" },
+      { NumerateVars, "NumerateVars" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12032,13 +12032,13 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & NumerateVars, "NumerateVars" ) )
+    if( ! refalrts::alloc_name( n4, NumerateVars, "NumerateVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Add, "Add" ) )
+    if( ! refalrts::alloc_name( n6, Add, "Add" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_number( n7, 2UL ) )
@@ -12092,8 +12092,8 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & NumerateVars, "NumerateVars" }
+      { Inc, "Inc" },
+      { NumerateVars, "NumerateVars" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12162,13 +12162,13 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & NumerateVars, "NumerateVars" ) )
+    if( ! refalrts::alloc_name( n3, NumerateVars, "NumerateVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n5, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -12284,7 +12284,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FindAllocForCopiedVars, "FindAllocForCopiedVars" }
+      { FindAllocForCopiedVars, "FindAllocForCopiedVars" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12392,7 +12392,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
         if( ! refalrts::alloc_open_call( n2 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n3 = 0;
-        if( ! refalrts::alloc_name( n3, & FindAllocForCopiedVars, "FindAllocForCopiedVars" ) )
+        if( ! refalrts::alloc_name( n3, FindAllocForCopiedVars, "FindAllocForCopiedVars" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n4 = 0;
         if( ! refalrts::alloc_open_bracket( n4 ) )
@@ -12515,7 +12515,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiNum, "CmdiNum" }
+      { CmdiNum, "CmdiNum" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12563,7 +12563,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiNum, "CmdiNum" ) )
+    if( ! refalrts::alloc_name( n1, CmdiNum, "CmdiNum" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -12596,7 +12596,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiHugeNum, "CmdiHugeNum" }
+      { CmdiHugeNum, "CmdiHugeNum" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12644,7 +12644,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiHugeNum, "CmdiHugeNum" ) )
+    if( ! refalrts::alloc_name( n1, CmdiHugeNum, "CmdiHugeNum" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -12684,9 +12684,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiBracket, "CmdiBracket" },
-      { & CmdBrackets, "CmdBrackets" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiBracket, "CmdiBracket" },
+      { CmdBrackets, "CmdBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12727,7 +12727,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdBrackets, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdBrackets, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -12746,7 +12746,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiBracket, "CmdiBracket" ) )
+    if( ! refalrts::alloc_name( n1, CmdiBracket, "CmdiBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -12755,7 +12755,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -12793,10 +12793,10 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiContextSet, "CmdiContextSet" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdClosedE, "CmdClosedE" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiContextSet, "CmdiContextSet" },
+      { AlgLeft, "AlgLeft" },
+      { CmdClosedE, "CmdClosedE" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -12837,9 +12837,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdClosedE, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdClosedE, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+    if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -12856,7 +12856,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiContextSet, "CmdiContextSet" ) )
+    if( ! refalrts::alloc_name( n1, CmdiContextSet, "CmdiContextSet" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'e' ) )
@@ -12868,7 +12868,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n5, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -12908,12 +12908,12 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & Compare, "Compare" },
-      { & Fetch, "Fetch" },
-      { & CmdNumber, "CmdNumber" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { Compare, "Compare" },
+      { Fetch, "Fetch" },
+      { CmdNumber, "CmdNumber" }
     };
     using refalrts::labels;
     static const refalrts::RefalNumber numbers[] = {
@@ -12965,7 +12965,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdNumber, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdNumber, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -12986,13 +12986,13 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Compare, "Compare" ) )
+    if( ! refalrts::alloc_name( n3, Compare, "Compare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_number( n4, 256UL ) )
@@ -13004,10 +13004,10 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n7, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" ) )
+    if( ! refalrts::alloc_name( n8, lambda_GenInterpretPatternCommand_0, "lambda_GenInterpretPatternCommand_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_call( n9 ) )
@@ -13019,7 +13019,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n12, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_close_call( n13 ) )
@@ -13072,9 +13072,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiIdent, "CmdiIdent" },
-      { & CmdIdent, "CmdIdent" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiIdent, "CmdiIdent" },
+      { CmdIdent, "CmdIdent" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13114,7 +13114,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdIdent, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdIdent, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13131,7 +13131,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiIdent, "CmdiIdent" ) )
+    if( ! refalrts::alloc_name( n1, CmdiIdent, "CmdiIdent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13140,7 +13140,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13178,9 +13178,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiSave, "CmdiSave" },
-      { & CmdSave, "CmdSave" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiSave, "CmdiSave" },
+      { CmdSave, "CmdSave" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13219,7 +13219,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdSave, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdSave, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13236,7 +13236,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiSave, "CmdiSave" ) )
+    if( ! refalrts::alloc_name( n1, CmdiSave, "CmdiSave" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13245,7 +13245,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13284,11 +13284,11 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiEStart, "CmdiEStart" },
-      { & CmdiEPrepare, "CmdiEPrepare" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdOpenedE, "CmdOpenedE" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiEStart, "CmdiEStart" },
+      { CmdiEPrepare, "CmdiEPrepare" },
+      { AlgLeft, "AlgLeft" },
+      { CmdOpenedE, "CmdOpenedE" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13335,9 +13335,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdOpenedE, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdOpenedE, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+    if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13358,7 +13358,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiEPrepare, "CmdiEPrepare" ) )
+    if( ! refalrts::alloc_name( n1, CmdiEPrepare, "CmdiEPrepare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'e' ) )
@@ -13370,7 +13370,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & CmdiEStart, "CmdiEStart" ) )
+    if( ! refalrts::alloc_name( n5, CmdiEStart, "CmdiEStart" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_char( n6, 'e' ) )
@@ -13382,7 +13382,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_name( n9, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n9, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
     if( ! refalrts::alloc_close_call( n10 ) )
@@ -13428,9 +13428,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiChar, "CmdiChar" },
-      { & CmdChar, "CmdChar" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiChar, "CmdiChar" },
+      { CmdChar, "CmdChar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13471,7 +13471,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdChar, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdChar, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13490,7 +13490,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiChar, "CmdiChar" ) )
+    if( ! refalrts::alloc_name( n1, CmdiChar, "CmdiChar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13499,7 +13499,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13538,9 +13538,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiName, "CmdiName" },
-      { & CmdName, "CmdName" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiName, "CmdiName" },
+      { CmdName, "CmdName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13580,7 +13580,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdName, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdName, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13597,7 +13597,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiName, "CmdiName" ) )
+    if( ! refalrts::alloc_name( n1, CmdiName, "CmdiName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13606,7 +13606,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13646,9 +13646,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiADT, "CmdiADT" },
-      { & CmdADT, "CmdADT" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiADT, "CmdiADT" },
+      { CmdADT, "CmdADT" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13690,7 +13690,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdADT, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdADT, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13709,7 +13709,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiADT, "CmdiADT" ) )
+    if( ! refalrts::alloc_name( n1, CmdiADT, "CmdiADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13718,7 +13718,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13758,9 +13758,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiRepeat, "CmdiRepeat" },
-      { & CmdRepeated, "CmdRepeated" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiRepeat, "CmdiRepeat" },
+      { CmdRepeated, "CmdRepeated" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13800,7 +13800,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdRepeated, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdRepeated, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13817,7 +13817,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiRepeat, "CmdiRepeat" ) )
+    if( ! refalrts::alloc_name( n1, CmdiRepeat, "CmdiRepeat" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13826,7 +13826,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13863,10 +13863,10 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiEmpty, "CmdiEmpty" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdEmpty, "CmdEmpty" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiEmpty, "CmdiEmpty" },
+      { AlgLeft, "AlgLeft" },
+      { CmdEmpty, "CmdEmpty" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -13904,9 +13904,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdEmpty, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdEmpty, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+    if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -13921,7 +13921,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiEmpty, "CmdiEmpty" ) )
+    if( ! refalrts::alloc_name( n1, CmdiEmpty, "CmdiEmpty" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13930,7 +13930,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -13968,9 +13968,9 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdiVar, "CmdiVar" },
-      { & CmdVar, "CmdVar" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdiVar, "CmdiVar" },
+      { CmdVar, "CmdVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14012,7 +14012,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdVar, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdVar, context[2], context[3] ) )
       break;
     context[__eEtc_1_1] = context[0];
     context[__eEtc_1_1 + 1] = context[1];
@@ -14031,7 +14031,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiVar, "CmdiVar" ) )
+    if( ! refalrts::alloc_name( n1, CmdiVar, "CmdiVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -14040,7 +14040,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n4, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -14078,8 +14078,8 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & CmdEmpty, "CmdEmpty" }
+      { WriteLine, "WriteLine" },
+      { CmdEmpty, "CmdEmpty" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14126,7 +14126,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdEmpty, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdEmpty, context[2], context[3] ) )
       break;
     // Unused closed variable e.Etc#1
     if( ! refalrts::svar_left( context[__sDirection_1_1], context[2], context[3] ) )
@@ -14142,7 +14142,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n1, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'C' ) )
@@ -14224,7 +14224,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" }
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14264,7 +14264,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n1, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -14349,8 +14349,8 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & VarSetDifference, "VarSetDifference" },
-      { & VarSetUnion, "VarSetUnion" }
+      { VarSetDifference, "VarSetDifference" },
+      { VarSetUnion, "VarSetUnion" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14445,7 +14445,7 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & VarSetUnion, "VarSetUnion" ) )
+    if( ! refalrts::alloc_name( n2, VarSetUnion, "VarSetUnion" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -14472,7 +14472,7 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_name( n11, & VarSetDifference, "VarSetDifference" ) )
+    if( ! refalrts::alloc_name( n11, VarSetDifference, "VarSetDifference" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
     if( ! refalrts::alloc_open_bracket( n12 ) )
@@ -14496,7 +14496,7 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & VarSetDifference, "VarSetDifference" ) )
+    if( ! refalrts::alloc_name( n19, VarSetDifference, "VarSetDifference" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_open_bracket( n20 ) )
@@ -14588,9 +14588,9 @@ static refalrts::FnResult lambda_GeneralizeResult_1(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FilterUnusedCmdClosedE, "FilterUnusedCmdClosedE" },
-      { & Map, "Map" },
-      { & VarSetDifference, "VarSetDifference" }
+      { FilterUnusedCmdClosedE, "FilterUnusedCmdClosedE" },
+      { Map, "Map" },
+      { VarSetDifference, "VarSetDifference" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14671,7 +14671,7 @@ static refalrts::FnResult lambda_GeneralizeResult_1(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & VarSetDifference, "VarSetDifference" ) )
+    if( ! refalrts::alloc_name( n2, VarSetDifference, "VarSetDifference" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -14701,13 +14701,13 @@ static refalrts::FnResult lambda_GeneralizeResult_1(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n12, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_open_bracket( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_name( n14, & FilterUnusedCmdClosedE, "FilterUnusedCmdClosedE" ) )
+    if( ! refalrts::alloc_name( n14, FilterUnusedCmdClosedE, "FilterUnusedCmdClosedE" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
     if( ! refalrts::alloc_close_bracket( n15 ) )
@@ -14774,7 +14774,7 @@ static refalrts::FnResult lambda_GeneralizeResult_2(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NumerateVars, "NumerateVars" }
+      { NumerateVars, "NumerateVars" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14837,7 +14837,7 @@ static refalrts::FnResult lambda_GeneralizeResult_2(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & NumerateVars, "NumerateVars" ) )
+    if( ! refalrts::alloc_name( n2, NumerateVars, "NumerateVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -14896,7 +14896,7 @@ static refalrts::FnResult lambda_GeneralizeResult_3(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FindAllocForCopiedVars, "FindAllocForCopiedVars" }
+      { FindAllocForCopiedVars, "FindAllocForCopiedVars" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -14985,7 +14985,7 @@ static refalrts::FnResult lambda_GeneralizeResult_3(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & FindAllocForCopiedVars, "FindAllocForCopiedVars" ) )
+    if( ! refalrts::alloc_name( n4, FindAllocForCopiedVars, "FindAllocForCopiedVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_open_bracket( n5 ) )
@@ -15071,26 +15071,26 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdEndIf, "CmdEndIf" },
-      { & CmdReturnResult, "CmdReturnResult" },
-      { & MakeCopyVar, "MakeCopyVar" },
-      { & Map, "Map" },
-      { & CmdEmptyResult, "CmdEmptyResult" },
-      { & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" },
-      { & CmdElse, "CmdElse" },
-      { & CmdiRunInterpret, "CmdiRunInterpret" },
-      { & CmdFinRAA, "CmdFinRAA" },
-      { & FoldAllocCommands, "FoldAllocCommands" },
-      { & MakeInterpCommands, "MakeInterpCommands" },
-      { & CmdiEmptyResult, "CmdiEmptyResult" },
-      { & GenInterpretPatternCommand, "GenInterpretPatternCommand" },
-      { & CmdInitRAA, "CmdInitRAA" },
-      { & OutlineConstants, "OutlineConstants" },
-      { & PrepareOpenEStack, "PrepareOpenEStack" },
-      { & CmdIfDef, "CmdIfDef" },
-      { & CmdInitB0, "CmdInitB0" },
-      { & MakeDeclaration, "MakeDeclaration" },
-      { & CmdIssueMem, "CmdIssueMem" }
+      { CmdEndIf, "CmdEndIf" },
+      { CmdReturnResult, "CmdReturnResult" },
+      { MakeCopyVar, "MakeCopyVar" },
+      { Map, "Map" },
+      { CmdEmptyResult, "CmdEmptyResult" },
+      { GenerateResult_OpenELoops, "GenerateResult_OpenELoops" },
+      { CmdElse, "CmdElse" },
+      { CmdiRunInterpret, "CmdiRunInterpret" },
+      { CmdFinRAA, "CmdFinRAA" },
+      { FoldAllocCommands, "FoldAllocCommands" },
+      { MakeInterpCommands, "MakeInterpCommands" },
+      { CmdiEmptyResult, "CmdiEmptyResult" },
+      { GenInterpretPatternCommand, "GenInterpretPatternCommand" },
+      { CmdInitRAA, "CmdInitRAA" },
+      { OutlineConstants, "OutlineConstants" },
+      { PrepareOpenEStack, "PrepareOpenEStack" },
+      { CmdIfDef, "CmdIfDef" },
+      { CmdInitB0, "CmdInitB0" },
+      { MakeDeclaration, "MakeDeclaration" },
+      { CmdIssueMem, "CmdIssueMem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -15253,7 +15253,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdIssueMem, "CmdIssueMem" ) )
+    if( ! refalrts::alloc_name( n1, CmdIssueMem, "CmdIssueMem" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -15262,10 +15262,10 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n4, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & MakeDeclaration, "MakeDeclaration" ) )
+    if( ! refalrts::alloc_name( n5, MakeDeclaration, "MakeDeclaration" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -15274,7 +15274,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & CmdInitB0, "CmdInitB0" ) )
+    if( ! refalrts::alloc_name( n8, CmdInitB0, "CmdInitB0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -15283,7 +15283,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_name( n11, & CmdIfDef, "CmdIfDef" ) )
+    if( ! refalrts::alloc_name( n11, CmdIfDef, "CmdIfDef" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
     if( ! refalrts::alloc_close_bracket( n12 ) )
@@ -15292,13 +15292,13 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_name( n14, & PrepareOpenEStack, "PrepareOpenEStack" ) )
+    if( ! refalrts::alloc_name( n14, PrepareOpenEStack, "PrepareOpenEStack" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
     if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_name( n16, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n16, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_open_bracket( n17 ) )
@@ -15331,7 +15331,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n26 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_name( n27, & CmdInitRAA, "CmdInitRAA" ) )
+    if( ! refalrts::alloc_name( n27, CmdInitRAA, "CmdInitRAA" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
     if( ! refalrts::alloc_close_bracket( n28 ) )
@@ -15340,7 +15340,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n29 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_name( n30, & GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
+    if( ! refalrts::alloc_name( n30, GenInterpretPatternCommand, "GenInterpretPatternCommand" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
     if( ! refalrts::alloc_close_call( n31 ) )
@@ -15349,7 +15349,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n32 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_name( n33, & CmdiEmptyResult, "CmdiEmptyResult" ) )
+    if( ! refalrts::alloc_name( n33, CmdiEmptyResult, "CmdiEmptyResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
     if( ! refalrts::alloc_close_bracket( n34 ) )
@@ -15358,13 +15358,13 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n35 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_name( n36, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n36, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
     if( ! refalrts::alloc_open_bracket( n37 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_name( n38, & MakeInterpCommands, "MakeInterpCommands" ) )
+    if( ! refalrts::alloc_name( n38, MakeInterpCommands, "MakeInterpCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
     if( ! refalrts::alloc_close_bracket( n39 ) )
@@ -15373,7 +15373,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n40 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_name( n41, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n41, FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
     if( ! refalrts::alloc_open_bracket( n42 ) )
@@ -15391,7 +15391,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n46 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n47 = 0;
-    if( ! refalrts::alloc_name( n47, & CmdFinRAA, "CmdFinRAA" ) )
+    if( ! refalrts::alloc_name( n47, CmdFinRAA, "CmdFinRAA" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n48 = 0;
     if( ! refalrts::alloc_close_bracket( n48 ) )
@@ -15409,7 +15409,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n52 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n53 = 0;
-    if( ! refalrts::alloc_name( n53, & CmdiRunInterpret, "CmdiRunInterpret" ) )
+    if( ! refalrts::alloc_name( n53, CmdiRunInterpret, "CmdiRunInterpret" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n54 = 0;
     if( ! refalrts::alloc_close_bracket( n54 ) )
@@ -15418,7 +15418,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n55 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n56 = 0;
-    if( ! refalrts::alloc_name( n56, & CmdElse, "CmdElse" ) )
+    if( ! refalrts::alloc_name( n56, CmdElse, "CmdElse" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n57 = 0;
     if( ! refalrts::alloc_close_bracket( n57 ) )
@@ -15427,13 +15427,13 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n58 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n59 = 0;
-    if( ! refalrts::alloc_name( n59, & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
+    if( ! refalrts::alloc_name( n59, GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n60 = 0;
     if( ! refalrts::alloc_open_bracket( n60 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n61 = 0;
-    if( ! refalrts::alloc_name( n61, & CmdEmptyResult, "CmdEmptyResult" ) )
+    if( ! refalrts::alloc_name( n61, CmdEmptyResult, "CmdEmptyResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n62 = 0;
     if( ! refalrts::alloc_close_bracket( n62 ) )
@@ -15442,10 +15442,10 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n63 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n64 = 0;
-    if( ! refalrts::alloc_name( n64, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n64, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n65 = 0;
-    if( ! refalrts::alloc_name( n65, & MakeCopyVar, "MakeCopyVar" ) )
+    if( ! refalrts::alloc_name( n65, MakeCopyVar, "MakeCopyVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n66 = 0;
     if( ! refalrts::alloc_close_call( n66 ) )
@@ -15454,7 +15454,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n67 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n68 = 0;
-    if( ! refalrts::alloc_name( n68, & CmdReturnResult, "CmdReturnResult" ) )
+    if( ! refalrts::alloc_name( n68, CmdReturnResult, "CmdReturnResult" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n69 = 0;
     if( ! refalrts::alloc_close_bracket( n69 ) )
@@ -15466,7 +15466,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n71 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n72 = 0;
-    if( ! refalrts::alloc_name( n72, & CmdEndIf, "CmdEndIf" ) )
+    if( ! refalrts::alloc_name( n72, CmdEndIf, "CmdEndIf" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n73 = 0;
     if( ! refalrts::alloc_close_bracket( n73 ) )
@@ -15619,18 +15619,18 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_GeneralizeResult_4, "lambda_GeneralizeResult_4" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & lambda_GeneralizeResult_3, "lambda_GeneralizeResult_3" },
-      { & lambda_GeneralizeResult_2, "lambda_GeneralizeResult_2" },
-      { & lambda_GeneralizeResult_1, "lambda_GeneralizeResult_1" },
-      { & lambda_GeneralizeResult_0, "lambda_GeneralizeResult_0" },
-      { & Seq, "Seq" },
-      { & ClosedEVariables, "ClosedEVariables" },
-      { & Map, "Map" },
-      { & RepeatedEVariables, "RepeatedEVariables" },
-      { & ReplicateVars, "ReplicateVars" },
-      { & Fetch, "Fetch" }
+      { lambda_GeneralizeResult_4, "lambda_GeneralizeResult_4" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { lambda_GeneralizeResult_3, "lambda_GeneralizeResult_3" },
+      { lambda_GeneralizeResult_2, "lambda_GeneralizeResult_2" },
+      { lambda_GeneralizeResult_1, "lambda_GeneralizeResult_1" },
+      { lambda_GeneralizeResult_0, "lambda_GeneralizeResult_0" },
+      { Seq, "Seq" },
+      { ClosedEVariables, "ClosedEVariables" },
+      { Map, "Map" },
+      { RepeatedEVariables, "RepeatedEVariables" },
+      { ReplicateVars, "ReplicateVars" },
+      { Fetch, "Fetch" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -15761,7 +15761,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -15770,7 +15770,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & ReplicateVars, "ReplicateVars" ) )
+    if( ! refalrts::alloc_name( n4, ReplicateVars, "ReplicateVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -15785,7 +15785,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_name( n9, & ReplicateVars, "ReplicateVars" ) )
+    if( ! refalrts::alloc_name( n9, ReplicateVars, "ReplicateVars" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
     if( ! refalrts::alloc_close_call( n10 ) )
@@ -15800,10 +15800,10 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_name( n14, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n14, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & RepeatedEVariables, "RepeatedEVariables" ) )
+    if( ! refalrts::alloc_name( n15, RepeatedEVariables, "RepeatedEVariables" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_call( n16 ) )
@@ -15815,10 +15815,10 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n19, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_name( n20, & ClosedEVariables, "ClosedEVariables" ) )
+    if( ! refalrts::alloc_name( n20, ClosedEVariables, "ClosedEVariables" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
     if( ! refalrts::alloc_close_call( n21 ) )
@@ -15827,19 +15827,19 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n22 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_name( n23, & Seq, "Seq" ) )
+    if( ! refalrts::alloc_name( n23, Seq, "Seq" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_name( n24, & lambda_GeneralizeResult_0, "lambda_GeneralizeResult_0" ) )
+    if( ! refalrts::alloc_name( n24, lambda_GeneralizeResult_0, "lambda_GeneralizeResult_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
     if( ! refalrts::alloc_open_call( n25 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_name( n26, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n26, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_name( n27, & lambda_GeneralizeResult_1, "lambda_GeneralizeResult_1" ) )
+    if( ! refalrts::alloc_name( n27, lambda_GeneralizeResult_1, "lambda_GeneralizeResult_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
     if( ! refalrts::alloc_open_bracket( n28 ) )
@@ -15854,25 +15854,25 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n31 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_name( n32, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n32, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_name( n33, & lambda_GeneralizeResult_2, "lambda_GeneralizeResult_2" ) )
+    if( ! refalrts::alloc_name( n33, lambda_GeneralizeResult_2, "lambda_GeneralizeResult_2" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
     if( ! refalrts::alloc_close_call( n34 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_name( n35, & lambda_GeneralizeResult_3, "lambda_GeneralizeResult_3" ) )
+    if( ! refalrts::alloc_name( n35, lambda_GeneralizeResult_3, "lambda_GeneralizeResult_3" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
     if( ! refalrts::alloc_open_call( n36 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_name( n37, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n37, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_name( n38, & lambda_GeneralizeResult_4, "lambda_GeneralizeResult_4" ) )
+    if( ! refalrts::alloc_name( n38, lambda_GeneralizeResult_4, "lambda_GeneralizeResult_4" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
     if( ! refalrts::alloc_open_bracket( n39 ) )
@@ -16082,8 +16082,8 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Dec, "Dec" },
-      { & ReplicateVar, "ReplicateVar" }
+      { Dec, "Dec" },
+      { ReplicateVar, "ReplicateVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16149,7 +16149,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & ReplicateVar, "ReplicateVar" ) )
+    if( ! refalrts::alloc_name( n1, ReplicateVar, "ReplicateVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -16158,7 +16158,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Dec, "Dec" ) )
+    if( ! refalrts::alloc_name( n4, Dec, "Dec" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -16222,8 +16222,8 @@ static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ReplicateVar, "ReplicateVar" },
-      { & Map, "Map" }
+      { ReplicateVar, "ReplicateVar" },
+      { Map, "Map" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16258,10 +16258,10 @@ static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n1, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & ReplicateVar, "ReplicateVar" ) )
+    if( ! refalrts::alloc_name( n2, ReplicateVar, "ReplicateVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -16303,7 +16303,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & VarSetUnion, "VarSetUnion" }
+      { VarSetUnion, "VarSetUnion" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16386,7 +16386,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & VarSetUnion, "VarSetUnion" ) )
+        if( ! refalrts::alloc_name( n1, VarSetUnion, "VarSetUnion" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -16514,7 +16514,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & VarSetDifference, "VarSetDifference" }
+      { VarSetDifference, "VarSetDifference" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16596,7 +16596,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & VarSetDifference, "VarSetDifference" ) )
+        if( ! refalrts::alloc_name( n1, VarSetDifference, "VarSetDifference" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -16714,8 +16714,8 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdClosedE, "CmdClosedE" }
+      { AlgLeft, "AlgLeft" },
+      { CmdClosedE, "CmdClosedE" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16751,9 +16751,9 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdClosedE, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdClosedE, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+    if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -16857,7 +16857,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdRepeated, "CmdRepeated" }
+      { CmdRepeated, "CmdRepeated" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -16894,7 +16894,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdRepeated, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdRepeated, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -17004,10 +17004,10 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & StrFromInt, "StrFromInt" },
-      { & CmdComment, "CmdComment" },
-      { & AlgLeft, "AlgLeft" },
-      { & CmdClosedE, "CmdClosedE" }
+      { StrFromInt, "StrFromInt" },
+      { CmdComment, "CmdComment" },
+      { AlgLeft, "AlgLeft" },
+      { CmdClosedE, "CmdClosedE" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17082,9 +17082,9 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdClosedE, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdClosedE, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+    if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
       break;
     if( ! refalrts::svar_left( context[__sNum_1_1], context[2], context[3] ) )
       break;
@@ -17121,7 +17121,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & CmdComment, "CmdComment" ) )
+      if( ! refalrts::alloc_name( n1, CmdComment, "CmdComment" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_char( n2, ' ' ) )
@@ -17208,7 +17208,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       if( ! refalrts::alloc_open_call( n29 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n30 = 0;
-      if( ! refalrts::alloc_name( n30, & StrFromInt, "StrFromInt" ) )
+      if( ! refalrts::alloc_name( n30, StrFromInt, "StrFromInt" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n31 = 0;
       if( ! refalrts::alloc_close_call( n31 ) )
@@ -17343,7 +17343,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdDeclareEVar, "CmdDeclareEVar" }
+      { CmdDeclareEVar, "CmdDeclareEVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17397,7 +17397,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdDeclareEVar, "CmdDeclareEVar" ) )
+    if( ! refalrts::alloc_name( n1, CmdDeclareEVar, "CmdDeclareEVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'e' ) )
@@ -17434,7 +17434,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdDeclareVar, "CmdDeclareVar" }
+      { CmdDeclareVar, "CmdDeclareVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17488,7 +17488,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdDeclareVar, "CmdDeclareVar" ) )
+    if( ! refalrts::alloc_name( n1, CmdDeclareVar, "CmdDeclareVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -17541,7 +17541,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdCopyEVar, "CmdCopyEVar" }
+      { CmdCopyEVar, "CmdCopyEVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17591,7 +17591,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdCopyEVar, "CmdCopyEVar" ) )
+    if( ! refalrts::alloc_name( n1, CmdCopyEVar, "CmdCopyEVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'e' ) )
@@ -17626,7 +17626,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdCopyVar, "CmdCopyVar" }
+      { CmdCopyVar, "CmdCopyVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17676,7 +17676,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdCopyVar, "CmdCopyVar" ) )
+    if( ! refalrts::alloc_name( n1, CmdCopyVar, "CmdCopyVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -17810,9 +17810,9 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdInsertElem, "CmdInsertElem" },
-      { & FoldAllocCommands, "FoldAllocCommands" },
-      { & CmdAllocateElem, "CmdAllocateElem" }
+      { CmdInsertElem, "CmdInsertElem" },
+      { FoldAllocCommands, "FoldAllocCommands" },
+      { CmdAllocateElem, "CmdAllocateElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -17869,7 +17869,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[4], context[5] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[4], context[5] ) )
       break;
     context[__eCommands_1_1] = context[0];
     context[__eCommands_1_1 + 1] = context[1];
@@ -17886,7 +17886,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       context[7] = 0;
       if( ! refalrts::brackets_left( context[6], context[7], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( & CmdAllocateElem, context[6], context[7] ) )
+      if( ! refalrts::function_left( CmdAllocateElem, context[6], context[7] ) )
         continue;
       if( ! refalrts::repeated_stvar_left( context[__sElemNo_1_2], context[__sElemNo_1_1], context[6], context[7] ) )
         continue;
@@ -17903,7 +17903,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & FoldAllocCommands, "FoldAllocCommands" ) )
+      if( ! refalrts::alloc_name( n1, FoldAllocCommands, "FoldAllocCommands" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -17918,7 +17918,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       if( ! refalrts::alloc_open_bracket( n5 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
-      if( ! refalrts::alloc_name( n6, & CmdInsertElem, "CmdInsertElem" ) )
+      if( ! refalrts::alloc_name( n6, CmdInsertElem, "CmdInsertElem" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
       if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -17964,8 +17964,8 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdInsertVar, "CmdInsertVar" },
-      { & FoldAllocCommands, "FoldAllocCommands" }
+      { CmdInsertVar, "CmdInsertVar" },
+      { FoldAllocCommands, "FoldAllocCommands" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18014,7 +18014,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertVar, context[4], context[5] ) )
+    if( ! refalrts::function_left( CmdInsertVar, context[4], context[5] ) )
       break;
     context[__eAllocs_1_1] = context[2];
     context[__eAllocs_1_1 + 1] = context[3];
@@ -18033,7 +18033,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n1, FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -18048,7 +18048,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdInsertVar, "CmdInsertVar" ) )
+    if( ! refalrts::alloc_name( n6, CmdInsertVar, "CmdInsertVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -18092,8 +18092,8 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdInsertVar, "CmdInsertVar" },
-      { & FoldAllocCommands, "FoldAllocCommands" }
+      { CmdInsertVar, "CmdInsertVar" },
+      { FoldAllocCommands, "FoldAllocCommands" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18142,7 +18142,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertVar, context[4], context[5] ) )
+    if( ! refalrts::function_left( CmdInsertVar, context[4], context[5] ) )
       break;
     context[__eAllocs_1_1] = context[2];
     context[__eAllocs_1_1 + 1] = context[3];
@@ -18161,7 +18161,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n1, FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -18176,7 +18176,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CmdInsertVar, "CmdInsertVar" ) )
+    if( ! refalrts::alloc_name( n6, CmdInsertVar, "CmdInsertVar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -18217,8 +18217,8 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FoldAllocCommands, "FoldAllocCommands" },
-      { & CmdLinkBrackets, "CmdLinkBrackets" }
+      { FoldAllocCommands, "FoldAllocCommands" },
+      { CmdLinkBrackets, "CmdLinkBrackets" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18258,7 +18258,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdLinkBrackets, context[4], context[5] ) )
+    if( ! refalrts::function_left( CmdLinkBrackets, context[4], context[5] ) )
       break;
     context[__eAllocs_1_1] = context[2];
     context[__eAllocs_1_1 + 1] = context[3];
@@ -18272,7 +18272,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n1, FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -18312,8 +18312,8 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FoldAllocCommands, "FoldAllocCommands" },
-      { & CmdPushStack, "CmdPushStack" }
+      { FoldAllocCommands, "FoldAllocCommands" },
+      { CmdPushStack, "CmdPushStack" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18353,7 +18353,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdPushStack, context[4], context[5] ) )
+    if( ! refalrts::function_left( CmdPushStack, context[4], context[5] ) )
       break;
     context[__eAllocs_1_1] = context[2];
     context[__eAllocs_1_1 + 1] = context[3];
@@ -18367,7 +18367,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FoldAllocCommands, "FoldAllocCommands" ) )
+    if( ! refalrts::alloc_name( n1, FoldAllocCommands, "FoldAllocCommands" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -18464,7 +18464,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrInt, "CmdArrInt" }
+      { CmdArrInt, "CmdArrInt" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18504,7 +18504,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrInt, "CmdArrInt" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrInt, "CmdArrInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18533,7 +18533,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrHugeInt, "CmdArrHugeInt" }
+      { CmdArrHugeInt, "CmdArrHugeInt" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18573,7 +18573,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrHugeInt, "CmdArrHugeInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18615,8 +18615,8 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrCopy, "CmdArrCopy" },
-      { & CmdInsertVar, "CmdInsertVar" }
+      { CmdArrCopy, "CmdArrCopy" },
+      { CmdInsertVar, "CmdInsertVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18659,7 +18659,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertVar, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertVar, context[2], context[3] ) )
       break;
     if( ! refalrts::svar_left( context[__sUsings_1_1], context[2], context[3] ) )
       break;
@@ -18694,7 +18694,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & CmdArrCopy, "CmdArrCopy" ) )
+      if( ! refalrts::alloc_name( n1, CmdArrCopy, "CmdArrCopy" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18726,8 +18726,8 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrSplice, "CmdArrSplice" },
-      { & CmdInsertVar, "CmdInsertVar" }
+      { CmdArrSplice, "CmdArrSplice" },
+      { CmdInsertVar, "CmdInsertVar" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18762,7 +18762,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertVar, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertVar, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sUsings_1_1], context[2], context[3] ) )
@@ -18778,7 +18778,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrSplice, "CmdArrSplice" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrSplice, "CmdArrSplice" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18809,9 +18809,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrChar, "CmdArrChar" },
-      { & ElChar, "ElChar" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrChar, "CmdArrChar" },
+      { ElChar, "ElChar" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18845,9 +18845,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElChar, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElChar, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -18863,7 +18863,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrChar, "CmdArrChar" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrChar, "CmdArrChar" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18892,9 +18892,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrFunc, "CmdArrFunc" },
-      { & ElName, "ElName" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrFunc, "CmdArrFunc" },
+      { ElName, "ElName" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -18927,9 +18927,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElName, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElName, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -18943,7 +18943,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrFunc, "CmdArrFunc" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrFunc, "CmdArrFunc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -18973,12 +18973,12 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" },
-      { & Compare, "Compare" },
-      { & Fetch, "Fetch" },
-      { & ElNumber, "ElNumber" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { Compare, "Compare" },
+      { Fetch, "Fetch" },
+      { ElNumber, "ElNumber" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     static const refalrts::RefalNumber numbers[] = {
@@ -19023,9 +19023,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElNumber, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElNumber, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19043,13 +19043,13 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Compare, "Compare" ) )
+    if( ! refalrts::alloc_name( n3, Compare, "Compare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_number( n4, 256UL ) )
@@ -19061,10 +19061,10 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n7, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" ) )
+    if( ! refalrts::alloc_name( n8, lambda_MakeInterpCommands_0, "lambda_MakeInterpCommands_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_call( n9 ) )
@@ -19110,9 +19110,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrIdent, "CmdArrIdent" },
-      { & ElIdent, "ElIdent" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrIdent, "CmdArrIdent" },
+      { ElIdent, "ElIdent" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19145,9 +19145,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElIdent, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElIdent, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19161,7 +19161,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrIdent, "CmdArrIdent" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrIdent, "CmdArrIdent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19189,9 +19189,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrOB, "CmdArrOB" },
-      { & ElOpenBracket, "ElOpenBracket" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrOB, "CmdArrOB" },
+      { ElOpenBracket, "ElOpenBracket" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19223,9 +19223,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElOpenBracket, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElOpenBracket, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19239,7 +19239,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrOB, "CmdArrOB" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrOB, "CmdArrOB" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19266,9 +19266,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrOADT, "CmdArrOADT" },
-      { & ElOpenADT, "ElOpenADT" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrOADT, "CmdArrOADT" },
+      { ElOpenADT, "ElOpenADT" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19300,9 +19300,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElOpenADT, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElOpenADT, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19316,7 +19316,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrOADT, "CmdArrOADT" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrOADT, "CmdArrOADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19343,9 +19343,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrOC, "CmdArrOC" },
-      { & ElOpenCall, "ElOpenCall" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrOC, "CmdArrOC" },
+      { ElOpenCall, "ElOpenCall" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19377,9 +19377,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElOpenCall, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElOpenCall, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19393,7 +19393,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrOC, "CmdArrOC" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrOC, "CmdArrOC" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19420,9 +19420,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrCB, "CmdArrCB" },
-      { & ElCloseBracket, "ElCloseBracket" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrCB, "CmdArrCB" },
+      { ElCloseBracket, "ElCloseBracket" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19454,9 +19454,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElCloseBracket, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElCloseBracket, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19470,7 +19470,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrCB, "CmdArrCB" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrCB, "CmdArrCB" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19497,9 +19497,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrCADT, "CmdArrCADT" },
-      { & ElCloseADT, "ElCloseADT" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrCADT, "CmdArrCADT" },
+      { ElCloseADT, "ElCloseADT" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19531,9 +19531,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElCloseADT, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElCloseADT, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19547,7 +19547,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrCADT, "CmdArrCADT" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrCADT, "CmdArrCADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19574,9 +19574,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrCC, "CmdArrCC" },
-      { & ElCloseCall, "ElCloseCall" },
-      { & CmdInsertElem, "CmdInsertElem" }
+      { CmdArrCC, "CmdArrCC" },
+      { ElCloseCall, "ElCloseCall" },
+      { CmdInsertElem, "CmdInsertElem" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19608,9 +19608,9 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdInsertElem, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdInsertElem, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & ElCloseCall, context[2], context[3] ) )
+    if( ! refalrts::function_left( ElCloseCall, context[2], context[3] ) )
       break;
     // Unused closed variable e.CopiedVars#1
     if( ! refalrts::svar_left( context[__sCounter_1_1], context[2], context[3] ) )
@@ -19624,7 +19624,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdArrCC, "CmdArrCC" ) )
+    if( ! refalrts::alloc_name( n1, CmdArrCC, "CmdArrCC" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -19805,12 +19805,12 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_OutlineConstants_0, "lambda_OutlineConstants_0" },
-      { & Map, "Map" },
-      { & CmdiNumberArray, "CmdiNumberArray" },
-      { & RemoveNumber, "RemoveNumber" },
-      { & CmdiLabelArray, "CmdiLabelArray" },
-      { & CmdiFuncArray, "CmdiFuncArray" }
+      { lambda_OutlineConstants_0, "lambda_OutlineConstants_0" },
+      { Map, "Map" },
+      { CmdiNumberArray, "CmdiNumberArray" },
+      { RemoveNumber, "RemoveNumber" },
+      { CmdiLabelArray, "CmdiLabelArray" },
+      { CmdiFuncArray, "CmdiFuncArray" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -19897,16 +19897,16 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiFuncArray, "CmdiFuncArray" ) )
+    if( ! refalrts::alloc_name( n1, CmdiFuncArray, "CmdiFuncArray" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n3, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & RemoveNumber, "RemoveNumber" ) )
+    if( ! refalrts::alloc_name( n4, RemoveNumber, "RemoveNumber" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -19918,16 +19918,16 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & CmdiLabelArray, "CmdiLabelArray" ) )
+    if( ! refalrts::alloc_name( n8, CmdiLabelArray, "CmdiLabelArray" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_open_call( n9 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_name( n10, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n10, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_name( n11, & RemoveNumber, "RemoveNumber" ) )
+    if( ! refalrts::alloc_name( n11, RemoveNumber, "RemoveNumber" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
     if( ! refalrts::alloc_close_call( n12 ) )
@@ -19939,16 +19939,16 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdiNumberArray, "CmdiNumberArray" ) )
+    if( ! refalrts::alloc_name( n15, CmdiNumberArray, "CmdiNumberArray" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_open_call( n16 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_name( n17, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n17, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_name( n18, & lambda_OutlineConstants_0, "lambda_OutlineConstants_0" ) )
+    if( ! refalrts::alloc_name( n18, lambda_OutlineConstants_0, "lambda_OutlineConstants_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
     if( ! refalrts::alloc_close_call( n19 ) )
@@ -20018,8 +20018,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiName, "CmdiName" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiName, "CmdiName" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -20100,7 +20100,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiName, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiName, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -20142,7 +20142,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -20175,7 +20175,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdiName, "CmdiName" ) )
+      if( ! refalrts::alloc_name( n12, CmdiName, "CmdiName" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -20240,9 +20240,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiName, "CmdiName" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiName, "CmdiName" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -20318,7 +20318,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiName, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiName, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -20347,7 +20347,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -20356,7 +20356,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n4, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -20389,7 +20389,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdiName, "CmdiName" ) )
+    if( ! refalrts::alloc_name( n15, CmdiName, "CmdiName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -20457,8 +20457,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrFunc, "CmdArrFunc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrFunc, "CmdArrFunc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -20535,7 +20535,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrFunc, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrFunc, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -20573,7 +20573,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -20606,7 +20606,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdArrFunc, "CmdArrFunc" ) )
+      if( ! refalrts::alloc_name( n12, CmdArrFunc, "CmdArrFunc" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -20667,9 +20667,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrFunc, "CmdArrFunc" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrFunc, "CmdArrFunc" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -20741,7 +20741,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrFunc, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrFunc, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -20766,7 +20766,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -20775,7 +20775,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n4, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -20808,7 +20808,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdArrFunc, "CmdArrFunc" ) )
+    if( ! refalrts::alloc_name( n15, CmdArrFunc, "CmdArrFunc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -20877,8 +20877,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiADT, "CmdiADT" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiADT, "CmdiADT" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -20961,7 +20961,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiADT, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiADT, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -21005,7 +21005,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -21038,7 +21038,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdiADT, "CmdiADT" ) )
+      if( ! refalrts::alloc_name( n12, CmdiADT, "CmdiADT" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -21105,9 +21105,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiADT, "CmdiADT" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiADT, "CmdiADT" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -21185,7 +21185,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiADT, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiADT, context[8], context[9] ) )
       break;
     context[__eLabels_1_1] = context[4];
     context[__eLabels_1_1 + 1] = context[5];
@@ -21216,7 +21216,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -21225,7 +21225,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n4, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -21258,7 +21258,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdiADT, "CmdiADT" ) )
+    if( ! refalrts::alloc_name( n15, CmdiADT, "CmdiADT" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -21329,8 +21329,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiIdent, "CmdiIdent" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiIdent, "CmdiIdent" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -21411,7 +21411,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiIdent, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiIdent, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -21453,7 +21453,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -21486,7 +21486,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdiIdent, "CmdiIdent" ) )
+      if( ! refalrts::alloc_name( n12, CmdiIdent, "CmdiIdent" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -21551,9 +21551,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiIdent, "CmdiIdent" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiIdent, "CmdiIdent" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -21629,7 +21629,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiIdent, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiIdent, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -21658,7 +21658,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -21673,7 +21673,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n6, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -21700,7 +21700,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdiIdent, "CmdiIdent" ) )
+    if( ! refalrts::alloc_name( n15, CmdiIdent, "CmdiIdent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -21768,8 +21768,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrIdent, "CmdArrIdent" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrIdent, "CmdArrIdent" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -21846,7 +21846,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrIdent, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrIdent, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -21884,7 +21884,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -21917,7 +21917,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdArrIdent, "CmdArrIdent" ) )
+      if( ! refalrts::alloc_name( n12, CmdArrIdent, "CmdArrIdent" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -21978,9 +21978,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrIdent, "CmdArrIdent" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrIdent, "CmdArrIdent" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -22052,7 +22052,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrIdent, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrIdent, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -22077,7 +22077,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -22092,7 +22092,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n6, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -22119,7 +22119,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdArrIdent, "CmdArrIdent" ) )
+    if( ! refalrts::alloc_name( n15, CmdArrIdent, "CmdArrIdent" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -22187,8 +22187,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiHugeNum, "CmdiHugeNum" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiHugeNum, "CmdiHugeNum" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -22270,7 +22270,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiHugeNum, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiHugeNum, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -22314,7 +22314,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -22347,7 +22347,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdiHugeNum, "CmdiHugeNum" ) )
+      if( ! refalrts::alloc_name( n12, CmdiHugeNum, "CmdiHugeNum" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -22412,9 +22412,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiHugeNum, "CmdiHugeNum" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdiHugeNum, "CmdiHugeNum" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -22491,7 +22491,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdiHugeNum, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdiHugeNum, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -22522,7 +22522,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -22543,7 +22543,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n8, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_call( n9 ) )
@@ -22564,7 +22564,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdiHugeNum, "CmdiHugeNum" ) )
+    if( ! refalrts::alloc_name( n15, CmdiHugeNum, "CmdiHugeNum" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -22632,8 +22632,8 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrHugeInt, "CmdArrHugeInt" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrHugeInt, "CmdArrHugeInt" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -22711,7 +22711,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrHugeInt, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrHugeInt, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -22751,7 +22751,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+      if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -22784,7 +22784,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n11 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
-      if( ! refalrts::alloc_name( n12, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+      if( ! refalrts::alloc_name( n12, CmdArrHugeInt, "CmdArrHugeInt" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n13 = 0;
       if( ! refalrts::alloc_close_bracket( n13 ) )
@@ -22845,9 +22845,9 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdArrHugeInt, "CmdArrHugeInt" },
-      { & Inc, "Inc" },
-      { & OutlineConstants, "OutlineConstants" }
+      { CmdArrHugeInt, "CmdArrHugeInt" },
+      { Inc, "Inc" },
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -22920,7 +22920,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     context[9] = 0;
     if( ! refalrts::brackets_right( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdArrHugeInt, context[8], context[9] ) )
+    if( ! refalrts::function_left( CmdArrHugeInt, context[8], context[9] ) )
       break;
     context[__eFuncs_1_1] = context[2];
     context[__eFuncs_1_1 + 1] = context[3];
@@ -22947,7 +22947,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -22968,7 +22968,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n8, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_call( n9 ) )
@@ -22989,7 +22989,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_bracket( n14 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_name( n15, & CmdArrHugeInt, "CmdArrHugeInt" ) )
+    if( ! refalrts::alloc_name( n15, CmdArrHugeInt, "CmdArrHugeInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
     if( ! refalrts::alloc_close_bracket( n16 ) )
@@ -23050,7 +23050,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & OutlineConstants, "OutlineConstants" }
+      { OutlineConstants, "OutlineConstants" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -23121,7 +23121,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & OutlineConstants, "OutlineConstants" ) )
+    if( ! refalrts::alloc_name( n1, OutlineConstants, "OutlineConstants" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -23191,9 +23191,9 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Inc, "Inc" },
-      { & PrepareOpenEStack, "PrepareOpenEStack" },
-      { & CmdiEStart, "CmdiEStart" }
+      { Inc, "Inc" },
+      { PrepareOpenEStack, "PrepareOpenEStack" },
+      { CmdiEStart, "CmdiEStart" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -23245,7 +23245,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
       context[3] = 0;
       if( ! refalrts::brackets_left( context[2], context[3], context[4], context[5] ) )
         continue;
-      if( ! refalrts::function_left( & CmdiEStart, context[2], context[3] ) )
+      if( ! refalrts::function_left( CmdiEStart, context[2], context[3] ) )
         continue;
       context[__eVarInfo_1_1] = context[2];
       context[__eVarInfo_1_1 + 1] = context[3];
@@ -23258,7 +23258,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & CmdiEStart, "CmdiEStart" ) )
+      if( ! refalrts::alloc_name( n1, CmdiEStart, "CmdiEStart" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
       if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -23267,13 +23267,13 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
       if( ! refalrts::alloc_open_call( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_name( n4, & PrepareOpenEStack, "PrepareOpenEStack" ) )
+      if( ! refalrts::alloc_name( n4, PrepareOpenEStack, "PrepareOpenEStack" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
       if( ! refalrts::alloc_open_call( n5 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
-      if( ! refalrts::alloc_name( n6, & Inc, "Inc" ) )
+      if( ! refalrts::alloc_name( n6, Inc, "Inc" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
       if( ! refalrts::alloc_close_call( n7 ) )
@@ -23319,7 +23319,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdiReserveStack, "CmdiReserveStack" }
+      { CmdiReserveStack, "CmdiReserveStack" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -23357,7 +23357,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdiReserveStack, "CmdiReserveStack" ) )
+    if( ! refalrts::alloc_name( n1, CmdiReserveStack, "CmdiReserveStack" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -23398,11 +23398,11 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AlgLeft, "AlgLeft" },
-      { & CmdOpenedE_End, "CmdOpenedE_End" },
-      { & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" },
-      { & CmdOpenedE_Start, "CmdOpenedE_Start" },
-      { & CmdOpenedE, "CmdOpenedE" }
+      { AlgLeft, "AlgLeft" },
+      { CmdOpenedE_End, "CmdOpenedE_End" },
+      { GenerateResult_OpenELoops, "GenerateResult_OpenELoops" },
+      { CmdOpenedE_Start, "CmdOpenedE_Start" },
+      { CmdOpenedE, "CmdOpenedE" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -23460,9 +23460,9 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       context[3] = 0;
       if( ! refalrts::brackets_left( context[2], context[3], context[4], context[5] ) )
         continue;
-      if( ! refalrts::function_left( & CmdOpenedE, context[2], context[3] ) )
+      if( ! refalrts::function_left( CmdOpenedE, context[2], context[3] ) )
         continue;
-      if( ! refalrts::function_left( & AlgLeft, context[2], context[3] ) )
+      if( ! refalrts::function_left( AlgLeft, context[2], context[3] ) )
         continue;
       context[__eCommands_E_1_1] = context[4];
       context[__eCommands_E_1_1 + 1] = context[5];
@@ -23483,10 +23483,10 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       if( ! refalrts::alloc_open_bracket( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & CmdOpenedE_Start, "CmdOpenedE_Start" ) )
+      if( ! refalrts::alloc_name( n1, CmdOpenedE_Start, "CmdOpenedE_Start" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
-      if( ! refalrts::alloc_name( n2, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n2, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
       if( ! refalrts::alloc_char( n3, 'e' ) )
@@ -23498,7 +23498,7 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       if( ! refalrts::alloc_open_call( n5 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
-      if( ! refalrts::alloc_name( n6, & GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
+      if( ! refalrts::alloc_name( n6, GenerateResult_OpenELoops, "GenerateResult_OpenELoops" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
       if( ! refalrts::alloc_close_call( n7 ) )
@@ -23507,10 +23507,10 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       if( ! refalrts::alloc_open_bracket( n8 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
-      if( ! refalrts::alloc_name( n9, & CmdOpenedE_End, "CmdOpenedE_End" ) )
+      if( ! refalrts::alloc_name( n9, CmdOpenedE_End, "CmdOpenedE_End" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_name( n10, & AlgLeft, "AlgLeft" ) )
+      if( ! refalrts::alloc_name( n10, AlgLeft, "AlgLeft" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
       if( ! refalrts::alloc_char( n11, 'e' ) )

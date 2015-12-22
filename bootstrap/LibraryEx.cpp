@@ -80,7 +80,7 @@ refalrts::FnResult Apply(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Apply, "Apply" }
+      { Apply, "Apply" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -127,7 +127,7 @@ refalrts::FnResult Apply(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n1, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -168,8 +168,8 @@ refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Map, "Map" },
-      { & Apply, "Apply" }
+      { Map, "Map" },
+      { Apply, "Apply" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -217,7 +217,7 @@ refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n1, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -226,7 +226,7 @@ refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n4, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -319,8 +319,8 @@ refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Apply, "Apply" },
-      { & Reduce, "Reduce" }
+      { Apply, "Apply" },
+      { Reduce, "Reduce" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -372,13 +372,13 @@ refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Reduce, "Reduce" ) )
+    if( ! refalrts::alloc_name( n1, Reduce, "Reduce" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n3, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -478,7 +478,7 @@ refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Apply, "Apply" }
+      { Apply, "Apply" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -516,7 +516,7 @@ refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n1, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -557,7 +557,7 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Y, "Y" }
+      { Y, "Y" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -608,7 +608,7 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Y, "Y" ) )
+    if( ! refalrts::alloc_name( n3, Y, "Y" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -660,8 +660,8 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_Y_0, "lambda_Y_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" }
+      { lambda_Y_0, "lambda_Y_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -699,10 +699,10 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Y_0, "lambda_Y_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Y_0, "lambda_Y_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -743,7 +743,7 @@ refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoMapReduce, "DoMapReduce" }
+      { DoMapReduce, "DoMapReduce" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -787,7 +787,7 @@ refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoMapReduce, "DoMapReduce" ) )
+    if( ! refalrts::alloc_name( n1, DoMapReduce, "DoMapReduce" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -841,9 +841,9 @@ static refalrts::FnResult DoMapReduce(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Apply, "Apply" },
-      { & MapReduce__AddScanned, "MapReduce__AddScanned" },
-      { & DoMapReduce, "DoMapReduce" }
+      { Apply, "Apply" },
+      { MapReduce__AddScanned, "MapReduce__AddScanned" },
+      { DoMapReduce, "DoMapReduce" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -909,19 +909,19 @@ static refalrts::FnResult DoMapReduce(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoMapReduce, "DoMapReduce" ) )
+    if( ! refalrts::alloc_name( n1, DoMapReduce, "DoMapReduce" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & MapReduce__AddScanned, "MapReduce__AddScanned" ) )
+    if( ! refalrts::alloc_name( n3, MapReduce__AddScanned, "MapReduce__AddScanned" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n5, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -1252,9 +1252,9 @@ refalrts::FnResult LoadFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FOpen, "FOpen" },
-      { & FReadLine, "FReadLine" },
-      { & DoLoadFile, "DoLoadFile" }
+      { FOpen, "FOpen" },
+      { FReadLine, "FReadLine" },
+      { DoLoadFile, "DoLoadFile" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1295,19 +1295,19 @@ refalrts::FnResult LoadFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoLoadFile, "DoLoadFile" ) )
+    if( ! refalrts::alloc_name( n1, DoLoadFile, "DoLoadFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & FReadLine, "FReadLine" ) )
+    if( ! refalrts::alloc_name( n3, FReadLine, "FReadLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & FOpen, "FOpen" ) )
+    if( ! refalrts::alloc_name( n5, FOpen, "FOpen" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_char( n6, 'r' ) )
@@ -1363,7 +1363,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FClose, "FClose" }
+      { FClose, "FClose" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1403,7 +1403,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FClose, "FClose" ) )
+    if( ! refalrts::alloc_name( n1, FClose, "FClose" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1433,7 +1433,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FClose, "FClose" }
+      { FClose, "FClose" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1482,7 +1482,7 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & FClose, "FClose" ) )
+    if( ! refalrts::alloc_name( n3, FClose, "FClose" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -1516,8 +1516,8 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FReadLine, "FReadLine" },
-      { & DoLoadFile, "DoLoadFile" }
+      { FReadLine, "FReadLine" },
+      { DoLoadFile, "DoLoadFile" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1566,13 +1566,13 @@ static refalrts::FnResult DoLoadFile(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & DoLoadFile, "DoLoadFile" ) )
+    if( ! refalrts::alloc_name( n3, DoLoadFile, "DoLoadFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & FReadLine, "FReadLine" ) )
+    if( ! refalrts::alloc_name( n5, FReadLine, "FReadLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -1623,10 +1623,10 @@ refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FOpen, "FOpen" },
-      { & WriteBracketLine, "WriteBracketLine" },
-      { & Reduce, "Reduce" },
-      { & FClose, "FClose" }
+      { FOpen, "FOpen" },
+      { WriteBracketLine, "WriteBracketLine" },
+      { Reduce, "Reduce" },
+      { FClose, "FClose" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1677,22 +1677,22 @@ refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FClose, "FClose" ) )
+    if( ! refalrts::alloc_name( n1, FClose, "FClose" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Reduce, "Reduce" ) )
+    if( ! refalrts::alloc_name( n3, Reduce, "Reduce" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & WriteBracketLine, "WriteBracketLine" ) )
+    if( ! refalrts::alloc_name( n4, WriteBracketLine, "WriteBracketLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & FOpen, "FOpen" ) )
+    if( ! refalrts::alloc_name( n6, FOpen, "FOpen" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_char( n7, 'w' ) )
@@ -1751,7 +1751,7 @@ static refalrts::FnResult WriteBracketLine(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FWriteLine, "FWriteLine" }
+      { FWriteLine, "FWriteLine" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1797,7 +1797,7 @@ static refalrts::FnResult WriteBracketLine(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FWriteLine, "FWriteLine" ) )
+    if( ! refalrts::alloc_name( n1, FWriteLine, "FWriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1838,7 +1838,7 @@ refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Add, "Add" }
+      { Add, "Add" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1876,7 +1876,7 @@ refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Add, "Add" ) )
+    if( ! refalrts::alloc_name( n1, Add, "Add" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_number( n2, 1UL ) )
@@ -1916,7 +1916,7 @@ refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Sub, "Sub" }
+      { Sub, "Sub" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1954,7 +1954,7 @@ refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Sub, "Sub" ) )
+    if( ! refalrts::alloc_name( n1, Sub, "Sub" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_number( n2, 1UL ) )
@@ -2000,7 +2000,7 @@ static refalrts::FnResult FastIntFromStr_Guard(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Success, "Success" }
+      { Success, "Success" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2024,7 +2024,7 @@ static refalrts::FnResult FastIntFromStr_Guard(refalrts::Iter arg_begin, refalrt
       return res;
 #else
     // & Success s.Number#1
-    if( ! refalrts::function_left( & Success, context[0], context[1] ) )
+    if( ! refalrts::function_left( Success, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
       break;
@@ -2059,8 +2059,8 @@ refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & IntFromStr, "IntFromStr" },
-      { & FastIntFromStr_Guard, "FastIntFromStr_Guard" }
+      { IntFromStr, "IntFromStr" },
+      { FastIntFromStr_Guard, "FastIntFromStr_Guard" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2097,13 +2097,13 @@ refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FastIntFromStr_Guard, "FastIntFromStr_Guard" ) )
+    if( ! refalrts::alloc_name( n1, FastIntFromStr_Guard, "FastIntFromStr_Guard" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & IntFromStr, "IntFromStr" ) )
+    if( ! refalrts::alloc_name( n3, IntFromStr, "IntFromStr" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -2150,7 +2150,7 @@ refalrts::FnResult ArgList(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoArgList, "DoArgList" }
+      { DoArgList, "DoArgList" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2184,7 +2184,7 @@ refalrts::FnResult ArgList(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoArgList, "DoArgList" ) )
+    if( ! refalrts::alloc_name( n1, DoArgList, "DoArgList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_number( n2, 0UL ) )
@@ -2226,9 +2226,9 @@ static refalrts::FnResult DoArgList(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Arg, "Arg" },
-      { & Inc, "Inc" },
-      { & SwDoArgList, "SwDoArgList" }
+      { Arg, "Arg" },
+      { Inc, "Inc" },
+      { SwDoArgList, "SwDoArgList" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2274,13 +2274,13 @@ static refalrts::FnResult DoArgList(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SwDoArgList, "SwDoArgList" ) )
+    if( ! refalrts::alloc_name( n1, SwDoArgList, "SwDoArgList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n3, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -2289,7 +2289,7 @@ static refalrts::FnResult DoArgList(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Arg, "Arg" ) )
+    if( ! refalrts::alloc_name( n6, Arg, "Arg" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -2385,7 +2385,7 @@ static refalrts::FnResult SwDoArgList(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoArgList, "DoArgList" }
+      { DoArgList, "DoArgList" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2431,7 +2431,7 @@ static refalrts::FnResult SwDoArgList(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & DoArgList, "DoArgList" ) )
+    if( ! refalrts::alloc_name( n3, DoArgList, "DoArgList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -2476,7 +2476,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Lexicon, "Lexicon" }
+      { Lexicon, "Lexicon" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2531,7 +2531,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon, "Lexicon" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon, "Lexicon" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2692,7 +2692,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & SymbCompare, "SymbCompare" }
+      { SymbCompare, "SymbCompare" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2733,7 +2733,7 @@ refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SymbCompare, "SymbCompare" ) )
+    if( ! refalrts::alloc_name( n1, SymbCompare, "SymbCompare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -2775,8 +2775,8 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Compare, "Compare" },
-      { & Lexicon_Aux, "Lexicon_Aux" }
+      { Compare, "Compare" },
+      { Lexicon_Aux, "Lexicon_Aux" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2842,13 +2842,13 @@ static refalrts::FnResult Lexicon(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon_Aux, "Lexicon_Aux" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon_Aux, "Lexicon_Aux" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Compare, "Compare" ) )
+    if( ! refalrts::alloc_name( n3, Compare, "Compare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -3157,7 +3157,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Lexicon, "Lexicon" }
+      { Lexicon, "Lexicon" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3215,7 +3215,7 @@ static refalrts::FnResult Lexicon_Aux(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon, "Lexicon" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon, "Lexicon" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3334,7 +3334,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Lexicon_T, "Lexicon_T" }
+      { Lexicon_T, "Lexicon_T" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3393,7 +3393,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon_T, "Lexicon_T" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon_T, "Lexicon_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3610,7 +3610,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & SymbCompare, "SymbCompare" }
+      { SymbCompare, "SymbCompare" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3657,7 +3657,7 @@ refalrts::FnResult Compare_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SymbCompare, "SymbCompare" ) )
+    if( ! refalrts::alloc_name( n1, SymbCompare, "SymbCompare" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -3703,8 +3703,8 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Compare_T, "Compare_T" },
-      { & Lexicon_T_Aux, "Lexicon_T_Aux" }
+      { Compare_T, "Compare_T" },
+      { Lexicon_T_Aux, "Lexicon_T_Aux" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3792,7 +3792,7 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon_T_Aux, "Lexicon_T_Aux" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon_T_Aux, "Lexicon_T_Aux" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3810,7 +3810,7 @@ static refalrts::FnResult Lexicon_T(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & Compare_T, "Compare_T" ) )
+    if( ! refalrts::alloc_name( n7, Compare_T, "Compare_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_call( n8 ) )
@@ -4339,7 +4339,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Lexicon_T, "Lexicon_T" }
+      { Lexicon_T, "Lexicon_T" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4427,7 +4427,7 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Lexicon_T, "Lexicon_T" ) )
+    if( ! refalrts::alloc_name( n1, Lexicon_T, "Lexicon_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4639,7 +4639,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TypeBracket, "TypeBracket" }
+      { TypeBracket, "TypeBracket" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4673,7 +4673,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, & TypeBracket, "TypeBracket" ) )
+    if( ! refalrts::alloc_name( n0, TypeBracket, "TypeBracket" ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4694,7 +4694,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & SymbType, "SymbType" }
+      { SymbType, "SymbType" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4731,7 +4731,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SymbType, "SymbType" ) )
+    if( ! refalrts::alloc_name( n1, SymbType, "SymbType" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -4768,7 +4768,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & TypeBracket, "TypeBracket" }
+      { TypeBracket, "TypeBracket" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4808,7 +4808,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, & TypeBracket, "TypeBracket" ) )
+    if( ! refalrts::alloc_name( n0, TypeBracket, "TypeBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
     if( ! refalrts::alloc_open_bracket( n1 ) )
@@ -4842,7 +4842,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & SymbType, "SymbType" }
+      { SymbType, "SymbType" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4883,7 +4883,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SymbType, "SymbType" ) )
+    if( ! refalrts::alloc_name( n1, SymbType, "SymbType" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -4969,7 +4969,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim, "Trim" }
+      { Trim, "Trim" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5006,7 +5006,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+    if( ! refalrts::alloc_name( n1, Trim, "Trim" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5035,7 +5035,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim, "Trim" }
+      { Trim, "Trim" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5072,7 +5072,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+    if( ! refalrts::alloc_name( n1, Trim, "Trim" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5101,7 +5101,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim, "Trim" }
+      { Trim, "Trim" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5138,7 +5138,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+    if( ! refalrts::alloc_name( n1, Trim, "Trim" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5167,7 +5167,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim, "Trim" }
+      { Trim, "Trim" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5204,7 +5204,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim, "Trim" ) )
+    if( ! refalrts::alloc_name( n1, Trim, "Trim" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5233,7 +5233,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim_R, "Trim_R" }
+      { Trim_R, "Trim_R" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5267,7 +5267,7 @@ refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+    if( ! refalrts::alloc_name( n1, Trim_R, "Trim_R" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5303,7 +5303,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim_R, "Trim_R" }
+      { Trim_R, "Trim_R" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5340,7 +5340,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+    if( ! refalrts::alloc_name( n1, Trim_R, "Trim_R" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5369,7 +5369,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim_R, "Trim_R" }
+      { Trim_R, "Trim_R" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5406,7 +5406,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+    if( ! refalrts::alloc_name( n1, Trim_R, "Trim_R" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5435,7 +5435,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim_R, "Trim_R" }
+      { Trim_R, "Trim_R" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5472,7 +5472,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+    if( ! refalrts::alloc_name( n1, Trim_R, "Trim_R" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5501,7 +5501,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Trim_R, "Trim_R" }
+      { Trim_R, "Trim_R" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5538,7 +5538,7 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Trim_R, "Trim_R" ) )
+    if( ! refalrts::alloc_name( n1, Trim_R, "Trim_R" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5622,9 +5622,9 @@ static refalrts::FnResult lambda_Seq_0(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Seq, "Seq" },
-      { & Apply, "Apply" },
-      { & Fetch, "Fetch" }
+      { Seq, "Seq" },
+      { Apply, "Apply" },
+      { Fetch, "Fetch" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5677,13 +5677,13 @@ static refalrts::FnResult lambda_Seq_0(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Apply, "Apply" ) )
+    if( ! refalrts::alloc_name( n3, Apply, "Apply" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -5692,7 +5692,7 @@ static refalrts::FnResult lambda_Seq_0(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Seq, "Seq" ) )
+    if( ! refalrts::alloc_name( n6, Seq, "Seq" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_call( n7 ) )
@@ -5842,8 +5842,8 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_Seq_0, "lambda_Seq_0" },
-      { & refalrts::create_closure, "refalrts::create_closure" }
+      { lambda_Seq_0, "lambda_Seq_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5884,10 +5884,10 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Seq_0, "lambda_Seq_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Seq_0, "lambda_Seq_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -5926,7 +5926,7 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & lambda_Seq_1, "lambda_Seq_1" }
+      { lambda_Seq_1, "lambda_Seq_1" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -5954,7 +5954,7 @@ refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, & lambda_Seq_1, "lambda_Seq_1" ) )
+    if( ! refalrts::alloc_name( n0, lambda_Seq_1, "lambda_Seq_1" ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );

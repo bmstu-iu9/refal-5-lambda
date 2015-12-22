@@ -49,9 +49,9 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Current, "Current" },
-      { & AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" },
-      { & Map, "Map" }
+      { Current, "Current" },
+      { AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" },
+      { Map, "Map" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -98,16 +98,16 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n1, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" ) )
+    if( ! refalrts::alloc_name( n3, AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Current, "Current" ) )
+    if( ! refalrts::alloc_name( n4, Current, "Current" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -158,9 +158,9 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AnalyzeInFolder, "AnalyzeInFolder" },
-      { & Map, "Map" },
-      { & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" }
+      { AnalyzeInFolder, "AnalyzeInFolder" },
+      { Map, "Map" },
+      { AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -214,7 +214,7 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -226,13 +226,13 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n5, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_open_bracket( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, & AnalyzeInFolder, "AnalyzeInFolder" ) )
+    if( ! refalrts::alloc_name( n7, AnalyzeInFolder, "AnalyzeInFolder" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
@@ -290,8 +290,8 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AnalyzeFile, "AnalyzeFile" },
-      { & Current, "Current" }
+      { AnalyzeFile, "AnalyzeFile" },
+      { Current, "Current" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -317,7 +317,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
       return res;
 #else
     // e.FileName#1 & Current
-    if( ! refalrts::function_right( & Current, context[0], context[1] ) )
+    if( ! refalrts::function_right( Current, context[0], context[1] ) )
       break;
     context[__eFileName_1_1] = context[0];
     context[__eFileName_1_1 + 1] = context[1];
@@ -328,7 +328,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeFile, "AnalyzeFile" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeFile, "AnalyzeFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -358,7 +358,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AnalyzeFile, "AnalyzeFile" }
+      { AnalyzeFile, "AnalyzeFile" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -402,7 +402,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeFile, "AnalyzeFile" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeFile, "AnalyzeFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '/' ) )
@@ -444,7 +444,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" }
+      { Source, "Source" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -485,7 +485,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Source, context[4], context[5] ) )
+    if( ! refalrts::function_left( Source, context[4], context[5] ) )
       break;
     context[6] = 0;
     context[7] = 0;
@@ -504,7 +504,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Source, "Source" ) )
+    if( ! refalrts::alloc_name( n1, Source, "Source" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -542,7 +542,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" }
+      { Output, "Output" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -578,7 +578,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Output, context[4], context[5] ) )
+    if( ! refalrts::function_left( Output, context[4], context[5] ) )
       break;
     // Unused closed variable e.FileName#1
     context[__eOutput_1_1] = context[4];
@@ -591,7 +591,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Output, "Output" ) )
+    if( ! refalrts::alloc_name( n1, Output, "Output" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -620,8 +620,8 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" },
-      { & NotFound, "NotFound" }
+      { AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" },
+      { NotFound, "NotFound" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -661,7 +661,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & NotFound, context[4], context[5] ) )
+    if( ! refalrts::function_left( NotFound, context[4], context[5] ) )
       break;
     context[__eFileName_1_1] = context[2];
     context[__eFileName_1_1 + 1] = context[3];
@@ -675,7 +675,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -714,7 +714,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" }
+      { NotFound, "NotFound" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -756,7 +756,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & NotFound, "NotFound" ) )
+    if( ! refalrts::alloc_name( n1, NotFound, "NotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -804,7 +804,7 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExistFile, "ExistFile" }
+      { ExistFile, "ExistFile" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -841,7 +841,7 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & ExistFile, "ExistFile" ) )
+    if( ! refalrts::alloc_name( n1, ExistFile, "ExistFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -878,8 +878,8 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" }
+      { ExistFile_T, "ExistFile_T" },
+      { AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -936,13 +936,13 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & ExistFile_T, "ExistFile_T" ) )
+    if( ! refalrts::alloc_name( n3, ExistFile_T, "ExistFile_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_char( n4, '.' ) )
@@ -999,8 +999,8 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" }
+      { ExistFile_T, "ExistFile_T" },
+      { AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1053,13 +1053,13 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & ExistFile_T, "ExistFile_T" ) )
+    if( ! refalrts::alloc_name( n3, ExistFile_T, "ExistFile_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_char( n4, '.' ) )
@@ -1113,8 +1113,8 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ExistFile_T, "ExistFile_T" },
-      { & AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" }
+      { ExistFile_T, "ExistFile_T" },
+      { AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1168,7 +1168,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" ) )
+    if( ! refalrts::alloc_name( n1, AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1177,7 +1177,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & ExistFile_T, "ExistFile_T" ) )
+    if( ! refalrts::alloc_name( n4, ExistFile_T, "ExistFile_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_char( n5, '.' ) )
@@ -1204,7 +1204,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n12 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_name( n13, & ExistFile_T, "ExistFile_T" ) )
+    if( ! refalrts::alloc_name( n13, ExistFile_T, "ExistFile_T" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
     if( ! refalrts::alloc_char( n14, '.' ) )
@@ -1279,8 +1279,8 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" },
-      { & True, "True" }
+      { Source, "Source" },
+      { True, "True" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1323,7 +1323,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       return res;
 #else
     // & True e.UnitName#1 '.sref'
-    if( ! refalrts::function_left( & True, context[0], context[1] ) )
+    if( ! refalrts::function_left( True, context[0], context[1] ) )
       break;
     if( ! refalrts::char_right( 'f', context[0], context[1] ) )
       break;
@@ -1346,7 +1346,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Source, "Source" ) )
+    if( ! refalrts::alloc_name( n1, Source, "Source" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1420,8 +1420,8 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" },
-      { & False, "False" }
+      { NotFound, "NotFound" },
+      { False, "False" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1447,7 +1447,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       return res;
 #else
     // & False e.SourceName#1
-    if( ! refalrts::function_left( & False, context[0], context[1] ) )
+    if( ! refalrts::function_left( False, context[0], context[1] ) )
       break;
     context[__eSourceName_1_1] = context[0];
     context[__eSourceName_1_1 + 1] = context[1];
@@ -1458,7 +1458,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & NotFound, "NotFound" ) )
+    if( ! refalrts::alloc_name( n1, NotFound, "NotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -1493,8 +1493,8 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" },
-      { & True, "True" }
+      { Output, "Output" },
+      { True, "True" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1520,7 +1520,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       return res;
 #else
     // & True e.OutName#1
-    if( ! refalrts::function_left( & True, context[0], context[1] ) )
+    if( ! refalrts::function_left( True, context[0], context[1] ) )
       break;
     context[__eOutName_1_1] = context[0];
     context[__eOutName_1_1 + 1] = context[1];
@@ -1531,7 +1531,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Output, "Output" ) )
+    if( ! refalrts::alloc_name( n1, Output, "Output" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -1559,8 +1559,8 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" },
-      { & False, "False" }
+      { NotFound, "NotFound" },
+      { False, "False" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1586,7 +1586,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       return res;
 #else
     // & False e.OutName#1
-    if( ! refalrts::function_left( & False, context[0], context[1] ) )
+    if( ! refalrts::function_left( False, context[0], context[1] ) )
       break;
     context[__eOutName_1_1] = context[0];
     context[__eOutName_1_1 + 1] = context[1];
@@ -1597,7 +1597,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & NotFound, "NotFound" ) )
+    if( ! refalrts::alloc_name( n1, NotFound, "NotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -1634,8 +1634,8 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" },
-      { & True, "True" }
+      { Source, "Source" },
+      { True, "True" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1671,7 +1671,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & True, context[2], context[3] ) )
+    if( ! refalrts::function_left( True, context[2], context[3] ) )
       break;
     context[__eSourceName_1_1] = context[2];
     context[__eSourceName_1_1 + 1] = context[3];
@@ -1686,7 +1686,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Source, "Source" ) )
+    if( ! refalrts::alloc_name( n1, Source, "Source" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1724,9 +1724,9 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" },
-      { & True, "True" },
-      { & False, "False" }
+      { Output, "Output" },
+      { True, "True" },
+      { False, "False" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1758,9 +1758,9 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & False, context[2], context[3] ) )
+    if( ! refalrts::function_left( False, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & True, context[0], context[1] ) )
+    if( ! refalrts::function_left( True, context[0], context[1] ) )
       break;
     // Unused closed variable e.SourceName#1
     context[__eOutName_1_1] = context[0];
@@ -1772,7 +1772,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Output, "Output" ) )
+    if( ! refalrts::alloc_name( n1, Output, "Output" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -1801,8 +1801,8 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" },
-      { & False, "False" }
+      { NotFound, "NotFound" },
+      { False, "False" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1853,9 +1853,9 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & False, context[2], context[3] ) )
+    if( ! refalrts::function_left( False, context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & False, context[0], context[1] ) )
+    if( ! refalrts::function_left( False, context[0], context[1] ) )
       break;
     if( ! refalrts::char_right( 'f', context[2], context[3] ) )
       break;
@@ -1880,7 +1880,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & NotFound, "NotFound" ) )
+    if( ! refalrts::alloc_name( n1, NotFound, "NotFound" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )

@@ -1976,7 +1976,7 @@ bool refalrts::vm::init_view_field() {
   if( ! refalrts::alloc_open_call( n0 ) )
     return false;
   refalrts::Iter n1 = 0;
-  if( ! refalrts::alloc_name( n1, & GO_START_FUNCTION, GO_NAME ) )
+  if( ! refalrts::alloc_name( n1, GO_START_FUNCTION, GO_NAME ) )
     return false;
   refalrts::Iter n2 = 0;
   if( ! refalrts::alloc_close_call( n2 ) )

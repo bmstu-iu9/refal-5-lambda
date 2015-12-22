@@ -31,8 +31,8 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ArgList, "ArgList" },
-      { & Main, "Main" }
+      { ArgList, "ArgList" },
+      { Main, "Main" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -68,13 +68,13 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Main, "Main" ) )
+    if( ! refalrts::alloc_name( n1, Main, "Main" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & ArgList, "ArgList" ) )
+    if( ! refalrts::alloc_name( n3, ArgList, "ArgList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -132,8 +132,8 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & LoadFile, "LoadFile" },
-      { & Main, "Main" }
+      { LoadFile, "LoadFile" },
+      { Main, "Main" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -192,7 +192,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Main, "Main" ) )
+    if( ! refalrts::alloc_name( n1, Main, "Main" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -204,7 +204,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & LoadFile, "LoadFile" ) )
+    if( ! refalrts::alloc_name( n5, LoadFile, "LoadFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -245,9 +245,9 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & ParseCommandLine, "ParseCommandLine" },
-      { & FindFiles_Compilers, "FindFiles_Compilers" },
-      { & Compile_And_Link, "Compile_And_Link" }
+      { ParseCommandLine, "ParseCommandLine" },
+      { FindFiles_Compilers, "FindFiles_Compilers" },
+      { Compile_And_Link, "Compile_And_Link" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -293,19 +293,19 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Compile_And_Link, "Compile_And_Link" ) )
+    if( ! refalrts::alloc_name( n1, Compile_And_Link, "Compile_And_Link" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & FindFiles_Compilers, "FindFiles_Compilers" ) )
+    if( ! refalrts::alloc_name( n3, FindFiles_Compilers, "FindFiles_Compilers" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & ParseCommandLine, "ParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n5, ParseCommandLine, "ParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_call( n6 ) )
@@ -361,7 +361,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FindFiles, "FindFiles" }
+      { FindFiles, "FindFiles" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -410,7 +410,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & FindFiles, "FindFiles" ) )
+    if( ! refalrts::alloc_name( n1, FindFiles, "FindFiles" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -450,7 +450,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CmdLineError, "CmdLineError" }
+      { CmdLineError, "CmdLineError" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -482,7 +482,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdLineError, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdLineError, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -495,7 +495,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdLineError, "CmdLineError" ) )
+    if( ! refalrts::alloc_name( n1, CmdLineError, "CmdLineError" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -546,8 +546,8 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & CmdLineError, "CmdLineError" }
+      { WriteLine, "WriteLine" },
+      { CmdLineError, "CmdLineError" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -599,7 +599,7 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CmdLineError, context[2], context[3] ) )
+    if( ! refalrts::function_left( CmdLineError, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -612,7 +612,7 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n1, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'C' ) )
@@ -724,9 +724,9 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NotFound, "NotFound" },
-      { & PrintNotFound, "PrintNotFound" },
-      { & Map, "Map" }
+      { NotFound, "NotFound" },
+      { PrintNotFound, "PrintNotFound" },
+      { Map, "Map" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -774,7 +774,7 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
       context[3] = 0;
       if( ! refalrts::brackets_left( context[2], context[3], context[4], context[5] ) )
         continue;
-      if( ! refalrts::function_left( & NotFound, context[2], context[3] ) )
+      if( ! refalrts::function_left( NotFound, context[2], context[3] ) )
         continue;
       context[__eFileName_1_1] = context[2];
       context[__eFileName_1_1 + 1] = context[3];
@@ -787,16 +787,16 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_call( n0 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n1 = 0;
-      if( ! refalrts::alloc_name( n1, & Map, "Map" ) )
+      if( ! refalrts::alloc_name( n1, Map, "Map" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n2 = 0;
-      if( ! refalrts::alloc_name( n2, & PrintNotFound, "PrintNotFound" ) )
+      if( ! refalrts::alloc_name( n2, PrintNotFound, "PrintNotFound" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
       if( ! refalrts::alloc_open_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_name( n4, & NotFound, "NotFound" ) )
+      if( ! refalrts::alloc_name( n4, NotFound, "NotFound" ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
       if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -836,9 +836,9 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & GetFileName, "GetFileName" },
-      { & Map, "Map" },
-      { & ScanCollisions, "ScanCollisions" }
+      { GetFileName, "GetFileName" },
+      { Map, "Map" },
+      { ScanCollisions, "ScanCollisions" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -880,16 +880,16 @@ static refalrts::FnResult Compile_And_Link(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & ScanCollisions, "ScanCollisions" ) )
+    if( ! refalrts::alloc_name( n1, ScanCollisions, "ScanCollisions" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n3, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & GetFileName, "GetFileName" ) )
+    if( ! refalrts::alloc_name( n4, GetFileName, "GetFileName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -935,8 +935,8 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & NotFound, "NotFound" }
+      { WriteLine, "WriteLine" },
+      { NotFound, "NotFound" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1003,7 +1003,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & NotFound, context[2], context[3] ) )
+    if( ! refalrts::function_left( NotFound, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1016,7 +1016,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n1, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'C' ) )
@@ -1184,7 +1184,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" }
+      { Output, "Output" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1211,7 +1211,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Output, context[2], context[3] ) )
+    if( ! refalrts::function_left( Output, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1236,7 +1236,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" }
+      { Source, "Source" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1264,7 +1264,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Source, context[2], context[3] ) )
+    if( ! refalrts::function_left( Source, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -1307,8 +1307,8 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Output, "Output" },
-      { & GetFileName_Aux, "GetFileName_Aux" }
+      { Output, "Output" },
+      { GetFileName_Aux, "GetFileName_Aux" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1347,7 +1347,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Output, context[2], context[3] ) )
+    if( ! refalrts::function_left( Output, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1365,7 +1365,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & GetFileName_Aux, "GetFileName_Aux" ) )
+    if( ! refalrts::alloc_name( n2, GetFileName_Aux, "GetFileName_Aux" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -1377,7 +1377,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Output, "Output" ) )
+    if( ! refalrts::alloc_name( n6, Output, "Output" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -1420,8 +1420,8 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" },
-      { & GetFileName_Aux, "GetFileName_Aux" }
+      { Source, "Source" },
+      { GetFileName_Aux, "GetFileName_Aux" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1465,7 +1465,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & Source, context[2], context[3] ) )
+    if( ! refalrts::function_left( Source, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -1489,7 +1489,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & GetFileName_Aux, "GetFileName_Aux" ) )
+    if( ! refalrts::alloc_name( n2, GetFileName_Aux, "GetFileName_Aux" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -1501,7 +1501,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & Source, "Source" ) )
+    if( ! refalrts::alloc_name( n6, Source, "Source" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_open_bracket( n7 ) )
@@ -1559,7 +1559,7 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoGetFileName, "DoGetFileName" }
+      { DoGetFileName, "DoGetFileName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1605,7 +1605,7 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGetFileName, "DoGetFileName" ) )
+    if( ! refalrts::alloc_name( n1, DoGetFileName, "DoGetFileName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1728,8 +1728,8 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Lower, "Lower" },
-      { & DoGetFileName, "DoGetFileName" }
+      { Lower, "Lower" },
+      { DoGetFileName, "DoGetFileName" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1770,7 +1770,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoGetFileName, "DoGetFileName" ) )
+    if( ! refalrts::alloc_name( n1, DoGetFileName, "DoGetFileName" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1779,7 +1779,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Lower, "Lower" ) )
+    if( ! refalrts::alloc_name( n4, Lower, "Lower" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -1864,7 +1864,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoLower, "DoLower" }
+      { DoLower, "DoLower" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -1953,7 +1953,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoLower, "DoLower" ) )
+    if( ! refalrts::alloc_name( n1, DoLower, "DoLower" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'A' ) )
@@ -2253,7 +2253,7 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & DoLower, "DoLower" }
+      { DoLower, "DoLower" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2297,7 +2297,7 @@ static refalrts::FnResult DoLower(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoLower, "DoLower" ) )
+    if( ! refalrts::alloc_name( n1, DoLower, "DoLower" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -2393,8 +2393,8 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & Output, "Output" }
+      { WriteLine, "WriteLine" },
+      { Output, "Output" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2512,7 +2512,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[5] = 0;
       if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
         continue;
-      if( ! refalrts::function_left( & Output, context[4], context[5] ) )
+      if( ! refalrts::function_left( Output, context[4], context[5] ) )
         continue;
       if( ! refalrts::number_right( 0UL, context[2], context[3] ) )
         continue;
@@ -2533,7 +2533,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         context[9] = 0;
         if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
           continue;
-        if( ! refalrts::function_left( & Output, context[8], context[9] ) )
+        if( ! refalrts::function_left( Output, context[8], context[9] ) )
           continue;
         if( ! refalrts::number_right( 0UL, context[6], context[7] ) )
           continue;
@@ -2551,7 +2551,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & WriteLine, "WriteLine" ) )
+        if( ! refalrts::alloc_name( n1, WriteLine, "WriteLine" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_char( n2, 'C' ) )
@@ -2820,11 +2820,11 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Renumerate, "Renumerate" },
-      { & MapReduce, "MapReduce" },
-      { & DelAccumulator, "DelAccumulator" },
-      { & Output, "Output" },
-      { & ScanCollisions, "ScanCollisions" }
+      { Renumerate, "Renumerate" },
+      { MapReduce, "MapReduce" },
+      { DelAccumulator, "DelAccumulator" },
+      { Output, "Output" },
+      { ScanCollisions, "ScanCollisions" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -2924,7 +2924,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         context[7] = 0;
         if( ! refalrts::brackets_right( context[6], context[7], context[4], context[5] ) )
           continue;
-        if( ! refalrts::function_left( & Output, context[6], context[7] ) )
+        if( ! refalrts::function_left( Output, context[6], context[7] ) )
           continue;
         if( ! refalrts::number_right( 0UL, context[4], context[5] ) )
           continue;
@@ -2945,7 +2945,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & ScanCollisions, "ScanCollisions" ) )
+        if( ! refalrts::alloc_name( n1, ScanCollisions, "ScanCollisions" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2966,7 +2966,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_bracket( n7 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n8 = 0;
-        if( ! refalrts::alloc_name( n8, & Output, "Output" ) )
+        if( ! refalrts::alloc_name( n8, Output, "Output" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n9 = 0;
         if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -2978,19 +2978,19 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n11 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n12 = 0;
-        if( ! refalrts::alloc_name( n12, & DelAccumulator, "DelAccumulator" ) )
+        if( ! refalrts::alloc_name( n12, DelAccumulator, "DelAccumulator" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
         if( ! refalrts::alloc_open_call( n13 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
-        if( ! refalrts::alloc_name( n14, & MapReduce, "MapReduce" ) )
+        if( ! refalrts::alloc_name( n14, MapReduce, "MapReduce" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n15 = 0;
         if( ! refalrts::alloc_open_bracket( n15 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n16 = 0;
-        if( ! refalrts::alloc_name( n16, & Renumerate, "Renumerate" ) )
+        if( ! refalrts::alloc_name( n16, Renumerate, "Renumerate" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n17 = 0;
         if( ! refalrts::alloc_close_bracket( n17 ) )
@@ -3076,11 +3076,11 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Renumerate, "Renumerate" },
-      { & MapReduce, "MapReduce" },
-      { & DelAccumulator, "DelAccumulator" },
-      { & Output, "Output" },
-      { & ScanCollisions, "ScanCollisions" }
+      { Renumerate, "Renumerate" },
+      { MapReduce, "MapReduce" },
+      { DelAccumulator, "DelAccumulator" },
+      { Output, "Output" },
+      { ScanCollisions, "ScanCollisions" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3165,7 +3165,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[5] = 0;
       if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
         continue;
-      if( ! refalrts::function_left( & Output, context[4], context[5] ) )
+      if( ! refalrts::function_left( Output, context[4], context[5] ) )
         continue;
       if( ! refalrts::number_right( 0UL, context[2], context[3] ) )
         continue;
@@ -3201,7 +3201,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & ScanCollisions, "ScanCollisions" ) )
+        if( ! refalrts::alloc_name( n1, ScanCollisions, "ScanCollisions" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3213,7 +3213,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_bracket( n4 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n5 = 0;
-        if( ! refalrts::alloc_name( n5, & Output, "Output" ) )
+        if( ! refalrts::alloc_name( n5, Output, "Output" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n6 = 0;
         if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -3234,19 +3234,19 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n11 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n12 = 0;
-        if( ! refalrts::alloc_name( n12, & DelAccumulator, "DelAccumulator" ) )
+        if( ! refalrts::alloc_name( n12, DelAccumulator, "DelAccumulator" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
         if( ! refalrts::alloc_open_call( n13 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
-        if( ! refalrts::alloc_name( n14, & MapReduce, "MapReduce" ) )
+        if( ! refalrts::alloc_name( n14, MapReduce, "MapReduce" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n15 = 0;
         if( ! refalrts::alloc_open_bracket( n15 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n16 = 0;
-        if( ! refalrts::alloc_name( n16, & Renumerate, "Renumerate" ) )
+        if( ! refalrts::alloc_name( n16, Renumerate, "Renumerate" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n17 = 0;
         if( ! refalrts::alloc_close_bracket( n17 ) )
@@ -3332,10 +3332,10 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Renumerate, "Renumerate" },
-      { & MapReduce, "MapReduce" },
-      { & DelAccumulator, "DelAccumulator" },
-      { & ScanCollisions, "ScanCollisions" }
+      { Renumerate, "Renumerate" },
+      { MapReduce, "MapReduce" },
+      { DelAccumulator, "DelAccumulator" },
+      { ScanCollisions, "ScanCollisions" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3445,7 +3445,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n0 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n1 = 0;
-        if( ! refalrts::alloc_name( n1, & ScanCollisions, "ScanCollisions" ) )
+        if( ! refalrts::alloc_name( n1, ScanCollisions, "ScanCollisions" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n2 = 0;
         if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3469,19 +3469,19 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_call( n8 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n9 = 0;
-        if( ! refalrts::alloc_name( n9, & DelAccumulator, "DelAccumulator" ) )
+        if( ! refalrts::alloc_name( n9, DelAccumulator, "DelAccumulator" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n10 = 0;
         if( ! refalrts::alloc_open_call( n10 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n11 = 0;
-        if( ! refalrts::alloc_name( n11, & MapReduce, "MapReduce" ) )
+        if( ! refalrts::alloc_name( n11, MapReduce, "MapReduce" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n12 = 0;
         if( ! refalrts::alloc_open_bracket( n12 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n13 = 0;
-        if( ! refalrts::alloc_name( n13, & Renumerate, "Renumerate" ) )
+        if( ! refalrts::alloc_name( n13, Renumerate, "Renumerate" ) )
           return refalrts::cNoMemory;
         refalrts::Iter n14 = 0;
         if( ! refalrts::alloc_close_bracket( n14 ) )
@@ -3556,9 +3556,9 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & CompileEachFile, "CompileEachFile" },
-      { & Map, "Map" },
-      { & Link, "Link" }
+      { CompileEachFile, "CompileEachFile" },
+      { Map, "Map" },
+      { Link, "Link" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3600,16 +3600,16 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Link, "Link" ) )
+    if( ! refalrts::alloc_name( n1, Link, "Link" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n3, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & CompileEachFile, "CompileEachFile" ) )
+    if( ! refalrts::alloc_name( n4, CompileEachFile, "CompileEachFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -3662,8 +3662,8 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Source, "Source" },
-      { & Inc, "Inc" }
+      { Source, "Source" },
+      { Inc, "Inc" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3717,7 +3717,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     context[5] = 0;
     if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & Source, context[4], context[5] ) )
+    if( ! refalrts::function_left( Source, context[4], context[5] ) )
       break;
     if( ! refalrts::number_right( 0UL, context[2], context[3] ) )
       break;
@@ -3746,7 +3746,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Inc, "Inc" ) )
+    if( ! refalrts::alloc_name( n1, Inc, "Inc" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -3758,7 +3758,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, & Source, "Source" ) )
+    if( ! refalrts::alloc_name( n5, Source, "Source" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_open_bracket( n6 ) )
@@ -3874,8 +3874,8 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & Output, "Output" }
+      { WriteLine, "WriteLine" },
+      { Output, "Output" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -3925,7 +3925,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     context[5] = 0;
     if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & Output, context[4], context[5] ) )
+    if( ! refalrts::function_left( Output, context[4], context[5] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3943,7 +3943,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n1, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '+' ) )
@@ -4021,11 +4021,11 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & FileNum, "FileNum" },
-      { & CompileFile, "CompileFile" },
-      { & WriteLine, "WriteLine" },
-      { & SwCompiled, "SwCompiled" },
-      { & Source, "Source" }
+      { FileNum, "FileNum" },
+      { CompileFile, "CompileFile" },
+      { WriteLine, "WriteLine" },
+      { SwCompiled, "SwCompiled" },
+      { Source, "Source" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4091,7 +4091,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     context[5] = 0;
     if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( & Source, context[4], context[5] ) )
+    if( ! refalrts::function_left( Source, context[4], context[5] ) )
       break;
     context[6] = 0;
     context[7] = 0;
@@ -4115,13 +4115,13 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & SwCompiled, "SwCompiled" ) )
+    if( ! refalrts::alloc_name( n1, SwCompiled, "SwCompiled" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n3, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_char( n4, '*' ) )
@@ -4166,7 +4166,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n17 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_name( n18, & CompileFile, "CompileFile" ) )
+    if( ! refalrts::alloc_name( n18, CompileFile, "CompileFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
     if( ! refalrts::alloc_open_bracket( n19 ) )
@@ -4178,7 +4178,7 @@ static refalrts::FnResult CompileEachFile(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n21 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_name( n22, & FileNum, "FileNum" ) )
+    if( ! refalrts::alloc_name( n22, FileNum, "FileNum" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
     if( ! refalrts::alloc_close_call( n23 ) )
@@ -4303,7 +4303,7 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & StrFromInt, "StrFromInt" }
+      { StrFromInt, "StrFromInt" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4361,7 +4361,7 @@ static refalrts::FnResult FileNum(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_call( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & StrFromInt, "StrFromInt" ) )
+    if( ! refalrts::alloc_name( n2, StrFromInt, "StrFromInt" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_call( n3 ) )
@@ -4415,7 +4415,7 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Success, "Success" }
+      { Success, "Success" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4440,7 +4440,7 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
       return res;
 #else
     // & Success e.OutputName#1
-    if( ! refalrts::function_left( & Success, context[0], context[1] ) )
+    if( ! refalrts::function_left( Success, context[0], context[1] ) )
       break;
     context[__eOutputName_1_1] = context[0];
     context[__eOutputName_1_1 + 1] = context[1];
@@ -4474,7 +4474,7 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Fails, "Fails" }
+      { Fails, "Fails" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4497,7 +4497,7 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
       return res;
 #else
     // & Fails
-    if( ! refalrts::function_left( & Fails, context[0], context[1] ) )
+    if( ! refalrts::function_left( Fails, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4505,7 +4505,7 @@ static refalrts::FnResult SwCompiled(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, & Fails, "Fails" ) )
+    if( ! refalrts::alloc_name( n0, Fails, "Fails" ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4606,7 +4606,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & NoCompile, "NoCompile" }
+      { NoCompile, "NoCompile" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4633,7 +4633,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & NoCompile, context[2], context[3] ) )
+    if( ! refalrts::function_left( NoCompile, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[2], context[3] ) )
       break;
@@ -4659,8 +4659,8 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & Fails, "Fails" },
-      { & CompileCommand, "CompileCommand" }
+      { Fails, "Fails" },
+      { CompileCommand, "CompileCommand" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4690,7 +4690,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CompileCommand, context[2], context[3] ) )
+    if( ! refalrts::function_left( CompileCommand, context[2], context[3] ) )
       break;
     // Unused closed variable e.Command#1
     context[__eOutputs_B_1_1] = 0;
@@ -4698,7 +4698,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     do {
       context[4] = context[0];
       context[5] = context[1];
-      if( ! refalrts::function_left( & Fails, context[4], context[5] ) )
+      if( ! refalrts::function_left( Fails, context[4], context[5] ) )
         continue;
       // Unused closed variable e.Outputs_E#1
 
@@ -4724,11 +4724,11 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { & WriteLine, "WriteLine" },
-      { & UnBracketSpace, "UnBracketSpace" },
-      { & Map, "Map" },
-      { & System, "System" },
-      { & CompileCommand, "CompileCommand" }
+      { WriteLine, "WriteLine" },
+      { UnBracketSpace, "UnBracketSpace" },
+      { Map, "Map" },
+      { System, "System" },
+      { CompileCommand, "CompileCommand" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4795,7 +4795,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( & CompileCommand, context[2], context[3] ) )
+    if( ! refalrts::function_left( CompileCommand, context[2], context[3] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -4808,16 +4808,16 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & System, "System" ) )
+    if( ! refalrts::alloc_name( n1, System, "System" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & Map, "Map" ) )
+    if( ! refalrts::alloc_name( n3, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & UnBracketSpace, "UnBracketSpace" ) )
+    if( ! refalrts::alloc_name( n4, UnBracketSpace, "UnBracketSpace" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_call( n5 ) )
@@ -4829,7 +4829,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & WriteLine, "WriteLine" ) )
+    if( ! refalrts::alloc_name( n8, WriteLine, "WriteLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_char( n9, '*' ) )
