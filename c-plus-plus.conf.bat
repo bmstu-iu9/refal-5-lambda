@@ -11,7 +11,7 @@ rem Не забудьте раскомментировать и эту стро�
 
 rem Если вы используете компилятор Borland C++ Compiler 5.5
 :: set PATH=%PATH%;C:\Borland\BCC55\bin
-:: set CPPLINE=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib -wall
+:: set CPPLINE=bcc32 -IC:\Borland\BCC55\Include -LC:\Borland\BCC55\Lib -w
 
 rem Если вы используете компилятор MinGW (MinGW builds), установите в строке ниже
 rem правильный путь до каталога bin дистрибутива MinGW.
