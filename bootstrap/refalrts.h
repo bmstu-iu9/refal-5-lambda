@@ -95,7 +95,7 @@ typedef struct ResultAction {
 
 extern void use( Iter& );
 
-// Операции распознавания образца
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ РѕР±СЂР°Р·С†Р°
 
 extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
@@ -154,7 +154,7 @@ extern unsigned read_chars(
   char buffer[], unsigned buflen, Iter& first, Iter& last
 );
 
-// Операции построения результата
+// РћРїРµСЂР°С†РёРё РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 
 extern void reset_allocator();
 
@@ -191,24 +191,24 @@ extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
 
 extern FnResult create_closure( Iter begin, Iter end );
-Iter unwrap_closure( Iter closure ); // Развернуть замыкание
-Iter wrap_closure( Iter closure ); // Свернуть замыкание
+Iter unwrap_closure( Iter closure ); // Р Р°Р·РІРµСЂРЅСѓС‚СЊ Р·Р°РјС‹РєР°РЅРёРµ
+Iter wrap_closure( Iter closure ); // РЎРІРµСЂРЅСѓС‚СЊ Р·Р°РјС‹РєР°РЅРёРµ
 
-// Работа со статическими ящиками
+// Р Р°Р±РѕС‚Р° СЃРѕ СЃС‚Р°С‚РёС‡РµСЃРєРёРјРё СЏС‰РёРєР°РјРё
 
 extern Iter initialize_swap_head( Iter head );
 extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
 extern void swap_save( Iter head, Iter first, Iter last );
 
-// Профилирование
+// РџСЂРѕС„РёР»РёСЂРѕРІР°РЅРёРµ
 
 extern void this_is_generated_function();
 
-// Прочие функции
+// РџСЂРѕС‡РёРµ С„СѓРЅРєС†РёРё
 
 extern void set_return_code( int retcode );
 
-// Интерпретатор
+// РРЅС‚РµСЂРїСЂРµС‚Р°С‚РѕСЂ
 
 extern FnResult interpret_array(
   const ResultAction raa[],

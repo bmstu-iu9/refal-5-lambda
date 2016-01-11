@@ -75,7 +75,7 @@ refalrts::FnResult string_from_seq(
   }
 
   /*
-    Здесь empty_seq( begin, end ) || (begin->tag != cDataChar).
+    Р—РґРµСЃСЊ empty_seq( begin, end ) || (begin->tag != cDataChar).
   */
 
   if( empty_seq( begin, end ) ) {
@@ -83,7 +83,7 @@ refalrts::FnResult string_from_seq(
     string.swap( result );
     return refalrts::cSuccess;
   } else {
-    // здесь begin->tag != cDataChar
+    // Р·РґРµСЃСЊ begin->tag != cDataChar
     return refalrts::cRecognitionImpossible;
   }
 }
@@ -312,7 +312,7 @@ refalrts::FnResult CoreP_MFileSystemP_DirList(refalrts::Iter arg_begin, refalrts
     return refalrts::cRecognitionImpossible;
   }
 
-  directory.back() = '\\'; // Перезаписываем нулевой символ в конце
+  directory.back() = '\\'; // РџРµСЂРµР·Р°РїРёСЃС‹РІР°РµРј РЅСѓР»РµРІРѕР№ СЃРёРјРІРѕР» РІ РєРѕРЅС†Рµ
 
   std::vector<char> find_str = directory;
 

@@ -102,22 +102,22 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'è'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '´'},
-      {refalrts::icChar, 0, 0, 'Ï'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '©'},
+      {refalrts::icChar, 0, 0, '–ü'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '–ª'},
+      {refalrts::icChar, 0, 0, '—å'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–π'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '°'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '‡'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–±'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '—Ä'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -135,52 +135,52 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_name( n1, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_char( n2, 'è' ) )
+    if( ! refalrts::alloc_char( n2, '–ü' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_char( n3, '‡' ) )
+    if( ! refalrts::alloc_char( n3, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_char( n4, '†' ) )
+    if( ! refalrts::alloc_char( n4, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_char( n5, '¢' ) )
+    if( ! refalrts::alloc_char( n5, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, '®' ) )
+    if( ! refalrts::alloc_char( n6, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, '´' ) )
+    if( ! refalrts::alloc_char( n7, '–ª' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, 'Ï' ) )
+    if( ! refalrts::alloc_char( n8, '—å' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_char( n9, '≠' ) )
+    if( ! refalrts::alloc_char( n9, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, 'Î' ) )
+    if( ! refalrts::alloc_char( n10, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, '©' ) )
+    if( ! refalrts::alloc_char( n11, '–π' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
     if( ! refalrts::alloc_char( n12, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, '¢' ) )
+    if( ! refalrts::alloc_char( n13, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, 'Î' ) )
+    if( ! refalrts::alloc_char( n14, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, '°' ) )
+    if( ! refalrts::alloc_char( n15, '–±' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'Æ' ) )
+    if( ! refalrts::alloc_char( n16, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, '‡' ) )
+    if( ! refalrts::alloc_char( n17, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
     if( ! refalrts::alloc_close_call( n18 ) )
@@ -231,36 +231,36 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'ï'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, 'Ë'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '©'},
+      {refalrts::icChar, 0, 0, '–•'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '—à'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '–π'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, 'Ø'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '‚'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '©'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–ø'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '—Ç'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–π'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '®'},
+      {refalrts::icChar, 0, 0, '–∏'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'é'},
-      {refalrts::icChar, 0, 0, 'é'},
+      {refalrts::icChar, 0, 0, '–û'},
+      {refalrts::icChar, 0, 0, '–û'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ô'},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '™'},
+      {refalrts::icChar, 0, 0, '—è'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–∫'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
     };
@@ -278,94 +278,94 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_name( n1, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_char( n2, 'ï' ) )
+    if( ! refalrts::alloc_char( n2, '–•' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_char( n3, 'Æ' ) )
+    if( ! refalrts::alloc_char( n3, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_char( n4, '‡' ) )
+    if( ! refalrts::alloc_char( n4, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_char( n5, 'Æ' ) )
+    if( ! refalrts::alloc_char( n5, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, 'Ë' ) )
+    if( ! refalrts::alloc_char( n6, '—à' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, '®' ) )
+    if( ! refalrts::alloc_char( n7, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, '©' ) )
+    if( ! refalrts::alloc_char( n8, '–π' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_char( n9, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, '®' ) )
+    if( ! refalrts::alloc_char( n10, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, '¨' ) )
+    if( ! refalrts::alloc_char( n11, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, 'Ø' ) )
+    if( ! refalrts::alloc_char( n12, '–ø' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, '•' ) )
+    if( ! refalrts::alloc_char( n13, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, '‡' ) )
+    if( ! refalrts::alloc_char( n14, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, '†' ) )
+    if( ! refalrts::alloc_char( n15, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, '‚' ) )
+    if( ! refalrts::alloc_char( n16, '—Ç' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, '®' ) )
+    if( ! refalrts::alloc_char( n17, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, '¢' ) )
+    if( ! refalrts::alloc_char( n18, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_char( n19, '≠' ) )
+    if( ! refalrts::alloc_char( n19, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_char( n20, 'Î' ) )
+    if( ! refalrts::alloc_char( n20, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, '©' ) )
+    if( ! refalrts::alloc_char( n21, '–π' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
     if( ! refalrts::alloc_char( n22, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '®' ) )
+    if( ! refalrts::alloc_char( n23, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_char( n24, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, 'é' ) )
+    if( ! refalrts::alloc_char( n25, '–û' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, 'é' ) )
+    if( ! refalrts::alloc_char( n26, '–û' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
     if( ! refalrts::alloc_char( n27, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, 'Ô' ) )
+    if( ! refalrts::alloc_char( n28, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, 'ß' ) )
+    if( ! refalrts::alloc_char( n29, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_char( n30, 'Î' ) )
+    if( ! refalrts::alloc_char( n30, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_char( n31, '™' ) )
+    if( ! refalrts::alloc_char( n31, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
     if( ! refalrts::alloc_close_call( n32 ) )
@@ -430,35 +430,35 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'è'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, '§'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '´'},
-      {refalrts::icChar, 0, 0, 'Ô'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '¨'},
+      {refalrts::icChar, 0, 0, '–ü'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '–¥'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–ª'},
+      {refalrts::icChar, 0, 0, '—è'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '–º'},
       {refalrts::icChar, 0, 0, ','},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ç'},
-      {refalrts::icChar, 0, 0, 'Î'},
+      {refalrts::icChar, 0, 0, '–í'},
+      {refalrts::icChar, 0, 0, '—ã'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, '-'},
       {refalrts::icChar, 0, 0, '-'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '°'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '§'},
-      {refalrts::icChar, 0, 0, '´'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '™'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '§'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '‡'},
+      {refalrts::icChar, 0, 0, '–±'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–¥'},
+      {refalrts::icChar, 0, 0, '–ª'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–∫'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–¥'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '—Ä'},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -477,37 +477,37 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_name( n1, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_char( n2, 'è' ) )
+    if( ! refalrts::alloc_char( n2, '–ü' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_char( n3, 'Æ' ) )
+    if( ! refalrts::alloc_char( n3, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_char( n4, 'ß' ) )
+    if( ! refalrts::alloc_char( n4, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_char( n5, '§' ) )
+    if( ! refalrts::alloc_char( n5, '–¥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, '‡' ) )
+    if( ! refalrts::alloc_char( n6, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, '†' ) )
+    if( ! refalrts::alloc_char( n7, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, '¢' ) )
+    if( ! refalrts::alloc_char( n8, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_char( n9, '´' ) )
+    if( ! refalrts::alloc_char( n9, '–ª' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, 'Ô' ) )
+    if( ! refalrts::alloc_char( n10, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, '•' ) )
+    if( ! refalrts::alloc_char( n11, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, '¨' ) )
+    if( ! refalrts::alloc_char( n12, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_char( n13, ',' ) )
@@ -516,10 +516,10 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n14, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, 'Ç' ) )
+    if( ! refalrts::alloc_char( n15, '–í' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, 'Î' ) )
+    if( ! refalrts::alloc_char( n16, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_char( n17, ' ' ) )
@@ -534,34 +534,34 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n20, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, '°' ) )
+    if( ! refalrts::alloc_char( n21, '–±' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_char( n22, 'Î' ) )
+    if( ! refalrts::alloc_char( n22, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '§' ) )
+    if( ! refalrts::alloc_char( n23, '–¥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, '´' ) )
+    if( ! refalrts::alloc_char( n24, '–ª' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, 'Æ' ) )
+    if( ! refalrts::alloc_char( n25, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '™' ) )
+    if( ! refalrts::alloc_char( n26, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, 'Æ' ) )
+    if( ! refalrts::alloc_char( n27, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, '§' ) )
+    if( ! refalrts::alloc_char( n28, '–¥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, '•' ) )
+    if( ! refalrts::alloc_char( n29, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_char( n30, '‡' ) )
+    if( ! refalrts::alloc_char( n30, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
     if( ! refalrts::alloc_char( n31, '.' ) )
@@ -629,73 +629,73 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     const static refalrts::ResultAction raa[] = {
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'å'},
-      {refalrts::icChar, 0, 0, 'Î'},
+      {refalrts::icChar, 0, 0, '–ú'},
+      {refalrts::icChar, 0, 0, '—ã'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '•'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–µ'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '¨'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '–º'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '‚'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '™'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, 'Â'},
+      {refalrts::icChar, 0, 0, '—Ç'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–∫'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—Ö'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ô'},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '™'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '¢'},
+      {refalrts::icChar, 0, 0, '—è'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–∫'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–≤'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ø'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '£'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, 'Ô'},
+      {refalrts::icChar, 0, 0, '–ø'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–≥'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—è'},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, ';'},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'å'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '¶'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '‚'},
+      {refalrts::icChar, 0, 0, '–ú'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–∂'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '—Ç'},
       {refalrts::icChar, 0, 0, ','},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '·'},
-      {refalrts::icChar, 0, 0, '·'},
-      {refalrts::icChar, 0, 0, '™'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¶'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '‚'},
-      {refalrts::icChar, 0, 0, '•'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '—Å'},
+      {refalrts::icChar, 0, 0, '—Å'},
+      {refalrts::icChar, 0, 0, '–∫'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–∂'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '—Ç'},
+      {refalrts::icChar, 0, 0, '–µ'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¨'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–º'},
       {refalrts::icChar, 0, 0, '?'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icEnd}
@@ -714,127 +714,127 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_name( n1, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_char( n2, 'å' ) )
+    if( ! refalrts::alloc_char( n2, '–ú' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_char( n3, 'Î' ) )
+    if( ! refalrts::alloc_char( n3, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_char( n4, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_char( n5, '≠' ) )
+    if( ! refalrts::alloc_char( n5, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, '•' ) )
+    if( ! refalrts::alloc_char( n6, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_char( n7, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, 'ß' ) )
+    if( ! refalrts::alloc_char( n8, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_char( n9, '≠' ) )
+    if( ! refalrts::alloc_char( n9, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, '†' ) )
+    if( ! refalrts::alloc_char( n10, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, '•' ) )
+    if( ! refalrts::alloc_char( n11, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, '¨' ) )
+    if( ! refalrts::alloc_char( n12, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
     if( ! refalrts::alloc_char( n13, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, '‚' ) )
+    if( ! refalrts::alloc_char( n14, '—Ç' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, '†' ) )
+    if( ! refalrts::alloc_char( n15, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, '™' ) )
+    if( ! refalrts::alloc_char( n16, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_char( n17, '®' ) )
+    if( ! refalrts::alloc_char( n17, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, 'Â' ) )
+    if( ! refalrts::alloc_char( n18, '—Ö' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
     if( ! refalrts::alloc_char( n19, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_char( n20, 'Ô' ) )
+    if( ! refalrts::alloc_char( n20, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, 'ß' ) )
+    if( ! refalrts::alloc_char( n21, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_char( n22, 'Î' ) )
+    if( ! refalrts::alloc_char( n22, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '™' ) )
+    if( ! refalrts::alloc_char( n23, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, 'Æ' ) )
+    if( ! refalrts::alloc_char( n24, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, '¢' ) )
+    if( ! refalrts::alloc_char( n25, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
     if( ! refalrts::alloc_char( n26, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, 'Ø' ) )
+    if( ! refalrts::alloc_char( n27, '–ø' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, '‡' ) )
+    if( ! refalrts::alloc_char( n28, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, 'Æ' ) )
+    if( ! refalrts::alloc_char( n29, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_char( n30, '£' ) )
+    if( ! refalrts::alloc_char( n30, '–≥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_char( n31, '‡' ) )
+    if( ! refalrts::alloc_char( n31, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_char( n32, '†' ) )
+    if( ! refalrts::alloc_char( n32, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_char( n33, '¨' ) )
+    if( ! refalrts::alloc_char( n33, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, '¨' ) )
+    if( ! refalrts::alloc_char( n34, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_char( n35, '®' ) )
+    if( ! refalrts::alloc_char( n35, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, '‡' ) )
+    if( ! refalrts::alloc_char( n36, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, 'Æ' ) )
+    if( ! refalrts::alloc_char( n37, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_char( n38, '¢' ) )
+    if( ! refalrts::alloc_char( n38, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
-    if( ! refalrts::alloc_char( n39, '†' ) )
+    if( ! refalrts::alloc_char( n39, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n40 = 0;
-    if( ! refalrts::alloc_char( n40, '≠' ) )
+    if( ! refalrts::alloc_char( n40, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n41 = 0;
-    if( ! refalrts::alloc_char( n41, '®' ) )
+    if( ! refalrts::alloc_char( n41, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n42 = 0;
-    if( ! refalrts::alloc_char( n42, 'Ô' ) )
+    if( ! refalrts::alloc_char( n42, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n43 = 0;
     if( ! refalrts::alloc_char( n43, '.' ) )
@@ -852,19 +852,19 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_name( n47, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n48 = 0;
-    if( ! refalrts::alloc_char( n48, 'å' ) )
+    if( ! refalrts::alloc_char( n48, '–ú' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n49 = 0;
-    if( ! refalrts::alloc_char( n49, 'Æ' ) )
+    if( ! refalrts::alloc_char( n49, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n50 = 0;
-    if( ! refalrts::alloc_char( n50, '¶' ) )
+    if( ! refalrts::alloc_char( n50, '–∂' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n51 = 0;
-    if( ! refalrts::alloc_char( n51, '•' ) )
+    if( ! refalrts::alloc_char( n51, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n52 = 0;
-    if( ! refalrts::alloc_char( n52, '‚' ) )
+    if( ! refalrts::alloc_char( n52, '—Ç' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n53 = 0;
     if( ! refalrts::alloc_char( n53, ',' ) )
@@ -873,46 +873,46 @@ static refalrts::FnResult lambda_Go_0(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n54, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n55 = 0;
-    if( ! refalrts::alloc_char( n55, '‡' ) )
+    if( ! refalrts::alloc_char( n55, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n56 = 0;
-    if( ! refalrts::alloc_char( n56, '†' ) )
+    if( ! refalrts::alloc_char( n56, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n57 = 0;
-    if( ! refalrts::alloc_char( n57, '·' ) )
+    if( ! refalrts::alloc_char( n57, '—Å' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n58 = 0;
-    if( ! refalrts::alloc_char( n58, '·' ) )
+    if( ! refalrts::alloc_char( n58, '—Å' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n59 = 0;
-    if( ! refalrts::alloc_char( n59, '™' ) )
+    if( ! refalrts::alloc_char( n59, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n60 = 0;
-    if( ! refalrts::alloc_char( n60, '†' ) )
+    if( ! refalrts::alloc_char( n60, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n61 = 0;
-    if( ! refalrts::alloc_char( n61, '¶' ) )
+    if( ! refalrts::alloc_char( n61, '–∂' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n62 = 0;
-    if( ! refalrts::alloc_char( n62, '•' ) )
+    if( ! refalrts::alloc_char( n62, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n63 = 0;
-    if( ! refalrts::alloc_char( n63, '‚' ) )
+    if( ! refalrts::alloc_char( n63, '—Ç' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n64 = 0;
-    if( ! refalrts::alloc_char( n64, '•' ) )
+    if( ! refalrts::alloc_char( n64, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n65 = 0;
     if( ! refalrts::alloc_char( n65, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n66 = 0;
-    if( ! refalrts::alloc_char( n66, '≠' ) )
+    if( ! refalrts::alloc_char( n66, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n67 = 0;
-    if( ! refalrts::alloc_char( n67, '†' ) )
+    if( ! refalrts::alloc_char( n67, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n68 = 0;
-    if( ! refalrts::alloc_char( n68, '¨' ) )
+    if( ! refalrts::alloc_char( n68, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n69 = 0;
     if( ! refalrts::alloc_char( n69, '?' ) )
@@ -1023,39 +1023,39 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icFunc, (void*) & Bind, (void*) "Bind"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'Ç'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, 'Ë'},
+      {refalrts::icChar, 0, 0, '–í'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '—à'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '´'},
-      {refalrts::icChar, 0, 0, 'Ó'},
-      {refalrts::icChar, 0, 0, '°'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '©'},
+      {refalrts::icChar, 0, 0, '–ª'},
+      {refalrts::icChar, 0, 0, '—é'},
+      {refalrts::icChar, 0, 0, '–±'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–π'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ô'},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, 'Î'},
-      {refalrts::icChar, 0, 0, '™'},
+      {refalrts::icChar, 0, 0, '—è'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '—ã'},
+      {refalrts::icChar, 0, 0, '–∫'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'Ø'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '£'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Æ'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, 'Ô'},
+      {refalrts::icChar, 0, 0, '–ø'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–≥'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '–æ'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—è'},
       {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icChar, 0, 0, ';'},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -1083,13 +1083,13 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icChar, 0, 0, ';'},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & PutLine, (void*) "PutLine"},
-      {refalrts::icChar, 0, 0, 'ç'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¶'},
-      {refalrts::icChar, 0, 0, '¨'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, '‚'},
-      {refalrts::icChar, 0, 0, '•'},
+      {refalrts::icChar, 0, 0, '–ù'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–∂'},
+      {refalrts::icChar, 0, 0, '–º'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—Ç'},
+      {refalrts::icChar, 0, 0, '–µ'},
       {refalrts::icChar, 0, 0, ' '},
       {refalrts::icChar, 0, 0, '<'},
       {refalrts::icChar, 0, 0, 'E'},
@@ -1099,20 +1099,20 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       {refalrts::icChar, 0, 0, 'r'},
       {refalrts::icChar, 0, 0, '>'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '§'},
-      {refalrts::icChar, 0, 0, '´'},
-      {refalrts::icChar, 0, 0, 'Ô'},
+      {refalrts::icChar, 0, 0, '–¥'},
+      {refalrts::icChar, 0, 0, '–ª'},
+      {refalrts::icChar, 0, 0, '—è'},
       {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'ß'},
-      {refalrts::icChar, 0, 0, '†'},
-      {refalrts::icChar, 0, 0, '¢'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '‡'},
-      {refalrts::icChar, 0, 0, 'Ë'},
-      {refalrts::icChar, 0, 0, '•'},
-      {refalrts::icChar, 0, 0, '≠'},
-      {refalrts::icChar, 0, 0, '®'},
-      {refalrts::icChar, 0, 0, 'Ô'},
+      {refalrts::icChar, 0, 0, '–∑'},
+      {refalrts::icChar, 0, 0, '–∞'},
+      {refalrts::icChar, 0, 0, '–≤'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '—Ä'},
+      {refalrts::icChar, 0, 0, '—à'},
+      {refalrts::icChar, 0, 0, '–µ'},
+      {refalrts::icChar, 0, 0, '–Ω'},
+      {refalrts::icChar, 0, 0, '–∏'},
+      {refalrts::icChar, 0, 0, '—è'},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, '.'},
       {refalrts::icChar, 0, 0, '.'},
@@ -1155,103 +1155,103 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_name( n5, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_char( n6, 'Ç' ) )
+    if( ! refalrts::alloc_char( n6, '–í' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_char( n7, '†' ) )
+    if( ! refalrts::alloc_char( n7, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_char( n8, 'Ë' ) )
+    if( ! refalrts::alloc_char( n8, '—à' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_char( n9, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_char( n10, '´' ) )
+    if( ! refalrts::alloc_char( n10, '–ª' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_char( n11, 'Ó' ) )
+    if( ! refalrts::alloc_char( n11, '—é' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_char( n12, '°' ) )
+    if( ! refalrts::alloc_char( n12, '–±' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_char( n13, '®' ) )
+    if( ! refalrts::alloc_char( n13, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_char( n14, '¨' ) )
+    if( ! refalrts::alloc_char( n14, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_char( n15, 'Î' ) )
+    if( ! refalrts::alloc_char( n15, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_char( n16, '©' ) )
+    if( ! refalrts::alloc_char( n16, '–π' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_char( n17, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_char( n18, 'Ô' ) )
+    if( ! refalrts::alloc_char( n18, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_char( n19, 'ß' ) )
+    if( ! refalrts::alloc_char( n19, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_char( n20, 'Î' ) )
+    if( ! refalrts::alloc_char( n20, '—ã' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, '™' ) )
+    if( ! refalrts::alloc_char( n21, '–∫' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
     if( ! refalrts::alloc_char( n22, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, 'Ø' ) )
+    if( ! refalrts::alloc_char( n23, '–ø' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, '‡' ) )
+    if( ! refalrts::alloc_char( n24, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, 'Æ' ) )
+    if( ! refalrts::alloc_char( n25, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '£' ) )
+    if( ! refalrts::alloc_char( n26, '–≥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, '‡' ) )
+    if( ! refalrts::alloc_char( n27, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, '†' ) )
+    if( ! refalrts::alloc_char( n28, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, '¨' ) )
+    if( ! refalrts::alloc_char( n29, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_char( n30, '¨' ) )
+    if( ! refalrts::alloc_char( n30, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_char( n31, '®' ) )
+    if( ! refalrts::alloc_char( n31, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_char( n32, '‡' ) )
+    if( ! refalrts::alloc_char( n32, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n33 = 0;
-    if( ! refalrts::alloc_char( n33, 'Æ' ) )
+    if( ! refalrts::alloc_char( n33, '–æ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, '¢' ) )
+    if( ! refalrts::alloc_char( n34, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
-    if( ! refalrts::alloc_char( n35, '†' ) )
+    if( ! refalrts::alloc_char( n35, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, '≠' ) )
+    if( ! refalrts::alloc_char( n36, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
-    if( ! refalrts::alloc_char( n37, '®' ) )
+    if( ! refalrts::alloc_char( n37, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n38 = 0;
-    if( ! refalrts::alloc_char( n38, 'Ô' ) )
+    if( ! refalrts::alloc_char( n38, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n39 = 0;
     if( ! refalrts::alloc_close_call( n39 ) )
@@ -1335,25 +1335,25 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_name( n65, & PutLine, "PutLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n66 = 0;
-    if( ! refalrts::alloc_char( n66, 'ç' ) )
+    if( ! refalrts::alloc_char( n66, '–ù' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n67 = 0;
-    if( ! refalrts::alloc_char( n67, '†' ) )
+    if( ! refalrts::alloc_char( n67, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n68 = 0;
-    if( ! refalrts::alloc_char( n68, '¶' ) )
+    if( ! refalrts::alloc_char( n68, '–∂' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n69 = 0;
-    if( ! refalrts::alloc_char( n69, '¨' ) )
+    if( ! refalrts::alloc_char( n69, '–º' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n70 = 0;
-    if( ! refalrts::alloc_char( n70, '®' ) )
+    if( ! refalrts::alloc_char( n70, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n71 = 0;
-    if( ! refalrts::alloc_char( n71, '‚' ) )
+    if( ! refalrts::alloc_char( n71, '—Ç' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n72 = 0;
-    if( ! refalrts::alloc_char( n72, '•' ) )
+    if( ! refalrts::alloc_char( n72, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n73 = 0;
     if( ! refalrts::alloc_char( n73, ' ' ) )
@@ -1383,46 +1383,46 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_char( n81, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n82 = 0;
-    if( ! refalrts::alloc_char( n82, '§' ) )
+    if( ! refalrts::alloc_char( n82, '–¥' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n83 = 0;
-    if( ! refalrts::alloc_char( n83, '´' ) )
+    if( ! refalrts::alloc_char( n83, '–ª' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n84 = 0;
-    if( ! refalrts::alloc_char( n84, 'Ô' ) )
+    if( ! refalrts::alloc_char( n84, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n85 = 0;
     if( ! refalrts::alloc_char( n85, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n86 = 0;
-    if( ! refalrts::alloc_char( n86, 'ß' ) )
+    if( ! refalrts::alloc_char( n86, '–∑' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n87 = 0;
-    if( ! refalrts::alloc_char( n87, '†' ) )
+    if( ! refalrts::alloc_char( n87, '–∞' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n88 = 0;
-    if( ! refalrts::alloc_char( n88, '¢' ) )
+    if( ! refalrts::alloc_char( n88, '–≤' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n89 = 0;
-    if( ! refalrts::alloc_char( n89, '•' ) )
+    if( ! refalrts::alloc_char( n89, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n90 = 0;
-    if( ! refalrts::alloc_char( n90, '‡' ) )
+    if( ! refalrts::alloc_char( n90, '—Ä' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n91 = 0;
-    if( ! refalrts::alloc_char( n91, 'Ë' ) )
+    if( ! refalrts::alloc_char( n91, '—à' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n92 = 0;
-    if( ! refalrts::alloc_char( n92, '•' ) )
+    if( ! refalrts::alloc_char( n92, '–µ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n93 = 0;
-    if( ! refalrts::alloc_char( n93, '≠' ) )
+    if( ! refalrts::alloc_char( n93, '–Ω' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n94 = 0;
-    if( ! refalrts::alloc_char( n94, '®' ) )
+    if( ! refalrts::alloc_char( n94, '–∏' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n95 = 0;
-    if( ! refalrts::alloc_char( n95, 'Ô' ) )
+    if( ! refalrts::alloc_char( n95, '—è' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n96 = 0;
     if( ! refalrts::alloc_char( n96, '.' ) )
