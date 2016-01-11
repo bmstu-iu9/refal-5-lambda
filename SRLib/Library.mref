@@ -7,14 +7,14 @@ $IMPORT MFileSystem;
 $IMPORT MOS;
 $IMPORT Str = MStrings;
 
-// Важные перечисления
+// Р’Р°Р¶РЅС‹Рµ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ
 
 $ENTRY Success { }
 $ENTRY Fails { }
 $ENTRY True { }
 $ENTRY False { }
 
-// Библиотека функций
+// Р‘РёР±Р»РёРѕС‚РµРєР° С„СѓРЅРєС†РёР№
 
 $ENTRY Add {
   s.Num1 s.Num2 = <Math::Add s.Num1 s.Num2>;

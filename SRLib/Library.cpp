@@ -28,7 +28,7 @@ static refalrts::Iter prev( refalrts::Iter current ) {
 
 //------------------------------------------------------------------------------
 
-// Операции распределителя памяти
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїСЂРµРґРµР»РёС‚РµР»СЏ РїР°РјСЏС‚Рё
 
 namespace refalrts{
 
@@ -44,10 +44,10 @@ void splice_to_freelist( Iter begin, Iter end );
 } // namespace refalrts
 
 //==============================================================================
-// Библиотека "встроенных" функций
+// Р‘РёР±Р»РёРѕС‚РµРєР° "РІСЃС‚СЂРѕРµРЅРЅС‹С…" С„СѓРЅРєС†РёР№
 //==============================================================================
 
-// Основные перечисления
+// РћСЃРЅРѕРІРЅС‹Рµ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ
 
 refalrts::FnResult Success( refalrts::Iter, refalrts::Iter ) {
   return refalrts::cRecognitionImpossible;
@@ -81,7 +81,7 @@ refalrts::FnResult TypeFile(refalrts::Iter, refalrts::Iter) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Математические операции
+// РњР°С‚РµРјР°С‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё
 
 refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {
@@ -278,7 +278,7 @@ refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Ввод-вывод
+// Р’РІРѕРґ-РІС‹РІРѕРґ
 
 refalrts::FnResult write_to_stream(
   FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
@@ -456,9 +456,9 @@ refalrts::FnResult read_from_stream(
       break;
     } else {
       /*
-        Пользуемся тем фактом, что в данной реализации размещёные в свободной
-        памяти узлы располагаются в последовательных адресах, которые будут
-        начинаться с before_begin->next.
+        РџРѕР»СЊР·СѓРµРјСЃСЏ С‚РµРј С„Р°РєС‚РѕРј, С‡С‚Рѕ РІ РґР°РЅРЅРѕР№ СЂРµР°Р»РёР·Р°С†РёРё СЂР°Р·РјРµС‰С‘РЅС‹Рµ РІ СЃРІРѕР±РѕРґРЅРѕР№
+        РїР°РјСЏС‚Рё СѓР·Р»С‹ СЂР°СЃРїРѕР»Р°РіР°СЋС‚СЃСЏ РІ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹С… Р°РґСЂРµСЃР°С…, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚
+        РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ before_begin->next.
       */
       if( ! refalrts::alloc_char( cur_char_node, cur_char ) ) {
         return refalrts::cNoMemory;
@@ -567,7 +567,7 @@ refalrts::FnResult string_from_seq(
   }
 
   /*
-    Здесь empty_seq( begin, end ) || (begin->tag != cDataChar).
+    Р—РґРµСЃСЊ empty_seq( begin, end ) || (begin->tag != cDataChar).
   */
 
   if( empty_seq( begin, end ) ) {
@@ -575,7 +575,7 @@ refalrts::FnResult string_from_seq(
     string.swap( result );
     return refalrts::cSuccess;
   } else {
-    // здесь begin->tag != cDataChar
+    // Р·РґРµСЃСЊ begin->tag != cDataChar
     return refalrts::cRecognitionImpossible;
   }
 }
@@ -664,7 +664,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( EOF == fclose_res ) {
       return refalrts::cRecognitionImpossible;
     } else {
-      /* Ничего не делаем */;
+      /* РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј */;
     }
 
     refalrts::reset_allocator();
@@ -678,8 +678,8 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 }
 
 /*
-  Глобальные переменные, хранящие параметры вызова
-  (устанавливаются в refalrts.cpp).
+  Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ, С…СЂР°РЅСЏС‰РёРµ РїР°СЂР°РјРµС‚СЂС‹ РІС‹Р·РѕРІР°
+  (СѓСЃС‚Р°РЅР°РІР»РёРІР°СЋС‚СЃСЏ РІ refalrts.cpp).
 */
 
 extern char **g_argv;
@@ -754,14 +754,14 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter ans = 0;
     if( FILE *f = fopen( &fname[0], "r" ) ) {
-      // Файл существует
+      // Р¤Р°Р№Р» СЃСѓС‰РµСЃС‚РІСѓРµС‚
       fclose( f );
 
       if( ! refalrts::alloc_name( ans, & True, "True" ) ) {
         return refalrts::cNoMemory;
       }
     } else {
-      // Файл по-видимому не существует
+      // Р¤Р°Р№Р» РїРѕ-РІРёРґРёРјРѕРјСѓ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
       if( ! refalrts::alloc_name( ans, & False, "False" ) ) {
         return refalrts::cNoMemory;
       }
@@ -839,7 +839,7 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Работа с типами символов
+// Р Р°Р±РѕС‚Р° СЃ С‚РёРїР°РјРё СЃРёРјРІРѕР»РѕРІ
 
 refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {

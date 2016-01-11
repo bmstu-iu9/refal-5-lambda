@@ -31,14 +31,14 @@ void valid_linked_aux( const char *text, refalrts::Iter i ) {
 }
 
 //==============================================================================
-// Примитивные операции
+// РџСЂРёРјРёС‚РёРІРЅС‹Рµ РѕРїРµСЂР°С†РёРё
 //==============================================================================
 
-// Операции распознавания
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ
 
 void refalrts::use( refalrts::Iter& ) {
-  /* Ничего не делаем. Эта функция добавляется, чтобы подавить предупреждение
-  компилятора о том, что переменная не используется */;
+  /* РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј. Р­С‚Р° С„СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ, С‡С‚РѕР±С‹ РїРѕРґР°РІРёС‚СЊ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ
+  РєРѕРјРїРёР»СЏС‚РѕСЂР° Рѕ С‚РѕРј, С‡С‚Рѕ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ */;
 }
 
 namespace {
@@ -341,9 +341,9 @@ bool refalrts::next_term(
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   /*
-    Функция используется для промотки к следующему терму при анализе
-    открытой e-переменной. Т.к. до этого в заголовке цикла проверяется факт,
-    что first != last, возвращаемое значение функции можно не проверять.
+    Р¤СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РїСЂРѕРјРѕС‚РєРё Рє СЃР»РµРґСѓСЋС‰РµРјСѓ С‚РµСЂРјСѓ РїСЂРё Р°РЅР°Р»РёР·Рµ
+    РѕС‚РєСЂС‹С‚РѕР№ e-РїРµСЂРµРјРµРЅРЅРѕР№. Рў.Рє. РґРѕ СЌС‚РѕРіРѕ РІ Р·Р°РіРѕР»РѕРІРєРµ С†РёРєР»Р° РїСЂРѕРІРµСЂСЏРµС‚СЃСЏ С„Р°РєС‚,
+    С‡С‚Рѕ first != last, РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ С„СѓРЅРєС†РёРё РјРѕР¶РЅРѕ РЅРµ РїСЂРѕРІРµСЂСЏС‚СЊ.
   */
   refalrts::Iter temp;
   return tvar_left( temp, first, last );
@@ -374,8 +374,8 @@ bool equal_nodes(
         // break;
 
       /*
-        Сведения о связях между скобками нужны для других целей, здесь
-        же нам важны только их одновременные появления.
+        РЎРІРµРґРµРЅРёСЏ Рѕ СЃРІСЏР·СЏС… РјРµР¶РґСѓ СЃРєРѕР±РєР°РјРё РЅСѓР¶РЅС‹ РґР»СЏ РґСЂСѓРіРёС… С†РµР»РµР№, Р·РґРµСЃСЊ
+        Р¶Рµ РЅР°Рј РІР°Р¶РЅС‹ С‚РѕР»СЊРєРѕ РёС… РѕРґРЅРѕРІСЂРµРјРµРЅРЅС‹Рµ РїРѕСЏРІР»РµРЅРёСЏ.
       */
       case refalrts::cDataOpenBracket:
       case refalrts::cDataCloseBracket:
@@ -387,14 +387,14 @@ bool equal_nodes(
         // break;
 
       /*
-        Данная функция предназначена только для использования функциями рас-
-        познавания образца. Поэтому других узлов мы тут не ожидаем.
+        Р”Р°РЅРЅР°СЏ С„СѓРЅРєС†РёСЏ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅР° С‚РѕР»СЊРєРѕ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С„СѓРЅРєС†РёСЏРјРё СЂР°СЃ-
+        РїРѕР·РЅР°РІР°РЅРёСЏ РѕР±СЂР°Р·С†Р°. РџРѕСЌС‚РѕРјСѓ РґСЂСѓРіРёС… СѓР·Р»РѕРІ РјС‹ С‚СѓС‚ РЅРµ РѕР¶РёРґР°РµРј.
       */
       default:
         throw UnexpectedTypeException();
         // break;
     }
-    // Все ветви в case завершаются либо return, либо throw.
+    // Р’СЃРµ РІРµС‚РІРё РІ case Р·Р°РІРµСЂС€Р°СЋС‚СЃСЏ Р»РёР±Рѕ return, Р»РёР±Рѕ throw.
   }
 }
 
@@ -407,8 +407,8 @@ bool equal_expressions(
   assert( (first2 == 0) == (last2 == 0) );
 
   for(
-    /* Пользуемся аргументами функции, инициализация не нужна */;
-    // Порядок условий важен
+    /* РџРѕР»СЊР·СѓРµРјСЃСЏ Р°СЂРіСѓРјРµРЅС‚Р°РјРё С„СѓРЅРєС†РёРё, РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅРµ РЅСѓР¶РЅР° */;
+    // РџРѕСЂСЏРґРѕРє СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     !empty_seq( first1, last1 ) && ! empty_seq( first2, last2 )
       && equal_nodes( first1, first2 );
     move_left( first1, last1 ), move_left( first2, last2 )
@@ -417,15 +417,15 @@ bool equal_expressions(
   }
 
   /*
-    Здесь empty_seq( first1, last1 ) || empty_seq( first2, last2 )
+    Р—РґРµСЃСЊ empty_seq( first1, last1 ) || empty_seq( first2, last2 )
       || !equal_nodes( first1, first2 )
   */
 
-  // Успешное завершение -- если мы достигли конца в обоих выражениях
+  // РЈСЃРїРµС€РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ -- РµСЃР»Рё РјС‹ РґРѕСЃС‚РёРіР»Рё РєРѕРЅС†Р° РІ РѕР±РѕРёС… РІС‹СЂР°Р¶РµРЅРёСЏС…
   if( empty_seq( first1, last1 ) && empty_seq( first2, last2 ) ) {
     return true;
   } else {
-    // Любое другое завершение цикла свидетельствует о несовпадении
+    // Р›СЋР±РѕРµ РґСЂСѓРіРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р° СЃРІРёРґРµС‚РµР»СЊСЃС‚РІСѓРµС‚ Рѕ РЅРµСЃРѕРІРїР°РґРµРЅРёРё
     return false;
   }
 }
@@ -520,8 +520,8 @@ bool refalrts::repeated_evar_left(
   refalrts::Iter copy_last = last;
 
   for(
-    /* инициализация выше */;
-    // порядок условий важен
+    /* РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІС‹С€Рµ */;
+    // РїРѕСЂСЏРґРѕРє СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     !empty_seq( current, copy_last )
       && !empty_seq( cur_sample, evar_e_sample )
       && equal_nodes( current, cur_sample );
@@ -531,12 +531,12 @@ bool refalrts::repeated_evar_left(
   }
 
   /*
-    Здесь empty_seq( current, copy_last )
+    Р—РґРµСЃСЊ empty_seq( current, copy_last )
       || empty_seq( cur_sample, evar_e_sample
       || ! equal_nodes( current, cur_sample )
   */
   if( empty_seq( cur_sample, evar_e_sample ) ) {
-    // Это нормальное завершение цикла -- вся образцовая переменная проверена
+    // Р­С‚Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р° -- РІСЃСЏ РѕР±СЂР°Р·С†РѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РїСЂРѕРІРµСЂРµРЅР°
 
     if( empty_seq( current, copy_last ) ) {
       evar_b = first;
@@ -567,8 +567,8 @@ bool refalrts::repeated_evar_right(
   refalrts::Iter copy_first = first;
 
   for(
-    /* инициализация выше */;
-    // порядок перечисления условий важен
+    /* РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РІС‹С€Рµ */;
+    // РїРѕСЂСЏРґРѕРє РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ СѓСЃР»РѕРІРёР№ РІР°Р¶РµРЅ
     !empty_seq( copy_first, current )
       && !empty_seq( evar_b_sample, cur_sample )
       && equal_nodes( current, cur_sample );
@@ -578,13 +578,13 @@ bool refalrts::repeated_evar_right(
   }
 
   /*
-    Здесь empty_seq( copy_first, current )
+    Р—РґРµСЃСЊ empty_seq( copy_first, current )
       || empty_seq( evar_b_sample, cur_sample )
       || ! equal_nodes( current, cur_sample )
   */
 
   if( empty_seq( evar_b_sample, cur_sample ) ) {
-    // Это нормальное завершение цикла: вся переменная-образец просмотрена
+    // Р­С‚Рѕ РЅРѕСЂРјР°Р»СЊРЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р°: РІСЃСЏ РїРµСЂРµРјРµРЅРЅР°СЏ-РѕР±СЂР°Р·РµС† РїСЂРѕСЃРјРѕС‚СЂРµРЅР°
 
     if( empty_seq( copy_first, current ) ) {
       evar_b = first;
@@ -607,7 +607,7 @@ bool refalrts::repeated_evar_right(
 
 //------------------------------------------------------------------------------
 
-// Операции распределителя памяти
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїСЂРµРґРµР»РёС‚РµР»СЏ РїР°РјСЏС‚Рё
 
 namespace refalrts{
 
@@ -624,7 +624,7 @@ void splice_to_freelist( Iter begin, Iter end );
 
 //------------------------------------------------------------------------------
 
-// Операции построения результата
+// РћРїРµСЂР°С†РёРё РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 
 void refalrts::reset_allocator() {
   allocator::reset_allocator();
@@ -668,8 +668,8 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
     }
 
     /*
-      Копируем только объектное выражение -- никаких вызовов функций быть не
-      должно.
+      РљРѕРїРёСЂСѓРµРј С‚РѕР»СЊРєРѕ РѕР±СЉРµРєС‚РЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ -- РЅРёРєР°РєРёС… РІС‹Р·РѕРІРѕРІ С„СѓРЅРєС†РёР№ Р±С‹С‚СЊ РЅРµ
+      РґРѕР»Р¶РЅРѕ.
     */
     default:
       throw UnexpectedTypeException();
@@ -899,7 +899,7 @@ refalrts::Iter list_splice(
 
 #endif //SHOW_DEBUG
 
-    // Цель достигнута сама по себе
+    // Р¦РµР»СЊ РґРѕСЃС‚РёРіРЅСѓС‚Р° СЃР°РјР° РїРѕ СЃРµР±Рµ
     return res;
   } else {
     refalrts::Iter prev_res = prev( res );
@@ -960,7 +960,7 @@ void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
 }
 
 //==============================================================================
-// Распределитель памяти
+// Р Р°СЃРїСЂРµРґРµР»РёС‚РµР»СЊ РїР°РјСЏС‚Рё
 //==============================================================================
 
 namespace refalrts {
@@ -1040,7 +1040,7 @@ void refalrts::allocator::free_memory() {
 }
 
 //==============================================================================
-// Виртуальная машина
+// Р’РёСЂС‚СѓР°Р»СЊРЅР°СЏ РјР°С€РёРЅР°
 //==============================================================================
 
 extern refalrts::FnResult Go( refalrts::Iter, refalrts::Iter );
@@ -1335,10 +1335,10 @@ void refalrts::vm::free_view_field() {
 }
 
 //==============================================================================
-// Библиотека "встроенных" функций
+// Р‘РёР±Р»РёРѕС‚РµРєР° "РІСЃС‚СЂРѕРµРЅРЅС‹С…" С„СѓРЅРєС†РёР№
 //==============================================================================
 
-// Основные перечисления
+// РћСЃРЅРѕРІРЅС‹Рµ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ
 
 refalrts::FnResult Success( refalrts::Iter, refalrts::Iter ) {
   return refalrts::cRecognitionImpossible;
@@ -1356,7 +1356,7 @@ refalrts::FnResult False( refalrts::Iter, refalrts::Iter ) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Математические операции
+// РњР°С‚РµРјР°С‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё
 
 refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {
@@ -1436,7 +1436,7 @@ refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Ввод-вывод
+// Р’РІРѕРґ-РІС‹РІРѕРґ
 
 refalrts::FnResult write_to_stream(
   FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
@@ -1614,9 +1614,9 @@ refalrts::FnResult read_from_stream(
       break;
     } else {
       /*
-        Пользуемся тем фактом, что в данной реализации размещёные в свободной
-        памяти узлы располагаются в последовательных адресах, которые будут
-        начинаться с before_begin->next.
+        РџРѕР»СЊР·СѓРµРјСЃСЏ С‚РµРј С„Р°РєС‚РѕРј, С‡С‚Рѕ РІ РґР°РЅРЅРѕР№ СЂРµР°Р»РёР·Р°С†РёРё СЂР°Р·РјРµС‰С‘РЅС‹Рµ РІ СЃРІРѕР±РѕРґРЅРѕР№
+        РїР°РјСЏС‚Рё СѓР·Р»С‹ СЂР°СЃРїРѕР»Р°РіР°СЋС‚СЃСЏ РІ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅС‹С… Р°РґСЂРµСЃР°С…, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚
+        РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ before_begin->next.
       */
       if( ! refalrts::alloc_char( cur_char_node, cur_char ) ) {
         return refalrts::cNoMemory;
@@ -1725,7 +1725,7 @@ refalrts::FnResult string_from_seq(
   }
 
   /*
-    Здесь empty_seq( begin, end ) || (begin->tag != cDataChar).
+    Р—РґРµСЃСЊ empty_seq( begin, end ) || (begin->tag != cDataChar).
   */
 
   if( empty_seq( begin, end ) ) {
@@ -1733,7 +1733,7 @@ refalrts::FnResult string_from_seq(
     string.swap( result );
     return refalrts::cSuccess;
   } else {
-    // здесь begin->tag != cDataChar
+    // Р·РґРµСЃСЊ begin->tag != cDataChar
     return refalrts::cRecognitionImpossible;
   }
 }
@@ -1822,7 +1822,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( EOF == fclose_res ) {
       return refalrts::cRecognitionImpossible;
     } else {
-      /* Ничего не делаем */;
+      /* РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј */;
     }
 
     refalrts::reset_allocator();
@@ -1835,7 +1835,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Глобальные переменные, хранящие параметры вызова
+// Р“Р»РѕР±Р°Р»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ, С…СЂР°РЅСЏС‰РёРµ РїР°СЂР°РјРµС‚СЂС‹ РІС‹Р·РѕРІР°
 
 char **g_argv = 0;
 int g_argc = 0;
@@ -1909,14 +1909,14 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
     refalrts::Iter ans = 0;
     if( FILE *f = fopen( &fname[0], "r" ) ) {
-      // Файл существует
+      // Р¤Р°Р№Р» СЃСѓС‰РµСЃС‚РІСѓРµС‚
       fclose( f );
 
       if( ! refalrts::alloc_name( ans, & True, "True" ) ) {
         return refalrts::cNoMemory;
       }
     } else {
-      // Файл по-видимому не существует
+      // Р¤Р°Р№Р» РїРѕ-РІРёРґРёРјРѕРјСѓ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
       if( ! refalrts::alloc_name( ans, & False, "False" ) ) {
         return refalrts::cNoMemory;
       }
@@ -1994,7 +1994,7 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cRecognitionImpossible;
 }
 
-// Преобразование типов.
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ.
 
 refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   do {

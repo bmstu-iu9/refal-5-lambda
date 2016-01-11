@@ -48,7 +48,7 @@ typedef struct Node {
 
 extern void use( Iter& );
 
-// Операции распознавания образца
+// РћРїРµСЂР°С†РёРё СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ РѕР±СЂР°Р·С†Р°
 
 extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
@@ -89,7 +89,7 @@ extern bool repeated_evar_right(
   Iter& first, Iter& last
 );
 
-// Операции построения результата
+// РћРїРµСЂР°С†РёРё РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 
 extern void reset_allocator();
 

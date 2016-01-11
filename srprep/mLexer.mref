@@ -96,7 +96,7 @@ ScanTokenBody {
 FinishName
   (e.Name) e.Text = (Name <Replace-_ e.Name>) e.Text;
 
-// Заменяет '-' на '_'.
+// Р—Р°РјРµРЅСЏРµС‚ '-' РЅР° '_'.
 Replace-_ {
   e.Line-B '-' e.Line-E =
     e.Line-B '_' <Replace-_ e.Line-E>;
