@@ -1,7 +1,7 @@
 $MODULE MSymTable;
 
 /*
-  Внутренний формат [SymTable (e.SrcName (e.OutName))*]
+  Р’РЅСѓС‚СЂРµРЅРЅРёР№ С„РѕСЂРјР°С‚ [SymTable (e.SrcName (e.OutName))*]
 */
 $DATA SymTable;
 
