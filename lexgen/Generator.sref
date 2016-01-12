@@ -11,11 +11,23 @@ $EXTERN True, False, Success, Fails;
 
 $FORWARD GenCode;
 
-$ENTRY Generate {
+$ENTRY Generate-SelfUpdate {
   e.FileName =
     <SaveFile
       (e.FileName)
       <GenCode <LoadFile e.FileName>>
+    >;
+}
+
+$ENTRY Generate-ToDifferent {
+  (e.From) e.To =
+    <SaveFile
+      (e.To)
+      ('// Automatically generated file, don''t edit!')
+      ('// Edit file ''' e.From '')
+      ()
+      ()
+      <GenCode <LoadFile e.From>>
     >;
 }
 

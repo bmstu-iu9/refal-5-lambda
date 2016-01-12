@@ -4,10 +4,10 @@ $EXTERN WriteLine, System;
 //FROM LibraryEx
 $EXTERN ArgList, Map;
 
-//FROM SRMake_FileScanner
+//FROM FileScanner
 $EXTERN CreateFileList;
 
-//FROM SRMake_ParseCmdLine
+//FROM ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
 
 //FROM sUtilitiesBanner

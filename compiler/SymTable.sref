@@ -19,7 +19,7 @@ $ENTRY ST-Create {
 
 $ENUM Declared, Defined, Identifier;
 
-//FROM Generator;
+//FROM Generator
 $EXTERN GN-Entry, GN-Local;
 
 //FROM Error

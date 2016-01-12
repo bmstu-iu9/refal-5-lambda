@@ -1,0 +1,33 @@
+/*
+  Генератор лексических анализаторов.
+*/
+
+//FROM LibraryEx
+$EXTERN ArgList;
+
+//FROM sUtilitiesBanner
+$EXTERN TypeBanner;
+
+$FORWARD Main;
+
+$ENTRY Go {
+  =
+    <TypeBanner 'LexGen'>
+    <Main <ArgList>>;
+}
+
+//FROM Library
+$EXTERN WriteLine;
+
+//FROM Generator
+$EXTERN Generate-SelfUpdate, Generate-ToDifferent;
+
+Main {
+  (e.ProgName) (e.File) =
+    <Generate-SelfUpdate e.File>;
+
+  (e.ProgName) ('-from:' e.From) ('-to:' e.To) =
+    <Generate-ToDifferent (e.From) e.To>;
+
+  (e.ProgName) e.Other = <WriteLine 'Command line error'>;
+}
