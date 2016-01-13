@@ -166,6 +166,7 @@ $EXTERN StrFromInt, WriteLine;
 $ENTRY GenSentence {
   e.Algorithm =
     ('  do {')
+    ('    refalrts::start_sentence();')
     <Fetch
       <MapReduce GenCommand ('    ' /* отступ */) e.Algorithm>
       {
@@ -350,6 +351,7 @@ GenCommand {
     (e.Indent '  ')
     (e.Indent <PrintEVar-B 1 'e' e.Index> ' = 0;')
     (e.Indent <PrintEVar-E 1 'e' e.Index> ' = 0;')
+    (e.Indent 'refalrts::start_e_loop();')
     (e.Indent 'do {')
     ;
 

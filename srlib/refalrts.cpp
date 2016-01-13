@@ -2451,6 +2451,7 @@ refalrts::FnResult refalrts::interpret_array(
     } \
   }
 
+  start_sentence();
   while(raa[i].cmd != icEnd)
   {
     // Интерпретация команд
@@ -2637,6 +2638,7 @@ refalrts::FnResult refalrts::interpret_array(
         context[raa[i].val2] = 0;
         context[raa[i].val2 + 1] = 0;
         open_e_stack[stack_top++] = ++i;
+        start_e_loop();
         break;
 
       case icEStart:
