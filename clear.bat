@@ -1,0 +1,1 @@
+erase /s *.exe

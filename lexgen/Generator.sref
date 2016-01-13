@@ -311,7 +311,9 @@ SubstituteSetsToRules {
    >;
 
  ( ((e.Name) NotUsed e.Content) e.Sets ) (e.Rules) =
-   <Warning 'Set ' e.Name ' not used'>
+   // Строчка закомментирована, т.к. часты ложноположительные
+   // срабатывания, а значит предупреждение смысла не несёт.
+   // <Warning 'Set ' e.Name ' not used'>
    <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
  // Для первого в списке множества не найдено вхождения
@@ -1034,16 +1036,6 @@ Escape {
 
   (e.Scanned) s.Other e.Text =
     (TError 'Unexpected escaped character') <LoTokens e.Text>;
-}
-
-SwIsDigit {
-  s.Char e.Dig-B s.Char e.Dig-E = (True s.Char);
-
-  s.Char e.Other = (False s.Char);
-}
-
-IsDigit {
-  s.Char = <SwIsDigit s.Char <Digits>>;
 }
 
 $FORWARD Literal-DecCode-SwDigit;
