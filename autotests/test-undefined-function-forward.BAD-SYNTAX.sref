@@ -1,0 +1,5 @@
+$FORWARD Hello;
+
+$ENTRY Go {
+  = Hello;
+}

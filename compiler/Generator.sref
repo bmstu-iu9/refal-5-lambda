@@ -48,12 +48,12 @@ $ENTRY GenEnum {
 
 $ENTRY GenExtern {
   e.Name =
-    ('extern refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
+    ('extern refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
 $ENTRY GenForward {
   e.Name =
-    ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');') ();
+    ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
 $FORWARD GenSwap-Aux;

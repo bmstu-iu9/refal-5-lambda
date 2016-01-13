@@ -1,18 +1,21 @@
 $ENUM SymTable;
 
 $ENTRY ST-Create {
-  = [SymTable];
+  = [SymTable ()];
 }
 
 $ENTRY ST-Destroy {
-  [SymTable e.Names] = ;
+  [SymTable e.Names (e.References)] = ;
 }
 
 /*
   Внутренний формат
-  t.SymTable ::= [SymTable e.Names]
-  e.Names ::= t.Name*
-  t.Name ::= (Declared s.ScopeClass e.Name) | (Defined s.ScopeClass e.Name)
+  t.SymTable ::= [SymTable t.Name* (t.Reference*)]
+  t.Name ::=
+      (Declared s.ScopeClass e.Name)
+    | (Defined s.ScopeClass e.Name)
+    | (Identifier s.ScopeClass e.Name)
+  t.Reference ::= (s.LnNum e.Name)
 */
 
 $ENUM Declared, Defined, Identifier;
@@ -23,6 +26,23 @@ $EXTERN GN-Entry, GN-Local;
 //FROM Error
 $EXTERN EL-AddErrorAt;
 
+//FROM LibraryEx
+$EXTERN Map, Reduce;
+
+PatchReferences {
+  (e.References) e.Name =
+    (
+      <Map
+        {
+          (s.LnNum e.Name) = /* пусто */;
+
+          (s.LnNum e.Name^) = (s.LnNum e.Name);
+        }
+        e.References
+      >
+    );
+}
+
 /**
   <ST-AddDe****
     t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name
@@ -32,35 +52,47 @@ $EXTERN EL-AddErrorAt;
 
 $ENTRY ST-AddDefined {
   t.ErrorList
-  [SymTable e.Names-B (Defined s.OtherScopeClass e.Name) e.Names-E]
+  [SymTable
+    e.Names-B (Defined s.AnyScopeClass e.Name) e.Names-E (e.References)
+  ]
   s.ScopeClass s.LnNum e.Name =
     <EL-AddErrorAt t.ErrorList s.LnNum 'Function ' e.Name ' already defined'>
-    [SymTable e.Names-B (Defined s.OtherScopeClass e.Name) e.Names-E];
+    [SymTable
+      e.Names-B (Defined s.AnyScopeClass e.Name) e.Names-E (e.References)
+    ];
 
   t.ErrorList
-  [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E]
+  [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)]
   s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E];
+    t.ErrorList
+    [SymTable
+      e.Names-B (Defined s.ScopeClass e.Name) e.Names-E
+      <PatchReferences (e.References) e.Name>
+    ];
 
   t.ErrorList
-  [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E]
+  [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)]
   GN-Local s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Entry'
     >
-    [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E];
+    [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References)];
 
   t.ErrorList
-  [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E]
+  [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References)]
   GN-Entry s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Local'
     >
-    [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E];
+    [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References)];
 
   t.ErrorList
-  [SymTable e.Names] s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names (Defined s.ScopeClass e.Name)];
+  [SymTable e.Names (e.References)] s.ScopeClass s.LnNum e.Name =
+    t.ErrorList
+    [SymTable
+      e.Names (Defined s.ScopeClass e.Name)
+      <PatchReferences (e.References) e.Name>
+    ];
 }
 
 $ENTRY ST-AddDeclared {
@@ -68,88 +100,156 @@ $ENTRY ST-AddDeclared {
     Можно повторно объявить имя не зависимо от того, было ли оно до этого
     объявлено или определено.
   */
-  t.ErrorList [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E]
+  t.ErrorList
+  [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)]
   s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E];
-
-  t.ErrorList [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E]
-  s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E];
+    t.ErrorList
+    [SymTable
+      e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)
+    ];
 
   t.ErrorList
-  [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E]
+  [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)]
+  s.ScopeClass s.LnNum e.Name =
+    t.ErrorList
+    [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)];
+
+  t.ErrorList
+  [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)]
   GN-Local s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Entry'
     >
-    [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E];
+    [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)];
 
   t.ErrorList
-  [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E]
+  [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References)]
   GN-Entry s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Local'
     >
-    [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E];
+    [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References)];
 
   t.ErrorList
-  [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E]
+  [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References)]
   GN-Local s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy defined as Entry'
     >
-    [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E];
+    [SymTable e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References)];
 
   t.ErrorList
-  [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E]
+  [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References)]
   GN-Entry s.LnNum e.Name =
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Function ' e.Name ' alredy defined as Local'
     >
-    [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E];
+    [SymTable e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References)];
 
-  t.ErrorList [SymTable e.Names] s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names (Declared s.ScopeClass e.Name)];
+  t.ErrorList [SymTable e.Names (e.References)] GN-Entry s.LnNum e.Name =
+    t.ErrorList
+    [SymTable
+      e.Names (Declared GN-Entry e.Name)
+      <PatchReferences (e.References) e.Name>
+    ];
+
+  t.ErrorList [SymTable e.Names (e.References)] GN-Local s.LnNum e.Name =
+    t.ErrorList
+    [SymTable e.Names (Declared GN-Local e.Name) (e.References)];
 }
 
 $ENTRY ST-AddIdent {
   t.ErrorList
-  [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E]
+  [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)]
   s.OtherScopeClass s.LnNum e.Name =
     <EL-AddErrorAt t.ErrorList s.LnNum 'Identifier ' e.Name ' alredy defined'>
-    [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E];
+    [SymTable
+      e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)
+    ];
 
   t.ErrorList
-  [SymTable e.Names] s.ScopeClass s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names (Identifier s.ScopeClass e.Name)];
+  [SymTable e.Names (e.References)] s.ScopeClass s.LnNum e.Name =
+    t.ErrorList
+    [SymTable e.Names (Identifier s.ScopeClass e.Name) (e.References)];
 }
 
 $ENTRY ST-CheckDeclared {
-  t.ErrorList [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E]
+  t.ErrorList
+  [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names-B (Declared s.ScopeClass e.Name) e.Names-E];
+    t.ErrorList
+    [SymTable
+      e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)
+    ];
 
-  t.ErrorList [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E]
+  t.ErrorList
+  [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E];
+    t.ErrorList
+    [SymTable
+      e.Names-B (Declared GN-Local e.Name) e.Names-E
+      (e.References (s.LnNum e.Name))
+    ];
 
-  t.ErrorList t.SymTable s.LnNum e.Name =
-    <EL-AddErrorAt t.ErrorList s.LnNum 'Function ' e.Name ' not declared'>
-    t.SymTable;
+  t.ErrorList
+  [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)]
+  s.LnNum e.Name =
+    t.ErrorList
+    [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)];
 
+  t.ErrorList
+  [SymTable e.Names (e.References)]
+  s.LnNum e.Name =
+    t.ErrorList [SymTable e.Names (e.References (s.LnNum e.Name))];
 }
 
 $ENTRY ST-CheckIdent {
-  t.ErrorList [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E]
+  t.ErrorList
+  [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
     t.ErrorList
-    [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E];
+    [SymTable
+      e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)
+    ];
 
   t.ErrorList t.SymTable s.LnNum e.Name =
     <EL-AddErrorAt t.ErrorList s.LnNum 'Identifier ' e.Name ' not declared'>
     t.SymTable;
 }
 
+$ENTRY ST-CheckUnresolved {
+  t.ErrorList [SymTable e.Names (e.References)] =
+    <Reduce
+      {
+        t.ErrorList^ (s.LnNum e.Name) =
+          <EL-AddErrorAt
+            t.ErrorList s.LnNum 'Function ' e.Name ' is not defined'
+          >;
+      }
+      t.ErrorList e.References
+    >
+    [SymTable e.Names (e.References)];
+}
+
+/**
+  <ST-AllFunctions t.SymTable>
+    == (s.ScopeClass e.Name)*
+*/
+$ENTRY ST-AllFunctions {
+  [SymTable e.Names (e.References)] =
+    <Map
+      {
+        (Declared s.ScopeClass e.Name) = (s.ScopeClass e.Name);
+        (Defined s.ScopeClass e.Name) = (s.ScopeClass e.Name);
+        (Identifier s.ScopeClass e.Name) = /* пусто */;
+      }
+      e.Names
+    >;
+}
+
 $ENTRY ST-GetAnyName {
-  [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E] = e.Name;
+  [SymTable
+    e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)
+  ] =
+    e.Name;
 }

@@ -9,7 +9,7 @@ $EXTERN Map, Fetch, Seq, SaveFile;
 
 
 //FROM SymTable
-$EXTERN ST-Create, ST-Destroy;
+$EXTERN ST-Create, ST-CheckUnresolved, ST-Destroy;
 
 //FROM Error
 $EXTERN EL-Create, EL-Destroy, EL-HasErrors, EL-NoErrors;
@@ -33,6 +33,10 @@ $ENTRY CompileFile {
               <EL-Create e.SrcName> <ST-Create> (/* generated */)
               e.LexFolding
             >;
+        }
+        {
+          t.ErrorList t.SymTable e.Lines =
+            <ST-CheckUnresolved t.ErrorList t.SymTable> e.Lines;
         }
         {
           t.ErrorList t.SymTable e.Lines =
@@ -117,12 +121,6 @@ PrepareBracket {
   выполняться условие, что TkEOF передаётся в ParseElements.
 */
 
-//FROM SymTable
-$EXTERN ST-AddDeclared, ST-AddDefined, ST-AddIdent;
-
-//FROM Error
-$EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
-
 /*
   TranslationUnit = Element* .
 */
@@ -140,6 +138,12 @@ $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
     Function .
 */
 
+//FROM SymTable
+$EXTERN ST-AllFunctions, ST-AddDeclared, ST-AddDefined, ST-AddIdent;
+
+//FROM Error
+$EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
+
 //FROM Lexer
 $EXTERN
   TkDirective,
@@ -149,12 +153,21 @@ $EXTERN
 $FORWARD ParseElement-SwDirective, ParseFunction;
 
 //FROM Generator
-$EXTERN GN-Entry, GN-Local, GenCommonHeaders, GenCommonTailer;
+$EXTERN GN-Entry, GN-Local, GenCommonHeaders, GenCommonTailer,
+  GenExtern, GenForward;
 
 ParseElements {
   t.ErrorList t.SymTable (e.Generated) (TkEOF s.LnNum) =
     t.ErrorList t.SymTable
     <GenCommonHeaders>
+    <Map
+      {
+        (GN-Entry e.Name) = <GenExtern e.Name>;
+        (GN-Local e.Name) = <GenForward e.Name>;
+      }
+      <ST-AllFunctions t.SymTable>
+    >
+    ()
     e.Generated
     <GenCommonTailer>;
 
@@ -202,11 +215,15 @@ $EXTERN GenEEnum, GenEnum, GenExtern, GenForward, GenESwap, GenSwap, GenIdent;
 
 $FORWARD ParseNameList;
 
+DontGen {
+  e.Name = /* пусто */;
+}
+
 GenFunctionsFromDirective {
   EEnum   = GenEEnum   ST-AddDefined  GN-Entry;
   Enum    = GenEnum    ST-AddDefined  GN-Local;
-  Extern  = GenExtern  ST-AddDeclared GN-Entry;
-  Forward = GenForward ST-AddDeclared GN-Local;
+  Extern  = DontGen    ST-AddDeclared GN-Entry;
+  Forward = DontGen    ST-AddDeclared GN-Local;
   ESwap   = GenESwap   ST-AddDefined  GN-Entry;
   Swap    = GenSwap    ST-AddDefined  GN-Local;
   // Для меток не важно: entry или local.
