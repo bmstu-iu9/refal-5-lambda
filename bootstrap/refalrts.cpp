@@ -1524,8 +1524,10 @@ void free_memory();
 
 extern refalrts::Node g_last_marker;
 
-refalrts::Node g_first_marker = { 0, & g_last_marker, refalrts::cDataIllegal };
-refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
+refalrts::Node g_first_marker =
+  { 0, & g_last_marker, refalrts::cDataIllegal, '\0' };
+refalrts::Node g_last_marker =
+  { & g_first_marker, 0, refalrts::cDataIllegal, '\0' };
 
 //const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
@@ -1925,8 +1927,10 @@ refalrts::NodePtr g_stack_ptr = 0;
 
 extern refalrts::Node g_last_marker;
 
-refalrts::Node g_first_marker = { 0, & g_last_marker, refalrts::cDataIllegal };
-refalrts::Node g_last_marker = { & g_first_marker, 0, refalrts::cDataIllegal };
+refalrts::Node g_first_marker =
+  { 0, & g_last_marker, refalrts::cDataIllegal, '\0' };
+refalrts::Node g_last_marker =
+  { & g_first_marker, 0, refalrts::cDataIllegal, '\0' };
 
 refalrts::Iter g_begin_view_field = & g_last_marker;
 const refalrts::Iter g_end_view_field = & g_last_marker;
