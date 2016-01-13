@@ -5,7 +5,7 @@ $FORWARD DoParseCommandLine;
     == t.Compiler (e.Folders) t.FoundedFile*
     == (CmdLineError e.Message)
 
-  t.FoundedFile -- см. в FindFile
+  t.FoundedFile -- СЃРј. РІ FindFile
   t.Compiler ::= (NoCompile) | (CompileCommand e.Command)
 */
 $ENTRY ParseCommandLine {
