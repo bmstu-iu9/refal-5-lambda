@@ -5,15 +5,10 @@
 //FROM LibraryEx
 $EXTERN ArgList;
 
-//FROM sUtilitiesBanner
-$EXTERN TypeBanner;
-
 $FORWARD Main;
 
 $ENTRY Go {
-  =
-    <TypeBanner 'LexGen'>
-    <Main <ArgList>>;
+  = <Main <ArgList>>;
 }
 
 //FROM Library

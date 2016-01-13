@@ -10,9 +10,6 @@ $EXTERN CreateFileList;
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
 
-//FROM sUtilitiesBanner
-$EXTERN TypeBanner;
-
 $FORWARD Main;
 
 $ENTRY Go { = <Main <ArgList>>; }
@@ -21,7 +18,6 @@ $FORWARD MakeProject;
 
 Main {
   (e.Program) e.Arguments =
-    <TypeBanner 'SRMake'>
     <MakeProject
       <ParseCommandLine e.Arguments>
     >;

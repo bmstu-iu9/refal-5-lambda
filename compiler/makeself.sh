@@ -1,7 +1,7 @@
 #!/bin/sh
 export MODULES='Srefc Parser Lexer Algorithm Error Generator
   SymTable FindFile ParseCmdLine Context
-  Library LibraryEx refalrts Version Escape'
+  Library LibraryEx refalrts Escape'
 # Копирование необходимо при компиляции при помощи Cygwin или MSYS,
 # поскольку на платформе Windows невозможно перезаписать исполнимый
 # файл, если соответствующая ему программма выполняется.

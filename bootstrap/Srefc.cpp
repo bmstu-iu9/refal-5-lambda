@@ -18,8 +18,6 @@ extern refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_en
 
 extern refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-extern refalrts::FnResult ShowVersion(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
@@ -35,9 +33,6 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       break;
 #ifdef INTERPRET
     const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & ShowVersion, (void*) "ShowVersion"},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
       {refalrts::icFunc, (void*) & Main, (void*) "Main"},
       {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
@@ -57,41 +52,27 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & ShowVersion, "ShowVersion" ) )
+    if( ! refalrts::alloc_name( n1, & Main, "Main" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_call( n2 ) )
+    if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_open_call( n3 ) )
+    if( ! refalrts::alloc_name( n3, & ArgList, "ArgList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, & Main, "Main" ) )
+    if( ! refalrts::alloc_close_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_open_call( n5 ) )
+    if( ! refalrts::alloc_close_call( n5 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & ArgList, "ArgList" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_close_call( n7 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_close_call( n8 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n8 );
-    refalrts::push_stack( n3 );
-    res = refalrts::splice_elem( res, n8 );
-    refalrts::push_stack( n7 );
     refalrts::push_stack( n5 );
-    res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_elem( res, n6 );
+    refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
-    refalrts::push_stack( n2 );
-    refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );

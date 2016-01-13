@@ -7,7 +7,7 @@ setlocal
   ..\bin\lexgen Lexer.sref
   set modules=Srefc Parser Lexer Algorithm Error Generator
   set modules=%modules% SymTable FindFile ParseCmdLine Context
-  set modules=%modules% Library LibraryEx refalrts Version Escape
+  set modules=%modules% Library LibraryEx refalrts Escape
   srefc_ -c "%CPPLINE% -I..\srlib" -d ..\srlib %modules%
   if exist a.exe move a.exe srefc.exe
   if exist *.obj erase *.obj
