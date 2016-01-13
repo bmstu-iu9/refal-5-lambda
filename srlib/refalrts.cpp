@@ -812,19 +812,15 @@ unsigned refalrts::read_chars(
   char buffer[], unsigned buflen, refalrts::Iter& first, refalrts::Iter& last
 ) {
   unsigned read = 0;
-  for( ; ; ) {
-    if( read == buflen ) {
-      return read;
-    } else if( empty_seq(first, last) ) {
-      return read;
-    } else if( first->tag != refalrts::cDataChar ) {
-      return read;
-    } else {
-      buffer[read] = first->char_info;
-      ++ read;
-      move_left( first, last );
-    }
+  while (
+    read != buflen && ! empty_seq(first, last)
+      && first->tag == refalrts::cDataChar
+  ) {
+    buffer[read] = first->char_info;
+    ++ read;
+    move_left( first, last );
   }
+  return read;
 }
 
 //------------------------------------------------------------------------------
@@ -1529,7 +1525,6 @@ refalrts::Node g_first_marker =
 refalrts::Node g_last_marker =
   { & g_first_marker, 0, refalrts::cDataIllegal, { '\0' } };
 
-//const refalrts::NodePtr g_end_list = & g_last_marker;
 refalrts::NodePtr g_free_ptr = & g_last_marker;
 
 namespace pool {
@@ -1712,6 +1707,15 @@ void add_match_repeated_evar_time(clock_t duration);
 void start_e_loop();
 void stop_e_loop();
 
+#ifndef DONT_PRINT_STATISTICS
+struct TimeItem {
+  const char *name;
+  unsigned long counter;
+};
+
+int reverse_compare(const void *left_void, const void *right_void);
+#endif // DONT_PRINT_STATISTICS
+
 } // namespace profiler
 
 } // namespace refalrts
@@ -1723,17 +1727,20 @@ void refalrts::profiler::start_profiler() {
 
 #ifndef DONT_PRINT_STATISTICS
 
-namespace {
+int refalrts::profiler::reverse_compare(
+  const void *left_void, const void *right_void
+) {
+  const TimeItem *left = static_cast<const TimeItem *>(left_void);
+  const TimeItem *right = static_cast<const TimeItem *>(right_void);
 
-inline double divide(double numerator, double denominator) {
-  if (denominator != 0.0) {
-    return numerator / denominator;
+  if (left->counter > right->counter) {
+    return -1;
+  } else if (left->counter < right->counter) {
+    return +1;
   } else {
-    return 0.0;
+    return 0;
   }
 }
-
-} // безымянное namespace
 
 #endif // DONT_PRINT_STATISTICS
 
@@ -1741,42 +1748,58 @@ void refalrts::profiler::end_profiler() {
   refalrts::profiler::after_step();
 #ifndef DONT_PRINT_STATISTICS
 
-  const double cfCLOCKS_PER_SEC = (double) CLOCKS_PER_SEC;
+  unsigned long counters[cPerformanceCounter_COUNTERS_NUMBER];
+  read_counters(counters);
 
-  double full_time =
-    (clock() - g_start_program_time) / cfCLOCKS_PER_SEC;
-  double pattern_time = g_total_pattern_match_time / cfCLOCKS_PER_SEC;
-  double result_time = g_total_building_result_time / cfCLOCKS_PER_SEC;
-  double refal_time = pattern_time + result_time;
-  double io_time = full_time - refal_time;
+  TimeItem items[] = {
+    { "\nTotal program time", cPerformanceCounter_TotalTime },
+    { "Builtin time", cPerformanceCounter_BuiltInTime },
+    { "(Total refal time)", cPerformanceCounter_RefalTime },
+    { "Linear pattern time", cPerformanceCounter_LinearPatternTime },
+    { "Linear result time", cPerformanceCounter_LinearResultTime },
+    { "Open e-loop time (clear)", cPerformanceCounter_OpenELoopTimeClear },
+    {
+      "Repeated e-var match time (inside e-loops)",
+      cPerformanceCounter_RepeatEvarMatchTime
+    },
+    {
+      "Repeated e-var match time (outside e-loops)",
+      cPerformanceCounter_RepeatEvarMatchTimeOutsideECycle
+    },
+    {
+      "Repeated t-var match time (inside e-loops)",
+      cPerformanceCounter_RepeatTvarMatchTime
+    },
+    {
+      "Repeated t-var match time (outside e-loops)",
+      cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle
+    },
+    { "t- and e-var copy time", cPerformanceCounter_TEvarCopyTime }
+  };
 
-  double pattern_percent = 100 * divide(pattern_time, refal_time);
-  double pattern_clear_percent = 100 * divide(pattern_time, full_time);
-  double result_percent = 100 * divide(result_time, refal_time);
-  double result_clear_percent = 100 * divide(result_time, full_time);
-  double refal_persent = 100 * divide(refal_time, full_time);
+  enum { nItems = sizeof(items) / sizeof(items[0]) };
 
-  fprintf(stderr, "\nTotal program time: %.3f seconds.\n", full_time);
-  fprintf(
-    stderr,
-    "Pattern match time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "p/r = %.2f.\n", pattern_time, pattern_percent,
-    pattern_clear_percent, divide(pattern_time, result_time)
-  );
-  fprintf(
-    stderr,
-    "Building result time: %.3f seconds (%1.1f%%, %1.1f%%), "
-    "r/p = %.2f.\n", result_time, result_percent,
-    result_clear_percent, divide(result_time, pattern_time)
-  );
-  fprintf(
-    stderr, "Total refal time: %.3f seconds (%1.1f%%).\n",
-    refal_time, refal_persent
-  );
-  fprintf(
-    stderr, "Builtin time: %.3f seconds (%1.1f%%).\n",
-    io_time, 100.0 - refal_persent
-  );
+  for (size_t i = 0; i < nItems; ++i) {
+    items[i].counter = counters[items[i].counter];
+  }
+
+  qsort(items, nItems, sizeof(items[0]), reverse_compare);
+
+  const double cfSECS_PER_CLOCK = 1.0 / CLOCKS_PER_SEC;
+  unsigned long total = counters[refalrts::cPerformanceCounter_TotalTime];
+
+  for (size_t i = 0; i < nItems; ++i) {
+    unsigned long value = items[i].counter;
+
+    if (value > 0) {
+      double percent = (total != 0) ? 100.0 * value / total : 0.0;
+      fprintf(
+        stderr, "%s: %.3f seconds (%.1f %%).\n",
+        items[i].name, value * cfSECS_PER_CLOCK, percent
+      );
+    }
+  }
+
 #endif // DONT_PRINT_STATISTICS
 }
 

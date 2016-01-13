@@ -34,6 +34,10 @@ $ENTRY GenFnEnd {
     ('}') ();
 }
 
+$ENTRY GenFnEnd-Success {
+  = ('  //return refalrts::cRecognitionImpossible;') ('}') ();
+}
+
 $ENTRY GenEEnum {
   e.Name = <SwGenFnStart GN-Entry NakedArguments e.Name> <GenFnEnd>;
 }
@@ -97,7 +101,7 @@ GenSwap-Aux {
 $ENTRY GenIdent {
   e.Name =
     ('//$LABEL ' e.Name)
-    ('template <typename T>')
+    ('template <typename SREFAL_PARAM_INT>')
     ('struct ' e.Name ' {')
     ('  static const char *name() {')
     ('    return "' e.Name '";')
@@ -739,13 +743,11 @@ PrintEVars {
 
 $FORWARD PrintMatch;
 
+//FROM Escape
+$EXTERN EscapeChar;
+
 Escape {
-  '\n' = '\\n';
-  '\t' = '\\t';
-  '\r' = '\\r';
-  '\\' = '\\\\';
-  '' = '\\' '';
-  s.Other = s.Other;
+  s.Char = <EscapeChar s.Char>;
 }
 
 PrintMatchChar {

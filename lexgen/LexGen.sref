@@ -5,19 +5,24 @@
 //FROM LibraryEx
 $EXTERN ArgList;
 
+$FORWARD Main;
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
 //FROM Library
 $EXTERN WriteLine;
 
 //FROM Generator
-$EXTERN Generate;
+$EXTERN Generate-SelfUpdate, Generate-ToDifferent;
 
 Main {
   (e.ProgName) (e.File) =
-    <Generate e.File>;
+    <Generate-SelfUpdate e.File>;
+
+  (e.ProgName) ('-from:' e.From) ('-to:' e.To) =
+    <Generate-ToDifferent (e.From) e.To>;
 
   (e.ProgName) e.Other = <WriteLine 'Command line error'>;
-}
-
-$ENTRY Go {
-  = <Main <ArgList>>;
 }

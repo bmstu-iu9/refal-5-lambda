@@ -1,0 +1,34 @@
+//FROM Library
+$EXTERN Div, Mod, Ord, Compare;
+
+//FROM LibraryEx
+$EXTERN Fetch;
+
+OctDigit {
+  0 = '0'; 1 = '1'; 2 = '2'; 3 = '3';
+  4 = '4'; 5 = '5'; 6 = '6'; 7 = '7';
+}
+
+//EscapeChar
+$ENTRY EscapeChar {
+  '\n' = '\\n';
+  '\t' = '\\t';
+  '\r' = '\\r';
+  '' = '\\' '';
+  '"' = '\\' '"';
+  '\\' = '\\\\';
+
+  s.Other =
+    <Fetch
+      <Compare s.Other ' '> <Ord s.Other>
+      {
+        '<' s.Code =
+          '\\'
+          <OctDigit <Div s.Code 64>>
+          <OctDigit <Mod <Div s.Code 8> 8>>
+          <OctDigit <Mod s.Code 8>>;
+
+        s.Compare s.Code = s.Other;
+      }
+    >;
+}

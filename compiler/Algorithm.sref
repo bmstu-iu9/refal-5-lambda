@@ -412,15 +412,11 @@ TextFromPattern {
   = ;
 }
 
-Escape {
-  '\n' = '\\n';
-  '\r' = '\\r';
-  '\t' = '\\t';
-  '\\' = '\\\\';
-  '' = '\\' '';
-  '"' = '\\"';
+//FROM Escape
+$EXTERN EscapeChar;
 
-  s.Other = s.Other;
+Escape {
+  s.Char = <EscapeChar s.Char>;
 }
 
 TextFromPattern-Char {

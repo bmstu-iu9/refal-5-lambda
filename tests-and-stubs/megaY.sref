@@ -1,0 +1,67 @@
+Y {
+  s.Func = { e.Arg = <<s.Func <Y s.Func>> e.Arg>; };
+}
+
+$EXTERN WriteLine, Inc, Dec, Mul;
+
+$FORWARD Select-K;
+
+Yn {
+  s.N =
+    {
+      s.Func =
+        <
+          <Y
+            {
+              s.Next-K =
+                {
+                  s.N = /* пусто */;
+
+                  s.K =
+                    {
+                      e.Arg-K =
+                        <Select-K (s.K <s.Func <<Yn s.N> s.Func>>) e.Arg-K>;
+                    }
+                    <s.Next-K <Inc s.K>>;
+                };
+            }
+          >
+          0
+        >;
+    };
+}
+
+ChAB-Q-G {
+  s.A s.B s.Q e.Expr =
+    <
+      { s.Loop1 s.Loop2 e.Arg = <s.Loop1 e.Arg>; }
+      <<Yn 2> {
+        s.ChAB s.Quotted =
+          {
+            s.A e.Tail = s.B <s.ChAB e.Tail>;
+            s.Q e.Tail = s.Q <s.Quotted e.Tail>;
+            s.Other e.Tail = s.Other <s.ChAB e.Tail>;
+            = ;
+          }
+          {
+            s.Q e.Tail = s.Q <s.ChAB e.Tail>;
+            s.Other e.Tail = s.Other <s.Quotted e.Tail>;
+            = ;
+          };
+      }>
+      e.Expr
+    >;
+}
+
+Select-K {
+  (0 s.Func e.OtherFuncs) e.Arg = <s.Func e.Arg>;
+
+  (s.K s.Func e.OtherFuncs) e.Arg =
+    <Select-K (<Dec s.K> e.OtherFuncs) e.Arg>;
+}
+
+$ENTRY Go { =
+  <WriteLine
+    <ChAB-Q-G 'a' 'b' '"' 'ababab"abababa"ababab'>
+  >;
+}

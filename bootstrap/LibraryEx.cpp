@@ -547,9 +547,9 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
-    enum { __sFunc_1_1 = 2 };
+    enum { __sY_Func_1_1 = 2 };
     enum { __eArg_2_1 = 3 };
-    enum { __sFunc_1_2 = 5 };
+    enum { __sY_Func_1_2 = 5 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -562,15 +562,15 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, 0, __sFunc_1_1, 0},
+      {refalrts::icsVarLeft, 0, __sY_Func_1_1, 0},
       {refalrts::icContextSet, 0, __eArg_2_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sFunc_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __sY_Func_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icCopySTVar, 0, __sFunc_1_1, 0},
+      {refalrts::icCopySTVar, 0, __sY_Func_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceEVar, 0, __eArg_2_1, 0},
@@ -588,15 +588,15 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     else
       return res;
 #else
-    // s.Func#1 e.Arg#2
-    if( ! refalrts::svar_left( context[__sFunc_1_1], context[0], context[1] ) )
+    // s.Y_Func#1 e.Arg#2
+    if( ! refalrts::svar_left( context[__sY_Func_1_1], context[0], context[1] ) )
       break;
     context[__eArg_2_1] = context[0];
     context[__eArg_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_stvar( context[__sFunc_1_2], context[__sFunc_1_1] ) )
+    if( ! refalrts::copy_stvar( context[__sY_Func_1_2], context[__sY_Func_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
@@ -629,10 +629,10 @@ static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_stvar( res, context[__sFunc_1_2] );
+    res = refalrts::splice_stvar( res, context[__sY_Func_1_2] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, context[__sFunc_1_1] );
+    res = refalrts::splice_stvar( res, context[__sY_Func_1_1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -652,7 +652,7 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
-    enum { __sFunc_1_1 = 2 };
+    enum { __sY_Func_1_1 = 2 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -666,13 +666,13 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, 0, __sFunc_1_1, 0},
+      {refalrts::icsVarLeft, 0, __sY_Func_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, __sFunc_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __sY_Func_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
@@ -687,8 +687,8 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     else
       return res;
 #else
-    // s.Func#1
-    if( ! refalrts::svar_left( context[__sFunc_1_1], context[0], context[1] ) )
+    // s.Y_Func#1
+    if( ! refalrts::svar_left( context[__sY_Func_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -710,7 +710,7 @@ refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::push_stack( n3 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, context[__sFunc_1_1] );
+    res = refalrts::splice_stvar( res, context[__sY_Func_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );

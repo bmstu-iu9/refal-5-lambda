@@ -541,9 +541,9 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icChar, 0, 's', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
@@ -639,10 +639,10 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_char( n20, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_char( n21, '"' ) )
+    if( ! refalrts::alloc_char( n21, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_char( n22, '"' ) )
+    if( ! refalrts::alloc_char( n22, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
     if( ! refalrts::alloc_close_call( n23 ) )

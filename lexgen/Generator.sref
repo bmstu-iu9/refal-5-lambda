@@ -11,11 +11,23 @@ $EXTERN True, False, Success, Fails;
 
 $FORWARD GenCode;
 
-$ENTRY Generate {
+$ENTRY Generate-SelfUpdate {
   e.FileName =
     <SaveFile
       (e.FileName)
       <GenCode <LoadFile e.FileName>>
+    >;
+}
+
+$ENTRY Generate-ToDifferent {
+  (e.From) e.To =
+    <SaveFile
+      (e.To)
+      ('// Automatically generated file, don''t edit!')
+      ('// Edit file ''' e.From '')
+      ()
+      ()
+      <GenCode <LoadFile e.From>>
     >;
 }
 
@@ -74,7 +86,7 @@ GenCode-Aux {
    Основные синтаксические единицы
 
    e.LexerDefinition ::= t.Element*
-   
+
    t.Element ::= t.Sentence | t.Set
 
    t.Set ::= (Set (e.Name) t.SetContent* )
@@ -494,7 +506,7 @@ WriteAlternative {
   (Empty (Flush e.FlushName) (t.SrcPos e.NextStateName)) =
     ('  (e.Accum) e.Text =')
     ('    (' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;');
-  
+
   (Empty (FlushError e.Message) Finitive) =
     ('  (e.Accum) = (TokenError ' '' e.Message '' ');');
 
@@ -542,21 +554,13 @@ WriteAlternative {
     );
 }
 
+//FROM Escape
+$EXTERN EscapeChar;
+
 //EscapeChar
 EC {
   Any = 's.Any';
-
-  '\n' = '' '\\n' '';
-
-  '\t' = '' '\\t' '';
-
-  '\r' = '' '\\r' '';
-
-  '' = '' '\\' '' '';
-
-  '\\' = '' '\\\\' '';
-
-  s.Other = '' s.Other '';
+  s.Other = '' <EscapeChar s.Other> '';
 }
 
 

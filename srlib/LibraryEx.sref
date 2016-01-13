@@ -30,7 +30,7 @@ $ENTRY Fetch {
 }
 
 $ENTRY Y {
-  s.Func = { e.Arg = <<s.Func <Y s.Func>> e.Arg>; };
+  s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
 }
 
 $FORWARD DoMapReduce;
@@ -275,6 +275,11 @@ Trim-R {
   e.Line = e.Line;
 }
 
+/**
+  <Seq s.F1 s.F2 ... s.Fn> == s.Compose
+
+  <s.Compose e.X> == <s.Fn ... <s.F2 <s.F1 e.X>>...>
+*/
 $ENTRY Seq {
   t.Func = t.Func;
 

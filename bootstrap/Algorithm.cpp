@@ -891,7 +891,7 @@ extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_en
 extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL Brackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct Brackets {
   static const char *name() {
     return "Brackets";
@@ -899,7 +899,7 @@ struct Brackets {
 };
 
 //$LABEL ADT_Brackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct ADT_Brackets {
   static const char *name() {
     return "ADT_Brackets";
@@ -907,7 +907,7 @@ struct ADT_Brackets {
 };
 
 //$LABEL CallBrackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CallBrackets {
   static const char *name() {
     return "CallBrackets";
@@ -8059,351 +8059,34 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
   );
 }
 
+extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
 static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, 'n', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\n'
-    if( ! refalrts::char_left( '\n', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, 'n' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\r', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, 'r', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\r'
-    if( ! refalrts::char_left( '\r', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, 'r' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\t', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, 't', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\t'
-    if( ! refalrts::char_left( '\t', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, 't' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\\', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\\'
-    if( ! refalrts::char_left( '\\', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, '\\' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, '\'', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\''
-    if( ! refalrts::char_left( '\'', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, '\'' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    // issue here memory for vars with 2 elems
-    refalrts::Iter context[2];
-    refalrts::zeros( context, 2 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    using refalrts::functions;
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'"', 0},
-      {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icChar, 0, '\\', 0},
-      {refalrts::icChar, 0, '"', 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // '\"'
-    if( ! refalrts::char_left( '"', context[0], context[1] ) )
-      break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
-      break;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_char( n0, '\\' ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_char( n1, '"' ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
   do {
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
-    enum { __sOther_1_1 = 2 };
+    enum { __sChar_1_1 = 2 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    using refalrts::functions;
+    static const refalrts::RefalFunction functions[] = {
+      { EscapeChar, "EscapeChar" }
+    };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icsVarLeft, 0, __sOther_1_1, 0},
+      {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, __sOther_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sChar_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -8417,15 +8100,29 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     else
       return res;
 #else
-    // s.Other#1
-    if( ! refalrts::svar_left( context[__sOther_1_1], context[0], context[1] ) )
+    // s.Char#1
+    if( ! refalrts::svar_left( context[__sChar_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    res = refalrts::splice_stvar( res, context[__sOther_1_1] );
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, EscapeChar, "EscapeChar" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__sChar_1_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -8868,7 +8565,7 @@ refalrts::FnResult ElCloseCall(refalrts::Iter, refalrts::Iter) {
 }
 
 //$LABEL CloseCall
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CloseCall {
   static const char *name() {
     return "CloseCall";

@@ -5,7 +5,7 @@ $EXTERN CompileFile;
 $EXTERN Map, ArgList;
 
 //FROM Library
-$EXTERN Success, Fails, WriteLine, System;
+$EXTERN Success, Fails, WriteLine, System, Exit;
 
 //------------------------------------------------------------------------------
 
@@ -15,55 +15,100 @@ $ENTRY Go {
   = <Main <ArgList>>;
 }
 
-$FORWARD Compile-And-Link, FindFiles-Compilers;
+$FORWARD FindFiles-Compilers;
 
 //FROM ParseCmdLine
-$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
+$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError,
+  CompileList, CompileToTarget;
 
 //FROM LibraryEx
-$EXTERN LoadFile;
+$EXTERN LoadFile, SaveFile;
 
 Main {
   (e.ProgName) ('@' e.Config) =
     <Main (e.ProgName) <LoadFile e.Config>>;
 
   (e.ProgName) e.Arguments =
-    <Compile-And-Link
-      <FindFiles-Compilers
-        <ParseCommandLine e.Arguments>
-      >
+    <FindFiles-Compilers
+      <ParseCommandLine e.Arguments>
     >;
 }
+
+//FROM LibraryEx
+$EXTERN Fetch, Seq;
 
 //FROM FindFile
 $EXTERN FindFiles;
 
-FindFiles-Compilers {
-  t.Compilers (e.Folders) e.Files =
-    t.Compilers <FindFiles (e.Folders) e.Files>;
-
-  (CmdLineError e.Message) =
-    (CmdLineError e.Message);
-}
-
 //FROM FindFile
 $EXTERN Source, Output, NotFound;
 
-$FORWARD PrintNotFound, CompileEachFile, Link;
+$LABEL CCompileCommand, CNone, CErrorFile;
 
-$FORWARD ScanCollisions, GetFileName;
+$FORWARD PrintNotFound, ForEach, RenameFiles, Link;
 
-Compile-And-Link {
+FindFiles-Compilers {
   (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
 
-  t.Compiler e.Files-B (NotFound e.FileName) e.Files-E =
-    <Map PrintNotFound (NotFound e.FileName) e.Files-E>;
+  s.CommandLineInfo CompileToTarget (e.Folders) (e.Source) (e.Output) =
+    ;
 
-  t.Compiler e.Files =
-    <ScanCollisions
-      t.Compiler <Map GetFileName e.Files>
+  s.CommandLineInfo CompileList (e.Folders) e.Files =
+    <Fetch
+      <FindFiles (e.Folders) e.Files>
+      {
+        e.Files-B (NotFound e.FileName) e.Files-E =
+          <Map PrintNotFound (NotFound e.FileName) e.Files-E>;
+
+        e.FoundFiles =
+          <Fetch
+            e.FoundFiles
+            // В последовательность:
+            <Seq
+              <RenameFiles s.CommandLineInfo>
+              //----------------------------------------------------------------
+              <ForEach
+                {
+                  (Output e.OutputName) =
+                    <WriteLine '+Linking ' e.OutputName> (e.OutputName);
+
+                  (Source (e.Source) e.OutputName) =
+                    <WriteLine '*Compiling ' e.Source ':'>
+                    <Fetch
+                      <CompileFile (e.Source) e.OutputName>
+                      {
+                        Success e.OutputName1 = (e.OutputName1);
+
+                        Fails = Fails;
+                      }
+                    >;
+                }
+              >
+              //----------------------------------------------------------------
+              {
+                 e.Outputs-B Fails e.Outputs-E =
+                   <Fetch
+                     <s.CommandLineInfo #CErrorFile>
+                     {
+                       #CNone = ;
+
+                       e.ErrorFileName = <SaveFile (e.ErrorFileName)>;
+                     }
+                   >;
+
+                 e.Outputs =
+                   <Link s.CommandLineInfo e.Outputs>
+                   <WriteLine '** Compilation successed **'>;
+              }
+            >
+          >;
+      }
     >;
+}
+
+ForEach {
+  s.Converter = { e.Elems = <Map s.Converter e.Elems>; };
 }
 
 PrintNotFound {
@@ -75,8 +120,52 @@ PrintNotFound {
   (Source (e.Source) e.Output) = ;
 }
 
+Link {
+  s.CommandLineInfo e.Files =
+    <Fetch
+      <s.CommandLineInfo #CCompileCommand>
+      {
+        #CNone = ;
 
-$FORWARD GetFileName-Aux, DoGetFileName;
+        e.CommandLine =
+          <System
+            e.CommandLine
+            <Map
+              {
+                (e.FileName) = ' "' e.FileName '"';
+              }
+              e.Files
+            >
+          >;
+      }
+    >;
+}
+
+$FORWARD ScanCollisions, GetFileName;
+
+RenameFiles {
+  s.CommandLineInfo =
+    <Fetch
+      <s.CommandLineInfo #CCompileCommand>
+      {
+        #CNone =
+          <ForEach
+            {
+              (Source (e.Source) e.Output) = (Source (e.Source) e.Output);
+
+              (Output e.Output) = (Output e.Output);
+            }
+          >;
+
+        e.CommandLine =
+          {
+            e.Files = <ScanCollisions <Map GetFileName e.Files>>;
+          };
+      }
+    >;
+}
+
+$FORWARD GetFileName-Aux;
 
 GetFileName {
   (Output e.FileName) =
@@ -90,6 +179,8 @@ GetFileName {
       (Source (e.Source) e.Output)
     );
 }
+
+$FORWARD DoGetFileName;
 
 GetFileName-Aux {
   e.FileName '.cpp' = <DoGetFileName e.FileName>;
@@ -106,136 +197,102 @@ DoGetFileName {
   = ;
 }
 
-$FORWARD DoLower;
-
 Lower {
   s.Char =
-    <DoLower
-      s.Char 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
+    // Сначала мы проверяем, что символ является большой буквой
+    <Fetch
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      {
+        e.Uppers-B s.Char e.Uppers-E =
+          // Символ является большой буквой, находим соответствующую маленькую
+          <Fetch
+            'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz'
+            {
+              e.UpLo-B s.Char s.Lower e.UpLo-E = s.Lower;
+            }
+          >;
+
+        e.Uppers = s.Char;
+      }
     >;
 }
 
-DoLower {
-  s.Upper s.Upper s.Lower e.Tail = s.Lower;
-
-  s.Char s.Upper s.Lower e.Tail = <DoLower s.Char e.Tail>;
-
-  s.Char = s.Char;
-}
-
-$FORWARD Renumerate;
-
-//FROM LibraryEx
-$EXTERN DelAccumulator, MapReduce;
+$FORWARD Renumerate, RestoreName;
 
 ScanCollisions {
-  t.Compiler
   e.Files-B (e.FileName 0 (Output e.Output1)) e.Files-M
   (e.FileName 0 (Output e.Output2)) e.Files-E =
     <WriteLine
       'COMMAND LINE ERROR: output files ' e.Output1 ' and '
       e.Output2 ' has some filename ' e.FileName
-    >;
+    >
+    <Exit 1>;
 
-  t.Compiler
   e.Files-B (e.FileName 0 t.Location) e.Files-M
   (e.FileName 0 (Output e.Output)) e.Files-E =
     <ScanCollisions
-      t.Compiler
       e.Files-B (e.FileName 1 t.Location) e.Files-M
       (e.FileName 0 (Output e.Output))
-      <DelAccumulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
-  t.Compiler
   e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
   (e.FileName 0 t.Location) e.Files-E =
     <ScanCollisions
-      t.Compiler
       e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
       (e.FileName 1 t.Location)
-      <DelAccumulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
-  t.Compiler
   e.Files-B (e.FileName 0 t.Location1) e.Files-M
   (e.FileName 0 t.Location2) e.Files-E =
     <ScanCollisions
-      t.Compiler
       e.Files-B (e.FileName 0 t.Location1)
       e.Files-M (e.FileName 1 t.Location2)
-      <DelAccumulator
-        <MapReduce
-          (Renumerate e.FileName) 2 e.Files-E
-        >
-      >
+      <Renumerate (e.FileName) e.Files-E>
     >;
 
-  t.Compiler e.Files =
-    <Link t.Compiler <Map CompileEachFile e.Files>>;
+  e.Files = <Map RestoreName e.Files>;
 }
 
 //FROM LibraryEx
-$EXTERN Inc;
+$EXTERN Inc, DelAccumulator, MapReduce;
 
 Renumerate {
-  e.FileName s.NextNumber
-  (e.FileName 0 (Source (e.Source) e.Output)) =
-    <Inc s.NextNumber>
-    (e.FileName s.NextNumber (Source (e.Source) e.Output));
+  (e.FileName) e.Files =
+    <DelAccumulator
+      <MapReduce
+        {
+          s.NextNumber (e.FileName 0 (Source (e.Source) e.Output)) =
+            <Inc s.NextNumber>
+            (e.FileName s.NextNumber (Source (e.Source) e.Output));
 
-  e.FileName s.NextNumber t.NextFile =
-    s.NextNumber t.NextFile;
-}
-
-$FORWARD SwCompiled, FileNum;
-
-CompileEachFile {
-  (e.FileName s.Num (Output e.OutputName)) =
-    <WriteLine '+Linking ' e.OutputName> (e.OutputName);
-
-  (e.FileName s.Num (Source (e.Source) e.Output)) =
-    <SwCompiled
-      <WriteLine '*Compiling ' e.Source ':'>
-      <CompileFile (e.Source) <FileNum s.Num e.Output>>
+          s.NextNumber t.NextFile =
+            s.NextNumber t.NextFile;
+        }
+        2 e.Files
+      >
     >;
 }
 
 //FROM Library
 $EXTERN StrFromInt;
 
-FileNum {
-  0 e.File = e.File;
+RestoreName {
+  (e.FileName s.Num (Output e.OutputName)) =
+    (Output e.OutputName);
 
-  s.Number e.File '.cpp' =
-    e.File '@' <StrFromInt s.Number> '.cpp';
+  (e.FileName s.Num (Source (e.Source) e.Output)) =
+    (Source
+      (e.Source)
+      <Fetch
+        s.Num e.Output
+        {
+          0 e.Output1 = e.Output1;
+
+          s.Number e.OutName '.cpp' =
+            e.OutName '@' <StrFromInt s.Number> '.cpp';
+        }
+      >
+    );
 }
-
-SwCompiled {
-  Success e.OutputName = (e.OutputName);
-
-  Fails = Fails;
-}
-
-UnBracketSpace {
-  (e.FileName) = ' "' e.FileName '"';
-}
-
-Link {
-  (NoCompile) e.Files = ;
-
-  (CompileCommand e.Command) e.Outputs-B Fails e.Outputs-E = ;
-
-  (CompileCommand e.Command) e.Outputs =
-    <System e.Command <Map UnBracketSpace e.Outputs>>
-    <WriteLine '** Compilation successed **'>;
-}
-

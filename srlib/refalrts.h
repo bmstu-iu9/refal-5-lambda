@@ -311,6 +311,7 @@ inline void set_return_code( RefalNumber retcode ) {
 /*
   Функция производит печать рефал-выражения в поток file
   в том же формате, как и при отладочном дампе памяти.
+
   Переменная file представляет собой стандартный файловый
   поток FILE* из stdio.h. Сделана она была void* только
   для того, чтобы не включать сюда лишние заголовочные файлы
@@ -319,6 +320,7 @@ inline void set_return_code( RefalNumber retcode ) {
 void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
+
 extern FnResult interpret_array(
   RASLCommand raa[],
   Iter allocs[],

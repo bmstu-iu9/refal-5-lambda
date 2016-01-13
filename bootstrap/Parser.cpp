@@ -161,7 +161,7 @@ extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter ar
 extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL COpen
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct COpen {
   static const char *name() {
     return "COpen";
@@ -169,7 +169,7 @@ struct COpen {
 };
 
 //$LABEL CClose
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CClose {
   static const char *name() {
     return "CClose";
@@ -3453,6 +3453,8 @@ extern refalrts::FnResult GenSentence(refalrts::Iter arg_begin, refalrts::Iter a
 
 extern refalrts::FnResult GenFnEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+extern refalrts::FnResult GenFnEnd_Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
 extern refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 extern refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3582,7 +3584,7 @@ static refalrts::FnResult CreateLambdaName(refalrts::Iter arg_begin, refalrts::I
 }
 
 //$LABEL CLambdaScope
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CLambdaScope {
   static const char *name() {
     return "CLambdaScope";
@@ -3594,7 +3596,7 @@ extern refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter
 extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CLambdaName
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CLambdaName {
   static const char *name() {
     return "CLambdaName";
@@ -4916,7 +4918,7 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
 }
 
 //$LABEL Brackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct Brackets {
   static const char *name() {
     return "Brackets";
@@ -4924,7 +4926,7 @@ struct Brackets {
 };
 
 //$LABEL ADT_Brackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct ADT_Brackets {
   static const char *name() {
     return "ADT_Brackets";
@@ -4932,7 +4934,7 @@ struct ADT_Brackets {
 };
 
 //$LABEL CallBrackets
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CallBrackets {
   static const char *name() {
     return "CallBrackets";
@@ -6581,9 +6583,9 @@ static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 'd', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icChar, 0, '}', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6753,13 +6755,13 @@ static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_char( n33, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n34 = 0;
-    if( ! refalrts::alloc_char( n34, '"' ) )
+    if( ! refalrts::alloc_char( n34, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n35 = 0;
     if( ! refalrts::alloc_char( n35, '}' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n36 = 0;
-    if( ! refalrts::alloc_char( n36, '"' ) )
+    if( ! refalrts::alloc_char( n36, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n37 = 0;
     if( ! refalrts::alloc_close_call( n37 ) )
@@ -8994,7 +8996,7 @@ extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts
 extern refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CSuccess
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CSuccess {
   static const char *name() {
     return "CSuccess";
@@ -9002,7 +9004,7 @@ struct CSuccess {
 };
 
 //$LABEL CInvalidMode
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CInvalidMode {
   static const char *name() {
     return "CInvalidMode";
@@ -9010,7 +9012,7 @@ struct CInvalidMode {
 };
 
 //$LABEL CAlreadyBounded
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CAlreadyBounded {
   static const char *name() {
     return "CAlreadyBounded";
@@ -11575,9 +11577,9 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icChar, 0, '[', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -11726,13 +11728,13 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_char( n23, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, '"' ) )
+    if( ! refalrts::alloc_char( n24, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
     if( ! refalrts::alloc_char( n25, '[' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '"' ) )
+    if( ! refalrts::alloc_char( n26, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
     if( ! refalrts::alloc_close_call( n27 ) )
@@ -12524,12 +12526,12 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sBracketsSign_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -12683,7 +12685,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_char( n22, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '"' ) )
+    if( ! refalrts::alloc_char( n23, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_open_call( n24 ) )
@@ -12695,7 +12697,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_close_call( n26 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, '"' ) )
+    if( ! refalrts::alloc_char( n27, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
     if( ! refalrts::alloc_close_call( n28 ) )
@@ -12863,12 +12865,12 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sCloseBracket_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -12998,7 +13000,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_char( n22, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '"' ) )
+    if( ! refalrts::alloc_char( n23, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_open_call( n24 ) )
@@ -13010,7 +13012,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_close_call( n26 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, '"' ) )
+    if( ! refalrts::alloc_char( n27, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
     if( ! refalrts::alloc_close_call( n28 ) )
@@ -13153,12 +13155,12 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sBracketsSign_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -13295,7 +13297,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_char( n22, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_char( n23, '"' ) )
+    if( ! refalrts::alloc_char( n23, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
     if( ! refalrts::alloc_open_call( n24 ) )
@@ -13307,7 +13309,7 @@ static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_close_call( n26 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_char( n27, '"' ) )
+    if( ! refalrts::alloc_char( n27, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
     if( ! refalrts::alloc_close_call( n28 ) )
@@ -16541,9 +16543,9 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icChar, 0, '#', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -16681,13 +16683,13 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n23, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_char( n24, '"' ) )
+    if( ! refalrts::alloc_char( n24, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
     if( ! refalrts::alloc_char( n25, '#' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '"' ) )
+    if( ! refalrts::alloc_char( n26, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
     if( ! refalrts::alloc_close_call( n27 ) )
@@ -17330,9 +17332,9 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icChar, 0, '[', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -17493,13 +17495,13 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n25, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_char( n26, '"' ) )
+    if( ! refalrts::alloc_char( n26, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
     if( ! refalrts::alloc_char( n27, '[' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_char( n28, '"' ) )
+    if( ! refalrts::alloc_char( n28, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
     if( ! refalrts::alloc_close_call( n29 ) )
@@ -18311,12 +18313,12 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sBracketsSign_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -18465,7 +18467,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n24, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, '"' ) )
+    if( ! refalrts::alloc_char( n25, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
     if( ! refalrts::alloc_open_call( n26 ) )
@@ -18477,7 +18479,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_close_call( n28 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, '"' ) )
+    if( ! refalrts::alloc_char( n29, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
     if( ! refalrts::alloc_close_call( n30 ) )
@@ -18640,12 +18642,12 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icChar, 0, ' ', 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sCloseBracket_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icChar, 0, '"', 0},
+      {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tContext_1_1, 0},
@@ -18787,7 +18789,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_char( n24, ' ' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_char( n25, '"' ) )
+    if( ! refalrts::alloc_char( n25, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
     if( ! refalrts::alloc_open_call( n26 ) )
@@ -18799,7 +18801,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_close_call( n28 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
-    if( ! refalrts::alloc_char( n29, '"' ) )
+    if( ! refalrts::alloc_char( n29, '\"' ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
     if( ! refalrts::alloc_close_call( n30 ) )
@@ -18998,7 +19000,7 @@ static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter a
 }
 
 //$LABEL CExistVariable
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CExistVariable {
   static const char *name() {
     return "CExistVariable";
@@ -19006,7 +19008,7 @@ struct CExistVariable {
 };
 
 //$LABEL CNotFound
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CNotFound {
   static const char *name() {
     return "CNotFound";
@@ -19577,7 +19579,7 @@ static refalrts::FnResult CheckUseVariable(refalrts::Iter arg_begin, refalrts::I
 }
 
 //$LABEL CCreateClosure
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CCreateClosure {
   static const char *name() {
     return "CCreateClosure";

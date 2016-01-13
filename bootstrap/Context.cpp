@@ -156,7 +156,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
 }
 
 //$LABEL CSuccess
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CSuccess {
   static const char *name() {
     return "CSuccess";
@@ -164,7 +164,7 @@ struct CSuccess {
 };
 
 //$LABEL CInvalidMode
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CInvalidMode {
   static const char *name() {
     return "CInvalidMode";
@@ -1126,7 +1126,7 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CAlreadyBounded
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CAlreadyBounded {
   static const char *name() {
     return "CAlreadyBounded";
@@ -1950,7 +1950,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
 }
 
 //$LABEL CExistVariable
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CExistVariable {
   static const char *name() {
     return "CExistVariable";
@@ -1958,7 +1958,7 @@ struct CExistVariable {
 };
 
 //$LABEL CNotFound
-template <typename T>
+template <typename SREFAL_PARAM_INT>
 struct CNotFound {
   static const char *name() {
     return "CNotFound";
