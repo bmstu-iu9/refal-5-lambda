@@ -1,26 +1,26 @@
 $ENUM ErrorList;
 
 $ENTRY EL-Create {
-  = (ErrorList);
+  = [ErrorList];
 }
 
 $ENTRY EL-AddError {
-  (ErrorList e.Errors) e.Message =
-    (ErrorList
+  [ErrorList e.Errors] e.Message =
+    [ErrorList
       e.Errors
       ('  ERROR: ' e.Message)
-    );
+    ];
 }
 
 //FROM Library
 $EXTERN StrFromInt;
 
 $ENTRY EL-AddErrorAt {
-  (ErrorList e.Errors) s.LineNumber e.Message =
-    (ErrorList
+  [ErrorList e.Errors] s.LineNumber e.Message =
+    [ErrorList
       e.Errors
       ('  ERROR at ' <StrFromInt s.LineNumber> ': ' e.Message)
-    );
+    ];
 }
 
 //FROM Lexer
@@ -57,14 +57,14 @@ PrintError {
 }
 
 $ENTRY EL-Print {
-  (ErrorList e.Errors) =
-    <Map PrintError e.Errors> (ErrorList e.Errors);
+  [ErrorList e.Errors] =
+    <Map PrintError e.Errors> [ErrorList e.Errors];
 }
 
 $EENUM EL-NoErrors, EL-HasErrors;
 
 $ENTRY EL-IsEmpty {
-  (ErrorList) = EL-NoErrors;
+  [ErrorList] = EL-NoErrors;
 
   t.ErrorList = EL-HasErrors;
 }
