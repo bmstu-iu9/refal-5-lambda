@@ -93,10 +93,10 @@ $EXTERN FOpen, FClose, FWriteLine;
 */
 
 //FROM SymTable
-$EXTERN ST-Create, ST-AddDeclared, ST-AddDefined, ST-AddIdent;
+$EXTERN ST-Create, ST-AddDeclared, ST-AddDefined, ST-AddIdent, ST-Destroy;
 
 //FROM Error
-$EXTERN EL-Create, EL-AddError, EL-AddErrorAt, EL-Print, EL-IsEmpty,
+$EXTERN EL-Create, EL-AddError, EL-AddErrorAt, EL-Destroy,
   EL-AddUnexpected, EL-HasErrors, EL-NoErrors;
 
 $FORWARD ParseElements, WriteGenerated;
@@ -108,23 +108,32 @@ $FORWARD ParseElements, WriteGenerated;
 //FROM Generator
 $EXTERN GenCommonHeaders;
 
+//FROM LibraryEx
+$EXTERN Fetch;
+
 ParseAndGenerate {
   (e.OutputName) e.LexFolding =
-    <WriteGenerated
-      (e.OutputName)
-      <GenCommonHeaders>
+    <Fetch
       <ParseElements
-        <EL-Create> <ST-Create> e.LexFolding
+        <EL-Create> <ST-Create> (/* generated */)
+        e.LexFolding
       >
+      {
+        t.ErrorList t.SymTable e.Lines =
+          <ST-Destroy t.SymTable>
+          <Fetch
+            <EL-Destroy t.ErrorList>
+            {
+              EL-NoErrors =
+                <SaveFile (e.OutputName) e.Lines>
+                Success e.OutputName;
+
+              EL-HasErrors =
+                Fails;
+            }
+          >;
+      }
     >;
-}
-
-WriteGenerated {
-  (e.OutputName) e.Lines EL-NoErrors =
-    <SaveFile (e.OutputName) e.Lines>
-    Success e.OutputName;
-
-  (e.OutputName) e.Lines EL-HasErrors = Fails;
 }
 
 /*
@@ -152,29 +161,48 @@ $FORWARD ParseElement-SwDirective, ParseFunction;
 $EXTERN GN-Entry, GN-Local, GenCommonTailer;
 
 ParseElements {
-  t.ErrorList t.SymTable (TkEOF s.LnNum) =
-    <GenCommonTailer>
-    <EL-IsEmpty <EL-Print t.ErrorList>>;
+  t.ErrorList t.SymTable (e.Generated) (TkEOF s.LnNum) =
+    t.ErrorList t.SymTable
+    <GenCommonHeaders>
+    e.Generated
+    <GenCommonTailer>;
 
-  t.ErrorList t.SymTable (TkDirective s.LnNum s.Directive) e.Tail =
-    <ParseElement-SwDirective
-      t.ErrorList t.SymTable s.Directive e.Tail
+  t.ErrorList t.SymTable (e.Generated)
+  (TkDirective s.LnNum s.Directive) e.Tail =
+    <Fetch
+      <ParseElement-SwDirective
+        t.ErrorList t.SymTable s.Directive e.Tail
+      >
+      {
+        (e.NewGenerated) t.ErrorList^ t.SymTable^ e.Tail^ =
+          <ParseElements
+            t.ErrorList t.SymTable (e.Generated e.NewGenerated) e.Tail
+          >;
+      }
     >;
 
-  t.ErrorList t.SymTable (TkName s.LnNum e.Name) e.Tail =
-    <ParseFunction
-      GN-Local (e.Name)
-      <ST-AddDefined t.ErrorList t.SymTable GN-Local s.LnNum e.Name>
-      e.Tail
+  t.ErrorList t.SymTable (e.Generated) (TkName s.LnNum e.Name) e.Tail =
+    <Fetch
+      <ParseFunction
+        GN-Local (e.Name)
+        <ST-AddDefined t.ErrorList t.SymTable GN-Local s.LnNum e.Name>
+        e.Tail
+      >
+      {
+        (e.NewGenerated) t.ErrorList^ t.SymTable^ e.Tail^ =
+          <ParseElements
+            t.ErrorList t.SymTable (e.Generated e.NewGenerated) e.Tail
+          >;
+      }
     >;
 
-  t.ErrorList t.SymTable (TkSemicolon s.LnNum) e.Tail =
-    <ParseElements t.ErrorList t.SymTable e.Tail>;
+  t.ErrorList t.SymTable (e.Generated) (TkSemicolon s.LnNum) e.Tail =
+    <ParseElements t.ErrorList t.SymTable (e.Generated) e.Tail>;
 
-  t.ErrorList t.SymTable t.Unexpected e.Tail =
+  t.ErrorList t.SymTable (e.Generated) t.Unexpected e.Tail =
     <ParseElements
       <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
-      t.SymTable e.Tail
+      t.SymTable (e.Generated) e.Tail
     >;
 }
 
@@ -203,13 +231,13 @@ ParseElement-SwDirective {
     >;
 
   t.ErrorList t.SymTable Entry t.Unexpected e.Tail =
-    <ParseElements
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
-      t.SymTable t.Unexpected e.Tail
-    >;
+    (/* ничего не генерируем */)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    t.SymTable t.Unexpected e.Tail;
 
   t.ErrorList t.SymTable s.Directive e.Tail =
     <ParseNameList
+      (/* generated */)
       t.ErrorList t.SymTable
       <GenFunctionsFromDirective s.Directive>
       e.Tail
@@ -226,42 +254,44 @@ $EXTERN TkComma, TkSemicolon;
 $FORWARD ParseNameList-Tail;
 
 ParseNameList {
+  (e.Generated)
   t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkName s.LnNum e.Name) e.Tail =
-    <s.GenFunc e.Name>
     <ParseNameList-Tail
+      (e.Generated <s.GenFunc e.Name>)
       <s.TableChangeFunc t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name>
       s.GenFunc s.TableChangeFunc s.ScopeClass
       e.Tail
     >;
 
+  (e.Generated)
   t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
-    <ParseElements
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
-      t.SymTable t.Unexpected e.Tail
-    >;
+    (e.Generated)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    t.SymTable t.Unexpected e.Tail;
 }
 
 ParseNameList-Tail {
+  (e.Generated)
   t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkComma s.LnNum) e.Tail =
     <ParseNameList
+      (e.Generated)
       t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass e.Tail
     >;
 
+  (e.Generated)
   t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   (TkSemicolon s.LnNum) e.Tail =
-    <ParseElements
-      t.ErrorList t.SymTable e.Tail
-    >;
+    (e.Generated) t.ErrorList t.SymTable e.Tail;
 
+  (e.Generated)
   t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
-    <ParseElements
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
-      t.SymTable t.Unexpected e.Tail
-    >;
+    (e.Generated)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+    t.SymTable t.Unexpected e.Tail;
 }
 
 /*
@@ -276,9 +306,6 @@ $EXTERN GenFnStart, GenSentence, GenFnEnd, GenFnEnd-Success;
 
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
-
-//FROM LibraryEx
-$EXTERN Fetch;
 
 $FORWARD ParseBlock;
 
@@ -312,54 +339,57 @@ ParseFunction {
       {
         (1 /* нет вложенных функций */ (0 e.Sentences))
         t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
-          <GenFunctionBody
-            s.ScopeClass (e.Name) (e.Name) e.Sentences
-          >
           <Cntx-Destroy t.Context>
-          <ParseElements t.ErrorList t.SymTable e.Tail>;
+          (
+            <GenFunctionBody
+              s.ScopeClass (e.Name) (e.Name) e.Sentences
+            >
+          )
+          t.ErrorList t.SymTable e.Tail;
 
         (s.NextNumber e.FunctionBodies t.MainBody)
         t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
+          <Cntx-Destroy t.Context>
           // Вложенные функции могут рекурсивно вызывать объемлющую
           // функцию, поэтому перед их телами нужно дать предобъявление
           // объемлющей функции.
-          <Fetch
-            s.ScopeClass
-            {
-              GN-Entry = <GenExtern e.Name>;
-              GN-Local = <GenForward e.Name>;
-            }
-          >
-          <Map
-            {
-              (s.Number e.Sentences) =
-                <GenFunctionBody
-                  GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
-                  e.Sentences
-                >;
-            }
-            e.FunctionBodies
-          >
-          <Fetch
-            t.MainBody
-            {
-              (s.Number e.Sentences) =
-                <GenFunctionBody
-                  s.ScopeClass (e.Name) (e.Name) e.Sentences
-                >;
-            }
-          >
-          <Cntx-Destroy t.Context>
-          <ParseElements t.ErrorList t.SymTable e.Tail>;
+          (
+            <Fetch
+              s.ScopeClass
+              {
+                GN-Entry = <GenExtern e.Name>;
+                GN-Local = <GenForward e.Name>;
+              }
+            >
+            <Map
+              {
+                (s.Number e.Sentences) =
+                  <GenFunctionBody
+                    GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
+                    e.Sentences
+                  >;
+              }
+              e.FunctionBodies
+            >
+            <Fetch
+              t.MainBody
+              {
+                (s.Number e.Sentences) =
+                  <GenFunctionBody
+                    s.ScopeClass (e.Name) (e.Name) e.Sentences
+                  >;
+              }
+            >
+          )
+          t.ErrorList t.SymTable e.Tail;
       }
     >;
 
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
   t.Unexpected e.Tail =
-    <ParseElements
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
-      t.SymTable t.Unexpected e.Tail
-    >;
+    (/* ничего не сгенерировали */)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
+    t.SymTable t.Unexpected e.Tail;
 }
 
 $LABEL Brackets, ADT-Brackets, CallBrackets;

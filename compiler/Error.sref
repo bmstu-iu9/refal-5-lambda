@@ -52,19 +52,17 @@ $EXTERN Map;
 //FROM Library
 $EXTERN WriteLine;
 
-PrintError {
-  (e.Line) = <WriteLine e.Line>;
-}
-
-$ENTRY EL-Print {
-  [ErrorList e.Errors] =
-    <Map PrintError e.Errors> [ErrorList e.Errors];
-}
-
 $EENUM EL-NoErrors, EL-HasErrors;
 
-$ENTRY EL-IsEmpty {
+$ENTRY EL-Destroy {
   [ErrorList] = EL-NoErrors;
 
-  t.ErrorList = EL-HasErrors;
+  [ErrorList e.Errors] =
+    <Map
+      {
+        (e.Line) = <WriteLine e.Line>;
+      }
+      e.Errors
+    >
+    EL-HasErrors;
 }

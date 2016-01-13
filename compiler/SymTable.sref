@@ -4,6 +4,10 @@ $ENTRY ST-Create {
   = [SymTable];
 }
 
+$ENTRY ST-Destroy {
+  [SymTable e.Names] = ;
+}
+
 /*
   Внутренний формат
   t.SymTable ::= [SymTable e.Names]
