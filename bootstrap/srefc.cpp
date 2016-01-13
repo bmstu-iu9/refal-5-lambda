@@ -23,6 +23,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -51,7 +52,7 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -126,6 +127,7 @@ extern refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_
 static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 10 elems
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
@@ -165,7 +167,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -240,6 +242,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -271,7 +274,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -380,6 +383,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
 static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -406,7 +410,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -440,6 +444,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -463,7 +468,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -498,6 +503,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
 static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 8 elems
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
@@ -541,7 +547,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -634,6 +640,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 12 elems
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
@@ -694,7 +701,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -845,6 +852,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
 static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -867,7 +875,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -891,6 +899,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -919,7 +928,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -972,6 +981,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
 static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 7 elems
     refalrts::Iter context[7];
     refalrts::zeros( context, 7 );
@@ -1011,7 +1021,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1025,6 +1035,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       break;
     context[__eOutputs_B_3_1] = 0;
     context[__eOutputs_B_3_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[2] = context[0];
       context[3] = context[1];
@@ -1075,6 +1086,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 5 elems
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
@@ -1135,7 +1147,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1304,6 +1316,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
 static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 13 elems
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
@@ -1347,7 +1360,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1361,6 +1374,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       break;
     context[__eFiles_B_2_1] = 0;
     context[__eFiles_B_2_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[4] = context[0];
       context[5] = context[1];
@@ -1418,6 +1432,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -1469,7 +1484,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1583,6 +1598,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
 static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -1633,7 +1649,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1758,6 +1774,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 9 elems
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
@@ -1785,7 +1802,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1826,6 +1843,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 9 elems
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
@@ -1873,7 +1891,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -1972,6 +1990,7 @@ static refalrts::FnResult ForEach(refalrts::Iter arg_begin, refalrts::Iter arg_e
 static refalrts::FnResult lambda_ForEach_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 5 elems
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
@@ -2001,7 +2020,7 @@ static refalrts::FnResult lambda_ForEach_0(refalrts::Iter arg_begin, refalrts::I
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2048,6 +2067,7 @@ static refalrts::FnResult lambda_ForEach_0(refalrts::Iter arg_begin, refalrts::I
 static refalrts::FnResult ForEach(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
@@ -2077,7 +2097,7 @@ static refalrts::FnResult ForEach(refalrts::Iter arg_begin, refalrts::Iter arg_e
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2127,6 +2147,7 @@ static refalrts::FnResult ForEach(refalrts::Iter arg_begin, refalrts::Iter arg_e
 static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -2192,7 +2213,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2377,6 +2398,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -2400,7 +2422,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2429,6 +2451,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -2453,7 +2476,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2496,6 +2519,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 static refalrts::FnResult lambda_Link_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -2522,7 +2546,7 @@ static refalrts::FnResult lambda_Link_0(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2570,6 +2594,7 @@ static refalrts::FnResult lambda_Link_0(refalrts::Iter arg_begin, refalrts::Iter
 static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -2593,7 +2618,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2622,6 +2647,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 8 elems
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
@@ -2658,7 +2684,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2727,6 +2753,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
 static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 5 elems
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
@@ -2769,7 +2796,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2863,6 +2890,7 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
 static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 10 elems
     refalrts::Iter context[10];
     refalrts::zeros( context, 10 );
@@ -2898,7 +2926,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -2958,6 +2986,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -2987,7 +3016,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3038,6 +3067,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult lambda_RenameFiles_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -3070,7 +3100,7 @@ static refalrts::FnResult lambda_RenameFiles_1(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3132,6 +3162,7 @@ static refalrts::FnResult lambda_RenameFiles_1(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -3161,7 +3192,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3203,6 +3234,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -3224,7 +3256,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3256,6 +3288,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
@@ -3290,7 +3323,7 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3356,6 +3389,7 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
 static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 8 elems
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
@@ -3394,7 +3428,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3468,6 +3502,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 12 elems
     refalrts::Iter context[12];
     refalrts::zeros( context, 12 );
@@ -3512,7 +3547,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3611,6 +3646,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
 static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -3641,7 +3677,7 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3695,6 +3731,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
 static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -3714,7 +3751,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3737,6 +3774,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -3756,7 +3794,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3779,6 +3817,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 5 elems
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
@@ -3812,7 +3851,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3866,6 +3905,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 2 elems
     refalrts::Iter context[2];
     refalrts::zeros( context, 2 );
@@ -3885,7 +3925,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3916,6 +3956,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
 static refalrts::FnResult lambda_Lower_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 9 elems
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
@@ -3945,7 +3986,7 @@ static refalrts::FnResult lambda_Lower_0(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -3959,6 +4000,7 @@ static refalrts::FnResult lambda_Lower_0(refalrts::Iter arg_begin, refalrts::Ite
       break;
     context[__eUpLo_B_3_1] = 0;
     context[__eUpLo_B_3_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[2] = context[0];
       context[3] = context[1];
@@ -3986,6 +4028,7 @@ static refalrts::FnResult lambda_Lower_0(refalrts::Iter arg_begin, refalrts::Ite
 static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 8 elems
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
@@ -4076,7 +4119,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -4090,6 +4133,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
       break;
     context[__eUppers_B_2_1] = 0;
     context[__eUppers_B_2_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[2] = context[0];
       context[3] = context[1];
@@ -4348,6 +4392,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
@@ -4369,7 +4414,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -4400,6 +4445,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
 static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 3 elems
     refalrts::Iter context[3];
     refalrts::zeros( context, 3 );
@@ -4459,7 +4505,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -4631,6 +4677,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
 static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 26 elems
     refalrts::Iter context[26];
     refalrts::zeros( context, 26 );
@@ -4745,7 +4792,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[2];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -4757,6 +4804,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     // e.Files_B#1 ( e.FileName#1 0 ( & Output e.Output1#1 ) ) e.Files_M#1 ( e.FileName#1 0 ( & Output e.Output2#1 ) ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[10] = context[0];
       context[11] = context[1];
@@ -4778,6 +4826,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[__eOutput1_1_1 + 1] = context[5];
       context[__eFiles_M_1_1] = 0;
       context[__eFiles_M_1_1 + 1] = 0;
+      refalrts::start_e_loop();
       do {
         context[12] = context[10];
         context[13] = context[11];
@@ -5075,6 +5124,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 27 elems
     refalrts::Iter context[27];
     refalrts::zeros( context, 27 );
@@ -5148,7 +5198,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[2];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -5160,6 +5210,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     // e.Files_B#1 ( e.FileName#1 0 t.Location#1 ) e.Files_M#1 ( e.FileName#1 0 ( & Output e.Output#1 ) ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[8] = context[0];
       context[9] = context[1];
@@ -5175,6 +5226,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[__eFileName_1_1 + 1] = context[3];
       context[__eFiles_M_1_1] = 0;
       context[__eFiles_M_1_1 + 1] = 0;
+      refalrts::start_e_loop();
       do {
         context[10] = context[8];
         context[11] = context[9];
@@ -5296,6 +5348,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 27 elems
     refalrts::Iter context[27];
     refalrts::zeros( context, 27 );
@@ -5369,7 +5422,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[2];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -5381,6 +5434,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     // e.Files_B#1 ( e.FileName#1 0 ( & Output e.Output#1 ) ) e.Files_M#1 ( e.FileName#1 0 t.Location#1 ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[8] = context[0];
       context[9] = context[1];
@@ -5402,6 +5456,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[__eOutput_1_1 + 1] = context[5];
       context[__eFiles_M_1_1] = 0;
       context[__eFiles_M_1_1 + 1] = 0;
+      refalrts::start_e_loop();
       do {
         context[10] = context[8];
         context[11] = context[9];
@@ -5517,6 +5572,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 24 elems
     refalrts::Iter context[24];
     refalrts::zeros( context, 24 );
@@ -5584,7 +5640,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[2];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -5596,6 +5652,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     // e.Files_B#1 ( e.FileName#1 0 t.Location1#1 ) e.Files_M#1 ( e.FileName#1 0 t.Location2#1 ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
+    refalrts::start_e_loop();
     do {
       context[6] = context[0];
       context[7] = context[1];
@@ -5611,6 +5668,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[__eFileName_1_1 + 1] = context[3];
       context[__eFiles_M_1_1] = 0;
       context[__eFiles_M_1_1 + 1] = 0;
+      refalrts::start_e_loop();
       do {
         context[8] = context[6];
         context[9] = context[7];
@@ -5713,6 +5771,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -5741,7 +5800,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -5797,6 +5856,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
 static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 20 elems
     refalrts::Iter context[20];
     refalrts::zeros( context, 20 );
@@ -5852,7 +5912,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -5958,6 +6018,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 6 elems
     refalrts::Iter context[6];
     refalrts::zeros( context, 6 );
@@ -5984,7 +6045,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -6024,6 +6085,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
 static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 8 elems
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
@@ -6067,7 +6129,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -6167,6 +6229,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
 static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 4 elems
     refalrts::Iter context[4];
     refalrts::zeros( context, 4 );
@@ -6189,7 +6252,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -6214,6 +6277,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 5 elems
     refalrts::Iter context[5];
     refalrts::zeros( context, 5 );
@@ -6252,7 +6316,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -6327,6 +6391,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 9 elems
     refalrts::Iter context[9];
     refalrts::zeros( context, 9 );
@@ -6359,7 +6424,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
@@ -6410,6 +6475,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
   } while ( 0 );
 
   do {
+    refalrts::start_sentence();
     // issue here memory for vars with 13 elems
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
@@ -6455,7 +6521,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( 
+    refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
       functions, labels, numbers, open_e_stack
     );
