@@ -623,7 +623,7 @@ GenCommand {
     (e.Indent
       'refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];'
     )
-    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array( ')
+    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
     (e.Indent '  raa, allocs, context, arg_begin, arg_end,')
     (e.Indent '  functions, labels, numbers, open_e_stack')
     (e.Indent ');')
