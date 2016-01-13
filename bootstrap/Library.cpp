@@ -519,7 +519,7 @@ refalrts::FnResult read_from_stream(
         памяти узлы располагаются в последовательных адресах, которые будут
         начинаться с before_begin->next.
       */
-      if( ! refalrts::alloc_char( cur_char_node, cur_char ) ) {
+      if( ! refalrts::alloc_char(cur_char_node, static_cast<char>(cur_char)) ) {
         return refalrts::cNoMemory;
       }
     }
@@ -627,6 +627,12 @@ refalrts::FnResult string_from_seq(
     if( read == 0 ) {
       break;
     }
+
+    // В текущей версии Open Watcom (и форка Open Watcom V2) есть ошибка
+    // в функции vector::insert, которая возникает в случае,
+    // если во время вставки вектор увеличивает свою ёмкость (capacity).
+    // Для обхода этой ошибки предварительно резервируем место.
+    result.reserve( result.size() + read + 1 );
 
     result.insert( result.end(), buffer, buffer + read );
   }
@@ -822,12 +828,12 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       // Файл существует
       fclose( f );
 
-      if( ! refalrts::alloc_name( ans, & True, "True" ) ) {
+      if( ! refalrts::alloc_name( ans, True, "True" ) ) {
         return refalrts::cNoMemory;
       }
     } else {
       // Файл по-видимому не существует
-      if( ! refalrts::alloc_name( ans, & False, "False" ) ) {
+      if( ! refalrts::alloc_name( ans, False, "False" ) ) {
         return refalrts::cNoMemory;
       }
     }
@@ -988,7 +994,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     if( ! start_is_digit ) {
       refalrts::Iter fail_pos = 0;
-      if( ! refalrts::alloc_name( fail_pos, & Fails, "Fails" ) )
+      if( ! refalrts::alloc_name( fail_pos, Fails, "Fails" ) )
         return refalrts::cNoMemory;
 
       res = refalrts::splice_evar( res, eNumber_b_1, eNumber_e_1 );
@@ -1013,7 +1019,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       refalrts::Iter success_pos = 0;
       refalrts::Iter number_pos = 0;
 
-      if( ! refalrts::alloc_name( success_pos, & Success, "Success" ) )
+      if( ! refalrts::alloc_name( success_pos, Success, "Success" ) )
         return refalrts::cNoMemory;
 
       if( ! refalrts::alloc_number( number_pos, acc ) )
@@ -1054,8 +1060,9 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     refalrts::Iter char_pos = 0;
     if( refalrts::RefalNumber num = sNumber_1->number_info ) {
-      // Хрен с ним, что много. Главное, что не мало.
-      enum { cMaxNumberLen = 30 };
+      // Длина десятичного числа = 0,3 * длина двоичного числа,
+      // т.к. lg(2) = 0,3. Хрен с ним, что много. Главное, что не мало.
+      enum { cMaxNumberLen = 8 * sizeof(refalrts::RefalNumber) * 3 / 10 + 2 };
 
       char buffer[cMaxNumberLen + 1] = { 0 };
       char *lim_digit = buffer + cMaxNumberLen;
@@ -1063,7 +1070,7 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
       while( num != 0 ) {
         -- cur_digit;
-        *cur_digit = (num % 10) + '0';
+        *cur_digit = static_cast<char>((num % 10) + '0');
         num /= 10;
       }
 
@@ -1408,27 +1415,27 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     switch( sSymb_1->tag ) {
     case refalrts::cDataNumber:
       fnname = "TypeNumber";
-      fnptr = & TypeNumber;
+      fnptr = TypeNumber;
       break;
 
     case refalrts::cDataChar:
       fnname = "TypeCharacter";
-      fnptr = & TypeCharacter;
+      fnptr = TypeCharacter;
       break;
 
     case refalrts::cDataFunction:
       fnname = "TypeFunction";
-      fnptr = & TypeFunction;
+      fnptr = TypeFunction;
       break;
 
     case refalrts::cDataIdentifier:
       fnname = "TypeIdentifier";
-      fnptr = & TypeIdentifier;
+      fnptr = TypeIdentifier;
       break;
 
     case refalrts::cDataFile:
       fnname = "TypeFile";
-      fnptr = & TypeFile;
+      fnptr = TypeFile;
       break;
 
     default:
@@ -1452,4 +1459,3 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
   return refalrts::cRecognitionImpossible;
 }
-

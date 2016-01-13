@@ -256,11 +256,11 @@ ScanCollisions {
 }
 
 //FROM LibraryEx
-$EXTERN Inc, DelAccummulator, MapReduce;
+$EXTERN Inc, DelAccumulator, MapReduce;
 
 Renumerate {
   (e.FileName) e.Files =
-    <DelAccummulator
+    <DelAccumulator
       <MapReduce
         {
           s.NextNumber (e.FileName 0 (Source (e.Source) e.Output)) =

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccummulator, Inc, Map,
+$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccumulator, Inc, Map,
   Fetch, Reduce;
 
 //FROM Library
@@ -50,6 +50,8 @@ StrDirective {
   Ident = 'LABEL';
 }
 
+$LABEL COpen, CClose;
+
 $ENTRY StrFromToken {
   TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
   TkCloseADT = '"]"';
@@ -72,6 +74,9 @@ $ENTRY StrFromToken {
   TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
   TkVariable s.Mode e.Index = s.Mode '.' e.Index;
   TkRedefinition = '"^"';
+
+  # COpen s.OpenBracket = <StrFromToken s.OpenBracket>;
+  # CClose s.CloseBracket = <StrFromToken s.CloseBracket>;
 }
 
 $ENUM
@@ -219,7 +224,7 @@ AddLineNumber {
 
 NormalizeTokens {
   e.Tokens =
-    <DelAccummulator
+    <DelAccumulator
       <MapReduce
         AddLineNumber 1
         <Map NormalizeToken e.Tokens>

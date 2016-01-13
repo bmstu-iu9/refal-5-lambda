@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="Windows-1251"?>
+<!DOCTYPE hrc PUBLIC "-//Cail Lomecb//DTD Colorer HRC take5//EN"
+  "http://colorer.sf.net/2003/hrc.dtd">
+<hrc version="take5" xmlns="http://colorer.sf.net/2003/hrc"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://colorer.sf.net/2003/hrc http://colorer.sf.net/2003/hrc.xsd">
+  <type name="Refal">
+    <import type="def"/>
+
+    <region name="refalComment" parent="def:CommentContent"/>
+    <region name="refalOpenStruct" parent="PairStart"/>
+    <region name="refalCloseStruct" parent="PairEnd"/>
+
+    <region name="refalCharacter" parent="def:Character"/>
+    <region name="refalString" parent="def:String"/>
+
+    <region name="refalLineComment" parent="def:LineComment"/>
+
+    <region name="refalSymbol" parent="def:SymbolStrong"/>
+
+    <region name="refalDirective" parent="def:Directive"/>
+
+    <region name="refalVariable" parent="def:Function"/>
+    <region name="refalFunction" parent="def:Keyword"/>
+
+    <scheme name="refalSymbolsCore">
+      <regexp match='/\\\\$/' region0="def:Error"/>
+      <regexp match='/\\[^xX0-7]/' region0="cString2"/>
+      <regexp match='/\\$/' region0="cString2"/>
+      <regexp match='/\\x|X[\da-fA-F]{1,8}/' region0="cString2"/>
+      <regexp match='/\\[0-7]{1,12}/' region0="cString2"/>
+      <regexp match="/[^\\\']$/" region0="def:Error"/>
+    </scheme>
+
+    <scheme name="refalStringCore">
+      <regexp match='/\\\\$/' region0="def:Error"/>
+      <regexp match='/\\[^xX0-7]/' region0="cString2"/>
+      <regexp match='/\\$/' region0="cString2"/>
+      <regexp match='/\\x|X[\da-fA-F]{1,8}/' region0="cString2"/>
+      <regexp match='/\\[0-7]{1,12}/' region0="cString2"/>
+      <regexp match='/[^\\\"]$/' region0="def:Error"/>
+    </scheme>
+
+    <scheme name="Refal">
+      <inherit scheme="CString"/>
+      <inherit scheme="DecNumber"/>
+      <inherit scheme="HexNumb"/>
+      <inherit scheme="FloatNumb"/>
+      <inherit scheme="PairedBrackets">
+        <virtual scheme="PairedBrackets" subst-scheme="Refal"/>
+      </inherit>
+
+      <!-- угловые скобки -->
+      <block start="/(&lt;)/" end="/(&gt;)/" scheme="Refal"
+             region00="refalSymbol" region01="refalOpenStruct"
+             region10="refalSymbol" region11="refalCloseStruct"/>
+
+      <block start="/\/\*/" end="/\*\//" scheme="Comment" region="refalComment" region00="refalOpenStruct" region10="refalCloseStruct"/>
+      <block start="/\/\//" end="/$/" scheme="Comment" region="refalComment"/>
+      <block start="/^\*/" end="/$/" scheme="Comment" region="refalComment"/>
+      <regexp match='/\$\w*/' region0="refalDirective"/>
+      <regexp match="/\c(0x[\da-fA-F]*?([^\s\W\da-fA-F]).*?)\B/i" region0="dError"/>
+      <keywords region="refalSymbol">
+        <symb name="="/>
+        <symb name=","/>
+        <symb name=":"/>
+        <symb name="::"/>
+        <symb name=";"/>
+
+        <symb name="."/>
+
+        <symb name="#"/>
+        <symb name="&amp;"/>
+      </keywords>
+      <keywords region="def:Error">
+        <symb name="["/><symb name="]"/>
+        <symb name="{"/><symb name="}"/>
+        <symb name="("/><symb name=")"/>
+        <symb name='&lt;'/><symb name="&gt;"/>
+        <symb name="*/"/>
+      </keywords>
+
+      <regexp match='/\b[stev]\.[\w_\-\d]+\M(\W|$)/' region0="refalVariable"/>
+      <regexp match='/\b*[\w_\-\d]*\M(\W|$)/' region0="refalFunction"/>
+
+      <block start="/'/" end="/'/" scheme="refalSymbolsCore" region="refalString"/>
+      <block start='/"/' end='/"/' scheme="refalStringCore" region="refalString"/>
+    </scheme>
+  </type>
+</hrc>

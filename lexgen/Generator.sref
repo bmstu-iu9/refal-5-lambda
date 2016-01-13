@@ -1,6 +1,6 @@
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
-  DelAccummulator;
+  DelAccumulator;
 
 //FROM Library
 $EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
@@ -406,7 +406,7 @@ NormalizeRule {
     ((e.Name)
       <Map
         SplitAlternatives
-        <DelAccummulator
+        <DelAccumulator
           <MapReduce
             NormalizeAlternative
             () e.Alternatives
@@ -1060,7 +1060,7 @@ Literal-DecCode-SwDigit {
 
 NameFail {
   () s.Next e.Tail =
-    (TError 'Unexpected chararcter ' s.Next) <LoTokens e.Tail>;
+    (TError 'Unexpected character ' s.Next) <LoTokens e.Tail>;
 }
 
 NameTailFail {

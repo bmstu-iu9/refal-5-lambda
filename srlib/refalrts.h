@@ -7,7 +7,9 @@ typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
-  cExit = 3
+  cExit = 3,
+  cEndErr = 4,
+  cPatternMismatch = 5
 } FnResult;
 
 typedef struct Node Node;
@@ -72,6 +74,7 @@ typedef struct Node {
 typedef enum iCmd {
   icChar,
   icInt,
+  icHugeInt,
   icFunc,
   icIdent,
   icString,
@@ -80,7 +83,41 @@ typedef enum iCmd {
   icSpliceEVar,
   icCopySTVar,
   icCopyEVar,
-  icEnd
+  icEnd,
+  icBoundSet,
+  icBoundMoveLeft,
+  icBoundMoveRight,
+  icBoundEmptySeq,
+  icBracketLeft,
+  icBracketRight,
+  icEmpty,
+  icContextSet,
+  icsVarRight,
+  icsVarLeft,
+  ictVarRight,
+  ictVarLeft,
+  icNumRight,
+  icNumLeft,
+  icHugeNumRight,
+  icHugeNumLeft,
+  icIdentRight,
+  icIdentLeft,
+  icADTRight,
+  icADTLeft,
+  icFuncRight,
+  icFuncLeft,
+  icCharRight,
+  icCharLeft,
+  iceRepeatRight,
+  iceRepeatLeft,
+  icsRepeatRight,
+  icsRepeatLeft,
+  ictRepeatRight,
+  ictRepeatLeft,
+  icSave,
+  icEPrepare,
+  icEStart,
+  icEmptyResult
 } iCmd;
 
 typedef enum BracketType {
@@ -92,14 +129,22 @@ typedef enum BracketType {
   ibCloseCall
 } BracketType;
 
-typedef struct ResultAction {
-    iCmd cmd;
-    void *ptr_value1;
-    void *ptr_value2;
-    int value;
-} ResultAction;
+/*
+   Для эффективной обработки на современных процессорах
+   команду выровляли по размеру в 4 байта.
+   И получили ограничение на индексацию в 255.
+   Анологичное ограничение присуствует в Рефал-5.
+ */
+typedef struct RASLCommand {
+  unsigned char cmd;
+  unsigned char val1;
+  unsigned char val2;
+  unsigned char bracket;
+} RASLCommand;
 
 extern void use( Iter& );
+
+void zeros( Iter context[], int size );
 
 // Операции распознавания образца
 
@@ -139,8 +184,6 @@ extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 extern bool tvar_left( Iter& tvar, Iter& first, Iter& last );
 extern bool tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool next_term( Iter& first, Iter& last );
-
 extern bool repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 extern bool repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
@@ -153,6 +196,11 @@ extern bool repeated_evar_left(
 extern bool repeated_evar_right(
   Iter& evar_b, Iter& evar_e,
   Iter evar_b_sample, Iter evar_e_sample,
+  Iter& first, Iter& last
+);
+
+extern bool open_evar_advance(
+  Iter& evar_b, Iter& evar_e,
   Iter& first, Iter& last
 );
 
@@ -274,11 +322,20 @@ void debug_print_expr(void *file, Iter first, Iter last);
 // Интерпретатор
 
 extern FnResult interpret_array(
-  const ResultAction raa[],
+  RASLCommand raa[],
   Iter allocs[],
+  Iter context[],
   Iter begin,
-  Iter end
+  Iter end,
+  const RefalFunction functions[],
+  const RefalIdentifier labels[],
+  const RefalNumber numbers[],
+  int open_e_stack[]
 );
+
+extern const RefalFunction functions[];
+extern const RefalIdentifier labels[];
+extern const RefalNumber numbers[];
 
 } //namespace refalrts
 

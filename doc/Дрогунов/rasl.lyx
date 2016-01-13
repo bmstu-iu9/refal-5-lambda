@@ -1,0 +1,1193 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+%вчегда ставить отступ, даже в начале
+\usepackage{indentfirst}
+%\renewcommand{\baselinestretch}{1.25}
+%\usepackage[12pt]{extsizes}
+\usepackage{float}
+%переименовать объект алгоритм
+\floatname{algorithm}{Листинг}
+%\newcommand{\algorithmname}{Listing}
+%позволить добавление списка литературы в содержание
+%\usepackage{tocbibind}
+\usepackage[nottoc]{tocbibind} %получаем ToC без включения его самого же
+\end_preamble
+\use_default_options true
+\begin_modules
+figs-within-sections
+tabs-within-sections
+eqs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language russian
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing onehalf
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 3cm
+\rightmargin 2cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language french
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Subsection
+RASL
+\end_layout
+
+\begin_layout Standard
+В различных реализациях Рефала достаточно часто встречается понятие промежуточно
+го языка сборки, названного RASL (Refal ASsembly Language).
+ По своей сути, RASL представляет собой систему команд для языка рефал,
+ описанную в символическом виде с использованием мнемонических названий
+ операций, меток и т.
+ п.
+ Предполагается, что язык сборки должен реализовываться посредством интерпретаци
+и.
+ Хотя, изначально язык сборки предполагалось не интерпретировать, а компилироват
+ь 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+
+\end_inset
+
+.
+ К непосредственной реализации языка сборки у каждого подмножества диалекта
+ языка Рефал применялись разные подходы.
+ Рассмотрим некоторые из них на примере таких диалектов, как Рефал-2, Рефал-5
+ и Рефал-6.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+RASL Рефал-2
+\end_layout
+
+\begin_layout Standard
+Исходный текст в Рефал-2 компилируется в язык сборки, который встраивается
+ в объектный файл.
+ Затем, полученные объектные файлы со сборками с помощью компоновщика соединяютс
+я с файлами среды выполнения компилятора Рефал-2 и внешними функциями языка
+ С.
+ При этом, для обеспечения правильной работы интерпретатора необходимо использов
+ать при компиляции С-функций ключ выравнивания указателей и целых на границу
+ байта для непрерывного размещения в памяти.
+\end_layout
+
+\begin_layout Standard
+Функции в языке сборки описываются в виде структуры:
+\end_layout
+
+\begin_layout Itemize
+имя функции в формате записи ASCII;
+\end_layout
+
+\begin_layout Itemize
+длина имени функции (1 байт);
+\end_layout
+
+\begin_layout Itemize
+коды операций (диапазон принимаемых значений маркирующего байта команды
+ - 
+\begin_inset Formula $0..81$
+\end_inset
+
+ (
+\begin_inset Formula $0_{8}..121_{8}$
+\end_inset
+
+)).
+\end_layout
+
+\begin_layout Standard
+Для работы со внешней функцией на Си порождается специальный адаптер:
+\end_layout
+
+\begin_layout Itemize
+имя функции в формате записи ASCII;
+\end_layout
+
+\begin_layout Itemize
+длина имени функции (1 байт);
+\end_layout
+
+\begin_layout Itemize
+код операции вызова С-функции ( код = 
+\begin_inset Formula $82$
+\end_inset
+
+ (
+\begin_inset Formula $122_{8}$
+\end_inset
+
+), размер --- 1 байт);
+\end_layout
+
+\begin_layout Itemize
+указатель на тело функции внешней Си-функции.
+\end_layout
+
+\begin_layout Standard
+При этом, для выполнения требований выравнивания указателя функции на чётность
+ или четырем байтам (PDP-11 и VAX-11 машины, соответственно) к имени добавлялись
+ в конец выравнивающие байты, содержащие символ пробела ('
+\backslash
+032').
+ При считывании имени они не учитывались и отбрасывались.
+ Также, при вычислении длины имени функции выравнивающие элементы не включались.
+ На листинге 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:Рефал2-rasl"
+
+\end_inset
+
+ приведён пример сгенерированого представления внешней функции для последующей
+ линковки со средой выполнения.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Пример генерации адаптера внешней функции и её описания для RASL языка Рефал-2.
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:Рефал2-rasl"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "language=C,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+static cproc_ (refpt)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REFAL *refpt;
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+  <тело функции>
+\end_layout
+
+\begin_layout Plain Layout
+
+}      
+\end_layout
+
+\begin_layout Plain Layout
+
+static char cproc_0[] = {'c','p','r','o','c','
+\backslash
+005'};
+\end_layout
+
+\begin_layout Plain Layout
+
+char cproc = '
+\backslash
+122';
+\end_layout
+
+\begin_layout Plain Layout
+
+static int (*cproc_1)() = cproc_;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+RASL Рефал-5
+\end_layout
+
+\begin_layout Standard
+В Рефал-5 язык сборки используется в качестве двоичного представления в
+ файлах с расширением .rsl.
+ Данное представление считывается в память и далее подается интерпретатору
+ в виде потока мнемонических команд.
+ Такое представление имеет очень важное преимущество --- переносимость сгенериро
+ванных сборок.
+ Отличным примером может служить результат переноса реализации Рефал-5 на
+ операционную систему Windows Mobile 5.0 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-6"
+
+\end_inset
+
+.
+ Все rsl-сборки для языка Рефал-5 могут быть запущены в данной среде.
+\end_layout
+
+\begin_layout Standard
+Кратко рассмотрим структуру представления, а более подробно ознакомиться
+ с представлением формата RASL для языка Рефал-5 и полным перечнем команд,
+ аргументов и их описанием можно в соответствующем курсовом проекте 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-5"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Структура .rsl-файла состоит из заголовка, служебной информации и байт-кода.
+ Порядок байт --- little-endian.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Представление заголовка:
+\end_layout
+
+\begin_layout Itemize
+имя модуля в формате записи строки ASCIIZ;
+\end_layout
+
+\begin_layout Itemize
+размер секции кода (4 байта);
+\end_layout
+
+\begin_layout Itemize
+число ENTRY-функций в модуле (4 байта);
+\end_layout
+
+\begin_layout Itemize
+число (Extern count) ссылок на внешние функции (4 байта);
+\end_layout
+
+\begin_layout Itemize
+число использованных идентификаторов (4 байта);
+\end_layout
+
+\begin_layout Itemize
+число функций, определённых в модуле (4 байта).
+\end_layout
+
+\begin_layout Standard
+Секция служебной информации хранит в себе данные в следующем порядке:
+\end_layout
+
+\begin_layout Itemize
+список ENTRY-функций;
+\end_layout
+
+\begin_layout Itemize
+список ссылок на внешние функции в формате записи строки ASCIIZ;
+\end_layout
+
+\begin_layout Itemize
+список идентификаторов в формате записи строки ASCIIZ;
+\end_layout
+
+\begin_layout Itemize
+список смещений функций в модуле.
+\end_layout
+
+\begin_layout Standard
+Entry-функции при этом описываются в виде пары значений --- именем функции
+ в формате записи строки ASCIIZ и её смещением в коде.
+\end_layout
+
+\begin_layout Subsubsection
+RASL Рефал-6
+\end_layout
+
+\begin_layout Standard
+В реализации диалекта Рефал-6 RASL называется R-кодом и выполняет его R-машина,
+ или по другому --- интерпретатор R-кода.
+ Скомпилированные сборки представляют собой сериализованное промежуточное
+ представление в текстовой форме и имеют расширение .rex.
+ Вместе с компилятором предоставляется API для применения сериализации /
+ десериализации данного типа.
+ В данной работе подробно не будет описано преобразование и формат R-кода,
+ лишь приведён пример программы (см.
+ листинг 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:Factorial-refal-6+rcode"
+
+\end_inset
+
+), вычисляющей факториал (верхний блок) и её R-код представление (нижний
+ блок).
+\end_layout
+
+\begin_layout Standard
+Каждый модуль начинается с ключевого слова START, за которым следует имя
+ модуля с приписанным расширением 
+\begin_inset Quotes fld
+\end_inset
+
+.rex
+\begin_inset Quotes frd
+\end_inset
+
+.
+ Затем, тело модуля заключается теги 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockBegin>
+\end_layout
+
+\end_inset
+
+ и 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockEnd>
+\end_layout
+
+\end_inset
+
+.
+ В атрибутах тега 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+<BlockBegin>
+\end_layout
+
+\end_inset
+
+ описываются имена всех сущностей, которые определяются в данном модуле,
+ или же должны быть подгружены из других.
+ Внутри описанных тегов располагаются последовательно определения функций
+ в виде 
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline true
+status open
+
+\begin_layout Plain Layout
+
+*{ИмяФункции}=F{Длина R-кода}({Последовательность команд})
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Подробную информацию можно найти в 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-7"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Пример программы вычисления факториала на языке Refal-6 и полученный R-код.
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:Factorial-refal-6+rcode"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="1">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+$ENTRY FACT e1 = <Fact e1>;
+\end_layout
+
+\begin_layout Plain Layout
+
+Fact {
+\end_layout
+
+\begin_layout Plain Layout
+
+  0 = 1;
+\end_layout
+
+\begin_layout Plain Layout
+
+  s1 = <MUL s1 <Fact <SUB s1 1>>>;
+\end_layout
+
+\begin_layout Plain Layout
+
+};
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+START "fact.rex"
+\end_layout
+
+\begin_layout Plain Layout
+
+<BlockBegin FACT FACT1 SUB MUL ADD DIV>
+\end_layout
+
+\begin_layout Plain Layout
+
+*FACT=F7(K P k *Fact dD lB p)
+\end_layout
+
+\begin_layout Plain Layout
+
+*Fact=F24(u 7 C 0 P i 1 p K P k *MULdD
+\end_layout
+
+\begin_layout Plain Layout
+
+          k *Fact k *SUB dD i 1 lB lB lB p)
+\end_layout
+
+\begin_layout Plain Layout
+
+<BlockEnd>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Простой Рефал и его RASL
+\end_layout
+
+\begin_layout Standard
+В реализации компилятора Простого Рефала на момент начала данной работы
+ уже существовал ограниченный интерпретатор и генератор псевдокода, по которому
+ во время выполнения строились результаты.
+ Напомним, что режим интерпретации был доступен только для вычисления результатн
+ой части предложения.
+ Образцовая часть предложения генерировалась в виде последовательности условий,
+ объявлений и вызовов соответствующих функций среды выполнения компилятора.
+ Сами же команды языка сборки представлялись в виде структуры ResultAction
+ (см.
+ листинг 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ResultAction"
+
+\end_inset
+
+).
+ Интерпретируемое тело функции транслируется в виде инициализации массива
+ структуры ResultAction и его заполнения соответствующими операциями на
+ языке C++.
+ Переключение между режимом интерпретации и компиляции должно задаваться
+ директивой условной компиляции Си-кода INTERPRET.
+ Во время компиляции исходного текста рефал-программы и происходит генерация
+ для линковки либо си-кода с включенными оттранслированными представлениями
+ языка сборки, либо без них.
+ 
+\end_layout
+
+\begin_layout Standard
+Рассмотрим организацию языка сборки.
+ Поле cmd представляет собой код команды интерпретатора.
+ Возможные значения и описание команд будет приведены ниже по тексту.
+ Поля ptr_value1, ptr_value2 используются для передачи таких аргументов,
+ как ссылки на идентификаторы, функции, объекты в поле зрения.
+ Поле value служит для передачи числовых значений, например, символов или
+ чисел.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+ResultAction
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:ResultAction"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "language=C,basicstyle={\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+typedef struct ResultAction {
+\end_layout
+
+\begin_layout Plain Layout
+
+    iCmd cmd;
+\end_layout
+
+\begin_layout Plain Layout
+
+    void *ptr_value1;
+\end_layout
+
+\begin_layout Plain Layout
+
+    void *ptr_value2;
+\end_layout
+
+\begin_layout Plain Layout
+
+    int value;
+\end_layout
+
+\begin_layout Plain Layout
+
+} ResultAction;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Рассмотрим подробнее возможные команды языка сборки.
+ Их можно объединить в следующие группы:
+\end_layout
+
+\begin_layout Itemize
+размещение атомов (icChar, icInt, icFunc, icIdent, icString, icBracket);
+\end_layout
+
+\begin_layout Itemize
+операции переноса фрагмента (icSpliceSTVar, icSpliceEVar);
+\end_layout
+
+\begin_layout Itemize
+операции копирования фрагмента (icCopySTVar, icCopyEVar);
+\end_layout
+
+\begin_layout Itemize
+маркер конца тела (icEnd).
+\end_layout
+
+\begin_layout Standard
+Построении результата из переменных образца и элементов осуществляется при
+ помощи операций над двусвязными списками.
+ Набор таких операций не должен нарушать инвариант двусвязного списка (то
+ есть, не должны появляться 
+\begin_inset Quotes fld
+\end_inset
+
+висячие
+\begin_inset Quotes frd
+\end_inset
+
+ фрагменты и список должен оставаться правильно связан).
+ Поэтому, появляется необходимость в переносе части цепочки из одного места
+ в другое с исключением из исходного местоположения (splicing).
+ Операции icSpliceSTVar и icSpliceEVar осуществляют перенос для s,t-перменных
+ и e-переменных соответственно.
+\end_layout
+
+\begin_layout Standard
+Пример сгенерированного Си-кода для небольшой функции компилятором до внесения
+ изменений можно найти в приложении 1 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "sub:attach-Func-master"
+
+\end_inset
+
+.
+ Легко заметить, что развилка кода с использованием директивы INTERPRET
+ позволяет в удобном виде наблюдать и изучать изменение генерируемого кода.
+ Данный способ разделения на интерпретируемую и компилируемую часть кодогенераци
+и будет оставлен и в улучшенной версии компилятора, написание которого и
+ является результат данной работы.
+\end_layout
+
+\begin_layout Standard
+В работе 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
+\end_inset
+
+ описано, что порождение команд языка сборки происходит в
+\begin_inset Newline linebreak
+\end_inset
+
+GeneralizeResult в файле Algorithm.sref и приводится её тело.
+ В дорабатываемой версии в рамках текущей работы данная операция вынесена
+ в GeneralizeResult (см.
+ листинг 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:GenerateResult-Interp-Algorithm"
+
+\end_inset
+
+), а функция MakeInterpCommands (преобразование оригинальных команд псевдокода
+ в команды языка сборки) осталась без изменений.
+ Из листинга видно, что добавилась улучшенная обработка открытых e-перменных,
+ вычисляются неиспользуемые переменные, которые не участвуют в генерации
+ кода и после происходит генерация команд операций языка сборки.
+ Также, из строчек 22 и 23 можно заметить, что обработка образцовой части
+ предложения не транслируется в команды языка сборки.
+\end_layout
+
+\begin_layout Standard
+Вызов выполнения команд языка сборки осуществляется через вызов функции
+\begin_inset Newline linebreak
+\end_inset
+
+ interpret_array, в качестве аргументов которой передаётся массив команд
+ RASL'a, указатель на выделенную память для размещение дополнительных данных,
+ указатели на границы поля зрения.
+ Результатом работы функции является один из следующих кодов:
+\end_layout
+
+\begin_layout Itemize
+cSuccess --- код успешного построения результата;
+\end_layout
+
+\begin_layout Itemize
+cRecognitionImpossible --- код ошибки сопоставления;
+\end_layout
+
+\begin_layout Itemize
+cNoMemory --- код ошибки при выделении памяти.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Более подробное описание деталей реализации и примеры кода дорабатываемой
+ в рамках текущей работы версии компиялтора можно найти в работе Сухарева
+ Вадима 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
+\end_inset
+
+, а также в ветке master проекта на GitHub 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-4"
+
+\end_inset
+
+ с историей изменений вплоть до 19 октября 2015 года.
+\end_layout
+
+\begin_layout Standard
+Таким образом, в данной работе необходимо расширить операции языка сборки,
+ добавить их обработку в интерпретатор RASL'a, чтобы интерпретироваться
+ могла и образцовая часть предложения.
+ Также, необходимо произвести актуализацию кода обработки команд и их порождения.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+GenerateResult-Interp Algorithm.sref
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:GenerateResult-Interp-Algorithm"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "numbers=left,stepnumber=1,basicstyle={\small\ttfamily},breaklines=true,tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+GeneralizeResult {
+\end_layout
+
+\begin_layout Plain Layout
+
+  (e.PatternVars) (e.PatternCommands) (e.ResultVars) 
+\end_layout
+
+\begin_layout Plain Layout
+
+  (e.ResultAllocCommands) (e.ResultCommands) =
+\end_layout
+
+\begin_layout Plain Layout
+
+    <Fetch
+\end_layout
+
+\begin_layout Plain Layout
+
+      (<ReplicateVars e.PatternVars>) (<ReplicateVars e.ResultVars>)
+\end_layout
+
+\begin_layout Plain Layout
+
+      (<Map RepeatedEVariables e.PatternCommands>)
+\end_layout
+
+\begin_layout Plain Layout
+
+      <Map ClosedEVariables e.PatternCommands>
+\end_layout
+
+\begin_layout Plain Layout
+
+      <Seq
+\end_layout
+
+\begin_layout Plain Layout
+
+        {
+\end_layout
+
+\begin_layout Plain Layout
+
+          (e.PatternVars^) (e.ResultVars^) (e.RepeatedEs) e.ClosedEs =
+\end_layout
+
+\begin_layout Plain Layout
+
+            (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
+\end_layout
+
+\begin_layout Plain Layout
+
+            (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
+\end_layout
+
+\begin_layout Plain Layout
+
+            <VarSetDifference (e.ClosedEs) (e.RepeatedEs e.ResultVars)>;
+\end_layout
+
+\begin_layout Plain Layout
+
+        } { 
+\end_layout
+
+\begin_layout Plain Layout
+
+         (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
+\end_layout
+
+\begin_layout Plain Layout
+
+            (<VarSetDifference (e.CommonVars) (e.UnusedClosedEs)>)
+\end_layout
+
+\begin_layout Plain Layout
+
+            (e.CopiedVars)
+\end_layout
+
+\begin_layout Plain Layout
+
+            <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
+\end_layout
+
+\begin_layout Plain Layout
+
+        } {
+\end_layout
+
+\begin_layout Plain Layout
+
+          (e.CommonVars) (e.CopiedVars) e.PatternCommands^ =
+\end_layout
+
+\begin_layout Plain Layout
+
+            <GenerateResult-OpenELoops
+\end_layout
+
+\begin_layout Plain Layout
+
+              <Map MakeDeclaration e.CommonVars>
+\end_layout
+
+\begin_layout Plain Layout
+
+              e.PatternCommands
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdIfDef)
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdInitRAA)
+\end_layout
+
+\begin_layout Plain Layout
+
+              <Map
+\end_layout
+
+\begin_layout Plain Layout
+
+                (MakeInterpCommands e.CopiedVars)
+\end_layout
+
+\begin_layout Plain Layout
+
+                <FoldAllocCommands
+\end_layout
+
+\begin_layout Plain Layout
+
+                  (e.ResultAllocCommands)
+\end_layout
+
+\begin_layout Plain Layout
+
+                  e.ResultCommands>
+\end_layout
+
+\begin_layout Plain Layout
+
+              > 
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdFinRAA)
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdElse)
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdEmptyResult)
+\end_layout
+
+\begin_layout Plain Layout
+
+              <Map MakeCopyVar e.CopiedVars>
+\end_layout
+
+\begin_layout Plain Layout
+
+              e.ResultAllocCommands
+\end_layout
+
+\begin_layout Plain Layout
+
+              e.ResultCommands
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdReturnResult)
+\end_layout
+
+\begin_layout Plain Layout
+
+              (CmdEndIf)>;
+\end_layout
+
+\begin_layout Plain Layout
+
+        }
+\end_layout
+
+\begin_layout Plain Layout
+
+      >
+\end_layout
+
+\begin_layout Plain Layout
+
+    >;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

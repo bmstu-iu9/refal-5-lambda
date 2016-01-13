@@ -1,16 +1,18 @@
 syntax case match
 setlocal iskeyword+=$
-syntax keyword mrefalKeyword $MODULE $ENTRY $END $IMPORT $SWAP $PROGRAM $SWAP $DATA
+syntax keyword mrefalKeyword $MODULE $ENTRY $END $IMPORT $SWAP $PROGRAM $ESWAP $DATA $EXTERN $FORWARD $LABEL $ENUM $EENUM
 syntax match mrefalBrokenKeyword /\$\a*\>/
 syntax match mrefalVariable /\<[ste]\.[A-Za-z0-9!?_-]\+\>/
 syntax match mrefalIdentifier /\<[A-Z!?][A-Za-z0-9!?_-]*\>/
 syntax match mrefalNumber /\<\d*\>/
 syntax match mrefalBrokenString /'[^']*$/
 syntax match mrefalString /'\(\(\\.\)\|[^']\)*'/
-syntax region mrefalComment start=/\/\*/ end=/\*\//
+syntax region mrefalComment start=/\/\*/ skip=/\n/ end=/\*\//
 syntax region mrefalComment start=/\/\// end=/$/
+syntax region mrefalComment start=/^\*/ end=/$/
 
 set matchpairs=(:),[:],<:>,{:}
+set iskeyword+=-
 
 highlight link mrefalKeyword Operator
 highlight link mrefalIdentifier Normal

@@ -5,7 +5,7 @@ $EXTERN Success, Fails;
 $EXTERN LexFolding;
 
 //FROM LibraryEx
-$EXTERN Map, MapReduce;
+$EXTERN Map;
 
 $FORWARD ParseAndGenerate, PrepareBracket;
 
@@ -29,14 +29,14 @@ $EXTERN TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
 $LABEL COpen, CClose;
 
 PrepareBracket {
-  (TkOpenBracket s.LnNum) = (# COpen TkOpenBracket s.LnNum);
-  (TkCloseBracket s.LnNum) = (# CClose TkCloseBracket s.LnNum);
+  (TkOpenBracket s.LnNum) = (# COpen s.LnNum TkOpenBracket);
+  (TkCloseBracket s.LnNum) = (# CClose s.LnNum TkCloseBracket);
 
-  (TkOpenADT s.LnNum) = (# COpen TkOpenADT s.LnNum);
-  (TkCloseADT s.LnNum) = (# CClose TkCloseADT s.LnNum);
+  (TkOpenADT s.LnNum) = (# COpen s.LnNum TkOpenADT);
+  (TkCloseADT s.LnNum) = (# CClose s.LnNum TkCloseADT);
 
-  (TkOpenCall s.LnNum) = (# COpen TkOpenCall s.LnNum);
-  (TkCloseCall s.LnNum) = (# CClose TkCloseCall s.LnNum);
+  (TkOpenCall s.LnNum) = (# COpen s.LnNum TkOpenCall);
+  (TkCloseCall s.LnNum) = (# CClose s.LnNum TkCloseCall);
 
   t.OtherToken = t.OtherToken;
 }
@@ -274,21 +274,84 @@ $EXTERN TkOpenBlock, TkCloseBlock;
 //FROM Generator
 $EXTERN GenFnStart, GenSentence, GenFnEnd, GenFnEnd-Success;
 
-$FORWARD ParseSentences;
-
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
 
-$FORWARD ParseBlock, ParseFunction-Aux;
+//FROM LibraryEx
+$EXTERN Fetch;
+
+$FORWARD ParseBlock;
+
+$FORWARD GenFunctionBody;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+CreateLambdaName {
+  e.Name s.Number =
+    'lambda_' e.Name '_' <StrFromInt s.Number>;
+}
+
+$LABEL CLambdaScope;
+
+//FROM Algorithm
+$EXTERN MakeAlgorithm;
+
+//FROM Lexer
+$EXTERN TkName;
+
+$LABEL CLambdaName;
 
 ParseFunction {
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
   (TkOpenBlock s.LnNum) e.Tail =
-    <ParseFunction-Aux
-      s.ScopeClass (e.Name)
+    <Fetch
       <ParseBlock
         (0) t.ErrorList t.SymTable <Cntx-Create> e.Tail
       >
+      {
+        (1 /* нет вложенных функций */ (0 e.Sentences))
+        t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
+          <GenFunctionBody
+            s.ScopeClass (e.Name) (e.Name) e.Sentences
+          >
+          <Cntx-Destroy t.Context>
+          <ParseElements t.ErrorList t.SymTable e.Tail>;
+
+        (s.NextNumber e.FunctionBodies t.MainBody)
+        t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
+          // Вложенные функции могут рекурсивно вызывать объемлющую
+          // функцию, поэтому перед их телами нужно дать предобъявление
+          // объемлющей функции.
+          <Fetch
+            s.ScopeClass
+            {
+              GN-Entry = <GenExtern e.Name>;
+              GN-Local = <GenForward e.Name>;
+            }
+          >
+          <Map
+            {
+              (s.Number e.Sentences) =
+                <GenFunctionBody
+                  GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
+                  e.Sentences
+                >;
+            }
+            e.FunctionBodies
+          >
+          <Fetch
+            t.MainBody
+            {
+              (s.Number e.Sentences) =
+                <GenFunctionBody
+                  s.ScopeClass (e.Name) (e.Name) e.Sentences
+                >;
+            }
+          >
+          <Cntx-Destroy t.Context>
+          <ParseElements t.ErrorList t.SymTable e.Tail>;
+      }
     >;
 
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
@@ -299,72 +362,31 @@ ParseFunction {
     >;
 }
 
-$FORWARD GenFunctionBody, Reverse;
+$LABEL Brackets, ADT-Brackets, CallBrackets;
 
-$LABEL CLambdaScope;
-
-//FROM LibraryEx
-$EXTERN Fetch;
-
-$FORWARD CreateLambdaName;
-
-ParseFunction-Aux {
-  s.ScopeClass (e.Name)
-  (s.NextNumber e.FunctionBodies t.MainBody)
-  t.ErrorList t.SymTable (t.Context) e.Tail =
-    <Fetch
-      e.FunctionBodies
+ResolveLambdaName {
+  (e.MainName) e.Result =
+    <Map
       {
-        = ;
+        (TkName #CLambdaName s.Number) =
+          (TkName <CreateLambdaName e.MainName s.Number>);
 
-        e.FunctionBodies^ =
-          <Fetch
-            s.ScopeClass
-            {
-              GN-Entry = <GenExtern e.Name>;
-              GN-Local = <GenForward e.Name>;
-            }
-          >
-          <Map
-            (GenFunctionBody # CLambdaScope e.Name)
-            e.FunctionBodies
-          >;
+        (#Brackets e.SubResult) =
+          (#Brackets <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        (#ADT-Brackets (e.Name) e.SubResult) =
+          (#ADT-Brackets (e.Name) <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        (#CallBrackets e.SubResult) =
+          (#CallBrackets <ResolveLambdaName (e.MainName) e.SubResult>);
+
+        t.OtherTerm = t.OtherTerm;
       }
-    >
-    <GenFunctionBody s.ScopeClass e.Name t.MainBody>
-    <Cntx-Destroy t.Context>
-    <ParseElements t.ErrorList t.SymTable e.Tail>;
+      e.Result
+    >;
 }
-
-$FORWARD GenFunctionBody-Aux;
 
 GenFunctionBody {
-  # CLambdaScope e.Name (s.Number e.Sentences) =
-    <GenFunctionBody-Aux
-      GN-Local (e.Name) (<CreateLambdaName e.Name s.Number>)
-      e.Sentences
-    >;
-
-  s.ScopeClass e.Name (s.Number e.Sentences) =
-    <GenFunctionBody-Aux
-      s.ScopeClass (e.Name) (e.Name) e.Sentences
-    >;
-}
-
-//FROM Library
-$EXTERN StrFromInt;
-
-CreateLambdaName {
-  e.Name s.Number =
-    'lambda_' e.Name '_' <StrFromInt s.Number>;
-}
-
-//FROM Lexer
-$EXTERN TkVariable;
-
-$FORWARD PrepareAndGenSentence;
-
-GenFunctionBody-Aux {
   // Закомментированный код содержит вариант кодогенерации,
   // при котором если последнее предложение имеет вид
   // e.X = ...;, в конце не генерится возврат
@@ -382,44 +404,24 @@ GenFunctionBody-Aux {
 
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
     <GenFnStart s.ScopeClass e.Name>
-    <Map
-      <PrepareAndGenSentence e.MainName> e.Sentences
+    <Fetch
+      e.Sentences
+      (Map {
+        ((e.Pattern) (e.Result)) =
+          <GenSentence
+            <MakeAlgorithm
+              (e.Pattern) (<ResolveLambdaName (e.MainName) e.Result>)
+            >
+          >;
+      })
     >
     <GenFnEnd>;
 }
 
-//FROM Algorithm
-$EXTERN MakeAlgorithm;
-
 //FROM Lexer
-$EXTERN TkName, TkVariable;
+$EXTERN TkVariable;
 
-$LABEL CLambdaName;
-
-PrepareAndGenSentence {
-  e.MainName =
-    {
-      ((e.Pattern) (e.Result)) =
-        <GenSentence
-          <MakeAlgorithm
-            (e.Pattern)
-            (
-              <Map
-                {
-                  (TkName # CLambdaName s.Number) =
-                    (TkName <CreateLambdaName e.MainName s.Number>);
-
-                  t.OtherToken = t.OtherToken;
-                }
-                e.Result
-              >
-            )
-          >
-        >;
-    };
-}
-
-$FORWARD DoParseBlock, ParseBlock-SetContext;
+$FORWARD DoParseBlock;
 
 //FROM Context
 $EXTERN Cntx-PushScope, Cntx-PopScope;
@@ -449,23 +451,31 @@ ParseBlock {
 //FROM LibraryEx
 $EXTERN Inc, Dec;
 
-$FORWARD ParseSentence;
+$FORWARD ParseSentence, AddContextToSentence;
 
 DoParseBlock {
   (s.Number e.Functions)
   t.ErrorList t.SymTable t.Context
   (e.Sentences)
   (TkCloseBlock s.LnNumber) e.Tail =
-    <ParseBlock-SetContext
-      (
-        <Inc s.Number>
-        e.Functions
-      )
-      (s.Number e.Sentences)
-      t.ErrorList t.SymTable
-      ( <Cntx-PopScope t.Context> )
-      e.Tail
-    >;
+    <Fetch
+      <Cntx-PopScope t.Context>
+      {
+        t.Context^ e.FreeContext =
+          (
+            <Inc s.Number> e.Functions
+            (
+              s.Number
+              <Map
+                (AddContextToSentence e.FreeContext)
+                e.Sentences
+              >
+            )
+          )
+          t.ErrorList t.SymTable (t.Context e.FreeContext);
+      }
+    >
+    e.Tail;
 
   (s.Number e.Functions)
   t.ErrorList t.SymTable t.Context
@@ -481,9 +491,7 @@ DoParseBlock {
     ( <Cntx-PopScope t.Context> )
     (TkEOF s.LnNum) e.Tail;
 
-  (e.Functions)
-  t.ErrorList t.SymTable t.Context
-  (e.Sentences) e.Tokens =
+  (e.Functions) t.ErrorList t.SymTable t.Context (e.Sentences) e.Tokens =
     <DoParseBlock
       <ParseSentence
         (e.Functions) t.ErrorList t.SymTable t.Context
@@ -492,39 +500,13 @@ DoParseBlock {
     >;
 }
 
-$FORWARD AddContextToSentence;
-
-ParseBlock-SetContext {
-  (e.Functions) (s.Number e.Sentences)
-  t.ErrorList t.SymTable
-  (t.Context e.FreeContext) e.Tokens =
-    (
-      e.Functions
-      (
-        s.Number
-        <Map
-          (AddContextToSentence e.FreeContext)
-          e.Sentences
-        >
-      )
-    )
-    t.ErrorList t.SymTable (t.Context e.FreeContext)
-    e.Tokens;
-}
-
 $FORWARD CreateContext;
 
 AddContextToSentence {
-  e.Context ((s.LastBracket e.Pattern) (e.Result)) =
+  e.Context ((e.Pattern) (e.Result)) =
     (
       (
-        <Fetch
-          <CreateContext s.LastBracket e.Context>
-          {
-            s.NextBracket e.PatternContext =
-              e.PatternContext;
-          }
-        >
+        <CreateContext e.Context>
         e.Pattern
       )
       (e.Result)
@@ -532,47 +514,98 @@ AddContextToSentence {
 }
 
 CreateContext {
-  s.LastBracketNumber e.Context =
-    <MapReduce
+  e.Context =
+    <Map
       {
-        s.BracketNumber ('e' e.Index) =
-          <Inc s.BracketNumber>
-          (TkOpenBracket s.BracketNumber)
-          (TkVariable 'e' e.Index)
-          (TkCloseBracket s.BracketNumber);
-
-        s.BracketNumber (s.Mode e.Index) =
-          s.BracketNumber (TkVariable s.Mode e.Index);
+        ('e' e.Index) = (#Brackets (TkVariable 'e' e.Index));
+        (s.Mode e.Index) = (TkVariable s.Mode e.Index);
       }
-      s.LastBracketNumber e.Context
+      e.Context
     >;
 }
 
-$FORWARD ParsePattern;
+//FROM LibraryEx
+$EXTERN Seq;
+
+//FROM Lexer
+$EXTERN TkReplace;
+
+//FROM Context
+$EXTERN Cntx-ResetAfterSentence;
+
+$FORWARD ParsePattern, ParseResult;
 
 ParseSentence {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) e.Tokens =
-    <ParsePattern
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences)
-      (
-        1 /* номер следующей скобки */
-        /* пусто */ /* мультискобки */
-      )
-      ( /* просканировано */ )
-      e.Tokens
+    <Fetch
+      <ParsePattern
+        t.ErrorList t.SymTable t.Context ( /* мультискобки */ )
+        ( /* просканировано */ ) e.Tokens
+      >
+      <Seq
+        {
+          t.ErrorList^ t.SymTable^ t.Context^
+          (e.Pattern) (TkReplace s.LnNum) e.Tokens^ =
+            t.ErrorList t.SymTable t.Context
+            (e.Pattern) e.Tokens;
+
+          t.ErrorList^ t.SymTable^ t.Context^
+          (e.Pattern) (s.NextResultTerm s.LnNum e.Info) e.Tokens^ =
+            <EL-AddErrorAt
+              t.ErrorList s.LnNum 'Incorrect pattern termination'
+            >
+            t.SymTable t.Context
+            (e.Pattern) e.Tokens;
+        }
+        {
+          t.ErrorList^ t.SymTable^ t.Context^
+          (e.Pattern) e.Tokens^ =
+            (e.Pattern)
+            <ParseResult
+              (e.Functions) t.ErrorList t.SymTable t.Context
+              ( /* мультискобки */ ) ( /* просканировано */ ) e.Tokens
+            >;
+        }
+        {
+          (e.Pattern)
+          (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
+          (e.Result) (TkSemicolon s.LnNum) e.Tokens^ =
+            (e.Functions) t.ErrorList t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
+            (e.Sentences ((e.Pattern) (e.Result))) e.Tokens;
+
+          (e.Pattern)
+          (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
+          (e.Result) (TkCloseBlock s.LnNum) e.Tokens^ =
+            (e.Functions)
+            <EL-AddErrorAt t.ErrorList s.LnNum 'Missed semicolon'>
+            t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
+            (e.Sentences ((e.Pattern) (e.Result)))
+            (TkCloseBlock s.LnNum) e.Tokens;
+
+          (e.Pattern)
+          (e.Functions^) t.ErrorList^ t.SymTable^ t.Context^
+          (e.Result) t.Unexpected e.Tokens^ =
+            (e.Functions)
+            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+            t.SymTable
+            <Cntx-ResetAfterSentence t.Context>
+            (e.Sentences ((e.Pattern) (e.Result)))
+            t.Unexpected e.Tokens;
+        }
+      >
     >;
 }
 
 
-$FORWARD CoBracket, CheckAddVariable, StrFromBracket,
-  ParseResult;
+$FORWARD CheckAddVariable, StrFromBracket;
 
 //FROM Lexer
 $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
   TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
-  TkRedefinition, TkReplace, TkOpenCall, TkCloseCall;
+  TkRedefinition, TkOpenCall, TkCloseCall;
 
 //FROM Algorithm
 $EXTERN TkIdentifier;
@@ -583,507 +616,408 @@ $EXTERN ST-CheckDeclared, ST-CheckIdent, ST-GetAnyName;
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
 
+$LABEL CSuccess, CInvalidMode, CAlreadyBounded;
+
 ParsePattern {
   // Обработка литералов атомов
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBrackets)
+  t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned) (TkChar s.LnNum s.Char) e.Tail =
     <ParsePattern
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.MultiBrackets)
+      t.ErrorList t.SymTable t.Context (e.MultiBrackets)
       (e.Scanned (TkChar s.Char)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBrackets)
+  t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned) (TkNumber s.LnNum s.Number) e.Tail =
     <ParsePattern
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.MultiBrackets)
+      t.ErrorList t.SymTable t.Context (e.MultiBrackets)
       (e.Scanned (TkNumber s.Number)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBrackets)
+  t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned) (TkName s.LnNum e.Name) e.Tail =
     <ParsePattern
-      (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNum e.Name>
-      t.Context
-      (e.Sentences) (e.MultiBrackets)
+      t.Context (e.MultiBrackets)
       (e.Scanned (TkName e.Name)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBrackets)
+  t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned)
   (TkIdentMarker s.LnNumMarker) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
-      (e.Functions)
       <ST-CheckIdent t.ErrorList t.SymTable s.LnNumName e.Name>
-      t.Context
-      (e.Sentences) (e.MultiBrackets)
+      t.Context (e.MultiBrackets)
       (e.Scanned (TkIdentifier e.Name)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBrackets)
+  t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned) (TkIdentMarker s.LnNum) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after ''#'''>
-      t.SymTable t.Context
-      (e.Sentences) (e.MultiBrackets)
+      t.SymTable t.Context (e.MultiBrackets)
       (e.Scanned) e.Tail
     >;
 
   // Переменные
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned)
   (TkVariable s.LnNumVar s.Mode e.Index)
   (TkRedefinition s.LnNumRedef)
   e.Tail =
-    <ParsePattern
-      (e.Functions)
+    <Fetch
       <CheckAddVariable
-        t.ErrorList t.SymTable t.Context
+        t.ErrorList t.Context
         Cntx-AddNewVariable s.LnNumVar s.Mode e.Index
       >
-      (e.Sentences) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParsePattern
+            t.ErrorList t.SymTable t.Context (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+      }
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned) (TkVariable s.LnNum s.Mode e.Index) e.Tail =
-    <ParsePattern
-      (e.Functions)
+    <Fetch
       <CheckAddVariable
-        t.ErrorList t.SymTable t.Context
+        t.ErrorList t.Context
         Cntx-AddVariable s.LnNum s.Mode e.Index
       >
-      (e.Sentences) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParsePattern
+            t.ErrorList t.SymTable t.Context (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+      }
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned) (TkRedefinition s.LnNum) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt t.ErrorList s.LnNum 'Naked redefinition sign'>
-      t.SymTable t.Context
-      (e.Sentences) (e.MultiBracket)
+      t.SymTable t.Context (e.MultiBracket)
+      (e.Scanned) e.Tail
     >;
 
   /*
     Скобки.
 
-    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую
-    скобку, считаем, что "та" была пропущена.
-    Если имеем непарную открывающую скобку, считаем,
-    что соответствующая скобка была пропущена в конце выражения;
+    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
+    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
+    считаем, что соответствующая скобка была пропущена в конце выражения;
     если имеем непарную закрывающую скобку, считаем её лишней.
   */
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
-  (e.Scanned) (# COpen TkOpenBracket s.LnNum) e.Tail =
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
+  (e.Scanned) (# COpen s.LnNum TkOpenBracket) e.Tail =
     <ParsePattern
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences)
+      t.ErrorList t.SymTable t.Context
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenBracket s.LnNum TkCloseBracket e.Scanned)
+        (#Brackets s.LnNum TkCloseBracket e.Scanned)
       )
       () e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNumBracket) (TkName s.LnNumName e.Name) e.Tail =
+  (# COpen s.LnNumBracket TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
-      (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
       t.Context
-      (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNumBracket TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNumBracket TkCloseADT e.Scanned)
       )
-      ((TkName e.Name)) e.Tail
+      ((e.Name)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNum) e.Tail =
+  (# COpen s.LnNum TkOpenADT) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.LnNum 'Expected name after "["'
       >
       t.SymTable t.Context
-      (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNum TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNum TkCloseADT e.Scanned)
       )
-      ((TkName <ST-GetAnyName t.SymTable>)) e.Tail
+      ((<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber e.MultiBracket)
+  t.ErrorList t.SymTable t.Context (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenCall s.LnNum) e.Tail =
+  (# COpen s.LnNum TkOpenCall) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.LnNum 'Unexpected call bracket in pattern expression'
       >
       t.SymTable t.Context
-      (e.Sentences)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenCall s.LnNum TkCloseCall e.Scanned)
+        (#Brackets s.LnNum TkCloseCall e.Scanned)
       )
       () e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences)
+  t.ErrorList t.SymTable t.Context
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.CloseBracket s.ClosedLnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.ClosedLnNum s.CloseBracket) e.Tail =
     <ParsePattern
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
-      )
+      t.ErrorList t.SymTable t.Context (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences)
+  t.ErrorList t.SymTable t.Context
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.OtherCloseBracket s.LnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.LnNum s.OtherCloseBracket) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.InnerLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
-      t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
-      )
-      (# CClose s.OtherCloseBracket s.LnNum) e.Tail
+      t.SymTable t.Context (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
+      (# CClose s.LnNum s.OtherCloseBracket) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
-  (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  t.ErrorList t.SymTable t.Context ()
+  (e.Scanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.LnNum
         'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
       >
-      t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber)
+      t.SymTable t.Context ()
       (e.Scanned) e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
-  (e.Scanned) (TkReplace s.LnNum) e.Tail =
-    <ParseResult
-      (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences)
-      (s.BracketNumber
-        <Map
-          {
-            (TkOpenCall s.Number) = (TkOpenBracket s.Number);
-            (TkCloseCall s.Number) = (TkCloseBracket s.Number);
-            t.Other = t.Other;
-          }
-          e.Scanned
-        >
-      )
-      (1)
-      () e.Tail
-    >;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences)
+  t.ErrorList t.SymTable t.Context
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.InnerLnNum s.CloseBracket
-      e.InnerScanned
-    )
+    (s.BracketsSign s.InnerLnNum s.CloseBracket e.Scanned)
   )
-  (e.Scanned) e.Tail =
+  (e.InnerScanned) e.Tail =
     <ParsePattern
-      (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.InnerLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
-      t.SymTable t.Context
-      (e.Sentences) (s.BracketNumber e.MultiBracket)
-      (
-        (s.OpenBracket s.InnerNumber)
-        e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
-        e.Scanned
-      )
+      t.SymTable t.Context (e.MultiBracket)
+      (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (s.BracketNumber)
-  (e.Scanned)
-  (s.NextResultTerm s.LnNum e.Info) e.Tail =
-    <ParseResult
-      (e.Functions)
-      <EL-AddErrorAt
-        t.ErrorList s.LnNum
-        'Incorrect pattern termination'
-      >
-      t.SymTable t.Context
-      (e.Sentences)
-      (s.BracketNumber
-        <Map
-          {
-            (TkOpenCall s.Number) = (TkOpenBracket s.Number);
-            (TkCloseCall s.Number) = (TkCloseBracket s.Number);
-            t.Other = t.Other;
-          }
-          e.Scanned
-        >
-      )
-      (1)
-      () e.Tail
-    >;
+  t.ErrorList t.SymTable t.Context ()
+  (e.Pattern) e.Tail =
+    t.ErrorList t.SymTable t.Context
+    (e.Pattern)  e.Tail;
 }
 
-CoBracket {
-  TkOpenADT = TkCloseADT;
-  TkOpenBracket = TkCloseBracket;
-  TkOpenCall = TkCloseCall;
-  TkCloseADT = TkOpenADT;
-  TkCloseBracket = TkOpenBracket;
-  TkCloseCall = TkOpenCall;
-}
-
-$FORWARD SwCheckAddVariable;
-
-CheckAddVariable {
-  t.ErrorList t.SymTable t.Context
-  s.ContextModifier s.LnNum s.Mode e.Index =
-    <SwCheckAddVariable
-      t.ErrorList t.SymTable s.LnNum
-      <s.ContextModifier t.Context s.Mode e.Index>
-    >;
-}
-
-$LABEL CSuccess, CInvalidMode;
-
-SwCheckAddVariable {
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CSuccess =
-    t.ErrorList t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CInvalidMode s.OldMode s.NewMode e.Index =
+InvalidModeVariableError {
+  t.ErrorList s.LnNum s.OldMode s.NewMode e.Index =
     <EL-AddErrorAt
       t.ErrorList s.LnNum
       'Variables ' s.OldMode '.' e.Index ' and '
       s.NewMode '.' e.Index ' has different modes'
-    >
-    t.SymTable t.Context;
+    >;
+}
+
+CheckAddVariable {
+  t.ErrorList t.Context
+  s.FnContextModifier s.LnNum s.Mode e.Index =
+    <Fetch
+      <s.FnContextModifier t.Context s.Mode e.Index>
+      {
+        t.Context^ # CSuccess s.Depth =
+          t.ErrorList t.Context s.Mode s.Depth;
+
+        t.Context^ # CInvalidMode s.Depth s.OldMode =
+          <InvalidModeVariableError
+            t.ErrorList s.LnNum s.OldMode s.Mode e.Index
+          >
+          t.Context s.OldMode s.Depth;
+
+        t.Context^ # CAlreadyBounded s.Depth =
+          <EL-AddErrorAt
+            t.ErrorList s.LnNum
+            'Variable hide operator^ must be applied to first occurence of '
+            'variable ' s.Mode '.' e.Index
+          >
+          t.Context s.Depth s.Mode;
+      }
+    >;
 }
 
 StrFromBracket {
   TkOpenBracket = '('; TkCloseBracket = ')';
   TkOpenCall = '<'; TkCloseCall = '>';
   TkOpenADT = '['; TkCloseADT = ']';
+  #Brackets = '(';
+  #ADT-Brackets = '[';
+  #CallBrackets = '<';
 }
 
 //FROM Context
-$EXTERN Cntx-CheckVariable, Cntx-ResetAfterSentence;
+$EXTERN Cntx-CheckVariable;
 
 $FORWARD CheckUseVariable, ParseResult-Block;
 
 /*
   <ParseResult
     (e.Functions) t.ErrorList t.SymTable t.Context
-    (e.Sentences) (e.Pattern) (s.BracketNum e.MultiBracket)
-    (e.Scanned) e.Tail
+    (e.MultiBracket) (e.Scanned) e.Tail
   >
 */
 ParseResult {
   // Обработка литералов атомов
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkChar s.LnNum s.Char) e.Tail =
+  (e.MultiBracket) (e.Scanned) (TkChar s.LnNum s.Char) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkChar s.Char)) e.Tail
+      (e.MultiBracket) (e.Scanned (TkChar s.Char)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkNumber s.LnNum s.Number) e.Tail =
+  (e.MultiBracket) (e.Scanned) (TkNumber s.LnNum s.Number) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkNumber s.Number)) e.Tail
+      (e.MultiBracket) (e.Scanned (TkNumber s.Number)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkName s.LnNum e.Name) e.Tail =
+  (e.MultiBracket) (e.Scanned) (TkName s.LnNum e.Name) e.Tail =
     <ParseResult
       (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNum e.Name>
       t.Context
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkName e.Name)) e.Tail
+      (e.MultiBracket) (e.Scanned (TkName e.Name)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
+  (e.MultiBracket)
   (e.Scanned)
   (TkIdentMarker s.MarkerLnNum) (TkName s.NameLnNum e.Name) e.Tail =
     <ParseResult
       (e.Functions)
       <ST-CheckIdent t.ErrorList t.SymTable s.NameLnNum e.Name>
       t.Context
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkIdentifier e.Name)) e.Tail
+      (e.MultiBracket) (e.Scanned (TkIdentifier e.Name)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkIdentMarker s.LnNum) e.Tail =
+  (e.MultiBracket) (e.Scanned) (TkIdentMarker s.LnNum) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after "#"'>
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned) e.Tail
+      (e.MultiBracket) (e.Scanned) e.Tail
     >;
 
   // Переменные
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkVariable s.LnNum s.Mode e.Index) e.Tail =
-    <ParseResult
-      (e.Functions)
-      <CheckUseVariable
-        t.ErrorList t.SymTable t.Context
-        s.LnNum s.Mode e.Index
-      >
-      (e.Sentences) (e.Pattern) (e.MultiBracket)
-      (e.Scanned (TkVariable s.Mode e.Index)) e.Tail
+  (e.MultiBracket) (e.Scanned) (TkVariable s.LnNum s.Mode e.Index) e.Tail =
+    <Fetch
+      <CheckUseVariable t.ErrorList t.Context s.LnNum s.Mode e.Index>
+      {
+        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+          <ParseResult
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.MultiBracket)
+            (e.Scanned (TkVariable s.Mode e.Index s.Depth)) e.Tail
+          >;
+
+        t.ErrorList^ t.Context^ =
+          <ParseResult
+            (e.Functions)
+            t.ErrorList t.SymTable t.Context
+            (e.MultiBracket) (e.Scanned) e.Tail
+          >;
+      }
     >;
 
   /*
     Скобки.
 
-    Стратегия обработки ошибок: если мы встретили "не ту"
-    закрывающую скобку, считаем, что "та" была пропущена.
-    Если имеем непарную открывающую скобку, считаем,
-    что соответствующая скобка была пропущена в конце выражения;
+    Стратегия обработки ошибок: если мы встретили "не ту" закрывающую скобку,
+    считаем, что "та" была пропущена. Если имеем непарную открывающую скобку,
+    считаем, что соответствующая скобка была пропущена в конце выражения;
     если имеем непарную закрывающую скобку, считаем её лишней.
   */
 
-  // Хитро обрабатываются АДТ-скобки,
-  // т.к. требуется, чтобы после них было имя.
+  // Хитро обрабатываются АДТ-скобки, т.к. требуется, чтобы после них было имя.
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
+  (e.MultiBracket)
   (e.Scanned)
-  (# COpen TkOpenADT s.LnNumADT) (TkName s.LnNumName e.Name) e.Tail =
+  (# COpen s.LnNumADT TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParseResult
       (e.Functions)
       <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
       t.Context
-      (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNumADT TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNumADT TkCloseADT e.Scanned)
       )
-      ((TkName e.Name)) e.Tail
+      ((e.Name)) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-  (e.Scanned)
-  (# COpen TkOpenADT s.LnNum) e.Tail =
+  (e.MultiBracket) (e.Scanned) (# COpen s.LnNum TkOpenADT) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.LnNum 'Expected name after "["'
       >
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber TkOpenADT s.LnNum TkCloseADT e.Scanned)
+        (#ADT-Brackets s.LnNum TkCloseADT e.Scanned)
       )
-      ((TkName <ST-GetAnyName t.SymTable>)) e.Tail
+      ((<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
   // Структурные и угловые скобки обрабатываются одинаково
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-  (e.Scanned) (# COpen s.OpenBracket s.LnNum) e.Tail =
+  (e.MultiBracket) (e.Scanned) (# COpen s.LnNum s.OpenBracket) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern)
       (
-        <Inc s.BracketNumber>
         e.MultiBracket
-        (s.BracketNumber
-          s.OpenBracket s.LnNum <CoBracket s.OpenBracket>
+        (
+          <Fetch
+            s.OpenBracket
+            {
+              TkOpenBracket = #Brackets;
+              TkOpenCall = #CallBrackets;
+            }
+          >
+          s.LnNum
+          <Fetch
+            s.OpenBracket
+            {
+              TkOpenBracket = TkCloseBracket;
+              TkOpenCall = TkCloseCall;
+            }
+          >
           e.Scanned
         )
       )
@@ -1092,75 +1026,48 @@ ParseResult {
 
   // Правильная закрывающая скобка
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.OpenLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerScanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  (e.InnerScanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParseResult
       (e.Functions) t.ErrorList t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerScanned
-        (s.CloseBracket s.InnerNumber)
-      )
+      (e.MultiBracket) (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
   // Лямбда-функция
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (e.MultiBracket)
-  (e.Scanned) (TkOpenBlock s.LnNum) e.Tail =
-    <ParseResult
-      <ParseResult-Block
-        (e.Sentences) (e.Pattern) (e.MultiBracket)
-        (e.Scanned)
-        <ParseBlock
-          (e.Functions) t.ErrorList t.SymTable t.Context
-          e.Tail
-        >
+  (e.MultiBracket) (e.Scanned) (TkOpenBlock s.LnNum) e.Tail =
+    <ParseResult-Block
+      (e.MultiBracket) (e.Scanned)
+      <ParseBlock
+        (e.Functions) t.ErrorList t.SymTable t.Context
+        e.Tail
       >
     >;
 
   // Неправильная закрывающая скобка или закрывающая скобка отсутствует
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern)
   (
-    s.BracketNumber
     e.MultiBracket
-    (s.InnerNumber
-      s.OpenBracket s.OpenLnNum s.CloseBracket
-      e.Scanned
-    )
+    (s.BracketsSign s.OpenLnNum s.CloseBracket e.Scanned)
   )
-  (e.InnerBracket) e.Tail =
+  (e.InnerScanned) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
         t.ErrorList s.OpenLnNum
-        'Unbalanced bracket "' <StrFromBracket s.OpenBracket> '"'
+        'Unbalanced bracket "' <StrFromBracket s.BracketsSign> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-      (
-        e.Scanned
-        (s.OpenBracket s.InnerNumber)
-        e.InnerBracket
-        (s.CloseBracket s.InnerNumber)
-      )
+      (e.MultiBracket) (e.Scanned (s.BracketsSign e.InnerScanned))
       e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
-  (e.Scanned) (# CClose s.CloseBracket s.LnNum) e.Tail =
+  () (e.Scanned) (# CClose s.LnNum s.CloseBracket) e.Tail =
     <ParseResult
       (e.Functions)
       <EL-AddErrorAt
@@ -1168,124 +1075,75 @@ ParseResult {
         'Unbalanced bracket "' <StrFromBracket s.CloseBracket> '"'
       >
       t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber)
-      (e.Scanned) e.Tail
+      () (e.Scanned) e.Tail
     >;
 
   (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
-  (e.Result) (TkSemicolon s.LnNum) e.Tail =
-    (e.Functions) t.ErrorList t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Sentences ((e.Pattern) (e.Result)))
-    e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
-  (e.Result) (TkCloseBlock s.LnNum) e.Tail =
-    (e.Functions)
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Missed semicolon'
-    >
-    t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Sentences ((e.Pattern) (e.Result)))
-    (TkCloseBlock s.LnNum) e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
-  (e.Result) (TkEOF s.LnNum) e.Tail =
-    (e.Functions)
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Unexpected EOF'
-    >
-    t.SymTable
-    <Cntx-ResetAfterSentence t.Context>
-    (e.Sentences ((e.Pattern) (e.Result)))
-    (TkCloseBlock s.LnNum) e.Tail;
-
-  (e.Functions) t.ErrorList t.SymTable t.Context
-  (e.Sentences) (e.Pattern) (s.BracketNumber)
-  (e.Scanned) t.Unexpected e.Tail =
-    <ParseResult
-      (e.Functions)
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'pattern or result term'>
-      t.SymTable t.Context
-      (e.Sentences) (e.Pattern) (s.BracketNumber)
-      (e.Scanned) e.Tail
-    >;
+  () (e.Result) e.Tail =
+    (e.Functions) t.ErrorList t.SymTable t.Context
+    (e.Result) e.Tail;
 }
-
-$FORWARD SwCheckUseVariable;
 
 $LABEL CExistVariable, CNotFound;
 
 CheckUseVariable {
-  t.ErrorList t.SymTable t.Context s.LnNum s.Mode e.Index =
-    <SwCheckUseVariable
-      t.ErrorList t.SymTable s.LnNum
+  t.ErrorList t.Context s.LnNum s.Mode e.Index =
+    <Fetch
       <Cntx-CheckVariable t.Context s.Mode e.Index>
+      {
+        t.Context^ # CExistVariable s.Depth =
+          t.ErrorList t.Context s.Mode s.Depth;
+
+        t.Context^ # CInvalidMode s.Depth s.OldMode =
+          <InvalidModeVariableError
+            t.ErrorList s.LnNum s.OldMode s.Mode e.Index
+          >
+          t.Context s.OldMode s.Depth;
+
+        t.Context^ # CNotFound =
+          <EL-AddErrorAt
+            t.ErrorList s.LnNum 'Variable ' s.Mode '.' e.Index ' not found'
+          >
+          t.Context;
+      }
     >;
-}
-
-SwCheckUseVariable {
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CExistVariable s.Mode e.Index =
-    t.ErrorList t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CInvalidMode s.OldMode s.NewMode e.Index =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum
-      'Variables ' s.OldMode '.' e.Index ' and '
-      s.NewMode '.' e.Index ' has different modes'
-    >
-    t.SymTable t.Context;
-
-  t.ErrorList t.SymTable s.LnNum
-  t.Context # CNotFound s.Mode e.Index =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum
-      'Variable ' s.Mode '.' e.Index ' not found'
-    >
-    t.SymTable t.Context;
 }
 
 $LABEL CCreateClosure;
 
 ParseResult-Block {
-  (e.Sentences) (e.Pattern) (s.BracketNumber e.MultiBracket)
-  (e.Scanned)
+  (e.MultiBracket) (e.Scanned)
   (s.NextNum e.Functions) t.ErrorList t.SymTable
-  (t.Context e.FreeContext)
+  ( t.Context /* свободные переменные в функции отсутствуют */ )
   e.Tail =
-    (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
-    (e.Sentences) (e.Pattern)
+    <ParseResult
+      (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
+      (e.MultiBracket)
+      (e.Scanned (TkName # CLambdaName <Dec s.NextNum>))
+      e.Tail
+    >;
+
+  (e.MultiBracket) (e.Scanned)
+  (s.NextNum e.Functions) t.ErrorList t.SymTable
+  ( t.Context e.FreeContext )
+  e.Tail =
     <Fetch
-      <CreateContext s.BracketNumber e.FreeContext>
+      <Dec s.NextNum> (<CreateContext e.FreeContext>)
       {
-        s.NextBracketNumber
-        /* свободные переменные в функции отсутствуют */ =
-          (s.BracketNumber e.MultiBracket)
-          // Формируем вызов глобальной функции
-          (
-            e.Scanned
-            (TkName # CLambdaName <Dec s.NextNum>)
-          );
-
-        s.NextBracketNumber e.ResultContext =
-          (<Inc s.NextBracketNumber> e.MultiBracket)
-          // Формируем вызов замыкания
-          (
-            e.Scanned
-            (TkOpenCall s.NextBracketNumber)
-            (TkName # CCreateClosure)
-            (TkName # CLambdaName <Dec s.NextNum>)
-            e.ResultContext
-            (TkCloseCall s.NextBracketNumber)
-          );
+        s.FunctionNumber (e.RealContext) =
+          <ParseResult
+            (s.NextNum e.Functions) t.ErrorList t.SymTable t.Context
+            (e.MultiBracket)
+            (
+              e.Scanned
+              (#CallBrackets
+                (TkName # CCreateClosure)
+                (TkName # CLambdaName s.FunctionNumber)
+                e.RealContext
+              )
+            )
+            e.Tail
+          >;
       }
-    >
-    e.Tail;
+    >;
 }
-

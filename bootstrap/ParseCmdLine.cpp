@@ -32,53 +32,72 @@ struct CNone {
 
 refalrts::FnResult CmdLineError(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult CompileToTarget(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult CompileList(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // e.Arguments
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    enum { __eArguments_1_1 = 2 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & CollectorObject, (void*) "CollectorObject"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { CollectorObject, "CollectorObject" },
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // e.Arguments#1
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -86,13 +105,13 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, & CollectorObject, "CollectorObject" ) )
+    if( ! refalrts::alloc_name( n3, CollectorObject, "CollectorObject" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_open_bracket( n4 ) )
@@ -109,7 +128,7 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::push_stack( n7 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n6 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n6 );
@@ -126,7 +145,9 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 //$LABEL CAddCompileCommand
@@ -182,63 +203,78 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eCompileCommand_b_1;
-    refalrts::use( eCompileCommand_b_1 );
-    static refalrts::Iter eCompileCommand_e_1;
-    refalrts::use( eCompileCommand_e_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 '-c )~1 (~2 e.CompileCommand )~2 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'c', bb_1, be_1 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    eCompileCommand_b_1 = bb_2;
-    refalrts::use( eCompileCommand_b_1 );
-    eCompileCommand_e_1 = be_2;
-    refalrts::use( eCompileCommand_e_1 );
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 11 elems
+    refalrts::Iter context[11];
+    refalrts::zeros( context, 11 );
+    enum { __sCollector_1_1 = 6 };
+    enum { __eCompileCommand_1_1 = 7 };
+    enum { __eArguments_1_1 = 9 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CAddCompileCommand<int>::name},
-      {refalrts::icSpliceEVar, & eCompileCommand_b_1, & eCompileCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'c', 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icContextSet, 0, __eCompileCommand_1_1, 4},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCompileCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-c' ) ( e.CompileCommand#1 ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'c', context[2], context[3] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    context[__eCompileCommand_1_1] = context[4];
+    context[__eCompileCommand_1_1 + 1] = context[5];
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -246,7 +282,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -263,13 +299,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eCompileCommand_b_1, eCompileCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCompileCommand_1_1], context[__eCompileCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -280,91 +316,112 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    // s.Collector (~1 '-c )~1
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'c', bb_1, be_1 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 5 elems
+    refalrts::Iter context[5];
+    refalrts::zeros( context, 5 );
+    enum { __sCollector_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
-      {refalrts::icChar, 0, 0, 'A'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, '-'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'x'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'C'},
-      {refalrts::icChar, 0, 0, '+'},
-      {refalrts::icChar, 0, 0, '+'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+    static const refalrts::RefalFunction functions[] = {
+      { CmdLineError, "CmdLineError" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'c', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icChar, 0, '+', 0},
+      {refalrts::icChar, 0, '+', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-c' )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'c', context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -372,7 +429,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdLineError, "CmdLineError" ) )
+    if( ! refalrts::alloc_name( n1, CmdLineError, "CmdLineError" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'A' ) )
@@ -596,63 +653,78 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 '-e )~1 (~2 e.ErrorFile )~2 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'e', bb_1, be_1 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 11 elems
+    refalrts::Iter context[11];
+    refalrts::zeros( context, 11 );
+    enum { __sCollector_1_1 = 6 };
+    enum { __eErrorFile_1_1 = 7 };
+    enum { __eArguments_1_1 = 9 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CAddErrorFile<int>::name},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'e', 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 4},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-e' ) ( e.ErrorFile#1 ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'e', context[2], context[3] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    context[__eErrorFile_1_1] = context[4];
+    context[__eErrorFile_1_1 + 1] = context[5];
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -660,7 +732,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -677,13 +749,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -694,89 +766,110 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    // s.Collector (~1 '-e )~1
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'e', bb_1, be_1 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 5 elems
+    refalrts::Iter context[5];
+    refalrts::zeros( context, 5 );
+    enum { __sCollector_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
-      {refalrts::icChar, 0, 0, 'A'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, '-'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'x'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'g'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+    static const refalrts::RefalFunction functions[] = {
+      { CmdLineError, "CmdLineError" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'e', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-e' )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'e', context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -784,7 +877,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdLineError, "CmdLineError" ) )
+    if( ! refalrts::alloc_name( n1, CmdLineError, "CmdLineError" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'A' ) )
@@ -1000,63 +1093,78 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eDirectory_b_1;
-    refalrts::use( eDirectory_b_1 );
-    static refalrts::Iter eDirectory_e_1;
-    refalrts::use( eDirectory_e_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 '-d )~1 (~2 e.Directory )~2 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'd', bb_1, be_1 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    eDirectory_b_1 = bb_2;
-    refalrts::use( eDirectory_b_1 );
-    eDirectory_e_1 = be_2;
-    refalrts::use( eDirectory_e_1 );
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 11 elems
+    refalrts::Iter context[11];
+    refalrts::zeros( context, 11 );
+    enum { __sCollector_1_1 = 6 };
+    enum { __eDirectory_1_1 = 7 };
+    enum { __eArguments_1_1 = 9 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CAddFolder<int>::name},
-      {refalrts::icSpliceEVar, & eDirectory_b_1, & eDirectory_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'d', 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icContextSet, 0, __eDirectory_1_1, 4},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eDirectory_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-d' ) ( e.Directory#1 ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'd', context[2], context[3] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    context[__eDirectory_1_1] = context[4];
+    context[__eDirectory_1_1 + 1] = context[5];
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1064,7 +1172,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -1081,13 +1189,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eDirectory_b_1, eDirectory_e_1 );
+    res = refalrts::splice_evar( res, context[__eDirectory_1_1], context[__eDirectory_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1098,80 +1206,101 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    // s.Collector (~1 '-d )~1
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_right( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'd', bb_1, be_1 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 5 elems
+    refalrts::Iter context[5];
+    refalrts::zeros( context, 5 );
+    enum { __sCollector_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
-      {refalrts::icChar, 0, 0, 'A'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, '-'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, '\''},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'x'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'y'},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+    static const refalrts::RefalFunction functions[] = {
+      { CmdLineError, "CmdLineError" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'d', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'A', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, '-', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, '\'', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'x', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'y', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-d' )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'd', context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1179,7 +1308,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdLineError, "CmdLineError" ) )
+    if( ! refalrts::alloc_name( n1, CmdLineError, "CmdLineError" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'A' ) )
@@ -1359,63 +1488,78 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eOutputFile_b_1;
-    refalrts::use( eOutputFile_b_1 );
-    static refalrts::Iter eOutputFile_e_1;
-    refalrts::use( eOutputFile_e_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 '-o )~1 (~2 e.OutputFile )~2 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( 'o', bb_1, be_1 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    eOutputFile_b_1 = bb_2;
-    refalrts::use( eOutputFile_b_1 );
-    eOutputFile_e_1 = be_2;
-    refalrts::use( eOutputFile_e_1 );
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 11 elems
+    refalrts::Iter context[11];
+    refalrts::zeros( context, 11 );
+    enum { __sCollector_1_1 = 6 };
+    enum { __eOutputFile_1_1 = 7 };
+    enum { __eArguments_1_1 = 9 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CSetOutput<int>::name},
-      {refalrts::icSpliceEVar, & eOutputFile_b_1, & eOutputFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CSetOutput<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'o', 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icContextSet, 0, __eOutputFile_1_1, 4},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eOutputFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '-o' ) ( e.OutputFile#1 ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( 'o', context[2], context[3] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    context[__eOutputFile_1_1] = context[4];
+    context[__eOutputFile_1_1 + 1] = context[5];
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1423,7 +1567,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -1440,13 +1584,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eOutputFile_b_1, eOutputFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eOutputFile_1_1], context[__eOutputFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1457,47 +1601,63 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 '-- )~1 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! refalrts::char_left( '-', bb_1, be_1 ) )
-      break;
-    if( ! empty_seq( bb_1, be_1 ) )
-      break;
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 7 elems
+    refalrts::Iter context[7];
+    refalrts::zeros( context, 7 );
+    enum { __sCollector_1_1 = 4 };
+    enum { __eArguments_1_1 = 5 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseFileNamesOnly, (void*) "DoParseFileNamesOnly"},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseFileNamesOnly, "DoParseFileNamesOnly" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( '--' ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::char_left( '-', context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[2], context[3] ) )
+      break;
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1505,7 +1665,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseFileNamesOnly, "DoParseFileNamesOnly" ) )
+    if( ! refalrts::alloc_name( n1, DoParseFileNamesOnly, "DoParseFileNamesOnly" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1513,8 +1673,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1524,53 +1684,64 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eNextFileName_b_1;
-    refalrts::use( eNextFileName_b_1 );
-    static refalrts::Iter eNextFileName_e_1;
-    refalrts::use( eNextFileName_e_1 );
-    static refalrts::Iter eArguments_b_1;
-    refalrts::use( eArguments_b_1 );
-    static refalrts::Iter eArguments_e_1;
-    refalrts::use( eArguments_e_1 );
-    // s.Collector (~1 e.NextFileName )~1 e.Arguments
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    eNextFileName_b_1 = bb_1;
-    refalrts::use( eNextFileName_b_1 );
-    eNextFileName_e_1 = be_1;
-    refalrts::use( eNextFileName_e_1 );
-    eArguments_b_1 = bb_0;
-    refalrts::use( eArguments_b_1 );
-    eArguments_e_1 = be_0;
-    refalrts::use( eArguments_e_1 );
+    // issue here memory for vars with 9 elems
+    refalrts::Iter context[9];
+    refalrts::zeros( context, 9 );
+    enum { __sCollector_1_1 = 4 };
+    enum { __eNextFileName_1_1 = 5 };
+    enum { __eArguments_1_1 = 7 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseCommandLine, (void*) "DoParseCommandLine"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CAddFile<int>::name},
-      {refalrts::icSpliceEVar, & eNextFileName_b_1, & eNextFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eArguments_b_1, & eArguments_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseCommandLine, "DoParseCommandLine" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eNextFileName_1_1, 2},
+      {refalrts::icContextSet, 0, __eArguments_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( e.NextFileName#1 ) e.Arguments#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eNextFileName_1_1] = context[2];
+    context[__eNextFileName_1_1 + 1] = context[3];
+    context[__eArguments_1_1] = context[0];
+    context[__eArguments_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1578,7 +1749,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseCommandLine, "DoParseCommandLine" ) )
+    if( ! refalrts::alloc_name( n1, DoParseCommandLine, "DoParseCommandLine" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -1595,13 +1766,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eArguments_b_1, eArguments_e_1 );
+    res = refalrts::splice_evar( res, context[__eArguments_1_1], context[__eArguments_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eNextFileName_b_1, eNextFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eNextFileName_1_1], context[__eNextFileName_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1612,30 +1783,47 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    // s.Collector
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 3 elems
+    refalrts::Iter context[3];
+    refalrts::zeros( context, 3 );
+    enum { __sCollector_1_1 = 2 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CGetInfo<int>::name},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1652,7 +1840,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -1660,59 +1848,72 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    static refalrts::Iter eNextFileName_b_1;
-    refalrts::use( eNextFileName_b_1 );
-    static refalrts::Iter eNextFileName_e_1;
-    refalrts::use( eNextFileName_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // s.Collector (~1 e.NextFileName )~1 e.Files
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    eNextFileName_b_1 = bb_1;
-    refalrts::use( eNextFileName_b_1 );
-    eNextFileName_e_1 = be_1;
-    refalrts::use( eNextFileName_e_1 );
-    eFiles_b_1 = bb_0;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_0;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 9 elems
+    refalrts::Iter context[9];
+    refalrts::zeros( context, 9 );
+    enum { __sCollector_1_1 = 4 };
+    enum { __eNextFileName_1_1 = 5 };
+    enum { __eFiles_1_1 = 7 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & DoParseFileNamesOnly, (void*) "DoParseFileNamesOnly"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CAddFile<int>::name},
-      {refalrts::icSpliceEVar, & eNextFileName_b_1, & eNextFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { DoParseFileNamesOnly, "DoParseFileNamesOnly" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eNextFileName_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1 ( e.NextFileName#1 ) e.Files#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eNextFileName_1_1] = context[2];
+    context[__eNextFileName_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[0];
+    context[__eFiles_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1720,7 +1921,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & DoParseFileNamesOnly, "DoParseFileNamesOnly" ) )
+    if( ! refalrts::alloc_name( n1, DoParseFileNamesOnly, "DoParseFileNamesOnly" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -1737,13 +1938,13 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::push_stack( n5 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eNextFileName_b_1, eNextFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eNextFileName_1_1], context[__eNextFileName_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1754,30 +1955,47 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter sCollector_1;
-    refalrts::use( sCollector_1 );
-    // s.Collector
-    if( ! refalrts::svar_left( sCollector_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 3 elems
+    refalrts::Iter context[3];
+    refalrts::zeros( context, 3 );
+    enum { __sCollector_1_1 = 2 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icSpliceSTVar, & sCollector_1},
-      {refalrts::icIdent, (void*) & CGetInfo<int>::name},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icIdent, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // s.Collector#1
+    if( ! refalrts::svar_left( context[__sCollector_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1794,7 +2012,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_stvar( res, sCollector_1 );
+    res = refalrts::splice_stvar( res, context[__sCollector_1_1] );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -1802,7 +2020,9 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -1814,25 +2034,44 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
 static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    // # CCompileCommand
-    if( ! refalrts::ident_left(  & CCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 2 elems
+    refalrts::Iter context[2];
+    refalrts::zeros( context, 2 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icIdent, (void*) & CNone<int>::name},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CNone<int>::name,
+      & CCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentLeft, 0, 1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // # CCompileCommand
+    if( ! refalrts::ident_left(  & CCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1847,25 +2086,44 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    // # CErrorFile
-    if( ! refalrts::ident_left(  & CErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 2 elems
+    refalrts::Iter context[2];
+    refalrts::zeros( context, 2 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icIdent, (void*) & CNone<int>::name},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CNone<int>::name,
+      & CErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentLeft, 0, 1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // # CErrorFile
+    if( ! refalrts::ident_left(  & CErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1879,70 +2137,81 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 # CAddCompileCommand e.Command
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eCommand_b_1 = bb_0;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_0;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eCommand_2_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler, (void*) "Collector_Compiler"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler, "Collector_Compiler" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eCommand_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) # CAddCompileCommand e.Command#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eCommand_2_1] = context[0];
+    context[__eCommand_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -1950,7 +2219,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler, "Collector_Compiler" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler, "Collector_Compiler" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1970,14 +2239,14 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n6 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_2_1], context[__eCommand_2_1 + 1] );
     refalrts::link_brackets( n4, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -1988,64 +2257,73 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 # CAddErrorFile e.ErrorFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eErrorFile_b_1 = bb_0;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_0;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eErrorFile_2_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_ErrorFile, (void*) "Collector_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_ErrorFile, "Collector_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eErrorFile_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) # CAddErrorFile e.ErrorFile#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eErrorFile_2_1] = context[0];
+    context[__eErrorFile_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2053,7 +2331,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_ErrorFile, "Collector_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_ErrorFile, "Collector_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2073,14 +2351,14 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n6 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_2_1], context[__eErrorFile_2_1 + 1] );
     refalrts::link_brackets( n4, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2091,64 +2369,73 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 # CAddFile e.FileName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eFileName_2_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & CollectorObject, (void*) "CollectorObject"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { CollectorObject, "CollectorObject" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eFileName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) # CAddFile e.FileName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eFileName_2_1] = context[0];
+    context[__eFileName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2156,7 +2443,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CollectorObject, "CollectorObject" ) )
+    if( ! refalrts::alloc_name( n1, CollectorObject, "CollectorObject" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2178,12 +2465,12 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n4, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFileName_2_1], context[__eFileName_2_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2194,64 +2481,73 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFolderName_b_1;
-    refalrts::use( eFolderName_b_1 );
-    static refalrts::Iter eFolderName_e_1;
-    refalrts::use( eFolderName_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 # CAddFolder e.FolderName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eFolderName_b_1 = bb_0;
-    refalrts::use( eFolderName_b_1 );
-    eFolderName_e_1 = be_0;
-    refalrts::use( eFolderName_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eFolderName_2_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & CollectorObject, (void*) "CollectorObject"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolderName_b_1, & eFolderName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { CollectorObject, "CollectorObject" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eFolderName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) # CAddFolder e.FolderName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eFolderName_2_1] = context[0];
+    context[__eFolderName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2259,7 +2555,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CollectorObject, "CollectorObject" ) )
+    if( ! refalrts::alloc_name( n1, CollectorObject, "CollectorObject" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2279,14 +2575,14 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n6 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n2, n5 );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFolderName_b_1, eFolderName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolderName_2_1], context[__eFolderName_2_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2297,62 +2593,77 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icFunc, (void*) & lambda_CollectorObject_0, (void*) "lambda_CollectorObject_0"},
-      {refalrts::icFunc, (void*) & CompileList, (void*) "CompileList"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
+    static const refalrts::RefalFunction functions[] = {
+      { CompileList, "CompileList" },
+      { lambda_CollectorObject_0, "lambda_CollectorObject_0" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
+    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, & lambda_CollectorObject_0, "lambda_CollectorObject_0" ) )
+    if( ! refalrts::alloc_name( n0, lambda_CollectorObject_0, "lambda_CollectorObject_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CompileList, "CompileList" ) )
+    if( ! refalrts::alloc_name( n1, CompileList, "CompileList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2360,10 +2671,10 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2373,56 +2684,68 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.Folders )~1 e.Files
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_0;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_0;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 8 elems
+    refalrts::Iter context[8];
+    refalrts::zeros( context, 8 );
+    enum { __eFolders_1_1 = 4 };
+    enum { __eFiles_1_1 = 6 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_CollectorObject_1, (void*) "lambda_CollectorObject_1"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_CollectorObject_1, "lambda_CollectorObject_1" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) e.Files#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[0];
+    context[__eFiles_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2430,10 +2753,10 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_CollectorObject_1, "lambda_CollectorObject_1" ) )
+    if( ! refalrts::alloc_name( n2, lambda_CollectorObject_1, "lambda_CollectorObject_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -2455,11 +2778,11 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -2470,7 +2793,9 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -2482,41 +2807,56 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
 static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.Command )~1 # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eCommand_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) # CCompileCommand
+    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -2524,37 +2864,50 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.Command )~1 # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icIdent, (void*) & CNone<int>::name},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CNone<int>::name,
+      & CErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) # CErrorFile
+    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Command#1
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2568,75 +2921,71 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eNewCommand_b_1;
-    refalrts::use( eNewCommand_b_1 );
-    static refalrts::Iter eNewCommand_e_1;
-    refalrts::use( eNewCommand_e_1 );
-    // (~1 e.Command )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddCompileCommand e.NewCommand
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eNewCommand_b_1 = bb_0;
-    refalrts::use( eNewCommand_b_1 );
-    eNewCommand_e_1 = be_0;
-    refalrts::use( eNewCommand_e_1 );
+    // issue here memory for vars with 8 elems
+    refalrts::Iter context[8];
+    refalrts::zeros( context, 8 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error_CC, (void*) "Collector_Error_CC"},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error_CC, "Collector_Error_CC" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddCompileCommand e.NewCommand#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Command#1
+    // Unused closed variable e.Folders#1
+    // Unused closed variable e.Files#1
+    // Unused closed variable e.NewCommand#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2644,7 +2993,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error_CC, "Collector_Error_CC" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error_CC, "Collector_Error_CC" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -2661,81 +3010,87 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.Command )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddErrorFile e.ErrorFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eErrorFile_b_1 = bb_0;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_0;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eCommand_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eErrorFile_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler_ErrorFile, (void*) "Collector_Compiler_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eErrorFile_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddErrorFile e.ErrorFile#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eErrorFile_2_1] = context[0];
+    context[__eErrorFile_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2743,7 +3098,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2777,19 +3132,19 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     res = refalrts::splice_elem( res, n10 );
     refalrts::link_brackets( n8, n9 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_2_1], context[__eErrorFile_2_1 + 1] );
     res = refalrts::splice_elem( res, n8 );
     refalrts::link_brackets( n6, n7 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n4, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2800,79 +3155,85 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.Command )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddFile e.FileName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eCommand_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eFileName_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler, (void*) "Collector_Compiler"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler, "Collector_Compiler" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eFileName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFile e.FileName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eFileName_2_1] = context[0];
+    context[__eFileName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2880,7 +3241,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler, "Collector_Compiler" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler, "Collector_Compiler" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2906,18 +3267,18 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     refalrts::push_stack( n8 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     refalrts::link_brackets( n4, n7 );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFileName_2_1], context[__eFileName_2_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -2928,79 +3289,85 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFolderName_b_1;
-    refalrts::use( eFolderName_b_1 );
-    static refalrts::Iter eFolderName_e_1;
-    refalrts::use( eFolderName_e_1 );
-    // (~1 e.Command )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddFolder e.FolderName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eFolderName_b_1 = bb_0;
-    refalrts::use( eFolderName_b_1 );
-    eFolderName_e_1 = be_0;
-    refalrts::use( eFolderName_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eCommand_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eFolderName_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler, (void*) "Collector_Compiler"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolderName_b_1, & eFolderName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler, "Collector_Compiler" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eFolderName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFolder e.FolderName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eFolderName_2_1] = context[0];
+    context[__eFolderName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3008,7 +3375,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler, "Collector_Compiler" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler, "Collector_Compiler" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3034,18 +3401,18 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     refalrts::push_stack( n8 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     refalrts::link_brackets( n6, n7 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n2, n5 );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFolderName_b_1, eFolderName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolderName_2_1], context[__eFolderName_2_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -3056,72 +3423,85 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.Command )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 14 elems
+    refalrts::Iter context[14];
+    refalrts::zeros( context, 14 );
+    enum { __eCommand_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_Compiler_0, (void*) "lambda_Collector_Compiler_0"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icFunc, (void*) & CompileList, (void*) "CompileList"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
+    static const refalrts::RefalFunction functions[] = {
+      { CompileList, "CompileList" },
+      { lambda_Collector_Compiler_0, "lambda_Collector_Compiler_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
+    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3129,10 +3509,10 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_Compiler_0, "lambda_Collector_Compiler_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_Compiler_0, "lambda_Collector_Compiler_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -3144,7 +3524,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     if( ! refalrts::alloc_close_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CompileList, "CompileList" ) )
+    if( ! refalrts::alloc_name( n6, CompileList, "CompileList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_open_bracket( n7 ) )
@@ -3152,10 +3532,10 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     refalrts::push_stack( n5 );
@@ -3163,7 +3543,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -3174,71 +3554,80 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 e.Command
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eCommand_b_1 = bb_0;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_0;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eCommand_1_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_Compiler_1, (void*) "lambda_Collector_Compiler_1"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_Collector_Compiler_1, "lambda_Collector_Compiler_1" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) e.Command#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eCommand_1_1] = context[0];
+    context[__eCommand_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3246,10 +3635,10 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_Compiler_1, "lambda_Collector_Compiler_1" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_Compiler_1, "lambda_Collector_Compiler_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -3277,15 +3666,15 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
     res = refalrts::splice_elem( res, n9 );
     refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -3296,7 +3685,9 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3304,74 +3695,91 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
 static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    //
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 2 elems
+    refalrts::Iter context[2];
+    refalrts::zeros( context, 2 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icChar, 0, 0, 'M'},
-      {refalrts::icChar, 0, 0, 'u'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'C'},
-      {refalrts::icChar, 0, 0, '+'},
-      {refalrts::icChar, 0, 0, '+'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'C', 0},
+      {refalrts::icChar, 0, '+', 0},
+      {refalrts::icChar, 0, '+', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    //
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3379,7 +3787,7 @@ static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'M' ) )
@@ -3591,7 +3999,9 @@ static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -3601,37 +4011,50 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
 static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.ErrorFile )~1 # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icIdent, (void*) & CNone<int>::name},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CNone<int>::name,
+      & CCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) # CCompileCommand
+    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.ErrorFile#1
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3646,128 +4069,151 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.ErrorFile )~1 # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eErrorFile_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) # CErrorFile
+    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddCompileCommand e.Command
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eCommand_b_1 = bb_0;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_0;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eErrorFile_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eCommand_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler_ErrorFile, (void*) "Collector_Compiler_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eCommand_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddCompileCommand e.Command#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eCommand_2_1] = context[0];
+    context[__eCommand_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3775,7 +4221,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -3809,19 +4255,19 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     res = refalrts::splice_elem( res, n10 );
     refalrts::link_brackets( n8, n9 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n8 );
     refalrts::link_brackets( n6, n7 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_2_1], context[__eCommand_2_1 + 1] );
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n4, n5 );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -3832,69 +4278,72 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eErrorFile_b_2;
-    refalrts::use( eErrorFile_b_2 );
-    static refalrts::Iter eErrorFile_e_2;
-    refalrts::use( eErrorFile_e_2 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddErrorFile e.ErrorFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    if( ! refalrts::repeated_evar_left( eErrorFile_b_2, eErrorFile_e_2, eErrorFile_b_1, eErrorFile_e_1, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eErrorFile_1_1 = 8 };
+    enum { __eErrorFile_1_2 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error_EF, (void*) "Collector_Error_EF"},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error_EF, "Collector_Error_EF" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::iceRepeatLeft, __eErrorFile_1_2, __eErrorFile_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddErrorFile e.ErrorFile#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    if( ! refalrts::repeated_evar_left( context[__eErrorFile_1_2], context[__eErrorFile_1_2 + 1], context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Folders#1
+    // Unused closed variable e.Files#1
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3902,7 +4351,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error_EF, "Collector_Error_EF" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error_EF, "Collector_Error_EF" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -3919,79 +4368,85 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddFile e.FileName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eErrorFile_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eFileName_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_ErrorFile, (void*) "Collector_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_ErrorFile, "Collector_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eFileName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFile e.FileName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eFileName_2_1] = context[0];
+    context[__eFileName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -3999,7 +4454,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_ErrorFile, "Collector_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_ErrorFile, "Collector_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4025,18 +4480,18 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     refalrts::push_stack( n8 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     refalrts::link_brackets( n4, n7 );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFileName_2_1], context[__eFileName_2_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -4047,79 +4502,85 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFolderName_b_1;
-    refalrts::use( eFolderName_b_1 );
-    static refalrts::Iter eFolderName_e_1;
-    refalrts::use( eFolderName_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CAddFolder e.FolderName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
-    eFolderName_b_1 = bb_0;
-    refalrts::use( eFolderName_b_1 );
-    eFolderName_e_1 = be_0;
-    refalrts::use( eFolderName_e_1 );
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eErrorFile_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eFolderName_2_1 = 14 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_ErrorFile, (void*) "Collector_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolderName_b_1, & eFolderName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_ErrorFile, "Collector_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icContextSet, 0, __eFolderName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFolder e.FolderName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
+    context[__eFolderName_2_1] = context[0];
+    context[__eFolderName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4127,7 +4588,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_ErrorFile, "Collector_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_ErrorFile, "Collector_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -4153,18 +4614,18 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     refalrts::push_stack( n8 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     refalrts::link_brackets( n6, n7 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n2, n5 );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFolderName_b_1, eFolderName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolderName_2_1], context[__eFolderName_2_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -4175,72 +4636,85 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Folders )~2 (~3 e.Files )~3 # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_2;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_2;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_3;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_3;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 14 elems
+    refalrts::Iter context[14];
+    refalrts::zeros( context, 14 );
+    enum { __eErrorFile_1_1 = 8 };
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_ErrorFile_0, (void*) "lambda_Collector_ErrorFile_0"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icFunc, (void*) & CompileList, (void*) "CompileList"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
+    static const refalrts::RefalFunction functions[] = {
+      { CompileList, "CompileList" },
+      { lambda_Collector_ErrorFile_0, "lambda_Collector_ErrorFile_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 4},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 6},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
+    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    context[__eFolders_1_1] = context[4];
+    context[__eFolders_1_1 + 1] = context[5];
+    context[__eFiles_1_1] = context[6];
+    context[__eFiles_1_1 + 1] = context[7];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4248,10 +4722,10 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_ErrorFile_0, "lambda_Collector_ErrorFile_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_ErrorFile_0, "lambda_Collector_ErrorFile_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -4263,7 +4737,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_close_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, & CompileList, "CompileList" ) )
+    if( ! refalrts::alloc_name( n6, CompileList, "CompileList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_open_bracket( n7 ) )
@@ -4271,10 +4745,10 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_bracket( n8 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     refalrts::push_stack( n5 );
@@ -4282,7 +4756,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -4293,71 +4767,80 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 e.ErrorFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eErrorFile_b_1 = bb_0;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_0;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eFolders_1_1 = 6 };
+    enum { __eFiles_1_1 = 8 };
+    enum { __eErrorFile_1_1 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_ErrorFile_1, (void*) "lambda_Collector_ErrorFile_1"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_Collector_ErrorFile_1, "lambda_Collector_ErrorFile_1" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) e.ErrorFile#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eErrorFile_1_1] = context[0];
+    context[__eErrorFile_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4365,10 +4848,10 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_ErrorFile_1, "lambda_Collector_ErrorFile_1" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_ErrorFile_1, "lambda_Collector_ErrorFile_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -4396,15 +4879,15 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
     res = refalrts::splice_elem( res, n9 );
     refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -4415,75 +4898,94 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    //
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
+    // issue here memory for vars with 2 elems
+    refalrts::Iter context[2];
+    refalrts::zeros( context, 2 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icChar, 0, 0, 'M'},
-      {refalrts::icChar, 0, 0, 'u'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'p'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'd'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'c'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 't'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, 'o'},
-      {refalrts::icChar, 0, 0, 'r'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'g'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'f'},
-      {refalrts::icChar, 0, 0, 'i'},
-      {refalrts::icChar, 0, 0, 'l'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icChar, 0, 0, ' '},
-      {refalrts::icChar, 0, 0, 'n'},
-      {refalrts::icChar, 0, 0, 'a'},
-      {refalrts::icChar, 0, 0, 'm'},
-      {refalrts::icChar, 0, 0, 'e'},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icChar, 0, 'M', 0},
+      {refalrts::icChar, 0, 'u', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'p', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'd', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'c', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 't', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, 'o', 0},
+      {refalrts::icChar, 0, 'r', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'g', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'f', 0},
+      {refalrts::icChar, 0, 'i', 0},
+      {refalrts::icChar, 0, 'l', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icChar, 0, ' ', 0},
+      {refalrts::icChar, 0, 'n', 0},
+      {refalrts::icChar, 0, 'a', 0},
+      {refalrts::icChar, 0, 'm', 0},
+      {refalrts::icChar, 0, 'e', 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    //
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4491,7 +4993,7 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'M' ) )
@@ -4683,7 +5185,9 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -4691,53 +5195,62 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
 static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Command )~2 # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eCommand_b_1 = bb_2;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_2;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 8 elems
+    refalrts::Iter context[8];
+    refalrts::zeros( context, 8 );
+    enum { __eCommand_1_1 = 6 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Command#1 ) # CCompileCommand
+    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.ErrorFile#1
+    context[__eCommand_1_1] = context[4];
+    context[__eCommand_1_1 + 1] = context[5];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -4745,140 +5258,139 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.ErrorFile )~1 (~2 e.Command )~2 # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eErrorFile_b_1 = bb_1;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_1;
-    refalrts::use( eErrorFile_e_1 );
-    eCommand_b_1 = bb_2;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_2;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 8 elems
+    refalrts::Iter context[8];
+    refalrts::zeros( context, 8 );
+    enum { __eErrorFile_1_1 = 6 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier labels[] = {
+      & CErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.ErrorFile#1 ) ( e.Command#1 ) # CErrorFile
+    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eErrorFile_1_1] = context[2];
+    context[__eErrorFile_1_1 + 1] = context[3];
+    // Unused closed variable e.Command#1
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eNewCommand_b_1;
-    refalrts::use( eNewCommand_b_1 );
-    static refalrts::Iter eNewCommand_e_1;
-    refalrts::use( eNewCommand_e_1 );
-    // (~1 e.Command )~1 (~2 e.ErrorFile )~2 (~3 e.Folders )~3 (~4 e.Files )~4 # CAddCompileCommand e.NewCommand
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_3;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_3;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_4;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_4;
-    refalrts::use( eFiles_e_1 );
-    eNewCommand_b_1 = bb_0;
-    refalrts::use( eNewCommand_b_1 );
-    eNewCommand_e_1 = be_0;
-    refalrts::use( eNewCommand_e_1 );
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error_CC, (void*) "Collector_Error_CC"},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error_CC, "Collector_Error_CC" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddCompileCommand e.NewCommand#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Command#1
+    // Unused closed variable e.ErrorFile#1
+    // Unused closed variable e.Folders#1
+    // Unused closed variable e.Files#1
+    // Unused closed variable e.NewCommand#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4886,7 +5398,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error_CC, "Collector_Error_CC" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error_CC, "Collector_Error_CC" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -4903,81 +5415,69 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eNewFile_b_1;
-    refalrts::use( eNewFile_b_1 );
-    static refalrts::Iter eNewFile_e_1;
-    refalrts::use( eNewFile_e_1 );
-    // (~1 e.Command )~1 (~2 e.ErrorFile )~2 (~3 e.Folders )~3 (~4 e.Files )~4 # CAddErrorFile e.NewFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_3;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_3;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_4;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_4;
-    refalrts::use( eFiles_e_1 );
-    eNewFile_b_1 = bb_0;
-    refalrts::use( eNewFile_b_1 );
-    eNewFile_e_1 = be_0;
-    refalrts::use( eNewFile_e_1 );
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error_EF, (void*) "Collector_Error_EF"},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error_EF, "Collector_Error_EF" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddErrorFile e.NewFile#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Command#1
+    // Unused closed variable e.ErrorFile#1
+    // Unused closed variable e.Folders#1
+    // Unused closed variable e.Files#1
+    // Unused closed variable e.NewFile#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -4985,7 +5485,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error_EF, "Collector_Error_EF" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error_EF, "Collector_Error_EF" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5002,96 +5502,99 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.Command )~1 (~2 e.ErrorFile )~2 (~3 e.Folders )~3 (~4 e.Files )~4 # CAddFile e.FileName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_3;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_3;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_4;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_4;
-    refalrts::use( eFiles_e_1 );
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    // issue here memory for vars with 20 elems
+    refalrts::Iter context[20];
+    refalrts::zeros( context, 20 );
+    enum { __eCommand_1_1 = 10 };
+    enum { __eErrorFile_1_1 = 12 };
+    enum { __eFolders_1_1 = 14 };
+    enum { __eFiles_1_1 = 16 };
+    enum { __eFileName_2_1 = 18 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler_ErrorFile, (void*) "Collector_Compiler_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFileName_b_1, & eFileName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 4},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 6},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 8},
+      {refalrts::icContextSet, 0, __eFileName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFile e.FileName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eErrorFile_1_1] = context[4];
+    context[__eErrorFile_1_1 + 1] = context[5];
+    context[__eFolders_1_1] = context[6];
+    context[__eFolders_1_1 + 1] = context[7];
+    context[__eFiles_1_1] = context[8];
+    context[__eFiles_1_1 + 1] = context[9];
+    context[__eFileName_2_1] = context[0];
+    context[__eFileName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5099,7 +5602,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5139,23 +5642,23 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     res = refalrts::splice_elem( res, n12 );
     refalrts::link_brackets( n10, n11 );
     res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n10 );
     refalrts::link_brackets( n8, n9 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n8 );
     refalrts::link_brackets( n4, n7 );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eFileName_b_1, eFileName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFileName_2_1], context[__eFileName_2_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n4 );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -5166,96 +5669,99 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eFolderName_b_1;
-    refalrts::use( eFolderName_b_1 );
-    static refalrts::Iter eFolderName_e_1;
-    refalrts::use( eFolderName_e_1 );
-    // (~1 e.Command )~1 (~2 e.ErrorFile )~2 (~3 e.Folders )~3 (~4 e.Files )~4 # CAddFolder e.FolderName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_3;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_3;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_4;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_4;
-    refalrts::use( eFiles_e_1 );
-    eFolderName_b_1 = bb_0;
-    refalrts::use( eFolderName_b_1 );
-    eFolderName_e_1 = be_0;
-    refalrts::use( eFolderName_e_1 );
+    // issue here memory for vars with 20 elems
+    refalrts::Iter context[20];
+    refalrts::zeros( context, 20 );
+    enum { __eCommand_1_1 = 10 };
+    enum { __eErrorFile_1_1 = 12 };
+    enum { __eFolders_1_1 = 14 };
+    enum { __eFiles_1_1 = 16 };
+    enum { __eFolderName_2_1 = 18 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Compiler_ErrorFile, (void*) "Collector_Compiler_ErrorFile"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolderName_b_1, & eFolderName_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 4},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 6},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 8},
+      {refalrts::icContextSet, 0, __eFolderName_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CAddFolder e.FolderName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eErrorFile_1_1] = context[4];
+    context[__eErrorFile_1_1 + 1] = context[5];
+    context[__eFolders_1_1] = context[6];
+    context[__eFolders_1_1 + 1] = context[7];
+    context[__eFiles_1_1] = context[8];
+    context[__eFiles_1_1 + 1] = context[9];
+    context[__eFolderName_2_1] = context[0];
+    context[__eFolderName_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5263,7 +5769,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -5303,23 +5809,23 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     res = refalrts::splice_elem( res, n12 );
     refalrts::link_brackets( n10, n11 );
     res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n10 );
     refalrts::link_brackets( n8, n9 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n8 );
     refalrts::link_brackets( n6, n7 );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n6 );
     refalrts::link_brackets( n2, n5 );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eFolderName_b_1, eFolderName_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolderName_2_1], context[__eFolderName_2_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -5330,87 +5836,97 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~1 e.Command )~1 (~2 e.ErrorFile )~2 (~3 e.Folders )~3 (~4 e.Files )~4 # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eCommand_b_1 = bb_1;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_1;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_2;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_2;
-    refalrts::use( eErrorFile_e_1 );
-    eFolders_b_1 = bb_3;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_3;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_4;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_4;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 18 elems
+    refalrts::Iter context[18];
+    refalrts::zeros( context, 18 );
+    enum { __eCommand_1_1 = 10 };
+    enum { __eErrorFile_1_1 = 12 };
+    enum { __eFolders_1_1 = 14 };
+    enum { __eFiles_1_1 = 16 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_Compiler_ErrorFile_0, (void*) "lambda_Collector_Compiler_ErrorFile_0"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
-      {refalrts::icFunc, (void*) & CompileList, (void*) "CompileList"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
+    static const refalrts::RefalFunction functions[] = {
+      { CompileList, "CompileList" },
+      { lambda_Collector_Compiler_ErrorFile_0, "lambda_Collector_Compiler_ErrorFile_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icIdentRight, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 2},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 4},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 6},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 8},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
+    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eCommand_1_1] = context[2];
+    context[__eCommand_1_1 + 1] = context[3];
+    context[__eErrorFile_1_1] = context[4];
+    context[__eErrorFile_1_1 + 1] = context[5];
+    context[__eFolders_1_1] = context[6];
+    context[__eFolders_1_1 + 1] = context[7];
+    context[__eFiles_1_1] = context[8];
+    context[__eFiles_1_1 + 1] = context[9];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5418,10 +5934,10 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_Compiler_ErrorFile_0, "lambda_Collector_Compiler_ErrorFile_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_Compiler_ErrorFile_0, "lambda_Collector_Compiler_ErrorFile_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -5439,7 +5955,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     if( ! refalrts::alloc_close_call( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, & CompileList, "CompileList" ) )
+    if( ! refalrts::alloc_name( n8, CompileList, "CompileList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_open_bracket( n9 ) )
@@ -5447,10 +5963,10 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     refalrts::Iter n10 = 0;
     if( ! refalrts::alloc_close_bracket( n10 ) )
       return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     refalrts::link_brackets( n9, n10 );
     res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n9 );
     res = refalrts::splice_elem( res, n8 );
     refalrts::push_stack( n7 );
@@ -5458,11 +5974,11 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -5473,92 +5989,100 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.Folders )~1 (~2 e.Files )~2 (~3 e.Command )~3 (~4 e.ErrorFile )~4
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_3 = 0;
-    refalrts::Iter be_3 = 0;
-    if( ! refalrts::brackets_left( bb_3, be_3, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_4 = 0;
-    refalrts::Iter be_4 = 0;
-    if( ! refalrts::brackets_left( bb_4, be_4, bb_0, be_0 ) )
-      break;
-    if( ! empty_seq( bb_0, be_0 ) )
-      break;
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_2;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_2;
-    refalrts::use( eFiles_e_1 );
-    eCommand_b_1 = bb_3;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_3;
-    refalrts::use( eCommand_e_1 );
-    eErrorFile_b_1 = bb_4;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_4;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 18 elems
+    refalrts::Iter context[18];
+    refalrts::zeros( context, 18 );
+    enum { __eFolders_1_1 = 10 };
+    enum { __eFiles_1_1 = 12 };
+    enum { __eCommand_1_1 = 14 };
+    enum { __eErrorFile_1_1 = 16 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_Compiler_ErrorFile_1, (void*) "lambda_Collector_Compiler_ErrorFile_1"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eCommand_b_1, & eCommand_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eErrorFile_b_1, & eErrorFile_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFolders_b_1, & eFolders_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eFiles_b_1, & eFiles_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_Collector_Compiler_ErrorFile_1, "lambda_Collector_Compiler_ErrorFile_1" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icBracketLeft, 0, 6, 0},
+      {refalrts::icBracketLeft, 0, 8, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eFolders_1_1, 2},
+      {refalrts::icContextSet, 0, __eFiles_1_1, 4},
+      {refalrts::icContextSet, 0, __eCommand_1_1, 6},
+      {refalrts::icContextSet, 0, __eErrorFile_1_1, 8},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Folders#1 ) ( e.Files#1 ) ( e.Command#1 ) ( e.ErrorFile#1 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[6] = 0;
+    context[7] = 0;
+    if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
+      break;
+    context[8] = 0;
+    context[9] = 0;
+    if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eFolders_1_1] = context[2];
+    context[__eFolders_1_1 + 1] = context[3];
+    context[__eFiles_1_1] = context[4];
+    context[__eFiles_1_1 + 1] = context[5];
+    context[__eCommand_1_1] = context[6];
+    context[__eCommand_1_1 + 1] = context[7];
+    context[__eErrorFile_1_1] = context[8];
+    context[__eErrorFile_1_1 + 1] = context[9];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5566,10 +6090,10 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_Compiler_ErrorFile_1, "lambda_Collector_Compiler_ErrorFile_1" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_Compiler_ErrorFile_1, "lambda_Collector_Compiler_ErrorFile_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -5603,19 +6127,19 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
     res = refalrts::splice_elem( res, n11 );
     refalrts::link_brackets( n9, n10 );
     res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_evar( res, eFiles_b_1, eFiles_e_1 );
+    res = refalrts::splice_evar( res, context[__eFiles_1_1], context[__eFiles_1_1 + 1] );
     res = refalrts::splice_elem( res, n9 );
     refalrts::link_brackets( n7, n8 );
     res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, eFolders_b_1, eFolders_e_1 );
+    res = refalrts::splice_evar( res, context[__eFolders_1_1], context[__eFolders_1_1 + 1] );
     res = refalrts::splice_elem( res, n7 );
     refalrts::link_brackets( n5, n6 );
     res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_evar( res, eErrorFile_b_1, eErrorFile_e_1 );
+    res = refalrts::splice_evar( res, context[__eErrorFile_1_1], context[__eErrorFile_1_1 + 1] );
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eCommand_b_1, eCommand_e_1 );
+    res = refalrts::splice_evar( res, context[__eCommand_1_1], context[__eCommand_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -5626,7 +6150,9 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -5634,46 +6160,55 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
 static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eCommand_b_1;
-    refalrts::use( eCommand_b_1 );
-    static refalrts::Iter eCommand_e_1;
-    refalrts::use( eCommand_e_1 );
-    // (~1 e.Message )~1 # CAddCompileCommand e.Command
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, bb_0, be_0 ) )
-      break;
-    eMessage_b_1 = bb_1;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_1;
-    refalrts::use( eMessage_e_1 );
-    eCommand_b_1 = bb_0;
-    refalrts::use( eCommand_b_1 );
-    eCommand_e_1 = be_0;
-    refalrts::use( eCommand_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eMessage_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddCompileCommand<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Message#1 ) # CAddCompileCommand e.Command#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+      break;
+    context[__eMessage_1_1] = context[2];
+    context[__eMessage_1_1 + 1] = context[3];
+    // Unused closed variable e.Command#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5681,7 +6216,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5689,7 +6224,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -5699,46 +6234,55 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eErrorFile_b_1;
-    refalrts::use( eErrorFile_b_1 );
-    static refalrts::Iter eErrorFile_e_1;
-    refalrts::use( eErrorFile_e_1 );
-    // (~1 e.Message )~1 # CAddErrorFile e.ErrorFile
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, bb_0, be_0 ) )
-      break;
-    eMessage_b_1 = bb_1;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_1;
-    refalrts::use( eMessage_e_1 );
-    eErrorFile_b_1 = bb_0;
-    refalrts::use( eErrorFile_b_1 );
-    eErrorFile_e_1 = be_0;
-    refalrts::use( eErrorFile_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eMessage_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddErrorFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Message#1 ) # CAddErrorFile e.ErrorFile#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eMessage_1_1] = context[2];
+    context[__eMessage_1_1 + 1] = context[3];
+    // Unused closed variable e.ErrorFile#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5746,7 +6290,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5754,7 +6298,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -5764,46 +6308,55 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eFileName_b_1;
-    refalrts::use( eFileName_b_1 );
-    static refalrts::Iter eFileName_e_1;
-    refalrts::use( eFileName_e_1 );
-    // (~1 e.Message )~1 # CAddFile e.FileName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, bb_0, be_0 ) )
-      break;
-    eMessage_b_1 = bb_1;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_1;
-    refalrts::use( eMessage_e_1 );
-    eFileName_b_1 = bb_0;
-    refalrts::use( eFileName_b_1 );
-    eFileName_e_1 = be_0;
-    refalrts::use( eFileName_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eMessage_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFile<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Message#1 ) # CAddFile e.FileName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+      break;
+    context[__eMessage_1_1] = context[2];
+    context[__eMessage_1_1 + 1] = context[3];
+    // Unused closed variable e.FileName#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5811,7 +6364,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5819,7 +6372,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -5829,46 +6382,55 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eFolderName_b_1;
-    refalrts::use( eFolderName_b_1 );
-    static refalrts::Iter eFolderName_e_1;
-    refalrts::use( eFolderName_e_1 );
-    // (~1 e.Message )~1 # CAddFolder e.FolderName
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, bb_0, be_0 ) )
-      break;
-    eMessage_b_1 = bb_1;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_1;
-    refalrts::use( eMessage_e_1 );
-    eFolderName_b_1 = bb_0;
-    refalrts::use( eFolderName_b_1 );
-    eFolderName_e_1 = be_0;
-    refalrts::use( eFolderName_e_1 );
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eMessage_1_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & Collector_Error, (void*) "Collector_Error"},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { Collector_Error, "Collector_Error" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CAddFolder<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Message#1 ) # CAddFolder e.FolderName#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+      break;
+    context[__eMessage_1_1] = context[2];
+    context[__eMessage_1_1 + 1] = context[3];
+    // Unused closed variable e.FolderName#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5876,7 +6438,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & Collector_Error, "Collector_Error" ) )
+    if( ! refalrts::alloc_name( n1, Collector_Error, "Collector_Error" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -5884,7 +6446,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -5894,58 +6456,61 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
   } while ( 0 );
 
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    static refalrts::Iter eFolders_b_1;
-    refalrts::use( eFolders_b_1 );
-    static refalrts::Iter eFolders_e_1;
-    refalrts::use( eFolders_e_1 );
-    static refalrts::Iter eFiles_b_1;
-    refalrts::use( eFiles_b_1 );
-    static refalrts::Iter eFiles_e_1;
-    refalrts::use( eFiles_e_1 );
-    // (~2 e.Message )~2 # CGetInfo (~1 e.Folders )~1 e.Files
-    refalrts::Iter bb_2 = 0;
-    refalrts::Iter be_2 = 0;
-    if( ! refalrts::brackets_left( bb_2, be_2, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::ident_left(  & CGetInfo<int>::name, bb_0, be_0 ) )
-      break;
-    refalrts::Iter bb_1 = 0;
-    refalrts::Iter be_1 = 0;
-    if( ! refalrts::brackets_left( bb_1, be_1, bb_0, be_0 ) )
-      break;
-    eMessage_b_1 = bb_2;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_2;
-    refalrts::use( eMessage_e_1 );
-    eFolders_b_1 = bb_1;
-    refalrts::use( eFolders_b_1 );
-    eFolders_e_1 = be_1;
-    refalrts::use( eFolders_e_1 );
-    eFiles_b_1 = bb_0;
-    refalrts::use( eFiles_b_1 );
-    eFiles_e_1 = be_0;
-    refalrts::use( eFiles_e_1 );
+    // issue here memory for vars with 8 elems
+    refalrts::Iter context[8];
+    refalrts::zeros( context, 8 );
+    enum { __eMessage_1_1 = 6 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icFunc, (void*) & CmdLineError, (void*) "CmdLineError"},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
+    static const refalrts::RefalFunction functions[] = {
+      { CmdLineError, "CmdLineError" }
+    };
+    static const refalrts::RefalIdentifier labels[] = {
+      & CGetInfo<int>::name
+    };
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eMessage_1_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // ( e.Message#1 ) # CGetInfo ( e.Folders#2 ) e.Files#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::ident_left(  & CGetInfo<int>::name, context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eMessage_1_1] = context[2];
+    context[__eMessage_1_1 + 1] = context[3];
+    // Unused closed variable e.Folders#2
+    // Unused closed variable e.Files#2
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -5953,14 +6518,14 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & CmdLineError, "CmdLineError" ) )
+    if( ! refalrts::alloc_name( n1, CmdLineError, "CmdLineError" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::link_brackets( n0, n2 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -5969,41 +6534,56 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-    static refalrts::Iter eMessage_b_1;
-    refalrts::use( eMessage_b_1 );
-    static refalrts::Iter eMessage_e_1;
-    refalrts::use( eMessage_e_1 );
-    // e.Message
-    eMessage_b_1 = bb_0;
-    refalrts::use( eMessage_b_1 );
-    eMessage_e_1 = be_0;
-    refalrts::use( eMessage_e_1 );
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    enum { __eMessage_1_1 = 2 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    const static refalrts::ResultAction raa[] = {
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenCall},
-      {refalrts::icFunc, (void*) & refalrts::create_closure, (void*) "refalrts::create_closure"},
-      {refalrts::icFunc, (void*) & lambda_Collector_Error_0, (void*) "lambda_Collector_Error_0"},
-      {refalrts::icBracket, 0, 0, refalrts::ibOpenBracket},
-      {refalrts::icSpliceEVar, & eMessage_b_1, & eMessage_e_1},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseBracket},
-      {refalrts::icBracket, 0, 0, refalrts::ibCloseCall},
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_Collector_Error_0, "lambda_Collector_Error_0" },
+      { refalrts::create_closure, "refalrts::create_closure" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icContextSet, 0, __eMessage_1_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
+    int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array( raa, allocs, arg_begin, arg_end );
-    return res;
+    refalrts::FnResult res = refalrts::interpret_array( 
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
 #else
+    // e.Message#1
+    context[__eMessage_1_1] = context[0];
+    context[__eMessage_1_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -6011,10 +6591,10 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, & refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_name( n1, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, & lambda_Collector_Error_0, "lambda_Collector_Error_0" ) )
+    if( ! refalrts::alloc_name( n2, lambda_Collector_Error_0, "lambda_Collector_Error_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_open_bracket( n3 ) )
@@ -6030,7 +6610,7 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
     res = refalrts::splice_elem( res, n5 );
     refalrts::link_brackets( n3, n4 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, eMessage_b_1, eMessage_e_1 );
+    res = refalrts::splice_evar( res, context[__eMessage_1_1], context[__eMessage_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
@@ -6041,7 +6621,9 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
 #endif
   } while ( 0 );
 
-  return refalrts::cRecognitionImpossible;
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
 }
 
 
