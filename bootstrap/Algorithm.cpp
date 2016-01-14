@@ -140,6 +140,38 @@ extern refalrts::FnResult CmdArrSplice(refalrts::Iter arg_begin, refalrts::Iter 
 extern refalrts::FnResult CmdArrCopy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+//$LABEL Brackets
+template <typename SREFAL_PARAM_INT>
+struct Brackets {
+  static const char *name() {
+    return "Brackets";
+  }
+};
+
+//$LABEL ADT_Brackets
+template <typename SREFAL_PARAM_INT>
+struct ADT_Brackets {
+  static const char *name() {
+    return "ADT_Brackets";
+  }
+};
+
+//$LABEL CallBrackets
+template <typename SREFAL_PARAM_INT>
+struct CallBrackets {
+  static const char *name() {
+    return "CallBrackets";
+  }
+};
+
+//$LABEL CloseCall
+template <typename SREFAL_PARAM_INT>
+struct CloseCall {
+  static const char *name() {
+    return "CloseCall";
+  }
+};
+
 refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -553,7 +585,6 @@ static refalrts::FnResult CmdOpenedE(refalrts::Iter, refalrts::Iter) {
   );
 }
 
-static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -986,30 +1017,6 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-//$LABEL Brackets
-template <typename SREFAL_PARAM_INT>
-struct Brackets {
-  static const char *name() {
-    return "Brackets";
-  }
-};
-
-//$LABEL ADT_Brackets
-template <typename SREFAL_PARAM_INT>
-struct ADT_Brackets {
-  static const char *name() {
-    return "ADT_Brackets";
-  }
-};
-
-//$LABEL CallBrackets
-template <typename SREFAL_PARAM_INT>
-struct CallBrackets {
-  static const char *name() {
-    return "CallBrackets";
-  }
-};
 
 static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -5967,7 +5974,6 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
   );
 }
 
-static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6353,7 +6359,6 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6927,7 +6932,6 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
   );
 }
 
-static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -8713,14 +8717,6 @@ refalrts::FnResult ElCloseCall(refalrts::Iter, refalrts::Iter) {
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-//$LABEL CloseCall
-template <typename SREFAL_PARAM_INT>
-struct CloseCall {
-  static const char *name() {
-    return "CloseCall";
-  }
-};
 
 static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -12327,7 +12323,6 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
   );
 }
 
-static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -14173,7 +14168,6 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
   );
 }
 
-static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -18324,7 +18318,6 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
   );
 }
 
-static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -19609,7 +19602,6 @@ static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter 
   );
 }
 
-static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_OutlineConstants_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {

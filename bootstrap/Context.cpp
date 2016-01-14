@@ -20,6 +20,46 @@ extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+//$LABEL CSuccess
+template <typename SREFAL_PARAM_INT>
+struct CSuccess {
+  static const char *name() {
+    return "CSuccess";
+  }
+};
+
+//$LABEL CInvalidMode
+template <typename SREFAL_PARAM_INT>
+struct CInvalidMode {
+  static const char *name() {
+    return "CInvalidMode";
+  }
+};
+
+//$LABEL CAlreadyBounded
+template <typename SREFAL_PARAM_INT>
+struct CAlreadyBounded {
+  static const char *name() {
+    return "CAlreadyBounded";
+  }
+};
+
+//$LABEL CExistVariable
+template <typename SREFAL_PARAM_INT>
+struct CExistVariable {
+  static const char *name() {
+    return "CExistVariable";
+  }
+};
+
+//$LABEL CNotFound
+template <typename SREFAL_PARAM_INT>
+struct CNotFound {
+  static const char *name() {
+    return "CNotFound";
+  }
+};
+
 static refalrts::FnResult Context(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::FnResult(
@@ -174,22 +214,6 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-//$LABEL CSuccess
-template <typename SREFAL_PARAM_INT>
-struct CSuccess {
-  static const char *name() {
-    return "CSuccess";
-  }
-};
-
-//$LABEL CInvalidMode
-template <typename SREFAL_PARAM_INT>
-struct CInvalidMode {
-  static const char *name() {
-    return "CInvalidMode";
-  }
-};
 
 refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -1150,15 +1174,6 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
   );
 }
 
-//$LABEL CAlreadyBounded
-template <typename SREFAL_PARAM_INT>
-struct CAlreadyBounded {
-  static const char *name() {
-    return "CAlreadyBounded";
-  }
-};
-
-extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -1979,22 +1994,6 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-//$LABEL CExistVariable
-template <typename SREFAL_PARAM_INT>
-struct CExistVariable {
-  static const char *name() {
-    return "CExistVariable";
-  }
-};
-
-//$LABEL CNotFound
-template <typename SREFAL_PARAM_INT>
-struct CNotFound {
-  static const char *name() {
-    return "CNotFound";
-  }
-};
 
 refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();

@@ -971,7 +971,6 @@ refalrts::FnResult EL_HasErrors(refalrts::Iter, refalrts::Iter) {
   );
 }
 
-extern refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_EL_Destroy_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {

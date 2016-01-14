@@ -592,7 +592,6 @@ refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   );
 }
 
-extern refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_Y_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -5669,7 +5668,6 @@ static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_en
   );
 }
 
-extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_Seq_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {

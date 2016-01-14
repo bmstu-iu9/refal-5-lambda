@@ -417,7 +417,6 @@ static refalrts::FnResult OctDigit(refalrts::Iter arg_begin, refalrts::Iter arg_
   );
 }
 
-extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult lambda_EscapeChar_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
