@@ -290,3 +290,32 @@ $ENTRY Seq {
 
   /* пусто */ = { e.Arg = e.Arg; };
 }
+
+$ENTRY Sort {
+  /* пусто */ = /* пусто */;
+
+  t.Pivot e.Items =
+    <Fetch
+      e.Items
+      <Seq
+        (Reduce
+          {
+            ((e.Less) (e.Equal) (e.Greater)) t.Next =
+              <Fetch
+                <Compare t.Next t.Pivot>
+                {
+                  '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
+                  '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
+                  '>' = ((e.Less) (e.Equal) (e.Greater t.Next));
+                }
+              >;
+          }
+          ( (/* less */) (t.Pivot /* equal */) (/* greater */) )
+        )
+        {
+          ((e.Less) (e.Equal) (e.Greater)) =
+            <Sort e.Less> e.Equal <Sort e.Greater>;
+        }
+      >
+    >;
+}
