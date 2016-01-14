@@ -2,13 +2,13 @@
 #include "refalrts.h"
 
 
+extern refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Div(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult OctDigit(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult OctDigit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();

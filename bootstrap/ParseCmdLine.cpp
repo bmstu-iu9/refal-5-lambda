@@ -2,43 +2,19 @@
 #include "refalrts.h"
 
 
-static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult CmdLineError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult CompileToTarget(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult CompileList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CompileToTarget(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-//$LABEL CCompileCommand
-template <typename SREFAL_PARAM_INT>
-struct CCompileCommand {
-  static const char *name() {
-    return "CCompileCommand";
-  }
-};
-
-//$LABEL CErrorFile
-template <typename SREFAL_PARAM_INT>
-struct CErrorFile {
-  static const char *name() {
-    return "CErrorFile";
-  }
-};
-
-//$LABEL CNone
-template <typename SREFAL_PARAM_INT>
-struct CNone {
-  static const char *name() {
-    return "CNone";
-  }
-};
+static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CAddCompileCommand
 template <typename SREFAL_PARAM_INT>
@@ -56,14 +32,6 @@ struct CAddErrorFile {
   }
 };
 
-//$LABEL CGetInfo
-template <typename SREFAL_PARAM_INT>
-struct CGetInfo {
-  static const char *name() {
-    return "CGetInfo";
-  }
-};
-
 //$LABEL CAddFile
 template <typename SREFAL_PARAM_INT>
 struct CAddFile {
@@ -77,6 +45,38 @@ template <typename SREFAL_PARAM_INT>
 struct CAddFolder {
   static const char *name() {
     return "CAddFolder";
+  }
+};
+
+//$LABEL CCompileCommand
+template <typename SREFAL_PARAM_INT>
+struct CCompileCommand {
+  static const char *name() {
+    return "CCompileCommand";
+  }
+};
+
+//$LABEL CErrorFile
+template <typename SREFAL_PARAM_INT>
+struct CErrorFile {
+  static const char *name() {
+    return "CErrorFile";
+  }
+};
+
+//$LABEL CGetInfo
+template <typename SREFAL_PARAM_INT>
+struct CGetInfo {
+  static const char *name() {
+    return "CGetInfo";
+  }
+};
+
+//$LABEL CNone
+template <typename SREFAL_PARAM_INT>
+struct CNone {
+  static const char *name() {
+    return "CNone";
   }
 };
 

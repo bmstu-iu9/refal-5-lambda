@@ -2,39 +2,23 @@
 #include "refalrts.h"
 
 
-static refalrts::FnResult Context(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult FreeVarsSent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult FreeVarsFunc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-//$LABEL CSuccess
-template <typename SREFAL_PARAM_INT>
-struct CSuccess {
-  static const char *name() {
-    return "CSuccess";
-  }
-};
-
-//$LABEL CInvalidMode
-template <typename SREFAL_PARAM_INT>
-struct CInvalidMode {
-  static const char *name() {
-    return "CInvalidMode";
-  }
-};
+extern refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Context(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult FreeVarsFunc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult FreeVarsSent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CAlreadyBounded
 template <typename SREFAL_PARAM_INT>
@@ -52,11 +36,27 @@ struct CExistVariable {
   }
 };
 
+//$LABEL CInvalidMode
+template <typename SREFAL_PARAM_INT>
+struct CInvalidMode {
+  static const char *name() {
+    return "CInvalidMode";
+  }
+};
+
 //$LABEL CNotFound
 template <typename SREFAL_PARAM_INT>
 struct CNotFound {
   static const char *name() {
     return "CNotFound";
+  }
+};
+
+//$LABEL CSuccess
+template <typename SREFAL_PARAM_INT>
+struct CSuccess {
+  static const char *name() {
+    return "CSuccess";
   }
 };
 

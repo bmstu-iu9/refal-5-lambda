@@ -2,22 +2,22 @@
 #include "refalrts.h"
 
 
-extern refalrts::FnResult Source(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Output(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult NotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult Current(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult False(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult NotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Output(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Source(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult True(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult True(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult False(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Current(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 refalrts::FnResult Source(refalrts::Iter, refalrts::Iter) {
