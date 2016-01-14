@@ -3,18 +3,111 @@
 
 
 extern refalrts::FnResult Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Fails(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
+extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_CheckUnresolved(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_HasErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_NoErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult PrepareBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_AllFunctions(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Enum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Extern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Forward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Swap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Ident(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkSemicolon(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GN_Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GN_Local(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenCommonHeaders(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenCommonTailer(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenForward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenEEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenSwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DontGen(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkComma(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenFnStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenFnEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult GenFnEnd_Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult GenFunctionBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CreateLambdaName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ResolveLambdaName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CreateContext(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkReplace(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CheckAddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StrFromBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkIdentMarker(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkRedefinition(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkIdentifier(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult InvalidModeVariableError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CheckUseVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ParseResult_Block(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+extern refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult lambda_CompileFile_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
@@ -22,7 +115,7 @@ refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter context[8];
     refalrts::zeros( context, 8 );
     enum { __eSrcName_1_1 = 4 };
-    enum { __eOutputName_1_1 = 6 };
+    enum { __eLexFolding_2_1 = 6 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -30,10 +123,585 @@ refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { LexFolding, "LexFolding" },
+      { ST_Create, "ST_Create" },
+      { EL_Create, "EL_Create" },
+      { ParseElements, "ParseElements" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eSrcName_1_1, 2},
+      {refalrts::icContextSet, 0, __eLexFolding_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceEVar, 0, __eSrcName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eLexFolding_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.SrcName#1 ) e.LexFolding#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eSrcName_1_1] = context[2];
+    context[__eSrcName_1_1 + 1] = context[3];
+    context[__eLexFolding_2_1] = context[0];
+    context[__eLexFolding_2_1 + 1] = context[1];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_name( n3, EL_Create, "EL_Create" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_open_call( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_name( n6, ST_Create, "ST_Create" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_open_bracket( n8 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_bracket( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_close_call( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n10 );
+    res = refalrts::splice_evar( res, context[__eLexFolding_2_1], context[__eLexFolding_2_1 + 1] );
+    refalrts::link_brackets( n8, n9 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_elem( res, n8 );
+    refalrts::push_stack( n7 );
+    refalrts::push_stack( n5 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_evar( res, context[__eSrcName_1_1], context[__eSrcName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+static refalrts::FnResult lambda_CompileFile_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __tErrorList_2_1 = 2 };
+    enum { __tSymTable_2_1 = 3 };
+    enum { __eLines_2_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { ST_CheckUnresolved, "ST_CheckUnresolved" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::ictVarLeft, 0, __tErrorList_2_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_2_1, 0},
+      {refalrts::icContextSet, 0, __eLines_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eLines_2_1, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // t.ErrorList#2 t.SymTable#2 e.Lines#2
+    if( ! refalrts::tvar_left( context[__tErrorList_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::tvar_left( context[__tSymTable_2_1], context[0], context[1] ) )
+      break;
+    context[__eLines_2_1] = context[0];
+    context[__eLines_2_1 + 1] = context[1];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, ST_CheckUnresolved, "ST_CheckUnresolved" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_evar( res, context[__eLines_2_1], context[__eLines_2_1 + 1] );
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
+    res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+static refalrts::FnResult lambda_CompileFile_2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eOutputName_1_1 = 6 };
+    enum { __eLines_2_1 = 8 };
+    enum { __eOutputName_1_2 = 10 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { Success, "Success" },
+      { SaveFile, "SaveFile" },
+      { EL_NoErrors, "EL_NoErrors" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icFuncRight, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eOutputName_1_1, 2},
+      {refalrts::icContextSet, 0, __eLines_2_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eLines_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icCopyEVar, 0, __eOutputName_1_1, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.OutputName#1 ) ( e.Lines#2 ) & EL_NoErrors
+    if( ! refalrts::function_right( EL_NoErrors, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eOutputName_1_1] = context[2];
+    context[__eOutputName_1_1 + 1] = context[3];
+    context[__eLines_2_1] = context[4];
+    context[__eLines_2_1 + 1] = context[5];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_evar( context[__eOutputName_1_2], context[__eOutputName_1_2 + 1], context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, SaveFile, "SaveFile" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_name( n5, Success, "Success" ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_evar( res, context[__eOutputName_1_2], context[__eOutputName_1_2 + 1] );
+    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_evar( res, context[__eLines_2_1], context[__eLines_2_1 + 1] );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { Fails, "Fails" },
+      { EL_HasErrors, "EL_HasErrors" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icFuncRight, 0, 1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.OutputName#1 ) ( e.Lines#2 ) & EL_HasErrors
+    if( ! refalrts::function_right( EL_HasErrors, context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.OutputName#1
+    // Unused closed variable e.Lines#2
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_name( n0, Fails, "Fails" ) )
+      return refalrts::cNoMemory;
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+static refalrts::FnResult lambda_CompileFile_3(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
+    enum { __eOutputName_1_1 = 4 };
+    enum { __tErrorList_2_1 = 6 };
+    enum { __tSymTable_2_1 = 7 };
+    enum { __eLines_2_1 = 8 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_CompileFile_2, "lambda_CompileFile_2" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { EL_Destroy, "EL_Destroy" },
+      { Fetch, "Fetch" },
+      { ST_Destroy, "ST_Destroy" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eOutputName_1_1, 2},
+      {refalrts::ictVarLeft, 0, __tErrorList_2_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_2_1, 0},
+      {refalrts::icContextSet, 0, __eLines_2_1, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eLines_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( e.OutputName#1 ) t.ErrorList#2 t.SymTable#2 e.Lines#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eOutputName_1_1] = context[2];
+    context[__eOutputName_1_1 + 1] = context[3];
+    if( ! refalrts::tvar_left( context[__tErrorList_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::tvar_left( context[__tSymTable_2_1], context[0], context[1] ) )
+      break;
+    context[__eLines_2_1] = context[0];
+    context[__eLines_2_1 + 1] = context[1];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, ST_Destroy, "ST_Destroy" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_open_call( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_name( n4, Fetch, "Fetch" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_open_call( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_name( n6, EL_Destroy, "EL_Destroy" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_open_call( n8 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_name( n9, refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_name( n10, lambda_CompileFile_2, "lambda_CompileFile_2" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_open_bracket( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_close_bracket( n12 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_open_bracket( n13 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_close_bracket( n14 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_close_call( n15 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_close_call( n16 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n16 );
+    refalrts::push_stack( n3 );
+    res = refalrts::splice_elem( res, n16 );
+    refalrts::push_stack( n15 );
+    refalrts::push_stack( n8 );
+    res = refalrts::splice_elem( res, n15 );
+    refalrts::link_brackets( n13, n14 );
+    res = refalrts::splice_elem( res, n14 );
+    res = refalrts::splice_evar( res, context[__eLines_2_1], context[__eLines_2_1 + 1] );
+    res = refalrts::splice_elem( res, n13 );
+    refalrts::link_brackets( n11, n12 );
+    res = refalrts::splice_elem( res, n12 );
+    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_elem( res, n10 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_elem( res, n8 );
+    refalrts::push_stack( n7 );
+    refalrts::push_stack( n5 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n3 );
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 10 elems
+    refalrts::Iter context[10];
+    refalrts::zeros( context, 10 );
+    enum { __eSrcName_1_1 = 4 };
+    enum { __eOutputName_1_1 = 6 };
+    enum { __eSrcName_1_2 = 8 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_CompileFile_3, "lambda_CompileFile_3" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { lambda_CompileFile_1, "lambda_CompileFile_1" },
+      { lambda_CompileFile_0, "lambda_CompileFile_0" },
       { PrepareBracket, "PrepareBracket" },
       { Map, "Map" },
-      { ParseAndGenerate, "ParseAndGenerate" }
+      { Seq, "Seq" },
+      { LexFolding, "LexFolding" },
+      { Fetch, "Fetch" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -43,16 +711,31 @@ refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eOutputName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 8, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 7, 0},
+      {refalrts::icSpliceEVar, 0, __eSrcName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 6, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icFunc, 0, 5, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icCopyEVar, 0, __eSrcName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eSrcName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
@@ -81,60 +764,125 @@ refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_evar( context[__eSrcName_1_2], context[__eSrcName_1_2 + 1], context[__eSrcName_1_1], context[__eSrcName_1_1 + 1] ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseAndGenerate, "ParseAndGenerate" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_bracket( n2 ) )
+    if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_close_bracket( n3 ) )
+    if( ! refalrts::alloc_name( n3, LexFolding, "LexFolding" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_open_call( n4 ) )
+    if( ! refalrts::alloc_close_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, Map, "Map" ) )
+    if( ! refalrts::alloc_open_call( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, PrepareBracket, "PrepareBracket" ) )
+    if( ! refalrts::alloc_name( n6, Seq, "Seq" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_open_call( n7 ) )
+    if( ! refalrts::alloc_open_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, LexFolding, "LexFolding" ) )
+    if( ! refalrts::alloc_name( n8, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_close_call( n9 ) )
+    if( ! refalrts::alloc_name( n9, PrepareBracket, "PrepareBracket" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_close_call( n10 ) )
+    if( ! refalrts::alloc_close_bracket( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_close_call( n11 ) )
+    if( ! refalrts::alloc_open_call( n11 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n11 );
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_name( n12, refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_name( n13, lambda_CompileFile_0, "lambda_CompileFile_0" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_open_bracket( n14 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_close_bracket( n15 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_close_call( n16 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n17 = 0;
+    if( ! refalrts::alloc_name( n17, lambda_CompileFile_1, "lambda_CompileFile_1" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n18 = 0;
+    if( ! refalrts::alloc_open_call( n18 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n19 = 0;
+    if( ! refalrts::alloc_name( n19, refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n20 = 0;
+    if( ! refalrts::alloc_name( n20, lambda_CompileFile_3, "lambda_CompileFile_3" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n21 = 0;
+    if( ! refalrts::alloc_open_bracket( n21 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n22 = 0;
+    if( ! refalrts::alloc_close_bracket( n22 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n23 = 0;
+    if( ! refalrts::alloc_close_call( n23 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n24 = 0;
+    if( ! refalrts::alloc_close_call( n24 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n25 = 0;
+    if( ! refalrts::alloc_close_call( n25 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n25 );
     refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n25 );
+    refalrts::push_stack( n24 );
+    refalrts::push_stack( n5 );
+    res = refalrts::splice_elem( res, n24 );
+    refalrts::push_stack( n23 );
+    refalrts::push_stack( n18 );
+    res = refalrts::splice_elem( res, n23 );
+    refalrts::link_brackets( n21, n22 );
+    res = refalrts::splice_elem( res, n22 );
+    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n21 );
+    res = refalrts::splice_elem( res, n20 );
+    res = refalrts::splice_elem( res, n19 );
+    res = refalrts::splice_elem( res, n18 );
+    res = refalrts::splice_elem( res, n17 );
+    refalrts::push_stack( n16 );
+    refalrts::push_stack( n11 );
+    res = refalrts::splice_elem( res, n16 );
+    refalrts::link_brackets( n14, n15 );
+    res = refalrts::splice_elem( res, n15 );
+    res = refalrts::splice_evar( res, context[__eSrcName_1_2], context[__eSrcName_1_2 + 1] );
+    res = refalrts::splice_elem( res, n14 );
+    res = refalrts::splice_elem( res, n13 );
+    res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_elem( res, n11 );
-    refalrts::push_stack( n10 );
-    refalrts::push_stack( n4 );
+    refalrts::link_brackets( n7, n10 );
     res = refalrts::splice_elem( res, n10 );
-    refalrts::push_stack( n9 );
-    refalrts::push_stack( n7 );
     res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, context[__eSrcName_1_1], context[__eSrcName_1_1 + 1] );
     res = refalrts::splice_elem( res, n8 );
     res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n2 );
     res = refalrts::splice_elem( res, n4 );
-    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_evar( res, context[__eSrcName_1_1], context[__eSrcName_1_1 + 1] );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
@@ -148,18 +896,6 @@ refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL COpen
 template <typename SREFAL_PARAM_INT>
@@ -736,55 +1472,15 @@ static refalrts::FnResult PrepareBracket(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-extern refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_AddDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_Print(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_IsEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_HasErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EL_NoErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenCommonHeaders(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+static refalrts::FnResult lambda_ParseElements_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 8 elems
-    refalrts::Iter context[8];
-    refalrts::zeros( context, 8 );
-    enum { __eOutputName_1_1 = 4 };
-    enum { __eLexFolding_1_1 = 6 };
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eName_2_1 = 4 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -792,37 +1488,20 @@ static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { ST_Create, "ST_Create" },
-      { EL_Create, "EL_Create" },
-      { ParseElements, "ParseElements" },
-      { GenCommonHeaders, "GenCommonHeaders" },
-      { WriteGenerated, "WriteGenerated" }
+      { GenExtern, "GenExtern" },
+      { GN_Entry, "GN_Entry" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icContextSet, 0, __eOutputName_1_1, 2},
-      {refalrts::icContextSet, 0, __eLexFolding_1_1, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eName_2_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 4, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 3, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icSpliceEVar, 0, __eLexFolding_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
@@ -837,15 +1516,17 @@ static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::I
     else
       return res;
 #else
-    // ( e.OutputName#1 ) e.LexFolding#1
+    // ( & GN_Entry e.Name#2 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    context[__eOutputName_1_1] = context[2];
-    context[__eOutputName_1_1 + 1] = context[3];
-    context[__eLexFolding_1_1] = context[0];
-    context[__eLexFolding_1_1 + 1] = context[1];
+    if( ! refalrts::function_left( GN_Entry, context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eName_2_1] = context[2];
+    context[__eName_2_1 + 1] = context[3];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -853,81 +1534,91 @@ static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::I
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, WriteGenerated, "WriteGenerated" ) )
+    if( ! refalrts::alloc_name( n1, GenExtern, "GenExtern" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_bracket( n2 ) )
+    if( ! refalrts::alloc_close_call( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_close_bracket( n3 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_open_call( n4 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, GenCommonHeaders, "GenCommonHeaders" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_close_call( n6 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_open_call( n7 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, ParseElements, "ParseElements" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_open_call( n9 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_name( n10, EL_Create, "EL_Create" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_close_call( n11 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_open_call( n12 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_name( n13, ST_Create, "ST_Create" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_close_call( n14 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_close_call( n15 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_close_call( n16 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n16 );
+    refalrts::push_stack( n2 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n16 );
-    refalrts::push_stack( n15 );
-    refalrts::push_stack( n7 );
-    res = refalrts::splice_elem( res, n15 );
-    res = refalrts::splice_evar( res, context[__eLexFolding_1_1], context[__eLexFolding_1_1 + 1] );
-    refalrts::push_stack( n14 );
-    refalrts::push_stack( n12 );
-    res = refalrts::splice_elem( res, n14 );
-    res = refalrts::splice_elem( res, n13 );
-    res = refalrts::splice_elem( res, n12 );
-    refalrts::push_stack( n11 );
-    refalrts::push_stack( n9 );
-    res = refalrts::splice_elem( res, n11 );
-    res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_elem( res, n7 );
-    refalrts::push_stack( n6 );
-    refalrts::push_stack( n4 );
-    res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_elem( res, n5 );
-    res = refalrts::splice_elem( res, n4 );
-    refalrts::link_brackets( n2, n3 );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, context[__eName_2_1], context[__eName_2_1 + 1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eName_2_1 = 4 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { GenForward, "GenForward" },
+      { GN_Local, "GN_Local" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icContextSet, 0, __eName_2_1, 2},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eName_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( & GN_Local e.Name#2 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( GN_Local, context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    context[__eName_2_1] = context[2];
+    context[__eName_2_1 + 1] = context[3];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, GenForward, "GenForward" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_evar( res, context[__eName_2_1], context[__eName_2_1 + 1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -941,16 +1632,18 @@ static refalrts::FnResult ParseAndGenerate(refalrts::Iter arg_begin, refalrts::I
   );
 }
 
-static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+static refalrts::FnResult lambda_ParseElements_1(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 10 elems
-    refalrts::Iter context[10];
-    refalrts::zeros( context, 10 );
-    enum { __eOutputName_1_1 = 4 };
-    enum { __eLines_1_1 = 6 };
-    enum { __eOutputName_1_2 = 8 };
+    // issue here memory for vars with 14 elems
+    refalrts::Iter context[14];
+    refalrts::zeros( context, 14 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __eNewGenerated_2_1 = 8 };
+    enum { __tErrorList_2_1 = 10 };
+    enum { __tSymTable_2_1 = 11 };
+    enum { __eTail_2_1 = 12 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -958,27 +1651,29 @@ static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Success, "Success" },
-      { SaveFile, "SaveFile" },
-      { EL_NoErrors, "EL_NoErrors" }
+      { ParseElements, "ParseElements" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncRight, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icContextSet, 0, __eOutputName_1_1, 2},
-      {refalrts::icContextSet, 0, __eLines_1_1, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
+      {refalrts::icContextSet, 0, __eNewGenerated_2_1, 4},
+      {refalrts::ictVarLeft, 0, __tErrorList_2_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_2_1, 0},
+      {refalrts::icContextSet, 0, __eTail_2_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eLines_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icCopyEVar, 0, __eOutputName_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icSpliceEVar, 0, __eNewGenerated_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eTail_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -992,27 +1687,33 @@ static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( e.OutputName#1 ) e.Lines#1 & EL_NoErrors
-    if( ! refalrts::function_right( EL_NoErrors, context[0], context[1] ) )
-      break;
+    // ( e.Generated#1 ) ( e.NewGenerated#2 ) t.ErrorList#2 t.SymTable#2 e.Tail#2
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    context[__eOutputName_1_1] = context[2];
-    context[__eOutputName_1_1 + 1] = context[3];
-    context[__eLines_1_1] = context[0];
-    context[__eLines_1_1 + 1] = context[1];
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
+    context[__eNewGenerated_2_1] = context[4];
+    context[__eNewGenerated_2_1 + 1] = context[5];
+    if( ! refalrts::tvar_left( context[__tErrorList_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::tvar_left( context[__tSymTable_2_1], context[0], context[1] ) )
+      break;
+    context[__eTail_2_1] = context[0];
+    context[__eTail_2_1 + 1] = context[1];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( context[__eOutputName_1_2], context[__eOutputName_1_2 + 1], context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] ) )
-      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, SaveFile, "SaveFile" ) )
+    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -1023,77 +1724,18 @@ static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, Success, "Success" ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_evar( res, context[__eOutputName_1_2], context[__eOutputName_1_2 + 1] );
-    res = refalrts::splice_elem( res, n5 );
     refalrts::push_stack( n4 );
     refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, context[__eLines_1_1], context[__eLines_1_1 + 1] );
+    res = refalrts::splice_evar( res, context[__eTail_2_1], context[__eTail_2_1 + 1] );
     refalrts::link_brackets( n2, n3 );
     res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_evar( res, context[__eOutputName_1_1], context[__eOutputName_1_1 + 1] );
+    res = refalrts::splice_evar( res, context[__eNewGenerated_2_1], context[__eNewGenerated_2_1 + 1] );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
     res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
+    res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
     res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    refalrts::start_sentence();
-    // issue here memory for vars with 4 elems
-    refalrts::Iter context[4];
-    refalrts::zeros( context, 4 );
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Fails, "Fails" },
-      { EL_HasErrors, "EL_HasErrors" }
-    };
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncRight, 0, 1, 0},
-      {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array(
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // ( e.OutputName#1 ) e.Lines#1 & EL_HasErrors
-    if( ! refalrts::function_right( EL_HasErrors, context[0], context[1] ) )
-      break;
-    context[2] = 0;
-    context[3] = 0;
-    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
-      break;
-    // Unused closed variable e.OutputName#1
-    // Unused closed variable e.Lines#1
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, Fails, "Fails" ) )
-      return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -1106,50 +1748,18 @@ static refalrts::FnResult WriteGenerated(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-extern refalrts::FnResult TkDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Enum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult EEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Extern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Forward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Swap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Ident(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkSemicolon(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GN_Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GN_Local(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenCommonTailer(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+static refalrts::FnResult lambda_ParseElements_2(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 7 elems
-    refalrts::Iter context[7];
-    refalrts::zeros( context, 7 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __sLnNum_1_1 = 5 };
-    enum { __tSymTable_1_1 = 6 };
+    // issue here memory for vars with 14 elems
+    refalrts::Iter context[14];
+    refalrts::zeros( context, 14 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __eNewGenerated_2_1 = 8 };
+    enum { __tErrorList_2_1 = 10 };
+    enum { __tSymTable_2_1 = 11 };
+    enum { __eTail_2_1 = 12 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1157,31 +1767,28 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_Print, "EL_Print" },
-      { EL_IsEmpty, "EL_IsEmpty" },
-      { GenCommonTailer, "GenCommonTailer" },
-      { TkEOF, "TkEOF" }
+      { ParseElements, "ParseElements" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icBracketRight, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 3, 2},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 2},
-      {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
-      {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
-      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
+      {refalrts::icContextSet, 0, __eNewGenerated_2_1, 4},
+      {refalrts::ictVarLeft, 0, __tErrorList_2_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_2_1, 0},
+      {refalrts::icContextSet, 0, __eTail_2_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icSpliceEVar, 0, __eNewGenerated_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eTail_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
@@ -1196,13 +1803,151 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 ( & TkEOF s.LnNum#1 )
+    // ( e.Generated#1 ) ( e.NewGenerated#2 ) t.ErrorList#2 t.SymTable#2 e.Tail#2
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
+    context[__eNewGenerated_2_1] = context[4];
+    context[__eNewGenerated_2_1 + 1] = context[5];
+    if( ! refalrts::tvar_left( context[__tErrorList_2_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::tvar_left( context[__tSymTable_2_1], context[0], context[1] ) )
+      break;
+    context[__eTail_2_1] = context[0];
+    context[__eTail_2_1 + 1] = context[1];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_evar( res, context[__eTail_2_1], context[__eTail_2_1 + 1] );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eNewGenerated_2_1], context[__eNewGenerated_2_1 + 1] );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
+    res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
+
+static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 12 elems
+    refalrts::Iter context[12];
+    refalrts::zeros( context, 12 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __tErrorList_1_1 = 8 };
+    enum { __tSymTable_1_1 = 9 };
+    enum { __sLnNum_1_1 = 10 };
+    enum { __tSymTable_1_2 = 11 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { GenCommonTailer, "GenCommonTailer" },
+      { ST_AllFunctions, "ST_AllFunctions" },
+      { lambda_ParseElements_0, "lambda_ParseElements_0" },
+      { Map, "Map" },
+      { GenCommonHeaders, "GenCommonHeaders" },
+      { TkEOF, "TkEOF" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketRight, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 5, 2},
+      {refalrts::icBracketRight, 0, 4, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 4},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
+      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icCopySTVar, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // t.ErrorList#1 t.SymTable#1 ( e.Generated#1 ) ( & TkEOF s.LnNum#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
     if( ! refalrts::function_left( TkEOF, context[2], context[3] ) )
       break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_right( context[4], context[5], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[4];
+    context[__eGenerated_1_1 + 1] = context[5];
     if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[2], context[3] ) )
@@ -1216,11 +1961,13 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_stvar( context[__tSymTable_1_2], context[__tSymTable_1_1] ) )
+      return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, GenCommonTailer, "GenCommonTailer" ) )
+    if( ! refalrts::alloc_name( n1, GenCommonHeaders, "GenCommonHeaders" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1229,27 +1976,55 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, EL_IsEmpty, "EL_IsEmpty" ) )
+    if( ! refalrts::alloc_name( n4, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_open_call( n5 ) )
+    if( ! refalrts::alloc_name( n5, lambda_ParseElements_0, "lambda_ParseElements_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, EL_Print, "EL_Print" ) )
+    if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_close_call( n7 ) )
+    if( ! refalrts::alloc_name( n7, ST_AllFunctions, "ST_AllFunctions" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
     if( ! refalrts::alloc_close_call( n8 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n8 );
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_call( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_open_bracket( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_close_bracket( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_open_call( n12 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_name( n13, GenCommonTailer, "GenCommonTailer" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_close_call( n14 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n14 );
+    refalrts::push_stack( n12 );
+    res = refalrts::splice_elem( res, n14 );
+    res = refalrts::splice_elem( res, n13 );
+    res = refalrts::splice_elem( res, n12 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    refalrts::link_brackets( n10, n11 );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_elem( res, n10 );
+    refalrts::push_stack( n9 );
     refalrts::push_stack( n3 );
+    res = refalrts::splice_elem( res, n9 );
+    refalrts::push_stack( n8 );
+    refalrts::push_stack( n6 );
     res = refalrts::splice_elem( res, n8 );
-    refalrts::push_stack( n7 );
-    refalrts::push_stack( n5 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_1_2] );
     res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
@@ -1259,6 +2034,8 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
+    res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;
@@ -1267,14 +2044,15 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
 
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 10 elems
-    refalrts::Iter context[10];
-    refalrts::zeros( context, 10 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __eTail_1_1 = 6 };
-    enum { __sDirective_1_1 = 8 };
-    enum { __sLnNum_1_1 = 9 };
+    // issue here memory for vars with 14 elems
+    refalrts::Iter context[14];
+    refalrts::zeros( context, 14 );
+    enum { __tErrorList_1_1 = 6 };
+    enum { __tSymTable_1_1 = 7 };
+    enum { __eGenerated_1_1 = 8 };
+    enum { __eTail_1_1 = 10 };
+    enum { __sDirective_1_1 = 12 };
+    enum { __sLnNum_1_1 = 13 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1282,7 +2060,10 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
+      { lambda_ParseElements_1, "lambda_ParseElements_1" },
+      { refalrts::create_closure, "refalrts::create_closure" },
       { ParseElement_SwDirective, "ParseElement_SwDirective" },
+      { Fetch, "Fetch" },
       { TkDirective, "TkDirective" }
     };
     using refalrts::labels;
@@ -1291,18 +2072,30 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 4, 4},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icsVarLeft, 0, __sDirective_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icsVarLeft, 0, __sDirective_1_1, 4},
+      {refalrts::icEmpty, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __sDirective_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
@@ -1317,7 +2110,7 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 ( & TkDirective s.LnNum#1 s.Directive#1 ) e.Tail#1
+    // t.ErrorList#1 t.SymTable#1 ( e.Generated#1 ) ( & TkDirective s.LnNum#1 s.Directive#1 ) e.Tail#1
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -1326,15 +2119,21 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkDirective, context[2], context[3] ) )
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
+    if( ! refalrts::function_left( TkDirective, context[4], context[5] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
       break;
-    if( ! refalrts::svar_left( context[__sDirective_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sDirective_1_1], context[4], context[5] ) )
       break;
-    if( ! refalrts::empty_seq( context[2], context[3] ) )
+    if( ! refalrts::empty_seq( context[4], context[5] ) )
       break;
 
     refalrts::reset_allocator();
@@ -1343,18 +2142,266 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElement_SwDirective, "ParseElement_SwDirective" ) )
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_call( n2 ) )
+    if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n2 );
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_name( n3, ParseElement_SwDirective, "ParseElement_SwDirective" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_open_call( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_name( n6, refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_name( n7, lambda_ParseElements_1, "lambda_ParseElements_1" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_open_bracket( n8 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_close_bracket( n9 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_close_call( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_close_call( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n11 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n11 );
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n5 );
+    res = refalrts::splice_elem( res, n10 );
+    refalrts::link_brackets( n8, n9 );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__sDirective_1_1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 17 elems
+    refalrts::Iter context[17];
+    refalrts::zeros( context, 17 );
+    enum { __tErrorList_1_1 = 6 };
+    enum { __tSymTable_1_1 = 7 };
+    enum { __eGenerated_1_1 = 8 };
+    enum { __eTail_1_1 = 10 };
+    enum { __sLnNum_1_1 = 12 };
+    enum { __eName_1_1 = 13 };
+    enum { __eName_1_2 = 15 };
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { lambda_ParseElements_2, "lambda_ParseElements_2" },
+      { refalrts::create_closure, "refalrts::create_closure" },
+      { GN_Local, "GN_Local" },
+      { ST_AddDefined, "ST_AddDefined" },
+      { ParseFunction, "ParseFunction" },
+      { Fetch, "Fetch" },
+      { TkName, "TkName" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
+      {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 6, 4},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
+      {refalrts::icContextSet, 0, __eTail_1_1, 0},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icContextSet, 0, __eName_1_1, 4},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 5, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
+      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icSpliceSTVar, 0, __sLnNum_1_1, 0},
+      {refalrts::icCopyEVar, 0, __eName_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // t.ErrorList#1 t.SymTable#1 ( e.Generated#1 ) ( & TkName s.LnNum#1 e.Name#1 ) e.Tail#1
+    if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
+      break;
+    if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
+      break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( TkName, context[4], context[5] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
+    context[__eTail_1_1] = context[0];
+    context[__eTail_1_1 + 1] = context[1];
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
+      break;
+    context[__eName_1_1] = context[4];
+    context[__eName_1_1 + 1] = context[5];
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    if( ! refalrts::copy_evar( context[__eName_1_2], context[__eName_1_2 + 1], context[__eName_1_1], context[__eName_1_1 + 1] ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n0 = 0;
+    if( ! refalrts::alloc_open_call( n0 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n1 = 0;
+    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_open_call( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_name( n3, ParseFunction, "ParseFunction" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_name( n4, GN_Local, "GN_Local" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n5 = 0;
+    if( ! refalrts::alloc_open_bracket( n5 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_close_bracket( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_open_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_name( n8, ST_AddDefined, "ST_AddDefined" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n9 = 0;
+    if( ! refalrts::alloc_name( n9, GN_Local, "GN_Local" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n10 = 0;
+    if( ! refalrts::alloc_close_call( n10 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n11 = 0;
+    if( ! refalrts::alloc_close_call( n11 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n12 = 0;
+    if( ! refalrts::alloc_open_call( n12 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n13 = 0;
+    if( ! refalrts::alloc_name( n13, refalrts::create_closure, "refalrts::create_closure" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n14 = 0;
+    if( ! refalrts::alloc_name( n14, lambda_ParseElements_2, "lambda_ParseElements_2" ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n15 = 0;
+    if( ! refalrts::alloc_open_bracket( n15 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n16 = 0;
+    if( ! refalrts::alloc_close_bracket( n16 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n17 = 0;
+    if( ! refalrts::alloc_close_call( n17 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n18 = 0;
+    if( ! refalrts::alloc_close_call( n18 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n18 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n18 );
+    refalrts::push_stack( n17 );
+    refalrts::push_stack( n12 );
+    res = refalrts::splice_elem( res, n17 );
+    refalrts::link_brackets( n15, n16 );
+    res = refalrts::splice_elem( res, n16 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n15 );
+    res = refalrts::splice_elem( res, n14 );
+    res = refalrts::splice_elem( res, n13 );
+    res = refalrts::splice_elem( res, n12 );
+    refalrts::push_stack( n11 );
+    refalrts::push_stack( n2 );
+    res = refalrts::splice_elem( res, n11 );
+    res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n7 );
+    res = refalrts::splice_elem( res, n10 );
+    res = refalrts::splice_evar( res, context[__eName_1_2], context[__eName_1_2 + 1] );
+    res = refalrts::splice_stvar( res, context[__sLnNum_1_1] );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
+    res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    refalrts::link_brackets( n5, n6 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_evar( res, context[__eName_1_1], context[__eName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1368,152 +2415,11 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     // issue here memory for vars with 13 elems
     refalrts::Iter context[13];
     refalrts::zeros( context, 13 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __eTail_1_1 = 6 };
-    enum { __sLnNum_1_1 = 8 };
-    enum { __eName_1_1 = 9 };
-    enum { __eName_1_2 = 11 };
-    context[0] = arg_begin;
-    context[1] = arg_end;
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_left( context[0], context[1] );
-    refalrts::move_right( context[0], context[1] );
-#ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { GN_Local, "GN_Local" },
-      { ST_AddDefined, "ST_AddDefined" },
-      { ParseFunction, "ParseFunction" },
-      { TkName, "TkName" }
-    };
-    using refalrts::labels;
-    using refalrts::numbers;
-    static refalrts::RASLCommand raa[] = {
-      {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
-      {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
-      {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 3, 2},
-      {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icContextSet, 0, __eName_1_1, 2},
-      {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
-      {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
-      {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
-      {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, __sLnNum_1_1, 0},
-      {refalrts::icCopyEVar, 0, __eName_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
-    };
-    int open_e_stack[1];
-    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
-    refalrts::FnResult res = refalrts::interpret_array(
-      raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
-    );
-    if ( res == refalrts::cRecognitionImpossible )
-      break;
-    else
-      return res;
-#else
-    // t.ErrorList#1 t.SymTable#1 ( & TkName s.LnNum#1 e.Name#1 ) e.Tail#1
-    if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
-      break;
-    if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
-      break;
-    context[2] = 0;
-    context[3] = 0;
-    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
-      break;
-    if( ! refalrts::function_left( TkName, context[2], context[3] ) )
-      break;
-    context[__eTail_1_1] = context[0];
-    context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
-      break;
-    context[__eName_1_1] = context[2];
-    context[__eName_1_1 + 1] = context[3];
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    if( ! refalrts::copy_evar( context[__eName_1_2], context[__eName_1_2 + 1], context[__eName_1_1], context[__eName_1_1 + 1] ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseFunction, "ParseFunction" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, GN_Local, "GN_Local" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_open_bracket( n3 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_close_bracket( n4 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_open_call( n5 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, ST_AddDefined, "ST_AddDefined" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_name( n7, GN_Local, "GN_Local" ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_close_call( n8 ) )
-      return refalrts::cNoMemory;
-    refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_close_call( n9 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n9 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
-    refalrts::push_stack( n8 );
-    refalrts::push_stack( n5 );
-    res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_evar( res, context[__eName_1_2], context[__eName_1_2 + 1] );
-    res = refalrts::splice_stvar( res, context[__sLnNum_1_1] );
-    res = refalrts::splice_elem( res, n7 );
-    res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
-    res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
-    res = refalrts::splice_elem( res, n6 );
-    res = refalrts::splice_elem( res, n5 );
-    refalrts::link_brackets( n3, n4 );
-    res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_evar( res, context[__eName_1_1], context[__eName_1_1 + 1] );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_elem( res, n1 );
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-#endif
-  } while ( 0 );
-
-  do {
-    refalrts::start_sentence();
-    // issue here memory for vars with 9 elems
-    refalrts::Iter context[9];
-    refalrts::zeros( context, 9 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __eTail_1_1 = 6 };
-    enum { __sLnNum_1_1 = 8 };
+    enum { __tErrorList_1_1 = 6 };
+    enum { __tSymTable_1_1 = 7 };
+    enum { __eGenerated_1_1 = 8 };
+    enum { __eTail_1_1 = 10 };
+    enum { __sLnNum_1_1 = 12 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1530,15 +2436,20 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 1, 4},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icEmpty, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
@@ -1554,7 +2465,7 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 ( & TkSemicolon s.LnNum#1 ) e.Tail#1
+    // t.ErrorList#1 t.SymTable#1 ( e.Generated#1 ) ( & TkSemicolon s.LnNum#1 ) e.Tail#1
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -1563,13 +2474,19 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkSemicolon, context[2], context[3] ) )
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
+    if( ! refalrts::function_left( TkSemicolon, context[4], context[5] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
       break;
-    if( ! refalrts::empty_seq( context[2], context[3] ) )
+    if( ! refalrts::empty_seq( context[4], context[5] ) )
       break;
 
     refalrts::reset_allocator();
@@ -1581,12 +2498,22 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_call( n2 ) )
+    if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n2 );
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n4 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n1 );
@@ -1599,13 +2526,14 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
 
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 7 elems
-    refalrts::Iter context[7];
-    refalrts::zeros( context, 7 );
-    enum { __tErrorList_1_1 = 2 };
-    enum { __tSymTable_1_1 = 3 };
-    enum { __tUnexpected_1_1 = 4 };
-    enum { __eTail_1_1 = 5 };
+    // issue here memory for vars with 11 elems
+    refalrts::Iter context[11];
+    refalrts::zeros( context, 11 );
+    enum { __tErrorList_1_1 = 4 };
+    enum { __tSymTable_1_1 = 5 };
+    enum { __eGenerated_1_1 = 6 };
+    enum { __tUnexpected_1_1 = 8 };
+    enum { __eTail_1_1 = 9 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -1621,6 +2549,8 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tUnexpected_1_1, 0},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -1649,6 +2579,9 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
@@ -1664,11 +2597,17 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 t.Unexpected#1 e.Tail#1
+    // t.ErrorList#1 t.SymTable#1 ( e.Generated#1 ) t.Unexpected#1 e.Tail#1
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
       break;
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tUnexpected_1_1], context[0], context[1] ) )
       break;
     context[__eTail_1_1] = context[0];
@@ -1743,12 +2682,22 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_close_call( n21 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_close_call( n22 ) )
+    if( ! refalrts::alloc_open_bracket( n22 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n22 );
+    refalrts::Iter n23 = 0;
+    if( ! refalrts::alloc_close_bracket( n23 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n24 = 0;
+    if( ! refalrts::alloc_close_call( n24 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n24 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n22 );
+    res = refalrts::splice_elem( res, n24 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
+    refalrts::link_brackets( n22, n23 );
+    res = refalrts::splice_elem( res, n23 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n22 );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     refalrts::push_stack( n21 );
     refalrts::push_stack( n2 );
@@ -1787,21 +2736,52 @@ static refalrts::FnResult ParseElements(refalrts::Iter arg_begin, refalrts::Iter
   );
 }
 
-extern refalrts::FnResult GenEEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DontGen(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+  refalrts::this_is_generated_function();
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 2 elems
+    refalrts::Iter context[2];
+    refalrts::zeros( context, 2 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    using refalrts::functions;
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // e.Name#1
+    // Unused closed variable e.Name#1
 
-extern refalrts::FnResult GenEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
 
-extern refalrts::FnResult GenExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenForward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenSwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+  return refalrts::FnResult(
+    refalrts::cRecognitionImpossible | (__LINE__ << 8)
+  );
+}
 
 static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -1949,7 +2929,7 @@ static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { GN_Entry, "GN_Entry" },
       { ST_AddDeclared, "ST_AddDeclared" },
-      { GenExtern, "GenExtern" },
+      { DontGen, "DontGen" },
       { Extern, "Extern" }
     };
     using refalrts::labels;
@@ -1983,7 +2963,7 @@ static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, re
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, GenExtern, "GenExtern" ) )
+    if( ! refalrts::alloc_name( n0, DontGen, "DontGen" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
     if( ! refalrts::alloc_name( n1, ST_AddDeclared, "ST_AddDeclared" ) )
@@ -2014,7 +2994,7 @@ static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { GN_Local, "GN_Local" },
       { ST_AddDeclared, "ST_AddDeclared" },
-      { GenForward, "GenForward" },
+      { DontGen, "DontGen" },
       { Forward, "Forward" }
     };
     using refalrts::labels;
@@ -2048,7 +3028,7 @@ static refalrts::FnResult GenFunctionsFromDirective(refalrts::Iter arg_begin, re
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, GenForward, "GenForward" ) )
+    if( ! refalrts::alloc_name( n0, DontGen, "DontGen" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
     if( ! refalrts::alloc_name( n1, ST_AddDeclared, "ST_AddDeclared" ) )
@@ -2431,7 +3411,6 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { EL_AddUnexpected, "EL_AddUnexpected" },
-      { ParseElements, "ParseElements" },
       { Entry, "Entry" }
     };
     using refalrts::labels;
@@ -2439,12 +3418,12 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
-      {refalrts::icFuncLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 0},
       {refalrts::ictVarLeft, 0, __tUnexpected_1_1, 0},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
@@ -2466,7 +3445,6 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icCopySTVar, 0, __tUnexpected_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2497,10 +3475,10 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
     if( ! refalrts::copy_stvar( context[__tUnexpected_1_2], context[__tUnexpected_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
+    if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -2550,12 +3528,6 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_close_call( n18 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n18 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n18 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tUnexpected_1_2] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
@@ -2579,6 +3551,7 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
+    refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -2616,6 +3589,8 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -2656,29 +3631,38 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_name( n1, ParseNameList, "ParseNameList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_call( n2 ) )
+    if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, GenFunctionsFromDirective, "GenFunctionsFromDirective" ) )
+    if( ! refalrts::alloc_close_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_close_call( n4 ) )
+    if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_call( n5 ) )
+    if( ! refalrts::alloc_name( n5, GenFunctionsFromDirective, "GenFunctionsFromDirective" ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n5 );
+    refalrts::Iter n6 = 0;
+    if( ! refalrts::alloc_close_call( n6 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n7 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
+    refalrts::push_stack( n6 );
     refalrts::push_stack( n4 );
-    refalrts::push_stack( n2 );
-    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_stvar( res, context[__sDirective_1_1] );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -2692,31 +3676,26 @@ static refalrts::FnResult ParseElement_SwDirective(refalrts::Iter arg_begin, ref
   );
 }
 
-extern refalrts::FnResult TkComma(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkSemicolon(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 19 elems
-    refalrts::Iter context[19];
-    refalrts::zeros( context, 19 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __sGenFunc_1_1 = 6 };
-    enum { __sTableChangeFunc_1_1 = 7 };
-    enum { __sScopeClass_1_1 = 8 };
-    enum { __eTail_1_1 = 9 };
-    enum { __sLnNum_1_1 = 11 };
-    enum { __eName_1_1 = 12 };
-    enum { __sGenFunc_1_2 = 14 };
-    enum { __eName_1_2 = 15 };
-    enum { __sTableChangeFunc_1_2 = 17 };
-    enum { __sScopeClass_1_2 = 18 };
+    // issue here memory for vars with 23 elems
+    refalrts::Iter context[23];
+    refalrts::zeros( context, 23 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __tErrorList_1_1 = 8 };
+    enum { __tSymTable_1_1 = 9 };
+    enum { __sGenFunc_1_1 = 10 };
+    enum { __sTableChangeFunc_1_1 = 11 };
+    enum { __sScopeClass_1_1 = 12 };
+    enum { __eTail_1_1 = 13 };
+    enum { __sLnNum_1_1 = 15 };
+    enum { __eName_1_1 = 16 };
+    enum { __sGenFunc_1_2 = 18 };
+    enum { __eName_1_2 = 19 };
+    enum { __sTableChangeFunc_1_2 = 21 };
+    enum { __sScopeClass_1_2 = 22 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2730,23 +3709,28 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icsVarLeft, 0, __sGenFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sTableChangeFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sScopeClass_1_1, 0},
-      {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 1, 4},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icContextSet, 0, __eName_1_1, 2},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icContextSet, 0, __eName_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icSpliceSTVar, 0, __sGenFunc_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icSpliceSTVar, 0, __sTableChangeFunc_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
@@ -2773,7 +3757,13 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkName s.LnNum#1 e.Name#1 ) e.Tail#1
+    // ( e.Generated#1 ) t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkName s.LnNum#1 e.Name#1 ) e.Tail#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -2784,18 +3774,18 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
       break;
     if( ! refalrts::svar_left( context[__sScopeClass_1_1], context[0], context[1] ) )
       break;
-    context[2] = 0;
-    context[3] = 0;
-    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkName, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkName, context[4], context[5] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
       break;
-    context[__eName_1_1] = context[2];
-    context[__eName_1_1 + 1] = context[3];
+    context[__eName_1_1] = context[4];
+    context[__eName_1_1 + 1] = context[5];
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
@@ -2811,47 +3801,57 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_close_call( n1 ) )
+    if( ! refalrts::alloc_name( n1, ParseNameList_Tail, "ParseNameList_Tail" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_call( n2 ) )
+    if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, ParseNameList_Tail, "ParseNameList_Tail" ) )
+    if( ! refalrts::alloc_open_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_open_call( n4 ) )
+    if( ! refalrts::alloc_close_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_call( n5 ) )
+    if( ! refalrts::alloc_close_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_close_call( n6 ) )
+    if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n6 );
-    refalrts::push_stack( n2 );
-    res = refalrts::splice_elem( res, n6 );
+    refalrts::Iter n7 = 0;
+    if( ! refalrts::alloc_close_call( n7 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n8 = 0;
+    if( ! refalrts::alloc_close_call( n8 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n8 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n8 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__sScopeClass_1_2] );
     res = refalrts::splice_stvar( res, context[__sTableChangeFunc_1_2] );
     res = refalrts::splice_stvar( res, context[__sGenFunc_1_2] );
-    refalrts::push_stack( n5 );
-    refalrts::push_stack( n4 );
-    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n7 );
+    refalrts::push_stack( n6 );
+    res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_evar( res, context[__eName_1_2], context[__eName_1_2 + 1] );
     res = refalrts::splice_stvar( res, context[__sLnNum_1_1] );
     res = refalrts::splice_stvar( res, context[__sScopeClass_1_1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_stvar( res, context[__sTableChangeFunc_1_1] );
+    res = refalrts::splice_elem( res, n6 );
+    refalrts::link_brackets( n2, n5 );
+    res = refalrts::splice_elem( res, n5 );
+    refalrts::push_stack( n4 );
+    refalrts::push_stack( n3 );
     res = refalrts::splice_elem( res, n4 );
-    res = refalrts::splice_elem( res, n3 );
-    res = refalrts::splice_elem( res, n2 );
-    refalrts::push_stack( n1 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_evar( res, context[__eName_1_1], context[__eName_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__sGenFunc_1_1] );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -2861,17 +3861,18 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
 
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 11 elems
-    refalrts::Iter context[11];
-    refalrts::zeros( context, 11 );
-    enum { __tErrorList_1_1 = 2 };
-    enum { __tSymTable_1_1 = 3 };
-    enum { __tUnexpected_1_1 = 4 };
-    enum { __eTail_1_1 = 5 };
-    enum { __sGenFunc_1_1 = 7 };
-    enum { __sTableChangeFunc_1_1 = 8 };
-    enum { __sScopeClass_1_1 = 9 };
-    enum { __tUnexpected_1_2 = 10 };
+    // issue here memory for vars with 15 elems
+    refalrts::Iter context[15];
+    refalrts::zeros( context, 15 );
+    enum { __eGenerated_1_1 = 4 };
+    enum { __tErrorList_1_1 = 6 };
+    enum { __tSymTable_1_1 = 7 };
+    enum { __tUnexpected_1_1 = 8 };
+    enum { __eTail_1_1 = 9 };
+    enum { __sGenFunc_1_1 = 11 };
+    enum { __sTableChangeFunc_1_1 = 12 };
+    enum { __sScopeClass_1_1 = 13 };
+    enum { __tUnexpected_1_2 = 14 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -2879,12 +3880,13 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_AddUnexpected, "EL_AddUnexpected" },
-      { ParseElements, "ParseElements" }
+      { EL_AddUnexpected, "EL_AddUnexpected" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icsVarLeft, 0, __sGenFunc_1_1, 0},
@@ -2893,8 +3895,9 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::ictVarLeft, 0, __tUnexpected_1_1, 0},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
@@ -2916,7 +3919,6 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icCopySTVar, 0, __tUnexpected_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -2930,7 +3932,13 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 t.Unexpected#1 e.Tail#1
+    // ( e.Generated#1 ) t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 t.Unexpected#1 e.Tail#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -2951,10 +3959,10 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::copy_stvar( context[__tUnexpected_1_2], context[__tUnexpected_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
+    if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -3004,12 +4012,6 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter n17 = 0;
     if( ! refalrts::alloc_close_call( n17 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_close_call( n18 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n18 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n18 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tUnexpected_1_2] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
@@ -3033,7 +4035,9 @@ static refalrts::FnResult ParseNameList(refalrts::Iter arg_begin, refalrts::Iter
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
+    refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -3050,16 +4054,17 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 12 elems
-    refalrts::Iter context[12];
-    refalrts::zeros( context, 12 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __sGenFunc_1_1 = 6 };
-    enum { __sTableChangeFunc_1_1 = 7 };
-    enum { __sScopeClass_1_1 = 8 };
-    enum { __eTail_1_1 = 9 };
-    enum { __sLnNum_1_1 = 11 };
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __tErrorList_1_1 = 8 };
+    enum { __tSymTable_1_1 = 9 };
+    enum { __sGenFunc_1_1 = 10 };
+    enum { __sTableChangeFunc_1_1 = 11 };
+    enum { __sScopeClass_1_1 = 12 };
+    enum { __eTail_1_1 = 13 };
+    enum { __sLnNum_1_1 = 15 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3073,19 +4078,24 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icsVarLeft, 0, __sGenFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sTableChangeFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sScopeClass_1_1, 0},
-      {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 1, 4},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icEmpty, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __sGenFunc_1_1, 0},
@@ -3106,7 +4116,13 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkComma s.LnNum#1 ) e.Tail#1
+    // ( e.Generated#1 ) t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkComma s.LnNum#1 ) e.Tail#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -3117,17 +4133,17 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( context[__sScopeClass_1_1], context[0], context[1] ) )
       break;
-    context[2] = 0;
-    context[3] = 0;
-    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkComma, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkComma, context[4], context[5] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
       break;
-    if( ! refalrts::empty_seq( context[2], context[3] ) )
+    if( ! refalrts::empty_seq( context[4], context[5] ) )
       break;
 
     refalrts::reset_allocator();
@@ -3139,17 +4155,27 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_name( n1, ParseNameList, "ParseNameList" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_call( n2 ) )
+    if( ! refalrts::alloc_open_bracket( n2 ) )
       return refalrts::cNoMemory;
-    refalrts::push_stack( n2 );
+    refalrts::Iter n3 = 0;
+    if( ! refalrts::alloc_close_bracket( n3 ) )
+      return refalrts::cNoMemory;
+    refalrts::Iter n4 = 0;
+    if( ! refalrts::alloc_close_call( n4 ) )
+      return refalrts::cNoMemory;
+    refalrts::push_stack( n4 );
     refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__sScopeClass_1_1] );
     res = refalrts::splice_stvar( res, context[__sTableChangeFunc_1_1] );
     res = refalrts::splice_stvar( res, context[__sGenFunc_1_1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
+    refalrts::link_brackets( n2, n3 );
+    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -3160,16 +4186,17 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
 
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 12 elems
-    refalrts::Iter context[12];
-    refalrts::zeros( context, 12 );
-    enum { __tErrorList_1_1 = 4 };
-    enum { __tSymTable_1_1 = 5 };
-    enum { __eTail_1_1 = 6 };
-    enum { __sGenFunc_1_1 = 8 };
-    enum { __sTableChangeFunc_1_1 = 9 };
-    enum { __sScopeClass_1_1 = 10 };
-    enum { __sLnNum_1_1 = 11 };
+    // issue here memory for vars with 16 elems
+    refalrts::Iter context[16];
+    refalrts::zeros( context, 16 );
+    enum { __eGenerated_1_1 = 6 };
+    enum { __tErrorList_1_1 = 8 };
+    enum { __tSymTable_1_1 = 9 };
+    enum { __eTail_1_1 = 10 };
+    enum { __sGenFunc_1_1 = 12 };
+    enum { __sTableChangeFunc_1_1 = 13 };
+    enum { __sScopeClass_1_1 = 14 };
+    enum { __sLnNum_1_1 = 15 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3177,29 +4204,30 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { ParseElements, "ParseElements" },
       { TkSemicolon, "TkSemicolon" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icsVarLeft, 0, __sGenFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sTableChangeFunc_1_1, 0},
       {refalrts::icsVarLeft, 0, __sScopeClass_1_1, 0},
-      {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icBracketLeft, 0, 4, 0},
+      {refalrts::icFuncLeft, 0, 0, 4},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
-      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 2},
-      {refalrts::icEmpty, 0, 0, 2},
+      {refalrts::icsVarLeft, 0, __sLnNum_1_1, 4},
+      {refalrts::icEmpty, 0, 0, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3213,7 +4241,13 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkSemicolon s.LnNum#1 ) e.Tail#1
+    // ( e.Generated#1 ) t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 ( & TkSemicolon s.LnNum#1 ) e.Tail#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -3224,37 +4258,33 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
       break;
     if( ! refalrts::svar_left( context[__sScopeClass_1_1], context[0], context[1] ) )
       break;
-    context[2] = 0;
-    context[3] = 0;
-    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+    context[4] = 0;
+    context[5] = 0;
+    if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkSemicolon, context[2], context[3] ) )
+    if( ! refalrts::function_left( TkSemicolon, context[4], context[5] ) )
       break;
     context[__eTail_1_1] = context[0];
     context[__eTail_1_1 + 1] = context[1];
-    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[2], context[3] ) )
+    if( ! refalrts::svar_left( context[__sLnNum_1_1], context[4], context[5] ) )
       break;
-    if( ! refalrts::empty_seq( context[2], context[3] ) )
+    if( ! refalrts::empty_seq( context[4], context[5] ) )
       break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
+    if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n1 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_close_call( n2 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n2 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
+    refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -3264,17 +4294,18 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
 
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 11 elems
-    refalrts::Iter context[11];
-    refalrts::zeros( context, 11 );
-    enum { __tErrorList_1_1 = 2 };
-    enum { __tSymTable_1_1 = 3 };
-    enum { __tUnexpected_1_1 = 4 };
-    enum { __eTail_1_1 = 5 };
-    enum { __sGenFunc_1_1 = 7 };
-    enum { __sTableChangeFunc_1_1 = 8 };
-    enum { __sScopeClass_1_1 = 9 };
-    enum { __tUnexpected_1_2 = 10 };
+    // issue here memory for vars with 15 elems
+    refalrts::Iter context[15];
+    refalrts::zeros( context, 15 );
+    enum { __eGenerated_1_1 = 4 };
+    enum { __tErrorList_1_1 = 6 };
+    enum { __tSymTable_1_1 = 7 };
+    enum { __tUnexpected_1_1 = 8 };
+    enum { __eTail_1_1 = 9 };
+    enum { __sGenFunc_1_1 = 11 };
+    enum { __sTableChangeFunc_1_1 = 12 };
+    enum { __sScopeClass_1_1 = 13 };
+    enum { __tUnexpected_1_2 = 14 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -3282,12 +4313,13 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_AddUnexpected, "EL_AddUnexpected" },
-      { ParseElements, "ParseElements" }
+      { EL_AddUnexpected, "EL_AddUnexpected" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icContextSet, 0, __eGenerated_1_1, 2},
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::ictVarLeft, 0, __tSymTable_1_1, 0},
       {refalrts::icsVarLeft, 0, __sGenFunc_1_1, 0},
@@ -3296,8 +4328,9 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
       {refalrts::ictVarLeft, 0, __tUnexpected_1_1, 0},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icSpliceEVar, 0, __eGenerated_1_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
@@ -3324,7 +4357,6 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icCopySTVar, 0, __tUnexpected_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -3338,7 +4370,13 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     else
       return res;
 #else
-    // t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 t.Unexpected#1 e.Tail#1
+    // ( e.Generated#1 ) t.ErrorList#1 t.SymTable#1 s.GenFunc#1 s.TableChangeFunc#1 s.ScopeClass#1 t.Unexpected#1 e.Tail#1
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    context[__eGenerated_1_1] = context[2];
+    context[__eGenerated_1_1 + 1] = context[3];
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     if( ! refalrts::tvar_left( context[__tSymTable_1_1], context[0], context[1] ) )
@@ -3359,10 +4397,10 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::copy_stvar( context[__tUnexpected_1_2], context[__tUnexpected_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
+    if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -3427,12 +4465,6 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     refalrts::Iter n22 = 0;
     if( ! refalrts::alloc_close_call( n22 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_close_call( n23 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n23 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n23 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tUnexpected_1_2] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
@@ -3461,7 +4493,9 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
+    refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
+    res = refalrts::splice_evar( res, context[__eGenerated_1_1], context[__eGenerated_1_1 + 1] );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
@@ -3473,30 +4507,6 @@ static refalrts::FnResult ParseNameList_Tail(refalrts::Iter arg_begin, refalrts:
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult TkOpenBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenFnStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenFnEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult GenFnEnd_Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult GenFunctionBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult CreateLambdaName(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -3623,10 +4633,6 @@ struct CLambdaScope {
   }
 };
 
-extern refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 //$LABEL CLambdaName
 template <typename SREFAL_PARAM_INT>
 struct CLambdaName {
@@ -3636,7 +4642,6 @@ struct CLambdaName {
 };
 
 static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ParseFunction_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -4092,9 +5097,8 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { ParseElements, "ParseElements" },
-      { Cntx_Destroy, "Cntx_Destroy" },
-      { GenFunctionBody, "GenFunctionBody" }
+      { GenFunctionBody, "GenFunctionBody" },
+      { Cntx_Destroy, "Cntx_Destroy" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4116,7 +5120,12 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
       {refalrts::icEmpty, 0, 0, 8},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icSpliceSTVar, 0, __tContext_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sScopeClass_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
@@ -4126,16 +5135,10 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eSentences_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, __tContext_2_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_2_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4197,68 +5200,63 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, GenFunctionBody, "GenFunctionBody" ) )
+    if( ! refalrts::alloc_name( n1, Cntx_Destroy, "Cntx_Destroy" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_bracket( n2 ) )
+    if( ! refalrts::alloc_close_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_close_bracket( n3 ) )
+    if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_open_bracket( n4 ) )
+    if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_close_bracket( n5 ) )
+    if( ! refalrts::alloc_name( n5, GenFunctionBody, "GenFunctionBody" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_close_call( n6 ) )
+    if( ! refalrts::alloc_open_bracket( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_open_call( n7 ) )
+    if( ! refalrts::alloc_close_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, Cntx_Destroy, "Cntx_Destroy" ) )
+    if( ! refalrts::alloc_open_bracket( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_close_call( n9 ) )
+    if( ! refalrts::alloc_close_bracket( n9 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_open_call( n10 ) )
+    if( ! refalrts::alloc_close_call( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_name( n11, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n11 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_close_call( n12 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n12 );
-    refalrts::push_stack( n10 );
-    res = refalrts::splice_elem( res, n12 );
     res = refalrts::splice_evar( res, context[__eTail_2_1], context[__eTail_2_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
+    refalrts::link_brackets( n3, n11 );
     res = refalrts::splice_elem( res, n11 );
+    refalrts::push_stack( n10 );
+    refalrts::push_stack( n4 );
     res = refalrts::splice_elem( res, n10 );
-    refalrts::push_stack( n9 );
-    refalrts::push_stack( n7 );
-    res = refalrts::splice_elem( res, n9 );
-    res = refalrts::splice_stvar( res, context[__tContext_2_1] );
-    res = refalrts::splice_elem( res, n8 );
-    res = refalrts::splice_elem( res, n7 );
-    refalrts::push_stack( n6 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_evar( res, context[__eSentences_2_1], context[__eSentences_2_1 + 1] );
-    refalrts::link_brackets( n4, n5 );
-    res = refalrts::splice_elem( res, n5 );
+    refalrts::link_brackets( n8, n9 );
+    res = refalrts::splice_elem( res, n9 );
     res = refalrts::splice_evar( res, context[__eName_1_2], context[__eName_1_2 + 1] );
-    res = refalrts::splice_elem( res, n4 );
-    refalrts::link_brackets( n2, n3 );
-    res = refalrts::splice_elem( res, n3 );
+    res = refalrts::splice_elem( res, n8 );
+    refalrts::link_brackets( n6, n7 );
+    res = refalrts::splice_elem( res, n7 );
     res = refalrts::splice_evar( res, context[__eName_1_1], context[__eName_1_1 + 1] );
-    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_stvar( res, context[__sScopeClass_1_1] );
+    res = refalrts::splice_elem( res, n5 );
+    res = refalrts::splice_elem( res, n4 );
+    res = refalrts::splice_elem( res, n3 );
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
+    res = refalrts::splice_elem( res, n2 );
+    res = refalrts::splice_stvar( res, context[__tContext_2_1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4291,14 +5289,13 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { ParseElements, "ParseElements" },
-      { Cntx_Destroy, "Cntx_Destroy" },
       { lambda_ParseFunction_2, "lambda_ParseFunction_2" },
       { refalrts::create_closure, "refalrts::create_closure" },
       { Fetch, "Fetch" },
       { lambda_ParseFunction_1, "lambda_ParseFunction_1" },
       { Map, "Map" },
-      { lambda_ParseFunction_0, "lambda_ParseFunction_0" }
+      { lambda_ParseFunction_0, "lambda_ParseFunction_0" },
+      { Cntx_Destroy, "Cntx_Destroy" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4318,21 +5315,26 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
       {refalrts::icContextSet, 0, __eFunctionBodies_2_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icFunc, 0, 6, 0},
+      {refalrts::icSpliceSTVar, 0, __tContext_2_1, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, __sScopeClass_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 3, 0},
-      {refalrts::icFunc, 0, 7, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 5, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 6, 0},
+      {refalrts::icFunc, 0, 4, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 3, 0},
-      {refalrts::icFunc, 0, 5, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icCopyEVar, 0, __eName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -4340,27 +5342,21 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
       {refalrts::icSpliceEVar, 0, __eFunctionBodies_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 4, 0},
+      {refalrts::icFunc, 0, 2, 0},
       {refalrts::icSpliceSTVar, 0, __tMainBody_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 3, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icCopySTVar, 0, __sScopeClass_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icCopyEVar, 0, __eName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icSpliceSTVar, 0, __tContext_2_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_2_1, 0},
       {refalrts::icSpliceSTVar, 0, __tSymTable_2_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_2_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4420,162 +5416,157 @@ static refalrts::FnResult lambda_ParseFunction_3(refalrts::Iter arg_begin, refal
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_name( n1, Cntx_Destroy, "Cntx_Destroy" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_open_call( n2 ) )
+    if( ! refalrts::alloc_close_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_name( n3, refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, lambda_ParseFunction_0, "lambda_ParseFunction_0" ) )
+    if( ! refalrts::alloc_open_call( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_open_bracket( n5 ) )
+    if( ! refalrts::alloc_name( n5, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_close_bracket( n6 ) )
+    if( ! refalrts::alloc_open_call( n6 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
-    if( ! refalrts::alloc_close_call( n7 ) )
+    if( ! refalrts::alloc_name( n7, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_close_call( n8 ) )
+    if( ! refalrts::alloc_name( n8, lambda_ParseFunction_0, "lambda_ParseFunction_0" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_open_call( n9 ) )
+    if( ! refalrts::alloc_open_bracket( n9 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
-    if( ! refalrts::alloc_name( n10, Map, "Map" ) )
+    if( ! refalrts::alloc_close_bracket( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_open_call( n11 ) )
+    if( ! refalrts::alloc_close_call( n11 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n12 = 0;
-    if( ! refalrts::alloc_name( n12, refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_close_call( n12 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n13 = 0;
-    if( ! refalrts::alloc_name( n13, lambda_ParseFunction_1, "lambda_ParseFunction_1" ) )
+    if( ! refalrts::alloc_open_call( n13 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n14 = 0;
-    if( ! refalrts::alloc_open_bracket( n14 ) )
+    if( ! refalrts::alloc_name( n14, Map, "Map" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_close_bracket( n15 ) )
+    if( ! refalrts::alloc_open_call( n15 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n16 = 0;
-    if( ! refalrts::alloc_close_call( n16 ) )
+    if( ! refalrts::alloc_name( n16, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n17 = 0;
-    if( ! refalrts::alloc_close_call( n17 ) )
+    if( ! refalrts::alloc_name( n17, lambda_ParseFunction_1, "lambda_ParseFunction_1" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n18 = 0;
-    if( ! refalrts::alloc_open_call( n18 ) )
+    if( ! refalrts::alloc_open_bracket( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_name( n19, Fetch, "Fetch" ) )
+    if( ! refalrts::alloc_close_bracket( n19 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
-    if( ! refalrts::alloc_open_call( n20 ) )
+    if( ! refalrts::alloc_close_call( n20 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n21 = 0;
-    if( ! refalrts::alloc_name( n21, refalrts::create_closure, "refalrts::create_closure" ) )
+    if( ! refalrts::alloc_close_call( n21 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n22 = 0;
-    if( ! refalrts::alloc_name( n22, lambda_ParseFunction_2, "lambda_ParseFunction_2" ) )
+    if( ! refalrts::alloc_open_call( n22 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n23 = 0;
-    if( ! refalrts::alloc_open_bracket( n23 ) )
+    if( ! refalrts::alloc_name( n23, Fetch, "Fetch" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n24 = 0;
-    if( ! refalrts::alloc_close_bracket( n24 ) )
+    if( ! refalrts::alloc_open_call( n24 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n25 = 0;
-    if( ! refalrts::alloc_close_call( n25 ) )
+    if( ! refalrts::alloc_name( n25, refalrts::create_closure, "refalrts::create_closure" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n26 = 0;
-    if( ! refalrts::alloc_close_call( n26 ) )
+    if( ! refalrts::alloc_name( n26, lambda_ParseFunction_2, "lambda_ParseFunction_2" ) )
       return refalrts::cNoMemory;
     refalrts::Iter n27 = 0;
-    if( ! refalrts::alloc_open_call( n27 ) )
+    if( ! refalrts::alloc_open_bracket( n27 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n28 = 0;
-    if( ! refalrts::alloc_name( n28, Cntx_Destroy, "Cntx_Destroy" ) )
+    if( ! refalrts::alloc_close_bracket( n28 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n29 = 0;
     if( ! refalrts::alloc_close_call( n29 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n30 = 0;
-    if( ! refalrts::alloc_open_call( n30 ) )
+    if( ! refalrts::alloc_close_call( n30 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n31 = 0;
-    if( ! refalrts::alloc_name( n31, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n31 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n32 = 0;
-    if( ! refalrts::alloc_close_call( n32 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n32 );
-    refalrts::push_stack( n30 );
-    res = refalrts::splice_elem( res, n32 );
     res = refalrts::splice_evar( res, context[__eTail_2_1], context[__eTail_2_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tSymTable_2_1] );
     res = refalrts::splice_stvar( res, context[__tErrorList_2_1] );
+    refalrts::link_brackets( n3, n31 );
     res = refalrts::splice_elem( res, n31 );
+    refalrts::push_stack( n30 );
+    refalrts::push_stack( n22 );
     res = refalrts::splice_elem( res, n30 );
     refalrts::push_stack( n29 );
-    refalrts::push_stack( n27 );
+    refalrts::push_stack( n24 );
     res = refalrts::splice_elem( res, n29 );
-    res = refalrts::splice_stvar( res, context[__tContext_2_1] );
+    refalrts::link_brackets( n27, n28 );
     res = refalrts::splice_elem( res, n28 );
-    res = refalrts::splice_elem( res, n27 );
-    refalrts::push_stack( n26 );
-    refalrts::push_stack( n18 );
-    res = refalrts::splice_elem( res, n26 );
-    refalrts::push_stack( n25 );
-    refalrts::push_stack( n20 );
-    res = refalrts::splice_elem( res, n25 );
-    refalrts::link_brackets( n23, n24 );
-    res = refalrts::splice_elem( res, n24 );
     res = refalrts::splice_evar( res, context[__eName_1_3], context[__eName_1_3 + 1] );
-    res = refalrts::splice_elem( res, n23 );
+    res = refalrts::splice_elem( res, n27 );
     res = refalrts::splice_stvar( res, context[__sScopeClass_1_2] );
-    res = refalrts::splice_elem( res, n22 );
-    res = refalrts::splice_elem( res, n21 );
-    res = refalrts::splice_elem( res, n20 );
+    res = refalrts::splice_elem( res, n26 );
+    res = refalrts::splice_elem( res, n25 );
+    res = refalrts::splice_elem( res, n24 );
     res = refalrts::splice_stvar( res, context[__tMainBody_2_1] );
-    res = refalrts::splice_elem( res, n19 );
-    res = refalrts::splice_elem( res, n18 );
-    refalrts::push_stack( n17 );
-    refalrts::push_stack( n9 );
-    res = refalrts::splice_elem( res, n17 );
+    res = refalrts::splice_elem( res, n23 );
+    res = refalrts::splice_elem( res, n22 );
+    refalrts::push_stack( n21 );
+    refalrts::push_stack( n13 );
+    res = refalrts::splice_elem( res, n21 );
     res = refalrts::splice_evar( res, context[__eFunctionBodies_2_1], context[__eFunctionBodies_2_1 + 1] );
-    refalrts::push_stack( n16 );
-    refalrts::push_stack( n11 );
-    res = refalrts::splice_elem( res, n16 );
-    refalrts::link_brackets( n14, n15 );
-    res = refalrts::splice_elem( res, n15 );
+    refalrts::push_stack( n20 );
+    refalrts::push_stack( n15 );
+    res = refalrts::splice_elem( res, n20 );
+    refalrts::link_brackets( n18, n19 );
+    res = refalrts::splice_elem( res, n19 );
     res = refalrts::splice_evar( res, context[__eName_1_2], context[__eName_1_2 + 1] );
+    res = refalrts::splice_elem( res, n18 );
+    res = refalrts::splice_elem( res, n17 );
+    res = refalrts::splice_elem( res, n16 );
+    res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_elem( res, n14 );
     res = refalrts::splice_elem( res, n13 );
+    refalrts::push_stack( n12 );
+    refalrts::push_stack( n4 );
     res = refalrts::splice_elem( res, n12 );
+    refalrts::push_stack( n11 );
+    refalrts::push_stack( n6 );
     res = refalrts::splice_elem( res, n11 );
+    refalrts::link_brackets( n9, n10 );
     res = refalrts::splice_elem( res, n10 );
-    res = refalrts::splice_elem( res, n9 );
-    refalrts::push_stack( n8 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n8 );
-    refalrts::push_stack( n7 );
-    refalrts::push_stack( n2 );
-    res = refalrts::splice_elem( res, n7 );
-    refalrts::link_brackets( n5, n6 );
-    res = refalrts::splice_elem( res, n6 );
     res = refalrts::splice_evar( res, context[__eName_1_1], context[__eName_1_1 + 1] );
+    res = refalrts::splice_elem( res, n9 );
+    res = refalrts::splice_elem( res, n8 );
+    res = refalrts::splice_elem( res, n7 );
+    res = refalrts::splice_elem( res, n6 );
+    res = refalrts::splice_stvar( res, context[__sScopeClass_1_1] );
     res = refalrts::splice_elem( res, n5 );
     res = refalrts::splice_elem( res, n4 );
     res = refalrts::splice_elem( res, n3 );
+    refalrts::push_stack( n2 );
+    refalrts::push_stack( n0 );
     res = refalrts::splice_elem( res, n2 );
-    res = refalrts::splice_stvar( res, context[__sScopeClass_1_1] );
+    res = refalrts::splice_stvar( res, context[__tContext_2_1] );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4805,8 +5796,7 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_AddUnexpected, "EL_AddUnexpected" },
-      { ParseElements, "ParseElements" }
+      { EL_AddUnexpected, "EL_AddUnexpected" }
     };
     using refalrts::labels;
     using refalrts::numbers;
@@ -4818,8 +5808,8 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::ictVarLeft, 0, __tUnexpected_1_1, 0},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __tErrorList_1_1, 0},
@@ -4838,7 +5828,6 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icSpliceSTVar, 0, __tSymTable_1_1, 0},
       {refalrts::icCopySTVar, 0, __tUnexpected_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eTail_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4874,10 +5863,10 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::copy_stvar( context[__tUnexpected_1_2], context[__tUnexpected_1_1] ) )
       return refalrts::cNoMemory;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_open_call( n0 ) )
+    if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, ParseElements, "ParseElements" ) )
+    if( ! refalrts::alloc_close_bracket( n1 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -4918,12 +5907,6 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter n14 = 0;
     if( ! refalrts::alloc_close_call( n14 ) )
       return refalrts::cNoMemory;
-    refalrts::Iter n15 = 0;
-    if( ! refalrts::alloc_close_call( n15 ) )
-      return refalrts::cNoMemory;
-    refalrts::push_stack( n15 );
-    refalrts::push_stack( n0 );
-    res = refalrts::splice_elem( res, n15 );
     res = refalrts::splice_evar( res, context[__eTail_1_1], context[__eTail_1_1 + 1] );
     res = refalrts::splice_stvar( res, context[__tUnexpected_1_2] );
     res = refalrts::splice_stvar( res, context[__tSymTable_1_1] );
@@ -4944,6 +5927,7 @@ static refalrts::FnResult ParseFunction(refalrts::Iter arg_begin, refalrts::Iter
     res = refalrts::splice_stvar( res, context[__tErrorList_1_1] );
     res = refalrts::splice_elem( res, n3 );
     res = refalrts::splice_elem( res, n2 );
+    refalrts::link_brackets( n0, n1 );
     res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4982,7 +5966,6 @@ struct CallBrackets {
 };
 
 static refalrts::FnResult ResolveLambdaName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ResolveLambdaName_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -5640,7 +6623,6 @@ static refalrts::FnResult ResolveLambdaName(refalrts::Iter arg_begin, refalrts::
 }
 
 static refalrts::FnResult GenFunctionBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_GenFunctionBody_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6006,14 +6988,6 @@ static refalrts::FnResult GenFunctionBody(refalrts::Iter arg_begin, refalrts::It
   );
 }
 
-extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6154,16 +7128,7 @@ static refalrts::FnResult ParseBlock(refalrts::Iter arg_begin, refalrts::Iter ar
   );
 }
 
-extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_DoParseBlock_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -7063,8 +8028,6 @@ static refalrts::FnResult DoParseBlock(refalrts::Iter arg_begin, refalrts::Iter 
   );
 }
 
-static refalrts::FnResult CreateContext(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -7200,7 +8163,6 @@ static refalrts::FnResult AddContextToSentence(refalrts::Iter arg_begin, refalrt
 }
 
 static refalrts::FnResult CreateContext(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_CreateContext_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -7459,18 +8421,7 @@ static refalrts::FnResult CreateContext(refalrts::Iter arg_begin, refalrts::Iter
   );
 }
 
-extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkReplace(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ParseSentence(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ParseSentence_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -9021,44 +9972,6 @@ static refalrts::FnResult ParseSentence(refalrts::Iter arg_begin, refalrts::Iter
   );
 }
 
-static refalrts::FnResult CheckAddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StrFromBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkIdentMarker(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkRedefinition(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkIdentifier(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_CheckDeclared(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_CheckIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 //$LABEL CSuccess
 template <typename SREFAL_PARAM_INT>
 struct CSuccess {
@@ -9084,7 +9997,6 @@ struct CAlreadyBounded {
 };
 
 static refalrts::FnResult ParsePattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ParsePattern_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -13862,7 +14774,6 @@ static refalrts::FnResult InvalidModeVariableError(refalrts::Iter arg_begin, ref
 }
 
 static refalrts::FnResult CheckAddVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_CheckAddVariable_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -15174,14 +16085,7 @@ static refalrts::FnResult StrFromBracket(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-extern refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult CheckUseVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ParseResult_Block(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ParseResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ParseResult_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -19133,7 +20037,6 @@ struct CNotFound {
 };
 
 static refalrts::FnResult CheckUseVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_CheckUseVariable_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -19708,7 +20611,6 @@ struct CCreateClosure {
 };
 
 static refalrts::FnResult ParseResult_Block(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ParseResult_Block_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {

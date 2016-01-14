@@ -3,8 +3,18 @@
 
 
 static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdLineError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CompileToTarget(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CompileList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL CCompileCommand
 template <typename SREFAL_PARAM_INT>
@@ -198,8 +208,6 @@ struct CSetOutput {
     return "CSetOutput";
   }
 };
-
-static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -2038,12 +2046,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
   );
 }
 
-static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -2819,12 +2822,7 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
   );
 }
 
-static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -3719,8 +3717,6 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
   );
 }
 
-static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -4034,10 +4030,7 @@ static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts:
   );
 }
 
-static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -5230,7 +5223,6 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
 }
 
 static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6203,7 +6195,6 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
 }
 
 static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {

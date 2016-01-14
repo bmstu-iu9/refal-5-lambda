@@ -3,28 +3,100 @@
 
 
 extern refalrts::FnResult LoadFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkComma(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkIdentMarker(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkReplace(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkSemicolon(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkRedefinition(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Enum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Extern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Forward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Swap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Ident(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_Char(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_Code(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_OCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_XCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_NewLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_CarriageReturn(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_Tab(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_Bell(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_BS(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_FF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkLiteral_VT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkNewLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TkPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TokenAccum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TokenError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TokenUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TokenUnexpectedEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CharFromNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoCharFromNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DigitFromChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -91,12 +163,7 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
   );
 }
 
-static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 extern refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_LexFolding_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -3030,10 +3097,6 @@ static refalrts::FnResult TokenUnexpectedEOF(refalrts::Iter, refalrts::Iter) {
   );
 }
 
-static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -3170,8 +3233,6 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-static refalrts::FnResult CharFromNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -5082,12 +5143,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-static refalrts::FnResult DoCharFromNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DigitFromChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult CharFromNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_CharFromNum_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -5523,7 +5579,6 @@ static refalrts::FnResult DoCharFromNum(refalrts::Iter arg_begin, refalrts::Iter
 }
 
 static refalrts::FnResult DigitFromChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_DigitFromChar_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -7866,56 +7921,6 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult Punctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DirectiveBody(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();

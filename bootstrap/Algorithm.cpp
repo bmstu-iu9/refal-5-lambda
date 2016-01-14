@@ -3,10 +3,142 @@
 
 
 static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult AlgLeft(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult AlgRight(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult TkIdentifier(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdInitB0(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdRepeated(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdClosedE(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdOpenedE_Start(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdOpenedE_End(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdSave(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdIssueMem(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdSetBound(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdBoundToLeft(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdBoundToRight(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdBoundEmptySeq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiContextSet(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiHugeNum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiRepeat(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiSave(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiEPrepare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiEStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiEmpty(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiFuncArray(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiLabelArray(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiNumberArray(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult CmdOpenedE(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdAllocateElem(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdLinkBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdPushStack(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdInsertElem(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdInsertVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult ElCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdEmptyResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdReturnResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdIfDef(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdElse(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdEndIf(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdInitRAA(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdFinRAA(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiRunInterpret(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiReserveStack(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdiEmptyResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdDeclareEVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdDeclareVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdCopyEVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdCopyVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrFunc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrHugeInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrOB(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrCB(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrOADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrCADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrOC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrCC(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrSplice(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+extern refalrts::FnResult CmdArrCopy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -133,26 +265,6 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 refalrts::FnResult AlgLeft(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
@@ -441,18 +553,7 @@ static refalrts::FnResult CmdOpenedE(refalrts::Iter, refalrts::Iter) {
   );
 }
 
-static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -885,14 +986,6 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 //$LABEL Brackets
 template <typename SREFAL_PARAM_INT>
@@ -5786,8 +5879,6 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
   );
 }
 
-static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -5876,14 +5967,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
   );
 }
 
-static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6269,12 +6353,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
   );
 }
 
-extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -6848,10 +6927,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
   );
 }
 
-static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -7307,10 +7383,6 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -8136,8 +8208,6 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
   );
 }
 
-extern refalrts::FnResult EscapeChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -8429,8 +8499,6 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -11627,40 +11695,6 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
   );
 }
 
-static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
-extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 refalrts::FnResult CmdEmptyResult(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::FnResult(
@@ -11730,8 +11764,6 @@ refalrts::FnResult CmdiEmptyResult(refalrts::Iter, refalrts::Iter) {
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
 }
-
-extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
 static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -12295,10 +12327,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
   );
 }
 
-extern refalrts::FnResult Compare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -14145,7 +14174,6 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
 }
 
 static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -15807,8 +15835,6 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
   );
 }
 
-extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -17166,8 +17192,6 @@ refalrts::FnResult CmdDeclareVar(refalrts::Iter, refalrts::Iter) {
   );
 }
 
-extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -18301,7 +18325,6 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
 }
 
 static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -19587,7 +19610,6 @@ static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter 
 }
 
 static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-
 static refalrts::FnResult lambda_OutlineConstants_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
