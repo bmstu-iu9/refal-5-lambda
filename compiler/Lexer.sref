@@ -241,8 +241,8 @@ NormalizeTokens {
 }
 
 $FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
-  StartComment, VariableIndex, Punctuation, StringLiteral, DirectiveTail,
-  DirectiveBody, StringLiteral-Escape, SL-E-C1, CComment, CppComment,
+  StartComment, VariableIndex, StringLiteral, DirectiveTail,
+  StringLiteral-Escape, SL-E-C1, CComment, CppComment,
   VariableIndexTail, StringLiteral-Quote, CComment-CheckNested,
   CComment-CheckEnd, StringLiteral-Escape-Code, SL-E-C2, SL-E-OC1,
   SL-E-OC2, StringLiteral-Escape-OCode, StringLiteral-Escape-XCode;
