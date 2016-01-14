@@ -14,7 +14,7 @@ $ENTRY ST-Destroy {
   t.Name ::=
       (Declared s.ScopeClass e.Name)
     | (Defined s.ScopeClass e.Name)
-    | (Identifier s.ScopeClass e.Name)
+    | (Identifier Identifier e.Name)
   t.Reference ::= (s.LnNum e.Name)
 */
 
@@ -158,21 +158,6 @@ $ENTRY ST-AddDeclared {
     [SymTable e.Names (Declared GN-Local e.Name) (e.References)];
 }
 
-$ENTRY ST-AddIdent {
-  t.ErrorList
-  [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)]
-  s.OtherScopeClass s.LnNum e.Name =
-    <EL-AddErrorAt t.ErrorList s.LnNum 'Identifier ' e.Name ' alredy defined'>
-    [SymTable
-      e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)
-    ];
-
-  t.ErrorList
-  [SymTable e.Names (e.References)] s.ScopeClass s.LnNum e.Name =
-    t.ErrorList
-    [SymTable e.Names (Identifier s.ScopeClass e.Name) (e.References)];
-}
-
 $ENTRY ST-AddFunctionCall {
   [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
@@ -196,18 +181,16 @@ $ENTRY ST-AddFunctionCall {
     [SymTable e.Names (e.References (s.LnNum e.Name))];
 }
 
-$ENTRY ST-CheckIdent {
-  t.ErrorList
-  [SymTable e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)]
-  s.LnNum e.Name =
-    t.ErrorList
+$ENTRY ST-AddIdent {
+  [SymTable e.Names-B (Identifier Identifier e.Name) e.Names-E (e.References)]
+  e.Name =
     [SymTable
-      e.Names-B (Identifier s.ScopeClass e.Name) e.Names-E (e.References)
+      e.Names-B (Identifier Identifier e.Name) e.Names-E (e.References)
     ];
 
-  t.ErrorList t.SymTable s.LnNum e.Name =
-    <EL-AddErrorAt t.ErrorList s.LnNum 'Identifier ' e.Name ' not declared'>
-    t.SymTable;
+
+  [SymTable e.Names (e.References)] e.Name =
+    [SymTable e.Names (Identifier Identifier e.Name) (e.References)];
 }
 
 $ENTRY ST-CheckUnresolved {
@@ -235,6 +218,21 @@ $ENTRY ST-AllFunctions {
         (Declared s.ScopeClass e.Name) = (s.ScopeClass e.Name);
         (Defined s.ScopeClass e.Name) = (s.ScopeClass e.Name);
         (Identifier s.ScopeClass e.Name) = /* пусто */;
+      }
+      e.Names
+    >;
+}
+
+/**
+  <ST-AllIdents t.SymTable> == (e.Name)*
+*/
+$ENTRY ST-AllIdents {
+  [SymTable e.Names (e.References)] =
+    <Map
+      {
+        (Declared s.ScopeClass e.Name) = /* пусто */;
+        (Defined s.ScopeClass e.Name) = /* пусто */;
+        (Identifier s.ScopeClass e.Name) = (e.Name);
       }
       e.Names
     >;

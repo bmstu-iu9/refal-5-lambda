@@ -139,7 +139,8 @@ PrepareBracket {
 */
 
 //FROM SymTable
-$EXTERN ST-AllFunctions, ST-AddDeclared, ST-AddDefined, ST-AddIdent;
+$EXTERN ST-AllFunctions, ST-AllIdents,
+  ST-AddDeclared, ST-AddDefined, ST-AddIdent;
 
 //FROM Error
 $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
@@ -168,6 +169,10 @@ ParseElements {
       <ST-AllFunctions t.SymTable>
     >
     ()
+    <Map
+      { (e.Name) = <GenIdent e.Name>; }
+      <ST-AllIdents t.SymTable>
+    >
     e.Generated
     <GenCommonTailer>;
 
@@ -227,7 +232,13 @@ GenFunctionsFromDirective {
   ESwap   = GenESwap   ST-AddDefined  GN-Entry;
   Swap    = GenSwap    ST-AddDefined  GN-Local;
   // Для меток не важно: entry или local.
-  Ident   = GenIdent   ST-AddIdent    GN-Entry;
+  Ident   =
+    DontGen
+    {
+      t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
+        t.ErrorList <ST-AddIdent t.SymTable e.Name>;
+    }
+    GN-Entry;
 }
 
 ParseElement-SwDirective {
@@ -629,7 +640,7 @@ $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
 $EXTERN TkIdentifier;
 
 //FROM SymTable
-$EXTERN ST-AddFunctionCall, ST-CheckIdent, ST-GetAnyName;
+$EXTERN ST-AddFunctionCall, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
@@ -665,7 +676,7 @@ ParsePattern {
   (e.Scanned)
   (TkIdentMarker s.LnNumMarker) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
-      <ST-CheckIdent t.ErrorList t.SymTable s.LnNumName e.Name>
+      t.ErrorList <ST-AddIdent t.SymTable e.Name>
       t.Context (e.MultiBrackets)
       (e.Scanned (TkIdentifier e.Name)) e.Tail
     >;
@@ -934,7 +945,7 @@ ParseResult {
   (TkIdentMarker s.MarkerLnNum) (TkName s.NameLnNum e.Name) e.Tail =
     <ParseResult
       (e.Functions)
-      <ST-CheckIdent t.ErrorList t.SymTable s.NameLnNum e.Name>
+      t.ErrorList <ST-AddIdent t.SymTable e.Name>
       t.Context
       (e.MultiBracket) (e.Scanned (TkIdentifier e.Name)) e.Tail
     >;

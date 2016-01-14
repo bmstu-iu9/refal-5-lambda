@@ -1,0 +1,7 @@
+$LABEL Before;
+
+$ENTRY Go {
+  = #Before #NotDeclared #After;
+}
+
+$LABEL After;
