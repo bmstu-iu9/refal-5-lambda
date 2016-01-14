@@ -345,30 +345,10 @@ ParseFunction {
         (0) t.ErrorList t.SymTable <Cntx-Create> e.Tail
       >
       {
-        (1 /* нет вложенных функций */ (0 e.Sentences))
-        t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
-          <Cntx-Destroy t.Context>
-          (
-            <GenFunctionBody
-              s.ScopeClass (e.Name) (e.Name) e.Sentences
-            >
-          )
-          t.ErrorList t.SymTable e.Tail;
-
         (s.NextNumber e.FunctionBodies t.MainBody)
         t.ErrorList^ t.SymTable^ (t.Context) e.Tail^ =
           <Cntx-Destroy t.Context>
-          // Вложенные функции могут рекурсивно вызывать объемлющую
-          // функцию, поэтому перед их телами нужно дать предобъявление
-          // объемлющей функции.
           (
-            <Fetch
-              s.ScopeClass
-              {
-                GN-Entry = <GenExtern e.Name>;
-                GN-Local = <GenForward e.Name>;
-              }
-            >
             <Map
               {
                 (s.Number e.Sentences) =
@@ -649,7 +629,7 @@ $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
 $EXTERN TkIdentifier;
 
 //FROM SymTable
-$EXTERN ST-CheckDeclared, ST-CheckIdent, ST-GetAnyName;
+$EXTERN ST-AddFunctionCall, ST-CheckIdent, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
@@ -676,7 +656,7 @@ ParsePattern {
   t.ErrorList t.SymTable t.Context (e.MultiBrackets)
   (e.Scanned) (TkName s.LnNum e.Name) e.Tail =
     <ParsePattern
-      <ST-CheckDeclared t.ErrorList t.SymTable s.LnNum e.Name>
+      t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNum e.Name>
       t.Context (e.MultiBrackets)
       (e.Scanned (TkName e.Name)) e.Tail
     >;
@@ -767,7 +747,7 @@ ParsePattern {
   (e.Scanned)
   (# COpen s.LnNumBracket TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
-      <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
+      t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNumName e.Name>
       t.Context
       (
         e.MultiBracket
@@ -943,7 +923,7 @@ ParseResult {
   (e.MultiBracket) (e.Scanned) (TkName s.LnNum e.Name) e.Tail =
     <ParseResult
       (e.Functions)
-      <ST-CheckDeclared t.ErrorList t.SymTable s.LnNum e.Name>
+      t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNum e.Name>
       t.Context
       (e.MultiBracket) (e.Scanned (TkName e.Name)) e.Tail
     >;
@@ -1009,7 +989,7 @@ ParseResult {
   (# COpen s.LnNumADT TkOpenADT) (TkName s.LnNumName e.Name) e.Tail =
     <ParseResult
       (e.Functions)
-      <ST-CheckDeclared t.ErrorList t.SymTable s.LnNumName e.Name>
+      t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNumName e.Name>
       t.Context
       (
         e.MultiBracket

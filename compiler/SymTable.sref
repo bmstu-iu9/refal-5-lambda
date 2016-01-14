@@ -173,34 +173,27 @@ $ENTRY ST-AddIdent {
     [SymTable e.Names (Identifier s.ScopeClass e.Name) (e.References)];
 }
 
-$ENTRY ST-CheckDeclared {
-  t.ErrorList
+$ENTRY ST-AddFunctionCall {
   [SymTable e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
-    t.ErrorList
     [SymTable
       e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)
     ];
 
-  t.ErrorList
   [SymTable e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
-    t.ErrorList
     [SymTable
       e.Names-B (Declared GN-Local e.Name) e.Names-E
       (e.References (s.LnNum e.Name))
     ];
 
-  t.ErrorList
   [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)]
   s.LnNum e.Name =
-    t.ErrorList
     [SymTable e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)];
 
-  t.ErrorList
   [SymTable e.Names (e.References)]
   s.LnNum e.Name =
-    t.ErrorList [SymTable e.Names (e.References (s.LnNum e.Name))];
+    [SymTable e.Names (e.References (s.LnNum e.Name))];
 }
 
 $ENTRY ST-CheckIdent {
