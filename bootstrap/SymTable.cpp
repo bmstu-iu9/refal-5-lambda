@@ -5081,11 +5081,10 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
   refalrts::this_is_generated_function();
   do {
     refalrts::start_sentence();
-    // issue here memory for vars with 7 elems
-    refalrts::Iter context[7];
-    refalrts::zeros( context, 7 );
-    enum { __sScopeClass_2_1 = 4 };
-    enum { __eName_2_1 = 5 };
+    // issue here memory for vars with 6 elems
+    refalrts::Iter context[6];
+    refalrts::zeros( context, 6 );
+    enum { __eName_2_1 = 4 };
     context[0] = arg_begin;
     context[1] = arg_end;
     refalrts::move_left( context[0], context[1] );
@@ -5093,19 +5092,20 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
+      { GN_Entry, "GN_Entry" },
       { Declared, "Declared" }
     };
     using refalrts::labels;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
       {refalrts::icFuncLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
-      {refalrts::icsVarLeft, 0, __sScopeClass_2_1, 2},
       {refalrts::icContextSet, 0, __eName_2_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceSTVar, 0, __sScopeClass_2_1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -5121,16 +5121,16 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     else
       return res;
 #else
-    // ( & Declared s.ScopeClass#2 e.Name#2 )
+    // ( & Declared & GN_Entry e.Name#2 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
     if( ! refalrts::function_left( Declared, context[2], context[3] ) )
       break;
-    if( ! refalrts::empty_seq( context[0], context[1] ) )
+    if( ! refalrts::function_left( GN_Entry, context[2], context[3] ) )
       break;
-    if( ! refalrts::svar_left( context[__sScopeClass_2_1], context[2], context[3] ) )
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
     context[__eName_2_1] = context[2];
     context[__eName_2_1 + 1] = context[3];
@@ -5141,13 +5141,73 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_close_bracket( n1 ) )
+    if( ! refalrts::alloc_name( n1, GN_Entry, "GN_Entry" ) )
       return refalrts::cNoMemory;
-    refalrts::link_brackets( n0, n1 );
-    res = refalrts::splice_elem( res, n1 );
+    refalrts::Iter n2 = 0;
+    if( ! refalrts::alloc_close_bracket( n2 ) )
+      return refalrts::cNoMemory;
+    refalrts::link_brackets( n0, n2 );
+    res = refalrts::splice_elem( res, n2 );
     res = refalrts::splice_evar( res, context[__eName_2_1], context[__eName_2_1 + 1] );
-    res = refalrts::splice_stvar( res, context[__sScopeClass_2_1] );
+    res = refalrts::splice_elem( res, n1 );
     res = refalrts::splice_elem( res, n0 );
+    refalrts::use( res );
+    refalrts::splice_to_freelist( arg_begin, arg_end );
+    return refalrts::cSuccess;
+#endif
+  } while ( 0 );
+
+  do {
+    refalrts::start_sentence();
+    // issue here memory for vars with 4 elems
+    refalrts::Iter context[4];
+    refalrts::zeros( context, 4 );
+    context[0] = arg_begin;
+    context[1] = arg_end;
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_left( context[0], context[1] );
+    refalrts::move_right( context[0], context[1] );
+#ifdef INTERPRET
+    static const refalrts::RefalFunction functions[] = {
+      { GN_Local, "GN_Local" },
+      { Declared, "Declared" }
+    };
+    using refalrts::labels;
+    using refalrts::numbers;
+    static refalrts::RASLCommand raa[] = {
+      {refalrts::icBracketLeft, 0, 2, 0},
+      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icEmpty, 0, 0, 0},
+      {refalrts::icEmptyResult, 0, 0, 0},
+      {refalrts::icEnd}
+    };
+    int open_e_stack[1];
+    refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
+    refalrts::FnResult res = refalrts::interpret_array(
+      raa, allocs, context, arg_begin, arg_end,
+      functions, labels, numbers, open_e_stack
+    );
+    if ( res == refalrts::cRecognitionImpossible )
+      break;
+    else
+      return res;
+#else
+    // ( & Declared & GN_Local e.Name#2 )
+    context[2] = 0;
+    context[3] = 0;
+    if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
+      break;
+    if( ! refalrts::function_left( Declared, context[2], context[3] ) )
+      break;
+    if( ! refalrts::function_left( GN_Local, context[2], context[3] ) )
+      break;
+    if( ! refalrts::empty_seq( context[0], context[1] ) )
+      break;
+    // Unused closed variable e.Name#2
+
+    refalrts::reset_allocator();
+    refalrts::Iter res = arg_begin;
     refalrts::use( res );
     refalrts::splice_to_freelist( arg_begin, arg_end );
     return refalrts::cSuccess;

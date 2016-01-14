@@ -215,7 +215,8 @@ $ENTRY ST-AllFunctions {
   [SymTable e.Names (e.References)] =
     <Map
       {
-        (Declared s.ScopeClass e.Name) = (s.ScopeClass e.Name);
+        (Declared GN-Entry e.Name) = (GN-Entry e.Name);
+        (Declared GN-Local e.Name) = /* пусто */;
         (Defined s.ScopeClass e.Name) = (s.ScopeClass e.Name);
         (Identifier s.ScopeClass e.Name) = /* пусто */;
       }
