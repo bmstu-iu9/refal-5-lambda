@@ -40,13 +40,13 @@ $ENTRY MapReduce {
     <DoMapReduce t.Fn t.Acc () e.Tail>;
 }
 
-$FORWARD MapReduce--AddScanned;
+$FORWARD MapReduce-AddScanned;
 
 DoMapReduce {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail =
     <DoMapReduce
       t.Fn
-      <MapReduce--AddScanned
+      <MapReduce-AddScanned
         <Apply t.Fn t.Acc t.Next> (e.Scanned)
       >
       e.Tail
@@ -55,7 +55,7 @@ DoMapReduce {
   t.Fn t.Acc (e.Scanned) = t.Acc e.Scanned;
 }
 
-MapReduce--AddScanned {
+MapReduce-AddScanned {
   t.Acc e.StepScanned (e.Scanned) =
     t.Acc (e.Scanned e.StepScanned);
 }
