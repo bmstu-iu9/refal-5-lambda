@@ -9,8 +9,6 @@ LinearizeLine {
   (e.Line) = e.Line '\n';
 }
 
-$FORWARD NormalizeTokens, Root;
-
 $ENTRY LexFolding {
   e.FileName =
     <NormalizeTokens
@@ -106,16 +104,12 @@ $ENUM
   TokenUnexpected,
   TokenUnexpectedEOF;
 
-$FORWARD ValidDirective, SwPunctuation;
-
 NormalizeName {
   e.Name-B '-' e.Name-E =
     <NormalizeName e.Name-B '_' e.Name-E>;
 
   e.Name = e.Name;
 }
-
-$FORWARD CharFromNum;
 
 NormalizeToken {
   (TkDirective e.Directive) =
@@ -161,8 +155,6 @@ NormalizeToken {
 
   (TokenUnexpectedEOF) = (TkError 'Unexpected EOF');
 }
-
-$FORWARD DoCharFromNum, DigitFromChar;
 
 CharFromNum {
   s.Base e.Chars =
@@ -239,13 +231,6 @@ NormalizeTokens {
       >
     >;
 }
-
-$FORWARD Name, Number, VariableStart, Directive, StringLiteral-Start,
-  StartComment, VariableIndex, StringLiteral, DirectiveTail,
-  StringLiteral-Escape, SL-E-C1, CComment, CppComment,
-  VariableIndexTail, StringLiteral-Quote, CComment-CheckNested,
-  CComment-CheckEnd, StringLiteral-Escape-Code, SL-E-C2, SL-E-OC1,
-  SL-E-OC2, StringLiteral-Escape-OCode, StringLiteral-Escape-XCode;
 
 /*GEN:TOKENS
 

@@ -67,8 +67,6 @@ $ENTRY Cntx-Destroy {
 
 $LABEL CSuccess, CInvalidMode;
 
-$FORWARD ShiftVariable;
-
 /**
   <Cntx-AddVariable t.Context s.Mode e.Index>
     == t.Context # CSuccess s.Depth
@@ -109,8 +107,6 @@ $ENTRY Cntx-AddVariable {
     [Context s.StackDepth (s.Mode e.Index s.StackDepth) e.Variables]
     # CSuccess s.StackDepth;
 }
-
-$FORWARD ShiftVariable-AddToFree;
 
 ShiftVariable {
   (s.Mode e.Index s.VarDepth)
@@ -223,8 +219,6 @@ $ENTRY Cntx-CheckVariable {
   [Context s.StackDepth e.Variables] s.Mode e.Index =
     [Context s.StackDepth e.Variables] # CNotFound;
 }
-
-$FORWARD Unique;
 
 /**
   <Cntx-ResetAfterSentence t.Context> == t.Context

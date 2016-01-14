@@ -1,5 +1,3 @@
-$FORWARD GeneralizeResult, GenPattern, GenResult;
-
 $ENTRY MakeAlgorithm {
   (e.Pattern) (e.Result) =
     <GeneralizeResult
@@ -76,8 +74,6 @@ $EENUM
   CmdiFuncArray, CmdiLabelArray, CmdiNumberArray;
 
 $ENUM CmdOpenedE;
-
-$FORWARD DoGenPattern, TextFromPattern, SaveBrackets;
 
 //FROM LibraryEx
 $EXTERN Fetch, Seq;
@@ -289,13 +285,9 @@ DoGenPattern {
     s.NumRanges (e.Vars) e.Commands;
 }
 
-$FORWARD DoSaveBrackets;
-
 SaveBrackets {
   s.LastBracket e.Commands = <DoSaveBrackets s.LastBracket () e.Commands>;
 }
-
-$FORWARD ExtractBrackets, DoSaveBrackets-MakeSavers;
 
 //FROM LibraryEx
 $EXTERN Map;
@@ -351,8 +343,6 @@ DoSaveBrackets-MakeSavers {
     <DoSaveBrackets s.LastBracket (e.Scanned) e.Commands>;
 }
 
-$FORWARD Brackets-Set;
-
 ExtractBrackets {
   e.Commands =
     <Brackets-Set
@@ -384,8 +374,6 @@ Brackets-Set {
 
 //FROM Library
 $EXTERN StrFromInt;
-
-$FORWARD TextFromPattern-Char;
 
 TextFromPattern {
   (#Brackets e.Inner) e.Tail =
@@ -431,8 +419,6 @@ TextFromPattern-Char {
 //==============================================================================
 // Генерация результата
 //==============================================================================
-
-$FORWARD DoGenResult;
 
 GenResult {
   e.Result =
@@ -612,12 +598,6 @@ DoGenResult {
 // Обобщение информации -- уничтожение ненужных переменных,
 // копирование повторных.
 //==============================================================================
-
-$FORWARD ReplicateVars, VarSetUnion, VarSetDifference,
-  ClosedEVariables, RepeatedEVariables, FilterUnusedCmdClosedE, MakeDeclaration,
-  GenerateResult-OpenELoops, MakeCopyVar, FoldAllocCommands, MakeInterpCommands,
-  OutlineConstants, PrepareOpenEStack;
-
 
 //FROM LibraryEx
 $EXTERN Map, Seq;

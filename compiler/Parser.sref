@@ -14,8 +14,6 @@ $EXTERN ST-Create, ST-CheckUnresolved, ST-Destroy;
 //FROM Error
 $EXTERN EL-Create, EL-Destroy, EL-HasErrors, EL-NoErrors;
 
-$FORWARD PrepareBracket, ParseElements;
-
 /**
   <CompileFile (e.SrcName) e.OutputName>
     == Success e.OutputName
@@ -151,8 +149,6 @@ $EXTERN
   Enum, EEnum, Extern, Forward, Entry, Swap, ESwap, Ident,
   TkName, TkEOF, TkSemicolon;
 
-$FORWARD ParseElement-SwDirective, ParseFunction;
-
 //FROM Generator
 $EXTERN GN-Entry, GN-Local, GenCommonHeaders, GenCommonTailer,
   GenExtern, GenForward;
@@ -221,8 +217,6 @@ ParseElements {
 //FROM Generator
 $EXTERN GenEEnum, GenEnum, GenExtern, GenForward, GenESwap, GenSwap, GenIdent;
 
-$FORWARD ParseNameList;
-
 DontGen {
   e.Name = /* пусто */;
 }
@@ -272,8 +266,6 @@ ParseElement-SwDirective {
 
 //FROM Lexer
 $EXTERN TkComma, TkSemicolon;
-
-$FORWARD ParseNameList-Tail;
 
 ParseNameList {
   (e.Generated)
@@ -328,10 +320,6 @@ $EXTERN GenFnStart, GenSentence, GenFnEnd, GenFnEnd-Success;
 
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
-
-$FORWARD ParseBlock;
-
-$FORWARD GenFunctionBody;
 
 //FROM Library
 $EXTERN StrFromInt;
@@ -453,8 +441,6 @@ GenFunctionBody {
 //FROM Lexer
 $EXTERN TkVariable;
 
-$FORWARD DoParseBlock;
-
 //FROM Context
 $EXTERN Cntx-PushScope, Cntx-PopScope;
 
@@ -482,8 +468,6 @@ ParseBlock {
 
 //FROM LibraryEx
 $EXTERN Inc, Dec;
-
-$FORWARD ParseSentence, AddContextToSentence;
 
 DoParseBlock {
   (s.Number e.Functions)
@@ -532,8 +516,6 @@ DoParseBlock {
     >;
 }
 
-$FORWARD CreateContext;
-
 AddContextToSentence {
   e.Context ((e.Pattern) (e.Result)) =
     (
@@ -564,8 +546,6 @@ $EXTERN TkReplace;
 
 //FROM Context
 $EXTERN Cntx-ResetAfterSentence;
-
-$FORWARD ParsePattern, ParseResult;
 
 ParseSentence {
   (e.Functions) t.ErrorList t.SymTable t.Context
@@ -630,9 +610,6 @@ ParseSentence {
       >
     >;
 }
-
-
-$FORWARD CheckAddVariable, StrFromBracket;
 
 //FROM Lexer
 $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
@@ -907,8 +884,6 @@ StrFromBracket {
 
 //FROM Context
 $EXTERN Cntx-CheckVariable;
-
-$FORWARD CheckUseVariable, ParseResult-Block;
 
 /*
   <ParseResult

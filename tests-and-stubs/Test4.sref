@@ -10,8 +10,6 @@ TestIdent {
 
 $ENUM Tag1, Tag2;
 
-$FORWARD DoTestADT;
-
 TestADT {
   = <DoTestADT [Tag1] 'abcd' 'efgh' [Tag2]>;
 }

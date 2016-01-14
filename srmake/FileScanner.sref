@@ -4,8 +4,6 @@ $EXTERN LoadFile, Map, Trim;
 //FROM FindFile
 $EXTERN FindFiles, Source, Output, NotFound;
 
-$FORWARD LoadList, DoCreateFileList;
-
 $ENTRY CreateFileList {
   (e.Folders) e.Unit =
     <DoCreateFileList

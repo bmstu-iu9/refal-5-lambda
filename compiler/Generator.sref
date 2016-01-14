@@ -56,8 +56,6 @@ $ENTRY GenForward {
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
-$FORWARD GenSwap-Aux;
-
 $ENTRY GenESwap {
   e.Name =
     ('//$ESWAP ' e.Name)
@@ -155,8 +153,6 @@ $EXTERN
   CmdiFuncArray, CmdiLabelArray, CmdiNumberArray,
   CmdiEmptyResult;
 
-$FORWARD GenCommand, BracketsVar-B, BracketsVar-E, BracketsVars;
-
 //FROM LibraryEx
 $EXTERN Map, MapReduce, Fetch, Add;
 
@@ -199,17 +195,6 @@ BracketsVars {
   Величина отступа также определяет режим работы. Отступ в 4 пробела --
   вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
 */
-
-$FORWARD PrintVar, PrintEVar-B, PrintEVar-E, PrintEVars,
-  PrintMatchChar, PrintMatchNumber, PrintMatchName,
-  PrintMatchIdent,
-  PrintMatchADT,
-  PrintMatchBrackets,
-  PrintMatchEmpty,
-  PrintMatchSTVar, PrintMatchRepeated,
-  PrintAllocateElem, PrintElemVar;
-
-$FORWARD Escape;
 
 //FROM LibraryEx
 $EXTERN Dec;
@@ -743,8 +728,6 @@ PrintEVars {
     <PrintEVar-E s.Usings s.Mode e.Index>;
 }
 
-$FORWARD PrintMatch;
-
 //FROM Escape
 $EXTERN EscapeChar;
 
@@ -860,8 +843,6 @@ PrintMatch {
 PrintElemVar {
   s.Number = 'n' <StrFromInt s.Number>;
 }
-
-$FORWARD PrintAllocate-Aux, SwAllocator, SwInfo;
 
 PrintAllocateElem {
   (e.Indent) s.ElemNumber s.ElementType e.Info =

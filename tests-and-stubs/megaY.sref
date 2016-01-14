@@ -4,8 +4,6 @@ Y {
 
 $EXTERN WriteLine, Inc, Dec, Mul;
 
-$FORWARD Select-K;
-
 Yn {
   s.N =
     {

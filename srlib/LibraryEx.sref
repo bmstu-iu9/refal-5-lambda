@@ -33,14 +33,10 @@ $ENTRY Y {
   s.Y-Func = { e.Arg = <<s.Y-Func <Y s.Y-Func>> e.Arg>; };
 }
 
-$FORWARD DoMapReduce;
-
 $ENTRY MapReduce {
   t.Fn t.Acc e.Tail =
     <DoMapReduce t.Fn t.Acc () e.Tail>;
 }
-
-$FORWARD MapReduce-AddScanned;
 
 DoMapReduce {
   t.Fn t.Acc (e.Scanned) t.Next e.Tail =
@@ -71,8 +67,6 @@ $ENTRY DelAccumulator {
 //FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine;
 
-$FORWARD DoLoadFile;
-
 $ENTRY LoadFile {
   e.FileName =
     <DoLoadFile
@@ -91,8 +85,6 @@ DoLoadFile {
       <FReadLine t.File>
     >;
 }
-
-$FORWARD WriteBracketLine;
 
 $ENTRY SaveFile {
   (e.FileName) e.Lines =
@@ -137,13 +129,9 @@ $ENTRY FastIntFromStr {
 //FROM Library
 $EXTERN Arg;
 
-$FORWARD DoArgList;
-
 $ENTRY ArgList {
   = <DoArgList 0>;
 }
-
-$FORWARD SwDoArgList;
 
 DoArgList {
   s.Next = <SwDoArgList <Inc s.Next> <Arg s.Next>>;
@@ -154,8 +142,6 @@ SwDoArgList {
 
   s.Next e.Arg = (e.Arg) <DoArgList s.Next>;
 }
-
-$FORWARD Lexicon;
 
 //FROM Library
 $EXTERN SymbCompare;
@@ -168,8 +154,6 @@ $ENTRY Compare {
 
   s.Left s.Right = <SymbCompare s.Left s.Right>;
 }
-
-$FORWARD Lexicon-Aux;
 
 Lexicon {
   (t.FirstLeft e.Left) (t.FirstRight e.Right) =
@@ -190,8 +174,6 @@ Lexicon-Aux {
   '>' (e.Left) (e.Right) = '>';
 }
 
-$FORWARD Lexicon-T;
-
 $ENTRY Compare-T {
   (e.Left) (e.Right) = <Lexicon-T () (e.Left) () (e.Right)>;
 
@@ -200,8 +182,6 @@ $ENTRY Compare-T {
 
   s.Left s.Right = <SymbCompare s.Left s.Right> s.Left s.Right;
 }
-
-$FORWARD Lexicon-T-Aux;
 
 Lexicon-T {
   (e.ScannedLeft) (t.FirstLeft e.Left)
@@ -256,8 +236,6 @@ $ENTRY Type-T {
   s.Symbol e.Tail = <SymbType s.Symbol> s.Symbol e.Tail;
   = '*';
 }
-
-$FORWARD Trim-R;
 
 $ENTRY Trim {
   ' ' e.Line = <Trim e.Line>;

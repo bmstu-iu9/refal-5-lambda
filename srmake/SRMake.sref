@@ -10,11 +10,7 @@ $EXTERN CreateFileList;
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
 
-$FORWARD Main;
-
 $ENTRY Go { = <Main <ArgList>>; }
-
-$FORWARD MakeProject, Get-s-option;
 
 Main {
   (e.Program) =
@@ -51,8 +47,6 @@ Get-s-option {
   e.Arguments = ('srefc') e.Arguments;
 }
 
-$FORWARD Make;
-
 MakeProject {
   (e.SrefC) (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
@@ -75,8 +69,6 @@ MakeProject {
 
 //FROM FindFile
 $EXTERN Source, Output, NotFound;
-
-$FORWARD PrintNotFound, PrintDirectory, PrintUnit;
 
 Make {
   (e.SrefC) (e.CompilerCommand) (e.Directories)

@@ -1,5 +1,3 @@
-$FORWARD DoParseCommandLine, FindFiles-Compilers;
-
 /**
   <ParseCommandLine e.Arguments>
     == t.Compiler (e.Folders) t.FoundedFile*
@@ -14,8 +12,6 @@ $ENTRY ParseCommandLine {
 }
 
 $EENUM NoCompile, CompileCommand, CmdLineError;
-
-$FORWARD DoParseFileNames, DoParseFileNamesOnly;
 
 DoParseCommandLine {
   (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Files =

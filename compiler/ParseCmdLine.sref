@@ -1,5 +1,3 @@
-$FORWARD DoParseCommandLine, CollectorObject;
-
 $LABEL CCompileCommand, CErrorFile, CNone;
 
 $EENUM CmdLineError, CompileToTarget, CompileList;
@@ -29,8 +27,6 @@ $ENTRY ParseCommandLine {
 
 $LABEL CAddCompileCommand, CAddErrorFile, CGetInfo, CAddFile, CAddFolder,
   CSetOutput;
-
-$FORWARD DoParseFileNamesOnly;
 
 DoParseCommandLine {
   s.Collector ('-c') (e.CompileCommand) e.Arguments =
@@ -86,8 +82,6 @@ DoParseFileNamesOnly {
 
 //------------------------------------------------------------------------------
 
-$FORWARD Collector-Compiler, Collector-ErrorFile;
-
 CollectorObject {
   (e.Folders) e.Files =
     {
@@ -111,8 +105,6 @@ CollectorObject {
         CompileList (e.Folders) e.Files;
     };
 }
-
-$FORWARD Collector-Error-CC, Collector-Compiler-ErrorFile;
 
 Collector-Compiler {
   (e.Folders) (e.Files) e.Command =
@@ -143,13 +135,9 @@ Collector-Compiler {
     };
 }
 
-$FORWARD Collector-Error;
-
 Collector-Error-CC {
   = <Collector-Error 'Multiple declaration of C++ compiler command line'>;
 }
-
-$FORWARD Collector-Error-EF;
 
 Collector-ErrorFile {
   (e.Folders) (e.Files) e.ErrorFile =

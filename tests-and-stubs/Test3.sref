@@ -5,8 +5,6 @@ $EXTERN WriteLine, TypeCharacter, TypeNumber, TypeFunction, TypeFile,
 //FROM LibraryEx
 $EXTERN Type, TypeBracket;
 
-$FORWARD PrintType;
-
 $ENTRY Go {
   =
     <PrintType 'a'>
@@ -15,8 +13,6 @@ $ENTRY Go {
     <PrintType ()>
     <PrintType <FOpen 'r' 'Test3.sref'>>;
 }
-
-$FORWARD PrintType-Aux;
 
 PrintType {
   t.Term = <PrintType-Aux t.Term <Type t.Term>>;

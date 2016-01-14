@@ -1,7 +1,5 @@
 $EENUM Source, Output, NotFound;
 
-$FORWARD AnalyzeFile-ByFolders;
-
 $ENUM Current;
 
 //FROM LibraryEx
@@ -21,8 +19,6 @@ $ENTRY FindFiles {
     <Map (AnalyzeFile-ByFolders Current e.Folders) e.Files>;
 }
 
-$FORWARD AnalyzeFile-CheckNotFound, AnalyzeInFolder;
-
 AnalyzeFile-ByFolders {
   e.Folders (e.FileName) =
     <AnalyzeFile-CheckNotFound
@@ -30,8 +26,6 @@ AnalyzeFile-ByFolders {
       <Map (AnalyzeInFolder e.FileName) e.Folders>
     >;
 }
-
-$FORWARD AnalyzeFile;
 
 AnalyzeInFolder {
   e.FileName Current = <AnalyzeFile e.FileName>;
@@ -53,9 +47,6 @@ AnalyzeFile-CheckNotFound {
 }
 
 //------------------------------------------------------------------------------
-
-$FORWARD AnalyzeSource-CheckExist, AnalyzeOutput-CheckExist,
-  AnalyzeBoth-CheckExist;
 
 //FROM Library
 $EXTERN ExistFile, True, False;

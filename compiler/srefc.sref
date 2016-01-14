@@ -9,13 +9,9 @@ $EXTERN Success, Fails, WriteLine, System, Exit;
 
 //------------------------------------------------------------------------------
 
-$FORWARD Main;
-
 $ENTRY Go {
   = <Main <ArgList>>;
 }
-
-$FORWARD FindFiles-Compilers;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError,
@@ -44,8 +40,6 @@ $EXTERN FindFiles;
 $EXTERN Source, Output, NotFound;
 
 $LABEL CCompileCommand, CNone, CErrorFile;
-
-$FORWARD PrintNotFound, ForEach, RenameFiles, Link;
 
 FindFiles-Compilers {
   (CmdLineError e.Message) =
@@ -141,8 +135,6 @@ Link {
     >;
 }
 
-$FORWARD ScanCollisions, GetFileName;
-
 RenameFiles {
   s.CommandLineInfo =
     <Fetch
@@ -165,8 +157,6 @@ RenameFiles {
     >;
 }
 
-$FORWARD GetFileName-Aux;
-
 GetFileName {
   (Output e.FileName) =
     (
@@ -180,13 +170,9 @@ GetFileName {
     );
 }
 
-$FORWARD DoGetFileName;
-
 GetFileName-Aux {
   e.FileName '.cpp' = <DoGetFileName e.FileName>;
 }
-
-$FORWARD Lower;
 
 DoGetFileName {
   e.FileName '/' = ;
@@ -216,8 +202,6 @@ Lower {
       }
     >;
 }
-
-$FORWARD Renumerate, RestoreName;
 
 ScanCollisions {
   e.Files-B (e.FileName 0 (Output e.Output1)) e.Files-M
