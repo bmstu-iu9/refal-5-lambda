@@ -65,8 +65,6 @@ $ENTRY Cntx-Destroy {
   [Context 0] = ;
 }
 
-$LABEL CSuccess, CInvalidMode;
-
 /**
   <Cntx-AddVariable t.Context s.Mode e.Index>
     == t.Context # CSuccess s.Depth
@@ -131,8 +129,6 @@ ShiftVariable-AddToFree {
 //FROM LibraryEx
 $EXTERN Fetch;
 
-$LABEL CAlreadyBounded;
-
 /**
   <Cntx-AddNewVariable t.Context s.Mode e.Index>
     == t.Context # CSuccess s.Depth
@@ -184,8 +180,6 @@ $ENTRY Cntx-AddNewVariable {
       }
     >;
 }
-
-$LABEL CExistVariable, CNotFound;
 
 /**
   <Cntx-CheckVariable t.Context s.Mode e.Index>

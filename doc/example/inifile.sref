@@ -2,10 +2,6 @@
 $EXTERN Fetch, LoadFile, Seq, MapReduce, Inc, DelAccumulator, Map, Trim,
   Reduce;
 
-$LABEL General, BadLine, EmptyParameterName, ReassignParameter;
-
-$LABEL Section, Parameter;
-
 /*
   <LoadIniFile e.FileName>
     == t.IniFile t.ErrorMessage*

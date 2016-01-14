@@ -59,8 +59,6 @@ $ENTRY CompileFile {
 $EXTERN TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
   TkOpenCall, TkCloseCall;
 
-$LABEL COpen, CClose;
-
 PrepareBracket {
   (TkOpenBracket s.LnNum) = (# COpen s.LnNum TkOpenBracket);
   (TkCloseBracket s.LnNum) = (# CClose s.LnNum TkCloseBracket);
@@ -329,15 +327,11 @@ CreateLambdaName {
     'lambda_' e.Name '_' <StrFromInt s.Number>;
 }
 
-$LABEL CLambdaScope;
-
 //FROM Algorithm
 $EXTERN MakeAlgorithm;
 
 //FROM Lexer
 $EXTERN TkName;
-
-$LABEL CLambdaName;
 
 ParseFunction {
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
@@ -381,8 +375,6 @@ ParseFunction {
     <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
     t.SymTable t.Unexpected e.Tail;
 }
-
-$LABEL Brackets, ADT-Brackets, CallBrackets;
 
 ResolveLambdaName {
   (e.MainName) e.Result =
@@ -624,8 +616,6 @@ $EXTERN ST-AddFunctionCall, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
-
-$LABEL CSuccess, CInvalidMode, CAlreadyBounded;
 
 ParsePattern {
   // Обработка литералов атомов
@@ -1091,8 +1081,6 @@ ParseResult {
     (e.Result) e.Tail;
 }
 
-$LABEL CExistVariable, CNotFound;
-
 CheckUseVariable {
   t.ErrorList t.Context s.LnNum s.Mode e.Index =
     <Fetch
@@ -1115,8 +1103,6 @@ CheckUseVariable {
       }
     >;
 }
-
-$LABEL CCreateClosure;
 
 ParseResult-Block {
   (e.MultiBracket) (e.Scanned)

@@ -1,5 +1,3 @@
-$LABEL CCompileCommand, CErrorFile, CNone;
-
 $EENUM CmdLineError, CompileToTarget, CompileList;
 
 /**
@@ -24,9 +22,6 @@ $ENTRY ParseCommandLine {
       <CollectorObject (/* folders */) /* files */> e.Arguments
     >;
 }
-
-$LABEL CAddCompileCommand, CAddErrorFile, CGetInfo, CAddFile, CAddFolder,
-  CSetOutput;
 
 DoParseCommandLine {
   s.Collector ('-c') (e.CompileCommand) e.Arguments =

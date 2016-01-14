@@ -15,8 +15,6 @@ $FORWARD PrintIni;
 //FROM Library
 $EXTERN StrFromInt;
 
-$LABEL BadLine, EmptyParameterName, ReassignParameter;
-
 Main {
   (e.ProgName) =
     <WriteLine 'Usage: ' e.ProgName ' file1.ini file2.ini ...'>;
@@ -61,8 +59,6 @@ Main {
       e.IniFiles
     >;
 }
-
-$LABEL General;
 
 WriteLineAt {
   s.LineNumber e.Text =

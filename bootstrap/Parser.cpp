@@ -171,14 +171,6 @@ struct CLambdaName {
   }
 };
 
-//$LABEL CLambdaScope
-template <typename SREFAL_PARAM_INT>
-struct CLambdaScope {
-  static const char *name() {
-    return "CLambdaScope";
-  }
-};
-
 //$LABEL CNotFound
 template <typename SREFAL_PARAM_INT>
 struct CNotFound {

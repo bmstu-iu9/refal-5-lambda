@@ -39,8 +39,6 @@ $EXTERN FindFiles;
 //FROM FindFile
 $EXTERN Source, Output, NotFound;
 
-$LABEL CCompileCommand, CNone, CErrorFile;
-
 FindFiles-Compilers {
   (CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;

@@ -102,8 +102,6 @@ GenPattern {
 //FROM LibraryEx
 $EXTERN MapReduce, DelAccumulator, Reduce, Map;
 
-$LABEL Brackets, ADT-Brackets, CallBrackets;
-
 Inc2 {
   s.Num = <Add 2 s.Num>;
 }
@@ -456,8 +454,6 @@ $EENUM
   2. Связывание крулых и угловых скобок и
   построение результата (в обратном порядке)
 */
-
-$LABEL CloseCall;
 
 DoGenResult {
   // Создаём литералы
