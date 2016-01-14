@@ -1,12 +1,13 @@
 $ENUM ErrorList;
 
 $ENTRY EL-Create {
-  = [ErrorList];
+  e.FileName = [ErrorList (e.FileName)];
 }
 
 $ENTRY EL-AddError {
-  [ErrorList e.Errors] e.Message =
+  [ErrorList (e.FileName) e.Errors] e.Message =
     [ErrorList
+      (e.FileName)
       e.Errors
       ('  ERROR: ' e.Message)
     ];
@@ -16,10 +17,11 @@ $ENTRY EL-AddError {
 $EXTERN StrFromInt;
 
 $ENTRY EL-AddErrorAt {
-  [ErrorList e.Errors] s.LineNumber e.Message =
+  [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
     [ErrorList
+      (e.FileName)
       e.Errors
-      ('  ERROR at ' <StrFromInt s.LineNumber> ': ' e.Message)
+      (e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message)
     ];
 }
 
@@ -55,9 +57,9 @@ $EXTERN WriteLine;
 $EENUM EL-NoErrors, EL-HasErrors;
 
 $ENTRY EL-Destroy {
-  [ErrorList] = EL-NoErrors;
+  [ErrorList (e.FileName)] = EL-NoErrors;
 
-  [ErrorList e.Errors] =
+  [ErrorList (e.FileName) e.Errors] =
     <Map
       {
         (e.Line) = <WriteLine e.Line>;

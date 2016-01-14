@@ -5,9 +5,16 @@ $EXTERN Success, Fails;
 $EXTERN LexFolding;
 
 //FROM LibraryEx
-$EXTERN Map;
+$EXTERN Map, Fetch, Seq, SaveFile;
 
-$FORWARD ParseAndGenerate, PrepareBracket;
+
+//FROM SymTable
+$EXTERN ST-Create, ST-Destroy;
+
+//FROM Error
+$EXTERN EL-Create, EL-Destroy, EL-HasErrors, EL-NoErrors;
+
+$FORWARD PrepareBracket, ParseElements;
 
 /**
   <CompileFile (e.SrcName) e.OutputName>
@@ -16,9 +23,33 @@ $FORWARD ParseAndGenerate, PrepareBracket;
 */
 $ENTRY CompileFile {
   (e.SrcName) e.OutputName =
-    <ParseAndGenerate
-      (e.OutputName)
-      <Map PrepareBracket <LexFolding e.SrcName>>
+    <Fetch
+      <LexFolding e.SrcName>
+      <Seq
+        (Map PrepareBracket)
+        {
+          e.LexFolding =
+            <ParseElements
+              <EL-Create e.SrcName> <ST-Create> (/* generated */)
+              e.LexFolding
+            >;
+        }
+        {
+          t.ErrorList t.SymTable e.Lines =
+            <ST-Destroy t.SymTable>
+            <Fetch
+              <EL-Destroy t.ErrorList>
+              {
+                EL-NoErrors =
+                  <SaveFile (e.OutputName) e.Lines>
+                  Success e.OutputName;
+
+                EL-HasErrors =
+                  Fails;
+              }
+            >;
+        }
+      >
     >;
 }
 
@@ -40,12 +71,6 @@ PrepareBracket {
 
   t.OtherToken = t.OtherToken;
 }
-
-//FROM LibraryEx
-$EXTERN SaveFile, Reduce;
-
-//FROM Library
-$EXTERN FOpen, FClose, FWriteLine;
 
 /*
   Трансляция осуществляется обычным методом рекурсивного спуска.
@@ -93,48 +118,14 @@ $EXTERN FOpen, FClose, FWriteLine;
 */
 
 //FROM SymTable
-$EXTERN ST-Create, ST-AddDeclared, ST-AddDefined, ST-AddIdent, ST-Destroy;
+$EXTERN ST-AddDeclared, ST-AddDefined, ST-AddIdent;
 
 //FROM Error
-$EXTERN EL-Create, EL-AddError, EL-AddErrorAt, EL-Destroy,
-  EL-AddUnexpected, EL-HasErrors, EL-NoErrors;
-
-$FORWARD ParseElements, WriteGenerated;
+$EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
 
 /*
   TranslationUnit = Element* .
 */
-
-//FROM Generator
-$EXTERN GenCommonHeaders;
-
-//FROM LibraryEx
-$EXTERN Fetch;
-
-ParseAndGenerate {
-  (e.OutputName) e.LexFolding =
-    <Fetch
-      <ParseElements
-        <EL-Create> <ST-Create> (/* generated */)
-        e.LexFolding
-      >
-      {
-        t.ErrorList t.SymTable e.Lines =
-          <ST-Destroy t.SymTable>
-          <Fetch
-            <EL-Destroy t.ErrorList>
-            {
-              EL-NoErrors =
-                <SaveFile (e.OutputName) e.Lines>
-                Success e.OutputName;
-
-              EL-HasErrors =
-                Fails;
-            }
-          >;
-      }
-    >;
-}
 
 /*
   Element =
@@ -158,7 +149,7 @@ $EXTERN
 $FORWARD ParseElement-SwDirective, ParseFunction;
 
 //FROM Generator
-$EXTERN GN-Entry, GN-Local, GenCommonTailer;
+$EXTERN GN-Entry, GN-Local, GenCommonHeaders, GenCommonTailer;
 
 ParseElements {
   t.ErrorList t.SymTable (e.Generated) (TkEOF s.LnNum) =
