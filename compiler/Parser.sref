@@ -157,6 +157,9 @@ $FORWARD ParseElement-SwDirective, ParseFunction;
 $EXTERN GN-Entry, GN-Local, GenCommonHeaders, GenCommonTailer,
   GenExtern, GenForward;
 
+//FROM LibraryEx
+$EXTERN Sort;
+
 ParseElements {
   t.ErrorList t.SymTable (e.Generated) (TkEOF s.LnNum) =
     t.ErrorList t.SymTable
@@ -166,12 +169,12 @@ ParseElements {
         (GN-Entry e.Name) = <GenExtern e.Name>;
         (GN-Local e.Name) = <GenForward e.Name>;
       }
-      <ST-AllFunctions t.SymTable>
+      <Sort <ST-AllFunctions t.SymTable>>
     >
     ()
     <Map
       { (e.Name) = <GenIdent e.Name>; }
-      <ST-AllIdents t.SymTable>
+      <Sort <ST-AllIdents t.SymTable>>
     >
     e.Generated
     <GenCommonTailer>;
