@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = Foo Bar;
+}
+
+$EXTERN Foo, Bar;
+
+$ENUM Foo;
+$EENUM Bar;

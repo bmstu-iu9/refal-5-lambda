@@ -44,7 +44,7 @@ PatchReferences {
 }
 
 /**
-  <ST-AddDe****
+  <ST-AddDefined
     t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name
   >
     == t.ErrorList t.SymTable
@@ -65,7 +65,7 @@ $ENTRY ST-AddDefined {
 
   t.ErrorList
   [SymTable
-    e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)
+    e.Names-B (Declared s.AnyScopeClass e.Name) e.Names-E (e.References)
     (e.Idents)
   ]
   s.ScopeClass s.LnNum e.Name =
@@ -74,32 +74,6 @@ $ENTRY ST-AddDefined {
       e.Names-B (Defined s.ScopeClass e.Name) e.Names-E
       <PatchReferences (e.References) e.Name>
       (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable
-    e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References)
-    (e.Idents)
-  ]
-  GN-Local s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Entry'
-    >
-    [SymTable
-      e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References)
-      (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable
-    e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References) (e.Idents)
-  ]
-  GN-Entry s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Local'
-    >
-    [SymTable
-      e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References) (e.Idents)
     ];
 
   t.ErrorList
@@ -112,7 +86,12 @@ $ENTRY ST-AddDefined {
     ];
 }
 
-$ENTRY ST-AddDeclared {
+$ENTRY ST-AddExtern {
+  t.ErrorList t.SymTable e.Name =
+    <ST-AddDeclared t.ErrorList t.SymTable GN-Entry 0 e.Name>;
+}
+
+ST-AddDeclared {
   /*
     Можно повторно объявить имя не зависимо от того, было ли оно до этого
     объявлено или определено.
@@ -122,7 +101,7 @@ $ENTRY ST-AddDeclared {
     e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)
     (e.Idents)
   ]
-  s.ScopeClass s.LnNum e.Name =
+  s.AnyScopeClass s.LnNum e.Name =
     t.ErrorList
     [SymTable
       e.Names-B (Declared s.ScopeClass e.Name) e.Names-E (e.References)
@@ -133,7 +112,7 @@ $ENTRY ST-AddDeclared {
   [SymTable
     e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References) (e.Idents)
   ]
-  s.ScopeClass s.LnNum e.Name =
+  s.AnyScopeClass s.LnNum e.Name =
     t.ErrorList
     [SymTable
       e.Names-B (Defined s.ScopeClass e.Name) e.Names-E (e.References)
@@ -141,66 +120,13 @@ $ENTRY ST-AddDeclared {
     ];
 
   t.ErrorList
-  [SymTable
-    e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References) (e.Idents)
-  ]
-  GN-Local s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Entry'
-    >
-    [SymTable
-      e.Names-B (Declared GN-Entry e.Name) e.Names-E (e.References) (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable
-    e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References) (e.Idents)
-  ]
-  GN-Entry s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy declared as Local'
-    >
-    [SymTable
-      e.Names-B (Declared GN-Local e.Name) e.Names-E (e.References) (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable
-    e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References) (e.Idents)
-  ]
-  GN-Local s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy defined as Entry'
-    >
-    [SymTable
-      e.Names-B (Defined GN-Entry e.Name) e.Names-E (e.References) (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable
-    e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References) (e.Idents)
-  ]
-  GN-Entry s.LnNum e.Name =
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Function ' e.Name ' alredy defined as Local'
-    >
-    [SymTable
-      e.Names-B (Defined GN-Local e.Name) e.Names-E (e.References) (e.Idents)
-    ];
-
-  t.ErrorList
-  [SymTable e.Names (e.References) (e.Idents)] GN-Entry s.LnNum e.Name =
+  [SymTable e.Names (e.References) (e.Idents)] s.AnyScopeClass s.LnNum e.Name =
     t.ErrorList
     [SymTable
       e.Names (Declared GN-Entry e.Name)
       <PatchReferences (e.References) e.Name>
       (e.Idents)
     ];
-
-  t.ErrorList
-  [SymTable e.Names (e.References) (e.Idents)] GN-Local s.LnNum e.Name =
-    t.ErrorList
-    [SymTable e.Names (Declared GN-Local e.Name) (e.References) (e.Idents)];
 }
 
 $ENTRY ST-AddFunctionCall {

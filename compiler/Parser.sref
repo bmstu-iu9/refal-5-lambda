@@ -135,8 +135,7 @@ PrepareBracket {
 */
 
 //FROM SymTable
-$EXTERN ST-AllFunctions, ST-AllIdents,
-  ST-AddDeclared, ST-AddDefined, ST-AddIdent;
+$EXTERN ST-AllFunctions, ST-AllIdents, ST-AddDefined;
 
 //FROM Error
 $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
@@ -215,25 +214,35 @@ ParseElements {
 //FROM Generator
 $EXTERN GenEEnum, GenEnum, GenExtern, GenForward, GenESwap, GenSwap, GenIdent;
 
+GenFunctionsFromDirective {
+  EEnum   = GenEEnum   ST-AddDefined  GN-Entry;
+  Enum    = GenEnum    ST-AddDefined  GN-Local;
+  ESwap   = GenESwap   ST-AddDefined  GN-Entry;
+  Swap    = GenSwap    ST-AddDefined  GN-Local;
+
+  Extern  = DontGen    AddExtern      GN-Entry;
+
+  // Директивы $FORWARD и $LABEL эквивалентны пустому месту
+  Forward = DontGen    DontAdd        GN-Local;
+  // Для меток не важно: entry или local.
+  Ident   = DontGen    DontAdd        GN-Entry;
+}
+
+//FROM SymTable
+$EXTERN ST-AddExtern;
+
+AddExtern {
+  t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
+    <ST-AddExtern t.ErrorList t.SymTable e.Name>;
+}
+
 DontGen {
   e.Name = /* пусто */;
 }
 
-GenFunctionsFromDirective {
-  EEnum   = GenEEnum   ST-AddDefined  GN-Entry;
-  Enum    = GenEnum    ST-AddDefined  GN-Local;
-  Extern  = DontGen    ST-AddDeclared GN-Entry;
-  Forward = DontGen    ST-AddDeclared GN-Local;
-  ESwap   = GenESwap   ST-AddDefined  GN-Entry;
-  Swap    = GenSwap    ST-AddDefined  GN-Local;
-  // Для меток не важно: entry или local.
-  Ident   =
-    DontGen
-    {
-      t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
-        t.ErrorList <ST-AddIdent t.SymTable e.Name>;
-    }
-    GN-Entry;
+DontAdd {
+  t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
+    t.ErrorList t.SymTable;
 }
 
 ParseElement-SwDirective {
@@ -612,7 +621,7 @@ $EXTERN TkChar, TkNumber, TkVariable, TkIdentMarker,
 $EXTERN TkIdentifier;
 
 //FROM SymTable
-$EXTERN ST-AddFunctionCall, ST-GetAnyName;
+$EXTERN ST-AddFunctionCall, ST-AddIdent, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
