@@ -8,7 +8,7 @@ $EXTERN ArgList, Map, Fetch;
 $EXTERN CreateFileList;
 
 //FROM ParseCmdLine
-$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError;
+$EXTERN ParseCommandLine;
 
 $ENTRY Go { = <Main <ArgList>>; }
 
@@ -48,15 +48,15 @@ Get-s-option {
 }
 
 MakeProject {
-  (e.SrefC) (CmdLineError e.Message) =
+  (e.SrefC) (#CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
 
-  (e.SrefC) (NoCompile) (e.Folders) (e.File) =
+  (e.SrefC) (#NoCompile) (e.Folders) (e.File) =
     <WriteLine
       'COMMAND LINE ERROR: Compiler not selected'
     >;
 
-  (e.SrefC) (CompileCommand e.Command) (e.Folders) (e.File) =
+  (e.SrefC) (#CompileCommand e.Command) (e.Folders) (e.File) =
     <Make
       (e.SrefC) (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
     >;
@@ -67,13 +67,10 @@ MakeProject {
     >;
 }
 
-//FROM FindFile
-$EXTERN Source, Output, NotFound;
-
 Make {
   (e.SrefC) (e.CompilerCommand) (e.Directories)
-  e.Units-B (NotFound e.UnitName) e.Units-E =
-    <Map PrintNotFound (NotFound e.UnitName) e.Units-E>;
+  e.Units-B (#NotFound e.UnitName) e.Units-E =
+    <Map PrintNotFound (#NotFound e.UnitName) e.Units-E>;
 
   (e.SrefC) (e.CompilerCommand) (e.Directories) e.Units =
     <System
@@ -84,13 +81,13 @@ Make {
 }
 
 PrintNotFound {
-  (NotFound e.UnitName) =
+  (#NotFound e.UnitName) =
     <WriteLine
       'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
     >;
 
-  (Output e.Output) = ;
-  (Source (e.Source) e.Output) = ;
+  (#Output e.Output) = ;
+  (#Source (e.Source) e.Output) = ;
 }
 
 PrintDirectory {
@@ -98,6 +95,6 @@ PrintDirectory {
 }
 
 PrintUnit {
-  (Output e.Output) = '"' e.Output '" ';
-  (Source (e.Source) e.Output) = '"' e.Source '" ';
+  (#Output e.Output) = '"' e.Output '" ';
+  (#Source (e.Source) e.Output) = '"' e.Source '" ';
 }

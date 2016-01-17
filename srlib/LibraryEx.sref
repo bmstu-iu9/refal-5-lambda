@@ -113,10 +113,10 @@ $ENTRY Dec {
 }
 
 //FROM Library
-$EXTERN IntFromStr, Success, Fails;
+$EXTERN IntFromStr;
 
 FastIntFromStr-Guard {
-  Success s.Number = s.Number;
+  #Success s.Number = s.Number;
 }
 
 $ENTRY FastIntFromStr {
@@ -224,15 +224,13 @@ Lexicon-T-Aux {
 //FROM Library
 $EXTERN SymbType;
 
-$EENUM TypeBracket;
-
 $ENTRY Type {
-  (e.InBracket) = TypeBracket;
+  (e.InBracket) = #TypeBracket;
   s.Symbol = <SymbType s.Symbol>;
 }
 
 $ENTRY Type-T {
-  (e.InBrackets) e.Tail = TypeBracket (e.InBrackets) e.Tail;
+  (e.InBrackets) e.Tail = #TypeBracket (e.InBrackets) e.Tail;
   s.Symbol e.Tail = <SymbType s.Symbol> s.Symbol e.Tail;
   = '*';
 }

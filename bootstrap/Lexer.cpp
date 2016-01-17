@@ -5,15 +5,8 @@
 extern refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult EEnum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult ESwap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Entry(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Enum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Extern(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Forward(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Ident(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult LoadFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -23,28 +16,6 @@ extern refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Reduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Swap(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkChar(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkCloseADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkCloseBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkCloseBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkCloseCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkComma(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkIdentMarker(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkOpenADT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkOpenBlock(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkOpenBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkOpenCall(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkRedefinition(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkReplace(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkSemicolon(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -76,41 +47,392 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
 static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_BS(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_Bell(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_CarriageReturn(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_Char(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_Code(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_FF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_NewLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_OCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_Tab(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_VT(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkLiteral_XCode(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkNewLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TkPunctuation(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TokenAccum(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TokenError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TokenUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult TokenUnexpectedEOF(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-// identifier #CClose
+// identifier #Close
 template <typename SREFAL_PARAM_INT>
-struct ident_CClose {
+struct ident_Close {
   static const char *name() {
-    return "CClose";
+    return "Close";
   }
 };
 
-// identifier #COpen
+// identifier #EEnum
 template <typename SREFAL_PARAM_INT>
-struct ident_COpen {
+struct ident_EEnum {
   static const char *name() {
-    return "COpen";
+    return "EEnum";
+  }
+};
+
+// identifier #ESwap
+template <typename SREFAL_PARAM_INT>
+struct ident_ESwap {
+  static const char *name() {
+    return "ESwap";
+  }
+};
+
+// identifier #Entry
+template <typename SREFAL_PARAM_INT>
+struct ident_Entry {
+  static const char *name() {
+    return "Entry";
+  }
+};
+
+// identifier #Enum
+template <typename SREFAL_PARAM_INT>
+struct ident_Enum {
+  static const char *name() {
+    return "Enum";
+  }
+};
+
+// identifier #Extern
+template <typename SREFAL_PARAM_INT>
+struct ident_Extern {
+  static const char *name() {
+    return "Extern";
+  }
+};
+
+// identifier #Forward
+template <typename SREFAL_PARAM_INT>
+struct ident_Forward {
+  static const char *name() {
+    return "Forward";
+  }
+};
+
+// identifier #Ident
+template <typename SREFAL_PARAM_INT>
+struct ident_Ident {
+  static const char *name() {
+    return "Ident";
+  }
+};
+
+// identifier #Open
+template <typename SREFAL_PARAM_INT>
+struct ident_Open {
+  static const char *name() {
+    return "Open";
+  }
+};
+
+// identifier #Swap
+template <typename SREFAL_PARAM_INT>
+struct ident_Swap {
+  static const char *name() {
+    return "Swap";
+  }
+};
+
+// identifier #TkChar
+template <typename SREFAL_PARAM_INT>
+struct ident_TkChar {
+  static const char *name() {
+    return "TkChar";
+  }
+};
+
+// identifier #TkCloseADT
+template <typename SREFAL_PARAM_INT>
+struct ident_TkCloseADT {
+  static const char *name() {
+    return "TkCloseADT";
+  }
+};
+
+// identifier #TkCloseBlock
+template <typename SREFAL_PARAM_INT>
+struct ident_TkCloseBlock {
+  static const char *name() {
+    return "TkCloseBlock";
+  }
+};
+
+// identifier #TkCloseBracket
+template <typename SREFAL_PARAM_INT>
+struct ident_TkCloseBracket {
+  static const char *name() {
+    return "TkCloseBracket";
+  }
+};
+
+// identifier #TkCloseCall
+template <typename SREFAL_PARAM_INT>
+struct ident_TkCloseCall {
+  static const char *name() {
+    return "TkCloseCall";
+  }
+};
+
+// identifier #TkComma
+template <typename SREFAL_PARAM_INT>
+struct ident_TkComma {
+  static const char *name() {
+    return "TkComma";
+  }
+};
+
+// identifier #TkDirective
+template <typename SREFAL_PARAM_INT>
+struct ident_TkDirective {
+  static const char *name() {
+    return "TkDirective";
+  }
+};
+
+// identifier #TkEOF
+template <typename SREFAL_PARAM_INT>
+struct ident_TkEOF {
+  static const char *name() {
+    return "TkEOF";
+  }
+};
+
+// identifier #TkError
+template <typename SREFAL_PARAM_INT>
+struct ident_TkError {
+  static const char *name() {
+    return "TkError";
+  }
+};
+
+// identifier #TkIdentMarker
+template <typename SREFAL_PARAM_INT>
+struct ident_TkIdentMarker {
+  static const char *name() {
+    return "TkIdentMarker";
+  }
+};
+
+// identifier #TkLiteral_BS
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_BS {
+  static const char *name() {
+    return "TkLiteral_BS";
+  }
+};
+
+// identifier #TkLiteral_Bell
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_Bell {
+  static const char *name() {
+    return "TkLiteral_Bell";
+  }
+};
+
+// identifier #TkLiteral_CarriageReturn
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_CarriageReturn {
+  static const char *name() {
+    return "TkLiteral_CarriageReturn";
+  }
+};
+
+// identifier #TkLiteral_Char
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_Char {
+  static const char *name() {
+    return "TkLiteral_Char";
+  }
+};
+
+// identifier #TkLiteral_Code
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_Code {
+  static const char *name() {
+    return "TkLiteral_Code";
+  }
+};
+
+// identifier #TkLiteral_FF
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_FF {
+  static const char *name() {
+    return "TkLiteral_FF";
+  }
+};
+
+// identifier #TkLiteral_NewLine
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_NewLine {
+  static const char *name() {
+    return "TkLiteral_NewLine";
+  }
+};
+
+// identifier #TkLiteral_OCode
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_OCode {
+  static const char *name() {
+    return "TkLiteral_OCode";
+  }
+};
+
+// identifier #TkLiteral_Tab
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_Tab {
+  static const char *name() {
+    return "TkLiteral_Tab";
+  }
+};
+
+// identifier #TkLiteral_VT
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_VT {
+  static const char *name() {
+    return "TkLiteral_VT";
+  }
+};
+
+// identifier #TkLiteral_XCode
+template <typename SREFAL_PARAM_INT>
+struct ident_TkLiteral_XCode {
+  static const char *name() {
+    return "TkLiteral_XCode";
+  }
+};
+
+// identifier #TkName
+template <typename SREFAL_PARAM_INT>
+struct ident_TkName {
+  static const char *name() {
+    return "TkName";
+  }
+};
+
+// identifier #TkNewLine
+template <typename SREFAL_PARAM_INT>
+struct ident_TkNewLine {
+  static const char *name() {
+    return "TkNewLine";
+  }
+};
+
+// identifier #TkNumber
+template <typename SREFAL_PARAM_INT>
+struct ident_TkNumber {
+  static const char *name() {
+    return "TkNumber";
+  }
+};
+
+// identifier #TkOpenADT
+template <typename SREFAL_PARAM_INT>
+struct ident_TkOpenADT {
+  static const char *name() {
+    return "TkOpenADT";
+  }
+};
+
+// identifier #TkOpenBlock
+template <typename SREFAL_PARAM_INT>
+struct ident_TkOpenBlock {
+  static const char *name() {
+    return "TkOpenBlock";
+  }
+};
+
+// identifier #TkOpenBracket
+template <typename SREFAL_PARAM_INT>
+struct ident_TkOpenBracket {
+  static const char *name() {
+    return "TkOpenBracket";
+  }
+};
+
+// identifier #TkOpenCall
+template <typename SREFAL_PARAM_INT>
+struct ident_TkOpenCall {
+  static const char *name() {
+    return "TkOpenCall";
+  }
+};
+
+// identifier #TkPunctuation
+template <typename SREFAL_PARAM_INT>
+struct ident_TkPunctuation {
+  static const char *name() {
+    return "TkPunctuation";
+  }
+};
+
+// identifier #TkRedefinition
+template <typename SREFAL_PARAM_INT>
+struct ident_TkRedefinition {
+  static const char *name() {
+    return "TkRedefinition";
+  }
+};
+
+// identifier #TkReplace
+template <typename SREFAL_PARAM_INT>
+struct ident_TkReplace {
+  static const char *name() {
+    return "TkReplace";
+  }
+};
+
+// identifier #TkSemicolon
+template <typename SREFAL_PARAM_INT>
+struct ident_TkSemicolon {
+  static const char *name() {
+    return "TkSemicolon";
+  }
+};
+
+// identifier #TkUnexpected
+template <typename SREFAL_PARAM_INT>
+struct ident_TkUnexpected {
+  static const char *name() {
+    return "TkUnexpected";
+  }
+};
+
+// identifier #TkVariable
+template <typename SREFAL_PARAM_INT>
+struct ident_TkVariable {
+  static const char *name() {
+    return "TkVariable";
+  }
+};
+
+// identifier #TokenAccum
+template <typename SREFAL_PARAM_INT>
+struct ident_TokenAccum {
+  static const char *name() {
+    return "TokenAccum";
+  }
+};
+
+// identifier #TokenError
+template <typename SREFAL_PARAM_INT>
+struct ident_TokenError {
+  static const char *name() {
+    return "TokenError";
+  }
+};
+
+// identifier #TokenUnexpected
+template <typename SREFAL_PARAM_INT>
+struct ident_TokenUnexpected {
+  static const char *name() {
+    return "TokenUnexpected";
+  }
+};
+
+// identifier #TokenUnexpectedEOF
+template <typename SREFAL_PARAM_INT>
+struct ident_TokenUnexpectedEOF {
+  static const char *name() {
+    return "TokenUnexpectedEOF";
   }
 };
 
@@ -451,209 +773,6 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   );
 }
 
-refalrts::FnResult TkChar(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkCloseADT(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkCloseCall(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkCloseBlock(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkCloseBracket(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkComma(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkDirective(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkEOF(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkError(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkIdentMarker(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkName(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkNumber(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkOpenADT(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkOpenCall(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkOpenBlock(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkOpenBracket(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkReplace(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkSemicolon(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkUnexpected(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkVariable(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult TkRedefinition(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult EEnum(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Entry(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Enum(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Extern(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Forward(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Swap(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult ESwap(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult Ident(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
 static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -667,13 +786,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { EEnum, "EEnum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_EEnum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
@@ -694,8 +813,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & EEnum
-    if( ! refalrts::function_left( EEnum, context[0], context[1] ) )
+    // # EEnum
+    if( ! refalrts::ident_left(  & ident_EEnum<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -739,13 +858,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Entry, "Entry" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Entry<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
@@ -766,8 +885,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Entry
-    if( ! refalrts::function_left( Entry, context[0], context[1] ) )
+    // # Entry
+    if( ! refalrts::ident_left(  & ident_Entry<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -811,13 +930,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Enum, "Enum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Enum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
@@ -837,8 +956,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Enum
-    if( ! refalrts::function_left( Enum, context[0], context[1] ) )
+    // # Enum
+    if( ! refalrts::ident_left(  & ident_Enum<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -878,13 +997,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Extern, "Extern" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Extern<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
@@ -906,8 +1025,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Extern
-    if( ! refalrts::function_left( Extern, context[0], context[1] ) )
+    // # Extern
+    if( ! refalrts::ident_left(  & ident_Extern<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -955,13 +1074,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Forward, "Forward" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Forward<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'F', 0},
@@ -984,8 +1103,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Forward
-    if( ! refalrts::function_left( Forward, context[0], context[1] ) )
+    // # Forward
+    if( ! refalrts::ident_left(  & ident_Forward<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1037,13 +1156,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Swap, "Swap" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Swap<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'S', 0},
@@ -1063,8 +1182,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Swap
-    if( ! refalrts::function_left( Swap, context[0], context[1] ) )
+    // # Swap
+    if( ! refalrts::ident_left(  & ident_Swap<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1104,13 +1223,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { ESwap, "ESwap" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_ESwap<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
@@ -1131,8 +1250,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & ESwap
-    if( ! refalrts::function_left( ESwap, context[0], context[1] ) )
+    // # ESwap
+    if( ! refalrts::ident_left(  & ident_ESwap<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1176,13 +1295,13 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Ident, "Ident" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Ident<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'L', 0},
@@ -1203,8 +1322,8 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // & Ident
-    if( ! refalrts::function_left( Ident, context[0], context[1] ) )
+    // # Ident
+    if( ! refalrts::ident_left(  & ident_Ident<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1256,13 +1375,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkChar<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -1282,8 +1401,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkChar s.Char#1
-    if( ! refalrts::function_left( TkChar, context[0], context[1] ) )
+    // # TkChar s.Char#1
+    if( ! refalrts::ident_left(  & ident_TkChar<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sChar_1_1], context[0], context[1] ) )
       break;
@@ -1318,13 +1437,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseADT, "TkCloseADT" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseADT<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1343,8 +1462,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkCloseADT
-    if( ! refalrts::function_left( TkCloseADT, context[0], context[1] ) )
+    // # TkCloseADT
+    if( ! refalrts::ident_left(  & ident_TkCloseADT<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1380,13 +1499,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseCall, "TkCloseCall" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseCall<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1405,8 +1524,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkCloseCall
-    if( ! refalrts::function_left( TkCloseCall, context[0], context[1] ) )
+    // # TkCloseCall
+    if( ! refalrts::ident_left(  & ident_TkCloseCall<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1442,13 +1561,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseBlock, "TkCloseBlock" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseBlock<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1467,8 +1586,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkCloseBlock
-    if( ! refalrts::function_left( TkCloseBlock, context[0], context[1] ) )
+    // # TkCloseBlock
+    if( ! refalrts::ident_left(  & ident_TkCloseBlock<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1504,13 +1623,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseBracket, "TkCloseBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1529,8 +1648,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkCloseBracket
-    if( ! refalrts::function_left( TkCloseBracket, context[0], context[1] ) )
+    // # TkCloseBracket
+    if( ! refalrts::ident_left(  & ident_TkCloseBracket<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1566,13 +1685,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkComma, "TkComma" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkComma<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1591,8 +1710,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkComma
-    if( ! refalrts::function_left( TkComma, context[0], context[1] ) )
+    // # TkComma
+    if( ! refalrts::ident_left(  & ident_TkComma<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1630,13 +1749,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StrDirective, "StrDirective" },
-      { TkDirective, "TkDirective" }
+      { StrDirective, "StrDirective" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkDirective<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 1, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sDirective_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -1660,8 +1780,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkDirective s.Directive#1
-    if( ! refalrts::function_left( TkDirective, context[0], context[1] ) )
+    // # TkDirective s.Directive#1
+    if( ! refalrts::ident_left(  & ident_TkDirective<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sDirective_1_1], context[0], context[1] ) )
       break;
@@ -1714,13 +1834,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkEOF, "TkEOF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkEOF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'e', 0},
@@ -1747,8 +1867,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkEOF
-    if( ! refalrts::function_left( TkEOF, context[0], context[1] ) )
+    // # TkEOF
+    if( ! refalrts::ident_left(  & ident_TkEOF<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1817,13 +1937,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkError, "TkError" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkError<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icContextSet, 0, __eMessage_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'L', 0},
@@ -1853,8 +1973,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkError e.Message#1
-    if( ! refalrts::function_left( TkError, context[0], context[1] ) )
+    // # TkError e.Message#1
+    if( ! refalrts::ident_left(  & ident_TkError<int>::name, context[0], context[1] ) )
       break;
     context[__eMessage_1_1] = context[0];
     context[__eMessage_1_1 + 1] = context[1];
@@ -1931,13 +2051,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkIdentMarker, "TkIdentMarker" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkIdentMarker<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -1956,8 +2076,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkIdentMarker
-    if( ! refalrts::function_left( TkIdentMarker, context[0], context[1] ) )
+    // # TkIdentMarker
+    if( ! refalrts::ident_left(  & ident_TkIdentMarker<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1994,13 +2114,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkName, "TkName" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkName<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icContextSet, 0, __eName_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'N', 0},
@@ -2022,8 +2142,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkName e.Name#1
-    if( ! refalrts::function_left( TkName, context[0], context[1] ) )
+    // # TkName e.Name#1
+    if( ! refalrts::ident_left(  & ident_TkName<int>::name, context[0], context[1] ) )
       break;
     context[__eName_1_1] = context[0];
     context[__eName_1_1 + 1] = context[1];
@@ -2070,13 +2190,14 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StrFromInt, "StrFromInt" },
-      { TkNumber, "TkNumber" }
+      { StrFromInt, "StrFromInt" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNumber<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 1, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -2104,8 +2225,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkNumber s.Number#1
-    if( ! refalrts::function_left( TkNumber, context[0], context[1] ) )
+    // # TkNumber s.Number#1
+    if( ! refalrts::ident_left(  & ident_TkNumber<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
       break;
@@ -2174,13 +2295,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenADT, "TkOpenADT" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenADT<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2199,8 +2320,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkOpenADT
-    if( ! refalrts::function_left( TkOpenADT, context[0], context[1] ) )
+    // # TkOpenADT
+    if( ! refalrts::ident_left(  & ident_TkOpenADT<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2236,13 +2357,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenCall, "TkOpenCall" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenCall<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2261,8 +2382,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkOpenCall
-    if( ! refalrts::function_left( TkOpenCall, context[0], context[1] ) )
+    // # TkOpenCall
+    if( ! refalrts::ident_left(  & ident_TkOpenCall<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2298,13 +2419,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenBlock, "TkOpenBlock" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenBlock<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2323,8 +2444,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkOpenBlock
-    if( ! refalrts::function_left( TkOpenBlock, context[0], context[1] ) )
+    // # TkOpenBlock
+    if( ! refalrts::ident_left(  & ident_TkOpenBlock<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2360,13 +2481,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenBracket, "TkOpenBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2385,8 +2506,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkOpenBracket
-    if( ! refalrts::function_left( TkOpenBracket, context[0], context[1] ) )
+    // # TkOpenBracket
+    if( ! refalrts::ident_left(  & ident_TkOpenBracket<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2422,13 +2543,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkReplace, "TkReplace" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkReplace<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2447,8 +2568,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkReplace
-    if( ! refalrts::function_left( TkReplace, context[0], context[1] ) )
+    // # TkReplace
+    if( ! refalrts::ident_left(  & ident_TkReplace<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2484,13 +2605,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkSemicolon, "TkSemicolon" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkSemicolon<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2509,8 +2630,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkSemicolon
-    if( ! refalrts::function_left( TkSemicolon, context[0], context[1] ) )
+    // # TkSemicolon
+    if( ! refalrts::ident_left(  & ident_TkSemicolon<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2547,13 +2668,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkUnexpected, "TkUnexpected" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkUnexpected<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icContextSet, 0, __eUnexpected_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
@@ -2594,8 +2715,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkUnexpected e.Unexpected#1
-    if( ! refalrts::function_left( TkUnexpected, context[0], context[1] ) )
+    // # TkUnexpected e.Unexpected#1
+    if( ! refalrts::ident_left(  & ident_TkUnexpected<int>::name, context[0], context[1] ) )
       break;
     context[__eUnexpected_1_1] = context[0];
     context[__eUnexpected_1_1 + 1] = context[1];
@@ -2718,13 +2839,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkVariable, "TkVariable" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkVariable<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, __eIndex_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -2744,8 +2865,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkVariable s.Mode#1 e.Index#1
-    if( ! refalrts::function_left( TkVariable, context[0], context[1] ) )
+    // # TkVariable s.Mode#1 e.Index#1
+    if( ! refalrts::ident_left(  & ident_TkVariable<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sMode_1_1], context[0], context[1] ) )
       break;
@@ -2777,13 +2898,13 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkRedefinition, "TkRedefinition" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkRedefinition<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icChar, 0, '\"', 0},
@@ -2802,8 +2923,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // & TkRedefinition
-    if( ! refalrts::function_left( TkRedefinition, context[0], context[1] ) )
+    // # TkRedefinition
+    if( ! refalrts::ident_left(  & ident_TkRedefinition<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2844,7 +2965,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrFromToken, "StrFromToken" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_COpen<int>::name
+      & idents_Open<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2869,8 +2990,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // # COpen s.OpenBracket#1
-    if( ! refalrts::ident_left(  & ident_COpen<int>::name, context[0], context[1] ) )
+    // # Open s.OpenBracket#1
+    if( ! refalrts::ident_left(  & ident_Open<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sOpenBracket_1_1], context[0], context[1] ) )
       break;
@@ -2916,7 +3037,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrFromToken, "StrFromToken" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CClose<int>::name
+      & idents_Close<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2941,8 +3062,8 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     else
       return res;
 #else
-    // # CClose s.CloseBracket#1
-    if( ! refalrts::ident_left(  & ident_CClose<int>::name, context[0], context[1] ) )
+    // # Close s.CloseBracket#1
+    if( ! refalrts::ident_left(  & ident_Close<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sCloseBracket_1_1], context[0], context[1] ) )
       break;
@@ -2972,125 +3093,6 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #endif
   } while ( 0 );
 
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_Char(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_Code(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_OCode(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_XCode(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_NewLine(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_CarriageReturn(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_Tab(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_Bell(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_BS(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_FF(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkLiteral_VT(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkNewLine(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TkPunctuation(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TokenAccum(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TokenError(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TokenUnexpected(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult TokenUnexpectedEOF(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
   return refalrts::FnResult(
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
   );
@@ -3248,14 +3250,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { ValidDirective, "ValidDirective" },
-      { TkDirective, "TkDirective" }
+      { ValidDirective, "ValidDirective" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkDirective<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eDirective_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -3276,12 +3279,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkDirective e.Directive#1 )
+    // ( # TkDirective e.Directive#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkDirective, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkDirective<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3322,19 +3325,19 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkEOF, "TkEOF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkEOF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -3349,12 +3352,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkEOF )
+    // ( # TkEOF )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkEOF, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkEOF<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[2], context[3] ) )
       break;
@@ -3367,7 +3370,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkEOF, "TkEOF" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -3394,21 +3397,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_Char<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sChar_1_1, 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sChar_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -3424,12 +3427,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_Char s.Char#1 )
+    // ( # TkLiteral_Char s.Char#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_Char, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_Char<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3444,7 +3447,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -3474,20 +3477,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { FastIntFromStr, "FastIntFromStr" },
-      { Chr, "Chr" },
-      { TkChar, "TkChar" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { Chr, "Chr" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 3, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eDecCode_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -3509,12 +3513,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_Code e.DecCode#1 )
+    // ( # TkLiteral_Code e.DecCode#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_Code, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_Code<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3527,7 +3531,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -3584,20 +3588,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { CharFromNum, "CharFromNum" },
-      { TkChar, "TkChar" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { CharFromNum, "CharFromNum" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 2, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eOctCode_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icInt, 0, 8 , 0},
@@ -3617,12 +3622,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_OCode e.OctCode#1 )
+    // ( # TkLiteral_OCode e.OctCode#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_OCode, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_OCode<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3635,7 +3640,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -3682,20 +3687,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { CharFromNum, "CharFromNum" },
-      { TkChar, "TkChar" },
-      { TkLiteral_XCode, "TkLiteral_XCode" }
+      { CharFromNum, "CharFromNum" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_XCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 2, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eHexCode_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icInt, 0, 16 , 0},
@@ -3715,12 +3721,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_XCode e.HexCode#1 )
+    // ( # TkLiteral_XCode e.HexCode#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_XCode, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_XCode<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3733,7 +3739,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -3778,21 +3784,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_NewLine, "TkLiteral_NewLine" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_NewLine<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'n', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\n', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -3808,12 +3814,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_NewLine 'n' )
+    // ( # TkLiteral_NewLine 'n' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_NewLine, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_NewLine<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'n', context[2], context[3] ) )
       break;
@@ -3828,7 +3834,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\n' ) )
@@ -3858,21 +3864,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_CarriageReturn, "TkLiteral_CarriageReturn" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_CarriageReturn<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'r', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\r', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -3888,12 +3894,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_CarriageReturn 'r' )
+    // ( # TkLiteral_CarriageReturn 'r' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_CarriageReturn, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_CarriageReturn<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'r', context[2], context[3] ) )
       break;
@@ -3908,7 +3914,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\r' ) )
@@ -3938,21 +3944,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_Tab, "TkLiteral_Tab" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_Tab<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'t', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\t', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -3968,12 +3974,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_Tab 't' )
+    // ( # TkLiteral_Tab 't' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_Tab, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_Tab<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 't', context[2], context[3] ) )
       break;
@@ -3988,7 +3994,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\t' ) )
@@ -4018,21 +4024,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_Bell, "TkLiteral_Bell" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_Bell<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'a', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\007', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4048,12 +4054,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_Bell 'a' )
+    // ( # TkLiteral_Bell 'a' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_Bell, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_Bell<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'a', context[2], context[3] ) )
       break;
@@ -4068,7 +4074,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\007' ) )
@@ -4098,21 +4104,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_BS, "TkLiteral_BS" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_BS<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'b', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\010', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4128,12 +4134,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_BS 'b' )
+    // ( # TkLiteral_BS 'b' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_BS, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_BS<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'b', context[2], context[3] ) )
       break;
@@ -4148,7 +4154,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\010' ) )
@@ -4178,21 +4184,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_FF, "TkLiteral_FF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_FF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'f', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\014', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4208,12 +4214,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_FF 'f' )
+    // ( # TkLiteral_FF 'f' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_FF, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_FF<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'f', context[2], context[3] ) )
       break;
@@ -4228,7 +4234,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\014' ) )
@@ -4258,21 +4264,21 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkChar, "TkChar" },
-      { TkLiteral_VT, "TkLiteral_VT" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkChar<int>::name,
+      & idents_TkLiteral_VT<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icCharLeft, 0, (int)'v', 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, '\013', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4288,12 +4294,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkLiteral_VT 'v' )
+    // ( # TkLiteral_VT 'v' )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkLiteral_VT, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkLiteral_VT<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::char_left( 'v', context[2], context[3] ) )
       break;
@@ -4308,7 +4314,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkChar, "TkChar" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkChar<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\013' ) )
@@ -4340,19 +4346,20 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { NormalizeName, "NormalizeName" },
-      { TkName, "TkName" }
+      { NormalizeName, "NormalizeName" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkName<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eName_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eName_1_1, 0},
@@ -4371,12 +4378,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkName e.Name#1 )
+    // ( # TkName e.Name#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkName, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkName<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4389,7 +4396,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkName, "TkName" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkName<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -4430,18 +4437,18 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkNewLine, "TkNewLine" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNewLine<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -4456,12 +4463,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkNewLine e.Accumulated#1 )
+    // ( # TkNewLine e.Accumulated#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkNewLine, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkNewLine<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4473,7 +4480,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNewLine, "TkNewLine" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNewLine<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -4501,19 +4508,20 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { FastIntFromStr, "FastIntFromStr" },
-      { TkNumber, "TkNumber" }
+      { FastIntFromStr, "FastIntFromStr" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNumber<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eDigits_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eDigits_1_1, 0},
@@ -4532,12 +4540,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkNumber e.Digits#1 )
+    // ( # TkNumber e.Digits#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkNumber, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkNumber<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4550,7 +4558,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNumber, "TkNumber" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNumber<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -4593,14 +4601,15 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { SwPunctuation, "SwPunctuation" },
-      { TkPunctuation, "TkPunctuation" }
+      { SwPunctuation, "SwPunctuation" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sPunctuation_1_1, 2},
       {refalrts::icEmpty, 0, 0, 2},
@@ -4624,12 +4633,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkPunctuation s.Punctuation#1 )
+    // ( # TkPunctuation s.Punctuation#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkPunctuation, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkPunctuation<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4684,21 +4693,22 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { NormalizeName, "NormalizeName" },
-      { TkVariable, "TkVariable" }
+      { NormalizeName, "NormalizeName" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkVariable<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sType_1_1, 2},
       {refalrts::icCharLeft, 0, (int)'.', 2},
       {refalrts::icContextSet, 0, __eIndex_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sType_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
@@ -4718,12 +4728,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkVariable s.Type#1 '. e.Index#1 )
+    // ( # TkVariable s.Type#1 '. e.Index#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkVariable, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkVariable<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4740,7 +4750,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkVariable, "TkVariable" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkVariable<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_call( n2 ) )
@@ -4783,19 +4793,19 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkUnexpected, "TkUnexpected" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkUnexpected<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eUnexpected_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4811,12 +4821,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TkUnexpected e.Unexpected#1 )
+    // ( # TkUnexpected e.Unexpected#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkUnexpected, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkUnexpected<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4829,7 +4839,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkUnexpected, "TkUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -4857,20 +4867,20 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkError, "TkError" },
-      { TokenError, "TokenError" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkError<int>::name,
+      & idents_TokenError<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eMessage_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4886,12 +4896,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TokenError e.Message#1 )
+    // ( # TokenError e.Message#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TokenError, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TokenError<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4904,7 +4914,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkError, "TkError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -4932,20 +4942,20 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkUnexpected, "TkUnexpected" },
-      { TokenUnexpected, "TokenUnexpected" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkUnexpected<int>::name,
+      & idents_TokenUnexpected<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eUnexpected_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -4961,12 +4971,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TokenUnexpected e.Unexpected#1 )
+    // ( # TokenUnexpected e.Unexpected#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TokenUnexpected, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TokenUnexpected<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -4979,7 +4989,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkUnexpected, "TkUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -5006,20 +5016,20 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkError, "TkError" },
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TkError<int>::name,
+      & idents_TokenUnexpectedEOF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
@@ -5048,12 +5058,12 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // ( & TokenUnexpectedEOF )
+    // ( # TokenUnexpectedEOF )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TokenUnexpectedEOF, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TokenUnexpectedEOF<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[2], context[3] ) )
       break;
@@ -5066,7 +5076,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkError, "TkError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -6142,11 +6152,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Enum, "Enum" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Enum<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'E', 0},
@@ -6156,8 +6166,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6190,10 +6200,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Enum, "Enum" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Enum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6220,11 +6230,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { EEnum, "EEnum" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_EEnum<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'E', 0},
@@ -6235,8 +6245,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6271,10 +6281,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, EEnum, "EEnum" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_EEnum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6301,11 +6311,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Entry, "Entry" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Entry<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'E', 0},
@@ -6316,8 +6326,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6352,10 +6362,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Entry, "Entry" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Entry<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6382,11 +6392,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Extern, "Extern" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Extern<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'E', 0},
@@ -6398,8 +6408,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6436,10 +6446,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Extern, "Extern" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Extern<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6466,11 +6476,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Forward, "Forward" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Forward<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'F', 0},
@@ -6483,8 +6493,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6523,10 +6533,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Forward, "Forward" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Forward<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6553,11 +6563,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Swap, "Swap" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Swap<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'S', 0},
@@ -6567,8 +6577,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6601,10 +6611,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Swap, "Swap" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Swap<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6631,11 +6641,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { ESwap, "ESwap" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_ESwap<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'E', 0},
@@ -6646,8 +6656,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6682,10 +6692,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, ESwap, "ESwap" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_ESwap<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6712,11 +6722,11 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Ident, "Ident" },
-      { TkDirective, "TkDirective" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_Ident<int>::name,
+      & idents_TkDirective<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'L', 0},
@@ -6727,8 +6737,8 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -6763,10 +6773,10 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
-    if( ! refalrts::alloc_name( n2, Ident, "Ident" ) )
+    if( ! refalrts::alloc_ident( n2, & ident_Ident<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
     if( ! refalrts::alloc_close_bracket( n3 ) )
@@ -6794,16 +6804,16 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkError, "TkError" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkError<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eOther_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'k', 0},
@@ -6848,7 +6858,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkError, "TkError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -6958,16 +6968,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenCall, "TkOpenCall" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenCall<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'<', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -6990,7 +7000,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkOpenCall, "TkOpenCall" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkOpenCall<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7010,16 +7020,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseCall, "TkCloseCall" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseCall<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'>', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7042,7 +7052,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkCloseCall, "TkCloseCall" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkCloseCall<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7062,16 +7072,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenBlock, "TkOpenBlock" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenBlock<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'{', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7094,7 +7104,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkOpenBlock, "TkOpenBlock" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkOpenBlock<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7114,16 +7124,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseBlock, "TkCloseBlock" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseBlock<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'}', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7146,7 +7156,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkCloseBlock, "TkCloseBlock" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkCloseBlock<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7166,16 +7176,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenBracket, "TkOpenBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'(', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7198,7 +7208,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkOpenBracket, "TkOpenBracket" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkOpenBracket<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7218,16 +7228,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseBracket, "TkCloseBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)')', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7250,7 +7260,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkCloseBracket, "TkCloseBracket" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkCloseBracket<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7270,16 +7280,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkReplace, "TkReplace" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkReplace<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'=', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7302,7 +7312,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkReplace, "TkReplace" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkReplace<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7322,16 +7332,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkComma, "TkComma" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkComma<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)',', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7354,7 +7364,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkComma, "TkComma" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkComma<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7374,16 +7384,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkSemicolon, "TkSemicolon" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkSemicolon<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)';', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7406,7 +7416,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkSemicolon, "TkSemicolon" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkSemicolon<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7426,16 +7436,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkOpenADT, "TkOpenADT" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkOpenADT<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'[', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7458,7 +7468,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkOpenADT, "TkOpenADT" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkOpenADT<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7478,16 +7488,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkCloseADT, "TkCloseADT" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkCloseADT<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)']', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7510,7 +7520,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkCloseADT, "TkCloseADT" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkCloseADT<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7530,16 +7540,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkIdentMarker, "TkIdentMarker" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkIdentMarker<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'#', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7562,7 +7572,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkIdentMarker, "TkIdentMarker" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkIdentMarker<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7582,16 +7592,16 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkRedefinition, "TkRedefinition" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkRedefinition<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharLeft, 0, (int)'^', 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -7614,7 +7624,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TkRedefinition, "TkRedefinition" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TkRedefinition<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -7643,14 +7653,15 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Inc, "Inc" },
-      { TkNewLine, "TkNewLine" }
+      { Inc, "Inc" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNewLine<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icsVarLeft, 0, __sLineNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
@@ -7672,12 +7683,12 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // s.LineNumber#1 ( & TkNewLine )
+    // s.LineNumber#1 ( # TkNewLine )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkNewLine, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkNewLine<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[2], context[3] ) )
       break;
@@ -8187,10 +8198,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8199,7 +8211,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '<', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8240,7 +8252,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '<' ) )
@@ -8298,10 +8310,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8310,7 +8323,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '>', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8351,7 +8364,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '>' ) )
@@ -8409,10 +8422,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8421,7 +8435,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '(', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8462,7 +8476,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '(' ) )
@@ -8520,10 +8534,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8532,7 +8547,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, ')', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8573,7 +8588,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, ')' ) )
@@ -8631,10 +8646,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8643,7 +8659,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '{', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8684,7 +8700,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '{' ) )
@@ -8742,10 +8758,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8754,7 +8771,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '}', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8795,7 +8812,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '}' ) )
@@ -8853,10 +8870,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8865,7 +8883,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '[', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -8906,7 +8924,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '[' ) )
@@ -8964,10 +8982,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8976,7 +8995,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, ']', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9017,7 +9036,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, ']' ) )
@@ -9075,10 +9094,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9087,7 +9107,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '=', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9128,7 +9148,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '=' ) )
@@ -9186,10 +9206,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9198,7 +9219,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, ';', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9239,7 +9260,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, ';' ) )
@@ -9297,10 +9318,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9309,7 +9331,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, ',', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9350,7 +9372,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, ',' ) )
@@ -9408,10 +9430,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9420,7 +9443,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '#', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9461,7 +9484,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '#' ) )
@@ -9519,10 +9542,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkPunctuation, "TkPunctuation" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkPunctuation<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9531,7 +9555,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '^', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -9572,7 +9596,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkPunctuation, "TkPunctuation" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkPunctuation<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '^' ) )
@@ -13558,10 +13582,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkNewLine, "TkNewLine" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNewLine<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13570,7 +13595,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\n', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -13611,7 +13636,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNewLine, "TkNewLine" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNewLine<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\n' ) )
@@ -13667,10 +13692,10 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkEOF, "TkEOF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkEOF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13678,7 +13703,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -13710,7 +13735,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkEOF, "TkEOF" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13741,10 +13766,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkUnexpected, "TkUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13753,7 +13779,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __sAny_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -13794,7 +13820,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkUnexpected, "TkUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13849,10 +13875,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13860,7 +13887,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -13899,7 +13926,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -13951,11 +13978,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13963,11 +13990,11 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -13998,7 +14025,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -14007,7 +14034,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -20064,10 +20091,11 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkName, "TkName" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkName<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20075,7 +20103,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -20113,7 +20141,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkName, "TkName" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkName<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -20167,10 +20195,11 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20178,7 +20207,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -20217,7 +20246,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -20269,11 +20298,11 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20281,11 +20310,11 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -20316,7 +20345,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -20325,7 +20354,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -20459,17 +20488,18 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenError, "TokenError" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
       {refalrts::icChar, 0, 'x', 0},
       {refalrts::icChar, 0, 'p', 0},
@@ -20517,7 +20547,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'E' ) )
@@ -20618,10 +20648,11 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20629,7 +20660,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -20668,7 +20699,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -20720,11 +20751,11 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20732,11 +20763,11 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -20767,7 +20798,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -20776,7 +20807,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -21757,10 +21788,11 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkNumber, "TkNumber" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNumber<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21768,7 +21800,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -21806,7 +21838,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNumber, "TkNumber" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNumber<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -21860,10 +21892,11 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21871,7 +21904,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -21910,7 +21943,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -21962,11 +21995,11 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21974,11 +22007,11 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -22009,7 +22042,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -22018,7 +22051,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -24502,17 +24535,18 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenError, "TokenError" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
       {refalrts::icChar, 0, 'x', 0},
       {refalrts::icChar, 0, 'p', 0},
@@ -24571,7 +24605,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'E' ) )
@@ -24716,10 +24750,11 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -24727,7 +24762,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -24766,7 +24801,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -24818,11 +24853,11 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -24830,11 +24865,11 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -24865,7 +24900,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -24874,7 +24909,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -24915,10 +24950,11 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -24927,7 +24963,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\'', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -24968,7 +25004,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\'' ) )
@@ -25112,10 +25148,11 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -25123,7 +25160,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -25162,7 +25199,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -25214,11 +25251,11 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -25226,11 +25263,11 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -25261,7 +25298,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -25270,7 +25307,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -25479,10 +25516,11 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkUnexpected, "TkUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -25490,7 +25528,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -25528,7 +25566,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkUnexpected, "TkUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -25582,10 +25620,11 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -25593,7 +25632,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -25632,7 +25671,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -25684,11 +25723,11 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -25696,11 +25735,11 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -25731,7 +25770,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -25740,7 +25779,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -31796,17 +31835,18 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenError, "TokenError" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
       {refalrts::icChar, 0, 'x', 0},
       {refalrts::icChar, 0, 'p', 0},
@@ -31864,7 +31904,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'E' ) )
@@ -32005,10 +32045,11 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -32016,7 +32057,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -32055,7 +32096,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -32107,11 +32148,11 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -32119,11 +32160,11 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -32154,7 +32195,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -32163,7 +32204,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -34648,10 +34689,11 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkDirective, "TkDirective" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkDirective<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -34659,7 +34701,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -34697,7 +34739,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkDirective, "TkDirective" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkDirective<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -34751,10 +34793,11 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -34762,7 +34805,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -34801,7 +34844,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -34853,11 +34896,11 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -34865,11 +34908,11 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -34900,7 +34943,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -34909,7 +34952,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -35117,10 +35160,11 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenError, "TokenError" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -35128,7 +35172,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'c', 0},
@@ -35180,7 +35224,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -35286,17 +35330,17 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenError, "TokenError" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
@@ -35358,7 +35402,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -35516,10 +35560,11 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -35528,7 +35573,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icSpliceSTVar, 0, __sAny_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -35569,7 +35614,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -35624,10 +35669,11 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -35635,7 +35681,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -35674,7 +35720,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -35726,11 +35772,11 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -35738,11 +35784,11 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -35773,7 +35819,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -35782,7 +35828,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -35991,10 +36037,11 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { CComment, "CComment" },
-      { TkNewLine, "TkNewLine" }
+      { CComment, "CComment" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNewLine<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36003,7 +36050,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\n', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -36044,7 +36091,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNewLine, "TkNewLine" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNewLine<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\n' ) )
@@ -36184,17 +36231,17 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenError, "TokenError" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
@@ -36256,7 +36303,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -36413,10 +36460,11 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36424,7 +36472,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -36463,7 +36511,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -36515,11 +36563,11 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36527,11 +36575,11 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -36562,7 +36610,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -36571,7 +36619,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -36612,10 +36660,11 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkNewLine, "TkNewLine" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkNewLine<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36624,7 +36673,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\n', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -36665,7 +36714,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkNewLine, "TkNewLine" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkNewLine<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\n' ) )
@@ -36721,10 +36770,10 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TkEOF, "TkEOF" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkEOF<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36732,7 +36781,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -36764,7 +36813,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkEOF, "TkEOF" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -36879,10 +36928,11 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36890,7 +36940,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -36929,7 +36979,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -36981,11 +37031,11 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -36993,11 +37043,11 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -37028,7 +37078,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -37037,7 +37087,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -43094,10 +43144,11 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TkVariable, "TkVariable" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkVariable<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43105,7 +43156,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -43143,7 +43194,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkVariable, "TkVariable" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkVariable<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -43197,10 +43248,11 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43208,7 +43260,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -43247,7 +43299,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -43299,11 +43351,11 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43311,11 +43363,11 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -43346,7 +43398,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -43355,7 +43407,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -43396,10 +43448,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_NewLine, "TkLiteral_NewLine" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_NewLine<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43408,7 +43461,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -43449,7 +43502,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_NewLine, "TkLiteral_NewLine" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_NewLine<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'n' ) )
@@ -43507,10 +43560,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_CarriageReturn, "TkLiteral_CarriageReturn" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_CarriageReturn<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43519,7 +43573,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -43560,7 +43614,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_CarriageReturn, "TkLiteral_CarriageReturn" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_CarriageReturn<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'r' ) )
@@ -43618,10 +43672,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Tab, "TkLiteral_Tab" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Tab<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43630,7 +43685,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 't', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -43671,7 +43726,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Tab, "TkLiteral_Tab" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Tab<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 't' ) )
@@ -43729,10 +43784,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Bell, "TkLiteral_Bell" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Bell<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43741,7 +43797,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'a', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -43782,7 +43838,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Bell, "TkLiteral_Bell" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Bell<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'a' ) )
@@ -43840,10 +43896,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_BS, "TkLiteral_BS" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_BS<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43852,7 +43909,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'b', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -43893,7 +43950,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_BS, "TkLiteral_BS" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_BS<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'b' ) )
@@ -43951,10 +44008,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_FF, "TkLiteral_FF" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_FF<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -43963,7 +44021,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'f', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -44004,7 +44062,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_FF, "TkLiteral_FF" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_FF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'f' ) )
@@ -44062,10 +44120,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_VT, "TkLiteral_VT" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_VT<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -44074,7 +44133,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, 'v', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -44115,7 +44174,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_VT, "TkLiteral_VT" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_VT<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'v' ) )
@@ -44173,10 +44232,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -44185,7 +44245,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\\', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -44226,7 +44286,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\\' ) )
@@ -44284,10 +44344,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -44296,7 +44357,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\'', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -44337,7 +44398,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\'' ) )
@@ -44395,10 +44456,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -44407,7 +44469,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\"', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -44448,7 +44510,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\"' ) )
@@ -45593,10 +45655,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenError, "TokenError" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -45604,7 +45667,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'c', 0},
@@ -45656,7 +45719,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -45764,17 +45827,18 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TokenError, "TokenError" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'U', 0},
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
@@ -45836,7 +45900,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'U' ) )
@@ -45993,10 +46057,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46004,7 +46069,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -46043,7 +46108,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -46095,11 +46160,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46107,11 +46172,11 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -46142,7 +46207,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -46151,7 +46216,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -46192,10 +46257,11 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Char, "TkLiteral_Char" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Char<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46204,7 +46270,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '\'', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -46245,7 +46311,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Char, "TkLiteral_Char" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Char<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '\'' ) )
@@ -46389,10 +46455,11 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46400,7 +46467,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -46439,7 +46506,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -46491,11 +46558,11 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46503,11 +46570,11 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -46538,7 +46605,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -46547,7 +46614,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -46587,10 +46654,11 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { CComment, "CComment" },
-      { TokenError, "TokenError" }
+      { CComment, "CComment" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46598,7 +46666,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'N', 0},
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icChar, 0, 's', 0},
@@ -46663,7 +46731,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'N' ) )
@@ -46910,10 +46978,11 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -46921,7 +46990,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -46960,7 +47029,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -47012,11 +47081,11 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -47024,11 +47093,11 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -47059,7 +47128,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -47068,7 +47137,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -47279,10 +47348,11 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -47290,7 +47360,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -47329,7 +47399,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -47381,11 +47451,11 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -47393,11 +47463,11 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -47428,7 +47498,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -47437,7 +47507,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -48417,17 +48487,18 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TokenError, "TokenError" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icChar, 0, 'E', 0},
       {refalrts::icChar, 0, 'x', 0},
       {refalrts::icChar, 0, 'p', 0},
@@ -48485,7 +48556,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenError, "TokenError" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenError<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, 'E' ) )
@@ -48626,10 +48697,11 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -48637,7 +48709,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -48676,7 +48748,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -48728,11 +48800,11 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -48740,11 +48812,11 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -48775,7 +48847,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -48784,7 +48856,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -49577,10 +49649,11 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -49588,7 +49661,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -49626,7 +49699,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -49680,10 +49753,11 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -49691,7 +49765,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -49730,7 +49804,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -49782,11 +49856,11 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -49794,11 +49868,11 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -49829,7 +49903,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -49838,7 +49912,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -51947,10 +52021,11 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_XCode, "TkLiteral_XCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_XCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -51958,7 +52033,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -51996,7 +52071,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_XCode, "TkLiteral_XCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_XCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -52050,10 +52125,11 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -52061,7 +52137,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -52100,7 +52176,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -52152,11 +52228,11 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -52164,11 +52240,11 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -52199,7 +52275,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -52208,7 +52284,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -53189,10 +53265,11 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -53200,7 +53277,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -53238,7 +53315,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -53292,10 +53369,11 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -53303,7 +53381,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -53342,7 +53420,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -53394,11 +53472,11 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -53406,11 +53484,11 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -53441,7 +53519,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -53450,7 +53528,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -54243,10 +54321,11 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54254,7 +54333,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -54292,7 +54371,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -54346,10 +54425,11 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54357,7 +54437,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -54396,7 +54476,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -54448,11 +54528,11 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54460,11 +54540,11 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -54495,7 +54575,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -54504,7 +54584,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -54545,10 +54625,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54557,7 +54638,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '0', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -54598,7 +54679,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '0' ) )
@@ -54656,10 +54737,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54668,7 +54750,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '1', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -54709,7 +54791,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '1' ) )
@@ -54767,10 +54849,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54779,7 +54862,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '2', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -54820,7 +54903,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '2' ) )
@@ -54878,10 +54961,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -54890,7 +54974,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '3', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -54931,7 +55015,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '3' ) )
@@ -54989,10 +55073,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55001,7 +55086,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '4', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55042,7 +55127,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '4' ) )
@@ -55100,10 +55185,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55112,7 +55198,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '5', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55153,7 +55239,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '5' ) )
@@ -55211,10 +55297,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55223,7 +55310,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '6', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55264,7 +55351,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '6' ) )
@@ -55322,10 +55409,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55334,7 +55422,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '7', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55375,7 +55463,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '7' ) )
@@ -55433,10 +55521,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55445,7 +55534,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '8', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55486,7 +55575,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '8' ) )
@@ -55544,10 +55633,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55556,7 +55646,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '9', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -55597,7 +55687,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '9' ) )
@@ -55655,10 +55745,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_Code, "TkLiteral_Code" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_Code<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55666,7 +55757,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -55704,7 +55795,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_Code, "TkLiteral_Code" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_Code<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -55758,10 +55849,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55769,7 +55861,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -55808,7 +55900,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -55860,11 +55952,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55872,11 +55964,11 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -55907,7 +55999,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -55916,7 +56008,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -55957,10 +56049,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -55969,7 +56062,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '0', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56010,7 +56103,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '0' ) )
@@ -56068,10 +56161,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56080,7 +56174,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '1', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56121,7 +56215,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '1' ) )
@@ -56179,10 +56273,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56191,7 +56286,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '2', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56232,7 +56327,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '2' ) )
@@ -56290,10 +56385,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56302,7 +56398,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '3', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56343,7 +56439,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '3' ) )
@@ -56401,10 +56497,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56413,7 +56510,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '4', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56454,7 +56551,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '4' ) )
@@ -56512,10 +56609,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56524,7 +56622,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '5', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56565,7 +56663,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '5' ) )
@@ -56623,10 +56721,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56635,7 +56734,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '6', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56676,7 +56775,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '6' ) )
@@ -56734,10 +56833,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56746,7 +56846,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icChar, 0, '7', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -56787,7 +56887,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_char( n2, '7' ) )
@@ -56845,10 +56945,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { StringLiteral, "StringLiteral" },
-      { TkLiteral_OCode, "TkLiteral_OCode" }
+      { StringLiteral, "StringLiteral" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkLiteral_OCode<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56856,7 +56957,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -56894,7 +56995,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TkLiteral_OCode, "TkLiteral_OCode" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TkLiteral_OCode<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -56948,10 +57049,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Root, "Root" },
-      { TokenUnexpected, "TokenUnexpected" }
+      { Root, "Root" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TokenUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -56959,7 +57061,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sUnexpected_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -56998,7 +57100,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenUnexpected, "TokenUnexpected" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenUnexpected<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -57050,11 +57152,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TokenUnexpectedEOF, "TokenUnexpectedEOF" },
-      { TokenAccum, "TokenAccum" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_TokenUnexpectedEOF<int>::name,
+      & idents_TokenAccum<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -57062,11 +57164,11 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eAccum_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
     };
@@ -57097,7 +57199,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, TokenAccum, "TokenAccum" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_TokenAccum<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -57106,7 +57208,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     if( ! refalrts::alloc_open_bracket( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, TokenUnexpectedEOF, "TokenUnexpectedEOF" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_TokenUnexpectedEOF<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
     if( ! refalrts::alloc_close_bracket( n5 ) )

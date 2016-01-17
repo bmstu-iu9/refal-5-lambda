@@ -14,15 +14,15 @@
   Пример: \ac.abcd, переменные a и c — связанные, b и d — свободные.
 */
 
-$ENUM Context, FreeVarsSent, FreeVarsFunc;
+$ENUM Context;
 /*
   Внутренняя структура контекста:
   [Context
     s.StackDepth
-    e.Variables1 (FreeVarsSent e.FreeSent1) (FreeVarsFunc e.FreeFunc1)
-    e.Variables2 (FreeVarsSent e.FreeSent2) (FreeVarsFunc e.FreeFunc2)
+    e.Variables1 (#FreeVarsSent e.FreeSent1) (#FreeVarsFunc e.FreeFunc1)
+    e.Variables2 (#FreeVarsSent e.FreeSent2) (#FreeVarsFunc e.FreeFunc2)
     ...
-    e.VariablesN (FreeVarsSent) (FreeVarsFunc)
+    e.VariablesN (#FreeVarsSent) (#FreeVarsFunc)
   ]
   e.VariablesK, e.FreeSentK, e.FreeFuncK ::= (s.Mode e.Index s.VarDepth)*
 
@@ -67,8 +67,8 @@ $ENTRY Cntx-Destroy {
 
 /**
   <Cntx-AddVariable t.Context s.Mode e.Index>
-    == t.Context # CSuccess s.Depth
-    == t.Context # CInvalidMode s.Depth s.OldMode
+    == t.Context # Success s.Depth
+    == t.Context # InvalidMode s.Depth s.OldMode
 */
 $ENTRY Cntx-AddVariable {
   [Context
@@ -90,7 +90,7 @@ $ENTRY Cntx-AddVariable {
       (s.Mode e.Index s.VarDepth)
       e.Variables-E
     ]
-    # CSuccess s.VarDepth;
+    # Success s.VarDepth;
 
   [Context
     s.StackDepth e.Variables-B (s.OldMode e.Index s.VarDepth) e.Variables-E
@@ -99,19 +99,21 @@ $ENTRY Cntx-AddVariable {
     [Context
       s.StackDepth e.Variables-B (s.OldMode e.Index s.VarDepth) e.Variables-E
     ]
-    # CInvalidMode s.VarDepth s.OldMode;
+    # InvalidMode s.VarDepth s.OldMode;
 
   [Context s.StackDepth e.Variables] s.Mode e.Index =
     [Context s.StackDepth (s.Mode e.Index s.StackDepth) e.Variables]
-    # CSuccess s.StackDepth;
+    # Success s.StackDepth;
 }
 
 ShiftVariable {
   (s.Mode e.Index s.VarDepth)
-  e.Variables-B (FreeVarsSent e.Free) (FreeVarsFunc e.FreeFunc) e.Variables-E =
+  e.Variables-B
+  (#FreeVarsSent e.Free) (#FreeVarsFunc e.FreeFunc)
+  e.Variables-E =
     e.Variables-B (s.Mode e.Index s.VarDepth)
-    (FreeVarsSent <ShiftVariable-AddToFree (s.Mode e.Index s.VarDepth) e.Free>)
-    (FreeVarsFunc e.FreeFunc)
+    (#FreeVarsSent <ShiftVariable-AddToFree (s.Mode e.Index s.VarDepth) e.Free>)
+    (#FreeVarsFunc e.FreeFunc)
     <ShiftVariable (s.Mode e.Index s.VarDepth) e.Variables-E>;
 
   (s.Mode e.Index s.VarDepth) e.Variables = e.Variables;
@@ -131,21 +133,21 @@ $EXTERN Fetch;
 
 /**
   <Cntx-AddNewVariable t.Context s.Mode e.Index>
-    == t.Context # CSuccess s.Depth
-    == t.Context # CInvalidMode s.Depth s.OldMode
-    == t.Context # CAlreadyBounded s.Depth
+    == t.Context # Success s.Depth
+    == t.Context # InvalidMode s.Depth s.OldMode
+    == t.Context # AlreadyBounded s.Depth
 
   Эта функция в отличие от Cntx-AddVariable добавляет переменную как
   имеющую область видимости начиная с текущей функции: если в области
   видимости имеется переменная с тем же именем, что и в данной функции,
   то она сокрывается.
   Если переменная уже упоминалась ранее в текущем образце, функция возвращает
-  # CAlreadyBounded, что является ошибкой.
+  # AlreadyBounded, что является ошибкой.
 */
 $ENTRY Cntx-AddNewVariable {
   [Context
     s.StackDepth
-    e.LocalVars (FreeVarsSent e.FreeSent) (FreeVarsFunc e.FreeFunc) e.Stack
+    e.LocalVars (#FreeVarsSent e.FreeSent) (#FreeVarsFunc e.FreeFunc) e.Stack
   ]
   s.Mode e.Index =
     <Fetch
@@ -155,37 +157,37 @@ $ENTRY Cntx-AddNewVariable {
           [Context
             s.StackDepth
             e.LocalVars-B (s.Mode e.Index s.Depth) e.LocalVars-E
-            (FreeVarsSent e.FreeSent) (FreeVarsFunc e.FreeFunc)
+            (#FreeVarsSent e.FreeSent) (#FreeVarsFunc e.FreeFunc)
             e.Stack
           ]
-          # CAlreadyBounded s.Depth;
+          # AlreadyBounded s.Depth;
 
         e.LocalVars-B (s.OldMode e.Index s.VarDepth) e.LocalVars-E =
           [Context
             s.StackDepth
             e.LocalVars-B (s.OldMode e.Index s.VarDepth) e.LocalVars-E
-            (FreeVarsSent e.FreeSent) (FreeVarsFunc e.FreeFunc)
+            (#FreeVarsSent e.FreeSent) (#FreeVarsFunc e.FreeFunc)
             e.Stack
           ]
-          # CInvalidMode s.VarDepth s.OldMode;
+          # InvalidMode s.VarDepth s.OldMode;
 
         e.LocalVars^ =
           [Context
             s.StackDepth
             (s.Mode e.Index s.StackDepth) e.LocalVars
-            (FreeVarsSent e.FreeSent) (FreeVarsFunc e.FreeFunc)
+            (#FreeVarsSent e.FreeSent) (#FreeVarsFunc e.FreeFunc)
             e.Stack
           ]
-          # CSuccess s.StackDepth;
+          # Success s.StackDepth;
       }
     >;
 }
 
 /**
   <Cntx-CheckVariable t.Context s.Mode e.Index>
-    == t.Context # CExistVariable s.Depth
-    == t.Context # CInvalidMode s.Depth s.OldMode
-    == t.Context # CNotFound
+    == t.Context # ExistVariable s.Depth
+    == t.Context # InvalidMode s.Depth s.OldMode
+    == t.Context # NotFound
 */
 $ENTRY Cntx-CheckVariable {
   [Context
@@ -199,7 +201,7 @@ $ENTRY Cntx-CheckVariable {
       (s.Mode e.Index s.VarDepth)
       e.Variables-E
     ]
-    # CExistVariable s.VarDepth;
+    # ExistVariable s.VarDepth;
 
   [Context
     s.StackDepth e.Variables-B (s.OldMode e.Index s.VarDepth) e.Variables-E
@@ -208,10 +210,10 @@ $ENTRY Cntx-CheckVariable {
     [Context
       s.StackDepth e.Variables-B (s.OldMode e.Index s.VarDepth) e.Variables-E
     ]
-    # CInvalidMode 00 s.OldMode;
+    # InvalidMode 00 s.OldMode;
 
   [Context s.StackDepth e.Variables] s.Mode e.Index =
-    [Context s.StackDepth e.Variables] # CNotFound;
+    [Context s.StackDepth e.Variables] # NotFound;
 }
 
 /**
@@ -220,12 +222,12 @@ $ENTRY Cntx-CheckVariable {
 $ENTRY Cntx-ResetAfterSentence {
   [Context
     s.StackDepth
-    e.Locals (FreeVarsSent e.FreeSent) (FreeVarsFunc e.FreeFunc)
+    e.Locals (#FreeVarsSent e.FreeSent) (#FreeVarsFunc e.FreeFunc)
     e.Outers
   ] =
     [Context
       s.StackDepth
-      (FreeVarsSent) (FreeVarsFunc <Unique e.FreeSent e.FreeFunc>)
+      (#FreeVarsSent) (#FreeVarsFunc <Unique e.FreeSent e.FreeFunc>)
       e.Outers
     ];
 }
@@ -247,7 +249,7 @@ $ENTRY Cntx-PushScope {
   [Context s.StackDepth e.Variables] =
     [Context
       <Inc s.StackDepth>
-      (FreeVarsSent) (FreeVarsFunc) e.Variables
+      (#FreeVarsSent) (#FreeVarsFunc) e.Variables
     ];
 }
 
@@ -259,7 +261,7 @@ $ENTRY Cntx-PushScope {
 $ENTRY Cntx-PopScope {
   [Context
     s.StackDepth
-    (FreeVarsSent) (FreeVarsFunc e.ClosureContext)
+    (#FreeVarsSent) (#FreeVarsFunc e.ClosureContext)
     e.Outers
   ] =
     [Context <Dec s.StackDepth> e.Outers] e.ClosureContext;

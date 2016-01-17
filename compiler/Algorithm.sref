@@ -14,66 +14,32 @@ $ENTRY MakeAlgorithm {
 // Генерация образца
 //==============================================================================
 
-//FROM Lexer
-$EXTERN
-  TkOpenBracket, TkCloseBracket, TkOpenADT, TkCloseADT,
-  TkName, TkNumber, TkVariable, TkChar;
-
 //FROM LibraryEx
 $EXTERN Inc, Add;
 
-// Направление распознавания
-$EENUM AlgLeft, AlgRight;
-
-/*
-  Тип идентификатора следует сделать доступным
-  и из Driver'а, и из Generator'а.
-  Остаётся только импортировать отсюда.
-*/
-$EENUM TkIdentifier;
-
 /*
 Команды распознавания
-  Литералы, формат (Cmd*** s.Direction s.BracketNum e.Literal)
-  Скобки, формат (CmdBrackets s.Direction s.BracketNum s.InnerNum)
+  Литералы, формат (#Cmd*** s.Direction s.BracketNum e.Literal)
+  Скобки, формат (#CmdBrackets s.Direction s.BracketNum s.InnerNum)
   АТД, формат
-    (CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (CmdEmpty AlgLeft s.BracketNum),
+    (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
+  Пустые скобки, формат (#CmdEmpty #AlgLeft s.BracketNum),
     направление добавлено для единнобразия, генератором не используется
   Переменные:
     повторные, формат
-      (CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
-    новые s и t, формат (CmdVar s.Direction s.BracketNum s.Mode e.Index)
+      (#CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
+    новые s и t, формат (#CmdVar s.Direction s.BracketNum s.Mode e.Index)
     открытые e:
-      первоначальный формат (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index)
+      первоначальный формат (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index)
       после обработки:
-        (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
-        (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index)
+        (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
+        (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
     закрытые e, формат
-      (CmdClosedE AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
+      (#CmdClosedE #AlgLeft s.BracketNum 'e' e.Index (e.BracketsForSave))
   Команды сохранения скобок
-    (CmdSave s.OldNumber e.NewNumber)
-  Комментарий, вносимый в исходный код (CmdComment e.Text)
+    (#CmdSave s.OldNumber e.NewNumber)
+  Комментарий, вносимый в исходный код (#CmdComment e.Text)
 */
-$EENUM
-  CmdInitB0,
-  CmdChar, CmdNumber, CmdName, CmdIdent,
-  CmdBrackets, CmdADT, CmdEmpty,
-  CmdRepeated, CmdVar, CmdClosedE,
-  CmdOpenedE-Start, CmdOpenedE-End,
-  CmdComment, CmdSave, CmdIssueMem,
-  CmdSetBound, CmdBoundToLeft, CmdBoundToRight,
-  CmdBoundEmptySeq,
-  CmdiContextSet, CmdiVar,
-  CmdiBracket,
-  CmdiNum, CmdiHugeNum, CmdiIdent, CmdiADT,
-  CmdiName, CmdiChar,
-  CmdiRepeat, CmdiSave,
-  CmdiEPrepare, CmdiEStart,
-  CmdiEmpty,
-  CmdiFuncArray, CmdiLabelArray, CmdiNumberArray;
-
-$ENUM CmdOpenedE;
 
 //FROM LibraryEx
 $EXTERN Fetch, Seq;
@@ -93,7 +59,7 @@ GenPattern {
           (e.Vars) s.NumRanges e.Commands =
             (e.Vars)
             s.NumRanges
-            ((CmdComment <TextFromPattern e.Pattern> ) e.Commands);
+            ((#CmdComment <TextFromPattern e.Pattern> ) e.Commands);
         }
       >
     >;
@@ -108,60 +74,60 @@ Inc2 {
 
 DoGenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
-  s.NumRanges e.Ranges-B (s.Num (TkChar s.Char) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkChar s.Char) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdChar AlgLeft s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdChar #AlgLeft s.Num s.Char))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkNumber s.Number) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkNumber s.Number) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdNumber AlgLeft s.Num s.Number))
+      (e.Vars) (e.Commands (#CmdNumber #AlgLeft s.Num s.Number))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkName e.Name) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkName e.Name) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdName AlgLeft s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdName #AlgLeft s.Num e.Name))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkIdentifier e.Name) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkIdentifier e.Name) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdIdent AlgLeft s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdent #AlgLeft s.Num e.Name))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkChar s.Char)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkChar s.Char)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdChar AlgRight s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdChar #AlgRight s.Num s.Char))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkNumber s.Number)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkNumber s.Number)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdNumber AlgRight s.Num s.Number))
+      (e.Vars) (e.Commands (#CmdNumber #AlgRight s.Num s.Number))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkName e.Name)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkName e.Name)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdName AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdName #AlgRight s.Num e.Name))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkIdentifier e.Name)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkIdentifier e.Name)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdIdent AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdent #AlgRight s.Num e.Name))
     >;
 
   // Распознавание скобок
@@ -172,7 +138,7 @@ DoGenPattern {
     <DoGenPattern
       <Inc2 s.NumRanges>
       e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (CmdBrackets AlgLeft s.Num s.NumRanges))
+      (e.Vars) (e.Commands (#CmdBrackets #AlgLeft s.Num s.NumRanges))
     >;
 
   s.NumRanges e.Ranges-B
@@ -182,7 +148,7 @@ DoGenPattern {
     <DoGenPattern
       <Inc2 s.NumRanges>
       e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
-      (e.Vars) (e.Commands (CmdBrackets AlgRight s.Num s.NumRanges))
+      (e.Vars) (e.Commands (#CmdBrackets #AlgRight s.Num s.NumRanges))
     >;
 
   // Распознавание АТД-скобок
@@ -194,7 +160,7 @@ DoGenPattern {
       <Inc2 s.NumRanges>
       e.Ranges-B (s.NumRanges e.SubRange) (s.Num e.Range) e.Ranges-E
       (e.Vars)
-      (e.Commands (CmdADT AlgLeft s.Num s.NumRanges e.Name))
+      (e.Commands (#CmdADT #AlgLeft s.Num s.NumRanges e.Name))
     >;
 
   s.NumRanges e.Ranges-B
@@ -205,7 +171,7 @@ DoGenPattern {
       <Inc2 s.NumRanges>
       e.Ranges-B (s.Num e.Range) (s.NumRanges e.SubRange) e.Ranges-E
       (e.Vars)
-      (e.Commands (CmdADT AlgRight s.Num s.NumRanges e.Name))
+      (e.Commands (#CmdADT #AlgRight s.Num s.NumRanges e.Name))
     >;
 
   // Пустой диапазон
@@ -213,69 +179,69 @@ DoGenPattern {
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B e.Ranges-E
-      (e.Vars) (e.Commands (CmdEmpty AlgLeft s.Num))
+      (e.Vars) (e.Commands (#CmdEmpty #AlgLeft s.Num))
     >;
 
   // Распознавание переменных
-  s.NumRanges e.Ranges-B (s.Num (TkVariable s.Mode e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkVariable s.Mode e.Index) e.Range) e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
-      (e.Commands (CmdRepeated AlgLeft s.Num <Inc s.Count> s.Mode e.Index))
+      (e.Commands (#CmdRepeated #AlgLeft s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable s.Mode e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkVariable s.Mode e.Index)) e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars-B (<Inc s.Count> s.Mode e.Index) e.Vars-E)
-      (e.Commands (CmdRepeated AlgRight s.Num <Inc s.Count> s.Mode e.Index))
+      (e.Commands (#CmdRepeated #AlgRight s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
   // Диапазон с закрытой переменной
-  s.NumRanges e.Ranges-B (s.Num (TkVariable 'e' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkVariable 'e' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B e.Ranges-E
       (e.Vars (1 'e' e.Index))
-      (e.Commands (CmdClosedE AlgLeft s.Num 'e' e.Index))
+      (e.Commands (#CmdClosedE #AlgLeft s.Num 'e' e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkVariable 's' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkVariable 's' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 's' e.Index))
+      (e.Vars (1 's' e.Index)) (e.Commands (#CmdVar #AlgLeft s.Num 's' e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkVariable 't' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkVariable 't' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgLeft s.Num 't' e.Index))
+      (e.Vars (1 't' e.Index)) (e.Commands (#CmdVar #AlgLeft s.Num 't' e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable 's' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkVariable 's' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars (1 's' e.Index)) (e.Commands (CmdVar AlgRight s.Num 's' e.Index))
+      (e.Vars (1 's' e.Index)) (e.Commands (#CmdVar #AlgRight s.Num 's' e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num e.Range (TkVariable 't' e.Index)) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num e.Range (#TkVariable 't' e.Index)) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
-      (e.Vars (1 't' e.Index)) (e.Commands (CmdVar AlgRight s.Num 't' e.Index))
+      (e.Vars (1 't' e.Index)) (e.Commands (#CmdVar #AlgRight s.Num 't' e.Index))
     >;
 
-  s.NumRanges e.Ranges-B (s.Num (TkVariable 'e' e.Index) e.Range) e.Ranges-E
+  s.NumRanges e.Ranges-B (s.Num (#TkVariable 'e' e.Index) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.NumRanges e.Ranges-B (s.Num e.Range) e.Ranges-E
       (e.Vars (1 'e' e.Index))
-      (e.Commands (CmdOpenedE AlgLeft s.Num 'e' e.Index))
+      (e.Commands (#CmdOpenedE #AlgLeft s.Num 'e' e.Index))
     >;
 
   // Завершение разбора.
@@ -292,9 +258,9 @@ $EXTERN Map;
 
 DoSaveBrackets {
   s.LastBracket (e.Scanned)
-  e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index) e.Commands-E =
+  e.Commands-B (#CmdOpenedE #AlgLeft s.Num 'e' e.Index) e.Commands-E =
     <Fetch
-      e.Scanned e.Commands-B (CmdOpenedE AlgLeft s.Num 'e' e.Index)
+      e.Scanned e.Commands-B (#CmdOpenedE #AlgLeft s.Num 'e' e.Index)
       {
         e.CommandsBeforeEMatch =
           <DoSaveBrackets-MakeSavers
@@ -320,7 +286,7 @@ DoSaveBrackets-MakeSavers {
     <DoSaveBrackets-MakeSavers
       <Inc2 s.LastBracket>
       (e.BoundedBrackets-B e.BoundedBrackets-E)
-      (e.Scanned (CmdSave s.Num s.LastBracket))
+      (e.Scanned (#CmdSave s.Num s.LastBracket))
       <Map
         {
           /*
@@ -350,10 +316,10 @@ ExtractBrackets {
             Все команды распознавания содержат номер скобок третьим термом,
             общий формат (s.Command s.Direction s.BracketNum e.Info)
           */
-          (CmdBrackets s.Direction s.BracketNum s.InnerNum) =
+          (#CmdBrackets s.Direction s.BracketNum s.InnerNum) =
             s.BracketNum s.InnerNum;
 
-          (CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
+          (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
             s.BracketNum s.InnerNum;
 
           (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
@@ -380,19 +346,19 @@ TextFromPattern {
   (#ADT-Brackets (e.Name) e.Inner) e.Tail =
     ' [' e.Name ' ' <TextFromPattern e.Inner> ' ]' <TextFromPattern e.Tail>;
 
-  (TkChar s.Char) e.Tail =
-    ' ' '' <TextFromPattern-Char (TkChar s.Char) e.Tail>;
+  (#TkChar s.Char) e.Tail =
+    ' ' '' <TextFromPattern-Char (#TkChar s.Char) e.Tail>;
 
-  (TkNumber s.Number) e.Tail =
+  (#TkNumber s.Number) e.Tail =
     ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
 
-  (TkName e.Name) e.Tail =
+  (#TkName e.Name) e.Tail =
     ' & ' e.Name <TextFromPattern e.Tail>;
 
-  (TkVariable s.Mode e.Index s.Depth) e.Tail =
+  (#TkVariable s.Mode e.Index s.Depth) e.Tail =
     ' ' s.Mode '.' e.Index '#' <StrFromInt s.Depth> <TextFromPattern e.Tail>;
 
-  (TkIdentifier e.Name) e.Tail =
+  (#TkIdentifier e.Name) e.Tail =
     ' # ' e.Name <TextFromPattern e.Tail>;
 
   = ;
@@ -406,7 +372,7 @@ Escape {
 }
 
 TextFromPattern-Char {
-  (TkChar s.Char) e.Tail =
+  (#TkChar s.Char) e.Tail =
     <Escape s.Char> <TextFromPattern-Char e.Tail>;
 
   = '';
@@ -429,24 +395,11 @@ GenResult {
 }
 
 // Основные команды работы с образцом
-//  (CmdAllocateElem s.Number s.ElType e.Info)
-//  (CmdLinkBrackets s.Left s.Right)
-//  (CmdPushStack s.Number)
-//  (CmdInsertElem s.Number)
-//  (CmdInsertVar s.Usings s.Mode e.Index)
-$EENUM
-  CmdAllocateElem,
-  CmdLinkBrackets,
-  CmdPushStack,
-  CmdInsertElem,
-  CmdInsertVar;
-
-// Спецификаторы команд (элементы)
-$EENUM
-  ElChar, ElName, ElNumber, ElIdent,
-  ElOpenADT, ElCloseADT,
-  ElOpenBracket, ElCloseBracket,
-  ElOpenCall, ElCloseCall;
+//  (#CmdAllocateElem s.Number s.ElType e.Info)
+//  (#CmdLinkBrackets s.Left s.Right)
+//  (#CmdPushStack s.Number)
+//  (#CmdInsertElem s.Number)
+//  (#CmdInsertVar s.Usings s.Mode e.Index)
 
 /*
   Порядок выполнения команд.
@@ -457,37 +410,37 @@ $EENUM
 
 DoGenResult {
   // Создаём литералы
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkChar s.Value) e.Result =
+  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElChar s.Value))
-      ((CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElChar s.Value))
+      ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (TkName e.Name) e.Result =
+  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkName e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElName e.Name))
-      ((CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkNumber s.Number) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElNumber s.Number))
-      ((CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElName e.Name))
+      ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkIdentifier e.Name) e.Result =
+  s.Counter (#TkNumber s.Number) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElIdent e.Name))
-      ((CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElNumber s.Number))
+      ((#CmdInsertElem s.Counter) e.Commands)
+      <Inc s.Counter> e.Result
+    >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkIdentifier e.Name) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElIdent e.Name))
+      ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
 
@@ -498,17 +451,17 @@ DoGenResult {
   s.Counter (#Brackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElOpenBracket))
-      ((CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (TkCloseBracket s.Counter) e.Result
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenBracket))
+      ((#CmdInsertElem s.Counter) e.Commands)
+      <Inc s.Counter> e.InBrackets (#TkCloseBracket s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
   s.Counter (#CallBrackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElOpenCall))
-      ((CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenCall))
+      ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
     >;
 
@@ -516,10 +469,10 @@ DoGenResult {
   s.Counter (#ADT-Brackets (e.Name) e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElOpenADT))
-      ((CmdInsertElem s.Counter) e.Commands)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenADT))
+      ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter>
-      (TkName e.Name) e.InBrackets (TkCloseADT s.Counter) e.Result
+      (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
     >;
 
   /*
@@ -527,26 +480,26 @@ DoGenResult {
     Круглые скобки и АТД -- слинковать, угловые -- добавить в стек.
   */
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkCloseBracket s.OpenCounter) e.Result =
+  s.Counter (#TkCloseBracket s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElCloseBracket))
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseBracket))
       (
-        (CmdLinkBrackets s.OpenCounter s.Counter)
-        (CmdInsertElem s.Counter)
+        (#CmdLinkBrackets s.OpenCounter s.Counter)
+        (#CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkCloseADT s.OpenCounter) e.Result =
+  s.Counter (#TkCloseADT s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElCloseADT))
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseADT))
       (
-        (CmdLinkBrackets s.OpenCounter s.Counter)
-        (CmdInsertElem s.Counter)
+        (#CmdLinkBrackets s.OpenCounter s.Counter)
+        (#CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
@@ -556,11 +509,11 @@ DoGenResult {
   s.Counter (#CloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (CmdAllocateElem s.Counter ElCloseCall))
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseCall))
       (
-        (CmdPushStack s.Counter)
-        (CmdPushStack s.OpenCounter)
-        (CmdInsertElem s.Counter)
+        (#CmdPushStack s.Counter)
+        (#CmdPushStack s.OpenCounter)
+        (#CmdInsertElem s.Counter)
         e.Commands
       )
       <Inc s.Counter> e.Result
@@ -568,20 +521,20 @@ DoGenResult {
 
   // Обработка переменных
   (e.Vars-B (s.Usings s.Mode e.Index) e.Vars-E) (e.AllocCommands) (e.Commands)
-  s.Counter (TkVariable s.Mode e.Index) e.Result =
+  s.Counter (#TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
       (e.Vars-B (<Inc s.Usings> s.Mode e.Index) e.Vars-E)
       (e.AllocCommands)
-      ((CmdInsertVar <Inc s.Usings> s.Mode e.Index) e.Commands)
+      ((#CmdInsertVar <Inc s.Usings> s.Mode e.Index) e.Commands)
       s.Counter e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (TkVariable s.Mode e.Index) e.Result =
+  s.Counter (#TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
       (e.Vars (1 s.Mode e.Index))
       (e.AllocCommands)
-      ((CmdInsertVar 1 s.Mode e.Index) e.Commands)
+      ((#CmdInsertVar 1 s.Mode e.Index) e.Commands)
       s.Counter e.Result
     >;
 
@@ -600,10 +553,6 @@ $EXTERN Map, Seq;
 
 //From Library
 $EXTERN Add, Inc;
-
-$EENUM CmdEmptyResult, CmdReturnResult, CmdIfDef, CmdElse, CmdEndIf,
-  CmdInitRAA, CmdFinRAA, CmdiRunInterpret, CmdiReserveStack,
-  CmdiEmptyResult;
 
 //FROM Library
 $EXTERN WriteLine;
@@ -633,75 +582,75 @@ FindAllocForCopiedVars {
 $EXTERN Compare;
 
 GenInterpretPatternCommand {
-  (CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
-    (CmdiBracket s.Direction s.Num s.NumRanges)
+  (#CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
+    (#CmdiBracket s.Direction s.Num s.NumRanges)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdClosedE AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
-    (CmdiContextSet s.BracketNumber 'e' e.Index)
+  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
+    (#CmdiContextSet s.BracketNumber 'e' e.Index)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdNumber s.Direction s.BracketNumber s.Number) e.Etc =
+  (#CmdNumber s.Direction s.BracketNumber s.Number) e.Etc =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (CmdiNum s.Direction s.BracketNumber s.Number);
+        '<' = (#CmdiNum s.Direction s.BracketNumber s.Number);
 
-        s.Other = (CmdiHugeNum s.Direction s.BracketNumber s.Number);
+        s.Other = (#CmdiHugeNum s.Direction s.BracketNumber s.Number);
       }
     >
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdIdent s.Direction s.BracketNumber e.Name) e.Etc =
-    (CmdiIdent s.Direction s.BracketNumber e.Name)
+  (#CmdIdent s.Direction s.BracketNumber e.Name) e.Etc =
+    (#CmdiIdent s.Direction s.BracketNumber e.Name)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdSave s.OldBracketNumber s.NewBracketNumber) e.Etc =
-    (CmdiSave s.OldBracketNumber s.NewBracketNumber)
+  (#CmdSave s.OldBracketNumber s.NewBracketNumber) e.Etc =
+    (#CmdiSave s.OldBracketNumber s.NewBracketNumber)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index) e.Etc =
-    (CmdiEPrepare s.BracketNum 'e' e.Index)
-    (CmdiEStart s.BracketNum 'e' e.Index)
+  (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) e.Etc =
+    (#CmdiEPrepare s.BracketNum 'e' e.Index)
+    (#CmdiEStart s.BracketNum 'e' e.Index)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdChar s.Direction s.BracketNumber s.Char) e.Etc =
-    (CmdiChar s.Direction s.BracketNumber s.Char)
+  (#CmdChar s.Direction s.BracketNumber s.Char) e.Etc =
+    (#CmdiChar s.Direction s.BracketNumber s.Char)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdName s.Direction s.BracketNumber e.Name) e.Etc =
-    (CmdiName s.Direction s.BracketNumber e.Name)
+  (#CmdName s.Direction s.BracketNumber e.Name) e.Etc =
+    (#CmdiName s.Direction s.BracketNumber e.Name)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) e.Etc =
-    (CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name)
+  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) e.Etc =
+    (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdRepeated s.Direction s.BracketNumber e.VarInfo) e.Etc =
-    (CmdiRepeat s.Direction s.BracketNumber e.VarInfo)
+  (#CmdRepeated s.Direction s.BracketNumber e.VarInfo) e.Etc =
+    (#CmdiRepeat s.Direction s.BracketNumber e.VarInfo)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdEmpty AlgLeft s.BracketNumber) e.Etc =
-    (CmdiEmpty s.BracketNumber)
+  (#CmdEmpty #AlgLeft s.BracketNumber) e.Etc =
+    (#CmdiEmpty s.BracketNumber)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
-    (CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
+  (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
+    (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (CmdEmpty s.Direction s.BracketNumber) e.Etc =
-    <WriteLine 'CmdEmpty: ' s.Direction ' : ' s.BracketNumber >
+  (#CmdEmpty s.Direction s.BracketNumber) e.Etc =
+    <WriteLine '#CmdEmpty: ' s.Direction ' : ' s.BracketNumber >
     ;
 
   (e.Command) e.PatternCommands = <GenInterpretPatternCommand e.PatternCommands>;
@@ -743,19 +692,19 @@ GeneralizeResult {
         {
           (e.NCommonVars) s.Number
           (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
-            (CmdIssueMem s.Number)
+            (#CmdIssueMem s.Number)
             <Map MakeDeclaration e.NCommonVars>
-            (CmdInitB0)
+            (#CmdInitB0)
             // Интерпретируемый код
-            (CmdIfDef)
+            (#CmdIfDef)
             <PrepareOpenEStack
               <OutlineConstants
                 (0 /* функции */)
-                (0 /* метки */)
+                (0 /* идентификаторы */)
                 (0 /* большие числа */)
-                (CmdInitRAA)
+                (#CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
-                (CmdiEmptyResult)
+                (#CmdiEmptyResult)
                 <Map
                   (MakeInterpCommands e.MCopiedVars)
                   <FoldAllocCommands
@@ -763,22 +712,22 @@ GeneralizeResult {
                     e.ResultCommands
                   >
                 >
-                (CmdFinRAA)
+                (#CmdFinRAA)
               >
               0 /* начальная глубина */
             >
-            (CmdiRunInterpret)
+            (#CmdiRunInterpret)
             // Компилируемый код
-            (CmdElse)
+            (#CmdElse)
             <GenerateResult-OpenELoops
               e.PatternCommands
-              (CmdEmptyResult)
+              (#CmdEmptyResult)
               <Map MakeCopyVar e.CopiedVars>
               e.ResultAllocCommands
               e.ResultCommands
-              (CmdReturnResult)
+              (#CmdReturnResult)
             >
-            (CmdEndIf);
+            (#CmdEndIf);
         }
       >
     >;
@@ -815,73 +764,65 @@ VarSetDifference {
 }
 
 ClosedEVariables {
-  (CmdClosedE AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
+  (#CmdClosedE #AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
 
   t.Other = /* игнорируем */;
 }
 
 RepeatedEVariables {
-  (CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
+  (#CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
 
   t.Other = /* игнорируем */;
 }
 
 FilterUnusedCmdClosedE {
   e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
-  (CmdClosedE AlgLeft s.Num 'e' e.Index s.Depth) =
-    (CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
+  (#CmdClosedE #AlgLeft s.Num 'e' e.Index s.Depth) =
+    (#CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
 
   e.Unuseds t.OtherCommand = t.OtherCommand;
 }
-
-$EENUM CmdDeclareEVar, CmdDeclareVar;
 
 //FROM Library
 $EXTERN WriteLine;
 
 MakeDeclaration {
   ( s.Number s.Usings 'e' e.Index ) =
-    (CmdDeclareEVar s.Number s.Usings 'e' e.Index);
+    (#CmdDeclareEVar s.Number s.Usings 'e' e.Index);
 
   ( s.Number s.Usings s.Mode e.Index ) =
-    (CmdDeclareVar s.Number s.Usings s.Mode e.Index);
+    (#CmdDeclareVar s.Number s.Usings s.Mode e.Index);
 }
-
-$EENUM CmdCopyEVar, CmdCopyVar;
 
 MakeCopyVar {
-  ( s.Usings 'e' e.Index ) = (CmdCopyEVar s.Usings 'e' e.Index);
+  ( s.Usings 'e' e.Index ) = (#CmdCopyEVar s.Usings 'e' e.Index);
 
   ( s.Usings s.Mode e.Index ) =
-    (CmdCopyVar s.Usings s.Mode e.Index);
+    (#CmdCopyVar s.Usings s.Mode e.Index);
 }
 
-$EENUM CmdArrChar, CmdArrFunc, CmdArrInt, CmdArrHugeInt, CmdArrIdent, CmdArrOB,
-  CmdArrCB, CmdArrOADT, CmdArrCADT, CmdArrOC, CmdArrCC, CmdArrSplice,
-  CmdArrCopy;
-
 FoldAllocCommands {
-  (e.Allocs-B (CmdAllocateElem s.ElemNo s.Type e.Value) e.Allocs-E)
-  (CmdInsertElem s.ElemNo) e.Commands =
+  (e.Allocs-B (#CmdAllocateElem s.ElemNo s.Type e.Value) e.Allocs-E)
+  (#CmdInsertElem s.ElemNo) e.Commands =
     <FoldAllocCommands (e.Allocs-B e.Allocs-E) e.Commands>
-    (CmdInsertElem s.Type s.ElemNo e.Value);
+    (#CmdInsertElem s.Type s.ElemNo e.Value);
 
   (e.Allocs)
-  (CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
+  (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>
-    (CmdInsertVar s.Usings s.Mode e.Index);
+    (#CmdInsertVar s.Usings s.Mode e.Index);
 
   (e.Allocs)
-  (CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
+  (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>
-    (CmdInsertVar s.Usings s.Mode e.Index);
+    (#CmdInsertVar s.Usings s.Mode e.Index);
 
   (e.Allocs)
-  (CmdLinkBrackets e.CmdInfo) e.Commands =
+  (#CmdLinkBrackets e.CmdInfo) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>;
 
   (e.Allocs)
-  (CmdPushStack e.CmdInfo) e.Commands =
+  (#CmdPushStack e.CmdInfo) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>;
 
   (/* должно быть пусто */) /* пусто */ = /* пусто */;
@@ -889,46 +830,46 @@ FoldAllocCommands {
 
 MakeInterpCommands {
   e.CopiedVars-B (s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
-  (CmdInsertVar s.Usings s.Mode e.Index) =
-    (CmdArrCopy s.Mode e.Index);
+  (#CmdInsertVar s.Usings s.Mode e.Index) =
+    (#CmdArrCopy s.Mode e.Index);
 
-  e.CopiedVars (CmdInsertVar s.Usings s.Mode e.Index) =
-    (CmdArrSplice s.Usings s.Mode e.Index);
+  e.CopiedVars (#CmdInsertVar s.Usings s.Mode e.Index) =
+    (#CmdArrSplice s.Usings s.Mode e.Index);
 
-  e.CopiedVars (CmdInsertElem ElChar s.Counter s.Value) =
-    (CmdArrChar s.Value);
+  e.CopiedVars (#CmdInsertElem #ElChar s.Counter s.Value) =
+    (#CmdArrChar s.Value);
 
-  e.CopiedVars (CmdInsertElem ElName s.Counter e.Name) =
-    (CmdArrFunc e.Name);
+  e.CopiedVars (#CmdInsertElem #ElName s.Counter e.Name) =
+    (#CmdArrFunc e.Name);
 
-  e.CopiedVars (CmdInsertElem ElNumber s.Counter s.Number) =
+  e.CopiedVars (#CmdInsertElem #ElNumber s.Counter s.Number) =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (CmdArrInt s.Number);
-        s.Other = (CmdArrHugeInt s.Number);
+        '<' = (#CmdArrInt s.Number);
+        s.Other = (#CmdArrHugeInt s.Number);
       }
     >;
 
-  e.CopiedVars (CmdInsertElem ElIdent s.Counter e.Name) =
-    (CmdArrIdent e.Name);
+  e.CopiedVars (#CmdInsertElem #ElIdent s.Counter e.Name) =
+    (#CmdArrIdent e.Name);
 
-  e.CopiedVars (CmdInsertElem ElOpenBracket s.Counter) =
-    (CmdArrOB);
+  e.CopiedVars (#CmdInsertElem #ElOpenBracket s.Counter) =
+    (#CmdArrOB);
 
-  e.CopiedVars (CmdInsertElem ElOpenADT s.Counter) =
-    (CmdArrOADT);
+  e.CopiedVars (#CmdInsertElem #ElOpenADT s.Counter) =
+    (#CmdArrOADT);
 
-  e.CopiedVars (CmdInsertElem ElOpenCall s.Counter) =
-    (CmdArrOC);
+  e.CopiedVars (#CmdInsertElem #ElOpenCall s.Counter) =
+    (#CmdArrOC);
 
-  e.CopiedVars (CmdInsertElem ElCloseBracket s.Counter) =
-    (CmdArrCB);
+  e.CopiedVars (#CmdInsertElem #ElCloseBracket s.Counter) =
+    (#CmdArrCB);
 
-  e.CopiedVars (CmdInsertElem ElCloseADT s.Counter) =
-    (CmdArrCADT);
+  e.CopiedVars (#CmdInsertElem #ElCloseADT s.Counter) =
+    (#CmdArrCADT);
 
-  e.CopiedVars (CmdInsertElem ElCloseCall s.Counter) =
-    (CmdArrCC);
+  e.CopiedVars (#CmdInsertElem #ElCloseCall s.Counter) =
+    (#CmdArrCC);
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
@@ -938,135 +879,135 @@ OutlineConstants {
   (s.NextLabel e.Labels)
   (s.NextNumber e.Numbers)
   /* пусто */ =
-    (CmdiFuncArray <Map RemoveNumber e.Funcs>)
-    (CmdiLabelArray <Map RemoveNumber e.Labels>)
-    (CmdiNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>);
+    (#CmdiFuncArray <Map RemoveNumber e.Funcs>)
+    (#CmdiLabelArray <Map RemoveNumber e.Labels>)
+    (#CmdiNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdiName s.Direction s.BracketNum e.Func) =
+  (#CmdiName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdiName s.Direction s.BracketNum s.Num);
+    (#CmdiName s.Direction s.BracketNum s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdiName s.Direction s.BracketNum e.Func) =
+  (#CmdiName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdiName s.Direction s.BracketNum s.NextFunc);
+    (#CmdiName s.Direction s.BracketNum s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdArrFunc e.Func) =
+  (#CmdArrFunc e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdArrFunc s.Num);
+    (#CmdArrFunc s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdArrFunc e.Func) =
+  (#CmdArrFunc e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdArrFunc s.NextFunc);
+    (#CmdArrFunc s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdiADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
   e.Commands
-  (CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       e.Commands
     >
-    (CmdiADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
   e.Commands
-  (CmdiIdent s.Direction s.BracketNum e.Label) =
+  (#CmdiIdent s.Direction s.BracketNum e.Label) =
     <OutlineConstants
       (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
       e.Commands
     >
-    (CmdiIdent s.Direction s.BracketNum s.Num);
+    (#CmdiIdent s.Direction s.BracketNum s.Num);
 
   (e.Funcs) (s.NextLabel e.Labels) (e.Numbers)
   e.Commands
-  (CmdiIdent s.Direction s.BracketNum e.Label) =
+  (#CmdiIdent s.Direction s.BracketNum e.Label) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
       e.Commands
     >
-    (CmdiIdent s.Direction s.BracketNum s.NextLabel);
+    (#CmdiIdent s.Direction s.BracketNum s.NextLabel);
 
   (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
   e.Commands
-  (CmdArrIdent e.Label) =
+  (#CmdArrIdent e.Label) =
     <OutlineConstants
       (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
       e.Commands
     >
-    (CmdArrIdent s.Num);
+    (#CmdArrIdent s.Num);
 
   (e.Funcs) (s.NextLabel e.Labels) (e.Numbers)
   e.Commands
-  (CmdArrIdent e.Label) =
+  (#CmdArrIdent e.Label) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
       e.Commands
     >
-    (CmdArrIdent s.NextLabel);
+    (#CmdArrIdent s.NextLabel);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
   e.Commands
-  (CmdiHugeNum s.Direction s.BracketNum s.Number) =
+  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
       e.Commands
     >
-    (CmdiHugeNum s.Direction s.BracketNum s.Id);
+    (#CmdiHugeNum s.Direction s.BracketNum s.Id);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
   e.Commands
-  (CmdiHugeNum s.Direction s.BracketNum s.Number) =
+  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
       e.Commands
     >
-    (CmdiHugeNum s.Direction s.BracketNum s.NextNumId);
+    (#CmdiHugeNum s.Direction s.BracketNum s.NextNumId);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
   e.Commands
-  (CmdArrHugeInt s.Number) =
+  (#CmdArrHugeInt s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
       e.Commands
     >
-    (CmdArrHugeInt s.Id);
+    (#CmdArrHugeInt s.Id);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
   e.Commands
-  (CmdArrHugeInt s.Number) =
+  (#CmdArrHugeInt s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
       e.Commands
     >
-    (CmdArrHugeInt s.NextNumId);
+    (#CmdArrHugeInt s.NextNumId);
 
   (e.Funcs) (e.Labels) (e.Numbers)
   e.Commands
@@ -1076,20 +1017,20 @@ OutlineConstants {
 }
 
 PrepareOpenEStack {
-  e.Commands-B (CmdiEStart e.VarInfo) e.Commands-E s.Depth =
-    e.Commands-B (CmdiEStart e.VarInfo)
+  e.Commands-B (#CmdiEStart e.VarInfo) e.Commands-E s.Depth =
+    e.Commands-B (#CmdiEStart e.VarInfo)
     <PrepareOpenEStack e.Commands-E <Inc s.Depth>>;
 
   e.Commands s.Depth =
-    e.Commands (CmdiReserveStack s.Depth);
+    e.Commands (#CmdiReserveStack s.Depth);
 }
 
 GenerateResult-OpenELoops {
-  e.Commands-B (CmdOpenedE AlgLeft s.BracketNum 'e' e.Index) e.Commands-E =
+  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) e.Commands-E =
     e.Commands-B
-    (CmdOpenedE-Start AlgLeft s.BracketNum 'e' e.Index)
+    (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
     <GenerateResult-OpenELoops e.Commands-E>
-    (CmdOpenedE-End AlgLeft s.BracketNum 'e' e.Index)
+    (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
     ;
 
   e.Commands = e.Commands;

@@ -14,67 +14,67 @@ extern refalrts::FnResult Dec(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Context(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult FreeVarsFunc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-static refalrts::FnResult FreeVarsSent(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-// identifier #CAlreadyBounded
+// identifier #AlreadyBounded
 template <typename SREFAL_PARAM_INT>
-struct ident_CAlreadyBounded {
+struct ident_AlreadyBounded {
   static const char *name() {
-    return "CAlreadyBounded";
+    return "AlreadyBounded";
   }
 };
 
-// identifier #CExistVariable
+// identifier #ExistVariable
 template <typename SREFAL_PARAM_INT>
-struct ident_CExistVariable {
+struct ident_ExistVariable {
   static const char *name() {
-    return "CExistVariable";
+    return "ExistVariable";
   }
 };
 
-// identifier #CInvalidMode
+// identifier #FreeVarsFunc
 template <typename SREFAL_PARAM_INT>
-struct ident_CInvalidMode {
+struct ident_FreeVarsFunc {
   static const char *name() {
-    return "CInvalidMode";
+    return "FreeVarsFunc";
   }
 };
 
-// identifier #CNotFound
+// identifier #FreeVarsSent
 template <typename SREFAL_PARAM_INT>
-struct ident_CNotFound {
+struct ident_FreeVarsSent {
   static const char *name() {
-    return "CNotFound";
+    return "FreeVarsSent";
   }
 };
 
-// identifier #CSuccess
+// identifier #InvalidMode
 template <typename SREFAL_PARAM_INT>
-struct ident_CSuccess {
+struct ident_InvalidMode {
   static const char *name() {
-    return "CSuccess";
+    return "InvalidMode";
+  }
+};
+
+// identifier #NotFound
+template <typename SREFAL_PARAM_INT>
+struct ident_NotFound {
+  static const char *name() {
+    return "NotFound";
+  }
+};
+
+// identifier #Success
+template <typename SREFAL_PARAM_INT>
+struct ident_Success {
+  static const char *name() {
+    return "Success";
   }
 };
 
 static refalrts::FnResult Context(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult FreeVarsSent(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-static refalrts::FnResult FreeVarsFunc(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
   return refalrts::FnResult(
     refalrts::cRecognitionImpossible | (__LINE__ << 8)
@@ -243,7 +243,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CSuccess<int>::name
+      & idents_Success<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -364,7 +364,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & ident_CSuccess<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & ident_Success<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_3] );
       res = refalrts::splice_elem( res, n10 );
@@ -424,7 +424,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CInvalidMode<int>::name
+      & idents_InvalidMode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -523,7 +523,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & ident_CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & ident_InvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sOldMode_1_2] );
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_2] );
@@ -569,7 +569,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CSuccess<int>::name
+      & idents_Success<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -640,7 +640,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_close_adt( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_ident( n5, & ident_CSuccess<int>::name ) )
+    if( ! refalrts::alloc_ident( n5, & ident_Success<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_stvar( res, context[__sStackDepth_1_3] );
     res = refalrts::splice_elem( res, n5 );
@@ -695,11 +695,12 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { ShiftVariable, "ShiftVariable" },
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { ShiftVariable_AddToFree, "ShiftVariable_AddToFree" },
-      { FreeVarsSent, "FreeVarsSent" }
+      { ShiftVariable_AddToFree, "ShiftVariable_AddToFree" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -710,9 +711,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icEStart, 0, __eVariables_B_1_1, 0},
       {refalrts::icSave, 0, 8, 0},
       {refalrts::icBracketLeft, 0, 4, 8},
-      {refalrts::icFuncLeft, 0, 3, 4},
+      {refalrts::icIdentLeft, 0, 1, 4},
       {refalrts::icBracketLeft, 0, 6, 8},
-      {refalrts::icFuncLeft, 0, 1, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icContextSet, 0, __eFree_1_1, 4},
       {refalrts::icContextSet, 0, __eFreeFunc_1_1, 6},
       {refalrts::icContextSet, 0, __eVariables_E_1_1, 8},
@@ -724,9 +725,9 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icSpliceSTVar, 0, __sVarDepth_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icCopySTVar, 0, __sMode_1_1, 0},
       {refalrts::icCopyEVar, 0, __eIndex_1_1, 0},
@@ -736,7 +737,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eFreeFunc_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -761,7 +762,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // ( s.Mode#1 e.Index#1 s.VarDepth#1 ) e.Variables_B#1 ( & FreeVarsSent e.Free#1 ) ( & FreeVarsFunc e.FreeFunc#1 ) e.Variables_E#1
+    // ( s.Mode#1 e.Index#1 s.VarDepth#1 ) e.Variables_B#1 ( # FreeVarsSent e.Free#1 ) ( # FreeVarsFunc e.FreeFunc#1 ) e.Variables_E#1
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
@@ -782,13 +783,13 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       context[5] = 0;
       if( ! refalrts::brackets_left( context[4], context[5], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsSent, context[4], context[5] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsSent<int>::name, context[4], context[5] ) )
         continue;
       context[6] = 0;
       context[7] = 0;
       if( ! refalrts::brackets_left( context[6], context[7], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsFunc, context[6], context[7] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsFunc<int>::name, context[6], context[7] ) )
         continue;
       context[__eFree_1_1] = context[4];
       context[__eFree_1_1 + 1] = context[5];
@@ -821,7 +822,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, FreeVarsSent, "FreeVarsSent" ) )
+      if( ! refalrts::alloc_ident( n3, & ident_FreeVarsSent<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_open_call( n4 ) )
@@ -845,7 +846,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       if( ! refalrts::alloc_open_bracket( n10 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_name( n11, FreeVarsFunc, "FreeVarsFunc" ) )
+      if( ! refalrts::alloc_ident( n11, & ident_FreeVarsFunc<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n12 = 0;
       if( ! refalrts::alloc_close_bracket( n12 ) )
@@ -1200,12 +1201,12 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CAlreadyBounded<int>::name
+      & ident_AlreadyBounded<int>::name,
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1230,7 +1231,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icEmpty, 0, 0, 10},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenADT, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sStackDepth_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eLocalVars_B_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -1240,11 +1241,11 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eLocalVars_E_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 2, 0},
       {refalrts::icSpliceEVar, 0, __eFreeSent_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eFreeFunc_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eStack_1_1, 0},
@@ -1334,7 +1335,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_name( n5, FreeVarsSent, "FreeVarsSent" ) )
+      if( ! refalrts::alloc_ident( n5, & ident_FreeVarsSent<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
       if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -1343,7 +1344,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, FreeVarsFunc, "FreeVarsFunc" ) )
+      if( ! refalrts::alloc_ident( n8, & ident_FreeVarsFunc<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
       if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -1352,7 +1353,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_close_adt( n10 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_ident( n11, & ident_CAlreadyBounded<int>::name ) )
+      if( ! refalrts::alloc_ident( n11, & ident_AlreadyBounded<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sDepth_2_2] );
       res = refalrts::splice_elem( res, n11 );
@@ -1412,12 +1413,12 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CInvalidMode<int>::name
+      & ident_InvalidMode<int>::name,
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1442,7 +1443,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icEmpty, 0, 0, 10},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenADT, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sStackDepth_1_1, 0},
       {refalrts::icSpliceEVar, 0, __eLocalVars_B_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -1452,11 +1453,11 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eLocalVars_E_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 2, 0},
       {refalrts::icSpliceEVar, 0, __eFreeSent_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eFreeFunc_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eStack_1_1, 0},
@@ -1549,7 +1550,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_bracket( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_name( n5, FreeVarsSent, "FreeVarsSent" ) )
+      if( ! refalrts::alloc_ident( n5, & ident_FreeVarsSent<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
       if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -1558,7 +1559,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_bracket( n7 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n8 = 0;
-      if( ! refalrts::alloc_name( n8, FreeVarsFunc, "FreeVarsFunc" ) )
+      if( ! refalrts::alloc_ident( n8, & ident_FreeVarsFunc<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n9 = 0;
       if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -1567,7 +1568,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_close_adt( n10 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_ident( n11, & ident_CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n11, & ident_InvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sOldMode_2_2] );
       res = refalrts::splice_stvar( res, context[__sVarDepth_2_2] );
@@ -1624,12 +1625,12 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CSuccess<int>::name
+      & ident_Success<int>::name,
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1646,7 +1647,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icContextSet, 0, __eLocalVars_2_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenADT, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sStackDepth_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceSTVar, 0, __sMode_1_1, 0},
@@ -1655,11 +1656,11 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eLocalVars_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 2, 0},
       {refalrts::icSpliceEVar, 0, __eFreeSent_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eFreeFunc_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eStack_1_1, 0},
@@ -1733,7 +1734,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, FreeVarsSent, "FreeVarsSent" ) )
+    if( ! refalrts::alloc_ident( n5, & ident_FreeVarsSent<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -1742,7 +1743,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_open_bracket( n7 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n8 = 0;
-    if( ! refalrts::alloc_name( n8, FreeVarsFunc, "FreeVarsFunc" ) )
+    if( ! refalrts::alloc_ident( n8, & ident_FreeVarsFunc<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
     if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -1751,7 +1752,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_close_adt( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_ident( n11, & ident_CSuccess<int>::name ) )
+    if( ! refalrts::alloc_ident( n11, & ident_Success<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_stvar( res, context[__sStackDepth_1_3] );
     res = refalrts::splice_elem( res, n11 );
@@ -1813,14 +1814,15 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       { lambda_Cntx_AddNewVariable_0, "lambda_Cntx_AddNewVariable_0" },
       { refalrts::create_closure, "refalrts::create_closure" },
       { Fetch, "Fetch" },
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 5, 2, 0},
+      {refalrts::icADTLeft, 3, 2, 0},
       {refalrts::icsVarLeft, 0, __sStackDepth_1_1, 2},
       {refalrts::icsVarLeft, 0, __sMode_1_1, 0},
       {refalrts::icContextSet, 0, __eIndex_1_1, 0},
@@ -1828,9 +1830,9 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       {refalrts::icEStart, 0, __eLocalVars_1_1, 2},
       {refalrts::icSave, 0, 8, 2},
       {refalrts::icBracketLeft, 0, 4, 8},
-      {refalrts::icFuncLeft, 0, 4, 4},
+      {refalrts::icIdentLeft, 0, 1, 4},
       {refalrts::icBracketLeft, 0, 6, 8},
-      {refalrts::icFuncLeft, 0, 3, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icContextSet, 0, __eFreeSent_1_1, 4},
       {refalrts::icContextSet, 0, __eFreeFunc_1_1, 6},
       {refalrts::icContextSet, 0, __eStack_1_1, 8},
@@ -1870,7 +1872,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
     else
       return res;
 #else
-    // [Context  s.StackDepth#1 e.LocalVars#1 ( & FreeVarsSent e.FreeSent#1 ) ( & FreeVarsFunc e.FreeFunc#1 ) e.Stack#1 ] s.Mode#1 e.Index#1
+    // [Context  s.StackDepth#1 e.LocalVars#1 ( # FreeVarsSent e.FreeSent#1 ) ( # FreeVarsFunc e.FreeFunc#1 ) e.Stack#1 ] s.Mode#1 e.Index#1
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::adt_left( context[2], context[3], Context, context[0], context[1] ) )
@@ -1891,13 +1893,13 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       context[5] = 0;
       if( ! refalrts::brackets_left( context[4], context[5], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsSent, context[4], context[5] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsSent<int>::name, context[4], context[5] ) )
         continue;
       context[6] = 0;
       context[7] = 0;
       if( ! refalrts::brackets_left( context[6], context[7], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsFunc, context[6], context[7] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsFunc<int>::name, context[6], context[7] ) )
         continue;
       context[__eFreeSent_1_1] = context[4];
       context[__eFreeSent_1_1 + 1] = context[5];
@@ -2023,7 +2025,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CExistVariable<int>::name
+      & idents_ExistVariable<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2144,7 +2146,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & ident_CExistVariable<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & ident_ExistVariable<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_3] );
       res = refalrts::splice_elem( res, n10 );
@@ -2203,7 +2205,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CInvalidMode<int>::name
+      & idents_InvalidMode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2300,7 +2302,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & ident_CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & ident_InvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
       if( ! refalrts::alloc_number( n6, 0UL ) )
@@ -2346,7 +2348,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       { Context, "Context" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CNotFound<int>::name
+      & idents_NotFound<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2399,7 +2401,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_close_adt( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & ident_CNotFound<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_NotFound<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n3 );
     refalrts::link_brackets( n0, n2 );
@@ -2439,35 +2441,36 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { Unique, "Unique" },
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 3, 2, 0},
+      {refalrts::icADTLeft, 1, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sStackDepth_1_1, 2},
       {refalrts::icEPrepare, 0, __eLocals_1_1, 2},
       {refalrts::icEStart, 0, __eLocals_1_1, 2},
       {refalrts::icSave, 0, 8, 2},
       {refalrts::icBracketLeft, 0, 4, 8},
-      {refalrts::icFuncLeft, 0, 2, 4},
+      {refalrts::icIdentLeft, 0, 1, 4},
       {refalrts::icBracketLeft, 0, 6, 8},
-      {refalrts::icFuncLeft, 0, 1, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icContextSet, 0, __eFreeSent_1_1, 4},
       {refalrts::icContextSet, 0, __eFreeFunc_1_1, 6},
       {refalrts::icContextSet, 0, __eOuters_1_1, 8},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenADT, 0},
-      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icSpliceSTVar, 0, __sStackDepth_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eFreeSent_1_1, 0},
@@ -2489,7 +2492,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
     else
       return res;
 #else
-    // [Context  s.StackDepth#1 e.Locals#1 ( & FreeVarsSent e.FreeSent#1 ) ( & FreeVarsFunc e.FreeFunc#1 ) e.Outers#1 ]
+    // [Context  s.StackDepth#1 e.Locals#1 ( # FreeVarsSent e.FreeSent#1 ) ( # FreeVarsFunc e.FreeFunc#1 ) e.Outers#1 ]
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::adt_left( context[2], context[3], Context, context[0], context[1] ) )
@@ -2508,13 +2511,13 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       context[5] = 0;
       if( ! refalrts::brackets_left( context[4], context[5], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsSent, context[4], context[5] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsSent<int>::name, context[4], context[5] ) )
         continue;
       context[6] = 0;
       context[7] = 0;
       if( ! refalrts::brackets_left( context[6], context[7], context[8], context[9] ) )
         continue;
-      if( ! refalrts::function_left( FreeVarsFunc, context[6], context[7] ) )
+      if( ! refalrts::ident_left(  & ident_FreeVarsFunc<int>::name, context[6], context[7] ) )
         continue;
       context[__eFreeSent_1_1] = context[4];
       context[__eFreeSent_1_1 + 1] = context[5];
@@ -2535,7 +2538,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_name( n3, FreeVarsSent, "FreeVarsSent" ) )
+      if( ! refalrts::alloc_ident( n3, & ident_FreeVarsSent<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_bracket( n4 ) )
@@ -2544,7 +2547,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       if( ! refalrts::alloc_open_bracket( n5 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
-      if( ! refalrts::alloc_name( n6, FreeVarsFunc, "FreeVarsFunc" ) )
+      if( ! refalrts::alloc_ident( n6, & ident_FreeVarsFunc<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n7 = 0;
       if( ! refalrts::alloc_open_call( n7 ) )
@@ -2762,30 +2765,31 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" },
       { Inc, "Inc" },
       { Context, "Context" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 3, 2, 0},
+      {refalrts::icADTLeft, 1, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sStackDepth_1_1, 2},
       {refalrts::icContextSet, 0, __eVariables_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenADT, 0},
-      {refalrts::icFunc, 0, 3, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sStackDepth_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eVariables_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseADT, 0},
@@ -2835,7 +2839,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, FreeVarsSent, "FreeVarsSent" ) )
+    if( ! refalrts::alloc_ident( n6, & ident_FreeVarsSent<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -2844,7 +2848,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
     if( ! refalrts::alloc_open_bracket( n8 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n9 = 0;
-    if( ! refalrts::alloc_name( n9, FreeVarsFunc, "FreeVarsFunc" ) )
+    if( ! refalrts::alloc_ident( n9, & ident_FreeVarsFunc<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n10 = 0;
     if( ! refalrts::alloc_close_bracket( n10 ) )
@@ -2900,20 +2904,21 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { Dec, "Dec" },
-      { Context, "Context" },
-      { FreeVarsFunc, "FreeVarsFunc" },
-      { FreeVarsSent, "FreeVarsSent" }
+      { Context, "Context" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_FreeVarsFunc<int>::name,
+      & idents_FreeVarsSent<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 1, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sStackDepth_1_1, 2},
       {refalrts::icBracketLeft, 0, 4, 2},
-      {refalrts::icFuncLeft, 0, 3, 4},
+      {refalrts::icIdentLeft, 0, 1, 4},
       {refalrts::icBracketLeft, 0, 6, 2},
-      {refalrts::icFuncLeft, 0, 2, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icEmpty, 0, 0, 4},
       {refalrts::icContextSet, 0, __eClosureContext_1_1, 6},
       {refalrts::icContextSet, 0, __eOuters_1_1, 2},
@@ -2940,7 +2945,7 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
     else
       return res;
 #else
-    // [Context  s.StackDepth#1 ( & FreeVarsSent ) ( & FreeVarsFunc e.ClosureContext#1 ) e.Outers#1 ]
+    // [Context  s.StackDepth#1 ( # FreeVarsSent ) ( # FreeVarsFunc e.ClosureContext#1 ) e.Outers#1 ]
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::adt_left( context[2], context[3], Context, context[0], context[1] ) )
@@ -2953,13 +2958,13 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( FreeVarsSent, context[4], context[5] ) )
+    if( ! refalrts::ident_left(  & ident_FreeVarsSent<int>::name, context[4], context[5] ) )
       break;
     context[6] = 0;
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( FreeVarsFunc, context[6], context[7] ) )
+    if( ! refalrts::ident_left(  & ident_FreeVarsFunc<int>::name, context[6], context[7] ) )
       break;
     if( ! refalrts::empty_seq( context[4], context[5] ) )
       break;

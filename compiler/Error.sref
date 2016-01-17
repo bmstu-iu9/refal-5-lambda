@@ -26,15 +26,15 @@ $ENTRY EL-AddErrorAt {
 }
 
 //FROM Lexer
-$EXTERN StrFromToken, TkError, TkUnexpected ;
+$EXTERN StrFromToken;
 
 $ENTRY EL-AddUnexpected {
-  t.ErrorList (TkError s.LineNumber e.Message) e.Expected =
+  t.ErrorList (#TkError s.LineNumber e.Message) e.Expected =
     <EL-AddErrorAt
       t.ErrorList s.LineNumber e.Message
     >;
 
-  t.ErrorList (TkUnexpected s.LineNumber e.Unexpected) e.Expected =
+  t.ErrorList (#TkUnexpected s.LineNumber e.Unexpected) e.Expected =
     <EL-AddErrorAt
       t.ErrorList s.LineNumber
       'Unknown characters "' e.Unexpected '"'
@@ -54,10 +54,8 @@ $EXTERN Map;
 //FROM Library
 $EXTERN WriteLine;
 
-$EENUM EL-NoErrors, EL-HasErrors;
-
 $ENTRY EL-Destroy {
-  [ErrorList (e.FileName)] = EL-NoErrors;
+  [ErrorList (e.FileName)] = #EL-NoErrors;
 
   [ErrorList (e.FileName) e.Errors] =
     <Map
@@ -66,5 +64,5 @@ $ENTRY EL-Destroy {
       }
       e.Errors
     >
-    EL-HasErrors;
+    #EL-HasErrors;
 }

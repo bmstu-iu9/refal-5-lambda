@@ -7,15 +7,43 @@ extern refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter
 extern refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult EL_HasErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult EL_NoErrors(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TkUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ErrorList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+// identifier #EL_HasErrors
+template <typename SREFAL_PARAM_INT>
+struct ident_EL_HasErrors {
+  static const char *name() {
+    return "EL_HasErrors";
+  }
+};
+
+// identifier #EL_NoErrors
+template <typename SREFAL_PARAM_INT>
+struct ident_EL_NoErrors {
+  static const char *name() {
+    return "EL_NoErrors";
+  }
+};
+
+// identifier #TkError
+template <typename SREFAL_PARAM_INT>
+struct ident_TkError {
+  static const char *name() {
+    return "TkError";
+  }
+};
+
+// identifier #TkUnexpected
+template <typename SREFAL_PARAM_INT>
+struct ident_TkUnexpected {
+  static const char *name() {
+    return "TkUnexpected";
+  }
+};
 
 static refalrts::FnResult ErrorList(refalrts::Iter, refalrts::Iter) {
   refalrts::this_is_generated_function();
@@ -469,15 +497,16 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_AddErrorAt, "EL_AddErrorAt" },
-      { TkError, "TkError" }
+      { EL_AddErrorAt, "EL_AddErrorAt" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icsVarLeft, 0, __sLineNumber_1_1, 2},
       {refalrts::icContextSet, 0, __eMessage_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -500,14 +529,14 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     else
       return res;
 #else
-    // t.ErrorList#1 ( & TkError s.LineNumber#1 e.Message#1 ) e.Expected#1
+    // t.ErrorList#1 ( # TkError s.LineNumber#1 e.Message#1 ) e.Expected#1
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkError, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkError<int>::name, context[2], context[3] ) )
       break;
     // Unused closed variable e.Expected#1
     if( ! refalrts::svar_left( context[__sLineNumber_1_1], context[2], context[3] ) )
@@ -555,15 +584,16 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_AddErrorAt, "EL_AddErrorAt" },
-      { TkUnexpected, "TkUnexpected" }
+      { EL_AddErrorAt, "EL_AddErrorAt" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TkUnexpected<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icsVarLeft, 0, __sLineNumber_1_1, 2},
       {refalrts::icContextSet, 0, __eUnexpected_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -607,14 +637,14 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     else
       return res;
 #else
-    // t.ErrorList#1 ( & TkUnexpected s.LineNumber#1 e.Unexpected#1 ) e.Expected#1
+    // t.ErrorList#1 ( # TkUnexpected s.LineNumber#1 e.Unexpected#1 ) e.Expected#1
     if( ! refalrts::tvar_left( context[__tErrorList_1_1], context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( TkUnexpected, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_TkUnexpected<int>::name, context[2], context[3] ) )
       break;
     // Unused closed variable e.Expected#1
     if( ! refalrts::svar_left( context[__sLineNumber_1_1], context[2], context[3] ) )
@@ -957,20 +987,6 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
   );
 }
 
-refalrts::FnResult EL_NoErrors(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
-refalrts::FnResult EL_HasErrors(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
 static refalrts::FnResult lambda_EL_Destroy_0(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -1064,18 +1080,19 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_NoErrors, "EL_NoErrors" },
       { ErrorList, "ErrorList" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_EL_NoErrors<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 1, 2, 0},
+      {refalrts::icADTLeft, 0, 2, 0},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1107,7 +1124,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, EL_NoErrors, "EL_NoErrors" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_EL_NoErrors<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -1129,25 +1146,26 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { EL_HasErrors, "EL_HasErrors" },
       { lambda_EL_Destroy_0, "lambda_EL_Destroy_0" },
       { Map, "Map" },
       { ErrorList, "ErrorList" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_EL_HasErrors<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icADTLeft, 3, 2, 0},
+      {refalrts::icADTLeft, 2, 2, 0},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eErrors_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
       {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eErrors_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -1191,7 +1209,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     if( ! refalrts::alloc_close_call( n3 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
-    if( ! refalrts::alloc_name( n4, EL_HasErrors, "EL_HasErrors" ) )
+    if( ! refalrts::alloc_ident( n4, & ident_EL_HasErrors<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n4 );
     refalrts::push_stack( n3 );

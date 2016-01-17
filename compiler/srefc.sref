@@ -5,7 +5,7 @@ $EXTERN CompileFile;
 $EXTERN Map, ArgList;
 
 //FROM Library
-$EXTERN Success, Fails, WriteLine, System, Exit;
+$EXTERN WriteLine, System, Exit;
 
 //------------------------------------------------------------------------------
 
@@ -14,8 +14,7 @@ $ENTRY Go {
 }
 
 //FROM ParseCmdLine
-$EXTERN ParseCommandLine, NoCompile, CompileCommand, CmdLineError,
-  CompileList, CompileToTarget;
+$EXTERN ParseCommandLine, NoCompile, CompileCommand;
 
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile;
@@ -36,22 +35,19 @@ $EXTERN Fetch, Seq;
 //FROM FindFile
 $EXTERN FindFiles;
 
-//FROM FindFile
-$EXTERN Source, Output, NotFound;
-
 FindFiles-Compilers {
-  (CmdLineError e.Message) =
+  (#CmdLineError e.Message) =
     <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
 
-  s.CommandLineInfo CompileToTarget (e.Folders) (e.Source) (e.Output) =
+  s.CommandLineInfo #CompileToTarget (e.Folders) (e.Source) (e.Output) =
     ;
 
-  s.CommandLineInfo CompileList (e.Folders) e.Files =
+  s.CommandLineInfo #CompileList (e.Folders) e.Files =
     <Fetch
       <FindFiles (e.Folders) e.Files>
       {
-        e.Files-B (NotFound e.FileName) e.Files-E =
-          <Map PrintNotFound (NotFound e.FileName) e.Files-E>;
+        e.Files-B (#NotFound e.FileName) e.Files-E =
+          <Map PrintNotFound (#NotFound e.FileName) e.Files-E>;
 
         e.FoundFiles =
           <Fetch
@@ -62,28 +58,28 @@ FindFiles-Compilers {
               //----------------------------------------------------------------
               <ForEach
                 {
-                  (Output e.OutputName) =
+                  (#Output e.OutputName) =
                     <WriteLine '+Linking ' e.OutputName> (e.OutputName);
 
-                  (Source (e.Source) e.OutputName) =
+                  (#Source (e.Source) e.OutputName) =
                     <WriteLine '*Compiling ' e.Source ':'>
                     <Fetch
                       <CompileFile (e.Source) e.OutputName>
                       {
-                        Success e.OutputName1 = (e.OutputName1);
+                        #Success e.OutputName1 = (e.OutputName1);
 
-                        Fails = Fails;
+                        #Fails = #Fails;
                       }
                     >;
                 }
               >
               //----------------------------------------------------------------
               {
-                 e.Outputs-B Fails e.Outputs-E =
+                 e.Outputs-B #Fails e.Outputs-E =
                    <Fetch
-                     <s.CommandLineInfo #CErrorFile>
+                     <s.CommandLineInfo #ErrorFile>
                      {
-                       #CNone = ;
+                       #None = ;
 
                        e.ErrorFileName = <SaveFile (e.ErrorFileName)>;
                      }
@@ -104,20 +100,20 @@ ForEach {
 }
 
 PrintNotFound {
-  (NotFound e.FileName) =
+  (#NotFound e.FileName) =
     <WriteLine 'COMMAND LINE ERROR: file ' e.FileName ' not found'>;
 
-  (Output e.FileName) = ;
+  (#Output e.FileName) = ;
 
-  (Source (e.Source) e.Output) = ;
+  (#Source (e.Source) e.Output) = ;
 }
 
 Link {
   s.CommandLineInfo e.Files =
     <Fetch
-      <s.CommandLineInfo #CCompileCommand>
+      <s.CommandLineInfo #CompileCommand>
       {
-        #CNone = ;
+        #None = ;
 
         e.CommandLine =
           <System
@@ -136,14 +132,14 @@ Link {
 RenameFiles {
   s.CommandLineInfo =
     <Fetch
-      <s.CommandLineInfo #CCompileCommand>
+      <s.CommandLineInfo #CompileCommand>
       {
-        #CNone =
+        #None =
           <ForEach
             {
-              (Source (e.Source) e.Output) = (Source (e.Source) e.Output);
+              (#Source (e.Source) e.Output) = (#Source (e.Source) e.Output);
 
-              (Output e.Output) = (Output e.Output);
+              (#Output e.Output) = (#Output e.Output);
             }
           >;
 
@@ -156,15 +152,15 @@ RenameFiles {
 }
 
 GetFileName {
-  (Output e.FileName) =
+  (#Output e.FileName) =
     (
-      <GetFileName-Aux e.FileName> 0 (Output e.FileName)
+      <GetFileName-Aux e.FileName> 0 (#Output e.FileName)
     );
 
-  (Source (e.Source) e.Output) =
+  (#Source (e.Source) e.Output) =
     (
       <GetFileName-Aux e.Output> 0
-      (Source (e.Source) e.Output)
+      (#Source (e.Source) e.Output)
     );
 }
 
@@ -202,8 +198,8 @@ Lower {
 }
 
 ScanCollisions {
-  e.Files-B (e.FileName 0 (Output e.Output1)) e.Files-M
-  (e.FileName 0 (Output e.Output2)) e.Files-E =
+  e.Files-B (e.FileName 0 (#Output e.Output1)) e.Files-M
+  (e.FileName 0 (#Output e.Output2)) e.Files-E =
     <WriteLine
       'COMMAND LINE ERROR: output files ' e.Output1 ' and '
       e.Output2 ' has some filename ' e.FileName
@@ -211,17 +207,17 @@ ScanCollisions {
     <Exit 1>;
 
   e.Files-B (e.FileName 0 t.Location) e.Files-M
-  (e.FileName 0 (Output e.Output)) e.Files-E =
+  (e.FileName 0 (#Output e.Output)) e.Files-E =
     <ScanCollisions
       e.Files-B (e.FileName 1 t.Location) e.Files-M
-      (e.FileName 0 (Output e.Output))
+      (e.FileName 0 (#Output e.Output))
       <Renumerate (e.FileName) e.Files-E>
     >;
 
-  e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
+  e.Files-B (e.FileName 0 (#Output e.Output)) e.Files-M
   (e.FileName 0 t.Location) e.Files-E =
     <ScanCollisions
-      e.Files-B (e.FileName 0 (Output e.Output)) e.Files-M
+      e.Files-B (e.FileName 0 (#Output e.Output)) e.Files-M
       (e.FileName 1 t.Location)
       <Renumerate (e.FileName) e.Files-E>
     >;
@@ -245,9 +241,9 @@ Renumerate {
     <DelAccumulator
       <MapReduce
         {
-          s.NextNumber (e.FileName 0 (Source (e.Source) e.Output)) =
+          s.NextNumber (e.FileName 0 (#Source (e.Source) e.Output)) =
             <Inc s.NextNumber>
-            (e.FileName s.NextNumber (Source (e.Source) e.Output));
+            (e.FileName s.NextNumber (#Source (e.Source) e.Output));
 
           s.NextNumber t.NextFile =
             s.NextNumber t.NextFile;
@@ -261,11 +257,11 @@ Renumerate {
 $EXTERN StrFromInt;
 
 RestoreName {
-  (e.FileName s.Num (Output e.OutputName)) =
-    (Output e.OutputName);
+  (e.FileName s.Num (#Output e.OutputName)) =
+    (#Output e.OutputName);
 
-  (e.FileName s.Num (Source (e.Source) e.Output)) =
-    (Source
+  (e.FileName s.Num (#Source (e.Source) e.Output)) =
+    (#Source
       (e.Source)
       <Fetch
         s.Num e.Output

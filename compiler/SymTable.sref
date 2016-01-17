@@ -16,9 +16,6 @@ $ENTRY ST-Destroy {
   t.Function ::= (s.ScopeClass e.Name)
 */
 
-//FROM Generator
-$EXTERN GN-Entry, GN-Local;
-
 //FROM Error
 $EXTERN EL-AddErrorAt;
 
@@ -174,12 +171,12 @@ $ENTRY ST-AllFunctions {
   [SymTable (e.References) (e.Idents) (e.Externs) e.Names] =
     <Map
       {
-        (GN-Entry e.Name) = (GN-Entry e.Name);
-        (GN-Local e.Name) = (GN-Local e.Name);
+        (#GN-Entry e.Name) = (#GN-Entry e.Name);
+        (#GN-Local e.Name) = (#GN-Local e.Name);
       }
       e.Names
     >
-    <Map { (e.Name) = (GN-Entry e.Name); } e.Externs>;
+    <Map { (e.Name) = (#GN-Entry e.Name); } e.Externs>;
 }
 
 /**

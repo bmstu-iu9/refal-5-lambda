@@ -14,7 +14,6 @@ extern refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_en
 extern refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FReadLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Fails(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FastIntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Inc(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -27,12 +26,10 @@ extern refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_
 extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Sort(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Trim(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult TypeBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult UnBracket(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Y(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -48,6 +45,22 @@ static refalrts::FnResult MapReduce_AddScanned(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult SwDoArgList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Trim_R(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult WriteBracketLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
+// identifier #Success
+template <typename SREFAL_PARAM_INT>
+struct ident_Success {
+  static const char *name() {
+    return "Success";
+  }
+};
+
+// identifier #TypeBracket
+template <typename SREFAL_PARAM_INT>
+struct ident_TypeBracket {
+  static const char *name() {
+    return "TypeBracket";
+  }
+};
 
 refalrts::FnResult Apply(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
@@ -2042,13 +2055,13 @@ static refalrts::FnResult FastIntFromStr_Guard(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Success, "Success" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Success<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -2066,8 +2079,8 @@ static refalrts::FnResult FastIntFromStr_Guard(refalrts::Iter arg_begin, refalrt
     else
       return res;
 #else
-    // & Success s.Number#1
-    if( ! refalrts::function_left( Success, context[0], context[1] ) )
+    // # Success s.Number#1
+    if( ! refalrts::ident_left(  & ident_Success<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::svar_left( context[__sNumber_1_1], context[0], context[1] ) )
       break;
@@ -4671,13 +4684,6 @@ static refalrts::FnResult Lexicon_T_Aux(refalrts::Iter arg_begin, refalrts::Iter
   );
 }
 
-refalrts::FnResult TypeBracket(refalrts::Iter, refalrts::Iter) {
-  refalrts::this_is_generated_function();
-  return refalrts::FnResult(
-    refalrts::cRecognitionImpossible | (__LINE__ << 8)
-  );
-}
-
 refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::this_is_generated_function();
   do {
@@ -4691,16 +4697,16 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TypeBracket, "TypeBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TypeBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -4726,7 +4732,7 @@ refalrts::FnResult Type(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TypeBracket, "TypeBracket" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TypeBracket<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4822,17 +4828,17 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { TypeBracket, "TypeBracket" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_TypeBracket<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eInBrackets_1_1, 2},
       {refalrts::icContextSet, 0, __eTail_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eInBrackets_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -4863,7 +4869,7 @@ refalrts::FnResult Type_T(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, TypeBracket, "TypeBracket" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_TypeBracket<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
     if( ! refalrts::alloc_open_bracket( n1 ) )

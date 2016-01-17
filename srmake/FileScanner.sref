@@ -2,7 +2,7 @@
 $EXTERN LoadFile, Map, Trim;
 
 //FROM FindFile
-$EXTERN FindFiles, Source, Output, NotFound;
+$EXTERN FindFiles;
 
 $ENTRY CreateFileList {
   (e.Folders) e.Unit =
@@ -36,16 +36,16 @@ FindImports {
 }
 
 LoadList {
-  (e.Folders) Source (e.NextModule) e.Output =
+  (e.Folders) #Source (e.NextModule) e.Output =
     <Map
       (FindImports e.Folders) <LoadFile e.NextModule>
     >;
 
-  (e.Folders) Output e.Output =
+  (e.Folders) #Output e.Output =
     <Map
       (FindImports e.Folders) <LoadFile e.Output>
     >;
 
 
-  (e.Folders) NotFound e.Unit = ;
+  (e.Folders) #NotFound e.Unit = ;
 }

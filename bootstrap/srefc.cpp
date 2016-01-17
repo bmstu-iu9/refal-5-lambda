@@ -3,14 +3,10 @@
 
 
 extern refalrts::FnResult ArgList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult CmdLineError(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult CompileCommand(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult CompileFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult CompileList(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult CompileToTarget(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult DelAccumulator(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Fails(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Fetch(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -19,14 +15,10 @@ extern refalrts::FnResult LoadFile(refalrts::Iter arg_begin, refalrts::Iter arg_
 extern refalrts::FnResult Map(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult MapReduce(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult NoCompile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult NotFound(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Output(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult SaveFile(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult Seq(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Source(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end);
-extern refalrts::FnResult Success(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 extern refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
@@ -43,27 +35,91 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
 static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-// identifier #CCompileCommand
+// identifier #CmdLineError
 template <typename SREFAL_PARAM_INT>
-struct ident_CCompileCommand {
+struct ident_CmdLineError {
   static const char *name() {
-    return "CCompileCommand";
+    return "CmdLineError";
   }
 };
 
-// identifier #CErrorFile
+// identifier #CompileCommand
 template <typename SREFAL_PARAM_INT>
-struct ident_CErrorFile {
+struct ident_CompileCommand {
   static const char *name() {
-    return "CErrorFile";
+    return "CompileCommand";
   }
 };
 
-// identifier #CNone
+// identifier #CompileList
 template <typename SREFAL_PARAM_INT>
-struct ident_CNone {
+struct ident_CompileList {
   static const char *name() {
-    return "CNone";
+    return "CompileList";
+  }
+};
+
+// identifier #CompileToTarget
+template <typename SREFAL_PARAM_INT>
+struct ident_CompileToTarget {
+  static const char *name() {
+    return "CompileToTarget";
+  }
+};
+
+// identifier #ErrorFile
+template <typename SREFAL_PARAM_INT>
+struct ident_ErrorFile {
+  static const char *name() {
+    return "ErrorFile";
+  }
+};
+
+// identifier #Fails
+template <typename SREFAL_PARAM_INT>
+struct ident_Fails {
+  static const char *name() {
+    return "Fails";
+  }
+};
+
+// identifier #None
+template <typename SREFAL_PARAM_INT>
+struct ident_None {
+  static const char *name() {
+    return "None";
+  }
+};
+
+// identifier #NotFound
+template <typename SREFAL_PARAM_INT>
+struct ident_NotFound {
+  static const char *name() {
+    return "NotFound";
+  }
+};
+
+// identifier #Output
+template <typename SREFAL_PARAM_INT>
+struct ident_Output {
+  static const char *name() {
+    return "Output";
+  }
+};
+
+// identifier #Source
+template <typename SREFAL_PARAM_INT>
+struct ident_Source {
+  static const char *name() {
+    return "Source";
+  }
+};
+
+// identifier #Success
+template <typename SREFAL_PARAM_INT>
+struct ident_Success {
+  static const char *name() {
+    return "Success";
   }
 };
 
@@ -377,13 +433,13 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Success, "Success" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Success<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icContextSet, 0, __eOutputName1_4_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -402,8 +458,8 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // & Success e.OutputName1#4
-    if( ! refalrts::function_left( Success, context[0], context[1] ) )
+    // # Success e.OutputName1#4
+    if( ! refalrts::ident_left(  & ident_Success<int>::name, context[0], context[1] ) )
       break;
     context[__eOutputName1_4_1] = context[0];
     context[__eOutputName1_4_1 + 1] = context[1];
@@ -437,16 +493,16 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Fails, "Fails" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Fails<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icFuncLeft, 0, 0, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icEnd}
     };
     int open_e_stack[1];
@@ -460,8 +516,8 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // & Fails
-    if( ! refalrts::function_left( Fails, context[0], context[1] ) )
+    // # Fails
+    if( ! refalrts::ident_left(  & ident_Fails<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -469,7 +525,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, Fails, "Fails" ) )
+    if( ! refalrts::alloc_ident( n0, & ident_Fails<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -499,14 +555,15 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { WriteLine, "WriteLine" },
-      { Output, "Output" }
+      { WriteLine, "WriteLine" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eOutputName_3_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -539,12 +596,12 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // ( & Output e.OutputName#3 )
+    // ( # Output e.OutputName#3 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Output, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Output<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -640,14 +697,15 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
       { lambda_FindFiles_Compilers_0, "lambda_FindFiles_Compilers_0" },
       { CompileFile, "CompileFile" },
       { Fetch, "Fetch" },
-      { WriteLine, "WriteLine" },
-      { Source, "Source" }
+      { WriteLine, "WriteLine" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 4, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eSource_3_1, 4},
@@ -693,12 +751,12 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // ( & Source ( e.Source#3 ) e.OutputName#3 )
+    // ( # Source ( e.Source#3 ) e.OutputName#3 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Source, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -847,7 +905,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CNone<int>::name
+      & idents_None<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -867,8 +925,8 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // # CNone
-    if( ! refalrts::ident_left(  & ident_CNone<int>::name, context[0], context[1] ) )
+    // # None
+    if( ! refalrts::ident_left(  & ident_None<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -978,11 +1036,11 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { lambda_FindFiles_Compilers_2, "lambda_FindFiles_Compilers_2" },
-      { Fetch, "Fetch" },
-      { Fails, "Fails" }
+      { Fetch, "Fetch" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CErrorFile<int>::name
+      & ident_ErrorFile<int>::name,
+      & idents_Fails<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -990,7 +1048,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       {refalrts::icEPrepare, 0, __eOutputs_B_3_1, 0},
       {refalrts::icEStart, 0, __eOutputs_B_3_1, 0},
       {refalrts::icSave, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 2, 2},
+      {refalrts::icIdentLeft, 0, 1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 1, 0},
@@ -1013,7 +1071,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // s.CommandLineInfo#1 e.Outputs_B#3 & Fails e.Outputs_E#3
+    // s.CommandLineInfo#1 e.Outputs_B#3 # Fails e.Outputs_E#3
     if( ! refalrts::svar_left( context[__sCommandLineInfo_1_1], context[0], context[1] ) )
       break;
     context[__eOutputs_B_3_1] = 0;
@@ -1022,7 +1080,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
     do {
       context[2] = context[0];
       context[3] = context[1];
-      if( ! refalrts::function_left( Fails, context[2], context[3] ) )
+      if( ! refalrts::ident_left(  & ident_Fails<int>::name, context[2], context[3] ) )
         continue;
       // Unused closed variable e.Outputs_E#3
 
@@ -1038,7 +1096,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_ident( n3, & ident_CErrorFile<int>::name ) )
+      if( ! refalrts::alloc_ident( n3, & ident_ErrorFile<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -1314,11 +1372,12 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { NotFound, "NotFound" },
       { PrintNotFound, "PrintNotFound" },
       { Map, "Map" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_NotFound<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
@@ -1326,15 +1385,15 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       {refalrts::icEStart, 0, __eFiles_B_2_1, 0},
       {refalrts::icSave, 0, 4, 0},
       {refalrts::icBracketLeft, 0, 2, 4},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icContextSet, 0, __eFileName_2_1, 2},
       {refalrts::icContextSet, 0, __eFiles_E_2_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
       {refalrts::icFunc, 0, 1, 0},
-      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_E_2_1, 0},
@@ -1352,7 +1411,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
     else
       return res;
 #else
-    // s.CommandLineInfo#1 e.Files_B#2 ( & NotFound e.FileName#2 ) e.Files_E#2
+    // s.CommandLineInfo#1 e.Files_B#2 ( # NotFound e.FileName#2 ) e.Files_E#2
     if( ! refalrts::svar_left( context[__sCommandLineInfo_1_1], context[0], context[1] ) )
       break;
     context[__eFiles_B_2_1] = 0;
@@ -1365,7 +1424,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       context[3] = 0;
       if( ! refalrts::brackets_left( context[2], context[3], context[4], context[5] ) )
         continue;
-      if( ! refalrts::function_left( NotFound, context[2], context[3] ) )
+      if( ! refalrts::ident_left(  & ident_NotFound<int>::name, context[2], context[3] ) )
         continue;
       context[__eFileName_2_1] = context[2];
       context[__eFileName_2_1 + 1] = context[3];
@@ -1387,7 +1446,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_bracket( n3 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
-      if( ! refalrts::alloc_name( n4, NotFound, "NotFound" ) )
+      if( ! refalrts::alloc_ident( n4, & ident_NotFound<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
       if( ! refalrts::alloc_close_bracket( n5 ) )
@@ -1593,14 +1652,15 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { WriteLine, "WriteLine" },
-      { CmdLineError, "CmdLineError" }
+      { WriteLine, "WriteLine" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CmdLineError<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eMessage_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -1641,12 +1701,12 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     else
       return res;
 #else
-    // ( & CmdLineError e.Message#1 )
+    // ( # CmdLineError e.Message#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( CmdLineError, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_CmdLineError<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -1768,16 +1828,16 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { CompileToTarget, "CompileToTarget" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CompileToTarget<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
       {refalrts::icBracketRight, 0, 4, 0},
       {refalrts::icBracketRight, 0, 6, 0},
-      {refalrts::icFuncRight, 0, 0, 0},
+      {refalrts::icIdentRight, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -1794,7 +1854,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     else
       return res;
 #else
-    // s.CommandLineInfo#1 & CompileToTarget ( e.Folders#1 ) ( e.Source#1 ) ( e.Output#1 )
+    // s.CommandLineInfo#1 # CompileToTarget ( e.Folders#1 ) ( e.Source#1 ) ( e.Output#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_right( context[2], context[3], context[0], context[1] ) )
@@ -1807,7 +1867,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     context[7] = 0;
     if( ! refalrts::brackets_right( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_right( CompileToTarget, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CompileToTarget<int>::name, context[0], context[1] ) )
       break;
     // Unused closed variable e.Folders#1
     // Unused closed variable e.Source#1
@@ -1843,14 +1903,15 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
       { lambda_FindFiles_Compilers_4, "lambda_FindFiles_Compilers_4" },
       { refalrts::create_closure, "refalrts::create_closure" },
       { FindFiles, "FindFiles" },
-      { Fetch, "Fetch" },
-      { CompileList, "CompileList" }
+      { Fetch, "Fetch" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CompileList<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
-      {refalrts::icFuncLeft, 0, 4, 0},
+      {refalrts::icIdentLeft, 0, 0, 0},
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icContextSet, 0, __eFolders_1_1, 2},
       {refalrts::icContextSet, 0, __eFiles_1_1, 0},
@@ -1883,10 +1944,10 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     else
       return res;
 #else
-    // s.CommandLineInfo#1 & CompileList ( e.Folders#1 ) e.Files#1
+    // s.CommandLineInfo#1 # CompileList ( e.Folders#1 ) e.Files#1
     if( ! refalrts::svar_left( context[__sCommandLineInfo_1_1], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( CompileList, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CompileList<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2140,14 +2201,15 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { WriteLine, "WriteLine" },
-      { NotFound, "NotFound" }
+      { WriteLine, "WriteLine" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_NotFound<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 1, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eFileName_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -2203,12 +2265,12 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // ( & NotFound e.FileName#1 )
+    // ( # NotFound e.FileName#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( NotFound, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_NotFound<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2389,14 +2451,14 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Output, "Output" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icEnd}
@@ -2412,12 +2474,12 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // ( & Output e.FileName#1 )
+    // ( # Output e.FileName#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Output, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Output<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2442,14 +2504,14 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Source, "Source" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -2466,12 +2528,12 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // ( & Source ( e.Source#1 ) e.Output#1 )
+    // ( # Source ( e.Source#1 ) e.Output#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Source, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -2585,7 +2647,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CNone<int>::name
+      & idents_None<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2606,8 +2668,8 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
     else
       return res;
 #else
-    // ( e.Files#1 ) # CNone
-    if( ! refalrts::ident_right(  & ident_CNone<int>::name, context[0], context[1] ) )
+    // ( e.Files#1 ) # None
+    if( ! refalrts::ident_right(  & ident_None<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2750,7 +2812,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Fetch, "Fetch" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CCompileCommand<int>::name
+      & idents_CompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2802,7 +2864,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & ident_CCompileCommand<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CompileCommand<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -2875,21 +2937,21 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Source, "Source" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eSource_3_1, 4},
       {refalrts::icContextSet, 0, __eOutput_3_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eSource_3_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -2908,12 +2970,12 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     else
       return res;
 #else
-    // ( & Source ( e.Source#3 ) e.Output#3 )
+    // ( # Source ( e.Source#3 ) e.Output#3 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Source, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -2932,7 +2994,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, Source, "Source" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_Source<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )
@@ -2970,19 +3032,19 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Output, "Output" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eOutput_3_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eOutput_3_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -2998,12 +3060,12 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     else
       return res;
 #else
-    // ( & Output e.Output#3 )
+    // ( # Output e.Output#3 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Output, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Output<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3016,7 +3078,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, Output, "Output" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_Output<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -3150,7 +3212,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
       { ForEach, "ForEach" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CNone<int>::name
+      & idents_None<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3174,8 +3236,8 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
     else
       return res;
 #else
-    // # CNone
-    if( ! refalrts::ident_left(  & ident_CNone<int>::name, context[0], context[1] ) )
+    // # None
+    if( ! refalrts::ident_left(  & ident_None<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3277,7 +3339,7 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
       { Fetch, "Fetch" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_CCompileCommand<int>::name
+      & idents_CompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3323,7 +3385,7 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & ident_CCompileCommand<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CompileCommand<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -3373,25 +3435,26 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Output, "Output" },
       { GetFileName_Aux, "GetFileName_Aux" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eFileName_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eFileName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icInt, 0, 0 , 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icCopyEVar, 0, __eFileName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -3408,12 +3471,12 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     else
       return res;
 #else
-    // ( & Output e.FileName#1 )
+    // ( # Output e.FileName#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Output, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Output<int>::name, context[2], context[3] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3443,7 +3506,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, Output, "Output" ) )
+    if( ! refalrts::alloc_ident( n6, & ident_Output<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_close_bracket( n7 ) )
@@ -3487,14 +3550,15 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Source, "Source" },
       { GetFileName_Aux, "GetFileName_Aux" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icFuncLeft, 0, 0, 2},
+      {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icBracketLeft, 0, 4, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eSource_1_1, 4},
@@ -3502,12 +3566,12 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eOutput_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icInt, 0, 0 , 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eSource_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -3527,12 +3591,12 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     else
       return res;
 #else
-    // ( & Source ( e.Source#1 ) e.Output#1 )
+    // ( # Source ( e.Source#1 ) e.Output#1 )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::function_left( Source, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -3568,7 +3632,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n5 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
-    if( ! refalrts::alloc_name( n6, Source, "Source" ) )
+    if( ! refalrts::alloc_ident( n6, & ident_Source<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n7 = 0;
     if( ! refalrts::alloc_open_bracket( n7 ) )
@@ -4656,10 +4720,11 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { Exit, "Exit" },
-      { WriteLine, "WriteLine" },
-      { Output, "Output" }
+      { WriteLine, "WriteLine" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -4667,7 +4732,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icSave, 0, 10, 0},
       {refalrts::icBracketLeft, 0, 2, 10},
       {refalrts::icBracketRight, 0, 4, 2},
-      {refalrts::icFuncLeft, 0, 2, 4},
+      {refalrts::icIdentLeft, 0, 0, 4},
       {refalrts::icNumRight, 0, 0, 2},
       {refalrts::icContextSet, 0, __eFileName_1_1, 2},
       {refalrts::icContextSet, 0, __eOutput1_1_1, 4},
@@ -4676,7 +4741,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icSave, 0, 12, 10},
       {refalrts::icBracketLeft, 0, 6, 12},
       {refalrts::icBracketRight, 0, 8, 6},
-      {refalrts::icFuncLeft, 0, 2, 8},
+      {refalrts::icIdentLeft, 0, 0, 8},
       {refalrts::icNumRight, 0, 0, 6},
       {refalrts::iceRepeatLeft, __eFileName_1_2, __eFileName_1_1, 6},
       {refalrts::icEmpty, 0, 0, 6},
@@ -4762,7 +4827,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // e.Files_B#1 ( e.FileName#1 0 ( & Output e.Output1#1 ) ) e.Files_M#1 ( e.FileName#1 0 ( & Output e.Output2#1 ) ) e.Files_E#1
+    // e.Files_B#1 ( e.FileName#1 0 ( # Output e.Output1#1 ) ) e.Files_M#1 ( e.FileName#1 0 ( # Output e.Output2#1 ) ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
     refalrts::start_e_loop();
@@ -4777,7 +4842,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[5] = 0;
       if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
         continue;
-      if( ! refalrts::function_left( Output, context[4], context[5] ) )
+      if( ! refalrts::ident_left(  & ident_Output<int>::name, context[4], context[5] ) )
         continue;
       if( ! refalrts::number_right( 0UL, context[2], context[3] ) )
         continue;
@@ -4799,7 +4864,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         context[9] = 0;
         if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
           continue;
-        if( ! refalrts::function_left( Output, context[8], context[9] ) )
+        if( ! refalrts::ident_left(  & ident_Output<int>::name, context[8], context[9] ) )
           continue;
         if( ! refalrts::number_right( 0UL, context[6], context[7] ) )
           continue;
@@ -5105,10 +5170,11 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { Renumerate, "Renumerate" },
-      { Output, "Output" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5123,7 +5189,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icSave, 0, 10, 8},
       {refalrts::icBracketLeft, 0, 4, 10},
       {refalrts::icBracketRight, 0, 6, 4},
-      {refalrts::icFuncLeft, 0, 1, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icNumRight, 0, 0, 4},
       {refalrts::iceRepeatLeft, __eFileName_1_2, __eFileName_1_1, 4},
       {refalrts::icEmpty, 0, 0, 4},
@@ -5131,7 +5197,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icContextSet, 0, __eFiles_E_1_1, 10},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_B_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFileName_1_1, 0},
@@ -5143,7 +5209,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icSpliceEVar, 0, __eFileName_1_2, 0},
       {refalrts::icInt, 0, 0 , 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eOutput_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -5168,7 +5234,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // e.Files_B#1 ( e.FileName#1 0 t.Location#1 ) e.Files_M#1 ( e.FileName#1 0 ( & Output e.Output#1 ) ) e.Files_E#1
+    // e.Files_B#1 ( e.FileName#1 0 t.Location#1 ) e.Files_M#1 ( e.FileName#1 0 ( # Output e.Output#1 ) ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
     refalrts::start_e_loop();
@@ -5199,7 +5265,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         context[7] = 0;
         if( ! refalrts::brackets_right( context[6], context[7], context[4], context[5] ) )
           continue;
-        if( ! refalrts::function_left( Output, context[6], context[7] ) )
+        if( ! refalrts::ident_left(  & ident_Output<int>::name, context[6], context[7] ) )
           continue;
         if( ! refalrts::number_right( 0UL, context[4], context[5] ) )
           continue;
@@ -5241,7 +5307,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_bracket( n7 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n8 = 0;
-        if( ! refalrts::alloc_name( n8, Output, "Output" ) )
+        if( ! refalrts::alloc_ident( n8, & ident_Output<int>::name ) )
           return refalrts::cNoMemory;
         refalrts::Iter n9 = 0;
         if( ! refalrts::alloc_close_bracket( n9 ) )
@@ -5329,10 +5395,11 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { Renumerate, "Renumerate" },
-      { Output, "Output" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5340,7 +5407,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icSave, 0, 8, 0},
       {refalrts::icBracketLeft, 0, 2, 8},
       {refalrts::icBracketRight, 0, 4, 2},
-      {refalrts::icFuncLeft, 0, 1, 4},
+      {refalrts::icIdentLeft, 0, 0, 4},
       {refalrts::icNumRight, 0, 0, 2},
       {refalrts::icContextSet, 0, __eFileName_1_1, 2},
       {refalrts::icContextSet, 0, __eOutput_1_1, 4},
@@ -5355,13 +5422,13 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icEmpty, 0, 0, 6},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icFunc, 0, 1, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_B_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFileName_1_1, 0},
       {refalrts::icInt, 0, 0 , 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eOutput_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -5392,7 +5459,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
     else
       return res;
 #else
-    // e.Files_B#1 ( e.FileName#1 0 ( & Output e.Output#1 ) ) e.Files_M#1 ( e.FileName#1 0 t.Location#1 ) e.Files_E#1
+    // e.Files_B#1 ( e.FileName#1 0 ( # Output e.Output#1 ) ) e.Files_M#1 ( e.FileName#1 0 t.Location#1 ) e.Files_E#1
     context[__eFiles_B_1_1] = 0;
     context[__eFiles_B_1_1 + 1] = 0;
     refalrts::start_e_loop();
@@ -5407,7 +5474,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       context[5] = 0;
       if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
         continue;
-      if( ! refalrts::function_left( Output, context[4], context[5] ) )
+      if( ! refalrts::ident_left(  & ident_Output<int>::name, context[4], context[5] ) )
         continue;
       if( ! refalrts::number_right( 0UL, context[2], context[3] ) )
         continue;
@@ -5456,7 +5523,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
         if( ! refalrts::alloc_open_bracket( n4 ) )
           return refalrts::cNoMemory;
         refalrts::Iter n5 = 0;
-        if( ! refalrts::alloc_name( n5, Output, "Output" ) )
+        if( ! refalrts::alloc_ident( n5, & ident_Output<int>::name ) )
           return refalrts::cNoMemory;
         refalrts::Iter n6 = 0;
         if( ! refalrts::alloc_close_bracket( n6 ) )
@@ -5826,16 +5893,17 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
-      { Source, "Source" },
       { Inc, "Inc" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icBracketRight, 0, 4, 0},
       {refalrts::icBracketRight, 0, 6, 4},
-      {refalrts::icFuncLeft, 0, 0, 6},
+      {refalrts::icIdentLeft, 0, 0, 6},
       {refalrts::icNumRight, 0, 0, 4},
       {refalrts::icBracketLeft, 0, 8, 6},
       {refalrts::icContextSet, 0, __eFileName_1_1, 2},
@@ -5847,14 +5915,14 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icFunc, 0, 1, 0},
+      {refalrts::icFunc, 0, 0, 0},
       {refalrts::icSpliceSTVar, 0, __sNextNumber_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFileName_1_1, 0},
       {refalrts::icCopySTVar, 0, __sNextNumber_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eSource_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -5874,7 +5942,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     else
       return res;
 #else
-    // ( e.FileName#1 ) s.NextNumber#2 ( e.FileName#1 0 ( & Source ( e.Source#2 ) e.Output#2 ) )
+    // ( e.FileName#1 ) s.NextNumber#2 ( e.FileName#1 0 ( # Source ( e.Source#2 ) e.Output#2 ) )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
@@ -5887,7 +5955,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     context[7] = 0;
     if( ! refalrts::brackets_right( context[6], context[7], context[4], context[5] ) )
       break;
-    if( ! refalrts::function_left( Source, context[6], context[7] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[6], context[7] ) )
       break;
     if( ! refalrts::number_right( 0UL, context[4], context[5] ) )
       break;
@@ -5930,7 +5998,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     if( ! refalrts::alloc_open_bracket( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_name( n5, Source, "Source" ) )
+    if( ! refalrts::alloc_ident( n5, & ident_Source<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n6 = 0;
     if( ! refalrts::alloc_open_bracket( n6 ) )
@@ -6352,21 +6420,21 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_left( context[0], context[1] );
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
-    static const refalrts::RefalFunction functions[] = {
-      { Output, "Output" }
+    using refalrts::functions;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Output<int>::name
     };
-    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icBracketRight, 0, 4, 2},
-      {refalrts::icFuncLeft, 0, 0, 4},
+      {refalrts::icIdentLeft, 0, 0, 4},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eOutputName_1_1, 4},
       {refalrts::icsVarRight, 0, __sNum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 0, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eOutputName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icEnd}
@@ -6382,7 +6450,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     else
       return res;
 #else
-    // ( e.FileName#1 s.Num#1 ( & Output e.OutputName#1 ) )
+    // ( e.FileName#1 s.Num#1 ( # Output e.OutputName#1 ) )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
@@ -6391,7 +6459,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     context[5] = 0;
     if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( Output, context[4], context[5] ) )
+    if( ! refalrts::ident_left(  & ident_Output<int>::name, context[4], context[5] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -6407,7 +6475,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, Output, "Output" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_Output<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_bracket( n2 ) )
@@ -6439,15 +6507,16 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
 #ifdef INTERPRET
     static const refalrts::RefalFunction functions[] = {
       { lambda_RestoreName_0, "lambda_RestoreName_0" },
-      { Fetch, "Fetch" },
-      { Source, "Source" }
+      { Fetch, "Fetch" }
     };
-    using refalrts::idents;
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Source<int>::name
+    };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icBracketRight, 0, 4, 2},
-      {refalrts::icFuncLeft, 0, 2, 4},
+      {refalrts::icIdentLeft, 0, 0, 4},
       {refalrts::icBracketLeft, 0, 6, 4},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icContextSet, 0, __eSource_1_1, 6},
@@ -6455,7 +6524,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
       {refalrts::icsVarRight, 0, __sNum_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icFunc, 0, 2, 0},
+      {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icSpliceEVar, 0, __eSource_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
@@ -6479,7 +6548,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     else
       return res;
 #else
-    // ( e.FileName#1 s.Num#1 ( & Source ( e.Source#1 ) e.Output#1 ) )
+    // ( e.FileName#1 s.Num#1 ( # Source ( e.Source#1 ) e.Output#1 ) )
     context[2] = 0;
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
@@ -6488,7 +6557,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     context[5] = 0;
     if( ! refalrts::brackets_right( context[4], context[5], context[2], context[3] ) )
       break;
-    if( ! refalrts::function_left( Source, context[4], context[5] ) )
+    if( ! refalrts::ident_left(  & ident_Source<int>::name, context[4], context[5] ) )
       break;
     context[6] = 0;
     context[7] = 0;
@@ -6510,7 +6579,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_name( n1, Source, "Source" ) )
+    if( ! refalrts::alloc_ident( n1, & ident_Source<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_open_bracket( n2 ) )

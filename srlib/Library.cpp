@@ -48,41 +48,26 @@ Iter free_ptr();
 
 // Основные перечисления
 
-refalrts::FnResult Success( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
+#define DEFINE_IDENT(ident_name) \
+  template <typename SREFAL_PARAM_INT> \
+  struct ident_ ## ident_name { \
+    static const char *name() { \
+      return #ident_name; \
+    } \
+  };
 
-refalrts::FnResult Fails( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
+#define USE_IDENT(ident_name) \
+  (& ident_ ## ident_name<int>::name)
 
-refalrts::FnResult True( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult False( refalrts::Iter, refalrts::Iter ) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult TypeNumber(refalrts::Iter, refalrts::Iter) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult TypeCharacter(refalrts::Iter, refalrts::Iter) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult TypeFunction(refalrts::Iter, refalrts::Iter) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult TypeFile(refalrts::Iter, refalrts::Iter) {
-  return refalrts::cRecognitionImpossible;
-}
-
-refalrts::FnResult TypeIdentifier(refalrts::Iter, refalrts::Iter) {
-  return refalrts::cRecognitionImpossible;
-}
+DEFINE_IDENT(Success);
+DEFINE_IDENT(Fails);
+DEFINE_IDENT(True);
+DEFINE_IDENT(False);
+DEFINE_IDENT(TypeNumber);
+DEFINE_IDENT(TypeCharacter);
+DEFINE_IDENT(TypeFunction);
+DEFINE_IDENT(TypeFile);
+DEFINE_IDENT(TypeIdentifier);
 
 // Математические операции
 
@@ -828,12 +813,12 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       // Файл существует
       fclose( f );
 
-      if( ! refalrts::alloc_name( ans, True, "True" ) ) {
+      if( ! refalrts::alloc_ident( ans, USE_IDENT(True) ) ) {
         return refalrts::cNoMemory;
       }
     } else {
       // Файл по-видимому не существует
-      if( ! refalrts::alloc_name( ans, False, "False" ) ) {
+      if( ! refalrts::alloc_ident( ans, USE_IDENT(False) ) ) {
         return refalrts::cNoMemory;
       }
     }
@@ -994,7 +979,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
 
     if( ! start_is_digit ) {
       refalrts::Iter fail_pos = 0;
-      if( ! refalrts::alloc_name( fail_pos, Fails, "Fails" ) )
+      if( ! refalrts::alloc_ident( fail_pos, USE_IDENT(Fails) ) )
         return refalrts::cNoMemory;
 
       res = refalrts::splice_evar( res, eNumber_b_1, eNumber_e_1 );
@@ -1019,7 +1004,7 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       refalrts::Iter success_pos = 0;
       refalrts::Iter number_pos = 0;
 
-      if( ! refalrts::alloc_name( success_pos, Success, "Success" ) )
+      if( ! refalrts::alloc_ident( success_pos, USE_IDENT(Success) ) )
         return refalrts::cNoMemory;
 
       if( ! refalrts::alloc_number( number_pos, acc ) )
@@ -1409,46 +1394,40 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     if( ! refalrts::empty_seq( bb_0, be_0 ) )
       break;
 
-    const char *fnname = 0;
-    refalrts::RefalFunctionPtr fnptr = 0;
+    refalrts::RefalIdentifier type_tag = 0;
 
     switch( sSymb_1->tag ) {
     case refalrts::cDataNumber:
-      fnname = "TypeNumber";
-      fnptr = TypeNumber;
+      type_tag = USE_IDENT(TypeNumber);
       break;
 
     case refalrts::cDataChar:
-      fnname = "TypeCharacter";
-      fnptr = TypeCharacter;
+      type_tag = USE_IDENT(TypeCharacter);
       break;
 
     case refalrts::cDataFunction:
-      fnname = "TypeFunction";
-      fnptr = TypeFunction;
+      type_tag = USE_IDENT(TypeFunction);
       break;
 
     case refalrts::cDataIdentifier:
-      fnname = "TypeIdentifier";
-      fnptr = TypeIdentifier;
+      type_tag = USE_IDENT(TypeIdentifier);
       break;
 
     case refalrts::cDataFile:
-      fnname = "TypeFile";
-      fnptr = TypeFile;
+      type_tag = USE_IDENT(TypeFile);
       break;
 
     default:
       break;
     }
 
-    if( 0 == fnname )
+    if( 0 == type_tag )
       break;
 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_name( n0, fnptr, fnname ) )
+    if( ! refalrts::alloc_ident( n0, type_tag ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
