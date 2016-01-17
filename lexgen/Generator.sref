@@ -257,89 +257,89 @@ SubstituteSetsToRules {
       e.Alternatives-E
     )
     e.Rules-E
- ) =
-   <SubstituteSetsToRules
-     ( ((e.Name) Used Chars e.Content) e.Sets )
-     (
-       e.Rules-B
-       ((e.RuleName)
-         e.Alternatives-B
-         ( (Chars e.Content) t.Flush t.NextState )
-         e.Alternatives-E
-       )
-       e.Rules-E
-     )
-   >;
+  ) =
+    <SubstituteSetsToRules
+      ( ((e.Name) Used Chars e.Content) e.Sets )
+      (
+        e.Rules-B
+        ((e.RuleName)
+          e.Alternatives-B
+          ( (Chars e.Content) t.Flush t.NextState )
+          e.Alternatives-E
+        )
+        e.Rules-E
+      )
+    >;
 
- ( ((e.Name) s.Used Any) e.Sets )
- (
-   e.Rules-B
-   ((e.RuleName)
-     e.Alternatives-B
-     ( (Set t.SrcPos e.Name) t.Flush t.NextState )
-     e.Alternatives-E
-   )
-   e.Rules-E
- ) =
-   <SubstituteSetsToRules
-     ( ((e.Name) s.Used Any) e.Sets )
-     (
-       e.Rules-B
-       ((e.RuleName)
-         e.Alternatives-B
-         ( Any t.Flush t.NextState )
-         e.Alternatives-E
-       )
-       e.Rules-E
-     )
-   >;
+  ( ((e.Name) s.Used Any) e.Sets )
+  (
+    e.Rules-B
+    ((e.RuleName)
+      e.Alternatives-B
+      ( (Set t.SrcPos e.Name) t.Flush t.NextState )
+      e.Alternatives-E
+    )
+    e.Rules-E
+  ) =
+    <SubstituteSetsToRules
+      ( ((e.Name) s.Used Any) e.Sets )
+      (
+        e.Rules-B
+        ((e.RuleName)
+          e.Alternatives-B
+          ( Any t.Flush t.NextState )
+          e.Alternatives-E
+        )
+        e.Rules-E
+      )
+    >;
 
- ( ((e.Name) NotUsed e.Content) e.Sets ) (e.Rules) =
-   // Строчка закомментирована, т.к. часты ложноположительные
-   // срабатывания, а значит предупреждение смысла не несёт.
-   // <Warning 'Set ' e.Name ' not used'>
-   <SubstituteSetsToRules (e.Sets) (e.Rules)>;
+  ( ((e.Name) NotUsed e.Content) e.Sets ) (e.Rules) =
+    // Строчка закомментирована, т.к. часты ложноположительные
+    // срабатывания, а значит предупреждение смысла не несёт.
+    // <Warning 'Set ' e.Name ' not used'>
+    <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
- // Для первого в списке множества не найдено вхождения
- ( ((e.Name) Used e.Content) e.Sets ) (e.Rules) =
-   <SubstituteSetsToRules (e.Sets) (e.Rules)>;
+  // Для первого в списке множества не найдено вхождения
+  ( ((e.Name) Used e.Content) e.Sets ) (e.Rules) =
+    <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
- ()
- (
-   e.Rules-B
-   ((e.RuleName)
-     e.Alternatives-B
-     ( (Set t.SrcPos 'Any') t.Flush t.NextState )
-     e.Alternatives-E
-   )
-   e.Rules-E
- ) =
-   <SubstituteSetsToRules
-     ()
-     (
-       e.Rules-B
-       ((e.RuleName)
-         e.Alternatives-B
-         ( Any t.Flush t.NextState )
-         e.Alternatives-E
-       )
-       e.Rules-E
-     )
-   >;
+  ()
+  (
+    e.Rules-B
+    ((e.RuleName)
+      e.Alternatives-B
+      ( (Set t.SrcPos 'Any') t.Flush t.NextState )
+      e.Alternatives-E
+    )
+    e.Rules-E
+  ) =
+    <SubstituteSetsToRules
+      ()
+      (
+        e.Rules-B
+        ((e.RuleName)
+          e.Alternatives-B
+          ( Any t.Flush t.NextState )
+          e.Alternatives-E
+        )
+        e.Rules-E
+      )
+    >;
 
- ()
- (
-   e.Rules-B
-   ((e.RuleName)
-     e.Alternatives-B
-     ( (Set s.LineNumber e.Name) t.Flush t.NextState )
-     e.Alternatives-E
-   )
-   e.Rules-E
- ) =
-   <ErrorAt s.LineNumber 'Undeclared set ' e.Name>;
+  ()
+  (
+    e.Rules-B
+    ((e.RuleName)
+      e.Alternatives-B
+      ( (Set s.LineNumber e.Name) t.Flush t.NextState )
+      e.Alternatives-E
+    )
+    e.Rules-E
+  ) =
+    <ErrorAt s.LineNumber 'Undeclared set ' e.Name>;
 
- () (e.Rules) = <GenerateSentences e.Rules>;
+  () (e.Rules) = <GenerateSentences e.Rules>;
 }
 
 GenerateSentences {
