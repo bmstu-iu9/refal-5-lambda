@@ -1,6 +1,6 @@
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
-  DelAccumulator;
+  DelAccumulator, Fetch, Seq;
 
 //FROM Library
 $EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
@@ -57,23 +57,22 @@ WarningAt {
 
 GenCode {
   e.LinesBefore ('/*GEN:TOKENS') e.Description =
-    <GenCode-Aux
+    <Fetch
       ( <Length-T e.LinesBefore ('/*GEN:TOKENS')> )
       e.Description
+      {
+        ( s.Length e.LinesBefore^ )
+        e.Description^ ('GEN:END*/') e.Deleted =
+          e.LinesBefore e.Description ('GEN:END*/')
+          <GenerateFromDFA
+            <Parse <Tokens s.Length e.Description>>
+          >;
+
+       e.Other = <Error 'End of description not found'>;
+      }
     >;
 
   e.Other = <Error 'Lexer description not found'>;
-}
-
-GenCode-Aux {
-  ( s.Length e.LinesBefore )
-  e.Description ('GEN:END*/') e.Deleted =
-    e.LinesBefore e.Description ('GEN:END*/')
-    <GenerateFromDFA
-      <Parse <Tokens s.Length e.Description>>
-    >;
-
- e.Other = <Error 'End of description not found'>;
 }
 
 /*==============================================================================
@@ -98,9 +97,9 @@ GenCode-Aux {
    t.NextState ::= (t.SrcPos e.NextStateName) | Finitive
 
    Разбор начинается с правила Root, множество :Any: задаёт множество всех
-   символов, системная ошибка TokenUnexpected, пользовательская ошибка
-   TokenError, неожиданный конец -- TokenUnexpectedEOF, в случае ошибки выб-
-   расывается также TokenAccum с содержимым аккумулятора на момент ошибки.
+   символов, системная ошибка #TokenUnexpected, пользовательская ошибка
+   #TokenError, неожиданный конец — #TokenUnexpectedEOF, в случае ошибки выб-
+   расывается также #TokenAccum с содержимым аккумулятора на момент ошибки.
 
    * пока множество :Any: не реализовано
 
@@ -185,7 +184,7 @@ SetCheckRecursion {
   e.Sets-B
   ((e.Name) e.Content-B (Set s.LineNumber e.Name) e.Content-E)
   e.Sets-E =
-    // Рекурсивная зависимость множеств -- не ошибка.
+    // Рекурсивная зависимость множеств — не ошибка.
     <WarningAt s.LineNumber 'Recursive depended set ' e.Name>
     <SetCheckRecursion
       e.Sets-B ((e.Name) e.Content-B e.Content-E) e.Sets-E
@@ -448,8 +447,8 @@ WriteFunction {
     (e.NextRule ' {')
     <Map WriteAlternative e.Alternatives>
     ('  (e.Accum) s.Unexpected e.Text =')
-    ('    (TokenUnexpected s.Unexpected) <Root () e.Text>;')
-    ('  (e.Accum) = (TokenAccum e.Accum) (TokenUnexpectedEOF);')
+    ('    (#TokenUnexpected s.Unexpected) <Root () e.Text>;')
+    ('  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);')
     ('}');
 }
 
@@ -463,7 +462,7 @@ t.NextState ::= (t.SrcPos e.NextStateName) | Finitive
 
 WriteAlternative {
   (Empty None Finitive) =
-    ('  (e.Accum) = (TokenAccum e.Accum) ;');
+    ('  (e.Accum) = (#TokenAccum e.Accum) ;');
 
   (Empty None (t.SrcPos e.NextStateName)) =
     ('  (e.Accum) e.Text = <' e.NextStateName ' (e.Accum) e.Text>;');
@@ -482,16 +481,16 @@ WriteAlternative {
     ('    (' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;');
 
   (Empty (FlushError e.Message) Finitive) =
-    ('  (e.Accum) = (TokenError ' '' e.Message '' ');');
+    ('  (e.Accum) = (#TokenError ' '' e.Message '' ');');
 
   (Empty (FlushError e.Message) (t.SrcPos e.NextStateName)) =
     (
       '  (e.Accum) e.Text = '
-      '(TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;'
+      '(#TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;'
     );
 
   (s.Char None Finitive) =
-    ('  (e.Accum) ' <EC s.Char> ' = (TokenAccum e.Accum ' <EC s.Char> ');');
+    ('  (e.Accum) ' <EC s.Char> ' = (#TokenAccum e.Accum ' <EC s.Char> ');');
 
   (s.Char None (t.SrcPos e.NextStateName)) =
     (
@@ -519,12 +518,12 @@ WriteAlternative {
     );
 
   (s.Char (FlushError e.Message) Finitive) =
-    ('  (e.Accum) ' <EC s.Char> ' = (TokenError ' '' e.Message '' ');');
+    ('  (e.Accum) ' <EC s.Char> ' = (#TokenError ' '' e.Message '' ');');
 
   (s.Char (FlushError e.Message) (t.SrcPos e.NextStateName)) =
     (
       '  (e.Accum) ' <EC s.Char> ' e.Text = '
-      '(TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;'
+      '(#TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;'
     );
 }
 
@@ -555,8 +554,8 @@ EC {
    ERRORFLUSH = '!"' e.Name '"' .
 
    Зарезервированные имена Root, :Any:.
-   Зарезервированные лексемы TokenError, TokenUnexpected, TokenUnexpectedEOF,
-     TokenAccum.
+   Зарезервированные лексемы #TokenError, #TokenUnexpected, #TokenUnexpectedEOF,
+     #TokenAccum.
 
 ==============================================================================*/
 
@@ -815,34 +814,31 @@ UnexpectedToken {
 
 $ENUM TNewLine, TError;
 
-AddSrcPos {
-  s.LineNumber (TNewLine) = <Inc s.LineNumber>;
-
-  s.LineNumber (TError e.Text) =
-    <ErrorAt s.LineNumber e.Text>;
-
-  s.LineNumber (s.TokName e.Content) =
-    s.LineNumber (s.TokName s.LineNumber e.Content);
-}
-
-ToPlain {
-  (e.Line) = e.Line '\n';
-}
-
-AddEOF {
-  s.LineNumber e.Tokens =
-    e.Tokens (TEOF s.LineNumber);
-}
-
 Tokens {
-  s.LineNumber e.Lines =
-    <AddEOF
-      <MapReduce
-        AddSrcPos
-        <Inc s.LineNumber>
-        <LoTokens
-          <Map ToPlain e.Lines>
-        >
+  s.FirstLineNumber e.Lines =
+    <Fetch
+      e.Lines
+      <Seq
+        (Map {
+          (e.Line) = e.Line '\n';
+        })
+        LoTokens
+        (MapReduce
+          {
+            s.LineNumber (TNewLine) = <Inc s.LineNumber>;
+
+            s.LineNumber (TError e.Text) =
+              <ErrorAt s.LineNumber e.Text>;
+
+            s.LineNumber (s.TokName e.Content) =
+              s.LineNumber (s.TokName s.LineNumber e.Content);
+          }
+          <Inc s.FirstLineNumber>
+        )
+        {
+          s.LineNumber e.Tokens =
+            e.Tokens (TEOF s.LineNumber);
+        }
       >
     >;
 }
@@ -908,6 +904,12 @@ FlushName {
       ErrorFlush ErrorFlushFail
       (<NameTailSet> ' \t,.:;(){}[]*&')
       () e.Text
+    >;
+
+  '#' e.Text =
+    <NextInSet
+      FlushNameTail FlushNameFail
+      (<HiLetters>) ('#') e.Text
     >;
 
   e.Text =
