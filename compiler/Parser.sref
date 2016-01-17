@@ -1,54 +1,21 @@
-//FROM Lexer
-$EXTERN LexFolding;
-
 //FROM LibraryEx
 $EXTERN Map, Fetch, Seq, SaveFile;
 
-
 //FROM SymTable
-$EXTERN ST-Create, ST-CheckUnresolved, ST-Destroy;
+$EXTERN ST-Create, ST-AddUnresolved;
 
-//FROM Error
-$EXTERN EL-Create, EL-Destroy;
-
-/**
-  <CompileFile (e.SrcName) e.OutputName>
-    == #Success e.OutputName
-    == #Fails
-*/
-$ENTRY CompileFile {
-  (e.SrcName) e.OutputName =
+$ENTRY ParseProgram {
+  t.ErrorList e.Tokens =
     <Fetch
-      <LexFolding e.SrcName>
-      <Seq
-        (Map PrepareBracket)
-        {
-          e.LexFolding =
-            <ParseElements
-              <EL-Create e.SrcName> <ST-Create> (/* generated */)
-              e.LexFolding
-            >;
-        }
-        {
-          t.ErrorList t.SymTable e.Lines =
-            <ST-CheckUnresolved t.ErrorList t.SymTable> e.Lines;
-        }
-        {
-          t.ErrorList t.SymTable e.Lines =
-            <ST-Destroy t.SymTable>
-            <Fetch
-              <EL-Destroy t.ErrorList>
-              {
-                #EL-NoErrors =
-                  <SaveFile (e.OutputName) e.Lines>
-                  #Success e.OutputName;
-
-                #EL-HasErrors =
-                  #Fails;
-              }
-            >;
-        }
+      <ParseElements
+        t.ErrorList <ST-Create>
+        (/* AST */)
+        <Map PrepareBracket e.Tokens>
       >
+      {
+        t.ErrorList^ t.SymTable e.AST =
+          <ST-AddUnresolved t.ErrorList t.SymTable> e.AST;
+      }
     >;
 }
 
@@ -133,46 +100,42 @@ $EXTERN ST-AllFunctions, ST-AllIdents, ST-AddDefined;
 //FROM Error
 $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
 
-//FROM Generator
-$EXTERN GenCommonHeaders, GenCommonTailer, GenExtern, GenForward, GenIdent;
-
 //FROM LibraryEx
 $EXTERN Sort;
 
 ParseElements {
-  t.ErrorList t.SymTable (e.Generated) (#TkEOF s.LnNum) =
+  t.ErrorList t.SymTable (e.AST) (#TkEOF s.LnNum) =
     t.ErrorList t.SymTable
-    <GenCommonHeaders>
     <Map
       {
-        (#GN-Entry e.Name) = <GenExtern e.Name>;
-        (#GN-Local e.Name) = <GenForward e.Name>;
+        (s.ScopeClass e.Name) = (#Declaration s.ScopeClass e.Name);
       }
       <Sort <ST-AllFunctions t.SymTable>>
     >
-    ()
+    (#Separator)
     <Map
-      { (e.Name) = <GenIdent e.Name>; }
+      {
+        (e.Name) = (#Ident e.Name);
+      }
       <Sort <ST-AllIdents t.SymTable>>
     >
-    e.Generated
-    <GenCommonTailer>;
+    e.AST;
 
-  t.ErrorList t.SymTable (e.Generated)
+  t.ErrorList t.SymTable (e.AST)
   (#TkDirective s.LnNum s.Directive) e.Tail =
     <Fetch
       <ParseElement-SwDirective
         t.ErrorList t.SymTable s.Directive e.Tail
       >
       {
-        (e.NewGenerated) t.ErrorList^ t.SymTable^ e.Tail^ =
+        (e.NewASTItems) t.ErrorList^ t.SymTable^ e.Tail^ =
           <ParseElements
-            t.ErrorList t.SymTable (e.Generated e.NewGenerated) e.Tail
+            t.ErrorList t.SymTable (e.AST e.NewASTItems) e.Tail
           >;
       }
     >;
 
-  t.ErrorList t.SymTable (e.Generated) (#TkName s.LnNum e.Name) e.Tail =
+  t.ErrorList t.SymTable (e.AST) (#TkName s.LnNum e.Name) e.Tail =
     <Fetch
       <ParseFunction
         #GN-Local (e.Name)
@@ -180,38 +143,35 @@ ParseElements {
         e.Tail
       >
       {
-        (e.NewGenerated) t.ErrorList^ t.SymTable^ e.Tail^ =
+        (e.NewASTItems) t.ErrorList^ t.SymTable^ e.Tail^ =
           <ParseElements
-            t.ErrorList t.SymTable (e.Generated e.NewGenerated) e.Tail
+            t.ErrorList t.SymTable (e.AST e.NewASTItems) e.Tail
           >;
       }
     >;
 
-  t.ErrorList t.SymTable (e.Generated) (#TkSemicolon s.LnNum) e.Tail =
-    <ParseElements t.ErrorList t.SymTable (e.Generated) e.Tail>;
+  t.ErrorList t.SymTable (e.AST) (#TkSemicolon s.LnNum) e.Tail =
+    <ParseElements t.ErrorList t.SymTable (e.AST) e.Tail>;
 
-  t.ErrorList t.SymTable (e.Generated) t.Unexpected e.Tail =
+  t.ErrorList t.SymTable (e.AST) t.Unexpected e.Tail =
     <ParseElements
       <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
-      t.SymTable (e.Generated) e.Tail
+      t.SymTable (e.AST) e.Tail
     >;
 }
 
-//FROM Generator
-$EXTERN GenEEnum, GenEnum, GenESwap, GenSwap;
-
 GenFunctionsFromDirective {
-  #EEnum   = GenEEnum   ST-AddDefined  #GN-Entry;
-  #Enum    = GenEnum    ST-AddDefined  #GN-Local;
-  #ESwap   = GenESwap   ST-AddDefined  #GN-Entry;
-  #Swap    = GenSwap    ST-AddDefined  #GN-Local;
+  #EEnum   = #Enum ST-AddDefined  #GN-Entry;
+  #Enum    = #Enum ST-AddDefined  #GN-Local;
+  #ESwap   = #Swap ST-AddDefined  #GN-Entry;
+  #Swap    = #Swap ST-AddDefined  #GN-Local;
 
-  #Extern  = DontGen    AddExtern      #GN-Entry;
+  #Extern  = #Stub AddExtern      #GN-Entry;
 
   // Директивы $FORWARD и $LABEL эквивалентны пустому месту
-  #Forward = DontGen    DontAdd        #GN-Local;
+  #Forward = #Stub DontAdd        #GN-Local;
   // Для меток не важно: entry или local.
-  #Ident   = DontGen    DontAdd        #GN-Entry;
+  #Ident   = #Stub DontAdd        #GN-Entry;
 }
 
 //FROM SymTable
@@ -220,10 +180,6 @@ $EXTERN ST-AddExtern;
 AddExtern {
   t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
     <ST-AddExtern t.ErrorList t.SymTable e.Name>;
-}
-
-DontGen {
-  e.Name = /* пусто */;
 }
 
 DontAdd {
@@ -258,42 +214,43 @@ ParseElement-SwDirective {
 */
 
 ParseNameList {
-  (e.Generated)
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
+  (e.AST)
+  t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
-      (e.Generated <s.GenFunc e.Name>)
+      (e.AST (s.ASTItem s.ScopeClass e.Name))
       <s.TableChangeFunc t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name>
-      s.GenFunc s.TableChangeFunc s.ScopeClass
+      s.ASTItem s.TableChangeFunc s.ScopeClass
       e.Tail
     >;
 
-  (e.Generated)
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
+  (e.AST)
+  t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
-    (e.Generated)
+    (e.AST)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.SymTable t.Unexpected e.Tail;
 }
 
 ParseNameList-Tail {
-  (e.Generated)
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
+  (e.AST)
+  t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   (#TkComma s.LnNum) e.Tail =
     <ParseNameList
-      (e.Generated)
-      t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass e.Tail
+      (e.AST)
+      t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
+      e.Tail
     >;
 
-  (e.Generated)
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
+  (e.AST)
+  t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   (#TkSemicolon s.LnNum) e.Tail =
-    (e.Generated) t.ErrorList t.SymTable e.Tail;
+    (e.AST) t.ErrorList t.SymTable e.Tail;
 
-  (e.Generated)
-  t.ErrorList t.SymTable s.GenFunc s.TableChangeFunc s.ScopeClass
+  (e.AST)
+  t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   t.Unexpected e.Tail =
-    (e.Generated)
+    (e.AST)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
     t.SymTable t.Unexpected e.Tail;
 }
@@ -301,9 +258,6 @@ ParseNameList-Tail {
 /*
   Function = Name '{' Sentence* '}'
 */
-
-//FROM Generator
-$EXTERN GenFnStart, GenSentence, GenFnEnd, GenFnEnd-Success;
 
 //FROM Context
 $EXTERN Cntx-Create, Cntx-Destroy;
@@ -315,9 +269,6 @@ CreateLambdaName {
   e.Name s.Number =
     'lambda_' e.Name '_' <StrFromInt s.Number>;
 }
-
-//FROM Algorithm
-$EXTERN MakeAlgorithm;
 
 ParseFunction {
   s.ScopeClass (e.Name) t.ErrorList t.SymTable
@@ -385,35 +336,17 @@ ResolveLambdaName {
 }
 
 GenFunctionBody {
-  // Закомментированный код содержит вариант кодогенерации,
-  // при котором если последнее предложение имеет вид
-  // e.X = ...;, в конце не генерится возврат
-  // return RecognitionImpossible;
-
-  //s.ScopeClass (e.MainName) (e.Name)
-  //e.Sentences (((#TkVariable 'e' e.Index)) (e.Result)) =
-  //  <GenFnStart s.ScopeClass e.Name>
-  //  <Map
-  //    <PrepareAndGenSentence e.MainName>
-  //    e.Sentences
-  //    (((#TkVariable 'e' e.Index)) (e.Result))
-  //  >
-  //  <GenFnEnd-Success>;
-
   s.ScopeClass (e.MainName) (e.Name) e.Sentences =
-    <GenFnStart s.ScopeClass e.Name>
-    <Fetch
-      e.Sentences
-      (Map {
-        ((e.Pattern) (e.Result)) =
-          <GenSentence
-            <MakeAlgorithm
-              (e.Pattern) (<ResolveLambdaName (e.MainName) e.Result>)
-            >
-          >;
-      })
-    >
-    <GenFnEnd>;
+    (#Function
+      s.ScopeClass (e.Name)
+      <Fetch
+        e.Sentences
+        (Map {
+          ((e.Pattern) (e.Result)) =
+            ((e.Pattern) (<ResolveLambdaName (e.MainName) e.Result>));
+        })
+      >
+    );
 }
 
 //FROM Context
