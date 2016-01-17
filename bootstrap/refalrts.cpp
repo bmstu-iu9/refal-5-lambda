@@ -2429,7 +2429,7 @@ refalrts::FnResult refalrts::interpret_array(
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
   const RefalFunction functions[],
-  const RefalIdentifier labels[],
+  const RefalIdentifier idents[],
   const RefalNumber numbers[],
   int open_e_stack[]
 ) {
@@ -2532,12 +2532,12 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icIdentRight:
-        if( ! refalrts::ident_right( labels[raa[i].val2], bb, be ) )
+        if( ! refalrts::ident_right( idents[raa[i].val2], bb, be ) )
           MATCH_FAIL
         break;
 
       case icIdentLeft:
-        if( ! refalrts::ident_left( labels[raa[i].val2], bb, be ) )
+        if( ! refalrts::ident_left( idents[raa[i].val2], bb, be ) )
           MATCH_FAIL
         break;
 
@@ -2689,7 +2689,7 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icIdent:
-        if( !alloc_ident( *allocs, labels[raa[i].val2] ) )
+        if( !alloc_ident( *allocs, idents[raa[i].val2] ) )
           return cNoMemory;
         ++allocs;
         break;
@@ -2891,7 +2891,7 @@ refalrts::FnResult refalrts::interpret_array(
 
 
 const refalrts::RefalFunction refalrts::functions[] = { { 0, 0 } };
-const refalrts::RefalIdentifier refalrts::labels[] = { 0 };
+const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 
 

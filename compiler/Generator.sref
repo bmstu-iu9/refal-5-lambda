@@ -98,9 +98,9 @@ GenSwap-Aux {
 
 $ENTRY GenIdent {
   e.Name =
-    ('//$LABEL ' e.Name)
+    ('// identifier #' e.Name)
     ('template <typename SREFAL_PARAM_INT>')
-    ('struct ' e.Name ' {')
+    ('struct ident_' e.Name ' {')
     ('  static const char *name() {')
     ('    return "' e.Name '";')
     ('  }')
@@ -468,18 +468,18 @@ GenCommand {
 
   (e.Indent) (CmdiLabelArray) =
     (e.Indent)
-    (e.Indent 'using refalrts::labels;');
+    (e.Indent 'using refalrts::idents;');
 
   (e.Indent) (CmdiLabelArray e.LabelNames (e.LastName)) =
     (e.Indent)
-    (e.Indent 'static const refalrts::RefalIdentifier labels[] = {')
+    (e.Indent 'static const refalrts::RefalIdentifier idents[] = {')
     <Map
       {
-        (e.Name) = (e.Indent '  & ' e.Name '<int>::name,');
+        (e.Name) = (e.Indent '  & ident_' e.Name '<int>::name,');
       }
       e.LabelNames
     >
-    (e.Indent '  & ' e.LastName '<int>::name')
+    (e.Indent '  & idents_' e.LastName '<int>::name')
     (e.Indent '};');
 
   (e.Indent) (CmdiNumberArray) =
@@ -761,7 +761,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' & ' e.Name '<int>::name'
+      ('ident') ' & ident_' e.Name '<int>::name'
     >;
 }
 
@@ -883,7 +883,7 @@ SwInfo {
 
   ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
-  ElIdent e.Name = ', & ' e.Name '<int>::name';
+  ElIdent e.Name = ', & ident_' e.Name '<int>::name';
 
   // Остальное -- скобки
   s.Other = ;

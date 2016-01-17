@@ -20,41 +20,41 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
 static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-//$LABEL CAlreadyBounded
+// identifier #CAlreadyBounded
 template <typename SREFAL_PARAM_INT>
-struct CAlreadyBounded {
+struct ident_CAlreadyBounded {
   static const char *name() {
     return "CAlreadyBounded";
   }
 };
 
-//$LABEL CExistVariable
+// identifier #CExistVariable
 template <typename SREFAL_PARAM_INT>
-struct CExistVariable {
+struct ident_CExistVariable {
   static const char *name() {
     return "CExistVariable";
   }
 };
 
-//$LABEL CInvalidMode
+// identifier #CInvalidMode
 template <typename SREFAL_PARAM_INT>
-struct CInvalidMode {
+struct ident_CInvalidMode {
   static const char *name() {
     return "CInvalidMode";
   }
 };
 
-//$LABEL CNotFound
+// identifier #CNotFound
 template <typename SREFAL_PARAM_INT>
-struct CNotFound {
+struct ident_CNotFound {
   static const char *name() {
     return "CNotFound";
   }
 };
 
-//$LABEL CSuccess
+// identifier #CSuccess
 template <typename SREFAL_PARAM_INT>
-struct CSuccess {
+struct ident_CSuccess {
   static const char *name() {
     return "CSuccess";
   }
@@ -97,7 +97,7 @@ refalrts::FnResult Cntx_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -169,7 +169,7 @@ refalrts::FnResult Cntx_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -242,8 +242,8 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       { ShiftVariable, "ShiftVariable" },
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CSuccess<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CSuccess<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -364,7 +364,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & CSuccess<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & ident_CSuccess<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_3] );
       res = refalrts::splice_elem( res, n10 );
@@ -423,8 +423,8 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CInvalidMode<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CInvalidMode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -523,7 +523,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & ident_CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sOldMode_1_2] );
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_2] );
@@ -568,8 +568,8 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CSuccess<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CSuccess<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -640,7 +640,7 @@ refalrts::FnResult Cntx_AddVariable(refalrts::Iter arg_begin, refalrts::Iter arg
     if( ! refalrts::alloc_close_adt( n4 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n5 = 0;
-    if( ! refalrts::alloc_ident( n5, & CSuccess<int>::name ) )
+    if( ! refalrts::alloc_ident( n5, & ident_CSuccess<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_stvar( res, context[__sStackDepth_1_3] );
     res = refalrts::splice_elem( res, n5 );
@@ -699,7 +699,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
       { ShiftVariable_AddToFree, "ShiftVariable_AddToFree" },
       { FreeVarsSent, "FreeVarsSent" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -927,7 +927,7 @@ static refalrts::FnResult ShiftVariable(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -998,7 +998,7 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1106,7 +1106,7 @@ static refalrts::FnResult ShiftVariable_AddToFree(refalrts::Iter arg_begin, refa
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1204,8 +1204,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAlreadyBounded<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAlreadyBounded<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1352,7 +1352,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_close_adt( n10 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_ident( n11, & CAlreadyBounded<int>::name ) )
+      if( ! refalrts::alloc_ident( n11, & ident_CAlreadyBounded<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sDepth_2_2] );
       res = refalrts::splice_elem( res, n11 );
@@ -1416,8 +1416,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CInvalidMode<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CInvalidMode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1567,7 +1567,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_close_adt( n10 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n11 = 0;
-      if( ! refalrts::alloc_ident( n11, & CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n11, & ident_CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sOldMode_2_2] );
       res = refalrts::splice_stvar( res, context[__sVarDepth_2_2] );
@@ -1628,8 +1628,8 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
       { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CSuccess<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CSuccess<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1751,7 +1751,7 @@ static refalrts::FnResult lambda_Cntx_AddNewVariable_0(refalrts::Iter arg_begin,
     if( ! refalrts::alloc_close_adt( n10 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n11 = 0;
-    if( ! refalrts::alloc_ident( n11, & CSuccess<int>::name ) )
+    if( ! refalrts::alloc_ident( n11, & ident_CSuccess<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_stvar( res, context[__sStackDepth_1_3] );
     res = refalrts::splice_elem( res, n11 );
@@ -1817,7 +1817,7 @@ refalrts::FnResult Cntx_AddNewVariable(refalrts::Iter arg_begin, refalrts::Iter 
       { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 5, 2, 0},
@@ -2022,8 +2022,8 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       { ShiftVariable, "ShiftVariable" },
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CExistVariable<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CExistVariable<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2144,7 +2144,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n9 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n10 = 0;
-      if( ! refalrts::alloc_ident( n10, & CExistVariable<int>::name ) )
+      if( ! refalrts::alloc_ident( n10, & ident_CExistVariable<int>::name ) )
         return refalrts::cNoMemory;
       res = refalrts::splice_stvar( res, context[__sVarDepth_1_3] );
       res = refalrts::splice_elem( res, n10 );
@@ -2202,8 +2202,8 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CInvalidMode<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CInvalidMode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2300,7 +2300,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
       if( ! refalrts::alloc_close_adt( n4 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n5 = 0;
-      if( ! refalrts::alloc_ident( n5, & CInvalidMode<int>::name ) )
+      if( ! refalrts::alloc_ident( n5, & ident_CInvalidMode<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n6 = 0;
       if( ! refalrts::alloc_number( n6, 0UL ) )
@@ -2345,8 +2345,8 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Context, "Context" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNotFound<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CNotFound<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2399,7 +2399,7 @@ refalrts::FnResult Cntx_CheckVariable(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_close_adt( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CNotFound<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CNotFound<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n3 );
     refalrts::link_brackets( n0, n2 );
@@ -2443,7 +2443,7 @@ refalrts::FnResult Cntx_ResetAfterSentence(refalrts::Iter arg_begin, refalrts::I
       { FreeVarsSent, "FreeVarsSent" },
       { Context, "Context" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 3, 2, 0},
@@ -2615,7 +2615,7 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static const refalrts::RefalFunction functions[] = {
       { Unique, "Unique" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eBegin_1_1, 0},
@@ -2709,7 +2709,7 @@ static refalrts::FnResult Unique(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eUniques_1_1, 0},
@@ -2767,7 +2767,7 @@ refalrts::FnResult Cntx_PushScope(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { Inc, "Inc" },
       { Context, "Context" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 3, 2, 0},
@@ -2904,7 +2904,7 @@ refalrts::FnResult Cntx_PopScope(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { FreeVarsFunc, "FreeVarsFunc" },
       { FreeVarsSent, "FreeVarsSent" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 1, 2, 0},

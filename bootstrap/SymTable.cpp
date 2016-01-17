@@ -43,7 +43,7 @@ refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -143,7 +143,7 @@ refalrts::FnResult ST_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -219,7 +219,7 @@ static refalrts::FnResult lambda_PatchReferences_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -285,7 +285,7 @@ static refalrts::FnResult lambda_PatchReferences_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -372,7 +372,7 @@ static refalrts::FnResult PatchReferences(refalrts::Iter arg_begin, refalrts::It
       { refalrts::create_closure, "refalrts::create_closure" },
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -508,7 +508,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { SymTable, "SymTable" },
       { EL_AddErrorAt, "EL_AddErrorAt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -850,7 +850,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { PatchReferences, "PatchReferences" },
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -1061,7 +1061,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { PatchReferences, "PatchReferences" },
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -1256,7 +1256,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -1439,7 +1439,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -1626,7 +1626,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { PatchReferences, "PatchReferences" },
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -1813,7 +1813,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -1994,7 +1994,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -2177,7 +2177,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -2342,7 +2342,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -2516,7 +2516,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -2672,7 +2672,7 @@ static refalrts::FnResult lambda_ST_CheckUnresolved_0(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { EL_AddErrorAt, "EL_AddErrorAt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -2888,7 +2888,7 @@ refalrts::FnResult ST_CheckUnresolved(refalrts::Iter arg_begin, refalrts::Iter a
       { lambda_ST_CheckUnresolved_0, "lambda_ST_CheckUnresolved_0" },
       { Reduce, "Reduce" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTRight, 0, 2, 0},
@@ -3060,7 +3060,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { GN_Entry, "GN_Entry" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3134,7 +3134,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { GN_Local, "GN_Local" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3215,7 +3215,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_1(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { GN_Entry, "GN_Entry" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3297,7 +3297,7 @@ refalrts::FnResult ST_AllFunctions(refalrts::Iter arg_begin, refalrts::Iter arg_
       { lambda_ST_AllFunctions_0, "lambda_ST_AllFunctions_0" },
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 3, 2, 0},
@@ -3425,7 +3425,7 @@ refalrts::FnResult ST_AllIdents(refalrts::Iter arg_begin, refalrts::Iter arg_end
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -3507,7 +3507,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static const refalrts::RefalFunction functions[] = {
       { SymTable, "SymTable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},

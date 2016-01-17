@@ -68,7 +68,7 @@ refalrts::FnResult FindFiles(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       { AnalyzeFile_ByFolders, "AnalyzeFile_ByFolders" },
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -174,7 +174,7 @@ static refalrts::FnResult AnalyzeFile_ByFolders(refalrts::Iter arg_begin, refalr
       { Map, "Map" },
       { AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -304,7 +304,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
       { AnalyzeFile, "AnalyzeFile" },
       { Current, "Current" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncRight, 0, 1, 0},
@@ -372,7 +372,7 @@ static refalrts::FnResult AnalyzeInFolder(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { AnalyzeFile, "AnalyzeFile" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -459,7 +459,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { Source, "Source" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -558,7 +558,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -638,7 +638,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
       { AnalyzeFile_CheckNotFound, "AnalyzeFile_CheckNotFound" },
       { NotFound, "NotFound" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -732,7 +732,7 @@ static refalrts::FnResult AnalyzeFile_CheckNotFound(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { NotFound, "NotFound" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -811,7 +811,7 @@ static refalrts::FnResult ExistFile_T(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { ExistFile, "ExistFile" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eFileName_1_1, 0},
@@ -887,7 +887,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       { ExistFile_T, "ExistFile_T" },
       { AnalyzeSource_CheckExist, "AnalyzeSource_CheckExist" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'f', 0},
@@ -1009,7 +1009,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       { ExistFile_T, "ExistFile_T" },
       { AnalyzeOutput_CheckExist, "AnalyzeOutput_CheckExist" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'p', 0},
@@ -1124,7 +1124,7 @@ static refalrts::FnResult AnalyzeFile(refalrts::Iter arg_begin, refalrts::Iter a
       { ExistFile_T, "ExistFile_T" },
       { AnalyzeBoth_CheckExist, "AnalyzeBoth_CheckExist" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eFileName_1_1, 0},
@@ -1291,7 +1291,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       { Source, "Source" },
       { True, "True" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 1, 0},
@@ -1433,7 +1433,7 @@ static refalrts::FnResult AnalyzeSource_CheckExist(refalrts::Iter arg_begin, ref
       { NotFound, "NotFound" },
       { False, "False" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 1, 0},
@@ -1507,7 +1507,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       { Output, "Output" },
       { True, "True" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 1, 0},
@@ -1574,7 +1574,7 @@ static refalrts::FnResult AnalyzeOutput_CheckExist(refalrts::Iter arg_begin, ref
       { NotFound, "NotFound" },
       { False, "False" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 1, 0},
@@ -1650,7 +1650,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       { Source, "Source" },
       { True, "True" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1742,7 +1742,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       { True, "True" },
       { False, "False" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1819,7 +1819,7 @@ static refalrts::FnResult AnalyzeBoth_CheckExist(refalrts::Iter arg_begin, refal
       { NotFound, "NotFound" },
       { False, "False" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'p', 0},

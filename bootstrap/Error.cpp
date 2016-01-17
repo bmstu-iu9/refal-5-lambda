@@ -41,7 +41,7 @@ refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     static const refalrts::RefalFunction functions[] = {
       { ErrorList, "ErrorList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eFileName_1_1, 0},
@@ -124,7 +124,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static const refalrts::RefalFunction functions[] = {
       { ErrorList, "ErrorList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 0, 2, 0},
@@ -286,7 +286,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { StrFromInt, "StrFromInt" },
       { ErrorList, "ErrorList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 1, 2, 0},
@@ -472,7 +472,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       { EL_AddErrorAt, "EL_AddErrorAt" },
       { TkError, "TkError" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -558,7 +558,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       { EL_AddErrorAt, "EL_AddErrorAt" },
       { TkUnexpected, "TkUnexpected" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -751,7 +751,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       { StrFromToken, "StrFromToken" },
       { EL_AddErrorAt, "EL_AddErrorAt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tErrorList_1_1, 0},
@@ -988,7 +988,7 @@ static refalrts::FnResult lambda_EL_Destroy_0(refalrts::Iter arg_begin, refalrts
     static const refalrts::RefalFunction functions[] = {
       { WriteLine, "WriteLine" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1067,7 +1067,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       { EL_NoErrors, "EL_NoErrors" },
       { ErrorList, "ErrorList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 1, 2, 0},
@@ -1134,7 +1134,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       { Map, "Map" },
       { ErrorList, "ErrorList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icADTLeft, 3, 2, 0},

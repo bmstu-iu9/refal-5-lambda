@@ -140,33 +140,33 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
 static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-//$LABEL ADT_Brackets
+// identifier #ADT_Brackets
 template <typename SREFAL_PARAM_INT>
-struct ADT_Brackets {
+struct ident_ADT_Brackets {
   static const char *name() {
     return "ADT_Brackets";
   }
 };
 
-//$LABEL Brackets
+// identifier #Brackets
 template <typename SREFAL_PARAM_INT>
-struct Brackets {
+struct ident_Brackets {
   static const char *name() {
     return "Brackets";
   }
 };
 
-//$LABEL CallBrackets
+// identifier #CallBrackets
 template <typename SREFAL_PARAM_INT>
-struct CallBrackets {
+struct ident_CallBrackets {
   static const char *name() {
     return "CallBrackets";
   }
 };
 
-//$LABEL CloseCall
+// identifier #CloseCall
 template <typename SREFAL_PARAM_INT>
-struct CloseCall {
+struct ident_CloseCall {
   static const char *name() {
     return "CloseCall";
   }
@@ -192,7 +192,7 @@ refalrts::FnResult MakeAlgorithm(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { GenPattern, "GenPattern" },
       { GeneralizeResult, "GeneralizeResult" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -604,7 +604,7 @@ static refalrts::FnResult lambda_GenPattern_0(refalrts::Iter arg_begin, refalrts
     static const refalrts::RefalFunction functions[] = {
       { SaveBrackets, "SaveBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumRanges_2_1, 0},
@@ -705,7 +705,7 @@ static refalrts::FnResult lambda_GenPattern_1(refalrts::Iter arg_begin, refalrts
       { TextFromPattern, "TextFromPattern" },
       { CmdComment, "CmdComment" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -845,7 +845,7 @@ static refalrts::FnResult GenPattern(refalrts::Iter arg_begin, refalrts::Iter ar
       { DoGenPattern, "DoGenPattern" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __ePattern_1_1, 0},
@@ -1035,7 +1035,7 @@ static refalrts::FnResult Inc2(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     static const refalrts::RefalFunction functions[] = {
       { Add, "Add" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNum_1_1, 0},
@@ -1125,7 +1125,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkChar, "TkChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1326,7 +1326,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkNumber, "TkNumber" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1527,7 +1527,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkName, "TkName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1725,7 +1725,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkIdentifier, "TkIdentifier" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1923,7 +1923,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkChar, "TkChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -2124,7 +2124,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkNumber, "TkNumber" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -2325,7 +2325,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkName, "TkName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -2523,7 +2523,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkIdentifier, "TkIdentifier" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -2723,8 +2723,8 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { Inc2, "Inc2" },
       { DoGenPattern, "DoGenPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2819,7 +2819,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::ident_left(  & Brackets<int>::name, context[8], context[9] ) )
+      if( ! refalrts::ident_left(  & ident_Brackets<int>::name, context[8], context[9] ) )
         continue;
       context[__eSubRange_1_1] = context[8];
       context[__eSubRange_1_1 + 1] = context[9];
@@ -2961,8 +2961,8 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { Inc2, "Inc2" },
       { DoGenPattern, "DoGenPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3053,7 +3053,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::ident_left(  & Brackets<int>::name, context[8], context[9] ) )
+      if( ! refalrts::ident_left(  & ident_Brackets<int>::name, context[8], context[9] ) )
         continue;
       context[__eSubRange_1_1] = context[8];
       context[__eSubRange_1_1 + 1] = context[9];
@@ -3200,8 +3200,8 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { Inc2, "Inc2" },
       { DoGenPattern, "DoGenPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & ADT_Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_ADT_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3299,7 +3299,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_left( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::ident_left(  & ADT_Brackets<int>::name, context[8], context[9] ) )
+      if( ! refalrts::ident_left(  & ident_ADT_Brackets<int>::name, context[8], context[9] ) )
         continue;
       context[10] = 0;
       context[11] = 0;
@@ -3449,8 +3449,8 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { Inc2, "Inc2" },
       { DoGenPattern, "DoGenPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & ADT_Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_ADT_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3544,7 +3544,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       context[9] = 0;
       if( ! refalrts::brackets_right( context[8], context[9], context[6], context[7] ) )
         continue;
-      if( ! refalrts::ident_left(  & ADT_Brackets<int>::name, context[8], context[9] ) )
+      if( ! refalrts::ident_left(  & ident_ADT_Brackets<int>::name, context[8], context[9] ) )
         continue;
       context[10] = 0;
       context[11] = 0;
@@ -3691,7 +3691,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { CmdEmpty, "CmdEmpty" },
       { DoGenPattern, "DoGenPattern" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -3866,7 +3866,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -4163,7 +4163,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -4452,7 +4452,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -4667,7 +4667,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -4899,7 +4899,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -5131,7 +5131,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -5363,7 +5363,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -5595,7 +5595,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
       { DoGenPattern, "DoGenPattern" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -5815,7 +5815,7 @@ static refalrts::FnResult DoGenPattern(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -5904,7 +5904,7 @@ static refalrts::FnResult SaveBrackets(refalrts::Iter arg_begin, refalrts::Iter 
     static const refalrts::RefalFunction functions[] = {
       { DoSaveBrackets, "DoSaveBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -5995,7 +5995,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_0(refalrts::Iter arg_begin, refa
       { ExtractBrackets, "ExtractBrackets" },
       { DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -6133,7 +6133,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
       { CmdOpenedE, "CmdOpenedE" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -6307,7 +6307,7 @@ static refalrts::FnResult DoSaveBrackets(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -6379,7 +6379,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -6469,7 +6469,7 @@ static refalrts::FnResult lambda_DoSaveBrackets_MakeSavers_0(refalrts::Iter arg_
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -6581,7 +6581,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
       { Inc2, "Inc2" },
       { DoSaveBrackets_MakeSavers, "DoSaveBrackets_MakeSavers" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -6846,7 +6846,7 @@ static refalrts::FnResult DoSaveBrackets_MakeSavers(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { DoSaveBrackets, "DoSaveBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sLastBracket_1_1, 0},
@@ -6951,7 +6951,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { CmdBrackets, "CmdBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7022,7 +7022,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { CmdADT, "CmdADT" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7089,7 +7089,7 @@ static refalrts::FnResult lambda_ExtractBrackets_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7160,7 +7160,7 @@ static refalrts::FnResult ExtractBrackets(refalrts::Iter arg_begin, refalrts::It
       { Map, "Map" },
       { Brackets_Set, "Brackets_Set" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eCommands_1_1, 0},
@@ -7257,7 +7257,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
     static const refalrts::RefalFunction functions[] = {
       { Brackets_Set, "Brackets_Set" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eUnique_1_1, 0},
@@ -7351,7 +7351,7 @@ static refalrts::FnResult Brackets_Set(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eUnique_1_1, 0},
@@ -7406,8 +7406,8 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { TextFromPattern, "TextFromPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -7446,7 +7446,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & Brackets<int>::name, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_Brackets<int>::name, context[2], context[3] ) )
       break;
     context[__eInner_1_1] = context[2];
     context[__eInner_1_1 + 1] = context[3];
@@ -7524,8 +7524,8 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { TextFromPattern, "TextFromPattern" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & ADT_Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_ADT_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -7568,7 +7568,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & ADT_Brackets<int>::name, context[2], context[3] ) )
+    if( ! refalrts::ident_left(  & ident_ADT_Brackets<int>::name, context[2], context[3] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -7657,7 +7657,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       { TkChar, "TkChar" },
       { TextFromPattern_Char, "TextFromPattern_Char" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7766,7 +7766,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       { StrFromInt, "StrFromInt" },
       { TkNumber, "TkNumber" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7870,7 +7870,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       { TextFromPattern, "TextFromPattern" },
       { TkName, "TkName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -7967,7 +7967,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       { StrFromInt, "StrFromInt" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8088,7 +8088,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
       { TextFromPattern, "TextFromPattern" },
       { TkIdentifier, "TkIdentifier" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8177,7 +8177,7 @@ static refalrts::FnResult TextFromPattern(refalrts::Iter arg_begin, refalrts::It
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -8229,7 +8229,7 @@ static refalrts::FnResult Escape(refalrts::Iter arg_begin, refalrts::Iter arg_en
     static const refalrts::RefalFunction functions[] = {
       { EscapeChar, "EscapeChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
@@ -8306,7 +8306,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
       { Escape, "Escape" },
       { TkChar, "TkChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8400,7 +8400,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -8450,7 +8450,7 @@ static refalrts::FnResult TextFromPattern_Char(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { TextFromPattern, "TextFromPattern" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eOther_1_1, 0},
@@ -8521,7 +8521,7 @@ static refalrts::FnResult GenResult(refalrts::Iter arg_begin, refalrts::Iter arg
     static const refalrts::RefalFunction functions[] = {
       { DoGenResult, "DoGenResult" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eResult_1_1, 0},
@@ -8747,7 +8747,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkChar, "TkChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -8969,7 +8969,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkName, "TkName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9188,7 +9188,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkNumber, "TkNumber" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9410,7 +9410,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkIdentifier, "TkIdentifier" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -9630,8 +9630,8 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { CmdAllocateElem, "CmdAllocateElem" },
       { DoGenResult, "DoGenResult" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -9716,7 +9716,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & Brackets<int>::name, context[8], context[9] ) )
+    if( ! refalrts::ident_left(  & ident_Brackets<int>::name, context[8], context[9] ) )
       break;
     context[__eInBrackets_1_1] = context[8];
     context[__eInBrackets_1_1 + 1] = context[9];
@@ -9871,9 +9871,9 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { CmdAllocateElem, "CmdAllocateElem" },
       { DoGenResult, "DoGenResult" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CloseCall<int>::name,
-      & CallBrackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_CloseCall<int>::name,
+      & idents_CallBrackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -9958,7 +9958,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CallBrackets<int>::name, context[8], context[9] ) )
+    if( ! refalrts::ident_left(  & ident_CallBrackets<int>::name, context[8], context[9] ) )
       break;
     context[__eInBrackets_1_1] = context[8];
     context[__eInBrackets_1_1 + 1] = context[9];
@@ -10031,7 +10031,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_bracket( n18 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n19 = 0;
-    if( ! refalrts::alloc_ident( n19, & CloseCall<int>::name ) )
+    if( ! refalrts::alloc_ident( n19, & ident_CloseCall<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n20 = 0;
     if( ! refalrts::alloc_close_bracket( n20 ) )
@@ -10116,8 +10116,8 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { CmdAllocateElem, "CmdAllocateElem" },
       { DoGenResult, "DoGenResult" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & ADT_Brackets<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_ADT_Brackets<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -10208,7 +10208,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & ADT_Brackets<int>::name, context[8], context[9] ) )
+    if( ! refalrts::ident_left(  & ident_ADT_Brackets<int>::name, context[8], context[9] ) )
       break;
     context[10] = 0;
     context[11] = 0;
@@ -10385,7 +10385,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkCloseBracket, "TkCloseBracket" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -10629,7 +10629,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkCloseADT, "TkCloseADT" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -10872,8 +10872,8 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { CmdAllocateElem, "CmdAllocateElem" },
       { DoGenResult, "DoGenResult" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CloseCall<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CloseCall<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -10962,7 +10962,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CloseCall<int>::name, context[8], context[9] ) )
+    if( ! refalrts::ident_left(  & ident_CloseCall<int>::name, context[8], context[9] ) )
       break;
     context[__eResult_1_1] = context[0];
     context[__eResult_1_1 + 1] = context[1];
@@ -11134,7 +11134,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -11394,7 +11394,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
       { DoGenResult, "DoGenResult" },
       { TkVariable, "TkVariable" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -11590,7 +11590,7 @@ static refalrts::FnResult DoGenResult(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -11783,7 +11783,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
       { Add, "Add" },
       { NumerateVars, "NumerateVars" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
@@ -11918,7 +11918,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
       { Inc, "Inc" },
       { NumerateVars, "NumerateVars" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
@@ -12037,7 +12037,7 @@ static refalrts::FnResult NumerateVars(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
@@ -12111,7 +12111,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
     static const refalrts::RefalFunction functions[] = {
       { FindAllocForCopiedVars, "FindAllocForCopiedVars" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -12276,7 +12276,7 @@ static refalrts::FnResult FindAllocForCopiedVars(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -12342,7 +12342,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     static const refalrts::RefalFunction functions[] = {
       { CmdiNum, "CmdiNum" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'<', 0},
@@ -12424,7 +12424,7 @@ static refalrts::FnResult lambda_GenInterpretPatternCommand_0(refalrts::Iter arg
     static const refalrts::RefalFunction functions[] = {
       { CmdiHugeNum, "CmdiHugeNum" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sDirection_1_1, 0},
@@ -12515,7 +12515,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiBracket, "CmdiBracket" },
       { CmdBrackets, "CmdBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -12626,7 +12626,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { AlgLeft, "AlgLeft" },
       { CmdClosedE, "CmdClosedE" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -12744,7 +12744,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { Fetch, "Fetch" },
       { CmdNumber, "CmdNumber" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     static const refalrts::RefalNumber numbers[] = {
       256UL
     };
@@ -12906,7 +12906,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiIdent, "CmdiIdent" },
       { CmdIdent, "CmdIdent" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13013,7 +13013,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiSave, "CmdiSave" },
       { CmdSave, "CmdSave" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13122,7 +13122,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { AlgLeft, "AlgLeft" },
       { CmdOpenedE, "CmdOpenedE" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13265,7 +13265,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiChar, "CmdiChar" },
       { CmdChar, "CmdChar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13376,7 +13376,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiName, "CmdiName" },
       { CmdName, "CmdName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13485,7 +13485,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiADT, "CmdiADT" },
       { CmdADT, "CmdADT" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13598,7 +13598,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiRepeat, "CmdiRepeat" },
       { CmdRepeated, "CmdRepeated" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13705,7 +13705,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { AlgLeft, "AlgLeft" },
       { CmdEmpty, "CmdEmpty" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13810,7 +13810,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { CmdiVar, "CmdiVar" },
       { CmdVar, "CmdVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -13920,7 +13920,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
       { WriteLine, "WriteLine" },
       { CmdEmpty, "CmdEmpty" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -14066,7 +14066,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     static const refalrts::RefalFunction functions[] = {
       { GenInterpretPatternCommand, "GenInterpretPatternCommand" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -14133,7 +14133,7 @@ static refalrts::FnResult GenInterpretPatternCommand(refalrts::Iter arg_begin, r
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -14192,7 +14192,7 @@ static refalrts::FnResult lambda_GeneralizeResult_0(refalrts::Iter arg_begin, re
       { VarSetDifference, "VarSetDifference" },
       { VarSetUnion, "VarSetUnion" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -14433,7 +14433,7 @@ static refalrts::FnResult lambda_GeneralizeResult_1(refalrts::Iter arg_begin, re
       { Map, "Map" },
       { VarSetDifference, "VarSetDifference" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -14618,7 +14618,7 @@ static refalrts::FnResult lambda_GeneralizeResult_2(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { NumerateVars, "NumerateVars" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumBrackets_1_1, 0},
@@ -14741,7 +14741,7 @@ static refalrts::FnResult lambda_GeneralizeResult_3(refalrts::Iter arg_begin, re
     static const refalrts::RefalFunction functions[] = {
       { FindAllocForCopiedVars, "FindAllocForCopiedVars" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -14936,7 +14936,7 @@ static refalrts::FnResult lambda_GeneralizeResult_4(refalrts::Iter arg_begin, re
       { MakeDeclaration, "MakeDeclaration" },
       { CmdIssueMem, "CmdIssueMem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -15477,7 +15477,7 @@ static refalrts::FnResult GeneralizeResult(refalrts::Iter arg_begin, refalrts::I
       { ReplicateVars, "ReplicateVars" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -15845,7 +15845,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -15930,7 +15930,7 @@ static refalrts::FnResult ReplicateVar(refalrts::Iter arg_begin, refalrts::Iter 
       { Dec, "Dec" },
       { ReplicateVar, "ReplicateVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16071,7 +16071,7 @@ static refalrts::FnResult ReplicateVars(refalrts::Iter arg_begin, refalrts::Iter
       { ReplicateVar, "ReplicateVar" },
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eVars_1_1, 0},
@@ -16152,7 +16152,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { VarSetUnion, "VarSetUnion" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16290,7 +16290,7 @@ static refalrts::FnResult VarSetUnion(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16367,7 +16367,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
     static const refalrts::RefalFunction functions[] = {
       { VarSetDifference, "VarSetDifference" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16502,7 +16502,7 @@ static refalrts::FnResult VarSetDifference(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16572,7 +16572,7 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
       { AlgLeft, "AlgLeft" },
       { CmdClosedE, "CmdClosedE" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16658,7 +16658,7 @@ static refalrts::FnResult ClosedEVariables(refalrts::Iter arg_begin, refalrts::I
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tOther_1_1, 0},
@@ -16716,7 +16716,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { CmdRepeated, "CmdRepeated" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -16805,7 +16805,7 @@ static refalrts::FnResult RepeatedEVariables(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarLeft, 0, __tOther_1_1, 0},
@@ -16868,7 +16868,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
       { AlgLeft, "AlgLeft" },
       { CmdClosedE, "CmdClosedE" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -17134,7 +17134,7 @@ static refalrts::FnResult FilterUnusedCmdClosedE(refalrts::Iter arg_begin, refal
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::ictVarRight, 0, __tOtherCommand_1_1, 0},
@@ -17205,7 +17205,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { CmdDeclareEVar, "CmdDeclareEVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17297,7 +17297,7 @@ static refalrts::FnResult MakeDeclaration(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { CmdDeclareVar, "CmdDeclareVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17405,7 +17405,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { CmdCopyEVar, "CmdCopyEVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17491,7 +17491,7 @@ static refalrts::FnResult MakeCopyVar(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { CmdCopyVar, "CmdCopyVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17678,7 +17678,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       { FoldAllocCommands, "FoldAllocCommands" },
       { CmdAllocateElem, "CmdAllocateElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17833,7 +17833,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       { CmdInsertVar, "CmdInsertVar" },
       { FoldAllocCommands, "FoldAllocCommands" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -17962,7 +17962,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       { CmdInsertVar, "CmdInsertVar" },
       { FoldAllocCommands, "FoldAllocCommands" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -18088,7 +18088,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       { FoldAllocCommands, "FoldAllocCommands" },
       { CmdLinkBrackets, "CmdLinkBrackets" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -18184,7 +18184,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
       { FoldAllocCommands, "FoldAllocCommands" },
       { CmdPushStack, "CmdPushStack" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -18275,7 +18275,7 @@ static refalrts::FnResult FoldAllocCommands(refalrts::Iter arg_begin, refalrts::
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -18335,7 +18335,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { CmdArrInt, "CmdArrInt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'<', 0},
@@ -18405,7 +18405,7 @@ static refalrts::FnResult lambda_MakeInterpCommands_0(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { CmdArrHugeInt, "CmdArrHugeInt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sNumber_1_1, 0},
@@ -18489,7 +18489,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { CmdArrCopy, "CmdArrCopy" },
       { CmdInsertVar, "CmdInsertVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -18602,7 +18602,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { CmdArrSplice, "CmdArrSplice" },
       { CmdInsertVar, "CmdInsertVar" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -18687,7 +18687,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElChar, "ElChar" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -18771,7 +18771,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElName, "ElName" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -18856,7 +18856,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElNumber, "ElNumber" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     static const refalrts::RefalNumber numbers[] = {
       256UL
     };
@@ -18991,7 +18991,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElIdent, "ElIdent" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19071,7 +19071,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElOpenBracket, "ElOpenBracket" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19149,7 +19149,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElOpenADT, "ElOpenADT" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19227,7 +19227,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElOpenCall, "ElOpenCall" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19305,7 +19305,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElCloseBracket, "ElCloseBracket" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19383,7 +19383,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElCloseADT, "ElCloseADT" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19461,7 +19461,7 @@ static refalrts::FnResult MakeInterpCommands(refalrts::Iter arg_begin, refalrts:
       { ElCloseCall, "ElCloseCall" },
       { CmdInsertElem, "CmdInsertElem" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -19543,7 +19543,7 @@ static refalrts::FnResult RemoveNumber(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -19618,7 +19618,7 @@ static refalrts::FnResult lambda_OutlineConstants_0(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -19696,7 +19696,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdiLabelArray, "CmdiLabelArray" },
       { CmdiFuncArray, "CmdiFuncArray" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -19906,7 +19906,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdiName, "CmdiName" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20131,7 +20131,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20348,7 +20348,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdArrFunc, "CmdArrFunc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20561,7 +20561,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -20771,7 +20771,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdiADT, "CmdiADT" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21002,7 +21002,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21226,7 +21226,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdiIdent, "CmdiIdent" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21451,7 +21451,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21668,7 +21668,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdArrIdent, "CmdArrIdent" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -21881,7 +21881,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -22090,7 +22090,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdiHugeNum, "CmdiHugeNum" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -22318,7 +22318,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -22538,7 +22538,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { CmdArrHugeInt, "CmdArrHugeInt" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -22754,7 +22754,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
       { Inc, "Inc" },
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -22958,7 +22958,7 @@ static refalrts::FnResult OutlineConstants(refalrts::Iter arg_begin, refalrts::I
     static const refalrts::RefalFunction functions[] = {
       { OutlineConstants, "OutlineConstants" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -23102,7 +23102,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
       { PrepareOpenEStack, "PrepareOpenEStack" },
       { CmdiEStart, "CmdiEStart" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarRight, 0, __sDepth_1_1, 0},
@@ -23230,7 +23230,7 @@ static refalrts::FnResult PrepareOpenEStack(refalrts::Iter arg_begin, refalrts::
     static const refalrts::RefalFunction functions[] = {
       { CmdiReserveStack, "CmdiReserveStack" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarRight, 0, __sDepth_1_1, 0},
@@ -23314,7 +23314,7 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
       { CmdOpenedE_Start, "CmdOpenedE_Start" },
       { CmdOpenedE, "CmdOpenedE" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eCommands_B_1_1, 0},
@@ -23472,7 +23472,7 @@ static refalrts::FnResult GenerateResult_OpenELoops(refalrts::Iter arg_begin, re
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eCommands_1_1, 0},

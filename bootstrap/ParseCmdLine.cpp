@@ -16,73 +16,73 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
 static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-//$LABEL CAddCompileCommand
+// identifier #CAddCompileCommand
 template <typename SREFAL_PARAM_INT>
-struct CAddCompileCommand {
+struct ident_CAddCompileCommand {
   static const char *name() {
     return "CAddCompileCommand";
   }
 };
 
-//$LABEL CAddErrorFile
+// identifier #CAddErrorFile
 template <typename SREFAL_PARAM_INT>
-struct CAddErrorFile {
+struct ident_CAddErrorFile {
   static const char *name() {
     return "CAddErrorFile";
   }
 };
 
-//$LABEL CAddFile
+// identifier #CAddFile
 template <typename SREFAL_PARAM_INT>
-struct CAddFile {
+struct ident_CAddFile {
   static const char *name() {
     return "CAddFile";
   }
 };
 
-//$LABEL CAddFolder
+// identifier #CAddFolder
 template <typename SREFAL_PARAM_INT>
-struct CAddFolder {
+struct ident_CAddFolder {
   static const char *name() {
     return "CAddFolder";
   }
 };
 
-//$LABEL CCompileCommand
+// identifier #CCompileCommand
 template <typename SREFAL_PARAM_INT>
-struct CCompileCommand {
+struct ident_CCompileCommand {
   static const char *name() {
     return "CCompileCommand";
   }
 };
 
-//$LABEL CErrorFile
+// identifier #CErrorFile
 template <typename SREFAL_PARAM_INT>
-struct CErrorFile {
+struct ident_CErrorFile {
   static const char *name() {
     return "CErrorFile";
   }
 };
 
-//$LABEL CGetInfo
+// identifier #CGetInfo
 template <typename SREFAL_PARAM_INT>
-struct CGetInfo {
+struct ident_CGetInfo {
   static const char *name() {
     return "CGetInfo";
   }
 };
 
-//$LABEL CNone
+// identifier #CNone
 template <typename SREFAL_PARAM_INT>
-struct CNone {
+struct ident_CNone {
   static const char *name() {
     return "CNone";
   }
 };
 
-//$LABEL CSetOutput
+// identifier #CSetOutput
 template <typename SREFAL_PARAM_INT>
-struct CSetOutput {
+struct ident_CSetOutput {
   static const char *name() {
     return "CSetOutput";
   }
@@ -127,7 +127,7 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
       { CollectorObject, "CollectorObject" },
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eArguments_1_1, 0},
@@ -228,8 +228,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -298,7 +298,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CAddCompileCommand<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CAddCompileCommand<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -340,7 +340,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { CmdLineError, "CmdLineError" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -680,8 +680,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -750,7 +750,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CAddErrorFile<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CAddErrorFile<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -792,7 +792,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { CmdLineError, "CmdLineError" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1122,8 +1122,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1192,7 +1192,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CAddFolder<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CAddFolder<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -1234,7 +1234,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { CmdLineError, "CmdLineError" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1519,8 +1519,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CSetOutput<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CSetOutput<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1589,7 +1589,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CSetOutput<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CSetOutput<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -1632,7 +1632,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseFileNamesOnly, "DoParseFileNamesOnly" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCollector_1_1, 0},
@@ -1717,8 +1717,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { DoParseCommandLine, "DoParseCommandLine" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1773,7 +1773,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CAddFile<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CAddFile<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -1813,8 +1813,8 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1850,7 +1850,7 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_ident( n1, & CGetInfo<int>::name ) )
+    if( ! refalrts::alloc_ident( n1, & ident_CGetInfo<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -1891,8 +1891,8 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { DoParseFileNamesOnly, "DoParseFileNamesOnly" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1947,7 +1947,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CAddFile<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CAddFile<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -1987,8 +1987,8 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2024,7 +2024,7 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
     if( ! refalrts::alloc_open_call( n0 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n1 = 0;
-    if( ! refalrts::alloc_ident( n1, & CGetInfo<int>::name ) )
+    if( ! refalrts::alloc_ident( n1, & ident_CGetInfo<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n2 = 0;
     if( ! refalrts::alloc_close_call( n2 ) )
@@ -2060,9 +2060,9 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name,
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_CNone<int>::name,
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2084,7 +2084,7 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
       return res;
 #else
     // # CCompileCommand
-    if( ! refalrts::ident_left(  & CCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CCompileCommand<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2092,7 +2092,7 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_ident( n0, & CNone<int>::name ) )
+    if( ! refalrts::alloc_ident( n0, & ident_CNone<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -2113,9 +2113,9 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name,
-      & CErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_CNone<int>::name,
+      & idents_CErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2137,7 +2137,7 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
       return res;
 #else
     // # CErrorFile
-    if( ! refalrts::ident_left(  & CErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CErrorFile<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -2145,7 +2145,7 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_ident( n0, & CNone<int>::name ) )
+    if( ! refalrts::alloc_ident( n0, & ident_CNone<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -2178,8 +2178,8 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler, "Collector_Compiler" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2222,7 +2222,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[__eFolders_1_1] = context[2];
     context[__eFolders_1_1 + 1] = context[3];
@@ -2291,8 +2291,8 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_ErrorFile, "Collector_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2335,7 +2335,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[__eFolders_1_1] = context[2];
     context[__eFolders_1_1 + 1] = context[3];
@@ -2404,8 +2404,8 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { CollectorObject, "CollectorObject" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2448,7 +2448,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFile<int>::name, context[0], context[1] ) )
       break;
     context[__eFolders_1_1] = context[2];
     context[__eFolders_1_1 + 1] = context[3];
@@ -2517,8 +2517,8 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { CollectorObject, "CollectorObject" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2561,7 +2561,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
     context[5] = 0;
     if( ! refalrts::brackets_left( context[4], context[5], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFolder<int>::name, context[0], context[1] ) )
       break;
     context[__eFolders_1_1] = context[2];
     context[__eFolders_1_1 + 1] = context[3];
@@ -2630,8 +2630,8 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       { CompileList, "CompileList" },
       { lambda_CollectorObject_0, "lambda_CollectorObject_0" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2662,7 +2662,7 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       return res;
 #else
     // ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CGetInfo<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2730,7 +2730,7 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
       { lambda_CollectorObject_1, "lambda_CollectorObject_1" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2836,8 +2836,8 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2861,7 +2861,7 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
       return res;
 #else
     // ( e.Command#1 ) # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2893,9 +2893,9 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name,
-      & CErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_CNone<int>::name,
+      & idents_CErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2918,7 +2918,7 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
       return res;
 #else
     // ( e.Command#1 ) # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2931,7 +2931,7 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_ident( n0, & CNone<int>::name ) )
+    if( ! refalrts::alloc_ident( n0, & ident_CNone<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -2961,8 +2961,8 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error_CC, "Collector_Error_CC" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3000,7 +3000,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddCompileCommand<int>::name, context[0], context[1] ) )
       break;
     // Unused closed variable e.Command#1
     // Unused closed variable e.Folders#1
@@ -3047,8 +3047,8 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3102,7 +3102,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -3193,8 +3193,8 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler, "Collector_Compiler" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3246,7 +3246,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFile<int>::name, context[0], context[1] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -3328,8 +3328,8 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler, "Collector_Compiler" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3381,7 +3381,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFolder<int>::name, context[0], context[1] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -3464,8 +3464,8 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       { lambda_Collector_Compiler_0, "lambda_Collector_Compiler_0" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3504,7 +3504,7 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       return res;
 #else
     // ( e.Command#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CGetInfo<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -3603,7 +3603,7 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
       { lambda_Collector_Compiler_1, "lambda_Collector_Compiler_1" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3731,7 +3731,7 @@ static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -4042,9 +4042,9 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name,
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & ident_CNone<int>::name,
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4067,7 +4067,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
       return res;
 #else
     // ( e.ErrorFile#1 ) # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -4080,7 +4080,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
     refalrts::reset_allocator();
     refalrts::Iter res = arg_begin;
     refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_ident( n0, & CNone<int>::name ) )
+    if( ! refalrts::alloc_ident( n0, & ident_CNone<int>::name ) )
       return refalrts::cNoMemory;
     res = refalrts::splice_elem( res, n0 );
     refalrts::use( res );
@@ -4102,8 +4102,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4127,7 +4127,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
       return res;
 #else
     // ( e.ErrorFile#1 ) # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -4172,8 +4172,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4227,7 +4227,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[__eErrorFile_1_1] = context[2];
     context[__eErrorFile_1_1 + 1] = context[3];
@@ -4316,8 +4316,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error_EF, "Collector_Error_EF" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4358,7 +4358,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[__eErrorFile_1_1] = context[2];
     context[__eErrorFile_1_1 + 1] = context[3];
@@ -4409,8 +4409,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Collector_ErrorFile, "Collector_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4462,7 +4462,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFile<int>::name, context[0], context[1] ) )
       break;
     context[__eErrorFile_1_1] = context[2];
     context[__eErrorFile_1_1 + 1] = context[3];
@@ -4544,8 +4544,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Collector_ErrorFile, "Collector_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4597,7 +4597,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
     context[7] = 0;
     if( ! refalrts::brackets_left( context[6], context[7], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFolder<int>::name, context[0], context[1] ) )
       break;
     context[__eErrorFile_1_1] = context[2];
     context[__eErrorFile_1_1 + 1] = context[3];
@@ -4680,8 +4680,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       { lambda_Collector_ErrorFile_0, "lambda_Collector_ErrorFile_0" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4720,7 +4720,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       return res;
 #else
     // ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CGetInfo<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -4819,7 +4819,7 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
       { lambda_Collector_ErrorFile_1, "lambda_Collector_ErrorFile_1" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -4947,7 +4947,7 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -5234,8 +5234,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5260,7 +5260,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
       return res;
 #else
     // ( e.ErrorFile#1 ) ( e.Command#1 ) # CCompileCommand
-    if( ! refalrts::ident_right(  & CCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -5298,8 +5298,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5324,7 +5324,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
       return res;
 #else
     // ( e.ErrorFile#1 ) ( e.Command#1 ) # CErrorFile
-    if( ! refalrts::ident_right(  & CErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -5370,8 +5370,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error_CC, "Collector_Error_CC" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5414,7 +5414,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddCompileCommand<int>::name, context[0], context[1] ) )
       break;
     // Unused closed variable e.Command#1
     // Unused closed variable e.ErrorFile#1
@@ -5458,8 +5458,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error_EF, "Collector_Error_EF" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5502,7 +5502,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddErrorFile<int>::name, context[0], context[1] ) )
       break;
     // Unused closed variable e.Command#1
     // Unused closed variable e.ErrorFile#1
@@ -5551,8 +5551,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5615,7 +5615,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFile<int>::name, context[0], context[1] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -5719,8 +5719,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Collector_Compiler_ErrorFile, "Collector_Compiler_ErrorFile" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5783,7 +5783,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
     context[9] = 0;
     if( ! refalrts::brackets_left( context[8], context[9], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFolder<int>::name, context[0], context[1] ) )
       break;
     context[__eCommand_1_1] = context[2];
     context[__eCommand_1_1 + 1] = context[3];
@@ -5888,8 +5888,8 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       { lambda_Collector_Compiler_ErrorFile_0, "lambda_Collector_Compiler_ErrorFile_0" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5933,7 +5933,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       return res;
 #else
     // ( e.Command#1 ) ( e.ErrorFile#1 ) ( e.Folders#1 ) ( e.Files#1 ) # CGetInfo
-    if( ! refalrts::ident_right(  & CGetInfo<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CGetInfo<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -6049,7 +6049,7 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
       { lambda_Collector_Compiler_ErrorFile_1, "lambda_Collector_Compiler_ErrorFile_1" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -6207,8 +6207,8 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6238,7 +6238,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddCompileCommand<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddCompileCommand<int>::name, context[0], context[1] ) )
       break;
     context[__eMessage_1_1] = context[2];
     context[__eMessage_1_1 + 1] = context[3];
@@ -6282,8 +6282,8 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6313,7 +6313,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddErrorFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddErrorFile<int>::name, context[0], context[1] ) )
       break;
     context[__eMessage_1_1] = context[2];
     context[__eMessage_1_1 + 1] = context[3];
@@ -6357,8 +6357,8 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6388,7 +6388,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFile<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFile<int>::name, context[0], context[1] ) )
       break;
     context[__eMessage_1_1] = context[2];
     context[__eMessage_1_1 + 1] = context[3];
@@ -6432,8 +6432,8 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { Collector_Error, "Collector_Error" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CAddFolder<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CAddFolder<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6463,7 +6463,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CAddFolder<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CAddFolder<int>::name, context[0], context[1] ) )
       break;
     context[__eMessage_1_1] = context[2];
     context[__eMessage_1_1 + 1] = context[3];
@@ -6507,8 +6507,8 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     static const refalrts::RefalFunction functions[] = {
       { CmdLineError, "CmdLineError" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CGetInfo<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CGetInfo<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6539,7 +6539,7 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
     context[3] = 0;
     if( ! refalrts::brackets_left( context[2], context[3], context[0], context[1] ) )
       break;
-    if( ! refalrts::ident_left(  & CGetInfo<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CGetInfo<int>::name, context[0], context[1] ) )
       break;
     context[4] = 0;
     context[5] = 0;
@@ -6595,7 +6595,7 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
       { lambda_Collector_Error_0, "lambda_Collector_Error_0" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eMessage_1_1, 0},

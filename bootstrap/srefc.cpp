@@ -43,25 +43,25 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
 static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-//$LABEL CCompileCommand
+// identifier #CCompileCommand
 template <typename SREFAL_PARAM_INT>
-struct CCompileCommand {
+struct ident_CCompileCommand {
   static const char *name() {
     return "CCompileCommand";
   }
 };
 
-//$LABEL CErrorFile
+// identifier #CErrorFile
 template <typename SREFAL_PARAM_INT>
-struct CErrorFile {
+struct ident_CErrorFile {
   static const char *name() {
     return "CErrorFile";
   }
 };
 
-//$LABEL CNone
+// identifier #CNone
 template <typename SREFAL_PARAM_INT>
-struct CNone {
+struct ident_CNone {
   static const char *name() {
     return "CNone";
   }
@@ -84,7 +84,7 @@ refalrts::FnResult Go(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
       { ArgList, "ArgList" },
       { Main, "Main" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -172,7 +172,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { LoadFile, "LoadFile" },
       { Main, "Main" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -286,7 +286,7 @@ static refalrts::FnResult Main(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { ParseCommandLine, "ParseCommandLine" },
       { FindFiles_Compilers, "FindFiles_Compilers" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -380,7 +380,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Success, "Success" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 0},
@@ -440,7 +440,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_0(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { Fails, "Fails" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icFuncLeft, 0, 0, 0},
@@ -502,7 +502,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
       { WriteLine, "WriteLine" },
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -643,7 +643,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_1(refalrts::Iter arg_begin,
       { WriteLine, "WriteLine" },
       { Source, "Source" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -846,8 +846,8 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CNone<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -868,7 +868,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
       return res;
 #else
     // # CNone
-    if( ! refalrts::ident_left(  & CNone<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CNone<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -896,7 +896,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_2(refalrts::Iter arg_begin,
     static const refalrts::RefalFunction functions[] = {
       { SaveFile, "SaveFile" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eErrorFileName_4_1, 0},
@@ -981,8 +981,8 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       { Fetch, "Fetch" },
       { Fails, "Fails" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CErrorFile<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CErrorFile<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1038,7 +1038,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       if( ! refalrts::alloc_open_call( n2 ) )
         return refalrts::cNoMemory;
       refalrts::Iter n3 = 0;
-      if( ! refalrts::alloc_ident( n3, & CErrorFile<int>::name ) )
+      if( ! refalrts::alloc_ident( n3, & ident_CErrorFile<int>::name ) )
         return refalrts::cNoMemory;
       refalrts::Iter n4 = 0;
       if( ! refalrts::alloc_close_call( n4 ) )
@@ -1085,7 +1085,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_3(refalrts::Iter arg_begin,
       { WriteLine, "WriteLine" },
       { Link, "Link" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
@@ -1318,7 +1318,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       { PrintNotFound, "PrintNotFound" },
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
@@ -1437,7 +1437,7 @@ static refalrts::FnResult lambda_FindFiles_Compilers_4(refalrts::Iter arg_begin,
       { Seq, "Seq" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
@@ -1596,7 +1596,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
       { WriteLine, "WriteLine" },
       { CmdLineError, "CmdLineError" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -1771,7 +1771,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
     static const refalrts::RefalFunction functions[] = {
       { CompileToTarget, "CompileToTarget" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketRight, 0, 2, 0},
@@ -1846,7 +1846,7 @@ static refalrts::FnResult FindFiles_Compilers(refalrts::Iter arg_begin, refalrts
       { Fetch, "Fetch" },
       { CompileList, "CompileList" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sCommandLineInfo_1_1, 0},
@@ -1986,7 +1986,7 @@ static refalrts::FnResult lambda_ForEach_0(refalrts::Iter arg_begin, refalrts::I
     static const refalrts::RefalFunction functions[] = {
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sConverter_1_1, 0},
@@ -2063,7 +2063,7 @@ static refalrts::FnResult ForEach(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { lambda_ForEach_0, "lambda_ForEach_0" },
       { refalrts::create_closure, "refalrts::create_closure" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sConverter_1_1, 0},
@@ -2143,7 +2143,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
       { WriteLine, "WriteLine" },
       { NotFound, "NotFound" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2392,7 +2392,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     static const refalrts::RefalFunction functions[] = {
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2445,7 +2445,7 @@ static refalrts::FnResult PrintNotFound(refalrts::Iter arg_begin, refalrts::Iter
     static const refalrts::RefalFunction functions[] = {
       { Source, "Source" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2510,7 +2510,7 @@ static refalrts::FnResult lambda_Link_0(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2584,8 +2584,8 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CNone<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2607,7 +2607,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
       return res;
 #else
     // ( e.Files#1 ) # CNone
-    if( ! refalrts::ident_right(  & CNone<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_right(  & ident_CNone<int>::name, context[0], context[1] ) )
       break;
     context[2] = 0;
     context[3] = 0;
@@ -2643,7 +2643,7 @@ static refalrts::FnResult lambda_Link_1(refalrts::Iter arg_begin, refalrts::Iter
       { Map, "Map" },
       { System, "System" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2749,8 +2749,8 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { refalrts::create_closure, "refalrts::create_closure" },
       { Fetch, "Fetch" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2802,7 +2802,7 @@ static refalrts::FnResult Link(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CCompileCommand<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CCompileCommand<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -2878,7 +2878,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { Source, "Source" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -2973,7 +2973,7 @@ static refalrts::FnResult lambda_RenameFiles_0(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3056,7 +3056,7 @@ static refalrts::FnResult lambda_RenameFiles_1(refalrts::Iter arg_begin, refalrt
       { Map, "Map" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eFiles_3_1, 0},
@@ -3149,8 +3149,8 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
       { lambda_RenameFiles_0, "lambda_RenameFiles_0" },
       { ForEach, "ForEach" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CNone<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CNone<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3175,7 +3175,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
       return res;
 #else
     // # CNone
-    if( ! refalrts::ident_left(  & CNone<int>::name, context[0], context[1] ) )
+    if( ! refalrts::ident_left(  & ident_CNone<int>::name, context[0], context[1] ) )
       break;
     if( ! refalrts::empty_seq( context[0], context[1] ) )
       break;
@@ -3220,7 +3220,7 @@ static refalrts::FnResult lambda_RenameFiles_2(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { lambda_RenameFiles_1, "lambda_RenameFiles_1" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -3276,8 +3276,8 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
       { lambda_RenameFiles_2, "lambda_RenameFiles_2" },
       { Fetch, "Fetch" }
     };
-    static const refalrts::RefalIdentifier labels[] = {
-      & CCompileCommand<int>::name
+    static const refalrts::RefalIdentifier idents[] = {
+      & idents_CCompileCommand<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3323,7 +3323,7 @@ static refalrts::FnResult RenameFiles(refalrts::Iter arg_begin, refalrts::Iter a
     if( ! refalrts::alloc_open_call( n2 ) )
       return refalrts::cNoMemory;
     refalrts::Iter n3 = 0;
-    if( ! refalrts::alloc_ident( n3, & CCompileCommand<int>::name ) )
+    if( ! refalrts::alloc_ident( n3, & ident_CCompileCommand<int>::name ) )
       return refalrts::cNoMemory;
     refalrts::Iter n4 = 0;
     if( ! refalrts::alloc_close_call( n4 ) )
@@ -3376,7 +3376,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
       { Output, "Output" },
       { GetFileName_Aux, "GetFileName_Aux" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3490,7 +3490,7 @@ static refalrts::FnResult GetFileName(refalrts::Iter arg_begin, refalrts::Iter a
       { Source, "Source" },
       { GetFileName_Aux, "GetFileName_Aux" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -3629,7 +3629,7 @@ static refalrts::FnResult GetFileName_Aux(refalrts::Iter arg_begin, refalrts::It
     static const refalrts::RefalFunction functions[] = {
       { DoGetFileName, "DoGetFileName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'p', 0},
@@ -3709,7 +3709,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'/', 0},
@@ -3752,7 +3752,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'\\', 0},
@@ -3800,7 +3800,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
       { Lower, "Lower" },
       { DoGetFileName, "DoGetFileName" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarRight, 0, __sLast_1_1, 0},
@@ -3883,7 +3883,7 @@ static refalrts::FnResult DoGetFileName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEmpty, 0, 0, 0},
@@ -3936,7 +3936,7 @@ static refalrts::FnResult lambda_Lower_0(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
@@ -4011,7 +4011,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
       { refalrts::create_closure, "refalrts::create_closure" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
@@ -4369,7 +4369,7 @@ static refalrts::FnResult lambda_Lower_1(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
@@ -4426,7 +4426,7 @@ static refalrts::FnResult Lower(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { refalrts::create_closure, "refalrts::create_closure" },
       { Fetch, "Fetch" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icsVarLeft, 0, __sChar_1_1, 0},
@@ -4659,7 +4659,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       { WriteLine, "WriteLine" },
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5108,7 +5108,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       { Output, "Output" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5332,7 +5332,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       { Output, "Output" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5555,7 +5555,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       { Renumerate, "Renumerate" },
       { ScanCollisions, "ScanCollisions" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icEPrepare, 0, __eFiles_B_1_1, 0},
@@ -5747,7 +5747,7 @@ static refalrts::FnResult ScanCollisions(refalrts::Iter arg_begin, refalrts::Ite
       { RestoreName, "RestoreName" },
       { Map, "Map" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icContextSet, 0, __eFiles_1_1, 0},
@@ -5829,7 +5829,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
       { Source, "Source" },
       { Inc, "Inc" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -5984,7 +5984,7 @@ static refalrts::FnResult lambda_Renumerate_0(refalrts::Iter arg_begin, refalrts
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -6056,7 +6056,7 @@ static refalrts::FnResult Renumerate(refalrts::Iter arg_begin, refalrts::Iter ar
       { MapReduce, "MapReduce" },
       { DelAccumulator, "DelAccumulator" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -6190,7 +6190,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
     refalrts::move_right( context[0], context[1] );
 #ifdef INTERPRET
     using refalrts::functions;
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icNumLeft, 0, 0, 0},
@@ -6241,7 +6241,7 @@ static refalrts::FnResult lambda_RestoreName_0(refalrts::Iter arg_begin, refalrt
     static const refalrts::RefalFunction functions[] = {
       { StrFromInt, "StrFromInt" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icCharRight, 0, (int)'p', 0},
@@ -6355,7 +6355,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
     static const refalrts::RefalFunction functions[] = {
       { Output, "Output" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
@@ -6442,7 +6442,7 @@ static refalrts::FnResult RestoreName(refalrts::Iter arg_begin, refalrts::Iter a
       { Fetch, "Fetch" },
       { Source, "Source" }
     };
-    using refalrts::labels;
+    using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},

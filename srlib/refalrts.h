@@ -328,13 +328,13 @@ extern FnResult interpret_array(
   Iter begin,
   Iter end,
   const RefalFunction functions[],
-  const RefalIdentifier labels[],
+  const RefalIdentifier idents[],
   const RefalNumber numbers[],
   int open_e_stack[]
 );
 
 extern const RefalFunction functions[];
-extern const RefalIdentifier labels[];
+extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
 
 } //namespace refalrts
