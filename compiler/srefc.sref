@@ -14,7 +14,7 @@ $ENTRY Go {
 }
 
 //FROM ParseCmdLine
-$EXTERN ParseCommandLine, NoCompile, CompileCommand;
+$EXTERN ParseCommandLine;
 
 //FROM LibraryEx
 $EXTERN LoadFile, SaveFile;

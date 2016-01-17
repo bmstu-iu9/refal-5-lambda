@@ -120,7 +120,7 @@ $ENTRY GenCommonTailer {
 $EXTERN Map, MapReduce, Fetch, Add;
 
 //FROM Library
-$EXTERN StrFromInt, WriteLine;
+$EXTERN StrFromInt;
 
 $ENTRY GenSentence {
   e.Algorithm =

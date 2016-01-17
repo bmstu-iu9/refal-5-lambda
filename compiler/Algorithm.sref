@@ -14,9 +14,6 @@ $ENTRY MakeAlgorithm {
 // Генерация образца
 //==============================================================================
 
-//FROM LibraryEx
-$EXTERN Inc, Add;
-
 /*
 Команды распознавания
   Литералы, формат (#Cmd*** s.Direction s.BracketNum e.Literal)
@@ -66,7 +63,10 @@ GenPattern {
 }
 
 //FROM LibraryEx
-$EXTERN MapReduce, DelAccumulator, Reduce, Map;
+$EXTERN MapReduce, DelAccumulator, Reduce, Map, Inc;
+
+//FROM Library
+$EXTERN Add;
 
 Inc2 {
   s.Num = <Add 2 s.Num>;
@@ -253,9 +253,6 @@ SaveBrackets {
   s.LastBracket e.Commands = <DoSaveBrackets s.LastBracket () e.Commands>;
 }
 
-//FROM LibraryEx
-$EXTERN Map;
-
 DoSaveBrackets {
   s.LastBracket (e.Scanned)
   e.Commands-B (#CmdOpenedE #AlgLeft s.Num 'e' e.Index) e.Commands-E =
@@ -274,9 +271,6 @@ DoSaveBrackets {
 
   s.LastBracket (e.Scanned) e.Commands = s.LastBracket e.Scanned e.Commands;
 }
-
-//From LibraryEx
-$EXTERN WriteLine, StrFromInt;
 
 DoSaveBrackets-MakeSavers {
   s.LastBracket
@@ -548,15 +542,6 @@ DoGenResult {
 // копирование повторных.
 //==============================================================================
 
-//FROM LibraryEx
-$EXTERN Map, Seq;
-
-//From Library
-$EXTERN Add, Inc;
-
-//FROM Library
-$EXTERN WriteLine;
-
 NumerateVars {
   s.Number ( s.Usings 'e' e.Index ) e.Etc =
     (s.Number s.Usings 'e' e.Index) <NumerateVars <Add s.Number 2> e.Etc>
@@ -647,10 +632,6 @@ GenInterpretPatternCommand {
   (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
     (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
     <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdEmpty s.Direction s.BracketNumber) e.Etc =
-    <WriteLine '#CmdEmpty: ' s.Direction ' : ' s.BracketNumber >
     ;
 
   (e.Command) e.PatternCommands = <GenInterpretPatternCommand e.PatternCommands>;
@@ -782,9 +763,6 @@ FilterUnusedCmdClosedE {
 
   e.Unuseds t.OtherCommand = t.OtherCommand;
 }
-
-//FROM Library
-$EXTERN WriteLine;
 
 MakeDeclaration {
   ( s.Number s.Usings 'e' e.Index ) =

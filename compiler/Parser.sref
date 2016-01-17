@@ -134,7 +134,7 @@ $EXTERN ST-AllFunctions, ST-AllIdents, ST-AddDefined;
 $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
 
 //FROM Generator
-$EXTERN GenCommonHeaders, GenCommonTailer, GenExtern, GenForward;
+$EXTERN GenCommonHeaders, GenCommonTailer, GenExtern, GenForward, GenIdent;
 
 //FROM LibraryEx
 $EXTERN Sort;
@@ -198,7 +198,7 @@ ParseElements {
 }
 
 //FROM Generator
-$EXTERN GenEEnum, GenEnum, GenExtern, GenForward, GenESwap, GenSwap, GenIdent;
+$EXTERN GenEEnum, GenEnum, GenESwap, GenSwap;
 
 GenFunctionsFromDirective {
   #EEnum   = GenEEnum   ST-AddDefined  #GN-Entry;
@@ -512,9 +512,6 @@ CreateContext {
       e.Context
     >;
 }
-
-//FROM LibraryEx
-$EXTERN Seq;
 
 //FROM Context
 $EXTERN Cntx-ResetAfterSentence;
