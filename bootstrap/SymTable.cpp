@@ -77,7 +77,7 @@ refalrts::FnResult ST_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -172,7 +172,7 @@ refalrts::FnResult ST_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -250,7 +250,7 @@ static refalrts::FnResult lambda_PatchReferences_0(refalrts::Iter arg_begin, ref
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -318,7 +318,7 @@ static refalrts::FnResult lambda_PatchReferences_0(refalrts::Iter arg_begin, ref
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -412,7 +412,7 @@ static refalrts::FnResult PatchReferences(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -600,7 +600,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -915,7 +915,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1119,7 +1119,7 @@ refalrts::FnResult ST_AddDefined(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1314,7 +1314,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1499,7 +1499,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1681,7 +1681,7 @@ refalrts::FnResult ST_AddExtern(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1870,7 +1870,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2053,7 +2053,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2228,7 +2228,7 @@ refalrts::FnResult ST_AddFunctionCall(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2398,7 +2398,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2565,7 +2565,7 @@ refalrts::FnResult ST_AddIdent(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2731,7 +2731,7 @@ static refalrts::FnResult lambda_ST_CheckUnresolved_0(refalrts::Iter arg_begin, 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2941,7 +2941,7 @@ refalrts::FnResult ST_CheckUnresolved(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3073,7 +3073,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_GN_Entry<int>::name
+      & ident_GN_Entry<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3092,7 +3092,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3147,7 +3147,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_GN_Local<int>::name
+      & ident_GN_Local<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3166,7 +3166,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_0(refalrts::Iter arg_begin, ref
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3228,7 +3228,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_1(refalrts::Iter arg_begin, ref
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_GN_Entry<int>::name
+      & ident_GN_Entry<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3246,7 +3246,7 @@ static refalrts::FnResult lambda_ST_AllFunctions_1(refalrts::Iter arg_begin, ref
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3338,7 +3338,7 @@ refalrts::FnResult ST_AllFunctions(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3456,7 +3456,7 @@ refalrts::FnResult ST_AllIdents(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3543,7 +3543,7 @@ refalrts::FnResult ST_GetAnyName(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;

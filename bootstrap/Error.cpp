@@ -86,7 +86,7 @@ refalrts::FnResult EL_Create(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -186,7 +186,7 @@ refalrts::FnResult EL_AddError(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -354,7 +354,7 @@ refalrts::FnResult EL_AddErrorAt(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -500,7 +500,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       { EL_AddErrorAt, "EL_AddErrorAt" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkError<int>::name
+      & ident_TkError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -522,7 +522,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -587,7 +587,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
       { EL_AddErrorAt, "EL_AddErrorAt" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkUnexpected<int>::name
+      & ident_TkUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -630,7 +630,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -830,7 +830,7 @@ refalrts::FnResult EL_AddUnexpected(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1021,7 +1021,7 @@ static refalrts::FnResult lambda_EL_Destroy_0(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1083,7 +1083,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       { ErrorList, "ErrorList" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_EL_NoErrors<int>::name
+      & ident_EL_NoErrors<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1099,7 +1099,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1151,7 +1151,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
       { ErrorList, "ErrorList" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_EL_HasErrors<int>::name
+      & ident_EL_HasErrors<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1172,7 +1172,7 @@ refalrts::FnResult EL_Destroy(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;

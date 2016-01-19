@@ -466,7 +466,7 @@ static refalrts::FnResult LinearizeLine(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -519,9 +519,9 @@ static refalrts::FnResult lambda_LexFolding_0(refalrts::Iter arg_begin, refalrts
     using refalrts::idents;
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'\357', 0},
-      {refalrts::icCharLeft, 0, (int)'\273', 0},
-      {refalrts::icCharLeft, 0, (int)'\277', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\357'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\273'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\277'), 0},
       {refalrts::icContextSet, 0, __eContent_2_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eContent_2_1, 0},
@@ -531,7 +531,7 @@ static refalrts::FnResult lambda_LexFolding_0(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -582,7 +582,7 @@ static refalrts::FnResult lambda_LexFolding_0(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -661,7 +661,7 @@ refalrts::FnResult LexFolding(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -788,7 +788,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_EEnum<int>::name
+      & ident_EEnum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -806,7 +806,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -860,7 +860,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Entry<int>::name
+      & ident_Entry<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -878,7 +878,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -932,7 +932,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Enum<int>::name
+      & ident_Enum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -949,7 +949,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -999,7 +999,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Extern<int>::name
+      & ident_Extern<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1018,7 +1018,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1076,7 +1076,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Forward<int>::name
+      & ident_Forward<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1096,7 +1096,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1158,7 +1158,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Swap<int>::name
+      & ident_Swap<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1175,7 +1175,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1225,7 +1225,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_ESwap<int>::name
+      & ident_ESwap<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1243,7 +1243,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1297,7 +1297,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Ident<int>::name
+      & ident_Ident<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1315,7 +1315,7 @@ static refalrts::FnResult StrDirective(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1377,7 +1377,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkChar<int>::name
+      & ident_TkChar<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1394,7 +1394,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1439,7 +1439,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseADT<int>::name
+      & ident_TkCloseADT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1455,7 +1455,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1501,7 +1501,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseCall<int>::name
+      & ident_TkCloseCall<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1517,7 +1517,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1563,7 +1563,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseBlock<int>::name
+      & ident_TkCloseBlock<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1579,7 +1579,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1625,7 +1625,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseBracket<int>::name
+      & ident_TkCloseBracket<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1641,7 +1641,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1687,7 +1687,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkComma<int>::name
+      & ident_TkComma<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1703,7 +1703,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1752,7 +1752,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrDirective, "StrDirective" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1773,7 +1773,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1836,7 +1836,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkEOF<int>::name
+      & ident_TkEOF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1860,7 +1860,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -1939,7 +1939,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkError<int>::name
+      & ident_TkError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -1966,7 +1966,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2053,7 +2053,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkIdentMarker<int>::name
+      & ident_TkIdentMarker<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2069,7 +2069,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2116,7 +2116,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkName<int>::name
+      & ident_TkName<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2135,7 +2135,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2193,7 +2193,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrFromInt, "StrFromInt" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNumber<int>::name
+      & ident_TkNumber<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2218,7 +2218,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2297,7 +2297,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenADT<int>::name
+      & ident_TkOpenADT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2313,7 +2313,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2359,7 +2359,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenCall<int>::name
+      & ident_TkOpenCall<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2375,7 +2375,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2421,7 +2421,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenBlock<int>::name
+      & ident_TkOpenBlock<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2437,7 +2437,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2483,7 +2483,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenBracket<int>::name
+      & ident_TkOpenBracket<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2499,7 +2499,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2545,7 +2545,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkReplace<int>::name
+      & ident_TkReplace<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2561,7 +2561,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2607,7 +2607,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkSemicolon<int>::name
+      & ident_TkSemicolon<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2623,7 +2623,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2670,7 +2670,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkUnexpected<int>::name
+      & ident_TkUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2708,7 +2708,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2841,7 +2841,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkVariable<int>::name
+      & ident_TkVariable<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2858,7 +2858,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2900,7 +2900,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkRedefinition<int>::name
+      & ident_TkRedefinition<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2916,7 +2916,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -2965,7 +2965,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrFromToken, "StrFromToken" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Open<int>::name
+      & ident_Open<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -2983,7 +2983,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3037,7 +3037,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
       { StrFromToken, "StrFromToken" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_Close<int>::name
+      & ident_Close<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3055,7 +3055,7 @@ refalrts::FnResult StrFromToken(refalrts::Iter arg_begin, refalrts::Iter arg_end
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3122,7 +3122,7 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
       {refalrts::icEPrepare, 0, __eName_B_1_1, 0},
       {refalrts::icEStart, 0, __eName_B_1_1, 0},
       {refalrts::icSave, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'-', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('-'), 2},
       {refalrts::icContextSet, 0, __eName_E_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -3137,7 +3137,7 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3210,7 +3210,7 @@ static refalrts::FnResult NormalizeName(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3253,7 +3253,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       { ValidDirective, "ValidDirective" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3272,7 +3272,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3327,7 +3327,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkEOF<int>::name
+      & ident_TkEOF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3345,7 +3345,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3400,7 +3400,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3420,7 +3420,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3481,7 +3481,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     };
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3506,7 +3506,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3592,7 +3592,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     };
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3615,7 +3615,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3691,7 +3691,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     };
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_XCode<int>::name
+      & ident_TkLiteral_XCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -3714,7 +3714,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3787,13 +3787,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_NewLine<int>::name
+      & ident_TkLiteral_NewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'n', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('n'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -3807,7 +3807,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3867,13 +3867,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_CarriageReturn<int>::name
+      & ident_TkLiteral_CarriageReturn<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'r', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('r'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -3887,7 +3887,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -3947,13 +3947,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_Tab<int>::name
+      & ident_TkLiteral_Tab<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'t', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -3967,7 +3967,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4027,13 +4027,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_Bell<int>::name
+      & ident_TkLiteral_Bell<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'a', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -4047,7 +4047,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4107,13 +4107,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_BS<int>::name
+      & ident_TkLiteral_BS<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'b', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -4127,7 +4127,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4187,13 +4187,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_FF<int>::name
+      & ident_TkLiteral_FF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'f', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -4207,7 +4207,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4267,13 +4267,13 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkChar<int>::name,
-      & idents_TkLiteral_VT<int>::name
+      & ident_TkLiteral_VT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
       {refalrts::icIdentLeft, 0, 1, 2},
-      {refalrts::icCharLeft, 0, (int)'v', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('v'), 2},
       {refalrts::icEmpty, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -4287,7 +4287,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4349,7 +4349,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       { NormalizeName, "NormalizeName" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkName<int>::name
+      & ident_TkName<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4371,7 +4371,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4439,7 +4439,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNewLine<int>::name
+      & ident_TkNewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4456,7 +4456,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4511,7 +4511,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       { FastIntFromStr, "FastIntFromStr" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNumber<int>::name
+      & ident_TkNumber<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4533,7 +4533,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4604,7 +4604,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       { SwPunctuation, "SwPunctuation" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4626,7 +4626,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4696,7 +4696,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       { NormalizeName, "NormalizeName" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkVariable<int>::name
+      & ident_TkVariable<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4704,7 +4704,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
       {refalrts::icIdentLeft, 0, 0, 2},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icsVarLeft, 0, __sType_1_1, 2},
-      {refalrts::icCharLeft, 0, (int)'.', 2},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('.'), 2},
       {refalrts::icContextSet, 0, __eIndex_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -4721,7 +4721,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4795,7 +4795,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkUnexpected<int>::name
+      & ident_TkUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4814,7 +4814,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4870,7 +4870,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkError<int>::name,
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4889,7 +4889,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -4945,7 +4945,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkUnexpected<int>::name,
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -4964,7 +4964,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5019,7 +5019,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TkError<int>::name,
-      & idents_TokenUnexpectedEOF<int>::name
+      & ident_TokenUnexpectedEOF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -5051,7 +5051,7 @@ static refalrts::FnResult NormalizeToken(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5195,7 +5195,7 @@ static refalrts::FnResult lambda_CharFromNum_0(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5308,7 +5308,7 @@ static refalrts::FnResult CharFromNum(refalrts::Iter arg_begin, refalrts::Iter a
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5455,7 +5455,7 @@ static refalrts::FnResult DoCharFromNum(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5557,7 +5557,7 @@ static refalrts::FnResult DoCharFromNum(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5626,7 +5626,7 @@ static refalrts::FnResult lambda_DigitFromChar_0(refalrts::Iter arg_begin, refal
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -5784,7 +5784,7 @@ static refalrts::FnResult DigitFromChar(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6155,14 +6155,14 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Enum<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6175,7 +6175,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6233,15 +6233,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_EEnum<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6254,7 +6254,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6314,15 +6314,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Entry<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6335,7 +6335,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6395,16 +6395,16 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Extern<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6417,7 +6417,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6479,17 +6479,17 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Forward<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'F', 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6502,7 +6502,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6566,14 +6566,14 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Swap<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'S', 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6586,7 +6586,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6644,15 +6644,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_ESwap<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6665,7 +6665,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6725,15 +6725,15 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_Ident<int>::name,
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'L', 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -6746,7 +6746,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6806,7 +6806,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkError<int>::name
+      & ident_TkError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -6841,7 +6841,7 @@ static refalrts::FnResult ValidDirective(refalrts::Iter arg_begin, refalrts::Ite
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -6970,11 +6970,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenCall<int>::name
+      & ident_TkOpenCall<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'<', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('<'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -6984,7 +6984,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7022,11 +7022,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseCall<int>::name
+      & ident_TkCloseCall<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'>', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('>'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7036,7 +7036,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7074,11 +7074,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenBlock<int>::name
+      & ident_TkOpenBlock<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'{', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('{'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7088,7 +7088,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7126,11 +7126,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseBlock<int>::name
+      & ident_TkCloseBlock<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'}', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('}'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7140,7 +7140,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7178,11 +7178,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenBracket<int>::name
+      & ident_TkOpenBracket<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'(', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('('), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7192,7 +7192,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7230,11 +7230,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseBracket<int>::name
+      & ident_TkCloseBracket<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)')', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(')'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7244,7 +7244,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7282,11 +7282,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkReplace<int>::name
+      & ident_TkReplace<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'=', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('='), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7296,7 +7296,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7334,11 +7334,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkComma<int>::name
+      & ident_TkComma<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)',', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(','), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7348,7 +7348,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7386,11 +7386,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkSemicolon<int>::name
+      & ident_TkSemicolon<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)';', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(';'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7400,7 +7400,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7438,11 +7438,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkOpenADT<int>::name
+      & ident_TkOpenADT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'[', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('['), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7452,7 +7452,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7490,11 +7490,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkCloseADT<int>::name
+      & ident_TkCloseADT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)']', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(']'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7504,7 +7504,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7542,11 +7542,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkIdentMarker<int>::name
+      & ident_TkIdentMarker<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'#', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('#'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7556,7 +7556,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7594,11 +7594,11 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkRedefinition<int>::name
+      & ident_TkRedefinition<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
-      {refalrts::icCharLeft, 0, (int)'^', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('^'), 0},
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
@@ -7608,7 +7608,7 @@ static refalrts::FnResult SwPunctuation(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7656,7 +7656,7 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
       { Inc, "Inc" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNewLine<int>::name
+      & ident_TkNewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -7676,7 +7676,7 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7757,7 +7757,7 @@ static refalrts::FnResult AddLineNumber(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7851,7 +7851,7 @@ static refalrts::FnResult NormalizeTokens(refalrts::Iter arg_begin, refalrts::It
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -7951,7 +7951,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)' ', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(' '), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -7966,7 +7966,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8035,7 +8035,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\t'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -8050,7 +8050,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8119,7 +8119,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\r', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\r'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -8134,7 +8134,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8201,12 +8201,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'<', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('<'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8227,7 +8227,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8313,12 +8313,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'>', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('>'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8339,7 +8339,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8425,12 +8425,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'(', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('('), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8451,7 +8451,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8537,12 +8537,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)')', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(')'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8563,7 +8563,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8649,12 +8649,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'{', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('{'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8675,7 +8675,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8761,12 +8761,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'}', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('}'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8787,7 +8787,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8873,12 +8873,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'[', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('['), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -8899,7 +8899,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -8985,12 +8985,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)']', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(']'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9011,7 +9011,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9097,12 +9097,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'=', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('='), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9123,7 +9123,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9209,12 +9209,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)';', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(';'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9235,7 +9235,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9321,12 +9321,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)',', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>(','), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9347,7 +9347,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9433,12 +9433,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'#', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('#'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9459,7 +9459,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9545,12 +9545,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkPunctuation<int>::name
+      & ident_TkPunctuation<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'^', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('^'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9571,7 +9571,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9660,7 +9660,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9678,7 +9678,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9754,7 +9754,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9772,7 +9772,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9848,7 +9848,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9866,7 +9866,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -9942,7 +9942,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -9960,7 +9960,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10036,7 +10036,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10054,7 +10054,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10130,7 +10130,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10148,7 +10148,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10224,7 +10224,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10242,7 +10242,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10318,7 +10318,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10336,7 +10336,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10412,7 +10412,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10430,7 +10430,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10506,7 +10506,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10524,7 +10524,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10600,7 +10600,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10618,7 +10618,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10694,7 +10694,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10712,7 +10712,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10788,7 +10788,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10806,7 +10806,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10882,7 +10882,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10900,7 +10900,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -10976,7 +10976,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -10994,7 +10994,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11070,7 +11070,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11088,7 +11088,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11164,7 +11164,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11182,7 +11182,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11258,7 +11258,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11276,7 +11276,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11352,7 +11352,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11370,7 +11370,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11446,7 +11446,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11464,7 +11464,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11540,7 +11540,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11558,7 +11558,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11634,7 +11634,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11652,7 +11652,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11728,7 +11728,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11746,7 +11746,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11822,7 +11822,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11840,7 +11840,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -11916,7 +11916,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -11934,7 +11934,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12010,7 +12010,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12028,7 +12028,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12104,7 +12104,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('s'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12122,7 +12122,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12198,7 +12198,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('e'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12216,7 +12216,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12292,7 +12292,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12310,7 +12310,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12386,7 +12386,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12404,7 +12404,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12480,7 +12480,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12498,7 +12498,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12574,7 +12574,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12592,7 +12592,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12668,7 +12668,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12686,7 +12686,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12762,7 +12762,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12780,7 +12780,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12856,7 +12856,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12874,7 +12874,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -12950,7 +12950,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -12968,7 +12968,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13044,7 +13044,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -13062,7 +13062,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13138,7 +13138,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -13156,7 +13156,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13232,7 +13232,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -13250,7 +13250,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13325,7 +13325,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'$', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('$'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -13340,7 +13340,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13409,7 +13409,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\''), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -13424,7 +13424,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13494,7 +13494,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('/'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -13512,7 +13512,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13585,12 +13585,12 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNewLine<int>::name
+      & ident_TkNewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -13611,7 +13611,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13694,7 +13694,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkEOF<int>::name
+      & ident_TkEOF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -13712,7 +13712,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13769,7 +13769,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkUnexpected<int>::name
+      & ident_TkUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -13795,7 +13795,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13878,7 +13878,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -13902,7 +13902,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -13981,7 +13981,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -14002,7 +14002,7 @@ static refalrts::FnResult Root(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14081,7 +14081,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14099,7 +14099,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14175,7 +14175,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14193,7 +14193,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14269,7 +14269,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14287,7 +14287,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14363,7 +14363,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14381,7 +14381,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14457,7 +14457,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14475,7 +14475,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14551,7 +14551,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14569,7 +14569,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14645,7 +14645,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14663,7 +14663,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14739,7 +14739,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14757,7 +14757,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14833,7 +14833,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14851,7 +14851,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -14927,7 +14927,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -14945,7 +14945,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15021,7 +15021,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15039,7 +15039,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15115,7 +15115,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15133,7 +15133,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15209,7 +15209,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('c'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15227,7 +15227,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15303,7 +15303,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('d'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15321,7 +15321,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15397,7 +15397,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('e'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15415,7 +15415,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15491,7 +15491,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15509,7 +15509,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15585,7 +15585,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('g'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15603,7 +15603,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15679,7 +15679,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('h'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15697,7 +15697,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15773,7 +15773,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('i'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15791,7 +15791,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15867,7 +15867,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('j'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15885,7 +15885,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -15961,7 +15961,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('k'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -15979,7 +15979,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16055,7 +16055,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('l'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16073,7 +16073,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16149,7 +16149,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('m'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16167,7 +16167,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16243,7 +16243,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16261,7 +16261,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16337,7 +16337,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('o'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16355,7 +16355,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16431,7 +16431,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('p'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16449,7 +16449,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16525,7 +16525,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16543,7 +16543,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16619,7 +16619,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('r'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16637,7 +16637,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16713,7 +16713,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('s'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16731,7 +16731,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16807,7 +16807,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16825,7 +16825,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16901,7 +16901,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('u'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -16919,7 +16919,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -16995,7 +16995,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('v'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17013,7 +17013,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17089,7 +17089,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('w'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17107,7 +17107,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17183,7 +17183,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('x'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17201,7 +17201,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17277,7 +17277,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17295,7 +17295,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17371,7 +17371,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17389,7 +17389,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17465,7 +17465,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17483,7 +17483,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17559,7 +17559,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17577,7 +17577,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17653,7 +17653,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17671,7 +17671,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17747,7 +17747,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17765,7 +17765,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17841,7 +17841,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17859,7 +17859,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -17935,7 +17935,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -17953,7 +17953,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18029,7 +18029,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18047,7 +18047,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18123,7 +18123,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18141,7 +18141,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18217,7 +18217,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18235,7 +18235,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18311,7 +18311,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18329,7 +18329,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18405,7 +18405,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18423,7 +18423,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18499,7 +18499,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18517,7 +18517,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18593,7 +18593,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18611,7 +18611,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18687,7 +18687,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18705,7 +18705,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18781,7 +18781,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18799,7 +18799,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18875,7 +18875,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18893,7 +18893,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -18969,7 +18969,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -18987,7 +18987,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19063,7 +19063,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19081,7 +19081,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19157,7 +19157,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19175,7 +19175,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19251,7 +19251,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19269,7 +19269,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19345,7 +19345,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19363,7 +19363,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19439,7 +19439,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19457,7 +19457,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19533,7 +19533,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19551,7 +19551,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19627,7 +19627,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19645,7 +19645,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19721,7 +19721,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19739,7 +19739,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19815,7 +19815,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19833,7 +19833,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -19909,7 +19909,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('_'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -19927,7 +19927,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20003,7 +20003,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('-'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -20021,7 +20021,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20094,7 +20094,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkName<int>::name
+      & ident_TkName<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20118,7 +20118,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20198,7 +20198,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20222,7 +20222,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20301,7 +20301,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20322,7 +20322,7 @@ static refalrts::FnResult Name(refalrts::Iter arg_begin, refalrts::Iter arg_end)
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20401,7 +20401,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'.', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('.'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -20419,7 +20419,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20491,7 +20491,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20525,7 +20525,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20651,7 +20651,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20675,7 +20675,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20754,7 +20754,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -20775,7 +20775,7 @@ static refalrts::FnResult VariableStart(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20854,7 +20854,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -20872,7 +20872,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -20948,7 +20948,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -20966,7 +20966,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21042,7 +21042,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21060,7 +21060,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21136,7 +21136,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21154,7 +21154,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21230,7 +21230,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21248,7 +21248,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21324,7 +21324,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21342,7 +21342,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21418,7 +21418,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21436,7 +21436,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21512,7 +21512,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21530,7 +21530,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21606,7 +21606,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21624,7 +21624,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21700,7 +21700,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -21718,7 +21718,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21791,7 +21791,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNumber<int>::name
+      & ident_TkNumber<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -21815,7 +21815,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21895,7 +21895,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -21919,7 +21919,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -21998,7 +21998,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -22019,7 +22019,7 @@ static refalrts::FnResult Number(refalrts::Iter arg_begin, refalrts::Iter arg_en
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22098,7 +22098,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22116,7 +22116,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22192,7 +22192,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22210,7 +22210,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22286,7 +22286,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22304,7 +22304,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22380,7 +22380,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22398,7 +22398,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22474,7 +22474,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22492,7 +22492,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22568,7 +22568,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22586,7 +22586,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22662,7 +22662,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22680,7 +22680,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22756,7 +22756,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22774,7 +22774,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22850,7 +22850,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22868,7 +22868,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -22944,7 +22944,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -22962,7 +22962,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23038,7 +23038,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23056,7 +23056,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23132,7 +23132,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23150,7 +23150,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23226,7 +23226,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23244,7 +23244,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23320,7 +23320,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23338,7 +23338,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23414,7 +23414,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23432,7 +23432,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23508,7 +23508,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23526,7 +23526,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23602,7 +23602,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23620,7 +23620,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23696,7 +23696,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23714,7 +23714,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23790,7 +23790,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23808,7 +23808,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23884,7 +23884,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23902,7 +23902,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -23978,7 +23978,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -23996,7 +23996,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24072,7 +24072,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24090,7 +24090,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24166,7 +24166,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24184,7 +24184,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24260,7 +24260,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24278,7 +24278,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24354,7 +24354,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24372,7 +24372,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24448,7 +24448,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24466,7 +24466,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24538,7 +24538,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -24583,7 +24583,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24753,7 +24753,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -24777,7 +24777,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24856,7 +24856,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -24877,7 +24877,7 @@ static refalrts::FnResult Directive(refalrts::Iter arg_begin, refalrts::Iter arg
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -24953,12 +24953,12 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\''), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -24979,7 +24979,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25084,7 +25084,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25151,7 +25151,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -25175,7 +25175,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25254,7 +25254,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -25275,7 +25275,7 @@ static refalrts::FnResult StringLiteral_Start(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25353,7 +25353,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('*'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -25368,7 +25368,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25437,7 +25437,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('/'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -25452,7 +25452,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25519,7 +25519,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkUnexpected<int>::name
+      & ident_TkUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -25543,7 +25543,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25623,7 +25623,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -25647,7 +25647,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25726,7 +25726,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -25747,7 +25747,7 @@ static refalrts::FnResult StartComment(refalrts::Iter arg_begin, refalrts::Iter 
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25826,7 +25826,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -25844,7 +25844,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -25920,7 +25920,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -25938,7 +25938,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26014,7 +26014,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26032,7 +26032,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26108,7 +26108,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26126,7 +26126,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26202,7 +26202,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26220,7 +26220,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26296,7 +26296,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26314,7 +26314,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26390,7 +26390,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26408,7 +26408,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26484,7 +26484,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26502,7 +26502,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26578,7 +26578,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26596,7 +26596,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26672,7 +26672,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26690,7 +26690,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26766,7 +26766,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26784,7 +26784,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26860,7 +26860,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26878,7 +26878,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -26954,7 +26954,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('c'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -26972,7 +26972,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27048,7 +27048,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('d'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27066,7 +27066,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27142,7 +27142,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('e'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27160,7 +27160,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27236,7 +27236,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27254,7 +27254,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27330,7 +27330,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('g'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27348,7 +27348,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27424,7 +27424,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('h'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27442,7 +27442,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27518,7 +27518,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('i'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27536,7 +27536,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27612,7 +27612,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('j'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27630,7 +27630,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27706,7 +27706,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('k'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27724,7 +27724,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27800,7 +27800,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('l'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27818,7 +27818,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27894,7 +27894,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('m'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -27912,7 +27912,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -27988,7 +27988,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28006,7 +28006,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28082,7 +28082,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('o'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28100,7 +28100,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28176,7 +28176,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('p'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28194,7 +28194,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28270,7 +28270,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28288,7 +28288,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28364,7 +28364,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('r'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28382,7 +28382,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28458,7 +28458,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('s'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28476,7 +28476,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28552,7 +28552,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28570,7 +28570,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28646,7 +28646,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('u'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28664,7 +28664,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28740,7 +28740,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('v'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28758,7 +28758,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28834,7 +28834,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('w'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28852,7 +28852,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -28928,7 +28928,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('x'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -28946,7 +28946,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29022,7 +29022,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29040,7 +29040,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29116,7 +29116,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29134,7 +29134,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29210,7 +29210,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29228,7 +29228,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29304,7 +29304,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29322,7 +29322,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29398,7 +29398,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29416,7 +29416,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29492,7 +29492,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29510,7 +29510,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29586,7 +29586,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29604,7 +29604,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29680,7 +29680,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29698,7 +29698,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29774,7 +29774,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29792,7 +29792,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29868,7 +29868,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29886,7 +29886,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -29962,7 +29962,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -29980,7 +29980,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30056,7 +30056,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30074,7 +30074,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30150,7 +30150,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30168,7 +30168,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30244,7 +30244,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30262,7 +30262,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30338,7 +30338,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30356,7 +30356,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30432,7 +30432,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30450,7 +30450,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30526,7 +30526,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30544,7 +30544,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30620,7 +30620,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30638,7 +30638,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30714,7 +30714,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30732,7 +30732,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30808,7 +30808,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30826,7 +30826,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30902,7 +30902,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -30920,7 +30920,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -30996,7 +30996,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31014,7 +31014,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31090,7 +31090,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31108,7 +31108,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31184,7 +31184,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31202,7 +31202,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31278,7 +31278,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31296,7 +31296,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31372,7 +31372,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31390,7 +31390,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31466,7 +31466,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31484,7 +31484,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31560,7 +31560,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31578,7 +31578,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31654,7 +31654,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('_'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31672,7 +31672,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31748,7 +31748,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('-'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -31766,7 +31766,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -31838,7 +31838,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -31882,7 +31882,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32048,7 +32048,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -32072,7 +32072,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32151,7 +32151,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -32172,7 +32172,7 @@ static refalrts::FnResult VariableIndex(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32251,7 +32251,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32269,7 +32269,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32345,7 +32345,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32363,7 +32363,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32439,7 +32439,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32457,7 +32457,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32533,7 +32533,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32551,7 +32551,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32627,7 +32627,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32645,7 +32645,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32721,7 +32721,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32739,7 +32739,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32815,7 +32815,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32833,7 +32833,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -32909,7 +32909,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -32927,7 +32927,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33003,7 +33003,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33021,7 +33021,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33097,7 +33097,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33115,7 +33115,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33191,7 +33191,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33209,7 +33209,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33285,7 +33285,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33303,7 +33303,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33379,7 +33379,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33397,7 +33397,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33473,7 +33473,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33491,7 +33491,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33567,7 +33567,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33585,7 +33585,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33661,7 +33661,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33679,7 +33679,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33755,7 +33755,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33773,7 +33773,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33849,7 +33849,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33867,7 +33867,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -33943,7 +33943,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -33961,7 +33961,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34037,7 +34037,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34055,7 +34055,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34131,7 +34131,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34149,7 +34149,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34225,7 +34225,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34243,7 +34243,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34319,7 +34319,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34337,7 +34337,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34413,7 +34413,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34431,7 +34431,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34507,7 +34507,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34525,7 +34525,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34601,7 +34601,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -34619,7 +34619,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34692,7 +34692,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkDirective<int>::name
+      & ident_TkDirective<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -34716,7 +34716,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34796,7 +34796,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -34820,7 +34820,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34899,7 +34899,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -34920,7 +34920,7 @@ static refalrts::FnResult DirectiveTail(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -34998,7 +34998,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\\', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\\'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -35013,7 +35013,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35082,7 +35082,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\''), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -35097,7 +35097,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35163,12 +35163,12 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\n'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -35200,7 +35200,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35332,7 +35332,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -35380,7 +35380,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35563,7 +35563,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -35589,7 +35589,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35672,7 +35672,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -35696,7 +35696,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35775,7 +35775,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -35796,7 +35796,7 @@ static refalrts::FnResult StringLiteral(refalrts::Iter arg_begin, refalrts::Iter
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35874,7 +35874,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('/'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -35889,7 +35889,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -35958,7 +35958,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('*'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -35973,7 +35973,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36040,12 +36040,12 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       { CComment, "CComment" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNewLine<int>::name
+      & ident_TkNewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -36066,7 +36066,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36170,7 +36170,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36233,7 +36233,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -36281,7 +36281,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36463,7 +36463,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -36487,7 +36487,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36566,7 +36566,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -36587,7 +36587,7 @@ static refalrts::FnResult CComment(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36663,12 +36663,12 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkNewLine<int>::name
+      & ident_TkNewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -36689,7 +36689,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36772,7 +36772,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
 #ifdef INTERPRET
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkEOF<int>::name
+      & ident_TkEOF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -36790,7 +36790,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36864,7 +36864,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -36931,7 +36931,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -36955,7 +36955,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37034,7 +37034,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -37055,7 +37055,7 @@ static refalrts::FnResult CppComment(refalrts::Iter arg_begin, refalrts::Iter ar
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37134,7 +37134,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37152,7 +37152,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37228,7 +37228,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37246,7 +37246,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37322,7 +37322,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37340,7 +37340,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37416,7 +37416,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37434,7 +37434,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37510,7 +37510,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37528,7 +37528,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37604,7 +37604,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37622,7 +37622,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37698,7 +37698,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37716,7 +37716,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37792,7 +37792,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37810,7 +37810,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37886,7 +37886,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37904,7 +37904,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -37980,7 +37980,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -37998,7 +37998,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38074,7 +38074,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38092,7 +38092,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38168,7 +38168,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38186,7 +38186,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38262,7 +38262,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('c'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38280,7 +38280,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38356,7 +38356,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('d'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38374,7 +38374,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38450,7 +38450,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('e'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38468,7 +38468,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38544,7 +38544,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38562,7 +38562,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38638,7 +38638,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'g', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('g'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38656,7 +38656,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38732,7 +38732,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'h', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('h'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38750,7 +38750,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38826,7 +38826,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'i', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('i'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38844,7 +38844,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -38920,7 +38920,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'j', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('j'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -38938,7 +38938,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39014,7 +39014,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'k', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('k'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39032,7 +39032,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39108,7 +39108,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'l', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('l'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39126,7 +39126,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39202,7 +39202,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'m', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('m'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39220,7 +39220,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39296,7 +39296,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39314,7 +39314,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39390,7 +39390,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'o', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('o'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39408,7 +39408,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39484,7 +39484,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'p', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('p'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39502,7 +39502,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39578,7 +39578,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39596,7 +39596,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39672,7 +39672,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('r'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39690,7 +39690,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39766,7 +39766,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'s', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('s'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39784,7 +39784,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39860,7 +39860,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39878,7 +39878,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -39954,7 +39954,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'u', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('u'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -39972,7 +39972,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40048,7 +40048,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('v'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40066,7 +40066,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40142,7 +40142,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'w', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('w'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40160,7 +40160,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40236,7 +40236,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('x'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40254,7 +40254,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40330,7 +40330,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40348,7 +40348,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40424,7 +40424,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40442,7 +40442,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40518,7 +40518,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40536,7 +40536,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40612,7 +40612,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40630,7 +40630,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40706,7 +40706,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40724,7 +40724,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40800,7 +40800,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40818,7 +40818,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40894,7 +40894,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -40912,7 +40912,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -40988,7 +40988,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41006,7 +41006,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41082,7 +41082,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'G', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('G'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41100,7 +41100,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41176,7 +41176,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'H', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('H'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41194,7 +41194,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41270,7 +41270,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'I', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('I'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41288,7 +41288,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41364,7 +41364,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'J', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('J'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41382,7 +41382,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41458,7 +41458,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'K', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('K'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41476,7 +41476,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41552,7 +41552,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'L', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('L'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41570,7 +41570,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41646,7 +41646,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'M', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('M'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41664,7 +41664,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41740,7 +41740,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'N', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('N'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41758,7 +41758,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41834,7 +41834,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'O', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('O'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41852,7 +41852,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -41928,7 +41928,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'P', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('P'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -41946,7 +41946,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42022,7 +42022,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Q', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Q'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42040,7 +42040,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42116,7 +42116,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'R', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('R'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42134,7 +42134,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42210,7 +42210,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'S', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('S'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42228,7 +42228,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42304,7 +42304,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'T', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('T'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42322,7 +42322,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42398,7 +42398,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'U', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('U'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42416,7 +42416,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42492,7 +42492,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'V', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('V'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42510,7 +42510,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42586,7 +42586,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'W', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('W'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42604,7 +42604,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42680,7 +42680,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42698,7 +42698,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42774,7 +42774,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Y', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Y'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42792,7 +42792,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42868,7 +42868,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'Z', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('Z'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42886,7 +42886,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -42962,7 +42962,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'_', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('_'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -42980,7 +42980,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43056,7 +43056,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'-', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('-'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43074,7 +43074,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43147,7 +43147,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkVariable<int>::name
+      & ident_TkVariable<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -43171,7 +43171,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43251,7 +43251,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -43275,7 +43275,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43354,7 +43354,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -43375,7 +43375,7 @@ static refalrts::FnResult VariableIndexTail(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43451,12 +43451,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_NewLine<int>::name
+      & ident_TkLiteral_NewLine<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('n'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43477,7 +43477,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43563,12 +43563,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_CarriageReturn<int>::name
+      & ident_TkLiteral_CarriageReturn<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'r', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('r'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43589,7 +43589,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43675,12 +43675,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Tab<int>::name
+      & ident_TkLiteral_Tab<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'t', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('t'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43701,7 +43701,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43787,12 +43787,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Bell<int>::name
+      & ident_TkLiteral_Bell<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43813,7 +43813,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -43899,12 +43899,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_BS<int>::name
+      & ident_TkLiteral_BS<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -43925,7 +43925,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44011,12 +44011,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_FF<int>::name
+      & ident_TkLiteral_FF<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44037,7 +44037,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44123,12 +44123,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_VT<int>::name
+      & ident_TkLiteral_VT<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'v', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('v'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44149,7 +44149,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44235,12 +44235,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\\', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\\'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44261,7 +44261,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44347,12 +44347,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\''), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44373,7 +44373,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44459,12 +44459,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\"', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\"'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44485,7 +44485,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44573,7 +44573,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('d'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -44588,7 +44588,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44657,7 +44657,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -44672,7 +44672,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44742,7 +44742,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44760,7 +44760,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44836,7 +44836,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44854,7 +44854,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -44930,7 +44930,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -44948,7 +44948,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45024,7 +45024,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -45042,7 +45042,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45118,7 +45118,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -45136,7 +45136,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45212,7 +45212,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -45230,7 +45230,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45306,7 +45306,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -45324,7 +45324,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45400,7 +45400,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -45418,7 +45418,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45493,7 +45493,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'x', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('x'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -45508,7 +45508,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45577,7 +45577,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'X', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('X'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -45592,7 +45592,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45658,12 +45658,12 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\n', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\n'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -45695,7 +45695,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -45830,7 +45830,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -45878,7 +45878,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46060,7 +46060,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -46084,7 +46084,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46163,7 +46163,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -46184,7 +46184,7 @@ static refalrts::FnResult StringLiteral_Escape(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46260,12 +46260,12 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Char<int>::name
+      & ident_TkLiteral_Char<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'\'', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('\''), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -46286,7 +46286,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46391,7 +46391,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46458,7 +46458,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -46482,7 +46482,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46561,7 +46561,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -46582,7 +46582,7 @@ static refalrts::FnResult StringLiteral_Quote(refalrts::Iter arg_begin, refalrts
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46657,12 +46657,12 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       { CComment, "CComment" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'*', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('*'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
@@ -46707,7 +46707,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46914,7 +46914,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -46981,7 +46981,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -47005,7 +47005,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47084,7 +47084,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -47105,7 +47105,7 @@ static refalrts::FnResult CComment_CheckNested(refalrts::Iter arg_begin, refalrt
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47183,7 +47183,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'/', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('/'), 0},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
@@ -47198,7 +47198,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47284,7 +47284,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47351,7 +47351,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -47375,7 +47375,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47454,7 +47454,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -47475,7 +47475,7 @@ static refalrts::FnResult CComment_CheckEnd(refalrts::Iter arg_begin, refalrts::
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47554,7 +47554,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -47572,7 +47572,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47648,7 +47648,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -47666,7 +47666,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47742,7 +47742,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -47760,7 +47760,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47836,7 +47836,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -47854,7 +47854,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -47930,7 +47930,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -47948,7 +47948,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48024,7 +48024,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48042,7 +48042,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48118,7 +48118,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48136,7 +48136,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48212,7 +48212,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48230,7 +48230,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48306,7 +48306,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48324,7 +48324,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48400,7 +48400,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48418,7 +48418,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48490,7 +48490,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenError<int>::name
+      & ident_TokenError<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -48534,7 +48534,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48700,7 +48700,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -48724,7 +48724,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48803,7 +48803,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -48824,7 +48824,7 @@ static refalrts::FnResult StringLiteral_Escape_Code(refalrts::Iter arg_begin, re
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48903,7 +48903,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -48921,7 +48921,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -48997,7 +48997,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49015,7 +49015,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49091,7 +49091,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49109,7 +49109,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49185,7 +49185,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49203,7 +49203,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49279,7 +49279,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49297,7 +49297,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49373,7 +49373,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49391,7 +49391,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49467,7 +49467,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49485,7 +49485,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49561,7 +49561,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49579,7 +49579,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49652,7 +49652,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -49676,7 +49676,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49756,7 +49756,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -49780,7 +49780,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49859,7 +49859,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -49880,7 +49880,7 @@ static refalrts::FnResult StringLiteral_Escape_OCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -49959,7 +49959,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -49977,7 +49977,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50053,7 +50053,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50071,7 +50071,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50147,7 +50147,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50165,7 +50165,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50241,7 +50241,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50259,7 +50259,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50335,7 +50335,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50353,7 +50353,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50429,7 +50429,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50447,7 +50447,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50523,7 +50523,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50541,7 +50541,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50617,7 +50617,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50635,7 +50635,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50711,7 +50711,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50729,7 +50729,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50805,7 +50805,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50823,7 +50823,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50899,7 +50899,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'A', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('A'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -50917,7 +50917,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -50993,7 +50993,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'B', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('B'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51011,7 +51011,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51087,7 +51087,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'C', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('C'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51105,7 +51105,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51181,7 +51181,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'D', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('D'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51199,7 +51199,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51275,7 +51275,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'E', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('E'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51293,7 +51293,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51369,7 +51369,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'F', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('F'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51387,7 +51387,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51463,7 +51463,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'a', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('a'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51481,7 +51481,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51557,7 +51557,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'b', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('b'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51575,7 +51575,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51651,7 +51651,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'c', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('c'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51669,7 +51669,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51745,7 +51745,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'d', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('d'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51763,7 +51763,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51839,7 +51839,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'e', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('e'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51857,7 +51857,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -51933,7 +51933,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'f', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('f'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -51951,7 +51951,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52024,7 +52024,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_XCode<int>::name
+      & ident_TkLiteral_XCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -52048,7 +52048,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52128,7 +52128,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -52152,7 +52152,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52231,7 +52231,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -52252,7 +52252,7 @@ static refalrts::FnResult StringLiteral_Escape_XCode(refalrts::Iter arg_begin, r
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52331,7 +52331,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52349,7 +52349,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52425,7 +52425,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52443,7 +52443,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52519,7 +52519,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52537,7 +52537,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52613,7 +52613,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52631,7 +52631,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52707,7 +52707,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52725,7 +52725,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52801,7 +52801,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52819,7 +52819,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52895,7 +52895,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -52913,7 +52913,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -52989,7 +52989,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53007,7 +53007,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53083,7 +53083,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53101,7 +53101,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53177,7 +53177,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53195,7 +53195,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53268,7 +53268,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -53292,7 +53292,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53372,7 +53372,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -53396,7 +53396,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53475,7 +53475,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -53496,7 +53496,7 @@ static refalrts::FnResult SL_E_C1(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53575,7 +53575,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53593,7 +53593,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53669,7 +53669,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53687,7 +53687,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53763,7 +53763,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53781,7 +53781,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53857,7 +53857,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53875,7 +53875,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -53951,7 +53951,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -53969,7 +53969,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54045,7 +54045,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54063,7 +54063,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54139,7 +54139,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54157,7 +54157,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54233,7 +54233,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54251,7 +54251,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54324,7 +54324,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -54348,7 +54348,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54428,7 +54428,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -54452,7 +54452,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54531,7 +54531,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -54552,7 +54552,7 @@ static refalrts::FnResult SL_E_OC1(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54628,12 +54628,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54654,7 +54654,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54740,12 +54740,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54766,7 +54766,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54852,12 +54852,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54878,7 +54878,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -54964,12 +54964,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -54990,7 +54990,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55076,12 +55076,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55102,7 +55102,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55188,12 +55188,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55214,7 +55214,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55300,12 +55300,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55326,7 +55326,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55412,12 +55412,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55438,7 +55438,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55524,12 +55524,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'8', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('8'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55550,7 +55550,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55636,12 +55636,12 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'9', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('9'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -55662,7 +55662,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55748,7 +55748,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_Code<int>::name
+      & ident_TkLiteral_Code<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -55772,7 +55772,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55852,7 +55852,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -55876,7 +55876,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -55955,7 +55955,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -55976,7 +55976,7 @@ static refalrts::FnResult SL_E_C2(refalrts::Iter arg_begin, refalrts::Iter arg_e
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56052,12 +56052,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'0', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('0'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56078,7 +56078,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56164,12 +56164,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'1', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('1'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56190,7 +56190,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56276,12 +56276,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'2', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('2'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56302,7 +56302,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56388,12 +56388,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'3', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('3'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56414,7 +56414,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56500,12 +56500,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'4', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('4'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56526,7 +56526,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56612,12 +56612,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'5', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('5'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56638,7 +56638,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56724,12 +56724,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'6', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('6'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56750,7 +56750,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56836,12 +56836,12 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
       {refalrts::icBracketLeft, 0, 2, 0},
-      {refalrts::icCharLeft, 0, (int)'7', 0},
+      {refalrts::icCharLeft, 0, static_cast<unsigned char>('7'), 0},
       {refalrts::icContextSet, 0, __eAccum_1_1, 2},
       {refalrts::icContextSet, 0, __eText_1_1, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
@@ -56862,7 +56862,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -56948,7 +56948,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { StringLiteral, "StringLiteral" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TkLiteral_OCode<int>::name
+      & ident_TkLiteral_OCode<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -56972,7 +56972,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -57052,7 +57052,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
       { Root, "Root" }
     };
     static const refalrts::RefalIdentifier idents[] = {
-      & idents_TokenUnexpected<int>::name
+      & ident_TokenUnexpected<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -57076,7 +57076,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
@@ -57155,7 +57155,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     using refalrts::functions;
     static const refalrts::RefalIdentifier idents[] = {
       & ident_TokenUnexpectedEOF<int>::name,
-      & idents_TokenAccum<int>::name
+      & ident_TokenAccum<int>::name
     };
     using refalrts::numbers;
     static refalrts::RASLCommand raa[] = {
@@ -57176,7 +57176,7 @@ static refalrts::FnResult SL_E_OC2(refalrts::Iter arg_begin, refalrts::Iter arg_
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
     refalrts::FnResult res = refalrts::interpret_array(
       raa, allocs, context, arg_begin, arg_end,
-      functions, labels, numbers, open_e_stack
+      functions, idents, numbers, open_e_stack
     );
     if ( res == refalrts::cRecognitionImpossible )
       break;
