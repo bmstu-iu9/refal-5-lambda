@@ -442,7 +442,7 @@ GenCommand {
       }
       e.LabelNames
     >
-    (e.Indent '  & idents_' e.LastName '<int>::name')
+    (e.Indent '  & ident_' e.LastName '<int>::name')
     (e.Indent '};');
 
   (e.Indent) (#CmdiNumberArray) =
@@ -502,7 +502,7 @@ GenCommand {
   (e.Indent) (#CmdiChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
     (e.Indent '{refalrts::icChar' <PrintDirection s.Direction> ', '
-              '0, (int)' '' <Escape s.Char> '' ', '
+              '0, static_cast<unsigned char>(' '' <Escape s.Char> '' '), '
               <StrFromInt s.BracketNumber> '},'
     )
     ;
@@ -573,7 +573,7 @@ GenCommand {
     )
     (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
     (e.Indent '  raa, allocs, context, arg_begin, arg_end,')
-    (e.Indent '  functions, labels, numbers, open_e_stack')
+    (e.Indent '  functions, idents, numbers, open_e_stack')
     (e.Indent ');')
     (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
     (e.Indent '  break;')
