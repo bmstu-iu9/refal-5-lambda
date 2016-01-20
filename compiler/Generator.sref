@@ -555,7 +555,7 @@ GenCommand {
 
   (e.Indent '  ') (#CmdFinRAA) =
     (e.Indent)
-    (e.Indent '  {refalrts::icEnd}')
+    (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
     (e.Indent '};');
 
   (e.Indent) (#CmdiReserveStack 0) =

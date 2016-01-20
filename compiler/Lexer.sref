@@ -128,17 +128,6 @@ CharFromNum {
     >;
 }
 
-DoCharFromNum {
-  s.Base s.Accum s.First e.Digits =
-    <DoCharFromNum
-      s.Base
-      <Add <Mul s.Accum s.Base> s.First>
-      e.Digits
-    >;
-
-  s.Base s.Accum = s.Accum;
-}
-
 DigitFromChar {
   s.Char =
     <Fetch
