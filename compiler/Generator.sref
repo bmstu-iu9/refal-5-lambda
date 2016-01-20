@@ -19,12 +19,12 @@ SwGenFnStart {
     ('  refalrts::this_is_generated_function();');
 }
 
-$ENTRY GenFnStart {
+GenFnStart {
   s.MemoryClass e.Name =
     <SwGenFnStart s.MemoryClass FuncArguments e.Name>;
 }
 
-$ENTRY GenFnEnd {
+GenFnEnd {
   =
     ('  return refalrts::FnResult(')
     ('    refalrts::cRecognitionImpossible | (__LINE__ << 8)')
@@ -32,41 +32,21 @@ $ENTRY GenFnEnd {
     ('}') ();
 }
 
-$ENTRY GenFnEnd-Success {
+GenFnEnd-Success {
   = ('  //return refalrts::cRecognitionImpossible;') ('}') ();
 }
 
-$ENTRY GenEEnum {
-  e.Name = <SwGenFnStart #GN-Entry NakedArguments e.Name> <GenFnEnd>;
-}
-
-$ENTRY GenEnum {
-  e.Name = <SwGenFnStart #GN-Local NakedArguments e.Name> <GenFnEnd>;
-}
-
-$ENTRY GenExtern {
+GenExtern {
   e.Name =
     ('extern refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
-$ENTRY GenForward {
+GenForward {
   e.Name =
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
-$ENTRY GenESwap {
-  e.Name =
-    ('//$ESWAP ' e.Name)
-    <GenSwap-Aux #GN-Entry e.Name>;
-}
-
-$ENTRY GenSwap {
-  e.Name =
-    ('//$SWAP ' e.Name)
-    <GenSwap-Aux #GN-Local e.Name>;
-}
-
-GenSwap-Aux {
+GenSwap {
   s.MemoryClass e.Name =
     <GenFnStart s.MemoryClass e.Name>
     ('  refalrts::Iter func_name = arg_begin;')
@@ -122,20 +102,18 @@ $EXTERN Map, MapReduce, Fetch, Add;
 //FROM Library
 $EXTERN StrFromInt;
 
-$ENTRY GenSentence {
+$ENTRY GenProgram {
   e.Algorithm =
-    ('  do {')
-    ('    refalrts::start_sentence();')
+    <GenCommonHeaders>
     <Fetch
-      <MapReduce GenCommand ('    ' /* отступ */) e.Algorithm>
+      <MapReduce GenCommand (/* отступ */) e.Algorithm>
       {
-        ('    ') /* отступ должен остаться тем же */
+        () /* отступ должен остаться тем же */
         e.Generated =
           e.Generated;
       }
     >
-    ('  } while ( 0 );')
-    ();
+    <GenCommonTailer>;
 }
 
 BracketsVar-B {
@@ -153,11 +131,6 @@ BracketsVars {
   s.BracketNumber =
     <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>;
 }
-
-/*
-  Величина отступа также определяет режим работы. Отступ в 4 пробела --
-  вне цикла по открытой e-переменной, отступ больше -- внутри оного цикла.
-*/
 
 //FROM LibraryEx
 $EXTERN Dec;
@@ -204,6 +177,53 @@ PrintRepeatInterp {
 
 GenCommand {
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
+
+  (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
+    (e.Indent)
+    <SwGenFnStart s.MemoryClass NakedArguments e.Name>
+    <GenFnEnd>;
+
+  (e.Indent) (#CmdSwap s.MemoryClass e.Name) =
+    (e.Indent)
+    <GenSwap s.MemoryClass e.Name>;
+
+  (e.Indent) (#CmdDeclaration #GN-Entry e.Name) =
+    (e.Indent)
+    <GenExtern e.Name>;
+
+  (e.Indent) (#CmdDeclaration #GN-Local e.Name) =
+    (e.Indent)
+    <GenForward e.Name>;
+
+  (e.Indent) (#CmdDefineIdent e.Name) =
+    (e.Indent)
+    <GenIdent e.Name>;
+
+  (e.Indent) (#CmdFnStart s.MemoryClass e.Name) =
+    (e.Indent '  ')
+    <GenFnStart s.MemoryClass e.Name>;
+
+  (e.Indent) (#CmdSeparator) =
+    (e.Indent)
+    (e.Indent);
+
+  (e.Indent '  ') (#CmdFnEnd) =
+    (e.Indent)
+    <GenFnEnd>;
+
+  (e.Indent '  ') (#CmdFnEnd-Success) =
+    (e.Indent)
+    <GenFnEnd-Success>;
+
+  (e.Indent) (#CmdStartSentence) =
+    (e.Indent '  ')
+    (e.Indent 'do {')
+    (e.Indent '  refalrts::start_sentence();');
+
+  (e.Indent '  ') (#CmdEndSentence) =
+    (e.Indent)
+    (e.Indent '} while ( 0 );')
+    ();
 
   (e.Indent) (#CmdInitB0) =
     (e.Indent)

@@ -4,10 +4,6 @@ $ENTRY ST-Create {
   = [SymTable () () ()];
 }
 
-$ENTRY ST-Destroy {
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names] = ;
-}
-
 /*
   Внутренний формат
   t.SymTable ::= [SymTable (t.Reference*) (e.Idents) (e.Externs) t.Function*]
@@ -149,7 +145,7 @@ $ENTRY ST-AddIdent {
     [SymTable (e.References) (e.Idents (e.Name)) (e.Externs) e.Names];
 }
 
-$ENTRY ST-CheckUnresolved {
+$ENTRY ST-AddUnresolved {
   t.ErrorList [SymTable (e.References) (e.Idents) (e.Externs) e.Names] =
     <Reduce
       {
@@ -159,8 +155,7 @@ $ENTRY ST-CheckUnresolved {
           >;
       }
       t.ErrorList e.References
-    >
-    [SymTable (e.References) (e.Idents) (e.Externs) e.Names];
+    >;
 }
 
 /**
@@ -169,14 +164,7 @@ $ENTRY ST-CheckUnresolved {
 */
 $ENTRY ST-AllFunctions {
   [SymTable (e.References) (e.Idents) (e.Externs) e.Names] =
-    <Map
-      {
-        (#GN-Entry e.Name) = (#GN-Entry e.Name);
-        (#GN-Local e.Name) = (#GN-Local e.Name);
-      }
-      e.Names
-    >
-    <Map { (e.Name) = (#GN-Entry e.Name); } e.Externs>;
+    e.Names <Map { (e.Name) = (#GN-Entry e.Name); } e.Externs>;
 }
 
 /**

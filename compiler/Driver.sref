@@ -1,0 +1,56 @@
+//FROM Lexer
+$EXTERN LexFolding;
+
+//FROM LibraryEx
+$EXTERN Map, Fetch, Seq, SaveFile;
+
+//FROM Error
+$EXTERN EL-Create, EL-Destroy;
+
+//FROM Generator
+$EXTERN GenProgram;
+
+//FROM Algorithm
+$EXTERN MakeAlgorithm-Program;
+
+//FROM Parser
+$EXTERN ParseProgram;
+
+/**
+  <CompileFile (e.SrcName) e.OutputName>
+    == #Success e.OutputName
+    == #Fails
+*/
+$ENTRY CompileFile {
+  (e.SrcName) e.OutputName =
+    <Fetch
+      <LexFolding e.SrcName>
+      <Seq
+        {
+          e.LexFolding =
+            <ParseProgram
+              <EL-Create e.SrcName> e.LexFolding
+            >;
+        }
+        {
+          t.ErrorList e.AST =
+            <Fetch
+              <EL-Destroy t.ErrorList>
+              {
+                #EL-NoErrors =
+                  <SaveFile
+                    (e.OutputName)
+                    <GenProgram
+                      <MakeAlgorithm-Program e.AST>
+                    >
+                  >
+                  #Success e.OutputName;
+
+                #EL-HasErrors =
+                  #Fails;
+              }
+            >;
+        }
+      >
+    >;
+}
