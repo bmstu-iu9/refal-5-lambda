@@ -2613,7 +2613,8 @@ refalrts::FnResult refalrts::interpret_array(
           int ind1, ind2;
           ind1 = raa[i].val1;
           ind2 = raa[i].val2;
-          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2], bb, be) )
+          if( ! refalrts::repeated_stvar_right( context[ind1],  context[ind2],
+                                                bb, be) )
             MATCH_FAIL
         }
         break;
@@ -2624,7 +2625,8 @@ refalrts::FnResult refalrts::interpret_array(
           int ind1, ind2;
           ind1 = raa[i].val1;
           ind2 = raa[i].val2;
-          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2], bb, be) )
+          if( ! refalrts::repeated_stvar_left( context[ind1],  context[ind2],
+                                               bb, be) )
             MATCH_FAIL
         }
         break;

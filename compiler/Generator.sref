@@ -677,9 +677,10 @@ GenCommand {
     );
 
   (e.Indent) (#CmdArrSplice s.Usings s.Mode e.Index) =
-  (e.Indent)
+    (e.Indent)
     (e.Indent
-      '{refalrts::icSpliceSTVar, 0, ' <PrintVarShortcut s.Usings s.Mode e.Index> ', 0},'
+      '{refalrts::icSpliceSTVar, 0, '
+      <PrintVarShortcut s.Usings s.Mode e.Index> ', 0},'
     );
 }
 
