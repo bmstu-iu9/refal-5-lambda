@@ -131,9 +131,17 @@ refalrts::FnResult ParseCommandLine(refalrts::Iter arg_begin, refalrts::Iter arg
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -237,13 +245,19 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eCompileCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCompileCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -397,7 +411,62 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -689,13 +758,19 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -847,7 +922,60 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icChar, 0, 'l', 0},
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1131,13 +1259,19 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eDirectory_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eDirectory_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1280,7 +1414,51 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icChar, 0, 'r', 0},
       {refalrts::icChar, 0, 'y', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1528,13 +1706,19 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eOutputFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eOutputFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1636,10 +1820,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
-      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1722,13 +1909,19 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eArguments_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1814,10 +2007,13 @@ static refalrts::FnResult DoParseCommandLine(refalrts::Iter arg_begin, refalrts:
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1896,13 +2092,19 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
-      {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eNextFileName_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -1988,10 +2190,13 @@ static refalrts::FnResult DoParseFileNamesOnly(refalrts::Iter arg_begin, refalrt
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
-      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceSTVar, 0, __sCollector_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2062,7 +2267,8 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2115,7 +2321,8 @@ static refalrts::FnResult lambda_CollectorObject_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2185,14 +2392,21 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2298,14 +2512,21 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2411,14 +2632,21 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2524,14 +2752,21 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2637,10 +2872,14 @@ static refalrts::FnResult lambda_CollectorObject_1(refalrts::Iter arg_begin, ref
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2733,13 +2972,21 @@ static refalrts::FnResult CollectorObject(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2839,7 +3086,7 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
       {refalrts::icContextSet, 0, __eCommand_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2896,7 +3143,8 @@ static refalrts::FnResult lambda_Collector_Compiler_0(refalrts::Iter arg_begin, 
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -2966,7 +3214,10 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3056,19 +3307,30 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3202,17 +3464,26 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3337,17 +3608,26 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3474,15 +3754,24 @@ static refalrts::FnResult lambda_Collector_Compiler_1(refalrts::Iter arg_begin, 
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3608,16 +3897,26 @@ static refalrts::FnResult Collector_Compiler(refalrts::Iter arg_begin, refalrts:
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -3780,7 +4079,59 @@ static refalrts::FnResult Collector_Error_CC(refalrts::Iter arg_begin, refalrts:
       {refalrts::icChar, 0, 'n', 0},
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4045,7 +4396,8 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
       {refalrts::icEmpty, 0, 0, 0},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4105,7 +4457,7 @@ static refalrts::FnResult lambda_Collector_ErrorFile_0(refalrts::Iter arg_begin,
       {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4181,19 +4533,30 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4324,7 +4687,10 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4418,17 +4784,26 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4553,17 +4928,26 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4690,15 +5074,24 @@ static refalrts::FnResult lambda_Collector_ErrorFile_1(refalrts::Iter arg_begin,
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4824,16 +5217,26 @@ static refalrts::FnResult Collector_ErrorFile(refalrts::Iter arg_begin, refalrts
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -4991,7 +5394,54 @@ static refalrts::FnResult Collector_Error_EF(refalrts::Iter arg_begin, refalrts:
       {refalrts::icChar, 0, 'm', 0},
       {refalrts::icChar, 0, 'e', 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5238,7 +5688,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
       {refalrts::icContextSet, 0, __eCommand_1_1, 4},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5302,7 +5752,7 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_0(refalrts::Iter a
       {refalrts::icContextSet, 0, __eErrorFile_1_1, 2},
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5376,7 +5826,10 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5464,7 +5917,10 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5562,22 +6018,35 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFileName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5730,22 +6199,35 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolderName_2_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -5900,18 +6382,29 @@ static refalrts::FnResult lambda_Collector_Compiler_ErrorFile_1(refalrts::Iter a
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
       {refalrts::icIdent, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6058,19 +6551,31 @@ static refalrts::FnResult Collector_Compiler_ErrorFile(refalrts::Iter arg_begin,
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFiles_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eFolders_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eErrorFile_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eCommand_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6210,9 +6715,12 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6285,9 +6793,12 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6360,9 +6871,12 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6435,9 +6949,12 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenCall, 0},
       {refalrts::icFunc, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6510,9 +7027,12 @@ static refalrts::FnResult lambda_Collector_Error_0(refalrts::Iter arg_begin, ref
       {refalrts::icEmptyResult, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
       {refalrts::icIdent, 0, 0, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
-      {refalrts::icEnd}
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
@@ -6595,10 +7115,16 @@ static refalrts::FnResult Collector_Error(refalrts::Iter arg_begin, refalrts::It
       {refalrts::icFunc, 0, 1, 0},
       {refalrts::icFunc, 0, 0, 0},
       {refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},
-      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},
       {refalrts::icBracket, 0, refalrts::ibCloseCall, 0},
-      {refalrts::icEnd}
+      {refalrts::icBracket_CloseCallLink, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceEVar, 0, __eMessage_1_1, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icSpliceElem, 0, 0, 0},
+      {refalrts::icEnd, 0, 0, 0}
     };
     int open_e_stack[1];
     refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];
