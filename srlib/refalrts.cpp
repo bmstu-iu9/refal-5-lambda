@@ -2751,6 +2751,7 @@ refalrts::FnResult refalrts::interpret_array(
           default:
             throw UnexpectedTypeException();
         }
+        break;
 
       case icSpliceSTVar:
         break;
