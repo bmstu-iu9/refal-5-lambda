@@ -752,11 +752,13 @@ GeneralizeResult {
                 (#CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
                 (#CmdiEmptyResult)
-                <Map
-                  (MakeInterpCommands e.MCopiedVars)
-                  <FoldAllocCommands
-                    (e.ResultAllocCommands)
-                    e.ResultCommands
+                <Mirror
+                  <Map
+                    (MakeInterpCommands e.MCopiedVars)
+                    <FoldAllocCommands
+                      (e.ResultAllocCommands)
+                      e.ResultCommands
+                    >
                   >
                 >
                 (#CmdFinRAA)
@@ -909,6 +911,74 @@ MakeInterpCommands {
 
   e.CopiedVars (#CmdInsertElem #ElCloseCall s.Counter) =
     (#CmdArrCC);
+}
+
+Mirror {
+  (#CmdArrCopy s.Mode e.Index) e.Commands =
+    (#CmdArrCopy s.Mode e.Index)
+    <Mirror e.Commands>
+    (#CmdSpliceCopyVar s.Mode);
+
+  (#CmdArrSplice s.Usings s.Mode e.Index) e.Commands =
+    <Mirror e.Commands>
+    (#CmdArrSplice s.Usings s.Mode e.Index);
+
+  (#CmdArrChar s.Value) e.Commands =
+    (#CmdArrChar s.Value)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrFunc e.Name) e.Commands =
+    (#CmdArrFunc e.Name)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrInt s.Number) e.Commands =
+    (#CmdArrInt s.Number)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrHugeInt s.Number) e.Commands =
+    (#CmdArrHugeInt s.Number)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrIdent e.Name) e.Commands =
+    (#CmdArrIdent e.Name)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrOB) e.Commands =
+    (#CmdArrOB)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrOADT) e.Commands =
+    (#CmdArrOADT)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrOC) e.Commands =
+    (#CmdArrOC)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrCB) e.Commands =
+    (#CmdArrCB)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrCADT) e.Commands =
+    (#CmdArrCADT)
+    <Mirror e.Commands>
+    (#CmdSpliceElem);
+
+  (#CmdArrCC) e.Commands =
+    (#CmdArrCC)
+    <Mirror e.Commands>
+    (#CmdArrCC-Link);
+
+  /* пусто */ = /* пусто */;
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }

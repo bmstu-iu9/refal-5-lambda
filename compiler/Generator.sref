@@ -655,6 +655,10 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icBracket, 0, refalrts::ibCloseCall, 0},');
 
+  (e.Indent) (#CmdArrCC-Link) =
+    (e.Indent)
+    (e.Indent '{refalrts::icBracket_CloseCallLink, 0, 0, 0},');
+
   (e.Indent) (#CmdArrCopy 'e' e.Index) =
     (e.Indent)
     (e.Indent
@@ -682,6 +686,18 @@ GenCommand {
       '{refalrts::icSpliceSTVar, 0, '
       <PrintVarShortcut s.Usings s.Mode e.Index> ', 0},'
     );
+
+  (e.Indent) (#CmdSpliceElem) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
+
+  (e.Indent) (#CmdSpliceCopyVar 'e') =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceCopyEVar, 0, 0, 0},');
+
+  (e.Indent) (#CmdSpliceCopyVar s.Mode) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceCopySTVar, 0, 0, 0},');
 }
 
 PrintVar {

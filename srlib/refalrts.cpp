@@ -2755,12 +2755,6 @@ refalrts::FnResult refalrts::interpret_array(
         }
         break;
 
-      case icSpliceSTVar:
-        break;
-
-      case icSpliceEVar:
-        break;
-
       case icCopySTVar:
         index = raa[i].val2;
         if( !copy_stvar(*allocs, context[index]) )
@@ -2790,58 +2784,9 @@ refalrts::FnResult refalrts::interpret_array(
         reset_allocator();
         break;
 
-      default:
-        throw UnexpectedTypeException();
-    }
-    i++;
-  }
-
-  while(i >= 0)
-  {
-    int index;
-    //Компоновка стека
-    switch(raa[i].cmd)
-    {
-      case icChar:
-      case icInt:
-      case icHugeInt:
-      case icFunc:
-      case icIdent:
+      case icSpliceElem:
         --allocs;
         res = splice_elem(res, *allocs);
-        break;
-
-      //skip-case
-      case icContextSet:
-      case icsVarRight:
-      case icsVarLeft:
-      case ictVarRight:
-      case ictVarLeft:
-      case icNumRight:
-      case icHugeNumRight:
-      case icNumLeft:
-      case icHugeNumLeft:
-      case icIdentRight:
-      case icIdentLeft:
-      case icADTLeft:
-      case icADTRight:
-      case icFuncRight:
-      case icFuncLeft:
-      case icCharRight:
-      case icCharLeft:
-      case iceRepeatRight:
-      case iceRepeatLeft:
-      case icsRepeatRight:
-      case icsRepeatLeft:
-      case ictRepeatRight:
-      case ictRepeatLeft:
-      case icSave:
-      case icEPrepare:
-      case icEStart:
-      case icBracketLeft:
-      case icBracketRight:
-      case icEmpty:
-      case icEmptyResult:
         break;
 
       case icSpliceSTVar:
@@ -2854,18 +2799,16 @@ refalrts::FnResult refalrts::interpret_array(
         res = splice_evar(res, context[index], context[index + 1]);
         break;
 
-      case icBracket:
+      case icBracket_CloseCallLink: {
         --allocs;
-        if( raa[i].val2 == ibCloseCall )
-        {
-          Iter open_call = (*allocs)->link_info;
-          push_stack(*allocs);
-          push_stack(open_call);
-        }
+        Iter open_call = (*allocs)->link_info;
+        push_stack(*allocs);
+        push_stack(open_call);
         res = splice_elem( res, *allocs);
         break;
+      }
 
-      case icCopyEVar: {
+      case icSpliceCopyEVar: {
         --allocs;
         refalrts::Iter eend = *allocs;
         --allocs;
@@ -2874,19 +2817,17 @@ refalrts::FnResult refalrts::interpret_array(
         break;
       }
 
-      case icCopySTVar:
+      case icSpliceCopySTVar:
         --allocs;
         res = splice_stvar(res, *allocs);
-        break;
-
-      case icEnd:
         break;
 
       default:
         throw UnexpectedTypeException();
     }
-    i--;
+    i++;
   }
+
   splice_to_freelist(begin, end);
 
   return cSuccess;
