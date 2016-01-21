@@ -423,11 +423,6 @@ GenCommand {
   (e.Indent) (#CmdEndIf) =
     (e.Indent) ('#endif');
 
-  (e.Indent) (#CmdSetBound) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBoundSet, arg_begin, arg_end, 0},')
-    ;
-
   (e.Indent) (#CmdiFuncArray) =
     (e.Indent)
     (e.Indent 'using refalrts::functions;');

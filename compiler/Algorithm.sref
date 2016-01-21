@@ -857,11 +857,6 @@ FoldAllocCommands {
     (#CmdInsertVar s.Usings s.Mode e.Index);
 
   (e.Allocs)
-  (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
-    <FoldAllocCommands (e.Allocs) e.Commands>
-    (#CmdInsertVar s.Usings s.Mode e.Index);
-
-  (e.Allocs)
   (#CmdLinkBrackets e.CmdInfo) e.Commands =
     <FoldAllocCommands (e.Allocs) e.Commands>;
 
