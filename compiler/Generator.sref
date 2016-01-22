@@ -132,6 +132,10 @@ BracketsVars {
     <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>;
 }
 
+ContextItem {
+  s.ItemNumber = 'context[' <StrFromInt s.ItemNumber> ']';
+}
+
 //FROM LibraryEx
 $EXTERN Dec;
 
@@ -349,19 +353,19 @@ GenCommand {
     (e.Indent 'refalrts::reset_allocator();')
     (e.Indent 'refalrts::Iter res = arg_begin;');
 
-  (e.Indent) (#CmdCopyEVar s.Usings 'e' e.Index) =
+  (e.Indent) (#CmdCopyEVar s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if( ! refalrts::copy_evar( ' <PrintEVars s.Usings 'e' e.Index> ', '
-      <PrintEVars <Dec s.Usings> 'e' e.Index> ' ) )'
+      'if (! refalrts::copy_evar(' <BracketsVars s.Target> ', '
+      <BracketsVars s.Sample> '))'
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
-  (e.Indent) (#CmdCopyVar s.Usings s.Mode e.Index) =
+  (e.Indent) (#CmdCopyVar s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if( ! refalrts::copy_stvar( ' <PrintVar s.Usings s.Mode e.Index> ', '
-      <PrintVar <Dec s.Usings> s.Mode e.Index> ' ) )'
+      'if (! refalrts::copy_stvar(' <ContextItem s.Target> ', '
+      <ContextItem s.Sample> '))'
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
@@ -659,18 +663,18 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icBracket_CloseCallLink, 0, 0, 0},');
 
-  (e.Indent) (#CmdArrCopy 'e' e.Index) =
+  (e.Indent) (#CmdArrCopy 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icCopyEVar, 0, '
-      <PrintVarShortcut 1 'e' e.Index>
-      ', 0},'
+      '{refalrts::icCopyEVar, '
+      <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
     );
 
-  (e.Indent) (#CmdArrCopy s.Mode e.Index) =
+  (e.Indent) (#CmdArrCopy s.Mode s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icCopySTVar, 0, ' <PrintVarShortcut 1 s.Mode e.Index> ', 0},'
+      '{refalrts::icCopySTVar, '
+      <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
     );
 
     (e.Indent) (#CmdArrSplice s.Usings 'e' e.Index) =
@@ -691,13 +695,13 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
 
-  (e.Indent) (#CmdSpliceCopyVar 'e') =
+  (e.Indent) (#CmdSpliceCopyVar 'e' s.Offset) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceCopyEVar, 0, 0, 0},');
+    (e.Indent '{refalrts::icSpliceEVar, 0, ' <StrFromInt s.Offset> ', 0},');
 
-  (e.Indent) (#CmdSpliceCopyVar s.Mode) =
+  (e.Indent) (#CmdSpliceCopyVar s.Mode s.Offset) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceCopySTVar, 0, 0, 0},');
+    (e.Indent '{refalrts::icSpliceSTVar, 0, ' <StrFromInt s.Offset> ', 0},');
 }
 
 PrintVar {

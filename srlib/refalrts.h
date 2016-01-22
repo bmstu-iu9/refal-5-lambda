@@ -115,9 +115,7 @@ typedef enum iCmd {
   icEStart,
   icEmptyResult,
   icSpliceElem,
-  icBracket_CloseCallLink,
-  icSpliceCopySTVar,
-  icSpliceCopyEVar
+  icBracket_CloseCallLink
 } iCmd;
 
 typedef enum BracketType {

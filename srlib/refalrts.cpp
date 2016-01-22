@@ -2752,27 +2752,23 @@ refalrts::FnResult refalrts::interpret_array(
         }
         break;
 
-      case icCopySTVar:
-        index = raa[i].val2;
-        if( !copy_stvar(*allocs, context[index]) )
+      case icCopySTVar: {
+        unsigned int target = raa[i].val1;
+        unsigned int sample = raa[i].val2;
+        if (! copy_stvar(context[target], context[sample]))
           return cNoMemory;
-        ++allocs;
         break;
+      }
 
       case icCopyEVar: {
-        refalrts::Iter& ebegin = *allocs;
-        ++allocs;
-        refalrts::Iter& eend = *allocs;
-        ++allocs;
-        index = raa[i].val2;
-        if(
-            !copy_evar(
-              ebegin,
-              eend,
-              context[index],
-              context[index + 1]
-            )
+        unsigned int target = raa[i].val1;
+        unsigned int sample = raa[i].val2;
+        if (
+          ! copy_evar(
+            context[target], context[target + 1],
+            context[sample], context[sample + 1]
           )
+        )
           return cNoMemory;
         break;
       }
@@ -2804,20 +2800,6 @@ refalrts::FnResult refalrts::interpret_array(
         res = splice_elem( res, *allocs);
         break;
       }
-
-      case icSpliceCopyEVar: {
-        --allocs;
-        refalrts::Iter eend = *allocs;
-        --allocs;
-        refalrts::Iter ebegin = *allocs;
-        res = splice_evar(res, ebegin, eend);
-        break;
-      }
-
-      case icSpliceCopySTVar:
-        --allocs;
-        res = splice_stvar(res, *allocs);
-        break;
 
       default:
         throw UnexpectedTypeException();

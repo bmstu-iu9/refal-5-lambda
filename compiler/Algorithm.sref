@@ -609,8 +609,15 @@ DoGenResult {
 //==============================================================================
 
 SetOffsetForCopiedVar {
-  e.Vars-B (s.Number e.VarInfo) e.Vars-E (e.VarInfo) =
-    (s.Number e.VarInfo);
+  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
+  (s.Usings s.Mode e.Index) =
+    <Fetch
+      e.Vars-B e.Vars-E <Dec s.Usings>
+      {
+        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
+          (s.Sample s.Number s.Usings s.Mode e.Index);
+      }
+    >;
 }
 
 //FROM LibraryEx
@@ -841,9 +848,11 @@ MakeDeclaration {
 }
 
 MakeCopyVar {
-  ( s.Number s.Usings 'e' e.Index ) = (#CmdCopyEVar s.Usings 'e' e.Index);
+  ( s.Sample s.Number s.Usings 'e' e.Index ) =
+    (#CmdCopyEVar s.Number s.Sample);
 
-  ( s.Number s.Usings s.Mode e.Index ) = (#CmdCopyVar s.Usings s.Mode e.Index);
+  ( s.Sample s.Number s.Usings s.Mode e.Index ) =
+    (#CmdCopyVar s.Number s.Sample);
 }
 
 FoldAllocCommands {
@@ -869,9 +878,9 @@ FoldAllocCommands {
 }
 
 MakeInterpCommands {
-  e.CopiedVars-B (s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
+  e.CopiedVars-B (s.Sample s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
   (#CmdInsertVar s.Usings s.Mode e.Index) =
-    (#CmdArrCopy s.Mode e.Index);
+    (#CmdArrCopy s.Mode s.Number s.Sample);
 
   e.CopiedVars (#CmdInsertVar s.Usings s.Mode e.Index) =
     (#CmdArrSplice s.Usings s.Mode e.Index);
@@ -913,10 +922,10 @@ MakeInterpCommands {
 }
 
 Mirror {
-  (#CmdArrCopy s.Mode e.Index) e.Commands =
-    (#CmdArrCopy s.Mode e.Index)
+  (#CmdArrCopy s.Mode s.Target s.Sample) e.Commands =
+    (#CmdArrCopy s.Mode s.Target s.Sample)
     <Mirror e.Commands>
-    (#CmdSpliceCopyVar s.Mode);
+    (#CmdSpliceCopyVar s.Mode s.Target);
 
   (#CmdArrSplice s.Usings s.Mode e.Index) e.Commands =
     <Mirror e.Commands>
