@@ -793,18 +793,23 @@ ReplicateVars {
 }
 
 VarSetUnion {
-  ( e.Set1-B t.Common e.Set1-E ) ( e.Set2-B t.Common e.Set2-E ) =
-    t.Common
-    <VarSetUnion (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>;
+  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
+    t.Common <VarSetUnion (e.Set1) (e.Set2-B e.Set2-E)>;
 
-  ( e.Set1 ) ( e.Set2 ) = e.Set1 e.Set2;
+  (t.OnlyInSet1 e.Set1) (e.Set2) =
+    t.OnlyInSet1 <VarSetUnion (e.Set1) (e.Set2)>;
+
+  () (e.Set2) = e.Set2;
 }
 
 VarSetDifference {
-  ( e.Set1-B t.Common e.Set1-E ) ( e.Set2-B t.Common e.Set2-E ) =
-    e.Set1-B <VarSetDifference (e.Set1-E) ( e.Set2-B e.Set2-E )>;
+  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
+    <VarSetDifference (e.Set1) (e.Set2-B e.Set2-E)>;
 
-  ( e.Set1 ) ( e.Set2 ) = e.Set1;
+  (t.OnlyInSet1 e.Set1) (e.Set2) =
+    t.OnlyInSet1 <VarSetDifference (e.Set1) (e.Set2)>;
+
+  () (e.Set2) = /* пусто */;
 }
 
 ClosedEVariables {
