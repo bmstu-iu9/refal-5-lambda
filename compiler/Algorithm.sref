@@ -608,25 +608,9 @@ DoGenResult {
 // копирование повторных.
 //==============================================================================
 
-NumerateVars {
-  s.Number ( s.Usings 'e' e.Index ) e.Etc =
-    (s.Number s.Usings 'e' e.Index) <NumerateVars <Add s.Number 2> e.Etc>
-  ;
-  s.Number ( s.Usings s.Mode e.Index ) e.Etc =
-    (s.Number s.Usings s.Mode e.Index) <NumerateVars <Inc s.Number> e.Etc>
-  ;
-
-  s.Number = (s.Number)
-  ;
-}
-
-FindAllocForCopiedVars {
-  (e.Set1-B (s.Number e.Common) e.Set1-E) (e.Set2-B (e.Common) e.Set2-E) =
-    (s.Number e.Common)
-    <FindAllocForCopiedVars (e.Set1-B e.Set1-E) (e.Set2-B e.Set2-E)>
-  ;
-
-  (e.Set1) (e.Set2) = ;
+SetOffsetForCopiedVar {
+  e.Vars-B (s.Number e.VarInfo) e.Vars-E (e.VarInfo) =
+    (s.Number e.VarInfo);
 }
 
 //FROM LibraryEx
@@ -726,21 +710,32 @@ GeneralizeResult {
             <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
         }
         {
-          (e.CommonVars) (e.CopiedVars) e.Etc =
-            (<NumerateVars s.NumBrackets e.CommonVars>) (e.CopiedVars) e.Etc;
+          (e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+            (
+              <MapReduce
+                {
+                  s.Number (s.Usings 'e' e.Index) =
+                    <Add s.Number 2> (s.Number s.Usings 'e' e.Index);
+
+                  s.Number (s.Usings s.Mode e.Index) =
+                    <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
+                }
+                s.NumBrackets e.CommonVars
+              >
+            )
+            (e.CopiedVars) e.FilteredPatternCommands;
         }
         {
-          (e.NCommonVars (s.Number)) (e.CopiedVars) e.Etc =
-            (e.NCommonVars) s.Number
-            (<FindAllocForCopiedVars (e.NCommonVars) (e.CopiedVars)>)
-            (e.CopiedVars)
-            e.Etc;
+          (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+            (e.CommonVars) s.Number
+            (<Map (SetOffsetForCopiedVar e.CommonVars) e.CopiedVars>)
+            e.FilteredPatternCommands;
         }
         {
-          (e.NCommonVars) s.Number
-          (e.MCopiedVars) (e.CopiedVars) e.PatternCommands^ =
+          (e.CommonVars) s.Number
+          (e.CopiedVars) e.PatternCommands^ =
             (#CmdIssueMem s.Number)
-            <Map MakeDeclaration e.NCommonVars>
+            <Map MakeDeclaration e.CommonVars>
             (#CmdInitB0)
             // Интерпретируемый код
             (#CmdIfDef)
@@ -754,7 +749,7 @@ GeneralizeResult {
                 (#CmdiEmptyResult)
                 <Mirror
                   <Map
-                    (MakeInterpCommands e.MCopiedVars)
+                    (MakeInterpCommands e.CopiedVars)
                     <FoldAllocCommands
                       (e.ResultAllocCommands)
                       e.ResultCommands
@@ -841,10 +836,9 @@ MakeDeclaration {
 }
 
 MakeCopyVar {
-  ( s.Usings 'e' e.Index ) = (#CmdCopyEVar s.Usings 'e' e.Index);
+  ( s.Number s.Usings 'e' e.Index ) = (#CmdCopyEVar s.Usings 'e' e.Index);
 
-  ( s.Usings s.Mode e.Index ) =
-    (#CmdCopyVar s.Usings s.Mode e.Index);
+  ( s.Number s.Usings s.Mode e.Index ) = (#CmdCopyVar s.Usings s.Mode e.Index);
 }
 
 FoldAllocCommands {
