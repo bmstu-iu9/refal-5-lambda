@@ -2026,7 +2026,6 @@ refalrts::FnResult refalrts::vm::main_loop() {
     refalrts::Iter active_end = pop_stack();
 
     res = execute_active( active_begin, active_end );
-    refalrts::profiler::after_step();
 
     ++ g_step_counter;
 
@@ -2049,12 +2048,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
       }
       make_dump( active_begin, active_end );
       return res;
-    } else {
-      continue;
     }
-  }
 
-  // printf("\n\nTOTAL STEPS %d\n", g_step_counter);
+    refalrts::profiler::after_step();
+  }
 
   return res;
 }
