@@ -754,14 +754,10 @@ GeneralizeResult {
                 (#CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
                 (#CmdiEmptyResult)
-                <Mirror
-                  <Map
-                    (MakeInterpCommands e.CopiedVars)
-                    <FoldAllocCommands
-                      (e.ResultAllocCommands)
-                      e.ResultCommands
-                    >
-                  >
+                <PrepareInterpretCommands
+                  (e.ResultAllocCommands)
+                  (e.CopiedVars)
+                  e.ResultCommands
                 >
                 (#CmdFinRAA)
               >
@@ -855,138 +851,158 @@ MakeCopyVar {
     (#CmdCopyVar s.Number s.Sample);
 }
 
-FoldAllocCommands {
-  (e.Allocs-B (#CmdAllocateElem s.ElemNo s.Type e.Value) e.Allocs-E)
-  (#CmdInsertElem s.ElemNo) e.Commands =
-    <FoldAllocCommands (e.Allocs-B e.Allocs-E) e.Commands>
-    (#CmdInsertElem s.Type s.ElemNo e.Value);
-
-  (e.Allocs)
-  (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
-    <FoldAllocCommands (e.Allocs) e.Commands>
-    (#CmdInsertVar s.Usings s.Mode e.Index);
-
-  (e.Allocs)
-  (#CmdLinkBrackets e.CmdInfo) e.Commands =
-    <FoldAllocCommands (e.Allocs) e.Commands>;
-
-  (e.Allocs)
-  (#CmdPushStack e.CmdInfo) e.Commands =
-    <FoldAllocCommands (e.Allocs) e.Commands>;
-
-  (/* должно быть пусто */) /* пусто */ = /* пусто */;
+PrepareInterpretCommands {
+  (e.ResultAllocCommands) (e.CopiedVars) e.ResultCommands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.ResultAllocCommands) (/* interpret alloc commands */)
+      (/* interpret commands */) e.ResultCommands
+    >;
 }
 
-MakeInterpCommands {
-  e.CopiedVars-B (s.Sample s.Number s.Usings s.Mode e.Index) e.CopiedVars-E
-  (#CmdInsertVar s.Usings s.Mode e.Index) =
-    (#CmdArrCopy s.Mode s.Number s.Sample);
+DoPrepareInterpretCommands {
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElChar s.Value)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrChar s.Value) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertVar s.Usings s.Mode e.Index) =
-    (#CmdArrSplice s.Usings s.Mode e.Index);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElName e.Name)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrFunc e.Name) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElChar s.Counter s.Value) =
-    (#CmdArrChar s.Value);
-
-  e.CopiedVars (#CmdInsertElem #ElName s.Counter e.Name) =
-    (#CmdArrFunc e.Name);
-
-  e.CopiedVars (#CmdInsertElem #ElNumber s.Counter s.Number) =
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElNumber s.Number)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (#CmdArrInt s.Number);
-        s.Other = (#CmdArrHugeInt s.Number);
+        '<' =
+          <DoPrepareInterpretCommands
+            (e.CopiedVars)
+            (e.Allocs) ((#CmdArrInt s.Number) e.iAllocs)
+            (e.iCommands (#CmdSpliceElem)) e.Commands
+          >;
+
+        s.Other =
+          <DoPrepareInterpretCommands
+            (e.CopiedVars)
+            (e.Allocs) ((#CmdArrHugeInt s.Number) e.iAllocs)
+            (e.iCommands (#CmdSpliceElem)) e.Commands
+          >;
       }
     >;
 
-  e.CopiedVars (#CmdInsertElem #ElIdent s.Counter e.Name) =
-    (#CmdArrIdent e.Name);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElIdent e.Name)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrIdent e.Name) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElOpenBracket s.Counter) =
-    (#CmdArrOB);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenBracket)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrOB) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElOpenADT s.Counter) =
-    (#CmdArrOADT);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenADT)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrOADT) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElOpenCall s.Counter) =
-    (#CmdArrOC);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenCall)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrOC) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElCloseBracket s.Counter) =
-    (#CmdArrCB);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseBracket)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrCB) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElCloseADT s.Counter) =
-    (#CmdArrCADT);
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseADT)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrCADT) e.iAllocs)
+      (e.iCommands (#CmdSpliceElem)) e.Commands
+    >;
 
-  e.CopiedVars (#CmdInsertElem #ElCloseCall s.Counter) =
-    (#CmdArrCC);
-}
+  (e.CopiedVars)
+  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseCall)) (e.iAllocs)
+  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) ((#CmdArrCC) e.iAllocs)
+      (e.iCommands (#CmdArrCC-Link)) e.Commands
+    >;
 
-Mirror {
-  (#CmdArrCopy s.Mode s.Target s.Sample) e.Commands =
-    (#CmdArrCopy s.Mode s.Target s.Sample)
-    <Mirror e.Commands>
-    (#CmdSpliceCopyVar s.Mode s.Target);
+  (e.CopiedVars-B (s.Sample s.Target s.Usings s.Mode e.Index) e.CopiedVars-E)
+  (e.Allocs) (e.iAllocs)
+  (e.iCommands) (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars-B e.CopiedVars-E)
+      (e.Allocs) ((#CmdArrCopy s.Mode s.Target s.Sample) e.iAllocs)
+      (e.iCommands (#CmdSpliceCopyVar s.Mode s.Target)) e.Commands
+    >;
 
-  (#CmdArrSplice s.Usings s.Mode e.Index) e.Commands =
-    <Mirror e.Commands>
-    (#CmdArrSplice s.Usings s.Mode e.Index);
+  (e.CopiedVars)
+  (e.Allocs) (e.iAllocs)
+  (e.iCommands) (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) (e.iAllocs)
+      (e.iCommands (#CmdArrSplice s.Usings s.Mode e.Index)) e.Commands
+    >;
 
-  (#CmdArrChar s.Value) e.Commands =
-    (#CmdArrChar s.Value)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
+  (e.CopiedVars)
+  (e.Allocs) (e.iAllocs)
+  (e.iCommands) (#CmdLinkBrackets e.CmdInfo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) (e.iAllocs)
+      (e.iCommands) e.Commands
+    >;
 
-  (#CmdArrFunc e.Name) e.Commands =
-    (#CmdArrFunc e.Name)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
+  (e.CopiedVars)
+  (e.Allocs) (e.iAllocs)
+  (e.iCommands) (#CmdPushStack e.CmdInfo) e.Commands =
+    <DoPrepareInterpretCommands
+      (e.CopiedVars)
+      (e.Allocs) (e.iAllocs)
+      (e.iCommands) e.Commands
+    >;
 
-  (#CmdArrInt s.Number) e.Commands =
-    (#CmdArrInt s.Number)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrHugeInt s.Number) e.Commands =
-    (#CmdArrHugeInt s.Number)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrIdent e.Name) e.Commands =
-    (#CmdArrIdent e.Name)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrOB) e.Commands =
-    (#CmdArrOB)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrOADT) e.Commands =
-    (#CmdArrOADT)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrOC) e.Commands =
-    (#CmdArrOC)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrCB) e.Commands =
-    (#CmdArrCB)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrCADT) e.Commands =
-    (#CmdArrCADT)
-    <Mirror e.Commands>
-    (#CmdSpliceElem);
-
-  (#CmdArrCC) e.Commands =
-    (#CmdArrCC)
-    <Mirror e.Commands>
-    (#CmdArrCC-Link);
-
-  /* пусто */ = /* пусто */;
+  (/* должно быть пусто */)
+  (/* должно быть пусто */) (e.iAllocs)
+  (e.iCommands) /* пусто */ =
+    e.iAllocs e.iCommands;
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
