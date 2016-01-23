@@ -845,11 +845,8 @@ MakeDeclaration {
 }
 
 MakeCopyVar {
-  ( s.Sample s.Number s.Usings 'e' e.Index ) =
-    (#CmdCopyEVar s.Number s.Sample);
-
   ( s.Sample s.Number s.Usings s.Mode e.Index ) =
-    (#CmdCopyVar s.Number s.Sample);
+    (#CmdCopyVar s.Mode s.Number s.Sample);
 }
 
 MakeCopyVarInterpret {

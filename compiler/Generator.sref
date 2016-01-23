@@ -353,7 +353,7 @@ GenCommand {
     (e.Indent 'refalrts::reset_allocator();')
     (e.Indent 'refalrts::Iter res = arg_begin;');
 
-  (e.Indent) (#CmdCopyEVar s.Target s.Sample) =
+  (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
       'if (! refalrts::copy_evar(' <BracketsVars s.Target> ', '
@@ -361,7 +361,7 @@ GenCommand {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
-  (e.Indent) (#CmdCopyVar s.Target s.Sample) =
+  (e.Indent) (#CmdCopyVar s.Mode s.Target s.Sample) =
     (e.Indent)
     (e.Indent
       'if (! refalrts::copy_stvar(' <ContextItem s.Target> ', '
@@ -843,23 +843,15 @@ PrintElemVar {
 
 PrintAllocateElem {
   (e.Indent) s.ElemNumber s.ElementType e.Info =
-    <PrintAllocate-Aux
-      (e.Indent) s.ElemNumber
-      ( <SwAllocator s.ElementType> )
-      ( <SwInfo s.ElementType e.Info> )
-    >
+    (e.Indent
+      'if( ! refalrts::' <AllocatorFuncName s.ElementType> '( '
+      <PrintElemVar s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
+      ' ) )'
+    )
     (e.Indent '  return refalrts::cNoMemory;');
 }
 
-PrintAllocate-Aux {
-  (e.Indent) s.ElemNumber (e.Constructor) (e.Value) =
-    (e.Indent
-      'if( ! refalrts::' e.Constructor '( ' <PrintElemVar s.ElemNumber>
-      e.Value ' ) )'
-    );
-}
-
-SwAllocator {
+AllocatorFuncName {
   #ElChar = 'alloc_char';
   #ElName = 'alloc_name';
   #ElNumber = 'alloc_number';
@@ -875,7 +867,7 @@ SwAllocator {
   #ElCloseCall = 'alloc_close_call';
 }
 
-SwInfo {
+AllocatorFuncArgument {
   #ElChar s.Char = ', ' '' <Escape s.Char> '';
 
   #ElName e.Name = ', ' <PrintName e.Name> ', "' <PrintName e.Name> '"';
