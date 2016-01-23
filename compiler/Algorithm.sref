@@ -754,6 +754,7 @@ GeneralizeResult {
                 (#CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
                 (#CmdiEmptyResult)
+                <Map MakeCopyVarInterpret e.CopiedVars>
                 <PrepareInterpretCommands
                   (e.ResultAllocCommands)
                   (e.CopiedVars)
@@ -849,6 +850,11 @@ MakeCopyVar {
 
   ( s.Sample s.Number s.Usings s.Mode e.Index ) =
     (#CmdCopyVar s.Number s.Sample);
+}
+
+MakeCopyVarInterpret {
+  (s.Sample s.Number s.Usings s.Mode e.Index) =
+    (#CmdArrCopy s.Mode s.Number s.Sample);
 }
 
 PrepareInterpretCommands {
@@ -968,7 +974,7 @@ DoPrepareInterpretCommands {
   (e.iCommands) (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
     <DoPrepareInterpretCommands
       (e.CopiedVars-B e.CopiedVars-E)
-      (e.Allocs) ((#CmdArrCopy s.Mode s.Target s.Sample) e.iAllocs)
+      (e.Allocs) (e.iAllocs)
       (e.iCommands (#CmdSpliceCopyVar s.Mode s.Target)) e.Commands
     >;
 
