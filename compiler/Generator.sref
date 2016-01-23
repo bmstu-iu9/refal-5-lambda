@@ -392,18 +392,16 @@ GenCommand {
       'res = refalrts::splice_elem( res, ' <PrintElemVar s.ElemNumber> ' );'
     );
 
-  (e.Indent) (#CmdInsertVar s.Usings 'e' e.Index) =
+  (e.Indent) (#CmdInsertVar 'e' s.Number) =
     (e.Indent)
     (e.Indent
-      'res = refalrts::splice_evar( res, '
-      <PrintEVars s.Usings 'e' e.Index> ' );'
+      'res = refalrts::splice_evar( res, ' <BracketsVars s.Number> ' );'
     );
 
-  (e.Indent) (#CmdInsertVar s.Usings s.Mode e.Index) =
+  (e.Indent) (#CmdInsertVar s.Mode s.Number) =
     (e.Indent)
     (e.Indent
-      'res = refalrts::splice_stvar( res, '
-      <PrintVar s.Usings s.Mode e.Index> ' );'
+      'res = refalrts::splice_stvar( res, ' <ContextItem s.Number> ' );'
     );
 
   (e.Indent) (#CmdReturnResult) =
@@ -677,31 +675,17 @@ GenCommand {
       <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
     );
 
-    (e.Indent) (#CmdArrSplice s.Usings 'e' e.Index) =
+  (e.Indent) (#CmdArrSplice 'e' s.Offset) =
     (e.Indent)
-    (e.Indent
-      '{refalrts::icSpliceEVar, 0, '
-      <PrintVarShortcut s.Usings 'e' e.Index> ', 0},'
-    );
+    (e.Indent '{refalrts::icSpliceEVar, 0, ' <StrFromInt s.Offset> ', 0},');
 
-  (e.Indent) (#CmdArrSplice s.Usings s.Mode e.Index) =
+  (e.Indent) (#CmdArrSplice s.Mode s.Offset) =
     (e.Indent)
-    (e.Indent
-      '{refalrts::icSpliceSTVar, 0, '
-      <PrintVarShortcut s.Usings s.Mode e.Index> ', 0},'
-    );
+    (e.Indent '{refalrts::icSpliceSTVar, 0, ' <StrFromInt s.Offset> ', 0},');
 
   (e.Indent) (#CmdSpliceElem) =
     (e.Indent)
     (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
-
-  (e.Indent) (#CmdSpliceCopyVar 'e' s.Offset) =
-    (e.Indent)
-    (e.Indent '{refalrts::icSpliceEVar, 0, ' <StrFromInt s.Offset> ', 0},');
-
-  (e.Indent) (#CmdSpliceCopyVar s.Mode s.Offset) =
-    (e.Indent)
-    (e.Indent '{refalrts::icSpliceSTVar, 0, ' <StrFromInt s.Offset> ', 0},');
 }
 
 PrintVar {

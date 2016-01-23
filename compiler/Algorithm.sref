@@ -459,7 +459,7 @@ GenResult {
 //  (#CmdLinkBrackets s.Left s.Right)
 //  (#CmdPushStack s.Number)
 //  (#CmdInsertElem s.Number)
-//  (#CmdInsertVar s.Usings s.Mode e.Index)
+//  (#CmdInsertVar s.Mode s.Number)
 
 /*
   Порядок выполнения команд.
@@ -741,6 +741,13 @@ GeneralizeResult {
         {
           (e.CommonVars) s.Number
           (e.CopiedVars) e.PatternCommands^ =
+            (e.CommonVars) s.Number
+            (e.CopiedVars) (e.PatternCommands)
+            <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>;
+        }
+        {
+          (e.CommonVars) s.Number
+          (e.CopiedVars) (e.PatternCommands^) e.ResultCommands^ =
             (#CmdIssueMem s.Number)
             <Map MakeDeclaration e.CommonVars>
             (#CmdInitB0)
@@ -756,9 +763,7 @@ GeneralizeResult {
                 (#CmdiEmptyResult)
                 <Map MakeCopyVarInterpret e.CopiedVars>
                 <PrepareInterpretCommands
-                  (e.ResultAllocCommands)
-                  (e.CopiedVars)
-                  e.ResultCommands
+                  (e.ResultAllocCommands) e.ResultCommands
                 >
                 (#CmdFinRAA)
               >
@@ -836,6 +841,15 @@ FilterUnusedCmdClosedE {
   e.Unuseds t.OtherCommand = t.OtherCommand;
 }
 
+SetOffsetForCmdInsertVar {
+  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
+  (#CmdInsertVar s.Usings s.Mode e.Index) =
+    (#CmdInsertVar s.Mode s.Number);
+
+  e.Vars t.OtherCommand =
+    t.OtherCommand;
+}
+
 MakeDeclaration {
   ( s.Number s.Usings 'e' e.Index ) =
     (#CmdDeclareEVar s.Number s.Usings 'e' e.Index);
@@ -855,156 +869,117 @@ MakeCopyVarInterpret {
 }
 
 PrepareInterpretCommands {
-  (e.ResultAllocCommands) (e.CopiedVars) e.ResultCommands =
+  (e.ResultAllocCommands) e.ResultCommands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.ResultAllocCommands) (/* interpret alloc commands */)
       (/* interpret commands */) e.ResultCommands
     >;
 }
 
 DoPrepareInterpretCommands {
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElChar s.Value)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrChar s.Value) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElName e.Name)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrFunc e.Name) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElNumber s.Number)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <Fetch
       <Compare s.Number 256> {
         '<' =
           <DoPrepareInterpretCommands
-            (e.CopiedVars)
             (e.Allocs) ((#CmdArrInt s.Number) e.iAllocs)
             (e.iCommands (#CmdSpliceElem)) e.Commands
           >;
 
         s.Other =
           <DoPrepareInterpretCommands
-            (e.CopiedVars)
             (e.Allocs) ((#CmdArrHugeInt s.Number) e.iAllocs)
             (e.iCommands (#CmdSpliceElem)) e.Commands
           >;
       }
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElIdent e.Name)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrIdent e.Name) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenBracket)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrOB) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenADT)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrOADT) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenCall)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrOC) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseBracket)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrCB) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseADT)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrCADT) e.iAllocs)
       (e.iCommands (#CmdSpliceElem)) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseCall)) (e.iAllocs)
   (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) ((#CmdArrCC) e.iAllocs)
       (e.iCommands (#CmdArrCC-Link)) e.Commands
     >;
 
-  (e.CopiedVars-B (s.Sample s.Target s.Usings s.Mode e.Index) e.CopiedVars-E)
   (e.Allocs) (e.iAllocs)
-  (e.iCommands) (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
+  (e.iCommands) (#CmdInsertVar s.Mode s.Number) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars-B e.CopiedVars-E)
       (e.Allocs) (e.iAllocs)
-      (e.iCommands (#CmdSpliceCopyVar s.Mode s.Target)) e.Commands
+      (e.iCommands (#CmdArrSplice s.Mode s.Number)) e.Commands
     >;
 
-  (e.CopiedVars)
-  (e.Allocs) (e.iAllocs)
-  (e.iCommands) (#CmdInsertVar s.Usings s.Mode e.Index) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.CopiedVars)
-      (e.Allocs) (e.iAllocs)
-      (e.iCommands (#CmdArrSplice s.Usings s.Mode e.Index)) e.Commands
-    >;
-
-  (e.CopiedVars)
   (e.Allocs) (e.iAllocs)
   (e.iCommands) (#CmdLinkBrackets e.CmdInfo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) (e.iAllocs)
       (e.iCommands) e.Commands
     >;
 
-  (e.CopiedVars)
   (e.Allocs) (e.iAllocs)
   (e.iCommands) (#CmdPushStack e.CmdInfo) e.Commands =
     <DoPrepareInterpretCommands
-      (e.CopiedVars)
       (e.Allocs) (e.iAllocs)
       (e.iCommands) e.Commands
     >;
 
-  (/* должно быть пусто */)
-  (/* должно быть пусто */) (e.iAllocs)
-  (e.iCommands) /* пусто */ =
+  (/* должно быть пусто */) (e.iAllocs) (e.iCommands) /* пусто */ =
     e.iAllocs e.iCommands;
 }
 
