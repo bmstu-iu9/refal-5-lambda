@@ -531,7 +531,7 @@ GenCommand {
 
   (e.Indent) (#CmdInitRAA) =
     (e.Indent '  ')
-    (e.Indent 'static refalrts::RASLCommand raa[] = {');
+    (e.Indent 'static const refalrts::RASLCommand raa[] = {');
 
   (e.Indent '  ') (#CmdFinRAA) =
     (e.Indent)

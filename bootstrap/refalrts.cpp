@@ -2424,7 +2424,7 @@ void refalrts::vm::free_view_field() {
 //==============================================================================
 
 refalrts::FnResult refalrts::interpret_array(
-  refalrts::RASLCommand raa[],
+  const refalrts::RASLCommand raa[],
   refalrts::Iter allocs[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,

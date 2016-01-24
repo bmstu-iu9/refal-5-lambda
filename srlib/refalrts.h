@@ -320,7 +320,7 @@ void debug_print_expr(void *file, Iter first, Iter last);
 // Интерпретатор
 
 extern FnResult interpret_array(
-  RASLCommand raa[],
+  const RASLCommand raa[],
   Iter allocs[],
   Iter context[],
   Iter begin,
