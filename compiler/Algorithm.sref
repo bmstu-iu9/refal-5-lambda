@@ -752,6 +752,14 @@ GeneralizeResult {
         {
           (e.CommonVars) s.Number
           (e.CopiedVars) (e.PatternCommands^) e.ResultCommands^ =
+            (e.CommonVars) s.Number
+            (e.PatternCommands)
+            <Map MakeCopyVar e.CopiedVars>
+            e.ResultAllocCommands e.ResultCommands;
+        }
+        {
+          (e.CommonVars) s.Number
+          (e.PatternCommands^) e.ResultCommands^ =
             (#CmdIssueMem s.Number)
             <Map MakeDeclaration e.CommonVars>
             (#CmdInitB0)
@@ -765,10 +773,7 @@ GeneralizeResult {
                 (#CmdInitRAA)
                 <GenInterpretPatternCommand e.PatternCommands>
                 (#CmdiEmptyResult)
-                <Map MakeCopyVarInterpret e.CopiedVars>
-                <PrepareInterpretCommands
-                  (e.ResultAllocCommands) e.ResultCommands
-                >
+                <PrepareInterpretCommands e.ResultCommands>
                 (#CmdFinRAA)
               >
               0 /* начальная глубина */
@@ -779,8 +784,6 @@ GeneralizeResult {
             <GenerateResult-OpenELoops
               e.PatternCommands
               (#CmdEmptyResult)
-              <Map MakeCopyVar e.CopiedVars>
-              e.ResultAllocCommands
               e.ResultCommands
               (#CmdReturnResult)
             >
@@ -867,124 +870,69 @@ MakeCopyVar {
     (#CmdCopyVar s.Mode s.Number s.Sample);
 }
 
-MakeCopyVarInterpret {
-  (s.Sample s.Number s.Usings s.Mode e.Index) =
-    (#CmdArrCopy s.Mode s.Number s.Sample);
-}
-
 PrepareInterpretCommands {
-  (e.ResultAllocCommands) e.ResultCommands =
-    <DoPrepareInterpretCommands
-      (e.ResultAllocCommands) (/* interpret alloc commands */)
-      (/* interpret commands */) e.ResultCommands
+  e.ResultCommands =
+    <Map
+      ConvertInterpretCommand
+      <PrepareInterpretCommands-PatchCloseCall
+        e.ResultCommands
+      >
     >;
 }
 
-DoPrepareInterpretCommands {
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElChar s.Value)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrChar s.Value) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
+PrepareInterpretCommands-PatchCloseCall {
+  e.ResultCommands-B (#CmdAllocateElem s.ElemNo #ElCloseCall)
+  e.ResultCommands-M (#CmdInsertElem s.ElemNo) e.ResultCommands-E =
+    e.ResultCommands-B
+    (#CmdAllocateElem s.ElemNo #ElCloseCall)
+    <PrepareInterpretCommands-PatchCloseCall
+      e.ResultCommands-M
+      (#CmdArrCC-Link)
+      e.ResultCommands-E
     >;
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElName e.Name)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrFunc e.Name) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  e.ResultCommands = e.ResultCommands;
+}
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElNumber s.Number)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
+ConvertInterpretCommand {
+  (#CmdAllocateElem s.ElemNo #ElChar s.Value) = (#CmdArrChar s.Value);
+
+  (#CmdAllocateElem s.ElemNo #ElName e.Name) = (#CmdArrFunc e.Name);
+
+  (#CmdAllocateElem s.ElemNo #ElNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
-        '<' =
-          <DoPrepareInterpretCommands
-            (e.Allocs) ((#CmdArrInt s.Number) e.iAllocs)
-            (e.iCommands (#CmdSpliceElem)) e.Commands
-          >;
-
-        s.Other =
-          <DoPrepareInterpretCommands
-            (e.Allocs) ((#CmdArrHugeInt s.Number) e.iAllocs)
-            (e.iCommands (#CmdSpliceElem)) e.Commands
-          >;
+        '<' = (#CmdArrInt s.Number);
+        s.Other = (#CmdArrHugeInt s.Number);
       }
     >;
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElIdent e.Name)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrIdent e.Name) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElIdent e.Name) = (#CmdArrIdent e.Name);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenBracket)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrOB) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElOpenBracket) = (#CmdArrOB);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenADT)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrOADT) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElOpenADT) = (#CmdArrOADT);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElOpenCall)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrOC) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElOpenCall) = (#CmdArrOC);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseBracket)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrCB) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElCloseBracket) = (#CmdArrCB);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseADT)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrCADT) e.iAllocs)
-      (e.iCommands (#CmdSpliceElem)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElCloseADT) = (#CmdArrCADT);
 
-  (e.Allocs (#CmdAllocateElem s.ElemNo #ElCloseCall)) (e.iAllocs)
-  (e.iCommands) (#CmdInsertElem s.ElemNo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) ((#CmdArrCC) e.iAllocs)
-      (e.iCommands (#CmdArrCC-Link)) e.Commands
-    >;
+  (#CmdAllocateElem s.ElemNo #ElCloseCall) = (#CmdArrCC);
 
-  (e.Allocs) (e.iAllocs)
-  (e.iCommands) (#CmdInsertVar s.Mode s.Number) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) (e.iAllocs)
-      (e.iCommands (#CmdArrSplice s.Mode s.Number)) e.Commands
-    >;
+  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem);
 
-  (e.Allocs) (e.iAllocs)
-  (e.iCommands) (#CmdLinkBrackets e.CmdInfo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) (e.iAllocs)
-      (e.iCommands) e.Commands
-    >;
+  (#CmdArrCC-Link) = (#CmdArrCC-Link);
 
-  (e.Allocs) (e.iAllocs)
-  (e.iCommands) (#CmdPushStack e.CmdInfo) e.Commands =
-    <DoPrepareInterpretCommands
-      (e.Allocs) (e.iAllocs)
-      (e.iCommands) e.Commands
-    >;
+  (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
 
-  (/* должно быть пусто */) (e.iAllocs) (e.iCommands) /* пусто */ =
-    e.iAllocs e.iCommands;
+  (#CmdLinkBrackets e.CmdInfo) = ;
+
+  (#CmdPushStack e.CmdInfo) = ;
+
+  (#CmdCopyVar s.Mode s.Number s.Sample) =
+    (#CmdArrCopy s.Mode s.Number s.Sample);
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
