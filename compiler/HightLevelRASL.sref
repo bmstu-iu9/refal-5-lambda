@@ -74,6 +74,208 @@ HightLevelRASL-Sentence {
     >;
 }
 
+GeneralizeResult {
+  (e.PatternVars) s.NumBrackets (e.PatternCommands)
+  (e.ResultVars) (e.ResultCommands) =
+    <Fetch
+      (<ReplicateVars e.PatternVars>)
+      (<ReplicateVars e.ResultVars>)
+      (<Map RepeatedEVariables e.PatternCommands>)
+      <Map ClosedEVariables e.PatternCommands>
+      <Seq
+        {
+          (e.PatternVars^) (e.ResultVars^) (e.RepeatedEs) e.ClosedEs =
+            (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
+            (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
+            <VarSetDifference (e.ClosedEs) (e.RepeatedEs e.ResultVars)>;
+        }
+        {
+          (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
+            (<VarSetDifference (e.CommonVars) (e.UnusedClosedEs)>)
+            (e.CopiedVars)
+            <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
+        }
+        {
+          (e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+            (
+              <MapReduce
+                {
+                  s.Number (s.Usings 'e' e.Index) =
+                    <Add s.Number 2> (s.Number s.Usings 'e' e.Index);
+
+                  s.Number (s.Usings s.Mode e.Index) =
+                    <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
+                }
+                s.NumBrackets e.CommonVars
+              >
+            )
+            (e.CopiedVars) e.FilteredPatternCommands;
+        }
+        {
+          (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+            <FoldOpenELoops
+              (#CmdIssueMem s.Number)
+              <PatchVariableNumbers
+                (e.CommonVars)
+                e.FilteredPatternCommands
+                (#CmdEmptyResult)
+                <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
+                <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
+              >
+            >;
+        }
+      >
+    >;
+}
+
+FoldOpenELoops {
+  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
+    e.Commands-B
+    (#CmdOpenELoop
+      #AlgLeft s.BracketNum s.VarNumber
+      <FoldOpenELoops e.Commands-E>
+    );
+
+  e.Commands = e.Commands;
+}
+
+ReplicateVar {
+  (1 s.Mode e.Index) = (1 s.Mode e.Index);
+
+  (s.Using s.Mode e.Index) =
+    <ReplicateVar (<Dec s.Using> s.Mode e.Index)>
+    (s.Using s.Mode e.Index);
+}
+
+ReplicateVars {
+  e.Vars = <Map ReplicateVar e.Vars>;
+}
+
+VarSetUnion {
+  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
+    t.Common <VarSetUnion (e.Set1) (e.Set2-B e.Set2-E)>;
+
+  (t.OnlyInSet1 e.Set1) (e.Set2) =
+    t.OnlyInSet1 <VarSetUnion (e.Set1) (e.Set2)>;
+
+  () (e.Set2) = e.Set2;
+}
+
+VarSetDifference {
+  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
+    <VarSetDifference (e.Set1) (e.Set2-B e.Set2-E)>;
+
+  (t.OnlyInSet1 e.Set1) (e.Set2) =
+    t.OnlyInSet1 <VarSetDifference (e.Set1) (e.Set2)>;
+
+  () (e.Set2) = /* пусто */;
+}
+
+ClosedEVariables {
+  (#CmdClosedE #AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
+
+  t.Other = /* игнорируем */;
+}
+
+RepeatedEVariables {
+  (#CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
+
+  t.Other = /* игнорируем */;
+}
+
+FilterUnusedCmdClosedE {
+  e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
+  (#CmdClosedE #AlgLeft s.Num 'e' e.Index s.Depth) =
+    (#CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
+
+  e.Unuseds t.OtherCommand = t.OtherCommand;
+}
+
+SetOffsetForCmdInsertVar {
+  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
+  (#CmdInsertVar s.Usings s.Mode e.Index) =
+    (#CmdInsertVar s.Mode s.Number);
+
+  e.Vars t.OtherCommand =
+    t.OtherCommand;
+}
+
+MakeCopyVar {
+  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
+  (s.Usings s.Mode e.Index) =
+    <Fetch
+      e.Vars-B e.Vars-E <Dec s.Usings>
+      {
+        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
+          (#CmdCopyVar s.Mode s.Number s.Sample);
+      }
+    >;
+}
+
+PatchVariableNumbers {
+  (e.CommonVars) e.Commands =
+    <Fetch
+      e.Commands
+      <Seq
+        (MapReduce
+          PatchVariableNumber
+          (e.CommonVars)
+        )
+        {
+          (e.CommonVars^) e.Commands^ =
+            <Map MakeVariableComment e.CommonVars>
+            e.Commands;
+        }
+      >
+    >;
+}
+
+MakeVariableComment {
+  (s.Number s.Usings s.Mode e.Index s.Depth) =
+    (#CmdComment
+      <StrFromInt s.Number> ': '
+      s.Mode '.'  e.Index '#' <StrFromInt s.Depth> '/' <StrFromInt s.Usings>
+    );
+}
+
+PatchVariableNumber {
+  (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
+  (#CmdRepeated s.Direction s.BracketNumber s.Usings s.Mode e.Index) =
+    <Fetch
+      <Dec s.Usings>
+      e.Vars-B
+      {
+        s.SampleUsings
+        e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index) e.Vars-BE =
+          (
+            e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index)
+            e.Vars-BE (s.Number s.Usings s.Mode e.Index)
+            e.Vars-E
+          )
+          (#CmdRepeated
+            s.Direction s.BracketNumber s.Mode s.Number s.SampleNumber
+          );
+      }
+    >;
+
+  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
+    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+    (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber);
+
+  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+  (#CmdOpenedE #AlgLeft s.BracketNumber 'e' e.Index) =
+    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+    (#CmdOpenedE #AlgLeft s.BracketNumber s.VarNumber);
+
+  (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
+  (#CmdVar s.Direction s.BracketNumber s.Mode e.Index) =
+    (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
+    (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
+
+  (e.Vars) t.NextCommand = (e.Vars) t.NextCommand;
+}
+
 /*
   e.Vars ::= (s.Count s.Mode e.Index)*
 */
@@ -588,211 +790,4 @@ DoGenResult {
   // Завершение просмотра
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
     (e.Vars) (e.AllocCommands e.Commands);
-}
-
-//==============================================================================
-// Обобщение информации -- уничтожение ненужных переменных,
-// копирование повторных.
-//==============================================================================
-
-GeneralizeResult {
-  (e.PatternVars) s.NumBrackets (e.PatternCommands)
-  (e.ResultVars) (e.ResultCommands) =
-    <Fetch
-      (<ReplicateVars e.PatternVars>)
-      (<ReplicateVars e.ResultVars>)
-      (<Map RepeatedEVariables e.PatternCommands>)
-      <Map ClosedEVariables e.PatternCommands>
-      <Seq
-        {
-          (e.PatternVars^) (e.ResultVars^) (e.RepeatedEs) e.ClosedEs =
-            (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
-            (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
-            <VarSetDifference (e.ClosedEs) (e.RepeatedEs e.ResultVars)>;
-        }
-        {
-          (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
-            (<VarSetDifference (e.CommonVars) (e.UnusedClosedEs)>)
-            (e.CopiedVars)
-            <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
-        }
-        {
-          (e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
-            (
-              <MapReduce
-                {
-                  s.Number (s.Usings 'e' e.Index) =
-                    <Add s.Number 2> (s.Number s.Usings 'e' e.Index);
-
-                  s.Number (s.Usings s.Mode e.Index) =
-                    <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
-                }
-                s.NumBrackets e.CommonVars
-              >
-            )
-            (e.CopiedVars) e.FilteredPatternCommands;
-        }
-        {
-          (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
-            <FoldOpenELoops
-              (#CmdIssueMem s.Number)
-              <PatchVariableNumbers
-                (e.CommonVars)
-                e.FilteredPatternCommands
-                (#CmdEmptyResult)
-                <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
-                <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
-              >
-            >;
-        }
-      >
-    >;
-}
-
-FoldOpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
-    e.Commands-B
-    (#CmdOpenELoop
-      #AlgLeft s.BracketNum s.VarNumber
-      <FoldOpenELoops e.Commands-E>
-    );
-
-  e.Commands = e.Commands;
-}
-
-ReplicateVar {
-  (1 s.Mode e.Index) = (1 s.Mode e.Index);
-
-  (s.Using s.Mode e.Index) =
-    <ReplicateVar (<Dec s.Using> s.Mode e.Index)>
-    (s.Using s.Mode e.Index);
-}
-
-ReplicateVars {
-  e.Vars = <Map ReplicateVar e.Vars>;
-}
-
-VarSetUnion {
-  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
-    t.Common <VarSetUnion (e.Set1) (e.Set2-B e.Set2-E)>;
-
-  (t.OnlyInSet1 e.Set1) (e.Set2) =
-    t.OnlyInSet1 <VarSetUnion (e.Set1) (e.Set2)>;
-
-  () (e.Set2) = e.Set2;
-}
-
-VarSetDifference {
-  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
-    <VarSetDifference (e.Set1) (e.Set2-B e.Set2-E)>;
-
-  (t.OnlyInSet1 e.Set1) (e.Set2) =
-    t.OnlyInSet1 <VarSetDifference (e.Set1) (e.Set2)>;
-
-  () (e.Set2) = /* пусто */;
-}
-
-ClosedEVariables {
-  (#CmdClosedE #AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
-
-  t.Other = /* игнорируем */;
-}
-
-RepeatedEVariables {
-  (#CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
-
-  t.Other = /* игнорируем */;
-}
-
-FilterUnusedCmdClosedE {
-  e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
-  (#CmdClosedE #AlgLeft s.Num 'e' e.Index s.Depth) =
-    (#CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
-
-  e.Unuseds t.OtherCommand = t.OtherCommand;
-}
-
-SetOffsetForCmdInsertVar {
-  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
-  (#CmdInsertVar s.Usings s.Mode e.Index) =
-    (#CmdInsertVar s.Mode s.Number);
-
-  e.Vars t.OtherCommand =
-    t.OtherCommand;
-}
-
-MakeCopyVar {
-  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
-  (s.Usings s.Mode e.Index) =
-    <Fetch
-      e.Vars-B e.Vars-E <Dec s.Usings>
-      {
-        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
-          (#CmdCopyVar s.Mode s.Number s.Sample);
-      }
-    >;
-}
-
-PatchVariableNumbers {
-  (e.CommonVars) e.Commands =
-    <Fetch
-      e.Commands
-      <Seq
-        (MapReduce
-          PatchVariableNumber
-          (e.CommonVars)
-        )
-        {
-          (e.CommonVars^) e.Commands^ =
-            <Map MakeVariableComment e.CommonVars>
-            e.Commands;
-        }
-      >
-    >;
-}
-
-MakeVariableComment {
-  (s.Number s.Usings s.Mode e.Index s.Depth) =
-    (#CmdComment
-      <StrFromInt s.Number> ': '
-      s.Mode '.'  e.Index '#' <StrFromInt s.Depth> '/' <StrFromInt s.Usings>
-    );
-}
-
-PatchVariableNumber {
-  (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
-  (#CmdRepeated s.Direction s.BracketNumber s.Usings s.Mode e.Index) =
-    <Fetch
-      <Dec s.Usings>
-      e.Vars-B
-      {
-        s.SampleUsings
-        e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index) e.Vars-BE =
-          (
-            e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index)
-            e.Vars-BE (s.Number s.Usings s.Mode e.Index)
-            e.Vars-E
-          )
-          (#CmdRepeated
-            s.Direction s.BracketNumber s.Mode s.Number s.SampleNumber
-          );
-      }
-    >;
-
-  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
-  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
-    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
-    (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber);
-
-  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
-  (#CmdOpenedE #AlgLeft s.BracketNumber 'e' e.Index) =
-    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
-    (#CmdOpenedE #AlgLeft s.BracketNumber s.VarNumber);
-
-  (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
-  (#CmdVar s.Direction s.BracketNumber s.Mode e.Index) =
-    (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
-    (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
-
-  (e.Vars) t.NextCommand = (e.Vars) t.NextCommand;
 }
