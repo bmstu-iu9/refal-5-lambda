@@ -116,20 +116,20 @@ $ENTRY GenProgram {
     <GenCommonTailer>;
 }
 
-BracketsVar-B {
-  s.BracketNumber = 'context[' <StrFromInt s.BracketNumber> ']';
+ContextRange-B {
+  s.RangeOffset = 'context[' <StrFromInt s.RangeOffset> ']';
 }
 
 //FROM Library
 $EXTERN Inc;
 
-BracketsVar-E {
-  s.BracketNumber = 'context[' <StrFromInt <Inc s.BracketNumber>> ']';
+ContextRange-E {
+  s.RangeOffset = 'context[' <StrFromInt <Inc s.RangeOffset>> ']';
 }
 
-BracketsVars {
-  s.BracketNumber =
-    <BracketsVar-B s.BracketNumber> ', ' <BracketsVar-E s.BracketNumber>;
+ContextRange {
+  s.RangeOffset =
+    <ContextRange-B s.RangeOffset> ', ' <ContextRange-E s.RangeOffset>;
 }
 
 ContextItem {
@@ -144,8 +144,8 @@ PrintName {
 
 PrintBracketsVarInit {
   e.Indent s.InnerBrackets =
-    (e.Indent <BracketsVar-B s.InnerBrackets> ' = 0;')
-    (e.Indent <BracketsVar-E s.InnerBrackets> ' = 0;')
+    (e.Indent <ContextRange-B s.InnerBrackets> ' = 0;')
+    (e.Indent <ContextRange-E s.InnerBrackets> ' = 0;')
     ;
 }
 
@@ -206,11 +206,11 @@ GenCommand {
 
   (e.Indent) (#CmdInitB0) =
     (e.Indent)
-    (e.Indent <BracketsVar-B 0> ' = arg_begin;')
-    (e.Indent <BracketsVar-E 0> ' = arg_end;')
-    (e.Indent 'refalrts::move_left( ' <BracketsVars 0> ' );')
-    (e.Indent 'refalrts::move_left( ' <BracketsVars 0> ' );')
-    (e.Indent 'refalrts::move_right( ' <BracketsVars 0> ' );')
+    (e.Indent <ContextRange-B 0> ' = arg_begin;')
+    (e.Indent <ContextRange-E 0> ' = arg_end;')
+    (e.Indent 'refalrts::move_left( ' <ContextRange 0> ' );')
+    (e.Indent 'refalrts::move_left( ' <ContextRange 0> ' );')
+    (e.Indent 'refalrts::move_right( ' <ContextRange 0> ' );')
     ;
 
   (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
@@ -265,10 +265,10 @@ GenCommand {
   (e.Indent) (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent)
     (e.Indent
-      <PrintEVar-B s.VarNumber> ' = ' <BracketsVar-B s.BracketNumber> ';'
+      <ContextRange-B s.VarNumber> ' = ' <ContextRange-B s.BracketNumber> ';'
     )
     (e.Indent
-      <PrintEVar-E s.VarNumber> ' = ' <BracketsVar-E s.BracketNumber> ';'
+      <ContextRange-E s.VarNumber> ' = ' <ContextRange-E s.BracketNumber> ';'
     );
 
   (e.Indent) (#CmdiContextSet s.BracketNumber s.VarNumber) =
@@ -281,8 +281,8 @@ GenCommand {
   (e.Indent)
   (#CmdOpenedE-Start #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent '  ')
-    (e.Indent <PrintEVar-B s.VarNumber> ' = 0;')
-    (e.Indent <PrintEVar-E s.VarNumber> ' = 0;')
+    (e.Indent <ContextRange-B s.VarNumber> ' = 0;')
+    (e.Indent <ContextRange-E s.VarNumber> ' = 0;')
     (e.Indent 'refalrts::start_e_loop();')
     (e.Indent 'do {')
     ;
@@ -292,7 +292,7 @@ GenCommand {
     (e.Indent)
     (e.Indent
       '} while ( refalrts::open_evar_advance( '
-      <BracketsVars s.VarNumber> ', ' <BracketsVars s.BracketNumber>
+      <ContextRange s.VarNumber> ', ' <ContextRange s.BracketNumber>
       ' ) );'
     )
     ;
@@ -300,12 +300,12 @@ GenCommand {
   (e.Indent) (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (e.Indent)
     (e.Indent
-      <BracketsVar-B s.NewBracketNumber>
-      ' = ' <BracketsVar-B s.OldBracketNumber> ';'
+      <ContextRange-B s.NewBracketNumber>
+      ' = ' <ContextRange-B s.OldBracketNumber> ';'
     )
     (e.Indent
-      <BracketsVar-E s.NewBracketNumber>
-      ' = ' <BracketsVar-E s.OldBracketNumber> ';'
+      <ContextRange-E s.NewBracketNumber>
+      ' = ' <ContextRange-E s.OldBracketNumber> ';'
     )
     ;
 
@@ -318,8 +318,8 @@ GenCommand {
   (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
-      'if (! refalrts::copy_evar(' <BracketsVars s.Target> ', '
-      <BracketsVars s.Sample> '))'
+      'if (! refalrts::copy_evar(' <ContextRange s.Target> ', '
+      <ContextRange s.Sample> '))'
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
@@ -357,7 +357,7 @@ GenCommand {
   (e.Indent) (#CmdInsertVar 'e' s.Number) =
     (e.Indent)
     (e.Indent
-      'res = refalrts::splice_evar( res, ' <BracketsVars s.Number> ' );'
+      'res = refalrts::splice_evar( res, ' <ContextRange s.Number> ' );'
     );
 
   (e.Indent) (#CmdInsertVar s.Mode s.Number) =
@@ -651,14 +651,6 @@ GenCommand {
     (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
 }
 
-PrintEVar-B {
-  s.VarNumber = 'context[' <StrFromInt s.VarNumber> ']';
-}
-
-PrintEVar-E {
-  s.VarNumber = 'context[' <StrFromInt <Inc s.VarNumber>> ']';
-}
-
 //FROM Escape
 $EXTERN EscapeChar;
 
@@ -703,7 +695,7 @@ PrintMatchBrackets {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('brackets')
-      <BracketsVars s.InnerNum>
+      <ContextRange s.InnerNum>
     >;
 }
 
@@ -712,7 +704,7 @@ PrintMatchADT {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('adt')
-      <BracketsVars s.InnerNum> ', '
+      <ContextRange s.InnerNum> ', '
       e.Name
     >;
 }
@@ -726,7 +718,7 @@ BreakerFromIndent {
 PrintMatchEmpty {
   (e.Indent) s.BracketNumber =
     (e.Indent
-      'if( ! refalrts::empty_seq( ' <BracketsVars s.BracketNumber> ' ) )'
+      'if( ! refalrts::empty_seq( ' <ContextRange s.BracketNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
@@ -750,7 +742,7 @@ PrintMatchRepeated {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('repeated_evar')
-      <BracketsVars s.VarNumber> ', ' <BracketsVars s.SampleNumber>
+      <ContextRange s.VarNumber> ', ' <ContextRange s.SampleNumber>
     >;
 
   (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
@@ -765,7 +757,7 @@ PrintMatch {
   (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
-      '( ' e.TextRep ', ' <BracketsVars s.BracketNumber> ' ) )'
+      '( ' e.TextRep ', ' <ContextRange s.BracketNumber> ' ) )'
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
