@@ -97,7 +97,7 @@ $ENTRY GenCommonTailer {
 }
 
 //FROM LibraryEx
-$EXTERN Map, MapReduce, Fetch, Add;
+$EXTERN Map, MapReduce, Fetch;
 
 //FROM Library
 $EXTERN StrFromInt;
@@ -135,9 +135,6 @@ BracketsVars {
 ContextItem {
   s.ItemNumber = 'context[' <StrFromInt s.ItemNumber> ']';
 }
-
-//FROM LibraryEx
-$EXTERN Dec;
 
 PrintName {
   # CreateClosure = 'refalrts::create_closure';
