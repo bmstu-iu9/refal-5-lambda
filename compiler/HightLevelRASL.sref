@@ -587,7 +587,7 @@ DoGenResult {
 
   // Завершение просмотра
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
-    (e.Vars) (e.AllocCommands) (e.Commands);
+    (e.Vars) (e.AllocCommands e.Commands);
 }
 
 //==============================================================================
@@ -595,21 +595,9 @@ DoGenResult {
 // копирование повторных.
 //==============================================================================
 
-SetOffsetForCopiedVar {
-  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
-  (s.Usings s.Mode e.Index) =
-    <Fetch
-      e.Vars-B e.Vars-E <Dec s.Usings>
-      {
-        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
-          (s.Sample s.Number s.Usings s.Mode e.Index);
-      }
-    >;
-}
-
 GeneralizeResult {
   (e.PatternVars) s.NumBrackets (e.PatternCommands)
-  (e.ResultVars) (e.ResultAllocCommands) (e.ResultCommands) =
+  (e.ResultVars) (e.ResultCommands) =
     <Fetch
       (<ReplicateVars e.PatternVars>)
       (<ReplicateVars e.ResultVars>)
@@ -646,39 +634,14 @@ GeneralizeResult {
         }
         {
           (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
-            (e.CommonVars) s.Number
-            (<Map (SetOffsetForCopiedVar e.CommonVars) e.CopiedVars>)
-            e.FilteredPatternCommands;
-        }
-        {
-          (e.CommonVars) s.Number
-          (e.CopiedVars) e.PatternCommands^ =
-            (e.CommonVars) s.Number
-            (e.CopiedVars) (e.PatternCommands)
-            <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>;
-        }
-        {
-          (e.CommonVars) s.Number
-          (e.CopiedVars) (e.PatternCommands^) e.ResultCommands^ =
-            (e.CommonVars) s.Number
-            (e.PatternCommands)
-            <Map MakeCopyVar e.CopiedVars>
-            e.ResultAllocCommands e.ResultCommands;
-        }
-        {
-          (e.CommonVars) s.Number
-          (e.PatternCommands^) e.ResultCommands^ =
-            (e.CommonVars) s.Number
-            e.PatternCommands
-            (#CmdEmptyResult)
-            e.ResultCommands;
-        }
-        {
-          (e.CommonVars) s.Number e.Commands =
             <FoldOpenELoops
               (#CmdIssueMem s.Number)
               <PatchVariableNumbers
-                (e.CommonVars) e.Commands
+                (e.CommonVars)
+                e.FilteredPatternCommands
+                (#CmdEmptyResult)
+                <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
+                <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
               >
             >;
         }
@@ -759,8 +722,15 @@ SetOffsetForCmdInsertVar {
 }
 
 MakeCopyVar {
-  ( s.Sample s.Number s.Usings s.Mode e.Index ) =
-    (#CmdCopyVar s.Mode s.Number s.Sample);
+  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
+  (s.Usings s.Mode e.Index) =
+    <Fetch
+      e.Vars-B e.Vars-E <Dec s.Usings>
+      {
+        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
+          (#CmdCopyVar s.Mode s.Number s.Sample);
+      }
+    >;
 }
 
 PatchVariableNumbers {
