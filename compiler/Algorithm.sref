@@ -90,10 +90,10 @@ MakeAlgorithm-Sentence {
     направление добавлено для единнобразия, генератором не используется
   Переменные:
     повторные, формат
-      (#CmdRepeated s.Direction s.BracketNum s.Usings s.Mode e.Index)
-    новые s и t, формат (#CmdVar s.Direction s.BracketNum s.Mode e.Index)
+      (#CmdRepeated s.Direction s.BracketNum s.Mode s.VarNumber s.SampleNumber)
+    новые s и t, формат (#CmdVar s.Direction s.BracketNum s.Mode s.VarNumber)
     открытые e:
-      первоначальный формат (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index)
+      первоначальный формат (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber)
       после обработки:
         (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
         (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
@@ -692,7 +692,13 @@ GeneralizeResult {
         {
           (e.CommonVars) s.Number e.Commands =
             (#CmdIssueMem s.Number)
-            <Map MakeDeclaration e.CommonVars>
+            <PatchVariableNumbers
+              (e.CommonVars) e.Commands
+            >;
+        }
+        {
+          (#CmdIssueMem s.Number) e.Commands =
+            (#CmdIssueMem s.Number)
             (#CmdInitB0)
             // Интерпретируемый код
             (#CmdIfDef)
@@ -784,17 +790,73 @@ SetOffsetForCmdInsertVar {
     t.OtherCommand;
 }
 
-MakeDeclaration {
-  ( s.Number s.Usings 'e' e.Index ) =
-    (#CmdDeclareEVar s.Number s.Usings 'e' e.Index);
-
-  ( s.Number s.Usings s.Mode e.Index ) =
-    (#CmdDeclareVar s.Number s.Usings s.Mode e.Index);
-}
-
 MakeCopyVar {
   ( s.Sample s.Number s.Usings s.Mode e.Index ) =
     (#CmdCopyVar s.Mode s.Number s.Sample);
+}
+
+PatchVariableNumbers {
+  (e.CommonVars) e.Commands =
+    <Fetch
+      e.Commands
+      <Seq
+        (MapReduce
+          PatchVariableNumber
+          (e.CommonVars)
+        )
+        {
+          (e.CommonVars^) e.Commands^ =
+            <Map MakeVariableComment e.CommonVars>
+            e.Commands;
+        }
+      >
+    >;
+}
+
+MakeVariableComment {
+  (s.Number s.Usings s.Mode e.Index s.Depth) =
+    (#CmdComment
+      <StrFromInt s.Number> ': '
+      s.Mode '.'  e.Index '#' <StrFromInt s.Depth> '/' <StrFromInt s.Usings>
+    );
+}
+
+PatchVariableNumber {
+  (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
+  (#CmdRepeated s.Direction s.BracketNumber s.Usings s.Mode e.Index) =
+    <Fetch
+      <Dec s.Usings>
+      e.Vars-B
+      {
+        s.SampleUsings
+        e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index) e.Vars-BE =
+          (
+            e.Vars-BB (s.SampleNumber s.SampleUsings s.Mode e.Index)
+            e.Vars-BE (s.Number s.Usings s.Mode e.Index)
+            e.Vars-E
+          )
+          (#CmdRepeated
+            s.Direction s.BracketNumber s.Mode s.Number s.SampleNumber
+          );
+      }
+    >;
+
+  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
+    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+    (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber);
+
+  (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+  (#CmdOpenedE #AlgLeft s.BracketNumber 'e' e.Index) =
+    (e.Vars-B (s.VarNumber 1 'e' e.Index) e.Vars-E)
+    (#CmdOpenedE #AlgLeft s.BracketNumber s.VarNumber);
+
+  (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
+  (#CmdVar s.Direction s.BracketNumber s.Mode e.Index) =
+    (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
+    (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
+
+  (e.Vars) t.NextCommand = (e.Vars) t.NextCommand;
 }
 
 PrepareInterpretCommands {
@@ -823,8 +885,8 @@ ConvertInterpretCommand {
   (#CmdBrackets s.Direction s.Num s.NumRanges) =
     (#CmdiBracket s.Direction s.Num s.NumRanges);
 
-  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
-    (#CmdiContextSet s.BracketNumber 'e' e.Index);
+  (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
+    (#CmdiContextSet s.BracketNumber s.VarNumber);
 
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
@@ -841,9 +903,9 @@ ConvertInterpretCommand {
   (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
 
-  (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) =
-    (#CmdiEPrepare s.BracketNum 'e' e.Index)
-    (#CmdiEStart s.BracketNum 'e' e.Index);
+  (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) =
+    (#CmdiEPrepare s.BracketNum s.VarNumber)
+    (#CmdiEStart s.BracketNum s.VarNumber);
 
   (#CmdChar s.Direction s.BracketNumber s.Char) =
     (#CmdiChar s.Direction s.BracketNumber s.Char);
@@ -854,14 +916,14 @@ ConvertInterpretCommand {
   (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
 
-  (#CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
-    (#CmdiRepeat s.Direction s.BracketNumber e.VarInfo);
+  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
+    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
   (#CmdEmpty #AlgLeft s.BracketNumber) =
     (#CmdiEmpty s.BracketNumber);
 
-  (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
-    (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info);
+  (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (#CmdiVar s.Direction s.BracketNumber s.Mode s.VarNumber);
 
   (#CmdComment e.Text) = (#CmdComment e.Text);
 
@@ -1061,11 +1123,11 @@ PrepareOpenEStack {
 }
 
 GenerateResult-OpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) e.Commands-E =
+  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
     e.Commands-B
-    (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
+    (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
     <GenerateResult-OpenELoops e.Commands-E>
-    (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
+    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
     ;
 
   e.Commands = e.Commands;

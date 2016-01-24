@@ -145,18 +145,6 @@ PrintName {
   e.Name = e.Name;
 }
 
-PrintVarShortcut {
-  s.Usings s.Mode e.Index s.Depth =
-    '__' s.Mode e.Index '_' <StrFromInt s.Depth> '_' <StrFromInt s.Usings>;
-}
-
-PrintConstShortcutDecl {
-  s.Number e.VarInfo =
-    'enum { ' <PrintVarShortcut e.VarInfo> ' = '
-    <StrFromInt s.Number> ' };'
-  ;
-}
-
 PrintBracketsVarInit {
   e.Indent s.InnerBrackets =
     (e.Indent <BracketsVar-B s.InnerBrackets> ' = 0;')
@@ -167,16 +155,6 @@ PrintBracketsVarInit {
 PrintDirection {
   #AlgLeft = 'Left';
   #AlgRight = 'Right';
-}
-
-PrintRepeatInterp {
-  (e.Indent) s.Direction s.BracketNumber s.Usings s.Mode e.Index =
-    (e.Indent '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
-              <PrintVarShortcut s.Usings s.Mode e.Index> ', '
-              <PrintVarShortcut <Dec s.Usings> s.Mode e.Index> ', '
-              <StrFromInt s.BracketNumber> '},'
-    )
-    ;
 }
 
 GenCommand {
@@ -238,16 +216,6 @@ GenCommand {
     (e.Indent 'refalrts::move_right( ' <BracketsVars 0> ' );')
     ;
 
-  (e.Indent) (#CmdDeclareEVar s.Number e.VarInfo) =
-    (e.Indent)
-    (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
-    ;
-
-  (e.Indent) (#CmdDeclareVar s.Number e.VarInfo) =
-    (e.Indent)
-    (e.Indent <PrintConstShortcutDecl s.Number e.VarInfo> )
-    ;
-
   (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
     <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
@@ -287,50 +255,47 @@ GenCommand {
     <PrintMatchEmpty (e.Indent) s.BracketNumber>
     ;
 
-  (e.Indent) (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
+  (e.Indent) (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
     (e.Indent)
-    <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode e.Info>
-    ;
+    <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
 
-  (e.Indent) (#CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
+  (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
     (e.Indent)
-    <PrintMatchRepeated (e.Indent) s.Direction s.BracketNumber e.VarInfo>
-    ;
+    <PrintMatchRepeated
+      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
+    >;
 
-  (e.Indent) (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
+  (e.Indent) (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent)
     (e.Indent
-      <PrintEVar-B 1 'e' e.Index> ' = ' <BracketsVar-B s.BracketNumber> ';'
+      <PrintEVar-B s.VarNumber> ' = ' <BracketsVar-B s.BracketNumber> ';'
     )
     (e.Indent
-      <PrintEVar-E 1 'e' e.Index> ' = ' <BracketsVar-E s.BracketNumber> ';'
-    )
-    ;
+      <PrintEVar-E s.VarNumber> ' = ' <BracketsVar-E s.BracketNumber> ';'
+    );
 
-  (e.Indent) (#CmdiContextSet s.BracketNumber 'e' e.Index) =
+  (e.Indent) (#CmdiContextSet s.BracketNumber s.VarNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icContextSet, '
-              '0, '
-              <PrintVarShortcut 1 'e' e.Index>
-              ', ' <StrFromInt s.BracketNumber> '},'
-    )
-    ;
+    (e.Indent
+      '{refalrts::icContextSet, '
+      '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
 
   (e.Indent)
-  (#CmdOpenedE-Start #AlgLeft s.BracketNumber 'e' e.Index) =
+  (#CmdOpenedE-Start #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent '  ')
-    (e.Indent <PrintEVar-B 1 'e' e.Index> ' = 0;')
-    (e.Indent <PrintEVar-E 1 'e' e.Index> ' = 0;')
+    (e.Indent <PrintEVar-B s.VarNumber> ' = 0;')
+    (e.Indent <PrintEVar-E s.VarNumber> ' = 0;')
     (e.Indent 'refalrts::start_e_loop();')
     (e.Indent 'do {')
     ;
 
   (e.Indent '  ')
-  (#CmdOpenedE-End #AlgLeft s.BracketNumber 'e' e.Index) =
+  (#CmdOpenedE-End #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent)
     (e.Indent
       '} while ( refalrts::open_evar_advance( '
-      <PrintEVars 1 'e' e.Index> ', ' <BracketsVars s.BracketNumber>
+      <BracketsVars s.VarNumber> ', ' <BracketsVars s.BracketNumber>
       ' ) );'
     )
     ;
@@ -478,26 +443,29 @@ GenCommand {
     (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
     (e.Indent '};');
 
-  (e.Indent) (#CmdiRepeat s.Direction s.BracketNumber e.VarInfo) =
+  (e.Indent)
+  (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
     (e.Indent)
-    <PrintRepeatInterp (e.Indent) s.Direction s.BracketNumber e.VarInfo>
-    ;
+    (e.Indent
+      '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
+      <StrFromInt s.VarNumber> ', '
+      <StrFromInt s.SampleNumber> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
 
-  (e.Indent) (#CmdiEPrepare s.BracketNumber 'e' e.Index) =
+  (e.Indent) (#CmdiEPrepare s.BracketNumber s.VarNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icEPrepare, 0, '
-              <PrintVarShortcut 1 'e' e.Index>
-              ', ' <StrFromInt s.BracketNumber> '},'
-    )
-    ;
+    (e.Indent
+      '{refalrts::icEPrepare, 0, '
+      <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
 
-  (e.Indent) (#CmdiEStart s.BracketNumber 'e' e.Index) =
+  (e.Indent) (#CmdiEStart s.BracketNumber s.VarNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icEStart, 0, '
-              <PrintVarShortcut 1 'e' e.Index>
-              ', ' <StrFromInt s.BracketNumber> '},'
-    )
-    ;
+    (e.Indent
+      '{refalrts::icEStart, 0, '
+      <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
 
   (e.Indent) (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
     (e.Indent)
@@ -524,14 +492,12 @@ GenCommand {
     )
     ;
 
-  (e.Indent) (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info) =
+  (e.Indent) (#CmdiVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> ', '
-              '0, '
-              <PrintVarShortcut 1 s.Mode e.Info>
-              ', ' <StrFromInt s.BracketNumber> '},'
-    )
-    ;
+    (e.Indent
+      '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> ', '
+      '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
 
   (e.Indent) (#CmdiName s.Direction s.BracketNumber s.NameId) =
     (e.Indent)
@@ -688,25 +654,12 @@ GenCommand {
     (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
 }
 
-PrintVar {
-  s.Usings s.Mode e.Index s.Depth =
-  'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
-}
-
 PrintEVar-B {
-  s.Usings s.Mode e.Index s.Depth =
-    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ']';
+  s.VarNumber = 'context[' <StrFromInt s.VarNumber> ']';
 }
 
 PrintEVar-E {
-  s.Usings s.Mode e.Index s.Depth =
-    'context[' <PrintVarShortcut s.Usings s.Mode e.Index s.Depth> ' + 1]';
-}
-
-PrintEVars {
-  s.Usings s.Mode e.Index =
-    <PrintEVar-B s.Usings s.Mode e.Index> ', '
-    <PrintEVar-E s.Usings s.Mode e.Index>;
+  s.VarNumber = 'context[' <StrFromInt <Inc s.VarNumber>> ']';
 }
 
 //FROM Escape
@@ -788,27 +741,26 @@ StrFromDirection {
 VarMatchFunction { 's' = 'svar'; 't' = 'tvar'; }
 
 PrintMatchSTVar {
-  (e.Indent) s.Direction s.BracketNumber s.Mode e.Index =
+  (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      (<VarMatchFunction s.Mode>) <PrintVar 1 s.Mode e.Index>
+      (<VarMatchFunction s.Mode>) <ContextItem s.VarNumber>
     >;
 }
 
 PrintMatchRepeated {
-  (e.Indent) s.Direction s.BracketNumber s.Usings 'e' e.Index =
+  (e.Indent) s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNumber =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('repeated_evar')
-      <PrintEVars s.Usings 'e' e.Index> ', '
-      <PrintEVars <Dec s.Usings> 'e' e.Index>
+      <BracketsVars s.VarNumber> ', ' <BracketsVars s.SampleNumber>
     >;
 
-  (e.Indent) s.Direction s.BracketNumber s.Usings s.Mode e.Index =
+  (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('repeated_stvar') <PrintVar s.Usings s.Mode e.Index>
-      ', ' <PrintVar <Dec s.Usings> s.Mode e.Index>
+      ('repeated_stvar')
+      <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
     >;
 }
 
