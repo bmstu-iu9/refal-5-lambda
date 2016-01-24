@@ -3,10 +3,35 @@ $EXTERN Map;
 
 $ENTRY MakeAlgorithm-Program {
   e.ProgramElements =
+    <LowLevelRASL
+      <HightLevelRASL
+        e.ProgramElements
+      >
+    >;
+}
+
+/**
+  <HightLevelRASL e.AST>
+    == e.RASLAST
+
+  e.RASLAST ::= t.RASLFunction*
+  t.RASLFunction ::=
+      (#Function s.ScopeClass (e.Name) t.Sentence*)
+    | (s.SingularItem s.ScopeClass e.Name)
+    | (#Ident e.Name)
+    | (#Separator)
+  s.SingularItem ::= #Enum | #Swap | #Stub | #Declaration
+  t.Sentence ::= (t.HiRASLCommand*)
+  t.HiRASLCommand ::=
+      (#Cmd… e.Value)
+    | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
+*/
+$ENTRY HightLevelRASL {
+  e.ProgramElements =
     <Map
       {
         (#Function s.ScopeClass (e.Name) e.Sentences) =
-          <MakeAlgorithm-Function
+          <HightLevelRASL-Function
             s.ScopeClass (e.Name) e.Sentences
           >;
 
@@ -30,41 +55,21 @@ $ENTRY MakeAlgorithm-Program {
     >;
 }
 
-MakeAlgorithm-Function {
-  // Закомментированный код содержит вариант кодогенерации,
-  // при котором если последнее предложение имеет вид
-  // e.X = ...;, в конце не генерится возврат
-  // return RecognitionImpossible;
-
-  //s.ScopeClass (e.Name)
-  //e.Sentences (((#TkVariable 'e' e.Index)) (e.Result)) =
-  //  (#CmdFnStart s.ScopeClass e.Name)
-  //  <Map
-  //    {
-  //      ((e.Pattern) (e.Result^)) =
-  //        (#CmdStartSentence)
-  //        <MakeAlgorithm-Sentence (e.Pattern) (e.Result)>
-  //        (#CmdEndSentence);
-  //    }
-  //    e.Sentences (((#TkVariable 'e' e.Index)) (e.Result))
-  //  >
-  //  (#CmdFnEnd-Success);
-
+HightLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
-    (#CmdFnStart s.ScopeClass e.Name)
-    <Map
-      {
-        ((e.Pattern) (e.Result)) =
-          (#CmdStartSentence)
-          <MakeAlgorithm-Sentence (e.Pattern) (e.Result)>
-          (#CmdEndSentence);
-      }
-      e.Sentences
-    >
-    (#CmdFnEnd);
+    (#Function
+      s.ScopeClass (e.Name)
+      <Map
+        {
+          ((e.Pattern) (e.Result)) =
+            (<HightLevelRASL-Sentence (e.Pattern) (e.Result)>);
+        }
+        e.Sentences
+      >
+    );
 }
 
-MakeAlgorithm-Sentence {
+HightLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <GeneralizeResult
       <GenPattern e.Pattern>
@@ -608,6 +613,32 @@ DoGenResult {
 // копирование повторных.
 //==============================================================================
 
+$ENTRY LowLevelRASL {
+  e.ProgramElements =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Sentences) =
+          <LowLevelRASL-Function
+            s.ScopeClass (e.Name) e.Sentences
+          >;
+
+        (#CmdEnum s.ScopeClass e.Name) =
+          (#CmdEnum s.ScopeClass e.Name);
+
+        (#CmdSwap s.ScopeClass e.Name) =
+          (#CmdSwap s.ScopeClass e.Name);
+
+        (#CmdDeclaration s.ScopeClass e.Name) =
+          (#CmdDeclaration s.ScopeClass e.Name);
+
+        (#CmdDefineIdent e.Name) = (#CmdDefineIdent e.Name);
+
+        (#CmdSeparator) = (#CmdSeparator);
+      }
+      e.ProgramElements
+    >;
+}
+
 SetOffsetForCopiedVar {
   e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
   (s.Usings s.Mode e.Index) =
@@ -691,39 +722,103 @@ GeneralizeResult {
         }
         {
           (e.CommonVars) s.Number e.Commands =
-            (#CmdIssueMem s.Number)
-            <PatchVariableNumbers
-              (e.CommonVars) e.Commands
-            >;
-        }
-        {
-          (#CmdIssueMem s.Number) e.Commands =
-            (#CmdIssueMem s.Number)
-            (#CmdInitB0)
-            // Интерпретируемый код
-            (#CmdIfDef)
-            <PrepareOpenEStack
-              <OutlineConstants
-                (0 /* функции */)
-                (0 /* идентификаторы */)
-                (0 /* большие числа */)
-                (#CmdInitRAA)
-                <PrepareInterpretCommands e.Commands>
-                (#CmdFinRAA)
+            <FoldOpenELoops
+              (#CmdIssueMem s.Number)
+              <PatchVariableNumbers
+                (e.CommonVars) e.Commands
               >
-              0 /* начальная глубина */
-            >
-            (#CmdiRunInterpret)
-            // Компилируемый код
-            (#CmdElse)
-            <GenerateResult-OpenELoops
-              e.Commands
-              (#CmdReturnResult)
-            >
-            (#CmdEndIf);
+            >;
         }
       >
     >;
+}
+
+FoldOpenELoops {
+  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
+    e.Commands-B
+    (#CmdOpenELoop
+      #AlgLeft s.BracketNum s.VarNumber
+      <FoldOpenELoops e.Commands-E>
+    );
+
+  e.Commands = e.Commands;
+}
+
+LowLevelRASL-Function {
+  s.ScopeClass (e.Name) e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        (Map AnalyzeSentence)
+        {
+          // Закомментированный код содержит вариант кодогенерации,
+          // при котором если последнее предложение имеет вид
+          // e.X = ...;, в конце не генерится возврат
+          // return RecognitionImpossible;
+
+          //e.Sentences^ (#AlwaysSuccess e.LastSentence) =
+          //  e.Sentences (#AlwaysSuccess e.LastSentence) (#CmdFnEnd-Success);
+
+          e.Sentences^ = e.Sentences (#CmdFnEnd);
+        }
+        {
+          e.Sentences^ t.LastCommand =
+          (#CmdFnStart s.ScopeClass e.Name)
+          <Map
+            {
+              (s.Type e.RASLSentence) =
+                <LowLevelRASL-Sentence e.RASLSentence>;
+            }
+            e.Sentences
+          >
+          t.LastCommand;
+        }
+      >
+    >;
+}
+
+AnalyzeSentence {
+  ((#CmdIssueMem s.Num) e.Sentence) =
+    <DoAnalyzeSentence ((#CmdIssueMem s.Num)) e.Sentence>;
+}
+
+DoAnalyzeSentence {
+  (e.Prefix) (#CmdComment e.Comment) e.Sentence =
+    <DoAnalyzeSentence (e.Prefix (#CmdComment e.Comment)) e.Sentence>;
+
+  (e.Prefix) (#CmdClosedE #AlgLeft 0 2) e.Sentence =
+    (#AlwaysSuccess e.Prefix (#CmdClosedE #AlgLeft 0 2) e.Sentence);
+
+  (e.Prefix) (#CmdEmptyResult) e.Sentence =
+    (#AlwaysSuccess e.Prefix (#CmdEmptyResult) e.Sentence);
+
+  (e.Prefix) e.OtherCommands = (#MayFail e.Prefix e.OtherCommands);
+}
+
+LowLevelRASL-Sentence {
+  (#CmdIssueMem s.Number) e.Commands =
+    (#CmdStartSentence)
+    (#CmdIssueMem s.Number)
+    (#CmdInitB0)
+    // Интерпретируемый код
+    (#CmdIfDef)
+    <PrepareOpenEStack
+      <OutlineConstants
+        (0 /* функции */)
+        (0 /* идентификаторы */)
+        (0 /* большие числа */)
+        (#CmdInitRAA)
+        <PrepareInterpretCommands e.Commands>
+        (#CmdFinRAA)
+      >
+      0 /* начальная глубина */
+    >
+    (#CmdiRunInterpret)
+    // Компилируемый код
+    (#CmdElse)
+    <GenerateResult-OpenELoops e.Commands>
+    (#CmdEndIf)
+    (#CmdEndSentence);
 }
 
 //FROM LibraryEx
@@ -863,8 +958,20 @@ PrepareInterpretCommands {
   e.Commands =
     <Map
       ConvertInterpretCommand
-      <PrepareInterpretCommands-PatchCloseCall e.Commands>
+      <PrepareInterpretCommands-PatchCloseCall
+        <PrepareInterpretCommands-OpenELoops e.Commands>
+      >
     >;
+}
+
+PrepareInterpretCommands-OpenELoops {
+  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
+    e.Commands
+    (#CmdiEPrepare s.BracketNum s.VarNumber)
+    (#CmdiEStart s.BracketNum s.VarNumber)
+    <PrepareInterpretCommands-OpenELoops e.SubCommands>;
+
+  e.Commands = e.Commands;
 }
 
 PrepareInterpretCommands-PatchCloseCall {
@@ -903,8 +1010,10 @@ ConvertInterpretCommand {
   (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
 
-  (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) =
-    (#CmdiEPrepare s.BracketNum s.VarNumber)
+  (#CmdiEPrepare s.BracketNum s.VarNumber) =
+    (#CmdiEPrepare s.BracketNum s.VarNumber);
+
+  (#CmdiEStart s.BracketNum s.VarNumber) =
     (#CmdiEStart s.BracketNum s.VarNumber);
 
   (#CmdChar s.Direction s.BracketNumber s.Char) =
@@ -1123,12 +1232,11 @@ PrepareOpenEStack {
 }
 
 GenerateResult-OpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
-    e.Commands-B
+  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
+    e.Commands
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <GenerateResult-OpenELoops e.Commands-E>
-    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
-    ;
+    <GenerateResult-OpenELoops e.SubCommands>
+    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber);
 
-  e.Commands = e.Commands;
+  e.Commands = e.Commands (#CmdReturnResult);
 }
