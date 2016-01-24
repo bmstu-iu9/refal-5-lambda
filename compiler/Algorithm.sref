@@ -691,7 +691,11 @@ GenInterpretPatternCommand {
     <GenInterpretPatternCommand e.Etc>
     ;
 
-  (e.Command) e.PatternCommands = <GenInterpretPatternCommand e.PatternCommands>;
+  (#CmdComment e.Text) e.Etc =
+    (#CmdComment e.Text)
+    <GenInterpretPatternCommand e.Etc>
+    ;
+
    = /* Пусто */;
 }
 
