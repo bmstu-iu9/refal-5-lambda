@@ -623,82 +623,6 @@ SetOffsetForCopiedVar {
 //FROM LibraryEx
 $EXTERN Compare;
 
-GenInterpretPatternCommand {
-  (#CmdBrackets s.Direction s.Num s.NumRanges) e.Etc =
-    (#CmdiBracket s.Direction s.Num s.NumRanges)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) e.Etc =
-    (#CmdiContextSet s.BracketNumber 'e' e.Index)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdNumber s.Direction s.BracketNumber s.Number) e.Etc =
-    <Fetch
-      <Compare s.Number 256> {
-        '<' = (#CmdiNum s.Direction s.BracketNumber s.Number);
-
-        s.Other = (#CmdiHugeNum s.Direction s.BracketNumber s.Number);
-      }
-    >
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdIdent s.Direction s.BracketNumber e.Name) e.Etc =
-    (#CmdiIdent s.Direction s.BracketNumber e.Name)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdSave s.OldBracketNumber s.NewBracketNumber) e.Etc =
-    (#CmdiSave s.OldBracketNumber s.NewBracketNumber)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) e.Etc =
-    (#CmdiEPrepare s.BracketNum 'e' e.Index)
-    (#CmdiEStart s.BracketNum 'e' e.Index)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdChar s.Direction s.BracketNumber s.Char) e.Etc =
-    (#CmdiChar s.Direction s.BracketNumber s.Char)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdName s.Direction s.BracketNumber e.Name) e.Etc =
-    (#CmdiName s.Direction s.BracketNumber e.Name)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) e.Etc =
-    (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdRepeated s.Direction s.BracketNumber e.VarInfo) e.Etc =
-    (#CmdiRepeat s.Direction s.BracketNumber e.VarInfo)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdEmpty #AlgLeft s.BracketNumber) e.Etc =
-    (#CmdiEmpty s.BracketNumber)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) e.Etc =
-    (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-  (#CmdComment e.Text) e.Etc =
-    (#CmdComment e.Text)
-    <GenInterpretPatternCommand e.Etc>
-    ;
-
-   = /* Пусто */;
-}
-
 GeneralizeResult {
   (e.PatternVars) s.NumBrackets (e.PatternCommands)
   (e.ResultVars) (e.ResultAllocCommands) (e.ResultCommands) =
@@ -760,6 +684,13 @@ GeneralizeResult {
         {
           (e.CommonVars) s.Number
           (e.PatternCommands^) e.ResultCommands^ =
+            (e.CommonVars) s.Number
+            e.PatternCommands
+            (#CmdEmptyResult)
+            e.ResultCommands;
+        }
+        {
+          (e.CommonVars) s.Number e.Commands =
             (#CmdIssueMem s.Number)
             <Map MakeDeclaration e.CommonVars>
             (#CmdInitB0)
@@ -771,9 +702,7 @@ GeneralizeResult {
                 (0 /* идентификаторы */)
                 (0 /* большие числа */)
                 (#CmdInitRAA)
-                <GenInterpretPatternCommand e.PatternCommands>
-                (#CmdiEmptyResult)
-                <PrepareInterpretCommands e.ResultCommands>
+                <PrepareInterpretCommands e.Commands>
                 (#CmdFinRAA)
               >
               0 /* начальная глубина */
@@ -782,9 +711,7 @@ GeneralizeResult {
             // Компилируемый код
             (#CmdElse)
             <GenerateResult-OpenELoops
-              e.PatternCommands
-              (#CmdEmptyResult)
-              e.ResultCommands
+              e.Commands
               (#CmdReturnResult)
             >
             (#CmdEndIf);
@@ -871,30 +798,75 @@ MakeCopyVar {
 }
 
 PrepareInterpretCommands {
-  e.ResultCommands =
+  e.Commands =
     <Map
       ConvertInterpretCommand
-      <PrepareInterpretCommands-PatchCloseCall
-        e.ResultCommands
-      >
+      <PrepareInterpretCommands-PatchCloseCall e.Commands>
     >;
 }
 
 PrepareInterpretCommands-PatchCloseCall {
-  e.ResultCommands-B (#CmdAllocateElem s.ElemNo #ElCloseCall)
-  e.ResultCommands-M (#CmdInsertElem s.ElemNo) e.ResultCommands-E =
-    e.ResultCommands-B
+  e.Commands-B (#CmdAllocateElem s.ElemNo #ElCloseCall)
+  e.Commands-M (#CmdInsertElem s.ElemNo) e.Commands-E =
+    e.Commands-B
     (#CmdAllocateElem s.ElemNo #ElCloseCall)
     <PrepareInterpretCommands-PatchCloseCall
-      e.ResultCommands-M
+      e.Commands-M
       (#CmdArrCC-Link)
-      e.ResultCommands-E
+      e.Commands-E
     >;
 
-  e.ResultCommands = e.ResultCommands;
+  e.Commands = e.Commands;
 }
 
 ConvertInterpretCommand {
+  (#CmdBrackets s.Direction s.Num s.NumRanges) =
+    (#CmdiBracket s.Direction s.Num s.NumRanges);
+
+  (#CmdClosedE #AlgLeft s.BracketNumber 'e' e.Index) =
+    (#CmdiContextSet s.BracketNumber 'e' e.Index);
+
+  (#CmdNumber s.Direction s.BracketNumber s.Number) =
+    <Fetch
+      <Compare s.Number 256> {
+        '<' = (#CmdiNum s.Direction s.BracketNumber s.Number);
+
+        s.Other = (#CmdiHugeNum s.Direction s.BracketNumber s.Number);
+      }
+    >;
+
+  (#CmdIdent s.Direction s.BracketNumber e.Name) =
+    (#CmdiIdent s.Direction s.BracketNumber e.Name);
+
+  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
+    (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
+
+  (#CmdOpenedE #AlgLeft s.BracketNum 'e' e.Index) =
+    (#CmdiEPrepare s.BracketNum 'e' e.Index)
+    (#CmdiEStart s.BracketNum 'e' e.Index);
+
+  (#CmdChar s.Direction s.BracketNumber s.Char) =
+    (#CmdiChar s.Direction s.BracketNumber s.Char);
+
+  (#CmdName s.Direction s.BracketNumber e.Name) =
+    (#CmdiName s.Direction s.BracketNumber e.Name);
+
+  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
+
+  (#CmdRepeated s.Direction s.BracketNumber e.VarInfo) =
+    (#CmdiRepeat s.Direction s.BracketNumber e.VarInfo);
+
+  (#CmdEmpty #AlgLeft s.BracketNumber) =
+    (#CmdiEmpty s.BracketNumber);
+
+  (#CmdVar s.Direction s.BracketNumber s.Mode e.Info) =
+    (#CmdiVar s.Direction s.BracketNumber s.Mode e.Info);
+
+  (#CmdComment e.Text) = (#CmdComment e.Text);
+
+  (#CmdEmptyResult) = (#CmdiEmptyResult);
+
   (#CmdAllocateElem s.ElemNo #ElChar s.Value) = (#CmdArrChar s.Value);
 
   (#CmdAllocateElem s.ElemNo #ElName e.Name) = (#CmdArrFunc e.Name);
