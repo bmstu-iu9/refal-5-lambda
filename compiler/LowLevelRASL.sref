@@ -1,0 +1,392 @@
+//FROM LibraryEx
+$EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
+
+$ENTRY LowLevelRASL {
+  e.ProgramElements =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Sentences) =
+          <LowLevelRASL-Function
+            s.ScopeClass (e.Name) e.Sentences
+          >;
+
+        (#CmdEnum s.ScopeClass e.Name) =
+          (#CmdEnum s.ScopeClass e.Name);
+
+        (#CmdSwap s.ScopeClass e.Name) =
+          (#CmdSwap s.ScopeClass e.Name);
+
+        (#CmdDeclaration s.ScopeClass e.Name) =
+          (#CmdDeclaration s.ScopeClass e.Name);
+
+        (#CmdDefineIdent e.Name) = (#CmdDefineIdent e.Name);
+
+        (#CmdSeparator) = (#CmdSeparator);
+      }
+      e.ProgramElements
+    >;
+}
+
+LowLevelRASL-Function {
+  s.ScopeClass (e.Name) e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        (Map AnalyzeSentence)
+        {
+          // Закомментированный код содержит вариант кодогенерации,
+          // при котором если последнее предложение имеет вид
+          // e.X = ...;, в конце не генерится возврат
+          // return RecognitionImpossible;
+
+          //e.Sentences^ (#AlwaysSuccess e.LastSentence) =
+          //  e.Sentences (#AlwaysSuccess e.LastSentence) (#CmdFnEnd-Success);
+
+          e.Sentences^ = e.Sentences (#CmdFnEnd);
+        }
+        {
+          e.Sentences^ t.LastCommand =
+          (#CmdFnStart s.ScopeClass e.Name)
+          <Map
+            {
+              (s.Type e.RASLSentence) =
+                <LowLevelRASL-Sentence e.RASLSentence>;
+            }
+            e.Sentences
+          >
+          t.LastCommand;
+        }
+      >
+    >;
+}
+
+AnalyzeSentence {
+  ((#CmdIssueMem s.Num) e.Sentence) =
+    <DoAnalyzeSentence ((#CmdIssueMem s.Num)) e.Sentence>;
+}
+
+DoAnalyzeSentence {
+  (e.Prefix) (#CmdComment e.Comment) e.Sentence =
+    <DoAnalyzeSentence (e.Prefix (#CmdComment e.Comment)) e.Sentence>;
+
+  (e.Prefix) (#CmdClosedE #AlgLeft 0 2) e.Sentence =
+    (#AlwaysSuccess e.Prefix (#CmdClosedE #AlgLeft 0 2) e.Sentence);
+
+  (e.Prefix) (#CmdEmptyResult) e.Sentence =
+    (#AlwaysSuccess e.Prefix (#CmdEmptyResult) e.Sentence);
+
+  (e.Prefix) e.OtherCommands = (#MayFail e.Prefix e.OtherCommands);
+}
+
+LowLevelRASL-Sentence {
+  (#CmdIssueMem s.Number) e.Commands =
+    (#CmdStartSentence)
+    (#CmdIssueMem s.Number)
+    (#CmdInitB0)
+    // Интерпретируемый код
+    (#CmdIfDef)
+    <PrepareOpenEStack
+      <OutlineConstants
+        (0 /* функции */)
+        (0 /* идентификаторы */)
+        (0 /* большие числа */)
+        (#CmdInitRAA)
+        <PrepareInterpretCommands e.Commands>
+        (#CmdFinRAA)
+      >
+      0 /* начальная глубина */
+    >
+    (#CmdiRunInterpret)
+    // Компилируемый код
+    (#CmdElse)
+    <GenerateResult-OpenELoops e.Commands>
+    (#CmdEndIf)
+    (#CmdEndSentence);
+}
+
+PrepareInterpretCommands {
+  e.Commands =
+    <Map
+      ConvertInterpretCommand
+      <PrepareInterpretCommands-PatchCloseCall
+        <PrepareInterpretCommands-OpenELoops e.Commands>
+      >
+    >;
+}
+
+PrepareInterpretCommands-OpenELoops {
+  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
+    e.Commands
+    (#CmdiEPrepare s.BracketNum s.VarNumber)
+    (#CmdiEStart s.BracketNum s.VarNumber)
+    <PrepareInterpretCommands-OpenELoops e.SubCommands>;
+
+  e.Commands = e.Commands;
+}
+
+PrepareInterpretCommands-PatchCloseCall {
+  e.Commands-B (#CmdAllocateElem s.ElemNo #ElCloseCall)
+  e.Commands-M (#CmdInsertElem s.ElemNo) e.Commands-E =
+    e.Commands-B
+    (#CmdAllocateElem s.ElemNo #ElCloseCall)
+    <PrepareInterpretCommands-PatchCloseCall
+      e.Commands-M
+      (#CmdArrCC-Link)
+      e.Commands-E
+    >;
+
+  e.Commands = e.Commands;
+}
+
+ConvertInterpretCommand {
+  (#CmdBrackets s.Direction s.Num s.NumRanges) =
+    (#CmdiBracket s.Direction s.Num s.NumRanges);
+
+  (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
+    (#CmdiContextSet s.BracketNumber s.VarNumber);
+
+  (#CmdNumber s.Direction s.BracketNumber s.Number) =
+    <Fetch
+      <Compare s.Number 256> {
+        '<' = (#CmdiNum s.Direction s.BracketNumber s.Number);
+
+        s.Other = (#CmdiHugeNum s.Direction s.BracketNumber s.Number);
+      }
+    >;
+
+  (#CmdIdent s.Direction s.BracketNumber e.Name) =
+    (#CmdiIdent s.Direction s.BracketNumber e.Name);
+
+  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
+    (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
+
+  (#CmdiEPrepare s.BracketNum s.VarNumber) =
+    (#CmdiEPrepare s.BracketNum s.VarNumber);
+
+  (#CmdiEStart s.BracketNum s.VarNumber) =
+    (#CmdiEStart s.BracketNum s.VarNumber);
+
+  (#CmdChar s.Direction s.BracketNumber s.Char) =
+    (#CmdiChar s.Direction s.BracketNumber s.Char);
+
+  (#CmdName s.Direction s.BracketNumber e.Name) =
+    (#CmdiName s.Direction s.BracketNumber e.Name);
+
+  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
+
+  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
+    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
+
+  (#CmdEmpty #AlgLeft s.BracketNumber) =
+    (#CmdiEmpty s.BracketNumber);
+
+  (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (#CmdiVar s.Direction s.BracketNumber s.Mode s.VarNumber);
+
+  (#CmdComment e.Text) = (#CmdComment e.Text);
+
+  (#CmdEmptyResult) = (#CmdiEmptyResult);
+
+  (#CmdAllocateElem s.ElemNo #ElChar s.Value) = (#CmdArrChar s.Value);
+
+  (#CmdAllocateElem s.ElemNo #ElName e.Name) = (#CmdArrFunc e.Name);
+
+  (#CmdAllocateElem s.ElemNo #ElNumber s.Number) =
+    <Fetch
+      <Compare s.Number 256> {
+        '<' = (#CmdArrInt s.Number);
+        s.Other = (#CmdArrHugeInt s.Number);
+      }
+    >;
+
+  (#CmdAllocateElem s.ElemNo #ElIdent e.Name) = (#CmdArrIdent e.Name);
+
+  (#CmdAllocateElem s.ElemNo #ElOpenBracket) = (#CmdArrOB);
+
+  (#CmdAllocateElem s.ElemNo #ElOpenADT) = (#CmdArrOADT);
+
+  (#CmdAllocateElem s.ElemNo #ElOpenCall) = (#CmdArrOC);
+
+  (#CmdAllocateElem s.ElemNo #ElCloseBracket) = (#CmdArrCB);
+
+  (#CmdAllocateElem s.ElemNo #ElCloseADT) = (#CmdArrCADT);
+
+  (#CmdAllocateElem s.ElemNo #ElCloseCall) = (#CmdArrCC);
+
+  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem);
+
+  (#CmdArrCC-Link) = (#CmdArrCC-Link);
+
+  (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
+
+  (#CmdLinkBrackets e.CmdInfo) = ;
+
+  (#CmdPushStack e.CmdInfo) = ;
+
+  (#CmdCopyVar s.Mode s.Number s.Sample) =
+    (#CmdArrCopy s.Mode s.Number s.Sample);
+}
+
+RemoveNumber { (s.Number e.Name) = (e.Name); }
+
+OutlineConstants {
+  (s.NextFunc e.Funcs)
+  (s.NextLabel e.Labels)
+  (s.NextNumber e.Numbers)
+  /* пусто */ =
+    (#CmdiFuncArray <Map RemoveNumber e.Funcs>)
+    (#CmdiLabelArray <Map RemoveNumber e.Labels>)
+    (#CmdiNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdiName s.Direction s.BracketNum e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiName s.Direction s.BracketNum s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdiName s.Direction s.BracketNum e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiName s.Direction s.BracketNum s.NextFunc);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdArrFunc e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdArrFunc s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdArrFunc e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdArrFunc s.NextFunc);
+
+  (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+    <OutlineConstants
+      (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+
+  (s.NextFunc e.Funcs) (e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+    <OutlineConstants
+      (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+
+  (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
+  e.Commands
+  (#CmdiIdent s.Direction s.BracketNum e.Label) =
+    <OutlineConstants
+      (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiIdent s.Direction s.BracketNum s.Num);
+
+  (e.Funcs) (s.NextLabel e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdiIdent s.Direction s.BracketNum e.Label) =
+    <OutlineConstants
+      (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
+      e.Commands
+    >
+    (#CmdiIdent s.Direction s.BracketNum s.NextLabel);
+
+  (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
+  e.Commands
+  (#CmdArrIdent e.Label) =
+    <OutlineConstants
+      (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
+      e.Commands
+    >
+    (#CmdArrIdent s.Num);
+
+  (e.Funcs) (s.NextLabel e.Labels) (e.Numbers)
+  e.Commands
+  (#CmdArrIdent e.Label) =
+    <OutlineConstants
+      (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
+      e.Commands
+    >
+    (#CmdArrIdent s.NextLabel);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+  e.Commands
+  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+      e.Commands
+    >
+    (#CmdiHugeNum s.Direction s.BracketNum s.Id);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
+  e.Commands
+  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
+      e.Commands
+    >
+    (#CmdiHugeNum s.Direction s.BracketNum s.NextNumId);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+  e.Commands
+  (#CmdArrHugeInt s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
+      e.Commands
+    >
+    (#CmdArrHugeInt s.Id);
+
+  (e.Funcs) (e.Labels) (s.NextNumId e.Numbers)
+  e.Commands
+  (#CmdArrHugeInt s.Number) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
+      e.Commands
+    >
+    (#CmdArrHugeInt s.NextNumId);
+
+  (e.Funcs) (e.Labels) (e.Numbers)
+  e.Commands
+  t.OtherCommand =
+    <OutlineConstants (e.Funcs) (e.Labels) (e.Numbers) e.Commands>
+    t.OtherCommand;
+}
+
+PrepareOpenEStack {
+  e.Commands-B (#CmdiEStart e.VarInfo) e.Commands-E s.Depth =
+    e.Commands-B (#CmdiEStart e.VarInfo)
+    <PrepareOpenEStack e.Commands-E <Inc s.Depth>>;
+
+  e.Commands s.Depth =
+    e.Commands (#CmdiReserveStack s.Depth);
+}
+
+GenerateResult-OpenELoops {
+  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
+    e.Commands
+    (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
+    <GenerateResult-OpenELoops e.SubCommands>
+    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber);
+
+  e.Commands = e.Commands (#CmdReturnResult);
+}

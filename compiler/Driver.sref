@@ -10,8 +10,11 @@ $EXTERN EL-Create, EL-Destroy;
 //FROM Generator
 $EXTERN GenProgram;
 
-//FROM Algorithm
-$EXTERN MakeAlgorithm-Program;
+//FROM HightLevelRASL
+$EXTERN HightLevelRASL;
+
+//FROM LowLevelRASL
+$EXTERN LowLevelRASL;
 
 //FROM Parser
 $EXTERN ParseProgram;
@@ -38,10 +41,13 @@ $ENTRY CompileFile {
               <EL-Destroy t.ErrorList>
               {
                 #EL-NoErrors =
-                  <SaveFile
-                    (e.OutputName)
-                    <GenProgram
-                      <MakeAlgorithm-Program e.AST>
+                  <Fetch
+                    e.AST
+                    <Seq
+                      HightLevelRASL
+                      LowLevelRASL
+                      GenProgram
+                      (SaveFile (e.OutputName))
                     >
                   >
                   #Success e.OutputName;
