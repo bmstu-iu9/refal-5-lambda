@@ -639,8 +639,38 @@ GenResult {
       (/* vars */)
       (/* alloc commands */) (/* other commands */)
       0 // счётчик новых элементов
-      e.Result
+      <CollectStrings e.Result>
     >;
+}
+
+CollectStrings {
+  (#TkChar s.Value1) (#TkChar s.Value2) e.Tail =
+    <Fetch
+      <BuildString (s.Value1 s.Value2) e.Tail>
+      {
+        (e.Chars) e.Tail^ = (#TkString e.Chars) <CollectStrings e.Tail>;
+      }
+    >;
+
+  (#Brackets e.InBrackets) e.Tail =
+    (#Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+
+  (#CallBrackets e.InBrackets) e.Tail =
+    (#CallBrackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+
+  (#ADT-Brackets e.InBrackets) e.Tail =
+    (#ADT-Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
+
+  t.OtherTerm e.Tail = t.OtherTerm <CollectStrings e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+BuildString {
+  (e.Chars) (#TkChar s.Value) e.Tail =
+    <BuildString (e.Chars s.Value) e.Tail>;
+
+  (e.Chars) e.Tail = (e.Chars) e.Tail;
 }
 
 // Основные команды работы с образцом
@@ -691,6 +721,15 @@ DoGenResult {
       (e.AllocCommands (#CmdAllocateElem s.Counter #ElIdent e.Name))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
+    >;
+
+  (e.Vars) (e.AllocCommands) (e.Commands)
+  s.Counter (#TkString e.Chars) e.Result =
+    <DoGenResult
+      (e.Vars)
+      (e.AllocCommands (#CmdAllocateElem s.Counter #ElString e.Chars))
+      ((#CmdInsertRange s.Counter) e.Commands)
+      <Add s.Counter 2> e.Result
     >;
 
   /*

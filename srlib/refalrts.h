@@ -115,6 +115,7 @@ typedef enum iCmd {
   icEStart,
   icEmptyResult,
   icSpliceElem,
+  icSpliceRange,
   icBracket_CloseCallLink
 } iCmd;
 
@@ -139,6 +140,11 @@ typedef struct RASLCommand {
   unsigned char val2;
   unsigned char bracket;
 } RASLCommand;
+
+typedef struct StringItem {
+  const char *string;
+  unsigned string_len;
+} StringItem;
 
 extern void use( Iter& );
 
@@ -328,12 +334,14 @@ extern FnResult interpret_array(
   const RefalFunction functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
+  const StringItem strings[],
   int open_e_stack[]
 );
 
 extern const RefalFunction functions[];
 extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
+extern const StringItem strings[];
 
 } //namespace refalrts
 

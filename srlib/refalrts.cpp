@@ -2428,6 +2428,7 @@ refalrts::FnResult refalrts::interpret_array(
   const RefalFunction functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
+  const StringItem strings[],
   int open_e_stack[]
 ) {
   int i = 0;
@@ -2693,6 +2694,24 @@ refalrts::FnResult refalrts::interpret_array(
         ++allocs;
         break;
 
+      case icString:
+        {
+          Iter begin = 0;
+          Iter end = 0;
+          if (
+            ! alloc_chars(
+              begin, end,
+              strings[raa[i].val2].string, strings[raa[i].val2].string_len
+            )
+          )
+            return cNoMemory;
+          *allocs = end;
+          ++allocs;
+          *allocs = begin;
+          ++allocs;
+        }
+        break;
+
       case icBracket:
         switch(raa[i].val2)
         {
@@ -2782,6 +2801,15 @@ refalrts::FnResult refalrts::interpret_array(
         res = splice_elem(res, *allocs);
         break;
 
+      case icSpliceRange: {
+        --allocs;
+        Iter begin = *allocs;
+        --allocs;
+        Iter end = *allocs;
+        res = splice_evar(res, begin, end);
+        break;
+      }
+
       case icSpliceSTVar:
         index = raa[i].val2;
         res = splice_stvar(res, context[index]);
@@ -2817,6 +2845,7 @@ refalrts::FnResult refalrts::interpret_array(
 const refalrts::RefalFunction refalrts::functions[] = { { 0, 0 } };
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
+const refalrts::StringItem refalrts::strings[] = { { "", 0 } };
 
 
 //==============================================================================

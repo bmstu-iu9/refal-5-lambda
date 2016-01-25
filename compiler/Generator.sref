@@ -331,6 +331,17 @@ GenCommand {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
+  (e.Indent) (#CmdAllocateElem s.ElemNumber #ElString e.String) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter ' <PrintElemVar s.ElemNumber> ' = 0;')
+    (e.Indent 'refalrts::Iter ' <PrintElemVar <Inc s.ElemNumber>> ' = 0;')
+    (e.Indent
+      'if( ! refalrts::alloc_chars( '
+      <PrintElemVar s.ElemNumber> ', ' <PrintElemVar <Inc s.ElemNumber>> ', '
+      <PrintString e.String> ' ) )'
+    )
+    (e.Indent '  return refalrts::cNoMemory;');
+
   (e.Indent) (#CmdAllocateElem s.ElemNumber e.ElemInfo) =
     (e.Indent)
     (e.Indent 'refalrts::Iter ' <PrintElemVar s.ElemNumber> ' = 0;')
@@ -364,6 +375,14 @@ GenCommand {
     (e.Indent)
     (e.Indent
       'res = refalrts::splice_stvar( res, ' <ContextItem s.Number> ' );'
+    );
+
+  (e.Indent) (#CmdInsertRange s.Number) =
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_evar( res, '
+      <PrintElemVar s.Number> ', ' <PrintElemVar <Inc s.Number>>
+      ' );'
     );
 
   (e.Indent) (#CmdReturnResult) =
@@ -438,6 +457,22 @@ GenCommand {
       e.Numbers
     >
     (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
+    (e.Indent '};');
+
+  (e.Indent) (#CmdiStringArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::strings;');
+
+  (e.Indent) (#CmdiStringArray e.Strings (e.LastString)) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::StringItem strings[] = {')
+    <Map
+      {
+        (e.String) = (e.Indent '  {' <PrintString e.String> '},');
+      }
+      e.Strings
+    >
+    (e.Indent '  {' <PrintString e.LastString> '}')
     (e.Indent '};');
 
   (e.Indent)
@@ -553,7 +588,7 @@ GenCommand {
     )
     (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
     (e.Indent '  raa, allocs, context, arg_begin, arg_end,')
-    (e.Indent '  functions, idents, numbers, open_e_stack')
+    (e.Indent '  functions, idents, numbers, strings, open_e_stack')
     (e.Indent ');')
     (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
     (e.Indent '  break;')
@@ -620,6 +655,10 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icBracket, 0, refalrts::ibCloseCall, 0},');
 
+  (e.Indent) (#CmdArrString s.StringId) =
+    (e.Indent)
+    (e.Indent '{refalrts::icString, 0, ' <StrFromInt s.StringId> ', 0},');
+
   (e.Indent) (#CmdArrCC-Link) =
     (e.Indent)
     (e.Indent '{refalrts::icBracket_CloseCallLink, 0, 0, 0},');
@@ -649,6 +688,10 @@ GenCommand {
   (e.Indent) (#CmdSpliceElem) =
     (e.Indent)
     (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
+
+  (e.Indent) (#CmdSpliceRange) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceRange, 0, 0, 0},');
 }
 
 //FROM Escape
@@ -656,6 +699,24 @@ $EXTERN EscapeChar;
 
 Escape {
   s.Char = <EscapeChar s.Char>;
+}
+
+EscapeString {
+  e.String = <Map EscapeChar e.String>;
+}
+
+PrintLength {
+  e.String = <DoPrintLength 0 e.String>;
+}
+
+DoPrintLength {
+  s.Length s.Char e.Tail = <DoPrintLength <Inc s.Length> e.Tail>;
+
+  s.Length = <StrFromInt s.Length>;
+}
+
+PrintString {
+  e.String = '"' <EscapeString e.String> '", ' <PrintLength e.String>;
 }
 
 PrintMatchChar {
