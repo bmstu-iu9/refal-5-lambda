@@ -2802,6 +2802,7 @@ refalrts::FnResult refalrts::interpret_array(
       }
 
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw UnexpectedTypeException();
     }
     i++;
