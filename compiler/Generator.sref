@@ -596,14 +596,6 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icEmptyResult, 0, 0, 0},');
 
-  (e.Indent) (#CmdArrChar s.Value) =
-    (e.Indent)
-    (e.Indent '{refalrts::icChar, 0, \'' <Escape s.Value> '\', 0},');
-
-  (e.Indent) (#CmdArrFunc s.NameId) =
-    (e.Indent)
-    (e.Indent '{refalrts::icFunc, 0, ' <StrFromInt s.NameId> ', 0},');
-
   (e.Indent) (#CmdiBracket s.Direction s.Num s.NumRanges) =
     (e.Indent)
     (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
@@ -616,45 +608,9 @@ GenCommand {
     (e.Indent '{refalrts::icEmpty, 0, 0, ' <StrFromInt s.Num> '},')
     ;
 
-  (e.Indent) (#CmdArrInt s.Number) =
+  (e.Indent) (#CmdiAllocateElem s.ElemNumber s.Type e.Info) =
     (e.Indent)
-    (e.Indent '{refalrts::icInt, 0, ' s.Number ', 0},');
-
-  (e.Indent) (#CmdArrHugeInt s.Number) =
-    (e.Indent)
-    (e.Indent '{refalrts::icHugeInt, 0, ' s.Number ', 0},');
-
-  (e.Indent) (#CmdArrIdent s.NameId) =
-    (e.Indent)
-    (e.Indent '{refalrts::icIdent, 0, ' <StrFromInt s.NameId> ', 0},');
-
-  (e.Indent) (#CmdArrOB) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibOpenBracket, 0},');
-
-  (e.Indent) (#CmdArrCB) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibCloseBracket, 0},');
-
-  (e.Indent) (#CmdArrOADT) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibOpenADT, 0},');
-
-  (e.Indent) (#CmdArrCADT) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibCloseADT, 0},');
-
-  (e.Indent) (#CmdArrOC) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibOpenCall, 0},');
-
-  (e.Indent) (#CmdArrCC) =
-    (e.Indent)
-    (e.Indent '{refalrts::icBracket, 0, refalrts::ibCloseCall, 0},');
-
-  (e.Indent) (#CmdArrString s.StringId) =
-    (e.Indent)
-    (e.Indent '{refalrts::icString, 0, ' <StrFromInt s.StringId> ', 0},');
+    <PrintInterpretAllocateElem (e.Indent) s.ElemNumber s.Type e.Info>;
 
   (e.Indent) (#CmdArrCC-Link) =
     (e.Indent)
@@ -857,4 +813,54 @@ AllocatorFuncArgument {
 
   // Остальное -- скобки
   s.Other = ;
+}
+
+PrintInterpretAllocateElem {
+  (e.Indent) s.ElemNumber s.ElementType e.Info =
+    (e.Indent
+      '{refalrts::' <AllocatorCommandTag s.ElementType> ', '
+      '0, '
+      <AllocatorCommandInfo s.ElementType e.Info> ', '
+      '0},'
+    );
+}
+
+AllocatorCommandTag {
+  #ElChar = 'icChar';
+
+  #ElName = 'icFunc';
+
+  #ElHugeNumber = 'icHugeInt';
+  #ElNumber = 'icInt';
+
+  #ElIdent = 'icIdent';
+
+  #ElOpenBracket = 'icBracket';
+  #ElOpenADT = 'icBracket';
+  #ElOpenCall = 'icBracket';
+  #ElCloseBracket = 'icBracket';
+  #ElCloseADT = 'icBracket';
+  #ElCloseCall = 'icBracket';
+
+  #ElString = 'icString';
+}
+
+AllocatorCommandInfo {
+  #ElChar s.Char = '' <Escape s.Char> '';
+
+  #ElName s.NameId = <StrFromInt s.NameId>;
+
+  #ElHugeNumber s.NumberId = <StrFromInt s.NumberId>;
+  #ElNumber s.Number = <StrFromInt s.Number>;
+
+  #ElIdent s.NameId = <StrFromInt s.NameId>;
+
+  #ElOpenBracket = 'refalrts::ibOpenBracket';
+  #ElOpenADT = 'refalrts::ibOpenADT';
+  #ElOpenCall = 'refalrts::ibOpenCall';
+  #ElCloseBracket = 'refalrts::ibCloseBracket';
+  #ElCloseADT = 'refalrts::ibCloseADT';
+  #ElCloseCall = 'refalrts::ibCloseCall';
+
+  #ElString s.StringId = <StrFromInt s.StringId>;
 }
