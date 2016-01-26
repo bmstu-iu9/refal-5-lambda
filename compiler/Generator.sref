@@ -580,11 +580,8 @@ GenCommand {
 
   (e.Indent) (#CmdiRunInterpret) =
     (e.Indent)
-    (e.Indent
-      'refalrts::Iter allocs[2*sizeof(raa)/sizeof(raa[0])];'
-    )
     (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
-    (e.Indent '  raa, allocs, context, arg_begin, arg_end,')
+    (e.Indent '  raa, context, arg_begin, arg_end,')
     (e.Indent '  functions, idents, numbers, strings, open_e_stack')
     (e.Indent ');')
     (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
@@ -612,9 +609,12 @@ GenCommand {
     (e.Indent)
     <PrintInterpretAllocateElem (e.Indent) s.ElemNumber s.Type e.Info>;
 
-  (e.Indent) (#CmdArrCC-Link) =
+  (e.Indent) (#CmdArrCC-Link s.ElemNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icBracket_CloseCallLink, 0, 0, 0},');
+    (e.Indent
+      '{refalrts::icBracket_CloseCallLink, 0, 0, '
+      <StrFromInt s.ElemNumber> '},'
+    );
 
   (e.Indent) (#CmdArrCopy 'e' s.Target s.Sample) =
     (e.Indent)
@@ -638,13 +638,17 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icSpliceSTVar, 0, ' <StrFromInt s.Offset> ', 0},');
 
-  (e.Indent) (#CmdSpliceElem) =
+  (e.Indent) (#CmdSpliceElem s.ElemNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceElem, 0, 0, 0},');
+    (e.Indent
+      '{refalrts::icSpliceElem, 0, 0, ' <StrFromInt s.ElemNumber> '},'
+    );
 
-  (e.Indent) (#CmdSpliceRange) =
+  (e.Indent) (#CmdSpliceRange s.ElemNumber) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceRange, 0, 0, 0},');
+    (e.Indent
+      '{refalrts::icSpliceRange, 0, 0, ' <StrFromInt s.ElemNumber> '},'
+    );
 }
 
 //FROM Escape
@@ -821,7 +825,7 @@ PrintInterpretAllocateElem {
       '{refalrts::' <AllocatorCommandTag s.ElementType> ', '
       '0, '
       <AllocatorCommandInfo s.ElementType e.Info> ', '
-      '0},'
+      <StrFromInt s.ElemNumber> '},'
     );
 }
 

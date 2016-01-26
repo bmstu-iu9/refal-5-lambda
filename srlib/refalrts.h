@@ -327,7 +327,6 @@ void debug_print_expr(void *file, Iter first, Iter last);
 
 extern FnResult interpret_array(
   const RASLCommand raa[],
-  Iter allocs[],
   Iter context[],
   Iter begin,
   Iter end,

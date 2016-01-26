@@ -132,7 +132,7 @@ PrepareInterpretCommands-PatchCloseCall {
     (#CmdAllocateElem s.ElemNo #ElCloseCall)
     <PrepareInterpretCommands-PatchCloseCall
       e.Commands-M
-      (#CmdArrCC-Link)
+      (#CmdArrCC-Link s.ElemNo)
       e.Commands-E
     >;
 
@@ -200,11 +200,11 @@ ConvertInterpretCommand {
   (#CmdAllocateElem s.ElemNo s.Type e.Info) =
     (#CmdiAllocateElem s.ElemNo s.Type e.Info);
 
-  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem);
+  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem s.ElemNo);
 
-  (#CmdArrCC-Link) = (#CmdArrCC-Link);
+  (#CmdArrCC-Link s.ElemNo) = (#CmdArrCC-Link s.ElemNo);
 
-  (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange);
+  (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange s.ElemNo);
 
   (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
 
