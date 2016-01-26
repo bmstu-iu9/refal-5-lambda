@@ -609,13 +609,6 @@ GenCommand {
     (e.Indent)
     <PrintInterpretAllocateElem (e.Indent) s.ElemNumber s.Type e.Info>;
 
-  (e.Indent) (#CmdArrCC-Link s.ElemNumber) =
-    (e.Indent)
-    (e.Indent
-      '{refalrts::icBracket_CloseCallLink, 0, 0, '
-      <StrFromInt s.ElemNumber> '},'
-    );
-
   (e.Indent) (#CmdArrCopy 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
@@ -632,11 +625,11 @@ GenCommand {
 
   (e.Indent) (#CmdArrSplice 'e' s.Offset) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceEVar, 0, ' <StrFromInt s.Offset> ', 0},');
+    (e.Indent '{refalrts::icSpliceEVar, 0, 0, ' <StrFromInt s.Offset> '},');
 
   (e.Indent) (#CmdArrSplice s.Mode s.Offset) =
     (e.Indent)
-    (e.Indent '{refalrts::icSpliceSTVar, 0, ' <StrFromInt s.Offset> ', 0},');
+    (e.Indent '{refalrts::icSpliceSTVar, 0, 0, ' <StrFromInt s.Offset> '},');
 
   (e.Indent) (#CmdSpliceElem s.ElemNumber) =
     (e.Indent)
@@ -649,6 +642,17 @@ GenCommand {
     (e.Indent
       '{refalrts::icSpliceRange, 0, 0, ' <StrFromInt s.ElemNumber> '},'
     );
+
+  (e.Indent) (#CmdiLinkBrackets s.Left s.Right) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icLinkBrackets, '
+      <StrFromInt s.Left> ', ' <StrFromInt s.Right> ', 0},'
+    );
+
+  (e.Indent) (#CmdiPushStack s.ElemNumber) =
+    (e.Indent)
+    (e.Indent '{refalrts::icPushStack, 0, 0, ' <StrFromInt s.ElemNumber> '},');
 }
 
 //FROM Escape

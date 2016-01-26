@@ -2431,11 +2431,8 @@ refalrts::FnResult refalrts::interpret_array(
   int open_e_stack[]
 ) {
   int i = 0;
-  Iter stack_ptr = 0;
   Iter res = begin;
-  Iter cobracket;
   unsigned int index;
-  char chValue;
   int stack_top = 0;
 
 #define MATCH_FAIL \
@@ -2568,14 +2565,12 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icCharRight:
-        chValue = (char)raa[i].val2;
-        if ( !char_right( chValue, bb, be) )
+        if ( !char_right( static_cast<char>(raa[i].val2), bb, be) )
           MATCH_FAIL
         break;
 
       case icCharLeft:
-        chValue = (char)raa[i].val2;
-        if ( !char_left( chValue, bb, be) )
+        if ( !char_left( static_cast<char>(raa[i].val2), bb, be) )
           MATCH_FAIL
         break;
 
@@ -2707,46 +2702,31 @@ refalrts::FnResult refalrts::interpret_array(
           case ibOpenADT:
             if(!alloc_open_adt(elem))
               return cNoMemory;
-            (elem)->link_info = stack_ptr;
-            stack_ptr = elem;
             break;
 
           case ibOpenBracket:
             if(!alloc_open_bracket(elem))
               return cNoMemory;
-            (elem)->link_info = stack_ptr;
-            stack_ptr = elem;
             break;
 
           case ibOpenCall:
             if(!alloc_open_call(elem))
               return cNoMemory;
-            (elem)->link_info = stack_ptr;
-            stack_ptr = elem;
             break;
 
           case ibCloseADT:
             if(!alloc_close_adt(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( elem, cobracket );
             break;
 
           case ibCloseBracket:
             if(!alloc_close_bracket(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( elem, cobracket );
             break;
 
           case ibCloseCall:
             if(!alloc_close_call(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( elem, cobracket );
             break;
 
           default:
@@ -2789,22 +2769,20 @@ refalrts::FnResult refalrts::interpret_array(
       }
 
       case icSpliceSTVar:
-        index = raa[i].val2;
-        res = splice_stvar(res, context[index]);
+        res = splice_stvar(res, elem);
         break;
 
       case icSpliceEVar:
-        index = raa[i].val2;
-        res = splice_evar(res, context[index], context[index + 1]);
+        res = splice_evar(res, bb, be);
         break;
 
-      case icBracket_CloseCallLink: {
-        Iter open_call = (elem)->link_info;
-        push_stack(elem);
-        push_stack(open_call);
-        res = splice_elem( res, elem);
+      case icLinkBrackets:
+        link_brackets(context[raa[i].val1], context[raa[i].val2]);
         break;
-      }
+
+      case icPushStack:
+        push_stack(elem);
+        break;
 
       default:
         assert( SWITCH_DEFAULT_VIOLATION );

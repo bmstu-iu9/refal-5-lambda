@@ -109,9 +109,7 @@ PrepareInterpretCommands {
   e.Commands =
     <Map
       ConvertInterpretCommand
-      <PrepareInterpretCommands-PatchCloseCall
-        <PrepareInterpretCommands-OpenELoops e.Commands>
-      >
+      <PrepareInterpretCommands-OpenELoops e.Commands>
     >;
 }
 
@@ -121,20 +119,6 @@ PrepareInterpretCommands-OpenELoops {
     (#CmdiEPrepare s.BracketNum s.VarNumber)
     (#CmdiEStart s.BracketNum s.VarNumber)
     <PrepareInterpretCommands-OpenELoops e.SubCommands>;
-
-  e.Commands = e.Commands;
-}
-
-PrepareInterpretCommands-PatchCloseCall {
-  e.Commands-B (#CmdAllocateElem s.ElemNo #ElCloseCall)
-  e.Commands-M (#CmdInsertElem s.ElemNo) e.Commands-E =
-    e.Commands-B
-    (#CmdAllocateElem s.ElemNo #ElCloseCall)
-    <PrepareInterpretCommands-PatchCloseCall
-      e.Commands-M
-      (#CmdArrCC-Link s.ElemNo)
-      e.Commands-E
-    >;
 
   e.Commands = e.Commands;
 }
@@ -202,15 +186,13 @@ ConvertInterpretCommand {
 
   (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem s.ElemNo);
 
-  (#CmdArrCC-Link s.ElemNo) = (#CmdArrCC-Link s.ElemNo);
-
   (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange s.ElemNo);
 
   (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
 
-  (#CmdLinkBrackets e.CmdInfo) = ;
+  (#CmdLinkBrackets s.Left s.Right) = (#CmdiLinkBrackets s.Left s.Right);
 
-  (#CmdPushStack e.CmdInfo) = ;
+  (#CmdPushStack s.ElemNo) = (#CmdiPushStack s.ElemNo);
 
   (#CmdCopyVar s.Mode s.Number s.Sample) =
     (#CmdArrCopy s.Mode s.Number s.Sample);
