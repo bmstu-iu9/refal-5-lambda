@@ -333,36 +333,33 @@ GenCommand {
 
   (e.Indent) (#CmdAllocateElem s.ElemNumber #ElString e.String) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <PrintElemVar s.ElemNumber> ' = 0;')
-    (e.Indent 'refalrts::Iter ' <PrintElemVar <Inc s.ElemNumber>> ' = 0;')
     (e.Indent
       'if( ! refalrts::alloc_chars( '
-      <PrintElemVar s.ElemNumber> ', ' <PrintElemVar <Inc s.ElemNumber>> ', '
+      <ContextItem s.ElemNumber> ', ' <ContextItem <Inc s.ElemNumber>> ', '
       <PrintString e.String> ' ) )'
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
   (e.Indent) (#CmdAllocateElem s.ElemNumber e.ElemInfo) =
     (e.Indent)
-    (e.Indent 'refalrts::Iter ' <PrintElemVar s.ElemNumber> ' = 0;')
     <PrintAllocateElem (e.Indent) s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
     (e.Indent)
     (e.Indent
       'refalrts::link_brackets( '
-      <PrintElemVar s.Left> ', ' <PrintElemVar s.Right>
+      <ContextItem s.Left> ', ' <ContextItem s.Right>
       ' );'
     );
 
   (e.Indent) (#CmdPushStack s.ElemNumber) =
     (e.Indent)
-    (e.Indent 'refalrts::push_stack( ' <PrintElemVar s.ElemNumber> ' );');
+    (e.Indent 'refalrts::push_stack( ' <ContextItem s.ElemNumber> ' );');
 
   (e.Indent) (#CmdInsertElem s.ElemNumber) =
     (e.Indent)
     (e.Indent
-      'res = refalrts::splice_elem( res, ' <PrintElemVar s.ElemNumber> ' );'
+      'res = refalrts::splice_elem( res, ' <ContextItem s.ElemNumber> ' );'
     );
 
   (e.Indent) (#CmdInsertVar 'e' s.Number) =
@@ -381,7 +378,7 @@ GenCommand {
     (e.Indent)
     (e.Indent
       'res = refalrts::splice_evar( res, '
-      <PrintElemVar s.Number> ', ' <PrintElemVar <Inc s.Number>>
+      <ContextItem s.Number> ', ' <ContextItem <Inc s.Number>>
       ' );'
     );
 
@@ -823,15 +820,11 @@ PrintMatch {
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
 
-PrintElemVar {
-  s.Number = 'n' <StrFromInt s.Number>;
-}
-
 PrintAllocateElem {
   (e.Indent) s.ElemNumber s.ElementType e.Info =
     (e.Indent
       'if( ! refalrts::' <AllocatorFuncName s.ElementType> '( '
-      <PrintElemVar s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
+      <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
       ' ) )'
     )
     (e.Indent '  return refalrts::cNoMemory;');

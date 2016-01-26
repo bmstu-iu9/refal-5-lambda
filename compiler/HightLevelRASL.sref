@@ -68,15 +68,21 @@ HightLevelRASL-Function {
 
 HightLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
-    <GeneralizeResult
+    <Fetch
       <GenPattern e.Pattern>
-      <GenResult e.Result>
+      {
+        (e.PatternVars) s.ContextItems (e.PatternCommands) =
+          <GeneralizeResult
+            (e.PatternVars) (e.PatternCommands)
+            <GenResult s.ContextItems e.Result>
+          >;
+      }
     >;
 }
 
 GeneralizeResult {
-  (e.PatternVars) s.NumBrackets (e.PatternCommands)
-  (e.ResultVars) (e.ResultCommands) =
+  (e.PatternVars) (e.PatternCommands)
+  s.ContextCount (e.ResultVars) (e.ResultCommands) =
     <Fetch
       (<ReplicateVars e.PatternVars>)
       (<ReplicateVars e.ResultVars>)
@@ -106,7 +112,7 @@ GeneralizeResult {
                   s.Number (s.Usings s.Mode e.Index) =
                     <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
                 }
-                s.NumBrackets e.CommonVars
+                s.ContextCount e.CommonVars
               >
             )
             (e.CopiedVars) e.FilteredPatternCommands;
@@ -634,11 +640,11 @@ TextFromPattern-Char {
 //==============================================================================
 
 GenResult {
-  e.Result =
+  s.BaseContextSize e.Result =
     <DoGenResult
       (/* vars */)
       (/* alloc commands */) (/* other commands */)
-      0 // счётчик новых элементов
+      s.BaseContextSize // счётчик новых элементов
       <CollectStrings e.Result>
     >;
 }
@@ -828,5 +834,5 @@ DoGenResult {
 
   // Завершение просмотра
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
-    (e.Vars) (e.AllocCommands e.Commands);
+    s.Counter (e.Vars) (e.AllocCommands e.Commands);
 }
