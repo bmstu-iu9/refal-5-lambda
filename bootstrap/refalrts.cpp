@@ -2026,7 +2026,6 @@ refalrts::FnResult refalrts::vm::main_loop() {
     refalrts::Iter active_end = pop_stack();
 
     res = execute_active( active_begin, active_end );
-    refalrts::profiler::after_step();
 
     ++ g_step_counter;
 
@@ -2049,12 +2048,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
       }
       make_dump( active_begin, active_end );
       return res;
-    } else {
-      continue;
     }
-  }
 
-  // printf("\n\nTOTAL STEPS %d\n", g_step_counter);
+    refalrts::profiler::after_step();
+  }
 
   return res;
 }
@@ -2431,6 +2428,7 @@ refalrts::FnResult refalrts::interpret_array(
   const RefalFunction functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
+  const StringItem strings[],
   int open_e_stack[]
 ) {
   int i = 0;
@@ -2696,6 +2694,24 @@ refalrts::FnResult refalrts::interpret_array(
         ++allocs;
         break;
 
+      case icString:
+        {
+          Iter begin = 0;
+          Iter end = 0;
+          if (
+            ! alloc_chars(
+              begin, end,
+              strings[raa[i].val2].string, strings[raa[i].val2].string_len
+            )
+          )
+            return cNoMemory;
+          *allocs = end;
+          ++allocs;
+          *allocs = begin;
+          ++allocs;
+        }
+        break;
+
       case icBracket:
         switch(raa[i].val2)
         {
@@ -2755,27 +2771,23 @@ refalrts::FnResult refalrts::interpret_array(
         }
         break;
 
-      case icCopySTVar:
-        index = raa[i].val2;
-        if( !copy_stvar(*allocs, context[index]) )
+      case icCopySTVar: {
+        unsigned int target = raa[i].val1;
+        unsigned int sample = raa[i].val2;
+        if (! copy_stvar(context[target], context[sample]))
           return cNoMemory;
-        ++allocs;
         break;
+      }
 
       case icCopyEVar: {
-        refalrts::Iter& ebegin = *allocs;
-        ++allocs;
-        refalrts::Iter& eend = *allocs;
-        ++allocs;
-        index = raa[i].val2;
-        if(
-            !copy_evar(
-              ebegin,
-              eend,
-              context[index],
-              context[index + 1]
-            )
+        unsigned int target = raa[i].val1;
+        unsigned int sample = raa[i].val2;
+        if (
+          ! copy_evar(
+            context[target], context[target + 1],
+            context[sample], context[sample + 1]
           )
+        )
           return cNoMemory;
         break;
       }
@@ -2788,6 +2800,15 @@ refalrts::FnResult refalrts::interpret_array(
         --allocs;
         res = splice_elem(res, *allocs);
         break;
+
+      case icSpliceRange: {
+        --allocs;
+        Iter begin = *allocs;
+        --allocs;
+        Iter end = *allocs;
+        res = splice_evar(res, begin, end);
+        break;
+      }
 
       case icSpliceSTVar:
         index = raa[i].val2;
@@ -2808,21 +2829,8 @@ refalrts::FnResult refalrts::interpret_array(
         break;
       }
 
-      case icSpliceCopyEVar: {
-        --allocs;
-        refalrts::Iter eend = *allocs;
-        --allocs;
-        refalrts::Iter ebegin = *allocs;
-        res = splice_evar(res, ebegin, eend);
-        break;
-      }
-
-      case icSpliceCopySTVar:
-        --allocs;
-        res = splice_stvar(res, *allocs);
-        break;
-
       default:
+        assert( SWITCH_DEFAULT_VIOLATION );
         throw UnexpectedTypeException();
     }
     i++;
@@ -2837,6 +2845,7 @@ refalrts::FnResult refalrts::interpret_array(
 const refalrts::RefalFunction refalrts::functions[] = { { 0, 0 } };
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
+const refalrts::StringItem refalrts::strings[] = { { "", 0 } };
 
 
 //==============================================================================
