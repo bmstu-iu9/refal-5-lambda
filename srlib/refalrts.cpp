@@ -2270,7 +2270,14 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosure:
-            fprintf( output, "{ " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "{" );
             begin = unwrap_closure( begin );
             refalrts::move_left( begin, end );
             continue;
@@ -2281,7 +2288,8 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataUnwrappedClosure:
-            fprintf( output, "} " );
+            --indent;
+            fprintf( output, "}" );
             begin = wrap_closure( begin );
             continue;
 
