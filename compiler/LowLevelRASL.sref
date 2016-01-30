@@ -5,9 +5,9 @@ $ENTRY LowLevelRASL {
   e.ProgramElements =
     <Map
       {
-        (#Function s.ScopeClass (e.Name) e.Sentences) =
+        (#Function s.ScopeClass (e.Name) e.Commands) =
           <LowLevelRASL-Function
-            s.ScopeClass (e.Name) e.Sentences
+            s.ScopeClass (e.Name) e.Commands
           >;
 
         (#CmdEnum s.ScopeClass e.Name) =
@@ -28,61 +28,9 @@ $ENTRY LowLevelRASL {
 }
 
 LowLevelRASL-Function {
-  s.ScopeClass (e.Name) e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        (Map AnalyzeSentence)
-        {
-          // Закомментированный код содержит вариант кодогенерации,
-          // при котором если последнее предложение имеет вид
-          // e.X = ...;, в конце не генерится возврат
-          // return RecognitionImpossible;
-
-          //e.Sentences^ (#AlwaysSuccess e.LastSentence) =
-          //  e.Sentences (#AlwaysSuccess e.LastSentence) (#CmdFnEnd-Success);
-
-          e.Sentences^ = e.Sentences (#CmdFnEnd);
-        }
-        {
-          e.Sentences^ t.LastCommand =
-          (#CmdFnStart s.ScopeClass e.Name)
-          <Map
-            {
-              (s.Type e.RASLSentence) =
-                <LowLevelRASL-Sentence e.RASLSentence>;
-            }
-            e.Sentences
-          >
-          t.LastCommand;
-        }
-      >
-    >;
-}
-
-AnalyzeSentence {
-  ((#CmdIssueMem s.Num) e.Sentence) =
-    <DoAnalyzeSentence ((#CmdIssueMem s.Num)) e.Sentence>;
-}
-
-DoAnalyzeSentence {
-  (e.Prefix) (#CmdComment e.Comment) e.Sentence =
-    <DoAnalyzeSentence (e.Prefix (#CmdComment e.Comment)) e.Sentence>;
-
-  (e.Prefix) (#CmdClosedE #AlgLeft 0 2) e.Sentence =
-    (#AlwaysSuccess e.Prefix (#CmdClosedE #AlgLeft 0 2) e.Sentence);
-
-  (e.Prefix) (#CmdEmptyResult) e.Sentence =
-    (#AlwaysSuccess e.Prefix (#CmdEmptyResult) e.Sentence);
-
-  (e.Prefix) e.OtherCommands = (#MayFail e.Prefix e.OtherCommands);
-}
-
-LowLevelRASL-Sentence {
-  (#CmdIssueMem s.Number) e.Commands =
-    (#CmdStartSentence)
+  s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
+    (#CmdFnStart s.ScopeClass e.Name)
     (#CmdIssueMem s.Number)
-    (#CmdInitB0)
     // Интерпретируемый код
     (#CmdIfDef)
     <PrepareOpenEStack
@@ -100,27 +48,54 @@ LowLevelRASL-Sentence {
     (#CmdiRunInterpret)
     // Компилируемый код
     (#CmdElse)
-    <GenerateResult-OpenELoops e.Commands>
+    <GenerateResult-Sentences e.Commands>
     (#CmdEndIf)
-    (#CmdEndSentence);
+    (#CmdFnEnd-Success);
 }
 
 PrepareInterpretCommands {
   e.Commands =
     <Map
       ConvertInterpretCommand
-      <PrepareInterpretCommands-OpenELoops e.Commands>
+      <PrepareInterpretCommands-Linearize e.Commands>
     >;
 }
 
-PrepareInterpretCommands-OpenELoops {
+PrepareInterpretCommands-Linearize {
+  e.Commands (#CmdSentence e.SubCommands) e.Tail =
+    <Fetch
+      <Length-T
+        <PrepareInterpretCommands-Linearize e.SubCommands>
+      >
+      {
+        s.Length e.SubCommands^ =
+          e.Commands
+          (#CmdiOnFailGoTo s.Length)
+          e.SubCommands
+          <PrepareInterpretCommands-Linearize e.Tail>;
+      }
+    >;
+
   e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
     e.Commands
     (#CmdiEPrepare s.BracketNum s.VarNumber)
     (#CmdiEStart s.BracketNum s.VarNumber)
-    <PrepareInterpretCommands-OpenELoops e.SubCommands>;
+    <PrepareInterpretCommands-Linearize e.SubCommands>;
 
   e.Commands = e.Commands;
+}
+
+Length-T {
+  e.Expr = <DoLength 0 e.Expr>;
+}
+
+DoLength {
+  s.Count e.Expr (#CmdComment e.Text) =
+    <DoLength s.Count e.Expr> (#CmdComment e.Text);
+
+  s.Count e.Expr t.Last = <DoLength <Inc s.Count> e.Expr> t.Last;
+
+  s.Count /* пусто */ = s.Count;
 }
 
 ConvertInterpretCommand {
@@ -196,6 +171,14 @@ ConvertInterpretCommand {
 
   (#CmdCopyVar s.Mode s.Number s.Sample) =
     (#CmdArrCopy s.Mode s.Number s.Sample);
+
+  (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
+
+  (#CmdFail) = (#CmdiFail);
+
+  (#CmdReturnResult) = (#CmdiReturnResult);
+
+  (#CmdInitB0) = (#CmdiInitB0);
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
@@ -387,12 +370,27 @@ OutlineConstants {
 }
 
 PrepareOpenEStack {
-  e.Commands-B (#CmdiEStart e.VarInfo) e.Commands-E s.Depth =
-    e.Commands-B (#CmdiEStart e.VarInfo)
-    <PrepareOpenEStack e.Commands-E <Inc s.Depth>>;
+  (#CmdiEStart e.VarInfo) e.Commands s.Depth =
+    (#CmdiEStart e.VarInfo) <PrepareOpenEStack e.Commands <Inc s.Depth>>;
 
-  e.Commands s.Depth =
-    e.Commands (#CmdiReserveStack s.Depth);
+  (#CmdiOnFailGoTo s.Offset) e.Commands s.Depth =
+    (#CmdiOnFailGoTo s.Offset) <PrepareOpenEStack e.Commands <Inc s.Depth>>;
+
+  t.OtherCommand e.Commands s.Depth =
+    t.OtherCommand <PrepareOpenEStack e.Commands s.Depth>;
+
+  s.Depth = (#CmdiReserveStack s.Depth);
+}
+
+GenerateResult-Sentences {
+  e.Commands (#CmdSentence e.SubCommands) e.Tail =
+    e.Commands
+    (#CmdStartSentence)
+    <GenerateResult-Sentences e.SubCommands>
+    (#CmdEndSentence)
+    <GenerateResult-Sentences e.Tail>;
+
+  e.Commands = <GenerateResult-OpenELoops e.Commands>;
 }
 
 GenerateResult-OpenELoops {
@@ -402,5 +400,5 @@ GenerateResult-OpenELoops {
     <GenerateResult-OpenELoops e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber);
 
-  e.Commands = e.Commands (#CmdReturnResult);
+  e.Commands = e.Commands;
 }

@@ -584,10 +584,7 @@ GenCommand {
     (e.Indent '  raa, context, arg_begin, arg_end,')
     (e.Indent '  functions, idents, numbers, strings, open_e_stack')
     (e.Indent ');')
-    (e.Indent 'if ( res == refalrts::cRecognitionImpossible )')
-    (e.Indent '  break;')
-    (e.Indent 'else')
-    (e.Indent '  return res;');
+    (e.Indent 'return res;');
 
   (e.Indent) (#CmdiEmptyResult) =
     (e.Indent)
@@ -653,6 +650,26 @@ GenCommand {
   (e.Indent) (#CmdiPushStack s.ElemNumber) =
     (e.Indent)
     (e.Indent '{refalrts::icPushStack, 0, 0, ' <StrFromInt s.ElemNumber> '},');
+
+  (e.Indent) (#CmdFail) =
+    (e.Indent)
+    (e.Indent 'return refalrts::cRecognitionImpossible;');
+
+  (e.Indent) (#CmdiOnFailGoTo s.Offset) =
+    (e.Indent)
+    (e.Indent '{refalrts::icOnFailGoTo, +' <StrFromInt s.Offset> ', 0, 0},');
+
+  (e.Indent) (#CmdiFail) =
+    (e.Indent)
+    (e.Indent '{refalrts::icFail, 0, 0, 0},');
+
+  (e.Indent) (#CmdiReturnResult) =
+    (e.Indent)
+    (e.Indent '{refalrts::icReturnResult, 0, 0, 0},');
+
+  (e.Indent) (#CmdiInitB0) =
+    (e.Indent)
+    (e.Indent '{refalrts::icInitB0, 0, 0, 0},');
 }
 
 //FROM Escape

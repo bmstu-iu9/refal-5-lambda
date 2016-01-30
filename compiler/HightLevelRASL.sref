@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec;
+$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -13,14 +13,14 @@ $EXTERN EscapeChar;
 
   e.RASLAST ::= t.RASLFunction*
   t.RASLFunction ::=
-      (#Function s.ScopeClass (e.Name) t.Sentence*)
+      (#Function s.ScopeClass (e.Name) t.HiRASLCommand*)
     | (s.SingularItem s.ScopeClass e.Name)
     | (#Ident e.Name)
     | (#Separator)
   s.SingularItem ::= #Enum | #Swap | #Stub | #Declaration
-  t.Sentence ::= (t.HiRASLCommand*)
   t.HiRASLCommand ::=
       (#Cmd… e.Value)
+    | (#CmdSentence t.HiRASLCommand*)
     | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
 $ENTRY HightLevelRASL {
@@ -54,16 +54,39 @@ $ENTRY HightLevelRASL {
 
 HightLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
-    (#Function
-      s.ScopeClass (e.Name)
-      <Map
+    <Fetch
+      e.Sentences
+      <Seq
+        (Map
+          {
+            ((e.Pattern) (e.Result)) =
+              (<HightLevelRASL-Sentence (e.Pattern) (e.Result)>);
+          }
+        )
+        (MapReduce
+          {
+            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
+              <Fetch
+                <Compare s.MaxMemory s.Memory> {
+                  '<' = s.Memory;
+                  s.Other = s.MaxMemory;
+                }
+              >
+              (#CmdSentence e.Sentence);
+          }
+          0
+        )
         {
-          ((e.Pattern) (e.Result)) =
-            (<HightLevelRASL-Sentence (e.Pattern) (e.Result)>);
+          s.MaxMemory e.Sentences^ =
+            (#Function
+              s.ScopeClass (e.Name)
+              (#CmdIssueMem s.MaxMemory)
+              e.Sentences
+              (#CmdFail)
+            );
         }
-        e.Sentences
       >
-    );
+    >;
 }
 
 HightLevelRASL-Sentence {
@@ -121,6 +144,7 @@ GeneralizeResult {
           (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
             <FoldOpenELoops
               (#CmdIssueMem s.Number)
+              (#CmdInitB0)
               <PatchVariableNumbers
                 (e.CommonVars)
                 e.FilteredPatternCommands
@@ -128,6 +152,7 @@ GeneralizeResult {
                 <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
                 <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
               >
+              (#CmdReturnResult)
             >;
         }
       >

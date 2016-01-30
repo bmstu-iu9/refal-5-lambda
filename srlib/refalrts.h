@@ -117,7 +117,11 @@ typedef enum iCmd {
   icSpliceElem,
   icSpliceRange,
   icLinkBrackets,
-  icPushStack
+  icPushStack,
+  icOnFailGoTo,
+  icFail,
+  icReturnResult,
+  icInitB0
 } iCmd;
 
 typedef enum BracketType {

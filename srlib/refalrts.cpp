@@ -2461,8 +2461,17 @@ refalrts::FnResult refalrts::interpret_array(
     Iter &bb = context[raa[i].bracket];
     Iter &be = context[raa[i].bracket + 1];
     Iter &elem = context[raa[i].bracket];
+
     switch(raa[i].cmd)
     {
+      case icInitB0:
+        context[0] = begin;
+        context[1] = end;
+        refalrts::move_left( context[0], context[1] );
+        refalrts::move_left( context[0], context[1] );
+        refalrts::move_right( context[0], context[1] );
+        break;
+
       case icBracketLeft:
         if( !refalrts::brackets_left( context[raa[i].val2],
                                       context[raa[i].val2 + 1],
@@ -2792,14 +2801,23 @@ refalrts::FnResult refalrts::interpret_array(
         push_stack(elem);
         break;
 
+      case icOnFailGoTo:
+        open_e_stack[stack_top++] = i + raa[i].val1 + 1;
+        break;
+
+      case icFail:
+        MATCH_FAIL;
+
+      case icReturnResult:
+        splice_to_freelist(begin, end);
+        return cSuccess;
+
       default:
         assert( SWITCH_DEFAULT_VIOLATION );
         throw UnexpectedTypeException();
     }
     i++;
   }
-
-  splice_to_freelist(begin, end);
 
   return cSuccess;
 }
