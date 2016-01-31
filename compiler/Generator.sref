@@ -34,6 +34,20 @@ GenForward {
     ('static refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
 }
 
+GenReturn {
+  #Success e.Indent =
+    (e.Indent
+      'return refalrts::FnResult(refalrts::cSuccess | (__LINE__ << 8));'
+    );
+
+  #Fail e.Indent =
+    (e.Indent
+      'return refalrts::FnResult('
+        'refalrts::cRecognitionImpossible | (__LINE__ << 8)'
+      ');'
+    );
+}
+
 GenSwap {
   s.MemoryClass e.Name =
     <GenFnStart s.MemoryClass e.Name>
@@ -57,7 +71,7 @@ GenSwap {
     ('  refalrts::swap_save( s_head, info_b, info_e );')
     ('  refalrts::splice_to_freelist( arg_begin, arg_end );')
     ()
-    ('  return refalrts::cSuccess;')
+    <GenReturn #Success '  '>
     ('}')
     ();
 }
@@ -148,9 +162,7 @@ GenCommand {
   (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
     (e.Indent)
     <SwGenFnStart s.MemoryClass NakedArguments e.Name>
-    ('  return refalrts::FnResult(')
-    ('    refalrts::cRecognitionImpossible | (__LINE__ << 8)')
-    ('  );')
+    <GenReturn #Fail '  '>
     ('}') ();
 
   (e.Indent) (#CmdSwap s.MemoryClass e.Name) =
@@ -373,7 +385,7 @@ GenCommand {
     (e.Indent)
     (e.Indent 'refalrts::use( res );')
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
-    (e.Indent 'return refalrts::cSuccess;');
+    <GenReturn #Success e.Indent>;
 
   (e.Indent) (#CmdIssueMem s.Number) =
     (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
@@ -640,7 +652,7 @@ GenCommand {
 
   (e.Indent) (#CmdFail) =
     (e.Indent)
-    (e.Indent 'return refalrts::cRecognitionImpossible;');
+    <GenReturn #Fail e.Indent>;
 
   (e.Indent) (#CmdiOnFailGoTo s.Offset) =
     (e.Indent)
