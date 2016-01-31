@@ -77,12 +77,20 @@ HightLevelRASL-Function {
           0
         )
         {
-          s.MaxMemory e.Sentences^ =
+          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
               s.ScopeClass (e.Name)
               (#CmdIssueMem s.MaxMemory)
               e.Sentences
-              (#CmdFail)
+              <Fetch
+                e.LastSentence
+                {
+                  e.Commands (#CmdOpenELoop e.OpenELoop) =
+                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+
+                  e.LastSentence^ = e.LastSentence;
+                }
+              >
             );
         }
       >

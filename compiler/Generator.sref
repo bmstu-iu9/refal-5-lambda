@@ -24,18 +24,6 @@ GenFnStart {
     <SwGenFnStart s.MemoryClass FuncArguments e.Name>;
 }
 
-GenFnEnd {
-  =
-    ('  return refalrts::FnResult(')
-    ('    refalrts::cRecognitionImpossible | (__LINE__ << 8)')
-    ('  );')
-    ('}') ();
-}
-
-GenFnEnd-Success {
-  = ('  //return refalrts::cRecognitionImpossible;') ('}') ();
-}
-
 GenExtern {
   e.Name =
     ('extern refalrts::FnResult ' e.Name '(' <FuncArguments> ');');
@@ -160,7 +148,10 @@ GenCommand {
   (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
     (e.Indent)
     <SwGenFnStart s.MemoryClass NakedArguments e.Name>
-    <GenFnEnd>;
+    ('  return refalrts::FnResult(')
+    ('    refalrts::cRecognitionImpossible | (__LINE__ << 8)')
+    ('  );')
+    ('}') ();
 
   (e.Indent) (#CmdSwap s.MemoryClass e.Name) =
     (e.Indent)
@@ -188,11 +179,7 @@ GenCommand {
 
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
-    <GenFnEnd>;
-
-  (e.Indent '  ') (#CmdFnEnd-Success) =
-    (e.Indent)
-    <GenFnEnd-Success>;
+    ('}') ();
 
   (e.Indent) (#CmdStartSentence) =
     (e.Indent '  ')
@@ -749,7 +736,7 @@ PrintMatchADT {
 }
 
 BreakerFromIndent {
-  '    ' = 'break;';
+  '  ' = 'return refalrts::cRecognitionImpossible;';
 
   e.OtherIndent = 'continue;';
 }

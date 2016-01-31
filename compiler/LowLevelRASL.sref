@@ -50,7 +50,7 @@ LowLevelRASL-Function {
     (#CmdElse)
     <GenerateResult-Sentences e.Commands>
     (#CmdEndIf)
-    (#CmdFnEnd-Success);
+    (#CmdFnEnd);
 }
 
 PrepareInterpretCommands {
@@ -62,27 +62,29 @@ PrepareInterpretCommands {
 }
 
 PrepareInterpretCommands-Linearize {
-  e.Commands (#CmdSentence e.SubCommands) e.Tail =
+  (#CmdSentence e.SubCommands) e.Tail =
     <Fetch
       <Length-T
         <PrepareInterpretCommands-Linearize e.SubCommands>
       >
       {
         s.Length e.SubCommands^ =
-          e.Commands
           (#CmdiOnFailGoTo s.Length)
           e.SubCommands
           <PrepareInterpretCommands-Linearize e.Tail>;
       }
     >;
 
-  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
-    e.Commands
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
     (#CmdiEPrepare s.BracketNum s.VarNumber)
     (#CmdiEStart s.BracketNum s.VarNumber)
-    <PrepareInterpretCommands-Linearize e.SubCommands>;
+    <PrepareInterpretCommands-Linearize e.SubCommands>
+    <PrepareInterpretCommands-Linearize e.Tail>;
 
-  e.Commands = e.Commands;
+  t.Command e.Tail =
+    t.Command <PrepareInterpretCommands-Linearize e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
 
 Length-T {
@@ -383,22 +385,19 @@ PrepareOpenEStack {
 }
 
 GenerateResult-Sentences {
-  e.Commands (#CmdSentence e.SubCommands) e.Tail =
-    e.Commands
+  (#CmdSentence e.SubCommands) e.Tail =
     (#CmdStartSentence)
     <GenerateResult-Sentences e.SubCommands>
     (#CmdEndSentence)
     <GenerateResult-Sentences e.Tail>;
 
-  e.Commands = <GenerateResult-OpenELoops e.Commands>;
-}
-
-GenerateResult-OpenELoops {
-  e.Commands (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
-    e.Commands
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <GenerateResult-OpenELoops e.SubCommands>
-    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber);
+    <GenerateResult-Sentences e.SubCommands>
+    (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
+    <GenerateResult-Sentences e.Tail>;
 
-  e.Commands = e.Commands;
+  t.Command e.Tail = t.Command <GenerateResult-Sentences e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
