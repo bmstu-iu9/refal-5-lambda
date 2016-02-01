@@ -2270,7 +2270,14 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosure:
-            fprintf( output, "{ " );
+            if( ! after_bracket )
+            {
+              print_indent( output, indent );
+            }
+            ++indent;
+            after_bracket = true;
+            reset_after_bracket = false;
+            fprintf( output, "{" );
             begin = unwrap_closure( begin );
             refalrts::move_left( begin, end );
             continue;
@@ -2281,7 +2288,8 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataUnwrappedClosure:
-            fprintf( output, "} " );
+            --indent;
+            fprintf( output, "}" );
             begin = wrap_closure( begin );
             continue;
 
@@ -2422,7 +2430,6 @@ void refalrts::vm::free_view_field() {
 
 refalrts::FnResult refalrts::interpret_array(
   const refalrts::RASLCommand raa[],
-  refalrts::Iter allocs[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
   const RefalFunction functions[],
@@ -2432,11 +2439,8 @@ refalrts::FnResult refalrts::interpret_array(
   int open_e_stack[]
 ) {
   int i = 0;
-  Iter stack_ptr = 0;
   Iter res = begin;
-  Iter cobracket;
   unsigned int index;
-  char chValue;
   int stack_top = 0;
 
 #define MATCH_FAIL \
@@ -2456,8 +2460,18 @@ refalrts::FnResult refalrts::interpret_array(
     // Для ряда команд эти переменные могут не иметь смысла
     Iter &bb = context[raa[i].bracket];
     Iter &be = context[raa[i].bracket + 1];
+    Iter &elem = context[raa[i].bracket];
+
     switch(raa[i].cmd)
     {
+      case icInitB0:
+        context[0] = begin;
+        context[1] = end;
+        refalrts::move_left( context[0], context[1] );
+        refalrts::move_left( context[0], context[1] );
+        refalrts::move_right( context[0], context[1] );
+        break;
+
       case icBracketLeft:
         if( !refalrts::brackets_left( context[raa[i].val2],
                                       context[raa[i].val2 + 1],
@@ -2568,14 +2582,12 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icCharRight:
-        chValue = (char)raa[i].val2;
-        if ( !char_right( chValue, bb, be) )
+        if ( !char_right( static_cast<char>(raa[i].val2), bb, be) )
           MATCH_FAIL
         break;
 
       case icCharLeft:
-        chValue = (char)raa[i].val2;
-        if ( !char_left( chValue, bb, be) )
+        if ( !char_left( static_cast<char>(raa[i].val2), bb, be) )
           MATCH_FAIL
         break;
 
@@ -2659,56 +2671,45 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icChar:
-        if(!alloc_char(*allocs, static_cast<char>(raa[i].val2)))
+        if(!alloc_char(elem, static_cast<char>(raa[i].val2)))
           return cNoMemory;
-        ++allocs;
         break;
 
       case icInt:
-        if(!alloc_number(*allocs, static_cast<RefalNumber>(raa[i].val2)))
+        if(!alloc_number(elem, static_cast<RefalNumber>(raa[i].val2)))
           return cNoMemory;
-        ++allocs;
         break;
 
       case icHugeInt:
-        if(!alloc_number(*allocs, numbers[raa[i].val2]))
+        if(!alloc_number(elem, numbers[raa[i].val2]))
           return cNoMemory;
-        ++allocs;
         break;
 
       case icFunc:
         if(
             !alloc_name(
-              *allocs,
+              elem,
               functions[raa[i].val2].ptr,
               functions[raa[i].val2].name
             )
         )
           return cNoMemory;
-        ++allocs;
         break;
 
       case icIdent:
-        if( !alloc_ident( *allocs, idents[raa[i].val2] ) )
+        if(!alloc_ident(elem, idents[raa[i].val2]))
           return cNoMemory;
-        ++allocs;
         break;
 
       case icString:
         {
-          Iter begin = 0;
-          Iter end = 0;
           if (
             ! alloc_chars(
-              begin, end,
+              bb, be,
               strings[raa[i].val2].string, strings[raa[i].val2].string_len
             )
           )
             return cNoMemory;
-          *allocs = end;
-          ++allocs;
-          *allocs = begin;
-          ++allocs;
         }
         break;
 
@@ -2716,54 +2717,33 @@ refalrts::FnResult refalrts::interpret_array(
         switch(raa[i].val2)
         {
           case ibOpenADT:
-            if(!alloc_open_adt(*allocs))
+            if(!alloc_open_adt(elem))
               return cNoMemory;
-            (*allocs)->link_info = stack_ptr;
-            stack_ptr = *allocs;
-            ++allocs;
             break;
 
           case ibOpenBracket:
-            if(!alloc_open_bracket(*allocs))
+            if(!alloc_open_bracket(elem))
               return cNoMemory;
-            (*allocs)->link_info = stack_ptr;
-            stack_ptr = *allocs;
-            ++allocs;
             break;
 
           case ibOpenCall:
-            if(!alloc_open_call(*allocs))
+            if(!alloc_open_call(elem))
               return cNoMemory;
-            (*allocs)->link_info = stack_ptr;
-            stack_ptr = *allocs;
-            ++allocs;
             break;
 
           case ibCloseADT:
-            if(!alloc_close_adt(*allocs))
+            if(!alloc_close_adt(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( *allocs, cobracket );
-            ++allocs;
             break;
 
           case ibCloseBracket:
-            if(!alloc_close_bracket(*allocs))
+            if(!alloc_close_bracket(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( *allocs, cobracket );
-            ++allocs;
             break;
 
           case ibCloseCall:
-            if(!alloc_close_call(*allocs))
+            if(!alloc_close_call(elem))
               return cNoMemory;
-            cobracket = stack_ptr;
-            stack_ptr = stack_ptr->link_info;
-            link_brackets( *allocs, cobracket );
-            ++allocs;
             break;
 
           default:
@@ -2797,37 +2777,40 @@ refalrts::FnResult refalrts::interpret_array(
         break;
 
       case icSpliceElem:
-        --allocs;
-        res = splice_elem(res, *allocs);
+        res = splice_elem(res, elem);
         break;
 
       case icSpliceRange: {
-        --allocs;
-        Iter begin = *allocs;
-        --allocs;
-        Iter end = *allocs;
-        res = splice_evar(res, begin, end);
+        res = splice_evar(res, bb, be);
         break;
       }
 
       case icSpliceSTVar:
-        index = raa[i].val2;
-        res = splice_stvar(res, context[index]);
+        res = splice_stvar(res, elem);
         break;
 
       case icSpliceEVar:
-        index = raa[i].val2;
-        res = splice_evar(res, context[index], context[index + 1]);
+        res = splice_evar(res, bb, be);
         break;
 
-      case icBracket_CloseCallLink: {
-        --allocs;
-        Iter open_call = (*allocs)->link_info;
-        push_stack(*allocs);
-        push_stack(open_call);
-        res = splice_elem( res, *allocs);
+      case icLinkBrackets:
+        link_brackets(context[raa[i].val1], context[raa[i].val2]);
         break;
-      }
+
+      case icPushStack:
+        push_stack(elem);
+        break;
+
+      case icOnFailGoTo:
+        open_e_stack[stack_top++] = i + raa[i].val1 + 1;
+        break;
+
+      case icFail:
+        MATCH_FAIL;
+
+      case icReturnResult:
+        splice_to_freelist(begin, end);
+        return cSuccess;
 
       default:
         assert( SWITCH_DEFAULT_VIOLATION );
@@ -2835,8 +2818,6 @@ refalrts::FnResult refalrts::interpret_array(
     }
     i++;
   }
-
-  splice_to_freelist(begin, end);
 
   return cSuccess;
 }
