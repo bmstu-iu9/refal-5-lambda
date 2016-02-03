@@ -1,0 +1,3 @@
+[submodule "distrib"]
+	path = distrib
+	url = ../simple-refal-distrib
