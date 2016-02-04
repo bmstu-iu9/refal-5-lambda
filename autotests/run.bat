@@ -26,7 +26,7 @@ setlocal
   set CPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\compiler\srefc %1 2> __error.txt
+  ..\bin\srefc %1 2> __error.txt
   if errorlevel 1 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit
@@ -37,7 +37,7 @@ setlocal
     exit
   )
 
-  %CPPLINE% -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../srlib/refalrts.cpp
+  %CPPLINE% -I../src/srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit
@@ -65,7 +65,7 @@ setlocal
   set SREF=%1
   set CPP=%~n1.cpp
 
-  ..\compiler\srefc %1 2> __error.txt
+  ..\bin\srefc %1 2> __error.txt
   if errorlevel 1 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit

@@ -1,10 +1,18 @@
-cd bootstrap
+@echo off
+
+if not exist distrib\bootstrap.bat (
+  git submodule init
+  git submodule update
+)
+
+cd distrib
+call bootstrap.bat
+cd ..
+if not exist bin\nul mkdir bin
+copy distrib\bin\*.exe bin
+
+cd src
 call make.bat
-cd ..\srmake
-call make.bat
-cd ..\lexgen
-call make.bat
-cd ..\compiler
-call makeself.bat
+
 cd ..\autotests
 call run.bat
