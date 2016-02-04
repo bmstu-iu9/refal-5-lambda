@@ -7,6 +7,7 @@ make_subdir() {
 }
 
 if [ -z "$1" ]; then
+  make_subdir compiler makeself-s.sh
   make_subdir srlib make.sh
   make_subdir compiler makeself.sh
   make_subdir lexgen make.sh

@@ -2,6 +2,7 @@
 setlocal
   if not {%1}=={} goto :MAKE_PROJECT
 
+  call :MAKE_SUBDIR compiler makeself-s.bat
   call :MAKE_SUBDIR srlib make.bat
   call :MAKE_SUBDIR compiler makeself.bat
   call :MAKE_SUBDIR lexgen make.bat
