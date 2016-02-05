@@ -1,2 +1,2 @@
 @echo off
-call ..\make srmake srmake SRMake -DDONT_PRINT_STATISTICS
+call ..\make srmake srmake-core SRMake -DDONT_PRINT_STATISTICS

@@ -1,2 +1,2 @@
 #!/bin/sh
-source ../make.sh srmake srmake SRMake -DDONT_PRINT_STATISTICS
+source ../make.sh srmake srmake-core SRMake -DDONT_PRINT_STATISTICS

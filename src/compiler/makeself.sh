@@ -1,3 +1,3 @@
 #!/bin/sh
 ../../bin/lexgen Lexer.sref
-source ../make.sh compiler srefc srefc
+source ../make.sh compiler srefc-core srefc

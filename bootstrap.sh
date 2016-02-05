@@ -7,7 +7,6 @@ fi
 
 ( cd distrib && ./bootstrap.sh )
 mkdir -p bin
-cp distrib/bin/* bin
 
 ( cd src && ./make.sh )
 

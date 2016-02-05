@@ -9,7 +9,6 @@ cd distrib
 call bootstrap.bat
 cd ..
 if not exist bin\nul mkdir bin
-copy distrib\bin\*.exe bin
 
 cd src
 call make.bat

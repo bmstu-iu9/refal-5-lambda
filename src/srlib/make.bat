@@ -1,4 +1,4 @@
-..\..\bin\srefc LibraryEx
+..\..\bin\srefc-core LibraryEx
 
 if not exist ..\..\srlib\src\nul (
   mkdir ..\..\srlib
