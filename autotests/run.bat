@@ -1,6 +1,6 @@
 @echo off
 call :MAIN %*
-exit
+goto :EOF
 
 :MAIN
 setlocal
