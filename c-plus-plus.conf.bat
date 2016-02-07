@@ -37,6 +37,10 @@ rem одинаковой.
 :: set PATH=%PATH%;C:\Program Files\LLVM\bin
 :: set CPPLINE=clang++ -Wall -g
 
+rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
+:: set PATH=%PATH%;…
+:: set CPPLINE=…
+
 if not "%CPPLINE%" == "" goto :EOF
 echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
 exit 1
