@@ -1,4 +1,8 @@
 @echo off
+
+rem Если переменная среды уже установлена явно, то содержимое файла игнорируется
+if not "%CPPLINE" == "" goto :EOF
+
 rem Раскомментируте групппу строчек ниже в зависимости от используемого
 rem компилятора C++
 
@@ -33,7 +37,6 @@ rem одинаковой.
 :: set PATH=%PATH%;C:\Program Files\LLVM\bin
 :: set CPPLINE=clang++ -Wall -g
 
-if not "%CPPLINE%" == "" goto END
+if not "%CPPLINE%" == "" goto :EOF
 echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
 exit 1
-:END
