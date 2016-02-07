@@ -1,4 +1,5 @@
 ..\..\bin\srefc-core LibraryEx
+echo //FROM Library>> LibraryEx.cpp
 
 if not exist ..\..\srlib\src\nul (
   mkdir ..\..\srlib
