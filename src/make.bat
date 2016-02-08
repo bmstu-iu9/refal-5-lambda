@@ -2,11 +2,12 @@
 setlocal
   if not {%1}=={} goto :MAKE_PROJECT
 
+  if not exist ..\bin\nul mkdir ..\bin
   call :MAKE_SUBDIR scripts install-scripts.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
   copy ..\distrib\bin\srmake-core.exe ..\bin
-  call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR srlib make.bat
+  call :MAKE_SUBDIR srmake make.bat
   call :MAKE_SUBDIR lexgen make.bat
   call :MAKE_SUBDIR compiler makeself.bat
 

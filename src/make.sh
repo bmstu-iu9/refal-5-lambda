@@ -7,11 +7,12 @@ make_subdir() {
 }
 
 if [ -z "$1" ]; then
+  mkdir -p ../bin
   make_subdir scripts install-scripts.sh
   make_subdir compiler makeself-s.sh
   cp ../distrib/bin/srmake-core ../bin
-  make_subdir srmake make.sh
   make_subdir srlib make.sh
+  make_subdir srmake make.sh
   make_subdir lexgen make.sh
   make_subdir compiler makeself.sh
 else
