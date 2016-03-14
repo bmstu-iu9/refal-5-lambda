@@ -7,9 +7,7 @@ typedef enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
-  cExit = 3,
-  cEndErr = 4,
-  cPatternMismatch = 5
+  cExit = 3
 } FnResult;
 
 typedef struct Node Node;

@@ -2877,10 +2877,6 @@ int main(int argc, char **argv) {
     case refalrts::cExit:
       return refalrts::vm::g_ret_code;
 
-    case refalrts::cEndErr:
-      fprintf(stderr, "ERROR: check start-end commands in raa\n");
-      return  5;
-
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main");
       return 5;
