@@ -116,24 +116,15 @@ GeneralizeResult {
   s.ContextCount (e.ResultVars) (e.ResultCommands) =
     <Fetch
       (<ReplicateVars e.PatternVars>)
-      (<ReplicateVars e.ResultVars>)
-      (<Map RepeatedEVariables e.PatternCommands>)
-      <Map ClosedEVariables e.PatternCommands>
+      <ReplicateVars e.ResultVars>
       <Seq
         {
-          (e.PatternVars^) (e.ResultVars^) (e.RepeatedEs) e.ClosedEs =
+          (e.PatternVars^) e.ResultVars^ =
             (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
-            (<VarSetDifference (e.ResultVars) (e.PatternVars)>)
-            <VarSetDifference (e.ClosedEs) (e.RepeatedEs e.ResultVars)>;
+            <VarSetDifference (e.ResultVars) (e.PatternVars)>;
         }
         {
-          (e.CommonVars) (e.CopiedVars) e.UnusedClosedEs =
-            (<VarSetDifference (e.CommonVars) (e.UnusedClosedEs)>)
-            (e.CopiedVars)
-            <Map (FilterUnusedCmdClosedE e.UnusedClosedEs) e.PatternCommands>;
-        }
-        {
-          (e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+          (e.CommonVars) e.CopiedVars =
             (
               <MapReduce
                 {
@@ -146,16 +137,16 @@ GeneralizeResult {
                 s.ContextCount e.CommonVars
               >
             )
-            (e.CopiedVars) e.FilteredPatternCommands;
+            e.CopiedVars;
         }
         {
-          (s.Number e.CommonVars) (e.CopiedVars) e.FilteredPatternCommands =
+          (s.Number e.CommonVars) e.CopiedVars =
             <FoldOpenELoops
               (#CmdIssueMem s.Number)
               (#CmdInitB0)
               <PatchVariableNumbers
                 (e.CommonVars)
-                e.FilteredPatternCommands
+                e.PatternCommands
                 (#CmdEmptyResult)
                 <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
                 <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
@@ -208,26 +199,6 @@ VarSetDifference {
     t.OnlyInSet1 <VarSetDifference (e.Set1) (e.Set2)>;
 
   () (e.Set2) = /* пусто */;
-}
-
-ClosedEVariables {
-  (#CmdClosedE #AlgLeft s.Num 'e' e.Index) = (1 'e' e.Index);
-
-  t.Other = /* игнорируем */;
-}
-
-RepeatedEVariables {
-  (#CmdRepeated s.Direction s.Num s.Count 'e' e.Index) = (1 'e' e.Index);
-
-  t.Other = /* игнорируем */;
-}
-
-FilterUnusedCmdClosedE {
-  e.Unuseds-B (1 'e' e.Index s.Depth) e.Unuseds-E
-  (#CmdClosedE #AlgLeft s.Num 'e' e.Index s.Depth) =
-    (#CmdComment ' Unused closed variable e.' e.Index '#' <StrFromInt s.Depth>);
-
-  e.Unuseds t.OtherCommand = t.OtherCommand;
 }
 
 SetOffsetForCmdInsertVar {
