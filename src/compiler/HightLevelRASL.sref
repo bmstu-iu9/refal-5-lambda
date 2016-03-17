@@ -634,9 +634,7 @@ TextFromPattern-Char {
   (#TkChar s.Char) e.Tail =
     <Escape s.Char> <TextFromPattern-Char e.Tail>;
 
-  = '';
-
-  e.Other = <TextFromPattern e.Other>;
+  e.Other = '' <TextFromPattern e.Other>;
 }
 
 //==============================================================================
