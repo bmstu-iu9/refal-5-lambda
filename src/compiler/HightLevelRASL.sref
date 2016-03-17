@@ -102,10 +102,10 @@ HightLevelRASL-Sentence {
     <Fetch
       <GenPattern e.Pattern>
       {
-        (e.PatternVars) s.ContextItems (e.PatternCommands) =
+        (e.PatternVars) s.ContextOffset (e.PatternCommands) =
           <GeneralizeResult
             (e.PatternVars) (e.PatternCommands)
-            <GenResult s.ContextItems e.Result>
+            <GenResult s.ContextOffset e.Result>
           >;
       }
     >;
@@ -326,13 +326,14 @@ GenPattern {
       >
       <Seq
         {
-          s.NumRanges (e.Vars) (e.MarkedPattern) e.Commands =
-            (e.Vars) (e.MarkedPattern) <SaveBrackets s.NumRanges e.Commands>;
+          s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
+            (e.Vars) (e.MarkedPattern)
+            <SaveBrackets s.ContextOffset e.Commands>;
         }
         {
-          (e.Vars) (e.MarkedPattern) s.NumRanges e.Commands =
+          (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
             (e.Vars)
-            s.NumRanges
+            s.ContextOffset
             ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
         }
       >
@@ -345,94 +346,94 @@ Inc2 {
 
 DoGenPattern {
   // Распознавание литералов (символьных, целочисленных, имён)
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkChar s.Char) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkChar s.Char)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdChar #AlgLeft s.Num s.Char))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkNumber s.Number) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkNumber s.Number)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdNumber #AlgLeft s.Num s.Number))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B (#Junk (#TkName e.Name)) (#Range s.Num e.Range) e.Ranges-E
       (e.Vars) (e.Commands (#CmdName #AlgLeft s.Num e.Name))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkIdentifier e.Name) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkIdentifier e.Name)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdIdent #AlgLeft s.Num e.Name))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkChar s.Char)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkChar s.Char) e.Junk)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdChar #AlgRight s.Num s.Char))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkNumber s.Number)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkNumber s.Number) e.Junk)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdNumber #AlgRight s.Num s.Number))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkName e.Name)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkName e.Name) e.Junk)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdName #AlgRight s.Num e.Name))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkIdentifier e.Name)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkIdentifier e.Name) e.Junk)
       e.Ranges-E
@@ -440,86 +441,86 @@ DoGenPattern {
     >;
 
   // Распознавание скобок
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#Brackets e.SubRange) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc2 s.NumRanges>
+      <Inc2 s.ContextOffset>
       e.Ranges-B
-      (#Junk e.Junk (#TkOpenBracket)) (#Range s.NumRanges e.SubRange)
+      (#Junk e.Junk (#TkOpenBracket)) (#Range s.ContextOffset e.SubRange)
       (#Junk (#TkCloseBracket)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdBrackets #AlgLeft s.Num s.NumRanges))
+      (e.Vars) (e.Commands (#CmdBrackets #AlgLeft s.Num s.ContextOffset))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#Brackets e.SubRange)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc2 s.NumRanges>
+      <Inc2 s.ContextOffset>
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkOpenBracket))
-      (#Range s.NumRanges e.SubRange) (#Junk (#TkCloseBracket) e.Junk)
+      (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseBracket) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdBrackets #AlgRight s.Num s.NumRanges))
+      (e.Vars) (e.Commands (#CmdBrackets #AlgRight s.Num s.ContextOffset))
     >;
 
   // Распознавание АТД-скобок
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc2 s.NumRanges>
+      <Inc2 s.ContextOffset>
       e.Ranges-B
       (#Junk e.Junk (#TkOpenADT) (#TkName e.Name))
-      (#Range s.NumRanges e.SubRange)
+      (#Range s.ContextOffset e.SubRange)
       (#Junk (#TkCloseADT)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars)
-      (e.Commands (#CmdADT #AlgLeft s.Num s.NumRanges e.Name))
+      (e.Commands (#CmdADT #AlgLeft s.Num s.ContextOffset e.Name))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#ADT-Brackets (e.Name) e.SubRange)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Inc2 s.NumRanges>
+      <Inc2 s.ContextOffset>
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkOpenADT) (#TkName e.Name))
-      (#Range s.NumRanges e.SubRange) (#Junk (#TkCloseADT) e.Junk)
+      (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseADT) e.Junk)
       e.Ranges-E
       (e.Vars)
-      (e.Commands (#CmdADT #AlgRight s.Num s.NumRanges e.Name))
+      (e.Commands (#CmdADT #AlgRight s.Num s.ContextOffset e.Name))
     >;
 
   // Пустой диапазон
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk1) (#Range s.Num /* пусто */) (#Junk e.Junk2)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B (#Junk e.Junk1 e.Junk2) e.Ranges-E
       (e.Vars) (e.Commands (#CmdEmpty #AlgLeft s.Num))
     >;
 
   // Распознавание переменных
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkVariable s.Mode e.Index) e.Range)
   e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkVariable s.Mode e.Index)) (#Range s.Num e.Range)
       e.Ranges-E
@@ -527,13 +528,13 @@ DoGenPattern {
       (e.Commands (#CmdRepeated #AlgLeft s.Num <Inc s.Count> s.Mode e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkVariable s.Mode e.Index)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars-B (s.Count s.Mode e.Index) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkVariable s.Mode e.Index) e.Junk)
       e.Ranges-E
@@ -542,77 +543,77 @@ DoGenPattern {
     >;
 
   // Диапазон с закрытой переменной
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk1) (#Range s.Num (#TkVariable 'e' e.Index)) (#Junk e.Junk2)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B (#Junk e.Junk1 (#TkVariable 'e' e.Index) e.Junk2) e.Ranges-E
       (e.Vars (1 'e' e.Index))
       (e.Commands (#CmdClosedE #AlgLeft s.Num 'e' e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkVariable 's' e.Index) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkVariable 's' e.Index)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars (1 's' e.Index)) (e.Commands (#CmdVar #AlgLeft s.Num 's' e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkVariable 't' e.Index) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkVariable 't' e.Index)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars (1 't' e.Index)) (e.Commands (#CmdVar #AlgLeft s.Num 't' e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkVariable 's' e.Index)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkVariable 's' e.Index) e.Junk)
       e.Ranges-E
       (e.Vars (1 's' e.Index)) (e.Commands (#CmdVar #AlgRight s.Num 's' e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkVariable 't' e.Index)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkVariable 't' e.Index) e.Junk)
       e.Ranges-E
       (e.Vars (1 't' e.Index)) (e.Commands (#CmdVar #AlgRight s.Num 't' e.Index))
     >;
 
-  s.NumRanges
+  s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkVariable 'e' e.Index) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.NumRanges
+      s.ContextOffset
       e.Ranges-B
       (#Junk e.Junk (#TkVariable 'e' e.Index)) (#Range s.Num e.Range)
       e.Ranges-E
@@ -621,8 +622,8 @@ DoGenPattern {
     >;
 
   // Завершение разбора.
-  s.NumRanges (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
-    s.NumRanges (e.Vars) (e.MarkedPattern) e.Commands;
+  s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
+    s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands;
 }
 
 SaveBrackets {
