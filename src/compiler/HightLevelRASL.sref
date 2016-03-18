@@ -104,57 +104,42 @@ HightLevelRASL-Sentence {
       {
         (e.PatternVars) s.ContextOffset (e.PatternCommands) =
           <GeneralizeResult
-            (e.PatternVars) (e.PatternCommands)
-            <GenResult s.ContextOffset e.Result>
+            (e.PatternCommands)
+            <GenResult s.ContextOffset (e.PatternVars) e.Result>
           >;
       }
     >;
 }
 
 GeneralizeResult {
-  (e.PatternVars) (e.PatternCommands)
-  s.ContextCount (e.ResultVars) (e.ResultCommands) =
+  (e.PatternCommands)
+  s.ContextCount (e.CommonVars) (e.ResultCommands) =
     <Fetch
-      (<ReplicateVars e.PatternVars>)
-      <ReplicateVars e.ResultVars>
-      <Seq
+      <MapReduce
         {
-          (e.PatternVars^) e.ResultVars^ =
-            (<VarSetUnion (e.PatternVars) (e.ResultVars)>)
-            <VarSetDifference (e.ResultVars) (e.PatternVars)>;
-        }
-        {
-          (e.CommonVars) e.CopiedVars =
-            (
-              <MapReduce
-                {
-                  s.Number (s.Usings 'e' e.Index) =
-                    <Add s.Number 2> (s.Number s.Usings 'e' e.Index);
+          s.Number (s.Usings 'e' e.Index) =
+            <Add s.Number 2> (s.Number s.Usings 'e' e.Index);
 
-                  s.Number (s.Usings s.Mode e.Index) =
-                    <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
-                }
-                s.ContextCount e.CommonVars
-              >
-            )
-            e.CopiedVars;
+          s.Number (s.Usings s.Mode e.Index) =
+            <Inc s.Number> (s.Number s.Usings s.Mode e.Index);
         }
-        {
-          (s.Number e.CommonVars) e.CopiedVars =
-            <FoldOpenELoops
-              (#CmdIssueMem s.Number)
-              (#CmdInitB0)
-              <PatchVariableNumbers
-                (e.CommonVars)
-                e.PatternCommands
-                (#CmdEmptyResult)
-                <Map (MakeCopyVar e.CommonVars) e.CopiedVars>
-                <Map (SetOffsetForCmdInsertVar e.CommonVars) e.ResultCommands>
-              >
-              (#CmdReturnResult)
-            >;
-        }
+        s.ContextCount
+        <ReplicateVars e.CommonVars>
       >
+      {
+        s.Number e.CommonVars^ =
+          <FoldOpenELoops
+            (#CmdIssueMem s.Number)
+            (#CmdInitB0)
+            <PatchVariableNumbers
+              (e.CommonVars)
+              e.PatternCommands
+              (#CmdEmptyResult)
+              e.ResultCommands
+            >
+            (#CmdReturnResult)
+          >;
+      }
     >;
 }
 
@@ -178,47 +163,19 @@ ReplicateVar {
 }
 
 ReplicateVars {
-  e.Vars = <Map ReplicateVar e.Vars>;
-}
+  e.Vars =
+    <Map
+      <Seq
+        {
+          (s.ResultUsings #Exhausted s.Mode e.Index) =
+            (s.ResultUsings s.Mode e.Index);
 
-VarSetUnion {
-  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
-    t.Common <VarSetUnion (e.Set1) (e.Set2-B e.Set2-E)>;
-
-  (t.OnlyInSet1 e.Set1) (e.Set2) =
-    t.OnlyInSet1 <VarSetUnion (e.Set1) (e.Set2)>;
-
-  () (e.Set2) = e.Set2;
-}
-
-VarSetDifference {
-  (t.Common e.Set1) (e.Set2-B t.Common e.Set2-E) =
-    <VarSetDifference (e.Set1) (e.Set2-B e.Set2-E)>;
-
-  (t.OnlyInSet1 e.Set1) (e.Set2) =
-    t.OnlyInSet1 <VarSetDifference (e.Set1) (e.Set2)>;
-
-  () (e.Set2) = /* пусто */;
-}
-
-SetOffsetForCmdInsertVar {
-  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
-  (#CmdInsertVar s.Usings s.Mode e.Index) =
-    (#CmdInsertVar s.Mode s.Number);
-
-  e.Vars t.OtherCommand =
-    t.OtherCommand;
-}
-
-MakeCopyVar {
-  e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E
-  (s.Usings s.Mode e.Index) =
-    <Fetch
-      e.Vars-B e.Vars-E <Dec s.Usings>
-      {
-        e.Vars-B^ (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-E^ s.Usings-1 =
-          (#CmdCopyVar s.Mode s.Number s.Sample);
-      }
+          (s.ResultUsings s.PatternUsings s.Mode e.Index) =
+            (s.PatternUsings s.Mode e.Index);
+        }
+        ReplicateVar
+      >
+      e.Vars
     >;
 }
 
@@ -282,6 +239,26 @@ PatchVariableNumber {
   (#CmdVar s.Direction s.BracketNumber s.Mode e.Index) =
     (e.Vars-B (s.VarNumber 1 s.Mode e.Index) e.Vars-E)
     (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
+
+  (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
+  (#CmdInsertVar s.Usings s.Mode e.Index) =
+    (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
+    (#CmdInsertVar s.Mode s.Number);
+
+  (e.Vars-B (s.Number s.Usings s.Mode e.Index) e.Vars-E)
+  (#CmdCopyVar s.Usings s.Mode e.Index) =
+    <Fetch
+      e.Vars-B <Dec s.Usings>
+      {
+        e.Vars-BB (s.Sample s.Usings-1 s.Mode e.Index) e.Vars-BE s.Usings-1 =
+          (
+            e.Vars-BB (s.Sample s.Usings-1 s.Mode e.Index)
+            e.Vars-BE (s.Number s.Usings s.Mode e.Index)
+            e.Vars-E
+          )
+          (#CmdCopyVar s.Mode s.Number s.Sample);
+      }
+    >;
 
   (e.Vars) t.NextCommand = (e.Vars) t.NextCommand;
 }
@@ -748,9 +725,16 @@ TextFromPattern-Char {
 //==============================================================================
 
 GenResult {
-  s.BaseContextSize e.Result =
+  s.BaseContextSize (e.PatternVars) e.Result =
     <DoGenResult
-      (/* vars */)
+      (
+        <Map
+          {
+            (s.Count s.Mode e.Index) = (1 s.Count s.Mode e.Index);
+          }
+          e.PatternVars
+        >
+      )
       (/* alloc commands */) (/* other commands */)
       s.BaseContextSize // счётчик новых элементов
       <CollectStrings e.Result>
@@ -922,25 +906,38 @@ DoGenResult {
     >;
 
   // Обработка переменных
-  (e.Vars-B (s.Usings s.Mode e.Index) e.Vars-E) (e.AllocCommands) (e.Commands)
+  (e.Vars-B (s.NextResultUsings s.PatternUsings s.Mode e.Index) e.Vars-E)
+  (e.AllocCommands) (e.Commands)
   s.Counter (#TkVariable s.Mode e.Index) e.Result =
     <DoGenResult
-      (e.Vars-B (<Inc s.Usings> s.Mode e.Index) e.Vars-E)
-      (e.AllocCommands)
-      ((#CmdInsertVar <Inc s.Usings> s.Mode e.Index) e.Commands)
-      s.Counter e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkVariable s.Mode e.Index) e.Result =
-    <DoGenResult
-      (e.Vars (1 s.Mode e.Index))
-      (e.AllocCommands)
-      ((#CmdInsertVar 1 s.Mode e.Index) e.Commands)
+      (
+        e.Vars-B
+        (<IncResultUsings s.NextResultUsings s.PatternUsings> s.Mode e.Index)
+        e.Vars-E
+      )
+      (
+        e.AllocCommands
+        <MakeCopyVarIfNeed s.NextResultUsings s.PatternUsings s.Mode e.Index>
+      )
+      ((#CmdInsertVar s.NextResultUsings s.Mode e.Index) e.Commands)
       s.Counter e.Result
     >;
 
   // Завершение просмотра
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
     s.Counter (e.Vars) (e.AllocCommands e.Commands);
+}
+
+IncResultUsings {
+  s.Usings s.Usings = <Inc s.Usings> #Exhausted;
+
+  s.ResultUsings s.PatternUsings = <Inc s.ResultUsings> s.PatternUsings;
+}
+
+MakeCopyVarIfNeed {
+  s.NextResultUsings #Exhausted s.Mode e.Index =
+    (#CmdCopyVar s.NextResultUsings s.Mode e.Index);
+
+  s.NextResultUsings s.PatternUsings s.Mode e.Index =
+    /* пусто */;
 }
