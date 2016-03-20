@@ -481,7 +481,9 @@ DoGenPattern {
       e.Ranges-E
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
-        (#CmdComment ' closed e.' e.Index ' as range ' <StrFromInt s.Num>)
+        (#CmdComment
+          ' closed ' <PrintVar 'e' e.Index> ' as range ' <StrFromInt s.Num>
+        )
       )
     >;
 
@@ -672,13 +674,17 @@ TextFromPattern {
     ' & ' e.Name <TextFromPattern e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' s.Mode '.' e.Index '#' <StrFromInt s.Depth> '/' <StrFromInt s.Offset>
+    ' ' <PrintVar s.Mode e.Index s.Depth> '/' <StrFromInt s.Offset>
     <TextFromPattern e.Tail>;
 
   (#TkIdentifier e.Name) e.Tail =
     ' # ' e.Name <TextFromPattern e.Tail>;
 
   = ;
+}
+
+PrintVar {
+  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
 Escape {
@@ -946,6 +952,6 @@ ReplicateVar {
 MakeVariableComment {
   (s.Offset s.Mode e.Index s.Depth) =
     (#CmdComment
-      <StrFromInt s.Offset> ': ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      <StrFromInt s.Offset> ': ' <PrintVar s.Mode e.Index s.Depth>
     );
 }
