@@ -109,15 +109,12 @@ HightLevelRASL-Sentence {
           <Fetch
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
             {
-              s.ContextCount (e.CommonVars) (e.ResultCommands) =
+              s.ContextCount e.ResultCommands =
                 <FoldOpenELoops
                   (#CmdIssueMem s.ContextCount)
                   (#CmdInitB0)
-                  <MakeVariableCommentTable e.CommonVars>
                   e.PatternCommands
-                  (#CmdEmptyResult)
                   e.ResultCommands
-                  (#CmdReturnResult)
                 >;
             }
           >;
@@ -134,35 +131,6 @@ FoldOpenELoops {
     );
 
   e.Commands = e.Commands;
-}
-
-MakeVariableCommentTable {
-  e.Vars =
-    <Fetch
-      e.Vars
-      <Seq
-        (Map ReplicateVar)
-        Sort
-        (Map MakeVariableComment)
-      >
-    >;
-}
-
-ReplicateVar {
-  (s.Mode (e.Index) (e.ResultOccurences) e.PatternOccurences) =
-    <Map
-      {
-        s.ContextOffset = (s.ContextOffset s.Mode e.Index);
-      }
-      e.ResultOccurences e.PatternOccurences
-    >;
-}
-
-MakeVariableComment {
-  (s.Offset s.Mode e.Index s.Depth) =
-    (#CmdComment
-      <StrFromInt s.Offset> ': ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
-    );
 }
 
 /*
@@ -729,19 +697,29 @@ TextFromPattern-Char {
 //==============================================================================
 
 GenResult {
-  s.BaseContextSize (e.PatternVars) e.Result =
-    <DoGenResult
-      (
-        <Map
-          {
-            (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-          }
-          e.PatternVars
-        >
-      )
-      (/* alloc commands */) (/* other commands */)
-      s.BaseContextSize // счётчик новых элементов
-      <CollectStrings e.Result>
+  s.ContextOffset (e.PatternVars) e.Result =
+    <Fetch
+      <DoGenResult
+        (
+          <Map
+            {
+              (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+            }
+            e.PatternVars
+          >
+        )
+        (/* alloc commands */) (/* other commands */)
+        s.ContextOffset // счётчик новых элементов
+        <CollectStrings e.Result>
+      >
+      {
+        s.ContextOffset^ (e.CommonVars) e.ResultCommands =
+          s.ContextOffset
+          <MakeVariableCommentTable e.CommonVars>
+          (#CmdEmptyResult)
+          e.ResultCommands
+          (#CmdReturnResult);
+      }
     >;
 }
 
@@ -940,5 +918,34 @@ DoGenResult {
 
   // Завершение просмотра
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
-    s.Counter (e.Vars) (e.AllocCommands e.Commands);
+    s.Counter (e.Vars) e.AllocCommands e.Commands;
+}
+
+MakeVariableCommentTable {
+  e.Vars =
+    <Fetch
+      e.Vars
+      <Seq
+        (Map ReplicateVar)
+        Sort
+        (Map MakeVariableComment)
+      >
+    >;
+}
+
+ReplicateVar {
+  (s.Mode (e.Index) (e.ResultOccurences) e.PatternOccurences) =
+    <Map
+      {
+        s.ContextOffset = (s.ContextOffset s.Mode e.Index);
+      }
+      e.ResultOccurences e.PatternOccurences
+    >;
+}
+
+MakeVariableComment {
+  (s.Offset s.Mode e.Index s.Depth) =
+    (#CmdComment
+      <StrFromInt s.Offset> ': ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+    );
 }
