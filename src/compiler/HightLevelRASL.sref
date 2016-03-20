@@ -92,6 +92,9 @@ HightLevelRASL-Function {
                 }
               >
             );
+
+          0 /* нет предложений */ =
+            (#CmdEnum s.ScopeClass e.Name);
         }
       >
     >;
