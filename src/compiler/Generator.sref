@@ -261,22 +261,6 @@ GenCommand {
       (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
     >;
 
-  (e.Indent) (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
-    (e.Indent)
-    (e.Indent
-      <ContextRange-B s.VarNumber> ' = ' <ContextRange-B s.BracketNumber> ';'
-    )
-    (e.Indent
-      <ContextRange-E s.VarNumber> ' = ' <ContextRange-E s.BracketNumber> ';'
-    );
-
-  (e.Indent) (#CmdiContextSet s.BracketNumber s.VarNumber) =
-    (e.Indent)
-    (e.Indent
-      '{refalrts::icContextSet, '
-      '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
-    );
-
   (e.Indent)
   (#CmdOpenedE-Start #AlgLeft s.BracketNumber s.VarNumber) =
     (e.Indent '  ')

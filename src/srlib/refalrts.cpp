@@ -2512,13 +2512,6 @@ refalrts::FnResult refalrts::interpret_array(
           MATCH_FAIL
         break;
 
-      case icContextSet:
-        index = raa[i].val2;
-        context[index] = bb;
-        context[index + 1] = be;
-        break;
-
-
       case icNumRight:
         if( ! refalrts::number_right(
           static_cast<RefalNumber>(raa[i].val2), bb, be )

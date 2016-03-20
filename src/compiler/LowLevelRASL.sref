@@ -104,9 +104,6 @@ ConvertInterpretCommand {
   (#CmdBrackets s.Direction s.Num s.NumRanges) =
     (#CmdiBracket s.Direction s.Num s.NumRanges);
 
-  (#CmdClosedE #AlgLeft s.BracketNumber s.VarNumber) =
-    (#CmdiContextSet s.BracketNumber s.VarNumber);
-
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
