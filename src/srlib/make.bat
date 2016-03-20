@@ -1,6 +1,3 @@
-..\..\bin\srefc-core LibraryEx
-echo //FROM Library>> LibraryEx.cpp
-
 if not exist ..\..\srlib\src\nul (
   mkdir ..\..\srlib
   mkdir ..\..\srlib\src
@@ -8,5 +5,14 @@ if not exist ..\..\srlib\src\nul (
 copy LICENSE ..\..\srlib
 copy *.h ..\..\srlib
 copy *.cpp ..\..\srlib
-move LibraryEx.cpp ..\..\srlib
-copy LibraryEx.sref ..\..\srlib\src
+call :PREPARE_SRCLIB LibraryEx
+call :PREPARE_SRCLIB GetOpt
+
+goto :EOF
+
+:PREPARE_SRCLIB
+  ..\..\bin\srefc-core %1
+  echo //FROM Library>> %1.cpp
+  move %1.cpp ..\..\srlib
+  copy %1.sref ..\..\srlib\src
+goto :EOF

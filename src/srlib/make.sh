@@ -1,8 +1,14 @@
 #!/bin/bash
-../../bin/srefc-core LibraryEx
-echo '//FROM Library' >> LibraryEx.cpp
+
+prepare_srclib() {
+  ../../bin/srefc-core $1
+  echo '//FROM Library' >> $1.cpp
+  mv $1.cpp ../../srlib
+  cp $1.sref ../../srlib/src
+}
+
 
 mkdir -p ../../srlib/src
 cp LICENSE *.h *.cpp ../../srlib
-mv LibraryEx.cpp ../../srlib
-cp LibraryEx.sref ../../srlib/src
+prepare_srclib LibraryEx
+prepare_srclib GetOpt
