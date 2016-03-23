@@ -614,6 +614,9 @@ DoSaveBrackets-MakeSavers {
           (s.Command^ s.Direction^ s.Num e.Info^) =
             (s.Command s.Direction s.LastBracket e.Info);
 
+          (#CmdRepeated s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
+            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.LastBracket);
+
           (s.Command^ s.Direction^ s.OtherNum e.Info^) =
             (s.Command s.Direction s.OtherNum e.Info);
         }
