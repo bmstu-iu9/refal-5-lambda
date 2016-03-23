@@ -76,7 +76,7 @@ GenSwap {
     ();
 }
 
-$ENTRY GenIdent {
+GenIdent {
   e.Name =
     ('// identifier #' e.Name)
     ('template <typename SREFAL_PARAM_INT>')
@@ -88,13 +88,13 @@ $ENTRY GenIdent {
     ();
 }
 
-$ENTRY GenCommonHeaders {
+GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"')
   () ();
 }
 
-$ENTRY GenCommonTailer {
+GenCommonTailer {
   = () ('//End of file');
 }
 
