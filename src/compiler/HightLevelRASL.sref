@@ -173,7 +173,7 @@ GenPattern {
         {
           s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
             (e.Vars) (e.MarkedPattern)
-            <SaveBrackets s.ContextOffset e.Commands>;
+            <FreezeRanges s.ContextOffset e.Commands>;
         }
         {
           (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
@@ -573,38 +573,38 @@ IncVarOffset {
   s.ContextOffset 's' = <Inc s.ContextOffset>;
 }
 
-SaveBrackets {
-  s.LastBracket e.Commands = <DoSaveBrackets s.LastBracket () e.Commands>;
+FreezeRanges {
+  s.ContextTop e.Commands = <DoFreezeRanges s.ContextTop () e.Commands>;
 }
 
-DoSaveBrackets {
-  s.LastBracket (e.Scanned)
+DoFreezeRanges {
+  s.ContextTop (e.Scanned)
   e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset) e.Commands-E =
     <Fetch
       e.Scanned e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset)
       {
         e.CommandsBeforeEMatch =
-          <DoSaveBrackets-MakeSavers
-            s.LastBracket
-            ( <ExtractBrackets e.CommandsBeforeEMatch> )
+          <DoFreezeRanges-MakeSavers
+            s.ContextTop
+            ( <ExtractRanges e.CommandsBeforeEMatch> )
             ( e.CommandsBeforeEMatch )
             e.Commands-E
           >;
       }
     >;
 
-  s.LastBracket (e.Scanned) e.Commands = s.LastBracket e.Scanned e.Commands;
+  s.ContextTop (e.Scanned) e.Commands = s.ContextTop e.Scanned e.Commands;
 }
 
-DoSaveBrackets-MakeSavers {
-  s.LastBracket
-  (e.BoundedBrackets-B s.Num e.BoundedBrackets-E)
+DoFreezeRanges-MakeSavers {
+  s.ContextTop
+  (e.FrozenRanges-B s.Num e.FrozenRanges-E)
   (e.Scanned)
   e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E =
-    <DoSaveBrackets-MakeSavers
-      <Inc2 s.LastBracket>
-      (e.BoundedBrackets-B e.BoundedBrackets-E)
-      (e.Scanned (#CmdSave s.Num s.LastBracket))
+    <DoFreezeRanges-MakeSavers
+      <Inc2 s.ContextTop>
+      (e.FrozenRanges-B e.FrozenRanges-E)
+      (e.Scanned (#CmdSave s.Num s.ContextTop))
       <Map
         {
           /*
@@ -612,10 +612,10 @@ DoSaveBrackets-MakeSavers {
             общий формат (s.Command s.Direction s.BracketNum e.Info)
           */
           (s.Command^ s.Direction^ s.Num e.Info^) =
-            (s.Command s.Direction s.LastBracket e.Info);
+            (s.Command s.Direction s.ContextTop e.Info);
 
           (#CmdRepeated s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
-            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.LastBracket);
+            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.ContextTop);
 
           (s.Command^ s.Direction^ s.OtherNum e.Info^) =
             (s.Command s.Direction s.OtherNum e.Info);
@@ -624,13 +624,13 @@ DoSaveBrackets-MakeSavers {
       >
     >;
 
-  s.LastBracket (e.UnusedBoundedBrackets) (e.Scanned) e.Commands =
-    <DoSaveBrackets s.LastBracket (e.Scanned) e.Commands>;
+  s.ContextTop (e.UnusedFrozenRanges) (e.Scanned) e.Commands =
+    <DoFreezeRanges s.ContextTop (e.Scanned) e.Commands>;
 }
 
-ExtractBrackets {
+ExtractRanges {
   e.Commands =
-    <Brackets-Set
+    <UniqueRanges
       <Map
         {
           /*
@@ -653,9 +653,9 @@ ExtractBrackets {
     >;
 }
 
-Brackets-Set {
+UniqueRanges {
   e.Unique s.Repeated e.Middle s.Repeated e.Rest =
-    e.Unique <Brackets-Set s.Repeated e.Middle e.Rest>;
+    e.Unique <UniqueRanges s.Repeated e.Middle e.Rest>;
 
   e.Unique = e.Unique;
 }
