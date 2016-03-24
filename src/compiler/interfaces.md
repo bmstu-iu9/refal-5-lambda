@@ -119,6 +119,8 @@
 
 ## Генерация высокоуровневого RASL’а (проход 6)
     <HightLevelRASL e.AST>
+    <HightLevelRASL-OptPattern e.AST>
+    <HightLevelRASL-OptResult e.AST>
       == e.RASLAST
 
     e.RASLAST ::= t.RASLAST-Item*

@@ -13,6 +13,12 @@ $EXTERN GenProgram;
 //FROM HightLevelRASL
 $EXTERN HightLevelRASL;
 
+//FROM HightLevelRASL-OptPattern
+$EXTERN HightLevelRASL-OptPattern;
+
+//FROM HightLevelRASL-OptResult
+$EXTERN HightLevelRASL-OptResult;
+
 //FROM LowLevelRASL
 $EXTERN LowLevelRASL;
 
@@ -47,7 +53,7 @@ $ENTRY CompileFile {
                   <Fetch
                     e.AST
                     <Seq
-                      HightLevelRASL
+                      <SelectRASL s.Opt>
                       (LowLevelRASL <SelectGenMode s.GenMode s.Opt>)
                       GenProgram
                       (SaveFile (e.OutputName))
@@ -62,6 +68,12 @@ $ENTRY CompileFile {
         }
       >
     >;
+}
+
+SelectRASL {
+  #OptNone = HightLevelRASL;
+  #OptPattern = HightLevelRASL-OptPattern;
+  #OptResult = HightLevelRASL-OptResult;
 }
 
 SelectGenMode {
