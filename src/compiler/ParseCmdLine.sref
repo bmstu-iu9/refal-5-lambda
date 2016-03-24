@@ -1,207 +1,177 @@
+//FROM GetOpt
+$EXTERN GetOpt;
+
+//FROM LibraryEx
+$EXTERN Fetch, Seq, MapReduce, Map;
+
 /**
   <ParseCommandLine e.Arguments>
-    == s.CommandLineInfo #CompileList (e.Folders) t.FoundedFile*
-    == s.CommandLineInfo #CompileToTarget (e.Folders) (e.Source) (e.Target)
-    == (#CmdLineError e.Message)
+    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile
+       ((e.Folder)*) (s.ArgNum e.File)*
+    == #Fails (s.ArgNum e.ErrorMessage)
 
-  t.FoundedFile ::= (e.FileName)
-
-  <s.CommandLineInfo #CompileCommand>
-    == #None
-    == e.Command
-
-  <s.CommandLineInfo #ErrorFile>
-    == #None
-    == e.FileName
+  t.CppCompiler ::= #NoCppCompiler | (e.CppCompiler)
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+  s.Opt ::= #OptNone | #OptPattern | #OptResult
+  t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
-    <DoParseCommandLine
-      <CollectorObject (/* folders */) /* files */> e.Arguments
-    >;
-}
-
-DoParseCommandLine {
-  s.Collector ('-c') (e.CompileCommand) e.Arguments =
-    <DoParseCommandLine
-      <s.Collector #AddCompileCommand e.CompileCommand> e.Arguments
-    >;
-
-  s.Collector ('-c') =
-    (#CmdLineError 'After option ''-c'' expected C++ compiler command line');
-
-  s.Collector ('-e') (e.ErrorFile) e.Arguments =
-    <DoParseCommandLine
-      <s.Collector #AddErrorFile e.ErrorFile> e.Arguments
-    >;
-
-  s.Collector ('-e') =
-    (#CmdLineError 'After option ''-e'' expected name of error flag file');
-
-  s.Collector ('-d') (e.Directory) e.Arguments =
-    <DoParseCommandLine
-      <s.Collector #AddFolder e.Directory> e.Arguments
-    >;
-
-  s.Collector ('-d') =
-    (#CmdLineError 'After option ''-d'' expected find directory');
-
-  s.Collector ('-o') (e.OutputFile) e.Arguments =
-    <DoParseCommandLine
-      <s.Collector #SetOutput e.OutputFile> e.Arguments
-    >;
-
-  s.Collector ('--') e.Arguments =
-    <DoParseFileNamesOnly
-      s.Collector e.Arguments
-    >;
-
-  s.Collector (e.NextFileName) e.Arguments =
-    <DoParseCommandLine
-      <s.Collector #AddFile e.NextFileName> e.Arguments
-    >;
-
-  s.Collector = <s.Collector #GetInfo>;
-}
-
-DoParseFileNamesOnly {
-  s.Collector (e.NextFileName) e.Files =
-    <DoParseFileNamesOnly
-      <s.Collector #AddFile e.NextFileName> e.Files
-    >;
-
-  s.Collector = <s.Collector #GetInfo>;
-}
-
-//------------------------------------------------------------------------------
-
-CollectorObject {
-  (e.Folders) e.Files =
-    {
-      #AddCompileCommand e.Command =
-        <Collector-Compiler (e.Folders) (e.Files) e.Command>;
-
-      #AddErrorFile e.ErrorFile =
-        <Collector-ErrorFile (e.Folders) (e.Files) e.ErrorFile>;
-
-      #AddFile e.FileName =
-        <CollectorObject (e.Folders) e.Files (e.FileName)>;
-
-      #AddFolder e.FolderName =
-        <CollectorObject (e.Folders (e.FolderName)) e.Files>;
-
-      #GetInfo =
+    <Fetch
+      <GetOpt
+        (
+          (#CppCompiler #Required 'c' ('cpp-command'))
+          (#GenMode #Required ('gen'))
+          (#Opt #Required 'O')
+          (#ErrorFile #Required 'e' ('error-file'))
+          (#SearchFolder #Required 'd' ('dir') ('directory'))
+        )
+        e.Arguments
+      >
+      <Seq
         {
-          #CompileCommand = #None;
-          #ErrorFile = #None;
+          (e.Errors) e.Options =
+            <CheckRepeated
+              (#CppCompiler #GenMode #Opt #ErrorFile) (e.Errors) e.Options
+            >;
         }
-        #CompileList (e.Folders) e.Files;
-    };
-}
-
-Collector-Compiler {
-  (e.Folders) (e.Files) e.Command =
-    {
-      #AddCompileCommand e.NewCommand = <Collector-Error-CC>;
-
-      #AddErrorFile e.ErrorFile =
-        <Collector-Compiler-ErrorFile
-          (e.Folders) (e.Files) (e.Command) (e.ErrorFile)
-        >;
-
-      #AddFile e.FileName =
-        <Collector-Compiler
-          (e.Folders) (e.Files (e.FileName)) e.Command
-        >;
-
-      #AddFolder e.FolderName =
-        <Collector-Compiler
-          (e.Folders (e.FolderName)) (e.Files) e.Command
-        >;
-
-      #GetInfo =
         {
-          #CompileCommand = e.Command;
-          #ErrorFile = #None;
+          (e.Errors)
+          e.Options-B (#CppCompiler s.Num e.CppCompiler) e.Options-E =
+            (e.Errors) ((e.CppCompiler)) e.Options-B e.Options-E;
+
+          (e.Errors) e.Options =
+            (e.Errors) (#NoCppCompiler) e.Options;
         }
-        #CompileList (e.Folders) e.Files;
-    };
-}
-
-Collector-Error-CC {
-  = <Collector-Error 'Multiple declaration of C++ compiler command line'>;
-}
-
-Collector-ErrorFile {
-  (e.Folders) (e.Files) e.ErrorFile =
-    {
-      #AddCompileCommand e.Command =
-        <Collector-Compiler-ErrorFile
-          (e.Folders) (e.Files) (e.Command) (e.ErrorFile)
-        >;
-
-      #AddErrorFile e.ErrorFile = <Collector-Error-EF>;
-
-      #AddFile e.FileName =
-        <Collector-ErrorFile
-          (e.Folders) (e.Files (e.FileName)) e.ErrorFile
-        >;
-
-      #AddFolder e.FolderName =
-        <Collector-ErrorFile
-          (e.Folders (e.FolderName)) (e.Files) e.ErrorFile
-        >;
-
-      #GetInfo =
         {
-          #CompileCommand = #None;
-          #ErrorFile = e.ErrorFile;
+          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'both') e.Options-E =
+            (e.Errors) (e.Bag #Both) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'direct') e.Options-E =
+            (e.Errors) (e.Bag #OnlyDirect) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'interp') e.Options-E =
+            (e.Errors) (e.Bag #OnlyInterpret) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num e.BadVal) e.Options-E =
+            (e.Errors (s.Num #BadValue-GenMode e.BadVal))
+            (e.Bag #Both) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #Both) e.Options;
         }
-        #CompileList (e.Folders) e.Files;
-    };
-}
-
-Collector-Error-EF {
-  = <Collector-Error 'Multiple declaration of error flag file name'>;
-}
-
-Collector-Compiler-ErrorFile {
-  (e.Folders) (e.Files) (e.Command) (e.ErrorFile) =
-    {
-      #AddCompileCommand e.NewCommand = <Collector-Error-CC>;
-
-      #AddErrorFile e.NewFile = <Collector-Error-EF>;
-
-      #AddFile e.FileName =
-        <Collector-Compiler-ErrorFile
-          (e.Folders) (e.Files (e.FileName)) (e.Command) (e.ErrorFile)
-        >;
-
-      #AddFolder e.FolderName =
-        <Collector-Compiler-ErrorFile
-          (e.Folders (e.FolderName)) (e.Files) (e.Command) (e.ErrorFile)
-        >;
-
-      #GetInfo =
         {
-          #CompileCommand = e.Command;
-          #ErrorFile = e.ErrorFile;
+          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'P') e.Options-E =
+            (e.Errors) (e.Bag #OptPattern) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'R') e.Options-E =
+            (e.Errors) (e.Bag #OptResult) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num e.BadOpt) e.Options-E =
+            (e.Errors (s.Num #BadValue-Opt e.BadOpt))
+            (e.Bag #OptNone) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #OptNone) e.Options;
         }
-        #CompileList (e.Folders) e.Files;
-    };
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#ErrorFile s.Num e.ErrorFile) e.Options-E =
+            (e.Errors) (e.Bag (#ErrorFile e.ErrorFile)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #NoErrorFile) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors)
+            <MapReduce
+              {
+                (e.Bag^ (e.Folders)) (#SearchFolder s.Num e.Folder) =
+                  (e.Bag (e.Folders (e.Folder)));
+
+                (e.Bag^) (#FILE s.Num e.FileName) =
+                  (e.Bag) (s.Num e.FileName);
+              }
+              (e.Bag ())
+              e.Options
+            >;
+        }
+        {
+          () (e.Bag) e.FileNames = #Success e.Bag e.FileNames;
+
+          (e.Errors) (e.Bag) e.FileNames =
+            #Fails
+            <Map
+              {
+                (s.Pos #NoRequiredParam e.Param) =
+                  (s.Pos 'option ' e.Param ' expects parameter');
+
+                (s.Pos #UnknownShortOption s.Option) =
+                  (s.Pos 'unknown option -' s.Option);
+
+                (s.Pos #UnknownLongOption e.Option) =
+                  (s.Pos 'unknown option --' e.Option);
+
+                // У нас все опции с параметрами, не должно возникать
+                // (s.Pos #UnexpectedLongOptionParam (e.Option) e.Param) =
+
+                (s.Pos #RepeatOption s.Tag) =
+                  (
+                    s.Pos
+                    'option '
+                    <Fetch
+                      s.Tag {
+                        #CppCompiler = '-c or --cpp-command';
+                        #GenMode = '--gen';
+                        #Opt = '-O';
+                        #ErrorFile = '-e or --error-file';
+                      }
+                    >
+                    ' must appear one time'
+                  );
+
+                (s.Pos #BadValue-GenMode e.BadValue) =
+                  (
+                    s.Pos
+                    'option --gen expects ''both'', ''direct'' or ''interp'', '
+                    'but got ''' e.BadValue ''
+                  );
+
+                (s.Pos #BadValue-Opt e.BadValue) =
+                  (
+                    s.Pos
+                    'option -O expects ''P'' or ''R'', '
+                    'but got ''' e.BadValue ''
+                  );
+              }
+              e.Errors
+            >;
+        }
+      >
+    >;
 }
 
-Collector-Error {
-  e.Message =
-    {
-      #AddCompileCommand e.Command = <Collector-Error e.Message>;
+CheckRepeated {
+  // Разрешаем повторять опции с одинаковым значением
+  (e.CheckedTags-B s.Tag e.CheckedTags-E)
+  (e.Errors)
+  e.Opts-B (s.Tag s.Num1 e.Value) e.Opts-M (s.Tag s.Num2 e.Value) e.Opts-E =
+    <CheckRepeated
+      (e.CheckedTags-B s.Tag e.CheckedTags-E)
+      (e.Errors)
+      e.Opts-B (s.Tag s.Num1 e.Value) e.Opts-M e.Opts-E
+    >;
 
-      #AddErrorFile e.ErrorFile = <Collector-Error e.Message>;
+  (e.CheckedTags-B s.Tag e.CheckedTags-E)
+  (e.Errors)
+  e.Opts-B (s.Tag s.Num1 e.Value1) e.Opts-M (s.Tag s.Num2 e.Value2) e.Opts-E =
+    <CheckRepeated
+      (e.CheckedTags-B s.Tag e.CheckedTags-E)
+      (e.Errors (s.Num2 #RepeatOption s.Tag))
+      e.Opts-B (s.Tag s.Num1 e.Value1) e.Opts-M e.Opts-E
+    >;
 
-      #AddFile e.FileName = <Collector-Error e.Message>;
-
-      #AddFolder e.FolderName = <Collector-Error e.Message>;
-
-      #GetInfo (e.Folders) e.Files = (#CmdLineError e.Message);
-    };
+  (e.CheckedTags) (e.Errors) e.Options =
+    (e.Errors) e.Options;
 }

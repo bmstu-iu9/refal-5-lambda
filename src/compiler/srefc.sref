@@ -2,10 +2,17 @@
 $EXTERN CompileFile;
 
 //FROM LibraryEx
-$EXTERN Map, ArgList;
+$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Seq, Inc, DelAccumulator,
+  MapReduce;
 
 //FROM Library
-$EXTERN WriteLine, System, Exit;
+$EXTERN WriteLine, System, Exit, StrFromInt;
+
+//FROM ParseCmdLine
+$EXTERN ParseCommandLine;
+
+//FROM FindFile
+$EXTERN FindFiles;
 
 //------------------------------------------------------------------------------
 
@@ -13,158 +20,254 @@ $ENTRY Go {
   = <Main <ArgList>>;
 }
 
-//FROM ParseCmdLine
-$EXTERN ParseCommandLine;
-
-//FROM LibraryEx
-$EXTERN LoadFile, SaveFile;
-
 Main {
   (e.ProgName) ('@' e.Config) =
-    <Main (e.ProgName) <LoadFile e.Config>>;
+    <Main-SwValidCommandLine
+      (e.Config) <ParseCommandLine <LoadFile e.Config>>
+    >;
 
   (e.ProgName) e.Arguments =
-    <FindFiles-Compilers
-      <ParseCommandLine e.Arguments>
+    <Main-SwValidCommandLine
+      #CommandLine <ParseCommandLine e.Arguments>
     >;
 }
 
-//FROM LibraryEx
-$EXTERN Fetch, Seq;
+Main-SwValidCommandLine {
+  t.CommandLineSource
+  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile (e.Folders) e.Files =
+    <Main-SwFoundFiles
+      t.CommandLineSource
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile
+      <LookupSourceFiles (e.Folders) e.Files>
+    >;
 
-//FROM FindFile
-$EXTERN FindFiles;
+  t.CommandLineSource #Fails e.Errors =
+    <ReportErrors t.CommandLineSource #NoErrorFile e.Errors>;
+}
 
-FindFiles-Compilers {
-  (#CmdLineError e.Message) =
-    <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
-
-  s.CommandLineInfo #CompileToTarget (e.Folders) (e.Source) (e.Output) =
-    ;
-
-  s.CommandLineInfo #CompileList (e.Folders) e.Files =
-    <Fetch
-      <FindFiles (e.Folders) e.Files>
+ReportErrors {
+  #CommandLine t.ErrorFile e.Errors =
+    <Map
       {
-        e.Files-B (#NotFound e.FileName) e.Files-E =
-          <Map PrintNotFound (#NotFound e.FileName) e.Files-E>;
+        (s.Pos e.Message) =
+          <WriteLine
+            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
 
-        e.FoundFiles =
+  (e.ConfigFile) t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+}
+
+CreateErrorFileMark {
+  #NoErrorFile = /* ничего */;
+  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
+}
+
+Main-SwFoundFiles {
+  t.CommandLineSource
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile
+  e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
+    <ReportErrors
+      t.CommandLineSource t.ErrorFile
+      <Map
+        {
+          (s.Pos^ #NotFound e.FileName^) =
+            (s.Pos 'file ' e.FileName ' is not found');
+
+          (s.Pos^ #Source (e.Source) e.Output) =
+            /* пусто */;
+
+          (s.Pos^ #Output e.Output) =
+            /* пусто */;
+        }
+        (s.Pos #NotFound e.FileName) e.Files-E
+      >
+    >;
+
+  t.CommandLineSource
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile e.Files =
+    <Main-SwRenamedTargets
+      t.CommandLineSource
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile
+      <RenameTargets t.CppCompiler e.Files>
+    >;
+}
+
+Main-SwRenamedTargets {
+  t.CommandLineSource
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile
+  e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
+    <ReportErrors
+      t.CommandLineSource t.ErrorFile
+      <Map
+        {
+          (s.Pos^ #Collision (e.FirstTarget) e.SecondTarget) =
+            (
+              s.Pos
+              'files ' e.FirstTarget ' and ' e.SecondTarget ' have same name'
+            );
+
+          (s.Pos^ #Source (e.Source) e.Output) =
+            /* пусто */;
+
+          (s.Pos^ #Output e.Output) =
+            /* пусто */;
+        }
+        (s.Pos #Collision e.Collision) e.Files-E
+      >
+    >;
+
+  t.CommandLineSource
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile e.Files =
+    <Main-SwCompiledFiles
+      t.CppCompiler t.ErrorFile
+      <CompileFiles s.GenMode s.Opt e.Files>
+    >;
+}
+
+Main-SwCompiledFiles {
+  t.CppCompiler t.ErrorFile e.Outputs-B #Fails e.OutputsErrors-E =
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+
+  t.CppCompiler t.ErrorFile e.Targets =
+    <Link t.CppCompiler e.Targets>
+    <WriteLine '** Compilation successed **'>;
+}
+
+//------------------------------------------------------------------------------
+
+LookupSourceFiles {
+  (e.Folders) e.Files =
+    <Map
+      {
+        (s.Pos e.FileName) =
           <Fetch
-            e.FoundFiles
-            // В последовательность:
-            <Seq
-              <RenameFiles s.CommandLineInfo>
-              //----------------------------------------------------------------
-              <ForEach
-                {
-                  (#Output e.OutputName) =
-                    <WriteLine '+Linking ' e.OutputName> (e.OutputName);
-
-                  (#Source (e.Source) e.OutputName) =
-                    <WriteLine '*Compiling ' e.Source ':'>
-                    <Fetch
-                      <CompileFile (e.Source) e.OutputName>
-                      {
-                        #Success e.OutputName^ = (e.OutputName);
-
-                        #Fails = #Fails;
-                      }
-                    >;
-                }
-              >
-              //----------------------------------------------------------------
-              {
-                 e.Outputs-B #Fails e.Outputs-E =
-                   <Fetch
-                     <s.CommandLineInfo #ErrorFile>
-                     {
-                       #None = ;
-
-                       e.ErrorFileName = <SaveFile (e.ErrorFileName)>;
-                     }
-                   >;
-
-                 e.Outputs =
-                   <Link s.CommandLineInfo e.Outputs>
-                   <WriteLine '** Compilation successed **'>;
-              }
-            >
-          >;
-      }
-    >;
-}
-
-ForEach {
-  s.Converter = { e.Elems = <Map s.Converter e.Elems>; };
-}
-
-PrintNotFound {
-  (#NotFound e.FileName) =
-    <WriteLine 'COMMAND LINE ERROR: file ' e.FileName ' not found'>;
-
-  (#Output e.FileName) = ;
-
-  (#Source (e.Source) e.Output) = ;
-}
-
-Link {
-  s.CommandLineInfo e.Files =
-    <Fetch
-      <s.CommandLineInfo #CompileCommand>
-      {
-        #None = ;
-
-        e.CommandLine =
-          <System
-            e.CommandLine
-            <Map
-              {
-                (e.FileName) = ' "' e.FileName '"';
-              }
-              e.Files
-            >
-          >;
-      }
-    >;
-}
-
-RenameFiles {
-  s.CommandLineInfo =
-    <Fetch
-      <s.CommandLineInfo #CompileCommand>
-      {
-        #None =
-          <ForEach
+            <FindFiles (e.Folders) (e.FileName)>
             {
-              (#Source (e.Source) e.Output) = (#Source (e.Source) e.Output);
-
-              (#Output e.Output) = (#Output e.Output);
+              (s.ResultTag e.Info) = (s.Pos s.ResultTag e.Info);
             }
           >;
-
-        e.CommandLine =
-          {
-            e.Files = <ScanCollisions <Map GetFileName e.Files>>;
-          };
       }
+      e.Files
     >;
+}
+
+RenameTargets {
+  #NoCppCompiler e.Files = e.Files;
+
+  (e.CppCompiler) e.Files =
+    <ScanCollisions <Map GetFileName e.Files>>;
 }
 
 GetFileName {
-  (#Output e.FileName) =
-    (
-      <GetFileName-Aux e.FileName> 0 (#Output e.FileName)
-    );
+  (s.Pos #Output e.FileName) =
+    ((<GetBaseNameLowerCase e.FileName>) (s.Pos #Output e.FileName));
 
-  (#Source (e.Source) e.Output) =
-    (
-      <GetFileName-Aux e.Output> 0
-      (#Source (e.Source) e.Output)
-    );
+  (s.Pos #Source (e.Source) e.Output) =
+    ((<GetBaseNameLowerCase e.Output>) (s.Pos #Source (e.Source) e.Output));
 }
 
-GetFileName-Aux {
+ScanCollisions {
+  ((e.BaseName) e.Locations1)
+  e.Files-B ((e.BaseName) e.Locations2) e.Files-E =
+    <ScanCollisions
+      e.Files-B ((e.BaseName) e.Locations1 e.Locations2) e.Files-E
+    >;
+
+  ((e.BaseName) e.Locations) e.Files =
+    <RenameLocations e.Locations> <ScanCollisions e.Files>;
+
+  /* пусто */ = /* всё */;
+}
+
+RenameLocations {
+  e.Locations-B (s.Pos1 #Output e.FirstTarget)
+  e.Locations-M (s.Pos2 #Output e.SecondTarget) e.Locations-E =
+    (s.Pos2 #Collision (e.FirstTarget) e.SecondTarget);
+
+  e.Locations-B (s.Pos #Output e.Target) e.Locations-E =
+    <RenameLocations-Aux
+      1 e.Locations-B (s.Pos #Output e.Target) e.Locations-E
+    >;
+
+  e.Locations = <RenameLocations-Aux 0 e.Locations>;
+}
+
+RenameLocations-Aux {
+  s.InitNumber e.Locations =
+    <DelAccumulator
+      <MapReduce
+        {
+          0 (s.Pos #Source (e.Source) e.Output) =
+            1 (s.Pos #Source (e.Source) e.Output);
+
+          s.Num (s.Pos #Source (e.Source) e.Output '.cpp') =
+            <Inc s.Num>
+            (s.Pos #Source (e.Source) e.Output '@' <StrFromInt s.Num> '.cpp');
+
+          s.Num (s.Pos #Output e.Output) =
+            s.Num (s.Pos #Output e.Output);
+        }
+        s.InitNumber e.Locations
+      >
+    >;
+}
+
+CompileFiles {
+  s.GenMode s.Opt e.Files =
+    <Map
+      {
+        (s.Pos #Output e.OutputName) =
+          <WriteLine '+Linking ' e.OutputName> (e.OutputName);
+
+        (s.Pos #Source (e.Source) e.OutputName) =
+          <WriteLine '*Compiling ' e.Source ':'>
+          <Fetch
+            <CompileFile (e.Source) e.OutputName>
+            {
+              #Success e.OutputName^ = (e.OutputName);
+
+              #Fails = #Fails;
+            }
+          >;
+      }
+      e.Files
+    >;
+}
+
+Link {
+  #NoCppCompiler e.Files =
+    /* ничего не делаем */;
+
+  (e.CommandLine) e.Files =
+    <System
+      e.CommandLine
+      <Map
+        {
+          (e.FileName) = ' "' e.FileName '"';
+        }
+        e.Files
+      >
+    >;
+}
+
+GetBaseNameLowerCase {
   e.FileName '.cpp' = <DoGetFileName e.FileName>;
 }
 
@@ -195,82 +298,4 @@ Lower {
         e.Uppers = s.Char;
       }
     >;
-}
-
-ScanCollisions {
-  e.Files-B (e.FileName 0 (#Output e.Output1)) e.Files-M
-  (e.FileName 0 (#Output e.Output2)) e.Files-E =
-    <WriteLine
-      'COMMAND LINE ERROR: output files ' e.Output1 ' and '
-      e.Output2 ' has some filename ' e.FileName
-    >
-    <Exit 1>;
-
-  e.Files-B (e.FileName 0 t.Location) e.Files-M
-  (e.FileName 0 (#Output e.Output)) e.Files-E =
-    <ScanCollisions
-      e.Files-B (e.FileName 1 t.Location) e.Files-M
-      (e.FileName 0 (#Output e.Output))
-      <Renumerate (e.FileName) e.Files-E>
-    >;
-
-  e.Files-B (e.FileName 0 (#Output e.Output)) e.Files-M
-  (e.FileName 0 t.Location) e.Files-E =
-    <ScanCollisions
-      e.Files-B (e.FileName 0 (#Output e.Output)) e.Files-M
-      (e.FileName 1 t.Location)
-      <Renumerate (e.FileName) e.Files-E>
-    >;
-
-  e.Files-B (e.FileName 0 t.Location1) e.Files-M
-  (e.FileName 0 t.Location2) e.Files-E =
-    <ScanCollisions
-      e.Files-B (e.FileName 0 t.Location1)
-      e.Files-M (e.FileName 1 t.Location2)
-      <Renumerate (e.FileName) e.Files-E>
-    >;
-
-  e.Files = <Map RestoreName e.Files>;
-}
-
-//FROM LibraryEx
-$EXTERN Inc, DelAccumulator, MapReduce;
-
-Renumerate {
-  (e.FileName) e.Files =
-    <DelAccumulator
-      <MapReduce
-        {
-          s.NextNumber (e.FileName 0 (#Source (e.Source) e.Output)) =
-            <Inc s.NextNumber>
-            (e.FileName s.NextNumber (#Source (e.Source) e.Output));
-
-          s.NextNumber t.NextFile =
-            s.NextNumber t.NextFile;
-        }
-        2 e.Files
-      >
-    >;
-}
-
-//FROM Library
-$EXTERN StrFromInt;
-
-RestoreName {
-  (e.FileName s.Num (#Output e.OutputName)) =
-    (#Output e.OutputName);
-
-  (e.FileName s.Num (#Source (e.Source) e.Output)) =
-    (#Source
-      (e.Source)
-      <Fetch
-        s.Num e.Output
-        {
-          0 e.Output1 = e.Output1;
-
-          s.Number e.OutName '.cpp' =
-            e.OutName '@' <StrFromInt s.Number> '.cpp';
-        }
-      >
-    );
 }
