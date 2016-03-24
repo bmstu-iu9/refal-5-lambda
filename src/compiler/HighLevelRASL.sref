@@ -8,7 +8,7 @@ $EXTERN Add, StrFromInt;
 $EXTERN EscapeChar;
 
 /**
-  <HightLevelRASL e.AST>
+  <HighLevelRASL e.AST>
     == e.RASLAST
 
   e.RASLAST ::= t.RASLFunction*
@@ -23,12 +23,12 @@ $EXTERN EscapeChar;
     | (#CmdSentence t.HiRASLCommand*)
     | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
-$ENTRY HightLevelRASL-OptResult {
+$ENTRY HighLevelRASL {
   e.ProgramElements =
     <Map
       {
         (#Function s.ScopeClass (e.Name) e.Sentences) =
-          <HightLevelRASL-Function
+          <HighLevelRASL-Function
             s.ScopeClass (e.Name) e.Sentences
           >;
 
@@ -52,7 +52,7 @@ $ENTRY HightLevelRASL-OptResult {
     >;
 }
 
-HightLevelRASL-Function {
+HighLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
@@ -60,7 +60,7 @@ HightLevelRASL-Function {
         (Map
           {
             ((e.Pattern) (e.Result)) =
-              (<HightLevelRASL-Sentence (e.Pattern) (e.Result)>);
+              (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
           }
         )
         (MapReduce
@@ -100,7 +100,7 @@ HightLevelRASL-Function {
     >;
 }
 
-HightLevelRASL-Sentence {
+HighLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <Fetch
       <GenPattern e.Pattern>

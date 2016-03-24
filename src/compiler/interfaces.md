@@ -118,9 +118,9 @@
 в глобальные именованные функции с именами `lambda_…_N`.
 
 ## Генерация высокоуровневого RASL’а (проход 6)
-    <HightLevelRASL e.AST>
-    <HightLevelRASL-OptPattern e.AST>
-    <HightLevelRASL-OptResult e.AST>
+    <HighLevelRASL e.AST>
+    <HighLevelRASL-OptPattern e.AST>
+    <HighLevelRASL-OptResult e.AST>
       == e.RASLAST
 
     e.RASLAST ::= t.RASLAST-Item*

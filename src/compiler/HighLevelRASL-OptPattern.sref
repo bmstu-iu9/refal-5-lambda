@@ -8,7 +8,7 @@ $EXTERN Add, StrFromInt;
 $EXTERN EscapeChar;
 
 /**
-  <HightLevelRASL e.AST>
+  <HighLevelRASL e.AST>
     == e.RASLAST
 
   e.RASLAST ::= t.RASLFunction*
@@ -23,12 +23,12 @@ $EXTERN EscapeChar;
     | (#CmdSentence t.HiRASLCommand*)
     | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
-$ENTRY HightLevelRASL {
+$ENTRY HighLevelRASL-OptPattern {
   e.ProgramElements =
     <Map
       {
         (#Function s.ScopeClass (e.Name) e.Sentences) =
-          <HightLevelRASL-Function
+          <HighLevelRASL-Function
             s.ScopeClass (e.Name) e.Sentences
           >;
 
@@ -52,7 +52,7 @@ $ENTRY HightLevelRASL {
     >;
 }
 
-HightLevelRASL-Function {
+HighLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
@@ -60,7 +60,7 @@ HightLevelRASL-Function {
         (Map
           {
             ((e.Pattern) (e.Result)) =
-              (<HightLevelRASL-Sentence (e.Pattern) (e.Result)>);
+              (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
           }
         )
         (MapReduce
@@ -100,7 +100,7 @@ HightLevelRASL-Function {
     >;
 }
 
-HightLevelRASL-Sentence {
+HighLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <Fetch
       <GenPattern e.Pattern>
@@ -260,11 +260,11 @@ DoGenPattern {
   e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkChar s.Char) e.Range) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Junk e.Junk (#TkChar s.Char)) (#Range s.Num e.Range)
+      (#Junk e.Junk (#TkChar s.Char s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdChar #AlgLeft s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdCharSave s.ContextOffset #AlgLeft s.Num s.Char))
     >;
 
   s.ContextOffset
@@ -306,11 +306,11 @@ DoGenPattern {
   e.Ranges-B (#Range s.Num e.Range (#TkChar s.Char)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkChar s.Char) e.Junk)
+      (#Range s.Num e.Range) (#Junk (#TkChar s.Char s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdChar #AlgRight s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdCharSave s.ContextOffset #AlgRight s.Num s.Char))
     >;
 
   s.ContextOffset
@@ -667,8 +667,9 @@ TextFromPattern {
   (#TkOpenADT) (#TkName e.Name) e.Tail = ' [' e.Name <TextFromPattern e.Tail>;
   (#TkCloseADT) e.Tail = ' ]' <TextFromPattern e.Tail>;
 
-  (#TkChar s.Char) e.Tail =
-    ' ' '' <TextFromPattern-Char (#TkChar s.Char) e.Tail>;
+  (#TkChar s.Char s.Offset) e.Tail =
+    ' ''' <EscapeChar s.Char> '' <Offset s.Offset>
+    <TextFromPattern e.Tail>;
 
   (#TkNumber s.Number) e.Tail =
     ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
@@ -677,7 +678,7 @@ TextFromPattern {
     ' & ' e.Name <TextFromPattern e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth> '/' <StrFromInt s.Offset>
+    ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
     <TextFromPattern e.Tail>;
 
   (#TkIdentifier e.Name) e.Tail =
@@ -690,15 +691,8 @@ PrintVar {
   s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
-Escape {
-  s.Char = <EscapeChar s.Char>;
-}
-
-TextFromPattern-Char {
-  (#TkChar s.Char) e.Tail =
-    <Escape s.Char> <TextFromPattern-Char e.Tail>;
-
-  e.Other = '' <TextFromPattern e.Other>;
+Offset {
+  s.Offset = '/' <StrFromInt s.Offset>;
 }
 
 //==============================================================================

@@ -10,14 +10,14 @@ $EXTERN EL-Create, EL-Destroy;
 //FROM Generator
 $EXTERN GenProgram;
 
-//FROM HightLevelRASL
-$EXTERN HightLevelRASL;
+//FROM HighLevelRASL
+$EXTERN HighLevelRASL;
 
-//FROM HightLevelRASL-OptPattern
-$EXTERN HightLevelRASL-OptPattern;
+//FROM HighLevelRASL-OptPattern
+$EXTERN HighLevelRASL-OptPattern;
 
-//FROM HightLevelRASL-OptResult
-$EXTERN HightLevelRASL-OptResult;
+//FROM HighLevelRASL-OptResult
+$EXTERN HighLevelRASL-OptResult;
 
 //FROM LowLevelRASL
 $EXTERN LowLevelRASL;
@@ -71,9 +71,9 @@ $ENTRY CompileFile {
 }
 
 SelectRASL {
-  #OptNone = HightLevelRASL;
-  #OptPattern = HightLevelRASL-OptPattern;
-  #OptResult = HightLevelRASL-OptResult;
+  #OptNone = HighLevelRASL;
+  #OptPattern = HighLevelRASL-OptPattern;
+  #OptResult = HighLevelRASL-OptResult;
 }
 
 SelectGenMode {
