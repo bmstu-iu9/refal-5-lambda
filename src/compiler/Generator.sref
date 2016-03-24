@@ -217,6 +217,11 @@ GenCommand {
     <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
     ;
 
+  (e.Indent) (#CmdCharSave s.Offset s.Direction s.BracketNumber s.Char) =
+    (e.Indent)
+    <PrintMatchCharSave (e.Indent) s.Offset s.Direction s.BracketNumber s.Char>
+    ;
+
   (e.Indent) (#CmdNumber s.Direction s.BracketNumber s.Number) =
     (e.Indent)
     <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>
@@ -781,6 +786,25 @@ PrintMatch {
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
       '( ' e.TextRep ', ' <ContextRange s.BracketNumber> ' ) )'
     )
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+}
+
+PrintMatchCharSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber s.Char =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
+      ('char') '' <Escape s.Char> ''
+    >;
+}
+
+PrintMatchSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep =
+    (e.Indent
+      <ContextItem s.Offset> ' = '
+      'refalrts::' e.Function '_' <StrFromDirection s.Direction>
+      '( ' e.TextRep ', ' <ContextRange s.BracketNumber> ' );'
+    )
+    (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
 

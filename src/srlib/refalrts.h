@@ -161,8 +161,8 @@ extern bool empty_seq( Iter begin, Iter end );
 extern bool function_left( RefalFunctionPtr func, Iter& first, Iter& last );
 extern bool function_right( RefalFunctionPtr func, Iter& first, Iter& last );
 
-extern bool char_left( char ch, Iter& first, Iter& last );
-extern bool char_right( char ch, Iter& first, Iter& last );
+extern Iter char_left( char ch, Iter& first, Iter& last );
+extern Iter char_right( char ch, Iter& first, Iter& last );
 
 extern bool number_left( RefalNumber num, Iter& first, Iter& last );
 extern bool number_right( RefalNumber num, Iter& first, Iter& last );

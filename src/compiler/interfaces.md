@@ -171,6 +171,7 @@
       | #CmdRepeated s.Mode s.VarOffset s.SampleOffset
       | #CmdEmpty
       | #CmdVar s.Mode s.VarOffset
+      | #CmdCharSave s.Offset s.Char
 
     s.Direction ::= #AlgLeft | #AlgRight
 
@@ -247,6 +248,8 @@
     * `#CmdEmpty` — этот диапазон должен быть пустым. Поле `s.Direction`
       игнорируется (обычно передаётся `#AlgLeft`).
     * `#CmdVar s.Mode s.VarOffset` — сопоставление с s- или t-переменной.
+    * `#Cmd****Save s.Offset e.Info` — аналогично без `Save`, но они
+      сохраняют сопоставленный элемент на контексте по смещению `s.Offset`.
   * `(#CmdSave s.OldOffset s.NewOffset)` — копирование границ диапазона
     `s.OldOffset` в `s.NewOffset`.
   * `(#CmdComment e.Text)` — соответствует однострочному комментарию
