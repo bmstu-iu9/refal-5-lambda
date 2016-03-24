@@ -1,3 +1,4 @@
+@echo off
 if not exist ..\..\srlib\src\nul (
   mkdir ..\..\srlib
   mkdir ..\..\srlib\src
