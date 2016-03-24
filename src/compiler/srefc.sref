@@ -239,7 +239,7 @@ CompileFiles {
         (s.Pos #Source (e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
           <Fetch
-            <CompileFile (e.Source) e.OutputName>
+            <CompileFile s.GenMode s.Opt (e.Source) e.OutputName>
             {
               #Success e.OutputName^ = (e.OutputName);
 

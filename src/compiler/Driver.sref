@@ -20,12 +20,15 @@ $EXTERN LowLevelRASL;
 $EXTERN ParseProgram;
 
 /**
-  <CompileFile (e.SrcName) e.OutputName>
+  <CompileFile s.GenMode s.Opt (e.SrcName) e.OutputName>
     == #Success e.OutputName
     == #Fails
+
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+  s.Opt ::= #OptNone | #OptPattern | #OptResult
 */
 $ENTRY CompileFile {
-  (e.SrcName) e.OutputName =
+  s.GenMode s.Opt (e.SrcName) e.OutputName =
     <Fetch
       <LexFolding e.SrcName>
       <Seq
@@ -45,7 +48,7 @@ $ENTRY CompileFile {
                     e.AST
                     <Seq
                       HightLevelRASL
-                      LowLevelRASL
+                      (LowLevelRASL <SelectGenMode s.GenMode s.Opt>)
                       GenProgram
                       (SaveFile (e.OutputName))
                     >
@@ -59,4 +62,10 @@ $ENTRY CompileFile {
         }
       >
     >;
+}
+
+SelectGenMode {
+  s.GenMode #OptNone = s.GenMode;
+  s.GenMode #OptPattern = #OnlyDirect;
+  s.GenMode #OptResult = #OnlyDirect;
 }

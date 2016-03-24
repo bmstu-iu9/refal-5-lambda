@@ -1,13 +1,19 @@
 //FROM LibraryEx
 $EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
 
+/**
+  <LowLevelRASL s.GenMode e.RASLAST>
+    == e.RASL
+
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+*/
 $ENTRY LowLevelRASL {
-  e.ProgramElements =
+  s.GenMode e.ProgramElements =
     <Map
       {
         (#Function s.ScopeClass (e.Name) e.Commands) =
           <LowLevelRASL-Function
-            s.ScopeClass (e.Name) e.Commands
+            s.GenMode s.ScopeClass (e.Name) e.Commands
           >;
 
         (#CmdEnum s.ScopeClass e.Name) =
@@ -28,7 +34,7 @@ $ENTRY LowLevelRASL {
 }
 
 LowLevelRASL-Function {
-  s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
+  #Both s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
     (#CmdFnStart s.ScopeClass e.Name)
     (#CmdIssueMem s.Number)
     // Интерпретируемый код
@@ -46,10 +52,36 @@ LowLevelRASL-Function {
       0 /* начальная глубина */
     >
     (#CmdiRunInterpret)
-    // Компилируемый код
     (#CmdElse)
+    // Компилируемый код
     <GenerateResult-Sentences e.Commands>
     (#CmdEndIf)
+    (#CmdFnEnd);
+
+  #OnlyDirect s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
+    (#CmdFnStart s.ScopeClass e.Name)
+    (#CmdIssueMem s.Number)
+    // Компилируемый код
+    <GenerateResult-Sentences e.Commands>
+    (#CmdFnEnd);
+
+  #OnlyInterpret s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
+    (#CmdFnStart s.ScopeClass e.Name)
+    (#CmdIssueMem s.Number)
+    // Интерпретируемый код
+    <PrepareOpenEStack
+      <OutlineConstants
+        (0 /* функции */)
+        (0 /* идентификаторы */)
+        (0 /* большие числа */)
+        (0 /* строки */)
+        (#CmdInitRAA)
+        <PrepareInterpretCommands e.Commands>
+        (#CmdFinRAA)
+      >
+      0 /* начальная глубина */
+    >
+    (#CmdiRunInterpret)
     (#CmdFnEnd);
 }
 

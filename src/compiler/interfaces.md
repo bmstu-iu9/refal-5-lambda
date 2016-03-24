@@ -301,9 +301,10 @@ e-переменные, распределяемые последователь�
 она находится.
 
 ## Генерация низкоуровневого RASL’а (проход 7)
-    <LowLevelRASL e.RASLAST>
+    <LowLevelRASL s.GenMode e.RASLAST>
       == e.RASL
 
+    s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
     e.RASL ::= t.LoCommand*
 
     t.LoCommand ::=
