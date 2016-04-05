@@ -150,39 +150,37 @@ bool refalrts::function_right(
   }
 }
 
-refalrts::Iter refalrts::char_left(
+bool refalrts::char_left(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return 0;
+    return false;
   } else if ( cDataChar != first->tag ) {
-    return 0;
+    return false;
   } else if ( first->char_info != ch ) {
-    return 0;
+    return false;
   } else {
-    Iter char_pos = first;
     move_left( first, last );
-    return char_pos;
+    return true;
   }
 }
 
-refalrts::Iter refalrts::char_right(
+bool refalrts::char_right(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return 0;
+    return false;
   } else if ( cDataChar != last->tag ) {
-    return 0;
+    return false;
   } else if ( last->char_info != ch ) {
-    return 0;
+    return false;
   } else {
-    Iter char_pos = last;
     move_right( first, last );
-    return char_pos;
+    return true;
   }
 }
 
