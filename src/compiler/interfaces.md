@@ -51,7 +51,7 @@
     <ParseProgram t.ErrorList e.Tokens>
       == t.ErrorList e.AST
 
-    e.AST ::= t.ProgramElement
+    e.AST ::= t.ProgramElement*
     t.ProgramElement ::=
         (#Function s.ScopeClass (e.Name) e.Sentences)
       | (#Enum s.ScopeClass e.Name)
