@@ -2864,16 +2864,16 @@ int main(int argc, char **argv) {
       return 0;
 
     case refalrts::cRecognitionImpossible:
-      return 1;
+      return 101;
 
     case refalrts::cNoMemory:
-      return 2;
+      return 102;
 
     case refalrts::cExit:
       return refalrts::vm::g_ret_code;
 
     default:
-      fprintf(stderr, "INTERNAL ERROR: check switch in main");
-      return 5;
+      fprintf(stderr, "INTERNAL ERROR: check switch in main (res = %d)\n", res);
+      return 105;
   }
 }

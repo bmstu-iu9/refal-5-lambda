@@ -66,7 +66,7 @@ setlocal
   set CPP=%~n1.cpp
 
   ..\bin\srefc-core %1 2> __error.txt
-  if errorlevel 1 (
+  if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit
   )
