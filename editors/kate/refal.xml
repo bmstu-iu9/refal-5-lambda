@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language name="Refal" section="Sources"
+          version="0.01" kateversion="3.4"
+          indenter="cstyle"
+          extensions="*.sref;*.mref"
+          mimetype="text/x-srefsrc;text/x-chdr"
+          priority="5">
+<!--
+##########################################################################
+## Fixes by Sebastian Pipping (webmaster@hartwork.org)
+##
+## NOTE: Keep in sync with C++ highlighter! (cpp.xml)
+##########################################################################
+-->
+  <highlighting>
+    <list name="keywords">
+      <item> $MODULE </item>
+      <item> $ENTRY </item>
+      <item> $END </item>
+      <item> $IMPORT </item>
+      <item> $SWAP </item>
+      <item> $PROGRAM </item>
+      <item> $ESWAP </item>
+      <item> $DATA </item>
+      <item> $EXTERN </item>
+      <item> $LABEL </item>
+      <item> $FORWARD </item>
+      <item> $ENUM </item>
+      <item> $EENUM </item>
+    </list>
+    <contexts>
+      <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
+        <DetectSpaces />
+        <keyword attribute="Keyword" context="#stay" String="keywords"/>
+	<RegExpr attribute="BrokenKeyword" context="#stay" String="\$[\w]*\b"/>
+        <RegExpr attribute="Value" context="#stay" String="\b[ste]\.[A-Za-z0-9!?_-]+\b"/>
+        <RegExpr attribute="Identifier" context="#stay" String="\b[A-Z!?][A-Za-z0-9!?_-]*\b"/> 
+        <RegExpr attribute="String" context="#stay" String="'((\\.)|[^'])*'"/>
+        <RegExpr attribute="BrokenString" context="#stay" String="\'[^']*$"/> 
+        <RegExpr attribute="Decimal" context="#stay" String="\b[\d]*\b"/>
+        <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="(" beginRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char=")" endRegion="Brace2" />
+        <DetectChar attribute="Symbol" context="#stay" char="\[" beginRegion="Brace3" />
+        <DetectChar attribute="Symbol" context="#stay" char="\]" endRegion="Brace3" />
+        <DetectChar attribute="Symbol" context="#stay" char="&lt;" beginRegion="Brace4" />
+        <DetectChar attribute="Symbol" context="#stay" char="&gt;" endRegion="Brace4" />
+        <Detect2Chars attribute="Comment" context="Commentar 1" char="/" char1="/"/>
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+      </context>
+
+      <context attribute="String" lineEndContext="#pop" name="String">
+        <LineContinue attribute="String" context="#stay"/>
+        <DetectChar attribute="String" context="#pop" char="&quot;"/>
+      </context>
+
+      <context attribute="Comment" lineEndContext="#pop" name="Commentar 1">
+        <LineContinue attribute="Comment" context="#stay"/>
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Commentar 2">
+        <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment"/>
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Commentar/Preprocessor">
+        <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment2" />
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Outscoped" >
+        <DetectSpaces />
+        <DetectIdentifier />
+        <DetectChar attribute="String" context="String" char="&quot;"/>
+        <Detect2Chars attribute="Comment" context="Commentar 1" char="/" char1="/"/>
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Outscoped intern">
+        <DetectSpaces />
+        <DetectIdentifier />
+        <DetectChar attribute="String" context="String" char="&quot;"/>
+        <Detect2Chars attribute="Comment" context="Commentar 1" char="/" char1="/"/>
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+      </context>
+    </contexts>
+    <itemDatas>
+      <itemData name="Normal Text"  defStyleNum="dsNormal" spellChecking="false"/>
+      <itemData name="Keyword"      defStyleNum="dsKeyword" spellChecking="false"/>
+      <itemData name="Value"    defStyleNum="dsValue" spellChecking="false"/>
+      <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>
+      <itemData name="Identifier"      defStyleNum="dsIdentifier" spellChecking="false"/>
+      <itemData name="BrokenKeyword"        defStyleNum="dsAlert" spellChecking="false"/>
+      <itemData name="String"       defStyleNum="dsString"/>
+      <itemData name="Comment"      defStyleNum="dsComment" spellChecking="true"/>
+      <itemData name="Symbol"       defStyleNum="dsNormal" spellChecking="false"/>
+      <itemData name="BrokenString" defStyleNum="dsError" spellChecking="false"/>
+    </itemDatas>
+  </highlighting>
+  <general>
+    <comments>
+      <comment name="singleLine" start="//" />
+      <comment name="multiLine" start="/*" end="*/" />
+    </comments>
+  </general>
+</language>
