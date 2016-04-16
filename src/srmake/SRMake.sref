@@ -58,7 +58,18 @@ MakeProject {
 
   (e.SrefC) (#CompileCommand e.Command) (e.Folders) (e.File) =
     <Make
-      (e.SrefC) (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
+      (e.SrefC) (e.Command) (e.Folders)
+      <CreateFileList
+        (
+          <Map
+            {
+              (s.FolderTag e.Folder) = (e.Folder);
+            }
+            e.Folders
+          >
+        )
+        e.File
+      >
     >;
 
   (e.SrefC) t.Compiler (e.Folders) e.ManyFiles =
@@ -91,7 +102,9 @@ PrintNotFound {
 }
 
 PrintDirectory {
-  (e.Folder) = '-d "' e.Folder '" ';
+  (#Search e.Folder) = '-d "' e.Folder '" ';
+
+  (#Runtime e.Folder) = '-D "' e.Folder '" ';
 }
 
 PrintUnit {

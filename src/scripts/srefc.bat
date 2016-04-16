@@ -15,5 +15,5 @@ set LIBDIR=%DISTRDIR%\srlib
 setlocal
   call "%DISTRDIR%\c-plus-plus.conf.bat"
   set PATH=%BINDIR%;%PATH%
-  srefc-core -c "%CPPLINE% %CPPLINE_FLAGS% -I\"%LIBDIR%\"" %* -d "%LIBDIR%"
+  srefc-core -c "%CPPLINE% %CPPLINE_FLAGS%" %* -D "%LIBDIR%"
 endlocal

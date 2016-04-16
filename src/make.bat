@@ -17,7 +17,7 @@ setlocal
   set DIR=%1
   set TARGET=%2
   set MAINSRC=%~n3
-  set CPPLINE_FLAGS=%4
+  set CPPLINE_FLAGS=%~4
   set PATH_TO_SREFC=%5
   if {%PATH_TO_SREFC%}=={} (
     set PATH_TO_SREFC=..\..
