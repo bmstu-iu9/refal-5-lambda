@@ -301,28 +301,36 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdNumberSave s.ContextOffset #AlgLeft s.Num s.Number))
     >;
 
+  //добавил смещение
   s.ContextOffset
-  e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range) e.Ranges-E
+  e.Ranges-B 
+  (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range)
+  e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
-      e.Ranges-B (#Junk (#TkName e.Name)) (#Range s.Num e.Range) e.Ranges-E
-      (e.Vars) (e.Commands (#CmdName #AlgLeft s.Num e.Name))
+      <Inc s.ContextOffset>
+      e.Ranges-B 
+      //e.Junk был добавлен, а нужно ли это было делать?
+      (#Junk e.Junk (#TkName e.Name s.ContextOffset)) (#Range s.Num e.Range) 
+      e.Ranges-E
+      (e.Vars) (e.Commands (#CmdNameSave s.ContextOffset #AlgLeft s.Num e.Name))
     >;
 
+  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkIdentifier e.Name) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Junk e.Junk (#TkIdentifier e.Name)) (#Range s.Num e.Range)
+      (#Junk e.Junk (#TkIdentifier e.Name s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgLeft s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdentSave s.ContextOffset #AlgLeft s.Num e.Name))
     >;
 
+  //добавил смещение
   s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkChar s.Char)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
@@ -334,41 +342,44 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdCharSave s.ContextOffset #AlgRight s.Num s.Char))
     >;
 
+  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkNumber s.Number)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkNumber s.Number) e.Junk)
+      (#Range s.Num e.Range) (#Junk (#TkNumber s.Number s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdNumber #AlgRight s.Num s.Number))
+      (e.Vars) (e.Commands (#CmdNumberSave s.ContextOffset #AlgRight s.Num s.Number))
     >;
 
+  //добавил смещение
   s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkName e.Name)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkName e.Name) e.Junk)
+      (#Range s.Num e.Range) (#Junk (#TkName e.Name s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdName #AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdNameSave s.ContextOffset #AlgRight s.Num e.Name))
     >;
 
+  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkIdentifier e.Name)) (#Junk e.Junk)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      s.ContextOffset
+      <Inc s.ContextOffset>
       e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkIdentifier e.Name) e.Junk)
+      (#Range s.Num e.Range) (#Junk (#TkIdentifier e.Name s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdentSave s.ContextOffset #AlgRight s.Num e.Name))
     >;
 
   // Распознавание скобок

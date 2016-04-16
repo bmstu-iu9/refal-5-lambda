@@ -237,9 +237,19 @@ GenCommand {
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
+  (e.Indent) (#CmdNameSave s.Offset s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    <PrintMatchNameSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
+    ;
+
   (e.Indent) (#CmdIdent s.Direction s.BracketNumber e.Name) =
     (e.Indent)
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
+    ;
+
+  (e.Indent) (#CmdIdentSave s.Offset s.Direction s.BracketNumber e.Name) =
+    (e.Indent)
+    <PrintMatchIdentSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
 
   (e.Indent) (#CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
@@ -730,10 +740,26 @@ PrintMatchName {
     >;
 }
 
+PrintMatchNameSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
+      ('function') e.Name
+    >;
+}
+
 PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
+      ('ident') ' & ident_' e.Name '<int>::name'
+    >;
+}
+
+PrintMatchIdentSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
       ('ident') ' & ident_' e.Name '<int>::name'
     >;
 }

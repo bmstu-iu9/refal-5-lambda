@@ -116,37 +116,39 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   return (first == 0) && (last == 0);
 }
 
-bool refalrts::function_left(
+refalrts::Iter refalrts::function_left(
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if( first->tag != cDataFunction ) {
-    return false;
+    return 0;
   } else if ( first->function_info.ptr != fn ) {
-    return false;
+    return 0;
   } else {
+    Iter char_pos = first;
     move_left( first, last );
-    return true;
+    return char_pos;
   }
 }
 
-bool refalrts::function_right(
+refalrts::Iter refalrts::function_right(
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( cDataFunction != last->tag ) {
-    return false;
+    return 0;
   } else if ( last->function_info.ptr != fn ) {
-    return false;
+    return 0;
   } else {
+    Iter char_pos = last;
     move_right( first, last );
-    return true;
+    return char_pos;
   }
 }
 
@@ -223,37 +225,39 @@ refalrts::Iter refalrts::number_right(
   }
 }
 
-bool refalrts::ident_left(
+refalrts::Iter refalrts::ident_left(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( cDataIdentifier != first->tag ) {
-    return false;
+    return 0;
   } else if ( first->ident_info != ident ) {
-    return false;
+    return 0;
   } else {
+    Iter char_pos = first;
     move_left( first, last );
-    return true;
+    return char_pos;
   }
 }
 
-bool refalrts::ident_right(
+refalrts::Iter refalrts::ident_right(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( cDataIdentifier != last->tag ) {
-    return false;
+    return 0;
   } else if ( last->ident_info != ident ) {
-    return false;
+    return 0;
   } else {
+    Iter char_pos = last;
     move_right( first, last );
-    return true;
+    return char_pos;
   }
 }
 
