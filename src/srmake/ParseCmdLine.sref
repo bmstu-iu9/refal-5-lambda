@@ -22,10 +22,18 @@ DoParseCommandLine {
 
   (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
     <DoParseCommandLine
-      (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
+      (e.ScannedFiles) (e.Folders (#Search e.Directory)) e.Options
     >;
 
   (e.ScannedFiles) (e.Folders) ('-d') =
+    (#CmdLineError 'After option ''-d'' expected find directory');
+
+  (e.ScannedFiles) (e.Folders) ('-D') (e.Directory) e.Options =
+    <DoParseCommandLine
+      (e.ScannedFiles) (e.Folders (#Runtime e.Directory)) e.Options
+    >;
+
+  (e.ScannedFiles) (e.Folders) ('-D') =
     (#CmdLineError 'After option ''-d'' expected find directory');
 
   (e.ScannedFiles) (e.Folders) ('--') e.Options =
@@ -50,10 +58,18 @@ DoParseFileNames {
 
   t.Compiler (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
     <DoParseFileNames
-      t.Compiler (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
+      t.Compiler (e.ScannedFiles) (e.Folders (#Search e.Directory)) e.Options
     >;
 
   t.Compiler (e.ScannedFiles) (e.Folders) ('-d') =
+    (#CmdLineError 'After option ''-d'' expected find directory');
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-D') (e.Directory) e.Options =
+    <DoParseFileNames
+      t.Compiler (e.ScannedFiles) (e.Folders (#Runtime e.Directory)) e.Options
+    >;
+
+  t.Compiler (e.ScannedFiles) (e.Folders) ('-D') =
     (#CmdLineError 'After option ''-d'' expected find directory');
 
   t.Compiler (e.ScannedFiles) (e.Folders) ('--') e.Files =

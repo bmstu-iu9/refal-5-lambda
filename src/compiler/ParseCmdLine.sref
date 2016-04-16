@@ -25,6 +25,9 @@ $ENTRY ParseCommandLine {
           (#Opt #Required 'O')
           (#ErrorFile #Required 'e' ('error-file'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
+          (#CppFlags #Required 'CF' ('cppflags'))
+          (#CppFlag #Required 'f' ('cppflag'))
+          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
         )
         e.Arguments
       >
@@ -81,6 +84,57 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #NoErrorFile) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag) e.Options =
+            ((e.Errors) (e.Bag)) e.Options;
+        }
+        (MapReduce {
+          ((e.Errors) (#NoCppCompiler e.Bag)) (#CppFlags s.Num e.Flags) =
+            (
+              (e.Errors (s.Num #FlagsForNoCompiler))
+              (#NoCppCompiler e.Bag)
+            );
+
+          ((e.Errors) (#NoCppCompiler e.Bag)) (#CppFlag s.Num e.Flag) =
+            (
+              (e.Errors (s.Num #FlagsForNoCompiler))
+              (#NoCppCompiler e.Bag)
+            );
+
+          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlags s.Num e.Flags) =
+            (
+              (e.Errors)
+              ((e.CppCompiler ' ' e.Flags) e.Bag)
+            );
+
+          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlag s.Num e.Flag) =
+            (
+              (e.Errors)
+              ((e.CppCompiler ' "' e.Flag '"') e.Bag)
+            );
+
+          ((e.Errors) (t.CppCompiler e.Bag)) (#RuntimeFolder s.Num e.Folder) =
+            (
+              (e.Errors)
+              (
+                <Fetch
+                  t.CppCompiler {
+                    #NoCppCompiler = #NoCppCompiler;
+                    (e.CppCompiler^) = (e.CppCompiler ' -I"' e.Folder '"');
+                  }
+                >
+                e.Bag
+              )
+            )
+            (#SearchFolder s.Num e.Folder);
+
+          ((e.Errors) (e.Bag)) t.OtherOption =
+            ((e.Errors) (e.Bag)) t.OtherOption;
+        })
+        {
+          ((e.Errors) (e.Bag)) e.Options =
+            (e.Errors) (e.Bag) e.Options;
         }
         {
           (e.Errors) (e.Bag) e.Options =
