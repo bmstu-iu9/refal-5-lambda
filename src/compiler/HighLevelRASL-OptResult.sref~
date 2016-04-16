@@ -692,7 +692,7 @@ TextFromPattern {
     ' ''' <EscapeChar s.Char> '' <Offset s.Offset>
     <TextFromPattern e.Tail>;
 
-  (#TkNumber s.Number s.Offset) e.Tail =
+  (#TkNumber s.Number) e.Tail =
     ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
 
   (#TkName e.Name) e.Tail =

@@ -1,0 +1,12 @@
+//FROM Library
+$EXTERN WriteLine;
+
+$ENTRY Go {
+  = <WriteLine <Test 'abc1'>>;
+}
+
+Test {
+  1 = 'integer_dbg';
+  s.X 'b' e.Y = <Test e.Y> 'b' s.X;
+  e.X = e.X;
+}
