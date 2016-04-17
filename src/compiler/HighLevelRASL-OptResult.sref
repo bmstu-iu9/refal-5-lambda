@@ -608,8 +608,19 @@ DoFreezeRanges-MakeSavers {
       <Map
         {
           /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
+            Сохраняющие команды сопоставления содержат номер скобок
+            четвёртым термом, их можно узнать по указателю направления
+            в третьем терме.
+          */
+          (s.Command^ s.ElemPos #AlgLeft s.Num e.Info^) =
+            (s.Command s.ElemPos #AlgLeft s.ContextTop e.Info);
+
+          (s.Command^ s.ElemPos #AlgRight s.Num e.Info^) =
+            (s.Command s.ElemPos #AlgRight s.ContextTop e.Info);
+
+          /*
+            Остальные команды распознавания содержат номер скобок третьим
+            термом, общий формат (s.Command s.Direction s.BracketNum e.Info)
           */
           (s.Command^ s.Direction^ s.Num e.Info^) =
             (s.Command s.Direction s.ContextTop e.Info);
