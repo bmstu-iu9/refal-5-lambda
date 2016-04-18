@@ -1,8 +1,8 @@
 //FROM Library
-$EXTERN WriteLine, System;
+$EXTERN WriteLine, System, StrFromInt, Exit;
 
 //FROM LibraryEx
-$EXTERN ArgList, Map, Fetch;
+$EXTERN ArgList, Map;
 
 //FROM FileScanner
 $EXTERN CreateFileList;
@@ -21,80 +21,73 @@ Main {
 
   (e.Program) e.Arguments =
     <MakeProject
-      <Fetch
-        <Get-s-option e.Arguments>
-        {
-          (e.SrefC) e.RestOfArguments =
-            (e.SrefC) <ParseCommandLine e.RestOfArguments>;
-        }
-      >
+      <ParseCommandLine e.Arguments>
     >;
-}
-
-/*
-  Да, костыль, но усложнение потребует большего объёма кода.
-  Костыль имеет недочёт: в командной строке может быть
-    srmake -c -s srefc g++ MainFile.sref
-  и эта строка корректно обработается.
-*/
-Get-s-option {
-  e.Arguments-B ('--') e.Arguments-E =
-    <Get-s-option e.Arguments-B> ('--') e.Arguments-E;
-
-  e.Arguments-B ('-s') (e.SrefC) e.Arguments-E =
-    (e.SrefC) e.Arguments-B e.Arguments-E;
-
-  e.Arguments = ('srefc') e.Arguments;
 }
 
 MakeProject {
-  (e.SrefC) (#CmdLineError e.Message) =
-    <WriteLine 'COMMAND LINE ERROR: ' e.Message>;
-
-  (e.SrefC) (#NoCompile) (e.Folders) (e.File) =
-    <WriteLine
-      'COMMAND LINE ERROR: Compiler not selected'
-    >;
-
-  (e.SrefC) (#CompileCommand e.Command) (e.Folders) (e.File) =
+  #Success (e.CppCompiler) (e.SrefCompiler) (e.SourceFile) e.Folders =
     <Make
-      (e.SrefC) (e.Command) (e.Folders) <CreateFileList (e.Folders) e.File>
+      (e.SrefCompiler) (e.CppCompiler) (e.Folders)
+      <CreateFileList
+        (
+          <Map
+            {
+              (s.FolderTag e.Folder) = (e.Folder);
+            }
+            e.Folders
+          >
+        )
+        e.SourceFile
+      >
     >;
 
-  (e.SrefC) t.Compiler (e.Folders) e.ManyFiles =
-    <WriteLine
-      'COMMAND LINE ERROR: many files selected'
-    >;
+  #Fails e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <Exit 1>;
 }
 
 Make {
   (e.SrefC) (e.CompilerCommand) (e.Directories)
   e.Units-B (#NotFound e.UnitName) e.Units-E =
-    <Map PrintNotFound (#NotFound e.UnitName) e.Units-E>;
+    <Map
+      {
+        (#NotFound e.UnitName^) =
+          <WriteLine
+            'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
+          >;
+
+        (#Output e.Output) = ;
+        (#Source (e.Source) e.Output) = ;
+      }
+      (#NotFound e.UnitName) e.Units-E
+    >
+    <Exit 1>;
 
   (e.SrefC) (e.CompilerCommand) (e.Directories) e.Units =
     <System
-      e.SrefC ' -c "' e.CompilerCommand '" '
-      <Map PrintDirectory e.Directories>
-      <Map PrintUnit e.Units>
+      e.SrefC ' -c "' e.CompilerCommand '"'
+      <Map
+        {
+          (#Search e.Folder) = ' -d "' e.Folder '"';
+          (#Runtime e.Folder) = ' -D "' e.Folder '"';
+        }
+        e.Directories
+      >
+      <Map
+        {
+          (#Output e.Output) = ' "' e.Output '"';
+          (#Source (e.Source) e.Output) = ' "' e.Source '"';
+        }
+        e.Units
+      >
     >;
-}
-
-PrintNotFound {
-  (#NotFound e.UnitName) =
-    <WriteLine
-      'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
-    >;
-
-  (#Output e.Output) = ;
-  (#Source (e.Source) e.Output) = ;
-}
-
-PrintDirectory {
-  (e.Folder) = '-d "' e.Folder '" ';
-}
-
-PrintUnit {
-  (#Output e.Output) = '"' e.Output '" ';
-  (#Source (e.Source) e.Output) = '"' e.Source '" ';
 }

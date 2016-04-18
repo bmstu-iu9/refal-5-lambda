@@ -1,7 +1,7 @@
 #!/bin/bash
 
 run_test_aux() {
-  echo Passing $1...
+  echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
@@ -37,12 +37,12 @@ run_test_aux() {
 }
 
 run_test_aux.BAD-SYNTAX() {
-  echo Passing $1...
+  echo Passing $1 \(syntax error recovering, flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
-  ../bin/srefc-core $SREF 2>__error.txt
+  ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit
@@ -61,7 +61,11 @@ run_test_aux.BAD-SYNTAX() {
 run_test() {
   SREF=$1
   SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
-  run_test_aux$SUFFIX $1
+  SRFLAGS= run_test_aux$SUFFIX $1
+  SRFLAGS=-OP run_test_aux$SUFFIX $1
+  SRFLAGS=-OR run_test_aux$SUFFIX $1
+  SRFLAGS=--gen=direct run_test_aux$SUFFIX $1
+  SRFLAGS=--gen=interp run_test_aux$SUFFIX $1
 }
 
 if [ -z "$1" ]; then

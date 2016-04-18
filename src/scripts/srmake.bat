@@ -4,7 +4,7 @@
 set BINDIR=%~dp0
 set BINDIR=%BINDIR:~0,-1%
 
-:: Получаем путь к дистрибутиву, удаяем концевой \
+:: Получаем путь к дистрибутиву, удаляем концевой \
 for %%d in ("%BINDIR%") do set DISTRDIR=%%~dpd
 set DISTRDIR=%DISTRDIR:~0,-1%
 
@@ -17,6 +17,6 @@ setlocal
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
     -s srefc-core.exe ^
-    -c "%CPPLINE% %CPPLINE_FLAGS% -I\\"%LIBDIR%\\"" ^
-    %* -d "%LIBDIR%"
+    -c "%CPPLINE% %CPPLINE_FLAGS%" ^
+    %* -D "%LIBDIR%"
 endlocal

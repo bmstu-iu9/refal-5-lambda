@@ -15,18 +15,27 @@ goto :EOF
 
 :RUN_TEST
 setlocal
+  set SRFLAGS=
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  set SRFLAGS=-OP
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  set SRFLAGS=-OR
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  set SRFLAGS=--gen=direct
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  set SRFLAGS=--gen=interp
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
 endlocal
 goto :EOF
 
 :RUN_TEST_AUX
 setlocal
-  echo Passing %1...
+  echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
   set CPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %1 2> __error.txt
+  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 1 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit
@@ -61,11 +70,11 @@ goto :EOF
 
 :RUN_TEST_AUX.BAD-SYNTAX
 setlocal
-  echo Passing %1 (syntax error recovering)...
+  echo Passing %1 (syntax error recovering, flags %SRFLAGS%)...
   set SREF=%1
   set CPP=%~n1.cpp
 
-  ..\bin\srefc-core %1 2> __error.txt
+  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit

@@ -217,7 +217,7 @@ GenCommand {
     <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
     ;
 
-  (e.Indent) (#CmdCharSave s.Offset s.Direction s.BracketNumber s.Char) =
+  (e.Indent) (#CmdCharSave s.Direction s.BracketNumber s.Offset s.Char) =
     (e.Indent)
     <PrintMatchCharSave (e.Indent) s.Offset s.Direction s.BracketNumber s.Char>
     ;

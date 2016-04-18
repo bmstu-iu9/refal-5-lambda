@@ -1,83 +1,131 @@
+//FROM GetOpt
+$EXTERN GetOpt;
+
+//FROM GetOpt-CheckRepeated
+$EXTERN GetOpt-CheckRepeated;
+
+//FROM LibraryEx
+$EXTERN Fetch, Seq, MapReduce, Map;
+
 /**
   <ParseCommandLine e.Arguments>
-    == t.Compiler (e.Folders) t.FoundedFile*
-    == (#CmdLineError e.Message)
+    == #Success
+       (e.CppCompiler) (e.SrefCompiler) (e.FileName) (e.Flags) e.Folders
+    == #Fails (s.ArgNum e.Message)*
 
-  t.FoundedFile -- см. в FindFile
-  t.Compiler ::= (#NoCompile) | (#CompileCommand e.Command)
+  e.Folders ::= (s.FolderType e.Path)*
+  s.FolderType ::= #Search | #Runtime
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
-    <DoParseCommandLine (/* files */) (/* folders */) e.Arguments>;
+    <Fetch
+      <GetOpt
+        (
+          (#CppCompiler #Required 'c' ('cpp-command'))
+          (#SrefCompiler #Required 's' ('sref-command'))
+          (#SearchFolder #Required 'd' ('dir') ('directory'))
+          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#CompilerOption #Required 'X' ('thru') ('through'))
+        )
+        e.Arguments
+      >
+      <Seq
+        {
+          (e.Errors) e.Options =
+            <GetOpt-CheckRepeated
+              (#CppCompiler #SrefCompiler #FILE) (e.Errors) e.Options
+            >;
+        }
+        {
+          (e.Errors) e.Options-B (#CppCompiler s.Num e.Command) e.Options-E =
+            (e.Errors) ((e.Command)) e.Options-B e.Options-E;
+
+          (e.Errors) e.Options =
+            (e.Errors (1 #NoCppCompiler)) (()) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#SrefCompiler s.Num e.Command) e.Options-E =
+            (e.Errors) (e.Bag (e.Command)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag ('srefc-core')) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#FILE s.Num e.FileName) e.Options-E =
+            (e.Errors) (e.Bag (e.FileName)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors (1 #NoSourceFile)) (e.Bag ()) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors)
+            <MapReduce
+              {
+                ((e.CppCompiler) (e.SrefCompiler) e.Bag^)
+                (#CompilerOption s.Num e.Flag) =
+                  ((e.CppCompiler) (e.SrefCompiler ' "' e.Flag '"') e.Bag);
+
+                (e.Bag^) t.OtherOption = (e.Bag) t.OtherOption;
+              }
+              (e.Bag) e.Options
+            >;
+        }
+        {
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag)
+            <Map
+              {
+                (#SearchFolder s.Num e.Folder) = (#Search e.Folder);
+                (#RuntimeFolder s.Num e.Folder) = (#Runtime e.Folder);
+              }
+              e.Options
+            >;
+        }
+        {
+          () ((e.CppCompiler) (e.SrefCompiler) (e.MainSource)) e.Folders =
+            #Success (e.CppCompiler) (e.SrefCompiler) (e.MainSource) e.Folders;
+
+          (e.Errors) (e.Bag) e.Folders =
+            #Fails
+            <Map
+              {
+                (s.Pos #NoRequiredParam e.Param) =
+                  (s.Pos 'option ' e.Param ' expects parameter');
+
+                (s.Pos #UnknownShortOption s.Option) =
+                  (s.Pos 'unknown option -' s.Option);
+
+                (s.Pos #UnknownLongOption e.Option) =
+                  (s.Pos 'unknown option --' e.Option);
+
+                // У нас все опции с параметрами, не должно возникать
+                // (s.Pos #UnexpectedLongOptionParam (e.Option) e.Param) =
+
+                (s.Pos #RepeatOption s.Tag) =
+                  (
+                    s.Pos
+                    <Fetch
+                      s.Tag {
+                        #CppCompiler = 'option -c or --cpp-command';
+                        #SrefCompiler = 'option -s or --sref-command';
+                        #FILE = 'source filename';
+                      }
+                    >
+                    ' must appear one time'
+                  );
+
+                (s.Pos #NoCppCompiler) =
+                  (s.Pos 'option -c or --cpp-command not found');
+
+                (s.Pos #NoSourceFile) =
+                  (s.Pos 'expected source filename in command line');
+              }
+              e.Errors
+            >;
+        }
+      >
+    >;
 }
-
-DoParseCommandLine {
-  (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Files =
-    <DoParseFileNames
-      (#CompileCommand e.CompileCommand) (e.ScannedFiles) (e.Folders) e.Files
-    >;
-
-  (e.ScannedFiles) (e.Folders) ('-c') =
-    (#CmdLineError 'After option ''-c'' expected C++ compiler command line');
-
-  (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
-    <DoParseCommandLine
-      (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
-    >;
-
-  (e.ScannedFiles) (e.Folders) ('-d') =
-    (#CmdLineError 'After option ''-d'' expected find directory');
-
-  (e.ScannedFiles) (e.Folders) ('--') e.Options =
-    <DoParseFileNamesOnly
-      (#NoCompile) (e.ScannedFiles) (e.Folders) e.Options
-    >;
-
-  (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
-    <DoParseCommandLine
-       (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
-    >;
-
-  (e.ScannedFiles) (e.Folders) = (#NoCompile) (e.Folders) e.ScannedFiles;
-}
-
-DoParseFileNames {
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') (e.CompileCommand) e.Options =
-    (#CmdLineError 'Multiple declaration of C++ compiler command line');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-c') =
-    (#CmdLineError 'After option ''-c'' expected C++ compiler command line');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') (e.Directory) e.Options =
-    <DoParseFileNames
-      t.Compiler (e.ScannedFiles) (e.Folders (e.Directory)) e.Options
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('-d') =
-    (#CmdLineError 'After option ''-d'' expected find directory');
-
-  t.Compiler (e.ScannedFiles) (e.Folders) ('--') e.Files =
-    <DoParseFileNamesOnly
-      t.Compiler (e.ScannedFiles) (e.Folders) e.Files
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Options =
-    <DoParseFileNames
-      t.Compiler (e.ScannedFiles (e.NextFileName)) (e.Folders) e.Options
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) =
-    t.Compiler (e.Folders) e.ScannedFiles;
-}
-
-DoParseFileNamesOnly {
-  t.Compiler (e.ScannedFiles) (e.Folders) (e.NextFileName) e.Files =
-    <DoParseFileNamesOnly
-      t.Compiler
-      (e.ScannedFiles (e.NextFileName)) e.Files
-    >;
-
-  t.Compiler (e.ScannedFiles) (e.Folders) =
-    t.Compiler (e.Folders) e.ScannedFiles;
-}
-
