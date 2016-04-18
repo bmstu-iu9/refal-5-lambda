@@ -298,7 +298,7 @@ DoGenPattern {
       e.Ranges-B
       (#Junk e.Junk (#TkNumber s.Number s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdNumberSave s.ContextOffset #AlgLeft s.Num s.Number))
+      (e.Vars) (e.Commands (#CmdNumberSave #AlgLeft s.Num s.ContextOffset  s.Number))
     >;
 
   //добавил смещение
@@ -313,7 +313,7 @@ DoGenPattern {
       //e.Junk был добавлен, а нужно ли это было делать?
       (#Junk e.Junk (#TkName e.Name s.ContextOffset)) (#Range s.Num e.Range) 
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdNameSave s.ContextOffset #AlgLeft s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdNameSave #AlgLeft s.Num s.ContextOffset e.Name))
     >;
 
   //добавил смещение
@@ -327,7 +327,7 @@ DoGenPattern {
       e.Ranges-B
       (#Junk e.Junk (#TkIdentifier e.Name s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdIdentSave s.ContextOffset #AlgLeft s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdentSave #AlgLeft s.Num s.ContextOffset  e.Name))
     >;
 
   //добавил смещение
@@ -353,7 +353,7 @@ DoGenPattern {
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkNumber s.Number s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdNumberSave s.ContextOffset #AlgRight s.Num s.Number))
+      (e.Vars) (e.Commands (#CmdNumberSave #AlgRight s.Num s.ContextOffset s.Number))
     >;
 
   //добавил смещение
@@ -365,7 +365,7 @@ DoGenPattern {
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkName e.Name s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdNameSave s.ContextOffset #AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdNameSave #AlgRight s.Num s.ContextOffset  e.Name))
     >;
 
   //добавил смещение
@@ -379,7 +379,7 @@ DoGenPattern {
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkIdentifier e.Name s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdIdentSave s.ContextOffset #AlgRight s.Num e.Name))
+      (e.Vars) (e.Commands (#CmdIdentSave #AlgRight s.Num s.ContextOffset e.Name))
     >;
 
   // Распознавание скобок

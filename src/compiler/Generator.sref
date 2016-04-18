@@ -227,7 +227,7 @@ GenCommand {
     <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>
     ;
 
-  (e.Indent) (#CmdNumberSave s.Offset s.Direction s.BracketNumber s.Number) =
+  (e.Indent) (#CmdNumberSave s.Direction s.BracketNumber s.Offset s.Number) =
     (e.Indent)
     <PrintMatchNumberSave (e.Indent) s.Offset s.Direction s.BracketNumber s.Number>
     ;
@@ -237,7 +237,7 @@ GenCommand {
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
-  (e.Indent) (#CmdNameSave s.Offset s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (#CmdNameSave  s.Direction s.BracketNumber s.Offset e.Name) =
     (e.Indent)
     <PrintMatchNameSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
@@ -247,7 +247,7 @@ GenCommand {
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
-  (e.Indent) (#CmdIdentSave s.Offset s.Direction s.BracketNumber e.Name) =
+  (e.Indent) (#CmdIdentSave s.Direction s.BracketNumber s.Offset e.Name) =
     (e.Indent)
     <PrintMatchIdentSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
