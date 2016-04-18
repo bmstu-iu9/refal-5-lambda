@@ -128,9 +128,9 @@ refalrts::Iter refalrts::function_left(
   } else if ( first->function_info.ptr != fn ) {
     return 0;
   } else {
-    Iter char_pos = first;
+    Iter func_pos = first;
     move_left( first, last );
-    return char_pos;
+    return func_pos;
   }
 }
 
@@ -146,9 +146,9 @@ refalrts::Iter refalrts::function_right(
   } else if ( last->function_info.ptr != fn ) {
     return 0;
   } else {
-    Iter char_pos = last;
+    Iter func_pos = last;
     move_right( first, last );
-    return char_pos;
+    return func_pos;
   }
 }
 
@@ -201,9 +201,9 @@ refalrts::Iter refalrts::number_left(
   } else if ( first->number_info != num ) {
     return 0;
   } else {
-    Iter char_pos = first;
+    Iter num_pos = first;
     move_left( first, last );
-    return char_pos;
+    return num_pos;
   }
 }
 
@@ -219,9 +219,9 @@ refalrts::Iter refalrts::number_right(
   } else if ( last->number_info != num ) {
     return 0;
   } else {
-    Iter char_pos = last;
+    Iter num_pos = last;
     move_right( first, last );
-    return char_pos;
+    return num_pos;
   }
 }
 
@@ -237,9 +237,9 @@ refalrts::Iter refalrts::ident_left(
   } else if ( first->ident_info != ident ) {
     return 0;
   } else {
-    Iter char_pos = first;
+    Iter ident_pos = first;
     move_left( first, last );
-    return char_pos;
+    return ident_pos;
   }
 }
 
@@ -255,9 +255,9 @@ refalrts::Iter refalrts::ident_right(
   } else if ( last->ident_info != ident ) {
     return 0;
   } else {
-    Iter char_pos = last;
+    Iter ident_pos = last;
     move_right( first, last );
-    return char_pos;
+    return ident_pos;
   }
 }
 
@@ -327,7 +327,7 @@ bool refalrts::brackets_right(
   }
 }
 
-bool refalrts::adt_left(
+refalrts::Iter refalrts::adt_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::RefalFunctionPtr tag,
   refalrts::Iter& first, refalrts::Iter& last
@@ -335,20 +335,20 @@ bool refalrts::adt_left(
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( cDataOpenADT != first->tag ) {
-    return false;
+    return 0;
   } else {
     refalrts::Iter left_bracket = first;
     refalrts::Iter right_bracket = left_bracket->link_info;
     refalrts::Iter pnext = next( left_bracket );
 
     if( pnext == right_bracket ) {
-      return false;
+      return 0;
     } else if( cDataFunction != pnext->tag ) {
-      return false;
+      return 0;
     } else if( pnext->function_info.ptr != tag ) {
-      return false;
+      return 0;
     } else {
       if( next( pnext ) != right_bracket ) {
         res_first = next( pnext );
@@ -365,12 +365,12 @@ bool refalrts::adt_left(
         first = next( right_bracket );
       }
 
-      return true;
+      return left_bracket;
     }
   }
 }
 
-bool refalrts::adt_right(
+refalrts::Iter refalrts::adt_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::RefalFunctionPtr tag,
   refalrts::Iter& first, refalrts::Iter& last
@@ -378,20 +378,20 @@ bool refalrts::adt_right(
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if( cDataCloseADT != last->tag ) {
-    return false;
+    return 0;
   } else {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
     refalrts::Iter pnext = next( left_bracket );
 
     if( pnext == right_bracket ) {
-      return false;
+      return 0;
     } else if( cDataFunction != pnext->tag ) {
-      return false;
+      return 0;
     } else if( pnext->function_info.ptr != tag ) {
-      return false;
+      return 0;
     } else {
       if( next( pnext ) != right_bracket ) {
         res_first = next( pnext );
@@ -408,9 +408,17 @@ bool refalrts::adt_right(
         last = prev( left_bracket );
       }
 
-      return true;
+      return right_bracket;
     }
   }
+}
+
+void refalrts::adt_pointers(refalrts::Iter left_bracket,
+ refalrts::Iter& tag, refalrts::Iter& right_bracket
+) {
+  refalrts::Iter pnext = next( left_bracket );
+  tag->tag = pnext->tag;
+  right_bracket = left_bracket->link_info;
 }
 
 bool refalrts::svar_left(

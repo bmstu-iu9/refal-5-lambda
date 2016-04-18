@@ -170,16 +170,18 @@ extern Iter number_right( RefalNumber num, Iter& first, Iter& last );
 extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
 extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
 
-extern bool adt_left(
+extern Iter adt_left(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
-extern bool adt_right(
+extern Iter adt_right(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
+
+extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 
 extern bool brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 extern bool brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );

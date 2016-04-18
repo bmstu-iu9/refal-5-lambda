@@ -391,8 +391,9 @@ DoGenPattern {
     <DoGenPattern
       <Inc2 s.ContextOffset>
       e.Ranges-B
-      (#Junk e.Junk (#TkOpenBracket)) (#Range s.ContextOffset e.SubRange)
-      (#Junk (#TkCloseBracket)) (#Range s.Num e.Range)
+      (#Junk e.Junk (#TkOpenBracket s.ContextOffset)) 
+      (#Range s.ContextOffset e.SubRange)
+      (#Junk (#TkCloseBracket s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdBrackets #AlgLeft s.Num s.ContextOffset))
     >;
@@ -405,8 +406,10 @@ DoGenPattern {
     <DoGenPattern
       <Inc2 s.ContextOffset>
       e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkOpenBracket))
-      (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseBracket) e.Junk)
+      (#Range s.Num e.Range) 
+      (#Junk (#TkOpenBracket s.ContextOffset))
+      (#Range s.ContextOffset e.SubRange) 
+      (#Junk (#TkCloseBracket s.ContextOffset) e.Junk)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdBrackets #AlgRight s.Num s.ContextOffset))
     >;
@@ -425,7 +428,7 @@ DoGenPattern {
       (#Junk (#TkCloseADT)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars)
-      (e.Commands (#CmdADT #AlgLeft s.Num s.ContextOffset e.Name))
+      (e.Commands (#CmdADTSave #AlgLeft s.Num s.ContextOffset e.Name))
     >;
 
   s.ContextOffset
@@ -440,7 +443,7 @@ DoGenPattern {
       (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseADT) e.Junk)
       e.Ranges-E
       (e.Vars)
-      (e.Commands (#CmdADT #AlgRight s.Num s.ContextOffset e.Name))
+      (e.Commands (#CmdADTSave #AlgRight s.Num s.ContextOffset e.Name))
     >;
 
   // Пустой диапазон
@@ -696,8 +699,8 @@ TextFromPattern {
   (#TkOpenBracket) e.Tail = ' (' <TextFromPattern e.Tail>;
   (#TkCloseBracket) e.Tail = ' )' <TextFromPattern e.Tail>;
 
-  (#TkOpenADT) (#TkName e.Name) e.Tail = ' [' e.Name <TextFromPattern e.Tail>;
-  (#TkCloseADT) e.Tail = ' ]' <TextFromPattern e.Tail>;
+  (#TkOpenADT s.ContextOffset) (#TkName e.Name) e.Tail = ' [' e.Name <TextFromPattern e.Tail>;
+  (#TkCloseADT s.ContextOffset) e.Tail = ' ]' <TextFromPattern e.Tail>;
 
   (#TkChar s.Char s.Offset) e.Tail =
     ' ''' <EscapeChar s.Char> '' <Offset s.Offset>
@@ -706,14 +709,14 @@ TextFromPattern {
   (#TkNumber s.Number s.Offset) e.Tail =
     ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
 
-  (#TkName e.Name) e.Tail =
+  (#TkName e.Name s.Offset) e.Tail =
     ' & ' e.Name <TextFromPattern e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
     ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
     <TextFromPattern e.Tail>;
 
-  (#TkIdentifier e.Name) e.Tail =
+  (#TkIdentifier e.Name s.Offset) e.Tail =
     ' # ' e.Name <TextFromPattern e.Tail>;
 
   = ;

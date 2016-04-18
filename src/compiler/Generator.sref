@@ -1,3 +1,7 @@
+//FROM Library
+$EXTERN Add, WriteLine;
+
+
 FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
 }
@@ -262,6 +266,14 @@ GenCommand {
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
     <PrintMatchADT
+      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
+    >
+    ;
+
+  (e.Indent) (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    <PrintMatchADTSave
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
     >
     ;
@@ -783,6 +795,25 @@ PrintMatchADT {
     >;
 }
 
+PrintMatchADTSave {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
+    <PrintMatchSave
+      (e.Indent) s.InnerNum s.Direction s.BracketNumber
+      ('adt')
+      <ContextRange s.BracketNumber> ', '
+      e.Name
+      #Brackets
+    >
+    (
+      e.Indent
+      'refalrts::adt_pointers('
+      <ContextItem <Add s.BracketNumber 2>> ', '
+      <ContextItem <Add s.BracketNumber 3>> ', '
+      <ContextItem <Add s.BracketNumber 4>>
+      ');'
+    );
+}
+
 BreakerFromIndent {
   '  ' = 'return refalrts::cRecognitionImpossible;';
 
@@ -838,6 +869,15 @@ PrintMatch {
 
 
 PrintMatchSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep #Brackets =
+    (e.Indent
+      <ContextItem <Add 2 s.BracketNumber> > ' = '
+      'refalrts::' e.Function '_' <StrFromDirection s.Direction>
+      '( ' e.TextRep ', ' <ContextRange s.Offset> ' );'
+    )
+    (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
   (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
       <ContextItem s.Offset> ' = '
@@ -846,6 +886,8 @@ PrintMatchSave {
     )
     (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+
 }
 
 PrintAllocateElem {
