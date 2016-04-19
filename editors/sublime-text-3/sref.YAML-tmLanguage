@@ -12,11 +12,6 @@ patterns:
   name: keyword.other.sref
   match: '\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM'
 
-- {match: '\{', name: open.curly.bracket.ccpp}
-- {match: '\}', name: close.curly.bracket.ccpp}
-- {match: \(, name: open.round.bracket.ccpp}
-- {match: \), name: close.round.bracket.ccpp}
-
 - comment: broken keyword
   name: invalid.illegal.sref
   match: '\$[\w]*\b'

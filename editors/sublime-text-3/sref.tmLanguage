@@ -23,30 +23,6 @@
 			<string>keyword.other.sref</string>
 		</dict>
 		<dict>
-			<key>match</key>
-			<string>\{</string>
-			<key>name</key>
-			<string>open.curly.bracket.ccpp</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\}</string>
-			<key>name</key>
-			<string>close.curly.bracket.ccpp</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\(</string>
-			<key>name</key>
-			<string>open.round.bracket.ccpp</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\)</string>
-			<key>name</key>
-			<string>close.round.bracket.ccpp</string>
-		</dict>
-		<dict>
 			<key>comment</key>
 			<string>broken keyword</string>
 			<key>match</key>
