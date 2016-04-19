@@ -10,6 +10,12 @@ $IMPORT MInOut;
 $IMPORT MOS;
 $YMPORT Broken; // А вот подсветка ошибки
 
+$DATA Encapsulated;
+
+$ENTRY CreateEncapsulated {
+  e.X = [Encapsulated e.X];
+}
+
 $ENTRY Go {
   = <Main <MOS::ArgList>>;
 }
