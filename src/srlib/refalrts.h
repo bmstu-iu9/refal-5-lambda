@@ -182,18 +182,19 @@ extern Iter adt_right(
 );
 
 extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
+extern void bracket_pointers(Iter left_bracket, Iter& right_bracket);
 
-extern bool brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
-extern bool brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 
-extern bool tvar_left( Iter& tvar, Iter& first, Iter& last );
-extern bool tvar_right( Iter& tvar, Iter& first, Iter& last );
+extern refalrts::Iter tvar_left( Iter& tvar, Iter& first, Iter& last );
+extern refalrts::Iter tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
-extern bool repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
+extern refalrts::Iter repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
+extern refalrts::Iter repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
 extern bool repeated_evar_left(
   Iter& evar_b, Iter& evar_e,

@@ -262,6 +262,12 @@ GenCommand {
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
     ;
 
+  (e.Indent) (#CmdBracketsSave s.Direction s.BracketNumber s.InnerBrackets) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    <PrintMatchBracketsSave (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
+    ;
+
   (e.Indent) (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
@@ -287,9 +293,19 @@ GenCommand {
     (e.Indent)
     <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
 
+ (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (e.Indent)
+    <PrintMatchSTVarSave (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
+
   (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
     (e.Indent)
     <PrintMatchRepeated
+      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
+    >;
+
+  (e.Indent) (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
+    (e.Indent)
+    <PrintMatchRepeatedSave
       (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
     >;
 
@@ -785,6 +801,23 @@ PrintMatchBrackets {
     >;
 }
 
+PrintMatchBracketsSave {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum =
+    <PrintMatchSave
+      (e.Indent) s.InnerNum s.Direction s.BracketNumber
+      ('brackets')
+      <ContextRange s.InnerNum>
+      #Brackets
+    >
+    (
+      e.Indent
+      'refalrts::bracket_pointers('
+      <ContextItem <Add s.InnerNum 2> > ', '
+      <ContextItem <Add s.InnerNum 3> > 
+      ');'
+    );
+}
+
 PrintMatchADT {
   (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
     <PrintMatch
@@ -800,16 +833,16 @@ PrintMatchADTSave {
     <PrintMatchSave
       (e.Indent) s.InnerNum s.Direction s.BracketNumber
       ('adt')
-      <ContextRange s.BracketNumber> ', '
+      <ContextRange s.InnerNum> ', '
       e.Name
       #Brackets
     >
     (
       e.Indent
       'refalrts::adt_pointers('
-      <ContextItem <Add s.BracketNumber 2>> ', '
-      <ContextItem <Add s.BracketNumber 3>> ', '
-      <ContextItem <Add s.BracketNumber 4>>
+      <ContextItem <Add s.InnerNum 2> > ', '
+      <ContextItem <Add s.InnerNum 3> > ', '
+      <ContextItem <Add s.InnerNum 4> >
       ');'
     );
 }
@@ -842,6 +875,14 @@ PrintMatchSTVar {
     >;
 }
 
+PrintMatchSTVarSave {
+  (e.Indent) s.Direction s.BracketNumber 't' s.VarNumber =
+    <PrintMatchSave
+      (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
+      (<VarMatchFunction 't'>) <ContextItem s.VarNumber>
+    >;
+}
+
 PrintMatchRepeated {
   (e.Indent) s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNumber =
     <PrintMatch
@@ -858,6 +899,20 @@ PrintMatchRepeated {
     >;
 }
 
+PrintMatchRepeatedSave {
+  (e.Indent) s.Direction s.BracketNumber 't' s.VarNumber s.SampleNumber =
+    <PrintMatchSave
+      (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
+      ('repeated_stvar')
+      <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
+    >;
+
+  (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
+    <PrintMatchRepeated
+      (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber
+    >;
+}
+
 PrintMatch {
   (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
@@ -871,11 +926,11 @@ PrintMatch {
 PrintMatchSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep #Brackets =
     (e.Indent
-      <ContextItem <Add 2 s.BracketNumber> > ' = '
+      <ContextItem <Add 2 s.Offset> > ' = '
       'refalrts::' e.Function '_' <StrFromDirection s.Direction>
-      '( ' e.TextRep ', ' <ContextRange s.Offset> ' );'
+      '( ' e.TextRep ', ' <ContextRange s.BracketNumber> ' );'
     )
-    (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
+    (e.Indent 'if( ! ' <ContextItem <Add 2 s.Offset>> ' )')
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 
   (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep =

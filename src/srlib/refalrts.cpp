@@ -261,16 +261,16 @@ refalrts::Iter refalrts::ident_right(
   }
 }
 
-bool refalrts::brackets_left(
+refalrts::Iter refalrts::brackets_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( cDataOpenBracket != first->tag ) {
-    return false;
+    return 0;
   } else {
     refalrts::Iter left_bracket = first;
     refalrts::Iter right_bracket = left_bracket->link_info;
@@ -290,20 +290,20 @@ bool refalrts::brackets_left(
       first = next( right_bracket );
     }
 
-    return true;
+    return left_bracket;
   }
 }
 
-bool refalrts::brackets_right(
+refalrts::Iter refalrts::brackets_right(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if( cDataCloseBracket != last->tag ) {
-    return false;
+    return 0;
   } else {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
@@ -323,8 +323,15 @@ bool refalrts::brackets_right(
       last = prev( left_bracket );
     }
 
-    return true;
+    return left_bracket;
   }
+}
+
+void refalrts::bracket_pointers(
+  refalrts::Iter left_bracket,
+  refalrts::Iter& right_bracket)
+{
+  right_bracket = left_bracket->link_info;
 }
 
 refalrts::Iter refalrts::adt_left(
@@ -408,14 +415,16 @@ refalrts::Iter refalrts::adt_right(
         last = prev( left_bracket );
       }
 
-      return right_bracket;
+      return left_bracket;
     }
   }
 }
 
-void refalrts::adt_pointers(refalrts::Iter left_bracket,
- refalrts::Iter& tag, refalrts::Iter& right_bracket
-) {
+void refalrts::adt_pointers(
+  refalrts::Iter left_bracket,
+  refalrts::Iter& tag,
+  refalrts::Iter& right_bracket)
+{
   refalrts::Iter pnext = next( left_bracket );
   tag->tag = pnext->tag;
   right_bracket = left_bracket->link_info;
@@ -453,34 +462,34 @@ bool refalrts::svar_right(
   }
 }
 
-bool refalrts::tvar_left(
+refalrts::Iter refalrts::tvar_left(
   refalrts::Iter& tvar, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( is_open_bracket( first ) ) {
     refalrts::Iter right_bracket = first->link_info;
 
     tvar = first;
     first = right_bracket;
     move_left( first, last );
-    return true;
+    return right_bracket;
   } else {
     tvar = first;
     move_left( first, last );
-    return true;
+    return tvar;
   }
 }
 
-bool refalrts::tvar_right(
+refalrts::Iter refalrts::tvar_right(
   refalrts::Iter& tvar, refalrts::Iter& first, refalrts::Iter& last
 ) {
   assert( (first == 0) == (last == 0) );
 
   if( empty_seq( first, last ) ) {
-    return false;
+    return 0;
   } else if ( is_close_bracket( last ) ) {
     refalrts::Iter right_bracket = last;
     refalrts::Iter left_bracket = right_bracket->link_info;
@@ -488,11 +497,11 @@ bool refalrts::tvar_right(
     tvar = left_bracket;
     last = left_bracket;
     move_right( first, last );
-    return true;
+    return right_bracket;
   } else {
     tvar = last;
     move_right( first, last );
-    return true;
+    return tvar;
   }
 }
 
@@ -616,7 +625,7 @@ bool equal_expressions(
 
 } // unnamed namespace
 
-bool refalrts::repeated_stvar_left(
+refalrts::Iter refalrts::repeated_stvar_left(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -626,7 +635,10 @@ bool refalrts::repeated_stvar_left(
   refalrts::Iter copy_last = last;
 
   if( ! is_open_bracket( stvar_sample ) && svar_left( stvar, first, last ) ) {
-    return equal_nodes( stvar, stvar_sample );
+    if (equal_nodes( stvar, stvar_sample )) 
+      return stvar;
+    else 
+      return 0;
   } else if( tvar_left( left_term, first, last ) ) {
     refalrts::Iter left_term_e;
     refalrts::Iter stvar_sample_e;
@@ -651,16 +663,16 @@ bool refalrts::repeated_stvar_left(
     if( equal ) {
       stvar = left_term;
 
-      return true;
+      return left_term_e;
     } else {
-      return false;
+      return 0;
     }
   } else {
-    return false;
+    return 0;
   }
 }
 
-bool refalrts::repeated_stvar_right(
+refalrts::Iter refalrts::repeated_stvar_right(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,
   refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -670,7 +682,10 @@ bool refalrts::repeated_stvar_right(
   refalrts::Iter old_last = last;
 
   if( ! is_open_bracket( stvar_sample ) && svar_right( stvar, first, last ) ) {
-    return equal_nodes( stvar, stvar_sample );
+    if (equal_nodes( stvar, stvar_sample )) 
+      return stvar;
+    else 
+      return 0;
   } else if( tvar_right( right_term, first, last ) ) {
     refalrts::Iter right_term_e = old_last;
     refalrts::Iter stvar_sample_e;
@@ -689,12 +704,12 @@ bool refalrts::repeated_stvar_right(
     if( equal ) {
       stvar = right_term;
 
-      return true;
+      return right_term_e;
     } else {
-      return false;
+      return 0;
     }
   } else {
-    return false;
+    return 0;
   }
 }
 
