@@ -42,7 +42,7 @@ patterns:
 
 - comment: idents
   name: storage.type.sref
-  match: '\#\w+'
+  match: '\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b'
 
 - comment: block comment
   name: comment.block.documentation.sref

@@ -82,7 +82,7 @@
 			<key>comment</key>
 			<string>idents</string>
 			<key>match</key>
-			<string>\#\w+</string>
+			<string>\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b</string>
 			<key>name</key>
 			<string>storage.type.sref</string>
 		</dict>
