@@ -5,7 +5,6 @@ scopeName: source.sref
 fileTypes: [sref]
 uuid: 8d74d8c6-adaa-4888-bc0a-80ba4d340ed0
 
-
 patterns:
 - {include: '#comments'}
 - comment: keywords
