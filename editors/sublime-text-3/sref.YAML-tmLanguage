@@ -5,7 +5,6 @@ scopeName: source.sref
 fileTypes: [sref]
 uuid: 8d74d8c6-adaa-4888-bc0a-80ba4d340ed0
 
-
 patterns:
 - {include: '#comments'}
 - comment: keywords
@@ -42,7 +41,7 @@ patterns:
 
 - comment: idents
   name: storage.type.sref
-  match: '\#\w+'
+  match: '\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b'
 
 - comment: block comment
   name: comment.block.documentation.sref
