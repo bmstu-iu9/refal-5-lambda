@@ -332,15 +332,15 @@ DoGenPattern {
 
   //добавил смещение
   s.ContextOffset
-  e.Ranges-B 
+  e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc s.ContextOffset>
-      e.Ranges-B 
+      e.Ranges-B
       //e.Junk был добавлен, а нужно ли это было делать?
-      (#Junk e.Junk (#TkName e.Name s.ContextOffset)) (#Range s.Num e.Range) 
+      (#Junk e.Junk (#TkName e.Name s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdNameSave #AlgLeft s.Num s.ContextOffset e.Name))
     >;
@@ -420,7 +420,7 @@ DoGenPattern {
     <DoGenPattern
       <Add s.ContextOffset 4>
       e.Ranges-B
-      (#Junk e.Junk (#TkOpenBracket <Add s.ContextOffset 2> )) 
+      (#Junk e.Junk (#TkOpenBracket <Add s.ContextOffset 2> ))
       (#Range s.ContextOffset e.SubRange)
       (#Junk (#TkCloseBracket <Add s.ContextOffset 3> )) (#Range s.Num e.Range)
       e.Ranges-E
@@ -435,9 +435,9 @@ DoGenPattern {
     <DoGenPattern
       <Add s.ContextOffset 4>
       e.Ranges-B
-      (#Range s.Num e.Range) 
+      (#Range s.Num e.Range)
       (#Junk (#TkOpenBracket <Add s.ContextOffset 2> ))
-      (#Range s.ContextOffset e.SubRange) 
+      (#Range s.ContextOffset e.SubRange)
       (#Junk (#TkCloseBracket <Add s.ContextOffset 3> ) e.Junk)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdBracketsSave #AlgRight s.Num s.ContextOffset))
@@ -454,16 +454,16 @@ DoGenPattern {
       <Add s.ContextOffset 5>
       e.Ranges-B
       (
-        #Junk 
-        e.Junk 
+        #Junk
+        e.Junk
         (#TkOpenADT  <Add s.ContextOffset 2>)
         (#TkName e.Name <Add s.ContextOffset 3>)
       )
       (#Range s.ContextOffset e.SubRange)
       (
-        #Junk 
+        #Junk
         (#TkCloseADT  <Add s.ContextOffset 4>)
-      ) 
+      )
       (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars)
@@ -478,16 +478,16 @@ DoGenPattern {
     <DoGenPattern
       <Add s.ContextOffset 5>
       e.Ranges-B
-      (#Range s.Num e.Range) 
+      (#Range s.Num e.Range)
       (
-        #Junk 
+        #Junk
         (#TkOpenADT  <Add s.ContextOffset 2>)
         (#TkName e.Name <Add s.ContextOffset 3>)
       )
-      (#Range s.ContextOffset e.SubRange) 
+      (#Range s.ContextOffset e.SubRange)
       (
-        #Junk 
-        (#TkCloseADT  <Add s.ContextOffset 4>) 
+        #Junk
+        (#TkCloseADT  <Add s.ContextOffset 4>)
         e.Junk
       )
       e.Ranges-E
