@@ -137,16 +137,22 @@ OverlapItem {
     #NoOverlap;
 
   (s.AnyType e.Info s.Offset) (#TkVariable 's' e.Index) =
-    1 (#HalfReuse s.Offset (#TkVariable 's' e.Index));
+    1 (#HalfReuse (#TkVariable 's' e.Index s.Offset));
+
+  (s.Type1 e.Info1 s.Offset) (#LEFT-EDGE) =
+    #NoOverlap;
+
+  (s.Type1 e.Info1 s.Offset) (#RIGHT-EDGE) =
+    #NoOverlap;
 
   (s.Type e.Info1 s.Offset) (s.Type e.Info2) =
-    2 (#Reuse s.Offset (s.Type e.Info2));
+    2 (#Reuse (s.Type e.Info2 s.Offset));
 
   (s.Type1 e.Info1 s.Offset) (s.Type2 e.Info2) =
-    1 (#HalfReuse s.Offset (s.Type2 e.Info2));
+    1 (#HalfReuse (s.Type2 e.Info2 s.Offset));
 
   (#LEFT-EDGE) (#LEFT-EDGE) = 3 (#LEFT-EDGE);
-  (#RIGHT-EDGE) (#RIGHT-EDGE) = 3 (#RIGTH-EDGE);
+  (#RIGHT-EDGE) (#RIGHT-EDGE) = 3 (#RIGHT-EDGE);
   (#LEFT-EDGE) t.Other = #NoOverlap;
   (#RIGHT-EDGE) t.Other = #NoOverlap;
 }

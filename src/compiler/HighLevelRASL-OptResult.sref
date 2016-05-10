@@ -111,11 +111,20 @@ HighLevelRASL-Sentence {
       <GenPattern e.Pattern>
       {
         (e.PatternVars) (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
-	      <WriteLine 'marked_pattern: ' e.MarkedPattern>
-        <WriteLine 'result: ' e.Result>
+	        //<WriteLine 'marked_pattern: ' e.MarkedPattern>
+          //<WriteLine 'result: ' e.Result>
           <Fetch
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
-            <GST (e.MarkedPattern) (e.Result)>
+            <GST
+              (
+                (#LEFT-EDGE)
+                //(#TkOpenCall 0) (#TkName #MyName 1)
+                e.MarkedPattern
+                //(#TkCloseCall 2)
+                (#RIGHT-EDGE)
+              )
+              ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
+            >
             {
               s.ContextCount e.ResultCommands
               (e.Trash) (e.MarkedResult) =
@@ -123,7 +132,7 @@ HighLevelRASL-Sentence {
                   (#CmdIssueMem s.ContextCount)
                   (#CmdInitB0)
                   e.PatternCommands
-                  //<CreateGSTComment (e.Trash) (e.MarkedResult)>
+                  <CreateGSTComment (e.Trash) (e.MarkedResult)>
                   e.ResultCommands
                 >;
             }
@@ -132,6 +141,54 @@ HighLevelRASL-Sentence {
     >;
 }
 
+FlatResult {
+  e.Range-B (#CallBrackets e.SubRange-E) e.Range-E =
+    <FlatResult e.Range-B>
+    (#TkOpenCall)
+    <FlatResult e.SubRange-E>
+    (#TkCloseCall)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range-B (#Brackets e.SubRange-E) e.Range-E =
+    <FlatResult e.Range-B>
+    (#TkOpenBracket)
+    <FlatResult e.SubRange-E>
+    (#TkCloseBracket)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range-B (#ADT-Brackets (e.Name) e.SubRange-E) e.Range-E =
+    e.Range-B
+    (#TkOpenADT)
+    (#TkName e.Name)
+    <FlatResult e.SubRange-E>
+    (#TkCloseADT)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range = e.Range;
+}
+
+
+CreateGSTComment {
+  (e.Trash) (e.MarkedResult) =
+    (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
+    (#CmdComment 'RESULT:' <TextFromExpr <AddOffsets e.MarkedResult>>);
+}
+
+AddOffsets {
+  e.Range =
+    <Map
+      {
+        (#Tile e.Tile) = (#Tile e.Tile);
+        (#LEFT-EDGE) = (#LEFT-EDGE);
+        (#RIGHT-EDGE) = (#RIGHT-EDGE);
+        (s.Tag e.Info) = (s.Tag e.Info #NoOffset);
+      }
+      e.Range
+    >;
+}
 
 /*
 HighLevelRASL-Sentence {
@@ -207,7 +264,7 @@ GenPattern {
     //<WriteLine 'Pattern: ' e.Pattern>
     <Fetch
       <DoGenPattern
-        2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
+        2 /*5*/ (#Junk) (#Range 0 /*3*/ e.Pattern) (#Junk) (/* vars */) (/* commands */)
       >
       <Seq
         {
@@ -230,7 +287,7 @@ GenPattern {
           (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
             (e.Vars) (e.MarkedPattern)
             s.ContextOffset
-            ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
+            ((#CmdComment <TextFromExpr e.MarkedPattern>) e.Commands);
         }
       >
     >;
@@ -745,33 +802,50 @@ UniqueRanges {
   e.Unique = e.Unique;
 }
 
-TextFromPattern {
+TextFromExpr {
   (#TkOpenBracket s.ContextOffset) e.Tail =
-    ' (' <Offset s.ContextOffset> <TextFromPattern e.Tail>;
+    ' (' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
   (#TkCloseBracket s.ContextOffset) e.Tail =
-    ' )' <Offset s.ContextOffset> <TextFromPattern e.Tail>;
+    ' )' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
+
+  (#TkOpenCall s.ContextOffset) e.Tail =
+    ' <' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
+  (#TkCloseCall s.ContextOffset) e.Tail =
+    ' >' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
 
   (#TkOpenADT s.ContextOffset) (#TkName e.Name s.NameOffset) e.Tail =
-    ' [' <Offset s.ContextOffset> e.Name <Offset s.NameOffset> <TextFromPattern e.Tail>;
+    ' [' <Offset s.ContextOffset> e.Name <Offset s.NameOffset> <TextFromExpr e.Tail>;
+  (#TkOpenADT s.ContextOffset) e.Tail =
+    ' [' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
   (#TkCloseADT s.ContextOffset) e.Tail =
-    ' ]' <Offset s.ContextOffset> <TextFromPattern e.Tail>;
+    ' ]' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
 
   (#TkChar s.Char s.Offset) e.Tail =
     ' ''' <EscapeChar s.Char> '' <Offset s.Offset>
-    <TextFromPattern e.Tail>;
+    <TextFromExpr e.Tail>;
 
   (#TkNumber s.Number s.Offset) e.Tail =
-    ' ' <StrFromInt s.Number> <Offset s.Offset> <TextFromPattern e.Tail>;
+    ' ' <StrFromInt s.Number> <Offset s.Offset> <TextFromExpr e.Tail>;
 
   (#TkName e.Name s.Offset) e.Tail =
-    ' & ' e.Name <Offset s.Offset> <TextFromPattern e.Tail>;
+    ' & ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
     ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
-    <TextFromPattern e.Tail>;
+    <TextFromExpr e.Tail>;
 
   (#TkIdentifier e.Name s.Offset) e.Tail =
-    ' # ' e.Name <Offset s.Offset> <TextFromPattern e.Tail>;
+    ' # ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
+
+  //Added
+  (#Tile e.SubRange) e.Tail = ' Tile{' <TextFromExpr e.SubRange> ' }' <TextFromExpr e.Tail>;
+  (#AsIs e.SubRange) e.Tail = ' AsIs:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
+  (#Reuse e.SubRange) e.Tail = ' Reuse:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
+  (#HalfReuse e.SubRange) e.Tail = ' HalfReuse:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
+
+  (#LEFT-EDGE) e.Tail = ' [[' <TextFromExpr e.Tail>;
+  (#RIGHT-EDGE) = ' ]]';
+  #RemovedTile e.Tail = ' {REMOVED TILE} ' <TextFromExpr e.Tail>;
 
   = ;
 }
@@ -781,6 +855,7 @@ PrintVar {
 }
 
 Offset {
+  #NoOffset = '/-';
   s.Offset = '/' <StrFromInt s.Offset>;
 }
 
