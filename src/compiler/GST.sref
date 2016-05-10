@@ -1,0 +1,171 @@
+//FROM LibraryEx
+$EXTERN Fetch, Compare;
+
+//FROM Library
+$EXTERN Add, Sub;
+
+//заменяем плитки, до тех пор, пока есть такая возможность
+$ENTRY GST {
+  (e.Pattern) (e.Result) =
+    <Fetch
+      <ReplaceMaxTile (e.Pattern) (e.Result)>
+      {
+        #TileReplaced (e.Pattern^) (e.Result^) =
+          <GST (e.Pattern) (e.Result)>;
+
+        #NoTiles (e.Pattern) (e.Result) =
+          (e.Pattern) (e.Result);
+      }
+    >;
+}
+
+//заменяем максимальную плитку
+ReplaceMaxTile {
+  (e.Pattern) (e.Result) =
+    <DoReplaceMaxTile
+      (0 () ()) (() e.Pattern) (() e.Result)
+    >;
+}
+
+
+DoReplaceMaxTile {
+  //изменений нет, все просканированно
+  (0 () ()) ((e.Pattern) /* пусто */) ((e.Result) /* пусто */) =
+    #NoTiles (e.Pattern) (e.Result);
+
+  //изменения есть, все просканированно
+  (s.MaxWeight (e.ChangedPattern) (e.ChangedResult))
+  ((e.Pattern) /* пусто */) ((e.Result) /* пусто */) =
+    #TileReplaced (e.ChangedPattern) (e.ChangedResult);
+
+  //результат просканирован, нужно переместить остатки образца в e.ScannedPattern
+  (s.MaxWeight (e.NewPattern) (e.NewResult))
+  ((e.ScannedPattern) t.NextTerm e.Pattern) ((e.ScannedResult)) =
+    <DoReplaceMaxTile
+      (s.MaxWeight (e.NewPattern) (e.NewResult))
+      ((e.ScannedPattern t.NextTerm) e.Pattern) (() e.ScannedResult)
+    >;
+
+  //основная логическая часть: шаг сканирования
+  (s.MaxWeight (e.NewPattern) (e.NewResult))
+  ((e.ScannedPattern) e.Pattern) ((e.ScannedResult) t.NextItem e.Result) =
+    <DoReplaceMaxTile
+      // с помощью фетча генерим (s.MaxWeight (e.NewPattern) (e.NewResult))
+      <Fetch
+        <FindTile (e.Pattern) (t.NextItem e.Result)>
+        {
+          s.Weight (e.Tile) (e.PatternTail) (e.ResultTail) =
+            <Fetch
+              <Compare s.MaxWeight s.Weight>
+              {
+                '<' =
+                  (
+                    s.Weight
+                    (e.ScannedPattern #RemovedTile e.PatternTail)
+                    (e.ScannedResult (#Tile e.Tile) e.ResultTail)
+                  );
+
+                s.Other =
+                  (s.MaxWeight (e.NewPattern) (e.NewResult));
+              }
+            >;
+        }
+      >
+      ((e.ScannedPattern) e.Pattern)
+      ((e.ScannedResult t.NextItem) e.Result)
+    >;
+}
+
+FindTile {
+  (e.Pattern) (e.Result) =
+    <FindTile-EEnd
+      <DoFindTile
+        0 (/* tile */) (e.Pattern) (e.Result)
+      >
+    >;
+}
+
+//расширяет плитку максимально возможным способом
+//условия выхода:
+//опустошение результата или образца,
+//встреча плитки в результате или образце
+//встреча #NoOverlap термов
+
+DoFindTile {
+  s.Weight (e.Tile) (#RemovedTile e.Pattern) (e.Result) =
+    s.Weight (e.Tile) (#RemovedTile e.Pattern) (e.Result);
+
+  s.Weight (e.Tile) (e.Pattern) ((#Tile e.NestedTile) e.Result) =
+    s.Weight (e.Tile) (e.Pattern) ((#Tile e.NestedTile) e.Result);
+
+  s.Weight (e.Tile) (/* кончился образец */) (e.Result) =
+    s.Weight (e.Tile) (/* пусто */) (e.Result);
+
+  s.Weight (e.Tile) (e.Pattern) (/* кончился результат */) =
+    s.Weight (e.Tile) (e.Pattern) (/* пусто */);
+
+  //плитка начинается с e переменной, и как следствие на ней заканчивается
+  s.Weight ( (#AsIs (#TkVariable 'e' e.Index s.Offset)) )
+  (e.Pattern) (e.Result) =
+    s.Weight ( (#AsIs (#TkVariable 'e' e.Index s.Offset)) )
+    (e.Pattern) (e.Result);
+
+  s.Weight (e.Tile) (t.PatternItem e.Pattern) (t.ResultItem e.Result) =
+    <Fetch
+      <OverlapItem t.PatternItem t.ResultItem>
+      {
+        #NoOverlap =
+          s.Weight (e.Tile) (t.PatternItem e.Pattern) (t.ResultItem e.Result);
+
+        s.ItemWeight t.Overlap =
+          <DoFindTile
+            <Add s.Weight s.ItemWeight>
+            (e.Tile t.Overlap) (e.Pattern) (e.Result)
+          >;
+
+      }
+    >;
+}
+
+//возвращает вес перекрытия
+OverlapItem {
+  //Почему тут записали оффсет в токен а в других местах нет?!
+  (s.AnyType e.Info s.Offset) (s.AnyType e.Info) =
+    3 (#AsIs (s.AnyType e.Info s.Offset));
+
+  (#TkVariable s.Mode e.Index s.Offset) t.AnyItem =
+    #NoOverlap;
+
+  (s.AnyType e.Info s.Offset) (#TkVariable 's' e.Index) =
+    1 (#HalfReuse s.Offset (#TkVariable 's' e.Index));
+
+  (s.Type e.Info1 s.Offset) (s.Type e.Info2) =
+    2 (#Reuse s.Offset (s.Type e.Info2));
+
+  (s.Type1 e.Info1 s.Offset) (s.Type2 e.Info2) =
+    1 (#HalfReuse s.Offset (s.Type2 e.Info2));
+
+  (#LEFT-EDGE) (#LEFT-EDGE) = 3 (#LEFT-EDGE);
+  (#RIGHT-EDGE) (#RIGHT-EDGE) = 3 (#RIGTH-EDGE);
+  (#LEFT-EDGE) t.Other = #NoOverlap;
+  (#RIGHT-EDGE) t.Other = #NoOverlap;
+}
+
+FindTile-EEnd {
+  s.Weight ((#AsIs (#TkVariable 'e' e.Index s.Offset)))
+  (e.Pattern) (e.Result) =
+    s.Weight ((#AsIs (#TkVariable 'e' e.Index s.Offset)))
+    (e.Pattern) (e.Result);
+
+  s.Weight (e.Tile (#AsIs (#TkVariable 'e' e.Index s.Offset)))
+  (e.Pattern) (e.Result) =
+    <FindTile-EEnd
+      <Sub s.Weight 3>
+      (e.Tile)
+      ((#TkVariable 'e' e.Index s.Offset) e.Pattern)
+      ((#TkVariable 'e' e.Index) e.Result)
+    >;
+
+  s.Weight (e.Tile) (e.Pattern) (e.Result) =
+    s.Weight (e.Tile) (e.Pattern) (e.Result);
+}

@@ -7,6 +7,9 @@ $EXTERN Add, StrFromInt, WriteLine;
 //FROM Escape
 $EXTERN EscapeChar;
 
+//FROM GST
+$EXTERN GST;
+
 /**
   <HighLevelRASL e.AST>
     == e.RASLAST
@@ -100,20 +103,27 @@ HighLevelRASL-Function {
     >;
 }
 
+
 HighLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <Fetch
+      //<WriteLine 'gen_pattern: ' <GenPattern e.Pattern> >
       <GenPattern e.Pattern>
       {
-        (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+        (e.PatternVars) (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
+	      <WriteLine 'marked_pattern: ' e.MarkedPattern>
+        <WriteLine 'result: ' e.Result>
           <Fetch
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
+            <GST (e.MarkedPattern) (e.Result)>
             {
-              s.ContextCount e.ResultCommands =
+              s.ContextCount e.ResultCommands
+              (e.Trash) (e.MarkedResult) =
                 <FoldOpenELoops
                   (#CmdIssueMem s.ContextCount)
                   (#CmdInitB0)
                   e.PatternCommands
+                  //<CreateGSTComment (e.Trash) (e.MarkedResult)>
                   e.ResultCommands
                 >;
             }
@@ -121,6 +131,35 @@ HighLevelRASL-Sentence {
       }
     >;
 }
+
+
+/*
+HighLevelRASL-Sentence {
+  (e.Pattern) (e.Result) =
+    <Fetch
+      <GenPattern e.Pattern>
+      {
+        (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
+          <Fetch
+            <GST (e.MarkedPattern) (e.Result)>
+            {
+              (e.Trash) (e.MarkedResult) =
+                <Fetch
+                  <GenResult s.ContextOffset e.MarkedResult>
+                  {
+                    s.ContextSize e.ResultCommands =
+                      (#CmdIssueMem s.ContextSize)
+                      e.PatternCommands
+                      e.ResultCommands
+                      <GenTrashCommands e.Trash>;
+                  }
+                >;
+            }
+          >;
+      }
+    >;
+}
+*/
 
 FoldOpenELoops {
   e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
@@ -165,18 +204,8 @@ FoldOpenELoops {
 
 GenPattern {
   e.Pattern =
-    //debug-start
-    <WriteLine 'Pattern: ' e.Pattern>
-    //debug-end
+    //<WriteLine 'Pattern: ' e.Pattern>
     <Fetch
-      //debug-start
-      <WriteLine 
-       'MarkedPattern: ' 
-        <DoGenPattern
-          2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
-        > 
-      >
-      //debug-end
       <DoGenPattern
         2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
       >
@@ -199,7 +228,7 @@ GenPattern {
         }
         {
           (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
-            (e.Vars)
+            (e.Vars) (e.MarkedPattern)
             s.ContextOffset
             ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
         }
