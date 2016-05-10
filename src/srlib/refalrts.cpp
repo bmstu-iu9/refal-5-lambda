@@ -426,7 +426,7 @@ void refalrts::adt_pointers(
   refalrts::Iter& right_bracket)
 {
   refalrts::Iter pnext = next( left_bracket );
-  tag->tag = pnext->tag;
+  tag = pnext;
   right_bracket = left_bracket->link_info;
 }
 
