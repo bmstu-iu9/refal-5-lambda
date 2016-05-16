@@ -430,6 +430,102 @@ void refalrts::adt_pointers(
   right_bracket = left_bracket->link_info;
 }
 
+refalrts::Iter refalrts::call_left(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::RefalFunctionPtr tag,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return 0;
+  } else if ( cDataOpenCall != first->tag ) {
+    return 0;
+  } else {
+    refalrts::Iter left_bracket = first;
+    refalrts::Iter right_bracket = left_bracket->link_info;
+    refalrts::Iter pnext = next( left_bracket );
+
+    if( pnext == right_bracket ) {
+      return 0;
+    } else if( cDataFunction != pnext->tag ) {
+      return 0;
+    } else if( pnext->function_info.ptr != tag ) {
+      return 0;
+    } else {
+      if( next( pnext ) != right_bracket ) {
+        res_first = next( pnext );
+        res_last = prev( right_bracket );
+      } else {
+        res_first = 0;
+        res_last = 0;
+      }
+
+      if( right_bracket == last ) {
+        first = 0;
+        last = 0;
+      } else {
+        first = next( right_bracket );
+      }
+
+      return left_bracket;
+    }
+  }
+}
+
+refalrts::Iter refalrts::call_right(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::RefalFunctionPtr tag,
+  refalrts::Iter& first, refalrts::Iter& last
+) {
+  assert( (first == 0) == (last == 0) );
+
+  if( empty_seq( first, last ) ) {
+    return 0;
+  } else if( cDataCloseCall != last->tag ) {
+    return 0;
+  } else {
+    refalrts::Iter right_bracket = last;
+    refalrts::Iter left_bracket = right_bracket->link_info;
+    refalrts::Iter pnext = next( left_bracket );
+
+    if( pnext == right_bracket ) {
+      return 0;
+    } else if( cDataFunction != pnext->tag ) {
+      return 0;
+    } else if( pnext->function_info.ptr != tag ) {
+      return 0;
+    } else {
+      if( next( pnext ) != right_bracket ) {
+        res_first = next( pnext );
+        res_last = prev( right_bracket );
+      } else {
+        res_first = 0;
+        res_last = 0;
+      }
+
+      if( first == left_bracket ) {
+        first = 0;
+        last = 0;
+      } else {
+        last = prev( left_bracket );
+      }
+
+      return left_bracket;
+    }
+  }
+}
+
+void refalrts::call_pointers(
+  refalrts::Iter left_bracket,
+  refalrts::Iter& tag,
+  refalrts::Iter& right_bracket)
+{
+  refalrts::Iter pnext = next( left_bracket );
+  tag = pnext;
+  right_bracket = left_bracket->link_info;
+}
+
 bool refalrts::svar_left(
   refalrts::Iter& svar, refalrts::Iter& first, refalrts::Iter& last
 ) {

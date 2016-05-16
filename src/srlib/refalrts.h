@@ -181,6 +181,18 @@ extern Iter adt_right(
   Iter& first, Iter& last
 );
 
+extern Iter call_left(
+  Iter& res_first, Iter& res_last,
+  RefalFunctionPtr tag,
+  Iter& first, Iter& last
+);
+extern Iter call_right(
+  Iter& res_first, Iter& res_last,
+  RefalFunctionPtr tag,
+  Iter& first, Iter& last
+);
+
+extern void call_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void bracket_pointers(Iter left_bracket, Iter& right_bracket);
 

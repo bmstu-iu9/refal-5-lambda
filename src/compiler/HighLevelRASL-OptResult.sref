@@ -57,13 +57,14 @@ $ENTRY HighLevelRASL-OptResult {
 
 HighLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
+    //<WriteLine 'called_func: ' e.Name>
     <Fetch
       e.Sentences
       <Seq
         (Map
           {
             ((e.Pattern) (e.Result)) =
-              (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+              (<HighLevelRASL-Sentence e.Name (e.Pattern) (e.Result)>);
           }
         )
         (MapReduce
@@ -105,12 +106,13 @@ HighLevelRASL-Function {
 
 
 HighLevelRASL-Sentence {
-  (e.Pattern) (e.Result) =
+  e.Name (e.Pattern) (e.Result) =
     <Fetch
       //<WriteLine 'gen_pattern: ' <GenPattern e.Pattern> >
-      <GenPattern e.Pattern>
+      <GenPattern ( #CallBrackets (e.Name) e.Pattern )>
       {
         (e.PatternVars) (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
+          //<WriteLine 'pattern: ' e.Pattern>
 	        //<WriteLine 'marked_pattern: ' e.MarkedPattern>
           //<WriteLine 'result: ' e.Result>
           <Fetch
@@ -118,7 +120,7 @@ HighLevelRASL-Sentence {
             <GST
               (
                 (#LEFT-EDGE)
-                //(#TkOpenCall 0) (#TkName #MyName 1)
+                //(#TkOpenCall 0) (#TkName e.Name 1)
                 e.MarkedPattern
                 //(#TkCloseCall 2)
                 (#RIGHT-EDGE)
@@ -373,7 +375,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdCharSave #AlgLeft s.Num s.ContextOffset s.Char))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkNumber s.Number) e.Range)
@@ -387,7 +388,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdNumberSave #AlgLeft s.Num s.ContextOffset  s.Number))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range)
@@ -396,13 +396,11 @@ DoGenPattern {
     <DoGenPattern
       <Inc s.ContextOffset>
       e.Ranges-B
-      //e.Junk был добавлен, а нужно ли это было делать?
       (#Junk e.Junk (#TkName e.Name s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdNameSave #AlgLeft s.Num s.ContextOffset e.Name))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#TkIdentifier e.Name) e.Range)
@@ -416,7 +414,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdIdentSave #AlgLeft s.Num s.ContextOffset  e.Name))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkChar s.Char)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
@@ -428,7 +425,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdCharSave #AlgRight s.Num s.ContextOffset s.Char))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkNumber s.Number)) (#Junk e.Junk)
@@ -442,7 +438,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdNumberSave #AlgRight s.Num s.ContextOffset s.Number))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B (#Range s.Num e.Range (#TkName e.Name)) (#Junk e.Junk) e.Ranges-E
   (e.Vars) (e.Commands) =
@@ -454,7 +449,6 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdNameSave #AlgRight s.Num s.ContextOffset  e.Name))
     >;
 
-  //добавил смещение
   s.ContextOffset
   e.Ranges-B
   (#Range s.Num e.Range (#TkIdentifier e.Name)) (#Junk e.Junk)
@@ -467,8 +461,60 @@ DoGenPattern {
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdIdentSave #AlgRight s.Num s.ContextOffset e.Name))
     >;
+    
+  // Распознавание скобок конкретизации
+  s.ContextOffset
+  e.Ranges-B
+  (#Junk e.Junk) (#Range s.Num (#CallBrackets (e.Name) e.SubRange) e.Range)
+  e.Ranges-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Add s.ContextOffset 5>
+      e.Ranges-B
+      (
+        #Junk
+        e.Junk
+        (#TkOpenCall  <Add s.ContextOffset 2>)
+        (#TkName e.Name <Add s.ContextOffset 3>)
+      )
+      (#Range s.ContextOffset e.SubRange)
+      (
+        #Junk
+        (#TkCloseCall  <Add s.ContextOffset 4>)
+      )
+      (#Range s.Num e.Range)
+      e.Ranges-E
+      (e.Vars)
+      (e.Commands (#CmdCallSave #AlgLeft s.Num s.ContextOffset e.Name))
+    >;
 
-  // Распознавание скобок
+  s.ContextOffset
+  e.Ranges-B
+  (#Range s.Num e.Range (#CallBrackets (e.Name) e.SubRange)) (#Junk e.Junk)
+  e.Ranges-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Add s.ContextOffset 5>
+      e.Ranges-B
+      (#Range s.Num e.Range)
+      (
+        #Junk
+        (#TkOpenCall  <Add s.ContextOffset 2>)
+        (#TkName e.Name <Add s.ContextOffset 3>)
+      )
+      (#Range s.ContextOffset e.SubRange)
+      (
+        #Junk
+        (#TkCloseCall  <Add s.ContextOffset 4>)
+        e.Junk
+      )
+      e.Ranges-E
+      (e.Vars)
+      (e.Commands (#CmdCallSave #AlgRight s.Num s.ContextOffset e.Name))
+    >;
+
+
+  // Распознавание структурных скобок
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#Brackets e.SubRange) e.Range)
@@ -501,7 +547,6 @@ DoGenPattern {
     >;
 
   // Распознавание АТД-скобок
-  // Добавил смещения
   s.ContextOffset
   e.Ranges-B
   (#Junk e.Junk) (#Range s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
@@ -710,7 +755,6 @@ DoGenPattern {
 
 IncVarOffset {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
-  //увеличил t смещение до 2
   s.ContextOffset 't' = <Inc2 s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
 }

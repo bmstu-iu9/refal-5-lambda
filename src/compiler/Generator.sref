@@ -283,6 +283,14 @@ GenCommand {
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
     >
     ;
+    
+  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    <PrintMatchCallSave
+      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
+    >
+    ;
 
   (e.Indent) (#CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
@@ -840,6 +848,25 @@ PrintMatchADTSave {
     (
       e.Indent
       'refalrts::adt_pointers('
+      <ContextItem <Add s.InnerNum 2> > ', '
+      <ContextItem <Add s.InnerNum 3> > ', '
+      <ContextItem <Add s.InnerNum 4> >
+      ');'
+    );
+}
+
+PrintMatchCallSave {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
+    <PrintMatchSave
+      (e.Indent) s.InnerNum s.Direction s.BracketNumber
+      ('call')
+      <ContextRange s.InnerNum> ', '
+      e.Name
+      #Brackets
+    >
+    (
+      e.Indent
+      'refalrts::call_pointers('
       <ContextItem <Add s.InnerNum 2> > ', '
       <ContextItem <Add s.InnerNum 3> > ', '
       <ContextItem <Add s.InnerNum 4> >
