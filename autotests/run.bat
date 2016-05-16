@@ -38,25 +38,25 @@ setlocal
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 1 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
-    exit
+    exit /b 1
   )
   erase __error.txt
   if not exist %CPP% (
     echo COMPILATION FAILED
-    exit
+    exit /b 1
   )
 
   %CPPLINE% -I../src/srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
-    exit
+    exit /b 1
   )
   if exist a.exe move a.exe %EXE%
 
   %EXE%
   if errorlevel 1 (
     echo TEST FAILED, SEE dump.txt
-    exit
+    exit /b 1
   )
 
   erase %CPP% %EXE%
@@ -77,13 +77,13 @@ setlocal
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
-    exit
+    exit /b 1
   )
   erase __error.txt
   if exist %CPP% (
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
     erase %CPP%
-    exit
+    exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax
   echo.
