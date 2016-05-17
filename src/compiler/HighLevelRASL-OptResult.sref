@@ -128,9 +128,10 @@ HighLevelRASL-Sentence {
             {
               s.ContextCount e.ResultCommands
               (e.Trash) (e.MarkedResult) =
+                <WriteLine 'marked_result: ' e.MarkedResult>
                 <FoldOpenELoops
                   (#CmdIssueMem s.ContextCount)
-                  (#CmdInitB0)
+                  (#CmdInitB0-Lite)
                   e.PatternCommands
                   <CreateGSTComment (e.Trash) (e.MarkedResult)>
                   e.ResultCommands
@@ -264,7 +265,8 @@ GenPattern {
     //<WriteLine 'Pattern: ' e.Pattern>
     <Fetch
       <DoGenPattern
-        2 /*5*/ (#Junk) (#Range 0 /*3*/ e.Pattern) (#Junk) (/* vars */) (/* commands */)
+        2 /*5*/
+        (#Junk) (#Range 0 /*3*/ e.Pattern) (#Junk) (/* vars */) (/* commands */)
       >
       <Seq
         {
@@ -463,54 +465,28 @@ DoGenPattern {
   // Распознавание скобок конкретизации
   s.ContextOffset
   e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#CallBrackets (e.Name) e.SubRange) e.Range)
+  (#Junk e.Junk-L) (#Range s.Num (#CallBrackets (e.Name) e.SubRange)) (#Junk e.Junk-R)
   e.Ranges-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
-      <Add s.ContextOffset 5>
+      <Add s.ContextOffset 3>
       e.Ranges-B
       (
         #Junk
-        e.Junk
-        (#TkOpenCall  <Add s.ContextOffset 2>)
-        (#TkName e.Name <Add s.ContextOffset 3>)
+        e.Junk-L
+        (#TkOpenCall s.Num)
+        (#TkName e.Name <Add s.ContextOffset 2>)
       )
       (#Range s.ContextOffset e.SubRange)
       (
         #Junk
-        (#TkCloseCall  <Add s.ContextOffset 4>)
+        (#TkCloseCall <Inc s.Num>)
+        e.Junk-R
       )
-      (#Range s.Num e.Range)
       e.Ranges-E
       (e.Vars)
       (e.Commands (#CmdCallSave #AlgLeft s.Num s.ContextOffset e.Name))
     >;
-
-  s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#CallBrackets (e.Name) e.SubRange)) (#Junk e.Junk)
-  e.Ranges-E
-  (e.Vars) (e.Commands) =
-    <DoGenPattern
-      <Add s.ContextOffset 5>
-      e.Ranges-B
-      (#Range s.Num e.Range)
-      (
-        #Junk
-        (#TkOpenCall  <Add s.ContextOffset 2>)
-        (#TkName e.Name <Add s.ContextOffset 3>)
-      )
-      (#Range s.ContextOffset e.SubRange)
-      (
-        #Junk
-        (#TkCloseCall  <Add s.ContextOffset 4>)
-        e.Junk
-      )
-      e.Ranges-E
-      (e.Vars)
-      (e.Commands (#CmdCallSave #AlgRight s.Num s.ContextOffset e.Name))
-    >;
-
 
   // Распознавание структурных скобок
   s.ContextOffset
@@ -798,8 +774,8 @@ DoFreezeRanges-MakeSavers {
           (s.Command^ s.Direction^ s.Num e.Info^) =
             (s.Command s.Direction s.ContextTop e.Info);
 
-          (#CmdRepeated s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
-            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.ContextTop);
+          (#CmdRepeatedSave s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
+            (#CmdRepeatedSave s.Direction s.OtherNum 'e' s.NewOffset s.ContextTop);
 
           (s.Command^ s.Direction^ s.OtherNum e.Info^) =
             (s.Command s.Direction s.OtherNum e.Info);
@@ -821,10 +797,13 @@ ExtractRanges {
             Все команды распознавания содержат номер скобок третьим термом,
             общий формат (s.Command s.Direction s.BracketNum e.Info)
           */
-          (#CmdBrackets s.Direction s.BracketNum s.InnerNum) =
+          (#CmdBracketsSave s.Direction s.BracketNum s.InnerNum) =
             s.BracketNum s.InnerNum;
 
-          (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
+          (#CmdADTSave s.Direction s.BracketNum s.InnerNum e.Name) =
+            s.BracketNum s.InnerNum;
+
+          (#CmdCallSave s.Direction s.BracketNum s.InnerNum e.Name) =
             s.BracketNum s.InnerNum;
 
           (#CmdComment e.Comment) =

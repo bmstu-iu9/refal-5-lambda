@@ -216,6 +216,12 @@ GenCommand {
     (e.Indent 'refalrts::move_right( ' <ContextRange 0> ' );')
     ;
 
+  (e.Indent) (#CmdInitB0-Lite) =
+    (e.Indent)
+    (e.Indent <ContextRange-B 0> ' = arg_begin;')
+    (e.Indent <ContextRange-E 0> ' = arg_end;')
+    ;
+
   (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
     <PrintMatchChar (e.Indent) s.Direction s.BracketNumber s.Char>
@@ -287,10 +293,13 @@ GenCommand {
   (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
-    <PrintMatchCallSave
-      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
-    >
-    ;
+    (e.Indent
+      <ContextItem <Add 2 s.InnerBrackets> > ' = '
+      'refalrts::call_' <StrFromDirection s.Direction>
+      '( '
+      <ContextRange s.InnerBrackets> ', '
+      e.Name ', ' <ContextRange s.BracketNumber> ' );'
+    );
 
   (e.Indent) (#CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
@@ -848,25 +857,6 @@ PrintMatchADTSave {
     (
       e.Indent
       'refalrts::adt_pointers('
-      <ContextItem <Add s.InnerNum 2> > ', '
-      <ContextItem <Add s.InnerNum 3> > ', '
-      <ContextItem <Add s.InnerNum 4> >
-      ');'
-    );
-}
-
-PrintMatchCallSave {
-  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
-    <PrintMatchSave
-      (e.Indent) s.InnerNum s.Direction s.BracketNumber
-      ('call')
-      <ContextRange s.InnerNum> ', '
-      e.Name
-      #Brackets
-    >
-    (
-      e.Indent
-      'refalrts::call_pointers('
       <ContextItem <Add s.InnerNum 2> > ', '
       <ContextItem <Add s.InnerNum 3> > ', '
       <ContextItem <Add s.InnerNum 4> >
