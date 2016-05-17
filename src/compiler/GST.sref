@@ -129,7 +129,6 @@ DoFindTile {
 
 //возвращает вес перекрытия
 OverlapItem {
-  //Почему тут записали оффсет в токен а в других местах нет?!
   (s.AnyType e.Info s.Offset) (s.AnyType e.Info) =
     3 (#AsIs (s.AnyType e.Info s.Offset));
 

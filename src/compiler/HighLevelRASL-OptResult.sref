@@ -120,9 +120,7 @@ HighLevelRASL-Sentence {
             <GST
               (
                 (#LEFT-EDGE)
-                //(#TkOpenCall 0) (#TkName e.Name 1)
                 e.MarkedPattern
-                //(#TkCloseCall 2)
                 (#RIGHT-EDGE)
               )
               ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
@@ -461,7 +459,7 @@ DoGenPattern {
       e.Ranges-E
       (e.Vars) (e.Commands (#CmdIdentSave #AlgRight s.Num s.ContextOffset e.Name))
     >;
-    
+
   // Распознавание скобок конкретизации
   s.ContextOffset
   e.Ranges-B
