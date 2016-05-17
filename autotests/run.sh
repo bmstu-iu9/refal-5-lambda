@@ -6,7 +6,7 @@ run_test_aux() {
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
-  ../bin/srefc-core $SREF 2>__error.txt
+  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
   if [ $? -gt 0 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit

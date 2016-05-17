@@ -13,5 +13,5 @@ LIBDIR=$DISTRDIR/srlib
 (
   source $DISTRDIR/c-plus-plus.conf.sh
   PATH=$BINDIR:$PATH
-  srefc-core -OR -c "$CPPLINE $CPPLINE_FLAGS -I\"$LIBDIR\"" $* -d "$LIBDIR"
+  srefc-core -c "$CPPLINE $CPPLINE_FLAGS -I\"$LIBDIR\"" $* -d "$LIBDIR"
 )
