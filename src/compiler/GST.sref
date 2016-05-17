@@ -138,6 +138,9 @@ OverlapItem {
   (s.AnyType e.Info s.Offset) (#TkVariable 's' e.Index) =
     1 (#HalfReuse (#TkVariable 's' e.Index s.Offset));
 
+  (s.AnyType e.Info s.Offset) (#TkVariable s.Mode e.Index) =
+    #NoOverlap;
+
   (s.Type1 e.Info1 s.Offset) (#LEFT-EDGE) =
     #NoOverlap;
 
