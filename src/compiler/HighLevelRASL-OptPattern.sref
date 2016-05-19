@@ -1,11 +1,22 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort;
+$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort, Dummy;
 
 //FROM Library
-$EXTERN Add, StrFromInt;
+$EXTERN Add, StrFromInt, WriteLine;
 
 //FROM Escape
 $EXTERN EscapeChar;
+
+//FROM FastGen
+$EXTERN GetFastGen, GetGlobalGen;
+
+//FROM Tree
+$EXTERN Dowork;
+
+Dummy {
+  e.any = ;
+  =;
+}
 
 /**
   <HighLevelRASL e.AST>
@@ -57,12 +68,18 @@ HighLevelRASL-Function {
     <Fetch
       e.Sentences
       <Seq
-        (Map
-          {
-            ((e.Pattern) (e.Result)) =
-              (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
-          }
-        )
+        // ({e.all = e.all <WriteLine 'not'><WriteLine <GetGlobalGen e.all>>;})
+        // ({e.all = e.all <Dummy <GetGlobalGen e.all>>;})
+        // ({e.all = e.all <WriteLine 'all'><WriteLine e.all>;})
+		<Seq
+		  (Map
+			{
+			  ((e.Pattern) (e.Result)) =
+				(<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+			}
+		  )
+		>
+        // ({e.all = e.all <WriteLine 'aftermap'><WriteLine e.all>;})
         (MapReduce
           {
             s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
@@ -76,6 +93,9 @@ HighLevelRASL-Function {
           }
           0
         )
+        // ({e.all = e.all <WriteLine 'aftermapreduce'><WriteLine e.all>;})
+        {s.mem e.all = s.mem e.all <WriteLine 'dowork: \n'<Dowork e.all>>; }
+        {s.mem e.all = s.mem <Dowork e.all>; }
         {
           s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
@@ -96,6 +116,7 @@ HighLevelRASL-Function {
           0 /* нет предложений */ =
             (#CmdEnum s.ScopeClass e.Name);
         }
+        // ({e.all = e.all <WriteLine 'last'><WriteLine e.all>;})
       >
     >;
 }
@@ -103,7 +124,7 @@ HighLevelRASL-Function {
 HighLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <Fetch
-      <GenPattern e.Pattern>
+      <GenPattern e.Pattern>//<WriteLine 'e.Pattern: ' e.Pattern '\nGenPattern '<GenPattern e.Pattern>'\n'>
       {
         (e.PatternVars) s.ContextOffset (e.PatternCommands) =
           <Fetch
@@ -190,7 +211,7 @@ GenPattern {
           (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
             (e.Vars)
             s.ContextOffset
-            ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
+            (e.Commands (#CmdComment <TextFromPattern e.MarkedPattern>));
         }
       >
     >;

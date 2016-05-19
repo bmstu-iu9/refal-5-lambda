@@ -58,6 +58,7 @@ MapReduce-AddScanned {
 
 $ENTRY UnBracket {
   (e.Expr) = e.Expr;
+  e.Expr = e.Expr;
 }
 
 $ENTRY DelAccumulator {
