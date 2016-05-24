@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>sref</string>
+	</array>
+	<key>name</key>
+	<string>Simple Refal</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>include</key>
+			<string>#comments</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>keywords</string>
+			<key>match</key>
+			<string>\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM</string>
+			<key>name</key>
+			<string>keyword.other.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>broken keyword</string>
+			<key>match</key>
+			<string>\$[\w]*\b</string>
+			<key>name</key>
+			<string>invalid.illegal.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>value</string>
+			<key>match</key>
+			<string>\b[ste]\.[A-Za-z0-9!?_-]+\b</string>
+			<key>name</key>
+			<string>variable.parameter.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>identifier</string>
+			<key>match</key>
+			<string>\b[A-Z!?][A-Za-z0-9!?_-]*\b</string>
+			<key>name</key>
+			<string>variable.language.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>single quoted strings</string>
+			<key>match</key>
+			<string>'((\\.)|[^'])*'</string>
+			<key>name</key>
+			<string>string.quoted.single.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>broken string</string>
+			<key>match</key>
+			<string>'[^']*$</string>
+			<key>name</key>
+			<string>invalid.illegal.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>decimal</string>
+			<key>match</key>
+			<string>\b[\d]*\b*</string>
+			<key>name</key>
+			<string>constant.numeric.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>line comment</string>
+			<key>match</key>
+			<string>//.*</string>
+			<key>name</key>
+			<string>comment.line.double-slash.sref</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>idents</string>
+			<key>match</key>
+			<string>\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b</string>
+			<key>name</key>
+			<string>storage.type.sref</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>/\*</string>
+			<key>comment</key>
+			<string>block comment</string>
+			<key>end</key>
+			<string>\*/</string>
+			<key>name</key>
+			<string>comment.block.documentation.sref</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.sref</string>
+	<key>uuid</key>
+	<string>8d74d8c6-adaa-4888-bc0a-80ba4d340ed0</string>
+</dict>
+</plist>
