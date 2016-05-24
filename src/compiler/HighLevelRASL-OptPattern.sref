@@ -8,10 +8,10 @@ $EXTERN Add, StrFromInt, WriteLine;
 $EXTERN EscapeChar;
 
 //FROM FastGen
-$EXTERN GetFastGen, GetGlobalGen;
+$EXTERN GetFastGen, CreateFastGen;
 
-//FROM Tree
-$EXTERN Dowork;
+//FROM HardSent
+$EXTERN GetHardPattern;
 
 Dummy {
   e.any = ;
@@ -68,55 +68,57 @@ HighLevelRASL-Function {
     <Fetch
       e.Sentences
       <Seq
-        // ({e.all = e.all <WriteLine 'not'><WriteLine <GetGlobalGen e.all>>;})
-        // ({e.all = e.all <Dummy <GetGlobalGen e.all>>;})
-        // ({e.all = e.all <WriteLine 'all'><WriteLine e.all>;})
-		<Seq
-		  (Map
-			{
-			  ((e.Pattern) (e.Result)) =
-				(<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
-			}
-		  )
-		>
-        // ({e.all = e.all <WriteLine 'aftermap'><WriteLine e.all>;})
-        (MapReduce
-          {
-            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
-              <Fetch
-                <Compare s.MaxMemory s.Memory> {
-                  '<' = s.Memory;
-                  s.Other = s.MaxMemory;
-                }
-              >
-              (#CmdSentence e.Sentence);
-          }
-          0
-        )
-        // ({e.all = e.all <WriteLine 'aftermapreduce'><WriteLine e.all>;})
-        {s.mem e.all = s.mem e.all <WriteLine 'dowork: \n'<Dowork e.all>>; }
-        {s.mem e.all = s.mem <Dowork e.all>; }
+        // ({e.all = e.all <WriteLine 'start:'><WriteLine e.all>;})
+        ({e.all = ((<GetFastGen e.all>)) e.all; })
+	   (Map
+		 {
+		   ((e.Pattern) (e.Result)) =
+		     (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+            ((e.comment)) = ((e.comment));
+	     }
+	   )
+        // ({e.all = e.all <WriteLine 'map:\n'><WriteLine e.all>;})
         {
-          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
+          ((e.comment)) e.tail = 
+            ((e.comment))
+            <Fetch
+              e.tail
+              (MapReduce
+                {
+                  s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
+                    <Fetch
+                      <Compare s.MaxMemory s.Memory> {
+                        '<' = s.Memory;
+                        s.Other = s.MaxMemory;
+                      }
+                    >
+                    (#CmdSentence e.Sentence);
+                }
+                0
+              )
+            >;
+        }
+        // ({e.all = e.all <WriteLine 'mapreduce:\n'><WriteLine e.all>;})
+        {
+          ((e.comment)) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
               s.ScopeClass (e.Name)
               (#CmdIssueMem s.MaxMemory)
+              (#CmdComment 'FastGen: ' e.comment)
               e.Sentences
               <Fetch
                 e.LastSentence
                 {
                   e.Commands (#CmdOpenELoop e.OpenELoop) =
                     e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
-
                   e.LastSentence^ = e.LastSentence;
                 }
               >
             );
-
-          0 /* нет предложений */ =
+             0 /* нет предложений */ =
             (#CmdEnum s.ScopeClass e.Name);
         }
-        // ({e.all = e.all <WriteLine 'last'><WriteLine e.all>;})
+        // ({e.all = e.all <WriteLine 'end:\n'><WriteLine e.all>;})
       >
     >;
 }
@@ -124,7 +126,8 @@ HighLevelRASL-Function {
 HighLevelRASL-Sentence {
   (e.Pattern) (e.Result) =
     <Fetch
-      <GenPattern e.Pattern>//<WriteLine 'e.Pattern: ' e.Pattern '\nGenPattern '<GenPattern e.Pattern>'\n'>
+      // <WriteLine 'e.Pattern:\n' e.Pattern '\nGenPattern\n'<GenPattern e.Pattern>>
+      <GenPattern e.Pattern>
       {
         (e.PatternVars) s.ContextOffset (e.PatternCommands) =
           <Fetch
@@ -188,7 +191,8 @@ GenPattern {
   e.Pattern =
     <Fetch
       <DoGenPattern
-        2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
+        2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */)
+              ((#CmdComment 'HardPattern: ' <GetHardPattern e.Pattern>))
       >
       <Seq
         {
@@ -211,7 +215,9 @@ GenPattern {
           (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
             (e.Vars)
             s.ContextOffset
-            (e.Commands (#CmdComment <TextFromPattern e.MarkedPattern>));
+            (e.Commands 
+              (#CmdComment <TextFromPattern e.MarkedPattern>)
+            );
         }
       >
     >;
