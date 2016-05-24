@@ -1,0 +1,5 @@
+﻿MarkupArguments {
+  s.Num ('--' e.Arg '=' e.Param) e.Tail = ;
+}
+
+$ENTRY Go { = ; }

@@ -1,6 +1,9 @@
 //FROM GetOpt
 $EXTERN GetOpt;
 
+//FROM GetOpt-CheckRepeated
+$EXTERN GetOpt-CheckRepeated;
+
 //FROM LibraryEx
 $EXTERN Fetch, Seq, MapReduce, Map;
 
@@ -34,7 +37,7 @@ $ENTRY ParseCommandLine {
       <Seq
         {
           (e.Errors) e.Options =
-            <CheckRepeated
+            <GetOpt-CheckRepeated
               (#CppCompiler #GenMode #Opt #ErrorFile) (e.Errors) e.Options
             >;
         }
@@ -204,28 +207,4 @@ $ENTRY ParseCommandLine {
         }
       >
     >;
-}
-
-CheckRepeated {
-  // Разрешаем повторять опции с одинаковым значением
-  (e.CheckedTags-B s.Tag e.CheckedTags-E)
-  (e.Errors)
-  e.Opts-B (s.Tag s.Num1 e.Value) e.Opts-M (s.Tag s.Num2 e.Value) e.Opts-E =
-    <CheckRepeated
-      (e.CheckedTags-B s.Tag e.CheckedTags-E)
-      (e.Errors)
-      e.Opts-B (s.Tag s.Num1 e.Value) e.Opts-M e.Opts-E
-    >;
-
-  (e.CheckedTags-B s.Tag e.CheckedTags-E)
-  (e.Errors)
-  e.Opts-B (s.Tag s.Num1 e.Value1) e.Opts-M (s.Tag s.Num2 e.Value2) e.Opts-E =
-    <CheckRepeated
-      (e.CheckedTags-B s.Tag e.CheckedTags-E)
-      (e.Errors (s.Num2 #RepeatOption s.Tag))
-      e.Opts-B (s.Tag s.Num1 e.Value1) e.Opts-M e.Opts-E
-    >;
-
-  (e.CheckedTags) (e.Errors) e.Options =
-    (e.Errors) e.Options;
 }

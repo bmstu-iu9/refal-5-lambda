@@ -264,7 +264,7 @@ DoGenPattern {
       e.Ranges-B
       (#Junk e.Junk (#TkChar s.Char s.ContextOffset)) (#Range s.Num e.Range)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdCharSave s.ContextOffset #AlgLeft s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdCharSave #AlgLeft s.Num s.ContextOffset s.Char))
     >;
 
   s.ContextOffset
@@ -310,7 +310,7 @@ DoGenPattern {
       e.Ranges-B
       (#Range s.Num e.Range) (#Junk (#TkChar s.Char s.ContextOffset) e.Junk)
       e.Ranges-E
-      (e.Vars) (e.Commands (#CmdCharSave s.ContextOffset #AlgRight s.Num s.Char))
+      (e.Vars) (e.Commands (#CmdCharSave #AlgRight s.Num s.ContextOffset s.Char))
     >;
 
   s.ContextOffset
