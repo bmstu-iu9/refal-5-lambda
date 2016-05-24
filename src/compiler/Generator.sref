@@ -289,7 +289,7 @@ GenCommand {
       (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
     >
     ;
-    
+
   (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
@@ -830,7 +830,7 @@ PrintMatchBracketsSave {
       e.Indent
       'refalrts::bracket_pointers('
       <ContextItem <Add s.InnerNum 2> > ', '
-      <ContextItem <Add s.InnerNum 3> > 
+      <ContextItem <Add s.InnerNum 3> >
       ');'
     );
 }

@@ -116,6 +116,7 @@ HighLevelRASL-Sentence {
 	        //<WriteLine 'marked_pattern: ' e.MarkedPattern>
           //<WriteLine 'result: ' e.Result>
           <Fetch
+            //в будущем GenResult будет убран и заменен на GenResultCmd
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
             <GST
               (
@@ -128,13 +129,22 @@ HighLevelRASL-Sentence {
             {
               s.ContextCount e.ResultCommands
               (e.Trash) (e.MarkedResult) =
-                <WriteLine 'marked_result: ' e.MarkedResult>
-                <FoldOpenELoops
-                  (#CmdIssueMem s.ContextCount)
-                  (#CmdInitB0-Lite)
-                  e.PatternCommands
-                  <CreateGSTComment (e.Trash) (e.MarkedResult)>
-                  e.ResultCommands
+                //<GenResultCmd s.ContextOffset (e.PatternVars) e.MarkedResult>
+                <Fetch
+                  <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
+                  {
+                    s.ContextOffset^ e.MarkedResult^ =
+                      //<WriteLine 'marked_result: ' e.MarkedResult>
+                      <FoldOpenELoops
+                        (#CmdIssueMem s.ContextCount)
+                        (#CmdInitB0-Lite)
+                        e.PatternCommands
+                        <NewGenResultComment
+                          (e.Trash) (e.MarkedResult)
+                        >
+                        e.ResultCommands
+                      >;
+                  }
                 >;
             }
           >;
@@ -172,22 +182,224 @@ FlatResult {
 }
 
 
-CreateGSTComment {
+NewGenResultComment {
   (e.Trash) (e.MarkedResult) =
     (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-    (#CmdComment 'RESULT:' <TextFromExpr <AddOffsets e.MarkedResult>>);
-}
-
-AddOffsets {
-  e.Range =
+    (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
     <Map
       {
-        (#Tile e.Tile) = (#Tile e.Tile);
-        (#LEFT-EDGE) = (#LEFT-EDGE);
-        (#RIGHT-EDGE) = (#RIGHT-EDGE);
-        (s.Tag e.Info) = (s.Tag e.Info #NoOffset);
+        (#Tile e.Tile) = ;
+        (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
+          (#CmdComment
+            <Target s.Offset> ' copy ' s.Mode '.' e.Index '#'
+            <StrFromInt s.Level> <Offset s.SampleOffset>
+          );
+
+        (#TkChar s.Char s.Offset) =
+          (#CmdComment <Target s.Offset> ' alloc char ' <EscapeChar s.Char>);
+
+        (#TkName e.Name s.Offset) =
+          (#CmdComment <Target s.Offset> ' alloc name ' e.Name);
+
+        t.Other = (#CmdComment 'alloc: ' <TextFromExpr t.Other>);
       }
-      e.Range
+      e.MarkedResult
+    >
+    <Map
+      {
+        (#Tile e.Tile) =
+          <Map
+            {
+              (#AsIs t.Item) = /* пусто */;
+
+              (#HalfReuse t.Item) =
+                (#CmdComment 'reinit (change tag and info)' <TextFromExpr t.Item>);
+
+              (#Reuse t.Item) =
+                (#CmdComment 'update (with same tag) ' <TextFromExpr t.Item>);
+
+              (#LEFT-EDGE) = /* пусто */;
+              (#RIGHT-EDGE) = /* пусто */;
+            }
+            e.Tile
+          >;
+
+        t.Other = /* пусто */;
+      }
+      e.MarkedResult
+    >
+
+    <GenSplicesComment (e.Trash) e.MarkedResult>
+
+    <GenPushLinkComment
+      <ModifyResult e.MarkedResult>
+    >;
+}
+
+GenPushLinkComment {
+  e.MarkedResult =
+    <Fetch
+      <MapReduce
+        {
+          (e.Stack) (#TkOpenCall s.Offset) = (e.Stack s.Offset);
+          (e.Stack) (#TkOpenADT s.Offset) = (e.Stack s.Offset);
+          (e.Stack) (#TkOpenBracket s.Offset) = (e.Stack s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseCall s.Offset) =
+            (e.Stack)
+            (#CmdComment 'push ' s.OpenOffset)
+            (#CmdComment 'push ' s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseADT s.Offset) =
+            (e.Stack) (#CmdComment 'link ' s.OpenOffset s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseBracket s.Offset) =
+            (e.Stack) (#CmdComment 'link ' s.OpenOffset s.Offset);
+          (e.Stack) (s.tag e.Info) = (e.Stack) ;
+        }
+        (/* стек */)
+        e.MarkedResult
+      >
+      {
+        () e.Commands = e.Commands;
+      }
+    >;
+}
+
+ModifyResult {
+  (#Tile e.Tile) e.Result = <ModifyTile e.Tile> <ModifyResult e.Result> ;
+  (s.tag e.info) e.Result = (s.tag e.info) <ModifyResult e.Result> ;
+  /*пусто*/ = ;
+}
+
+ModifyTile {
+  (#RIGHT-EDGE) e.Range = <ModifyTile e.Range>;
+  (#LEFT-EDGE) e.Range = <ModifyTile e.Range>;
+  (#AsIs t.Item) e.Range = t.Item <ModifyTile e.Range>;
+  (#HalfReuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
+  (#Reuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
+  /*пусто*/ = ;
+}
+
+Target {
+  s.Offset = <StrFromInt s.Offset> ' <= ';
+}
+
+GenSplicesComment {
+  (e.Trash) (#Tile e.LeftTile) e.Result (#Tile e.RightTile) =
+    (#CmdComment 'origin res ' <CalcRes e.RightTile>)
+    <Map
+      {
+        (t.OneItem) =
+          (#CmdComment
+            'splice ' <BeginOffset t.OneItem> ', ' <EndOffset t.OneItem>
+          );
+
+        (t.Begin e.Inner t.End) =
+          (#CmdComment
+            'splice ' <BeginOffset t.Begin> ', ' <EndOffset t.End>
+          );
+      }
+      <CollectTiles e.Result>
+    >
+    <GenTrashComment (e.LeftTile) e.Trash>;
+
+  (#RemovedTile) (#Tile e.OneTile) = (#CmdComment 'no move tiles');
+}
+
+CalcRes {
+  (#RIGHT-EDGE) = 'arg_end->next';
+
+  t.First e.Tile = <BeginOffset t.First>;
+}
+
+CollectTiles {
+  (#Tile e.Tile) e.Other =
+    <CollectTiles e.Other> (e.Tile);
+
+  e.Allocated (#Tile e.Tile) e.Other =
+    <CollectTiles e.Other> (e.Tile) (e.Allocated);
+
+  /* пусто */ = /* пусто */;
+
+  e.Allocated = (e.Allocated);
+}
+
+GenTrashComment {
+  (e.LeftTile) e.Trash-B #RemovedTile e.Trash-E =
+    <GenTrashComment (e.LeftTile) e.Trash-B e.Trash-E>;
+
+  (e.LeftTile) /* пусто */ = (#CmdComment 'no trash');
+
+  ((#LEFT-EDGE)) e.Trash = (#CmdComment 'trash from LEFT-EDGE to res');
+
+  (e.LeftTile t.Last) e.Trash =
+    (#CmdComment 'trash from ' <EndOffset t.Last> 'to res');
+}
+
+BeginOffset {
+  (#AsIs t.Item) = <BeginOffset t.Item>;
+  (#HalfReuse t.Item) = <BeginOffset t.Item>;
+  (#Reuse t.Item) = <BeginOffset t.Item>;
+
+  (s.Tag e.Info s.Offset) = s.Offset;
+}
+
+EndOffset {
+  (#AsIs t.Item) = <EndOffset t.Item>;
+  (#HalfReuse t.Item) = <EndOffset t.Item>;
+  (#Reuse t.Item) = <EndOffset t.Item>;
+
+  (#TkVariable 's' e.Index s.Depth s.Offset) = s.Offset;
+  (#TkVariableCopy 's' e.Index s.Depth s.Sample s.Offset) = s.Offset;
+
+  (#TkVariable s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
+  (#TkVariableCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
+
+  (s.Tag e.Info s.Offset) = s.Offset;
+}
+/*
+  e.PatternVars ::= (s.Mode (e.Index) s.Offset*)*
+*/
+AddOffsets {
+  s.ContextOffset (e.PatternVars) e.MarkedResult =
+    /*
+      Для переменных смещение брать из e.PatternVars + добавляем смещение для копии
+      (+1 для s-переменных, +2 для t и e),
+      для остальных элементов --- смещение s.ContextOffset.
+    */
+    <MapReduce
+      {
+        s.Offset (#Tile e.Tile) = s.Offset (#Tile e.Tile);
+
+        s.Offset (#TkVariable 's' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('s' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 1> (#TkVariableCopy 's' e.Index s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (#TkVariable 't' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('t' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 2> (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (#TkVariableCopy 'e' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('e' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 2> (#TkVariableCopy 'e' e.Index  s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (s.Tag e.Info) = <Add s.Offset 1> (s.Tag e.Info s.Offset);
+      }
+
+      s.ContextOffset e.MarkedResult
     >;
 }
 
@@ -855,10 +1067,14 @@ TextFromExpr {
     ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
     <TextFromExpr e.Tail>;
 
+  (#TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) e.Tail =
+    ' ' <PrintVar s.Mode e.Index s.Depth>
+    <Offset s.SampleOffset> <Offset s.CopyOffset>
+    <TextFromExpr e.Tail>;
+
   (#TkIdentifier e.Name s.Offset) e.Tail =
     ' # ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
 
-  //Added
   (#Tile e.SubRange) e.Tail = ' Tile{' <TextFromExpr e.SubRange> ' }' <TextFromExpr e.Tail>;
   (#AsIs e.SubRange) e.Tail = ' AsIs:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
   (#Reuse e.SubRange) e.Tail = ' Reuse:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
