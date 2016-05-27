@@ -57,7 +57,6 @@ $ENTRY HighLevelRASL-OptResult {
 
 HighLevelRASL-Function {
   s.ScopeClass (e.Name) e.Sentences =
-    //<WriteLine 'called_func: ' e.Name>
     <Fetch
       e.Sentences
       <Seq
@@ -108,16 +107,10 @@ HighLevelRASL-Function {
 HighLevelRASL-Sentence {
   e.Name (e.Pattern) (e.Result) =
     <Fetch
-      //<WriteLine 'gen_pattern: ' <GenPattern e.Pattern> >
       <GenPattern ( #CallBrackets (e.Name) e.Pattern )>
       {
         (e.PatternVars) (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
-          //<WriteLine 'pattern: ' e.Pattern>
-	        //<WriteLine 'marked_pattern: ' e.MarkedPattern>
-          //<WriteLine 'result: ' e.Result>
           <Fetch
-            //в будущем GenResult будет убран и заменен на GenResultCmd
-            <GenResult s.ContextOffset (e.PatternVars) e.Result>
             <GST
               (
                 (#LEFT-EDGE)
@@ -128,12 +121,10 @@ HighLevelRASL-Sentence {
             >
             {
               (e.Trash) (e.MarkedResult) =
-                //<GenResultCmd s.ContextOffset (e.PatternVars) e.MarkedResult>
                 <Fetch
                   <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
                   {
                     s.ContextOffset^ e.MarkedResult^ =
-                      //<WriteLine 'marked_result: ' e.MarkedResult>
                       <FoldOpenELoops
                         (#CmdIssueMem s.ContextOffset)
                         (#CmdInitB0-Lite)
@@ -527,34 +518,6 @@ AddOffsets {
       s.ContextOffset e.MarkedResult
     >;
 }
-
-/*
-HighLevelRASL-Sentence {
-  (e.Pattern) (e.Result) =
-    <Fetch
-      <GenPattern e.Pattern>
-      {
-        (e.MarkedPattern) s.ContextOffset (e.PatternCommands) =
-          <Fetch
-            <GST (e.MarkedPattern) (e.Result)>
-            {
-              (e.Trash) (e.MarkedResult) =
-                <Fetch
-                  <GenResult s.ContextOffset e.MarkedResult>
-                  {
-                    s.ContextSize e.ResultCommands =
-                      (#CmdIssueMem s.ContextSize)
-                      e.PatternCommands
-                      e.ResultCommands
-                      <GenTrashCommands e.Trash>;
-                  }
-                >;
-            }
-          >;
-      }
-    >;
-}
-*/
 
 FoldOpenELoops {
   e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
