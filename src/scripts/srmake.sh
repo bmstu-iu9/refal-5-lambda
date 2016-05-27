@@ -15,6 +15,7 @@ LIBDIR=$DISTRDIR/srlib
   PATH=$BINDIR:$PATH
   srmake-core \
     -s "srefc-core" \
+    $SRMAKE_FLAGS \
     -c "$CPPLINE $CPPLINE_FLAGS -I\"$LIBDIR\"" \
     $* -d "$LIBDIR"
 )
