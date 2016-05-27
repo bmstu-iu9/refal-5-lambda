@@ -152,6 +152,31 @@ extern void use( Iter& );
 
 void zeros( Iter context[], int size );
 
+//операции реинициализации
+
+extern void reinit_svar(Iter res, Iter sample);
+extern void reinit_char(Iter res, char ch);
+extern void update_char(Iter res, char ch);
+extern void reinit_number(Iter res, RefalNumber num);
+extern void update_number(Iter res, RefalNumber num);
+extern void reinit_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
+extern void update_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
+extern void reinit_ident(Iter res, RefalIdentifier ident);
+extern void update_ident(Iter res, RefalIdentifier ident);
+
+extern void reinit_open_bracket(Iter res);
+extern void reinit_close_bracket(Iter res);
+
+extern void reinit_open_adt(Iter res);
+extern void reinit_close_adt(Iter res);
+
+extern void reinit_open_call(Iter res);
+extern void reinit_close_call(Iter res);
+
+
+//операции
+
+
 // Операции распознавания образца
 
 extern void move_left( Iter& begin, Iter& end );
@@ -273,6 +298,7 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+extern void splice_to_freelist_open( Iter before_first, Iter after_last );
 extern void splice_from_freelist( Iter pos );
 
 extern FnResult create_closure( Iter begin, Iter end );

@@ -207,6 +207,14 @@ GenCommand {
     (e.Indent '} while ( 0 );')
     ();
 
+  (e.Indent) (#CmdReinitElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('reinit') s.ElemNumber e.ElemInfo>;
+
+  (e.Indent) (#CmdUpdateElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('update') s.ElemNumber e.ElemInfo>;
+
   (e.Indent) (#CmdInitB0) =
     (e.Indent)
     (e.Indent <ContextRange-B 0> ' = arg_begin;')
@@ -363,6 +371,22 @@ GenCommand {
     (e.Indent 'refalrts::reset_allocator();')
     (e.Indent 'refalrts::Iter res = arg_begin;');
 
+  (e.Indent) (#CmdResetAllocator) =
+    (e.Indent)
+    ()
+    (e.Indent 'refalrts::reset_allocator();');
+
+  (e.Indent) (#CmdSetRes s.Offset) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter trash_prev = arg_begin->prev;')
+    <Fetch
+      s.Offset
+      {
+        #RIGHT-EDGE = (e.Indent 'refalrts::Iter res = arg_end->next;');
+        s.Offset^ = (e.Indent 'refalrts::Iter res = ' <ContextItem s.Offset> ';');
+      }
+    >;
+
   (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
@@ -379,6 +403,14 @@ GenCommand {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
+  (e.Indent) (#CmdReinitSVar s.Offset s.Sample) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::reinit_svar( '
+      <ContextItem s.Offset> ', ' <ContextItem s.Sample>
+      ' );'
+    );
+
   (e.Indent) (#CmdAllocateElem s.ElemNumber #ElString e.String) =
     (e.Indent)
     (e.Indent
@@ -390,7 +422,7 @@ GenCommand {
 
   (e.Indent) (#CmdAllocateElem s.ElemNumber e.ElemInfo) =
     (e.Indent)
-    <PrintAllocateElem (e.Indent) s.ElemNumber e.ElemInfo>;
+    <PrintCreateElem (e.Indent) ('alloc') s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
     (e.Indent)
@@ -430,11 +462,43 @@ GenCommand {
       ' );'
     );
 
+  (e.Indent) (#CmdInsertTile s.BeginOffset s.EndOffset) =
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_evar( res, '
+      <ContextItem s.BeginOffset> ', ' <ContextItem s.EndOffset>
+      ' );'
+    );
+
   (e.Indent) (#CmdReturnResult) =
     (e.Indent)
     (e.Indent 'refalrts::use( res );')
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     <GenReturn #Success e.Indent>;
+
+  (e.Indent) (#CmdReturnResult-NoTrash) =
+    (e.Indent)
+    <GenReturn #Success e.Indent>;
+
+  (e.Indent) (#CmdTrash s.Offset) =
+    (e.Indent)
+    <Fetch
+      s.Offset
+      {
+        #LEFT-EDGE =
+          (e.Indent
+            'refalrts::splice_to_freelist_open( trash_prev, res );'
+          )
+          <GenReturn #Success e.Indent>;
+
+        s.Offset^ =
+          (e.Indent
+            'refalrts::splice_to_freelist_open( '
+            <ContextItem s.Offset> ', res );'
+          )
+          <GenReturn #Success e.Indent>;
+      }
+    >;
 
   (e.Indent) (#CmdIssueMem s.Number) =
     (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
@@ -962,30 +1026,37 @@ PrintMatchSave {
 
 }
 
-PrintAllocateElem {
-  (e.Indent) s.ElemNumber s.ElementType e.Info =
+PrintCreateElem {
+  (e.Indent) ('alloc') s.ElemNumber s.ElementType e.Info =
     (e.Indent
-      'if( ! refalrts::' <AllocatorFuncName s.ElementType> '( '
+      'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
       ' ) )'
     )
     (e.Indent '  return refalrts::cNoMemory;');
+
+  (e.Indent) (e.Action) s.ElemNumber s.ElementType e.Info =
+    (e.Indent
+      'refalrts::' e.Action '_' <AllocatorFuncName s.ElementType> '( '
+      <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
+      ' );'
+    );
 }
 
 AllocatorFuncName {
-  #ElChar = 'alloc_char';
-  #ElName = 'alloc_name';
-  #ElNumber = 'alloc_number';
-  #ElIdent = 'alloc_ident';
+  #ElChar = 'char';
+  #ElName = 'name';
+  #ElNumber = 'number';
+  #ElIdent = 'ident';
 
-  #ElOpenADT = 'alloc_open_adt';
-  #ElCloseADT = 'alloc_close_adt';
+  #ElOpenADT = 'open_adt';
+  #ElCloseADT = 'close_adt';
 
-  #ElOpenBracket = 'alloc_open_bracket';
-  #ElCloseBracket = 'alloc_close_bracket';
+  #ElOpenBracket = 'open_bracket';
+  #ElCloseBracket = 'close_bracket';
 
-  #ElOpenCall = 'alloc_open_call';
-  #ElCloseCall = 'alloc_close_call';
+  #ElOpenCall = 'open_call';
+  #ElCloseCall = 'close_call';
 }
 
 AllocatorFuncArgument {

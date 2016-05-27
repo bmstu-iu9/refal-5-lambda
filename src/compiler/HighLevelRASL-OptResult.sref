@@ -127,7 +127,6 @@ HighLevelRASL-Sentence {
               ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
             >
             {
-              s.ContextCount e.ResultCommands
               (e.Trash) (e.MarkedResult) =
                 //<GenResultCmd s.ContextOffset (e.PatternVars) e.MarkedResult>
                 <Fetch
@@ -136,13 +135,13 @@ HighLevelRASL-Sentence {
                     s.ContextOffset^ e.MarkedResult^ =
                       //<WriteLine 'marked_result: ' e.MarkedResult>
                       <FoldOpenELoops
-                        (#CmdIssueMem s.ContextCount)
+                        (#CmdIssueMem s.ContextOffset)
                         (#CmdInitB0-Lite)
                         e.PatternCommands
-                        <NewGenResultComment
+                        (#CmdResetAllocator)
+                        <GenResult
                           (e.Trash) (e.MarkedResult)
                         >
-                        e.ResultCommands
                       >;
                   }
                 >;
@@ -182,29 +181,69 @@ FlatResult {
 }
 
 
-NewGenResultComment {
+// Основные команды работы с результатом
+//  (#CmdAllocateElem s.Number s.ElType e.Info)
+//  (#CmdLinkBrackets s.Left s.Right)
+//  (#CmdPushStack s.Number)
+//  (#CmdInsertElem s.Number)
+//  (#CmdInsertVar s.Mode s.Number)
+
+/*
+  Порядок выполнения команд.
+  1. Все выделения памяти (в порядке перечисления)
+  2. Связывание крулых и угловых скобок и
+  построение результата (в обратном порядке)
+*/
+
+GenResult {
   (e.Trash) (e.MarkedResult) =
     (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
     (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+
+    //генерируем команды аллокаций
     <Map
       {
         (#Tile e.Tile) = ;
+
         (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
-          (#CmdComment
-            <Target s.Offset> ' copy ' s.Mode '.' e.Index '#'
-            <StrFromInt s.Level> <Offset s.SampleOffset>
-          );
+          (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
+
 
         (#TkChar s.Char s.Offset) =
-          (#CmdComment <Target s.Offset> ' alloc char ' <EscapeChar s.Char>);
+          (#CmdAllocateElem s.Offset #ElChar s.Char);
+
+        (#TkNumber s.Number s.Offset) =
+          (#CmdAllocateElem s.Offset #ElNumber s.Number);
+
+        (#TkOpenBracket s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenBracket);
+
+        (#TkCloseBracket s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseBracket);
+
+        (#TkOpenADT s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenADT);
+
+        (#TkCloseADT s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseADT);
+
+        (#TkOpenCall s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenCall);
+
+        (#TkCloseCall s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseCall);
 
         (#TkName e.Name s.Offset) =
-          (#CmdComment <Target s.Offset> ' alloc name ' e.Name);
+          (#CmdAllocateElem s.Offset #ElName e.Name);
 
-        t.Other = (#CmdComment 'alloc: ' <TextFromExpr t.Other>);
+        (#TkIdentifier e.Name s.Offset) =
+          (#CmdAllocateElem s.Offset #ElIdent e.Name);
+
       }
       e.MarkedResult
     >
+
+    //Генерируем команды reinit/update
     <Map
       {
         (#Tile e.Tile) =
@@ -212,11 +251,69 @@ NewGenResultComment {
             {
               (#AsIs t.Item) = /* пусто */;
 
-              (#HalfReuse t.Item) =
-                (#CmdComment 'reinit (change tag and info)' <TextFromExpr t.Item>);
+              (#HalfReuse (#TkChar s.Char s.Offset)) =
+                (#CmdReinitElem s.Offset #ElChar s.Char);
 
-              (#Reuse t.Item) =
-                (#CmdComment 'update (with same tag) ' <TextFromExpr t.Item>);
+              (#HalfReuse (#TkNumber s.Number s.Offset)) =
+                (#CmdReinitElem s.Offset #ElNumber s.Number);
+
+              (#HalfReuse (#TkOpenBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenBracket);
+
+              (#HalfReuse (#TkCloseBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseBracket);
+
+              (#HalfReuse (#TkOpenADT s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenADT);
+
+              (#HalfReuse (#TkCloseADT s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseADT);
+
+              (#HalfReuse (#TkOpenCall s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenCall);
+
+              (#HalfReuse (#TkCloseCall s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseCall);
+
+              (#HalfReuse (#TkName e.Name s.Offset)) =
+                (#CmdReinitElem s.Offset #ElName e.Name);
+
+              (#HalfReuse (#TkIdentifier e.Name s.Offset)) =
+                (#CmdReinitElem s.Offset #ElIdent e.Name);
+
+              (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
+                (#CmdReinitSVar s.Offset s.SampleOffset);
+
+
+              (#Reuse (#TkChar s.Char s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElChar s.Char);
+
+              (#Reuse (#TkNumber s.Number s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElNumber s.Number);
+
+              (#Reuse (#TkOpenBracket s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenBracket);
+
+              (#Reuse (#TkCloseBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseBracket);
+
+              (#Reuse (#TkOpenADT s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenADT);
+
+              (#Reuse (#TkCloseADT s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElCloseADT);
+
+              (#Reuse (#TkOpenCall s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenCall);
+
+              (#Reuse (#TkCloseCall s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElCloseCall);
+
+              (#Reuse (#TkName e.Name s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElName e.Name);
+
+              (#Reuse (#TkIdentifier e.Name s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElIdent e.Name);
 
               (#LEFT-EDGE) = /* пусто */;
               (#RIGHT-EDGE) = /* пусто */;
@@ -229,11 +326,13 @@ NewGenResultComment {
       e.MarkedResult
     >
 
-    <GenSplicesComment (e.Trash) e.MarkedResult>
-
+    //Генерируем команды связывания скобок
     <GenPushLinkComment
       <ModifyResult e.MarkedResult>
-    >;
+    >
+
+    //Генерируем команды переноса из списка свободных узлов
+    <GenSplicesComment (e.Trash) e.MarkedResult>;
 }
 
 GenPushLinkComment {
@@ -246,21 +345,27 @@ GenPushLinkComment {
           (e.Stack) (#TkOpenBracket s.Offset) = (e.Stack s.Offset);
           (e.Stack s.OpenOffset) (#TkCloseCall s.Offset) =
             (e.Stack)
-            (#CmdComment 'push ' s.OpenOffset)
-            (#CmdComment 'push ' s.Offset);
+            (#CmdPushStack s.OpenOffset)
+            (#CmdPushStack s.Offset);
           (e.Stack s.OpenOffset) (#TkCloseADT s.Offset) =
-            (e.Stack) (#CmdComment 'link ' s.OpenOffset s.Offset);
+            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
           (e.Stack s.OpenOffset) (#TkCloseBracket s.Offset) =
-            (e.Stack) (#CmdComment 'link ' s.OpenOffset s.Offset);
+            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
           (e.Stack) (s.tag e.Info) = (e.Stack) ;
         }
         (/* стек */)
         e.MarkedResult
       >
       {
-        () e.Commands = e.Commands;
+        () e.Commands = <Reverse e.Commands>;
       }
     >;
+}
+
+Reverse {
+  e.Items t.Last = t.Last <Reverse e.Items>;
+
+  /* empty */ = /* empty */;
 }
 
 ModifyResult {
@@ -278,34 +383,28 @@ ModifyTile {
   /*пусто*/ = ;
 }
 
-Target {
-  s.Offset = <StrFromInt s.Offset> ' <= ';
-}
-
 GenSplicesComment {
   (e.Trash) (#Tile e.LeftTile) e.Result (#Tile e.RightTile) =
-    (#CmdComment 'origin res ' <CalcRes e.RightTile>)
+    (#CmdSetRes <CalcRes e.RightTile>)
     <Map
       {
         (t.OneItem) =
-          (#CmdComment
-            'splice ' <BeginOffset t.OneItem> ', ' <EndOffset t.OneItem>
+          (#CmdInsertTile
+            <BeginOffset t.OneItem> <EndOffset t.OneItem>
           );
 
         (t.Begin e.Inner t.End) =
-          (#CmdComment
-            'splice ' <BeginOffset t.Begin> ', ' <EndOffset t.End>
-          );
+          (#CmdInsertTile <BeginOffset t.Begin> <EndOffset t.End>);
       }
       <CollectTiles e.Result>
     >
     <GenTrashComment (e.LeftTile) e.Trash>;
 
-  (#RemovedTile) (#Tile e.OneTile) = (#CmdComment 'no move tiles');
+  (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
 }
 
 CalcRes {
-  (#RIGHT-EDGE) = 'arg_end->next';
+  (#RIGHT-EDGE) = #RIGHT-EDGE;
 
   t.First e.Tile = <BeginOffset t.First>;
 }
@@ -326,12 +425,14 @@ GenTrashComment {
   (e.LeftTile) e.Trash-B #RemovedTile e.Trash-E =
     <GenTrashComment (e.LeftTile) e.Trash-B e.Trash-E>;
 
-  (e.LeftTile) /* пусто */ = (#CmdComment 'no trash');
+  (e.LeftTile) /* пусто */ =
+    (#CmdReturnResult-NoTrash);
 
-  ((#LEFT-EDGE)) e.Trash = (#CmdComment 'trash from LEFT-EDGE to res');
+  ((#LEFT-EDGE)) e.Trash =
+    (#CmdTrash #LEFT-EDGE);
 
   (e.LeftTile t.Last) e.Trash =
-    (#CmdComment 'trash from ' <EndOffset t.Last> 'to res');
+    (#CmdTrash <EndOffset t.Last>);
 }
 
 BeginOffset {
@@ -367,7 +468,31 @@ AddOffsets {
     */
     <MapReduce
       {
-        s.Offset (#Tile e.Tile) = s.Offset (#Tile e.Tile);
+        s.Offset (#Tile e.Tile) =
+          s.Offset
+          (#Tile
+            <Map
+              {
+                (#HalfReuse (#TkVariable 's' e.Index s.Level s.Offset^)) =
+                  <Fetch
+                    e.PatternVars
+                    {
+                      e.Range-B
+                      ('s' (e.Index s.Level) e.Offsets s.SampleOffset)
+                      e.Range-E =
+                        (#HalfReuse
+                          (#TkVariable
+                            's' e.Index s.Level s.SampleOffset s.Offset
+                          )
+                        );
+                    }
+                  >;
+
+                t.Other = t.Other;
+              }
+              e.Tile
+            >
+          );
 
         s.Offset (#TkVariable 's' e.Index s.Level) =
           <Fetch
@@ -387,7 +512,7 @@ AddOffsets {
             }
           >;
 
-        s.Offset (#TkVariableCopy 'e' e.Index s.Level) =
+        s.Offset (#TkVariable 'e' e.Index s.Level) =
           <Fetch
             e.PatternVars
             {
@@ -1100,33 +1225,6 @@ Offset {
 // Генерация результата
 //==============================================================================
 
-GenResult {
-  s.ContextOffset (e.PatternVars) e.Result =
-    //<WriteLine 'dbg: ' s.ContextOffset (e.PatternVars) e.Result>
-    <Fetch
-      <DoGenResult
-        (
-          <Map
-            {
-              (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-            }
-            e.PatternVars
-          >
-        )
-        (/* alloc commands */) (/* other commands */)
-        s.ContextOffset // счётчик новых элементов
-        <CollectStrings e.Result>
-      >
-      {
-        s.ContextOffset^ (e.CommonVars) e.ResultCommands =
-          s.ContextOffset
-          <MakeVariableCommentTable e.CommonVars>
-          (#CmdEmptyResult)
-          e.ResultCommands
-          (#CmdReturnResult);
-      }
-    >;
-}
 
 CollectStrings {
   (#TkChar s.Value1) (#TkChar s.Value2) e.Tail =
@@ -1158,199 +1256,3 @@ BuildString {
   (e.Chars) e.Tail = (e.Chars) e.Tail;
 }
 
-// Основные команды работы с образцом
-//  (#CmdAllocateElem s.Number s.ElType e.Info)
-//  (#CmdLinkBrackets s.Left s.Right)
-//  (#CmdPushStack s.Number)
-//  (#CmdInsertElem s.Number)
-//  (#CmdInsertVar s.Mode s.Number)
-
-/*
-  Порядок выполнения команд.
-  1. Все выделения памяти (в порядке перечисления)
-  2. Связывание крулых и угловых скобок и
-  построение результата (в обратном порядке)
-*/
-
-DoGenResult {
-  // Создаём литералы
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElChar s.Value))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkName e.Name) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElName e.Name))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkNumber s.Number) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElNumber s.Number))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkIdentifier e.Name) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElIdent e.Name))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkString e.Chars) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElString e.Chars))
-      ((#CmdInsertRange s.Counter) e.Commands)
-      <Add s.Counter 2> e.Result
-    >;
-
-  /*
-    Обработка открывающих скобок всех трёх типов осуществляется похоже.
-  */
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#Brackets e.InBrackets) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenBracket))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#TkCloseBracket s.Counter) e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#CallBrackets e.InBrackets) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenCall))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#ADT-Brackets (e.Name) e.InBrackets) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenADT))
-      ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter>
-      (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
-    >;
-
-  /*
-    Закрывающие скобки надо обрабатывать особым образом.
-    Круглые скобки и АТД -- слинковать, угловые -- добавить в стек.
-  */
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseBracket s.OpenCounter) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseBracket))
-      (
-        (#CmdLinkBrackets s.OpenCounter s.Counter)
-        (#CmdInsertElem s.Counter)
-        e.Commands
-      )
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#TkCloseADT s.OpenCounter) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseADT))
-      (
-        (#CmdLinkBrackets s.OpenCounter s.Counter)
-        (#CmdInsertElem s.Counter)
-        e.Commands
-      )
-      <Inc s.Counter> e.Result
-    >;
-
-  (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#CloseCall s.OpenCounter) e.Result =
-    <DoGenResult
-      (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseCall))
-      (
-        (#CmdPushStack s.Counter)
-        (#CmdPushStack s.OpenCounter)
-        (#CmdInsertElem s.Counter)
-        e.Commands
-      )
-      <Inc s.Counter> e.Result
-    >;
-
-  // Обработка переменных
-  (
-    e.Vars-B
-    (s.Mode (e.Index) (e.ResultVars) s.NextPatternVar e.PatternVars)
-    e.Vars-E
-  )
-  (e.AllocCommands) (e.Commands)
-  s.Counter (#TkVariable s.Mode e.Index) e.Result =
-    <DoGenResult
-      (
-        e.Vars-B
-        (s.Mode (e.Index) (e.ResultVars s.NextPatternVar) e.PatternVars)
-        e.Vars-E
-      )
-      (e.AllocCommands)
-      ((#CmdInsertVar s.Mode s.NextPatternVar) e.Commands)
-      s.Counter e.Result
-    >;
-
-  (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample)) e.Vars-E)
-  (e.AllocCommands) (e.Commands)
-  s.Counter (#TkVariable s.Mode e.Index) e.Result =
-    <DoGenResult
-      (e.Vars-B (s.Mode (e.Index) (e.ResultVars s.Sample s.Counter)) e.Vars-E)
-      (e.AllocCommands (#CmdCopyVar s.Mode s.Counter s.Sample))
-      ((#CmdInsertVar s.Mode s.Counter) e.Commands)
-      <IncVarOffset s.Counter s.Mode> e.Result
-    >;
-
-  // Завершение просмотра
-  (e.Vars) (e.AllocCommands) (e.Commands) s.Counter =
-    s.Counter (e.Vars) e.AllocCommands e.Commands;
-}
-
-MakeVariableCommentTable {
-  e.Vars =
-    <Fetch
-      e.Vars
-      <Seq
-        (Map ReplicateVar)
-        Sort
-        (Map MakeVariableComment)
-      >
-    >;
-}
-
-ReplicateVar {
-  (s.Mode (e.Index) (e.ResultOccurences) e.PatternOccurences) =
-    <Map
-      {
-        s.ContextOffset = (s.ContextOffset s.Mode e.Index);
-      }
-      e.ResultOccurences e.PatternOccurences
-    >;
-}
-
-MakeVariableComment {
-  (s.Offset s.Mode e.Index s.Depth) =
-    (#CmdComment
-      <StrFromInt s.Offset> ': ' <PrintVar s.Mode e.Index s.Depth>
-    );
-}

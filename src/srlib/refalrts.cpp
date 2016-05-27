@@ -665,9 +665,9 @@ refalrts::Iter refalrts::repeated_stvar_left(
   refalrts::Iter copy_last = last;
 
   if( ! is_open_bracket( stvar_sample ) && svar_left( stvar, first, last ) ) {
-    if (equal_nodes( stvar, stvar_sample )) 
+    if (equal_nodes( stvar, stvar_sample ))
       return stvar;
-    else 
+    else
       return 0;
   } else if( tvar_left( left_term, first, last ) ) {
     refalrts::Iter left_term_e;
@@ -712,9 +712,9 @@ refalrts::Iter refalrts::repeated_stvar_right(
   refalrts::Iter old_last = last;
 
   if( ! is_open_bracket( stvar_sample ) && svar_right( stvar, first, last ) ) {
-    if (equal_nodes( stvar, stvar_sample )) 
+    if (equal_nodes( stvar, stvar_sample ))
       return stvar;
-    else 
+    else
       return 0;
   } else if( tvar_right( right_term, first, last ) ) {
     refalrts::Iter right_term_e = old_last;
@@ -1330,9 +1330,11 @@ refalrts::Iter list_splice(
   VALID_LINKED( end->prev );
 
   if( (res == begin) || refalrts::empty_seq( begin, end ) ) {
-
     // Цель достигнута сама по себе
     return res;
+  } else if ( res == next(end) ) {
+    // Цель достигнута сама по себе
+    return begin;
   } else {
     refalrts::Iter prev_res = prev( res );
     refalrts::Iter prev_begin = prev( begin );
@@ -1354,6 +1356,143 @@ refalrts::Iter list_splice(
 }
 
 } // unnamed namespace
+
+void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
+  res->tag = sample->tag;
+
+  switch( sample->tag ) {
+    case refalrts::cDataChar:
+      res->char_info = sample->char_info;
+      break;
+
+    case refalrts::cDataNumber:
+      res->number_info = sample->number_info;
+      break;
+
+    case refalrts::cDataFunction:
+      res->function_info = sample->function_info;
+      break;
+
+    case refalrts::cDataIdentifier:
+      res->ident_info = sample->ident_info;
+      break;
+
+    case refalrts::cDataClosure: {
+      res->tag = refalrts::cDataClosure;
+      refalrts::Iter head = sample->link_info;
+      res->link_info = head;
+      ++ (head->number_info);
+    }
+    break;
+
+    case refalrts::cDataFile:
+      res->file_info = sample->file_info;
+      break;
+
+    /*
+      Копируем только атом, скобок быть не должно.
+    */
+    default:
+      assert( SWITCH_DEFAULT_VIOLATION );
+      throw refalrts::UnexpectedTypeException();
+      break;
+  }
+}
+
+void refalrts::reinit_char(refalrts::Iter res, char ch) {
+  res->tag = cDataChar;
+  res->char_info  = ch;
+}
+
+void refalrts::update_char(refalrts::Iter res, char ch) {
+  res->char_info  = ch;
+}
+
+void refalrts::reinit_number(
+  refalrts::Iter res, refalrts::RefalNumber num)
+{
+  res->tag = cDataNumber;
+  res->number_info  = num;
+}
+
+void refalrts::update_number(
+  refalrts::Iter res, refalrts::RefalNumber num
+) {
+  res->number_info  = num;
+}
+
+
+void refalrts::reinit_name(
+  refalrts::Iter res,
+  refalrts::RefalFunctionPtr func,
+  refalrts::RefalFuncName name
+) {
+  res->tag = cDataFunction;
+  res->function_info.ptr  = func;
+  res->function_info.name  = name;
+}
+
+void refalrts::update_name(
+  refalrts::Iter res,
+  refalrts::RefalFunctionPtr func,
+  refalrts::RefalFuncName name
+) {
+  res->function_info.ptr  = func;
+  res->function_info.name  = name;
+}
+
+void refalrts::reinit_ident(
+  refalrts::Iter res, refalrts::RefalIdentifier ident
+) {
+  res->tag = cDataIdentifier;
+  res->ident_info  = ident;
+}
+
+void refalrts::update_ident(
+  refalrts::Iter res, refalrts::RefalIdentifier ident
+) {
+  res->ident_info  = ident;
+}
+
+void refalrts::reinit_open_bracket(
+  refalrts::Iter res
+) {
+  res->tag = cDataOpenBracket;
+}
+
+void refalrts::reinit_close_bracket(
+  refalrts::Iter res
+) {
+  res->tag = cDataCloseBracket;
+}
+
+void refalrts::reinit_open_adt(
+  refalrts::Iter res
+) {
+  res->tag = cDataOpenADT;
+}
+
+void refalrts::reinit_close_adt(
+  refalrts::Iter res
+) {
+  res->tag = cDataCloseADT;
+}
+
+void refalrts::reinit_open_call(
+  refalrts::Iter res
+) {
+  res->tag = cDataOpenCall;
+}
+
+
+void refalrts::reinit_close_call(
+  refalrts::Iter res
+) {
+  res->tag = cDataCloseCall;
+}
+
+
+
 
 refalrts::Iter refalrts::splice_elem(
   refalrts::Iter res, refalrts::Iter elem
@@ -1382,6 +1521,14 @@ refalrts::Iter refalrts::splice_evar(
 
 void refalrts::splice_to_freelist( refalrts::Iter begin, refalrts::Iter end ) {
   allocator::splice_to_freelist( begin, end );
+}
+
+extern void refalrts::splice_to_freelist_open(
+  refalrts::Iter before_first, refalrts::Iter after_last
+) {
+  if (before_first->next != after_last) {
+    refalrts::splice_to_freelist(before_first->next, after_last->prev);
+  }
 }
 
 void refalrts::splice_from_freelist( refalrts::Iter pos ) {
