@@ -1,0 +1,96 @@
+$EXTERN WriteLine, Map, Fetch;
+
+  
+PreparePatternsHS-Aux {
+  e.Pattern = 
+    <Map
+      {
+        (#TkChar s.char) = (#Atom #TkChar s.char);
+        (#TkNumber s.value) = (#Atom #TkNumber s.value);
+        (#TkName s.name) = (#Atom #TkName s.name);
+        (#TkIdentifier s.ident) = (#Atom #TkIdentifier s.ident);
+        (#TkVariable s.Mode e.Index) = 
+          (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
+        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsHS-Aux e.inBrackets>);
+        /* пусто */ = /* пусто */;
+      }
+      e.Pattern
+    >;
+}
+
+PreparePatternsHS {
+  (e.Pattern) e.Tail = 
+    (<PreparePatternsHS-Aux e.Pattern>)
+    <PreparePatternsHS e.Tail>;
+  = ;
+}
+
+CreateHardPattern-Aux {
+  /* предлажение имеет вид (P') */
+  (#Brackets e.body) ( e.tek_index ) = 
+    (#Brackets <CreateHardPattern-Aux e.body ()>);
+    
+  /* отщипнуть терм слева или справа */
+  (#Brackets e.body) e.smth ( e.tek_index ) = 
+    (#Brackets <CreateHardPattern-Aux e.body ('l')>) 
+    <CreateHardPattern-Aux e.smth ('r')>;
+    
+  e.smth (#Brackets e.body) ( e.tek_index ) = 
+    <CreateHardPattern-Aux e.smth ('l')> 
+    (#Brackets <CreateHardPattern-Aux e.body ('r')>);
+  
+  /* переменные */
+  (#S (e.name) (e.pattern)) e.smth ( e.tek_index ) = 
+    (#S('idx') ( ((#S (e.name) ))))
+    <CreateHardPattern-Aux e.smth ('r')>;
+  
+  e.smth (#S (e.name) (e.pattern)) ( e.tek_index ) = 
+    <CreateHardPattern-Aux e.smth ('l')>
+    (#S('idx') ( ((#S (e.name) ))));
+  
+  (#T (e.name) (e.pattern)) e.smth ( e.tek_index ) = 
+    (#T('idx') ( ((#T (e.name)))))
+    <CreateHardPattern-Aux e.smth ('r')>;
+  
+  e.smth (#T (e.name) (e.pattern)) ( e.tek_index ) = 
+    <CreateHardPattern-Aux e.smth ('l')>
+    (#T('idx') ( ((#T (e.name)))));
+  
+  /* атом */
+  (#Atom e.attr) e.smth ( e.tek_index ) = 
+    (#Atom e.attr)
+    <CreateHardPattern-Aux e.smth ('r')>;
+  
+  e.smth (#Atom e.attr) ( e.tek_index ) = 
+    <CreateHardPattern-Aux e.smth ('l')>
+    (#Atom e.attr);
+    
+  /* пусто */
+  ( e.tek_index ) = ;
+  
+  /* все остальное */
+  e.smth ( e.tek_index ) = 
+    (#E('idx') ((e.smth)));
+}
+
+$ENTRY CreateHardPattern {
+    e.patterns =
+      <Map 
+        { (e.sent) = (<CreateHardPattern-Aux e.sent ('_')>); }
+        <PreparePatternsHS e.patterns>
+      >;
+}
+
+GetHardPattern-Aux {
+  (e.name (e.idx) ((e.any))) e.tail = e.name <GetHardPattern-Aux e.tail>;
+  (#Atom #TkChar s.char) e.tail = '\'' s.char '\'' <GetHardPattern-Aux e.tail>;
+  (#Atom #TkNumber s.value) e.tail = '\'' s.value '\'' <GetHardPattern-Aux e.tail>;
+  (#Atom #TkName s.name) e.tail = '\'' s.name '\'' <GetHardPattern-Aux e.tail>;
+  (#Atom #TkIdentifier s.ident) e.tail = '\'' s.ident '\'' <GetHardPattern-Aux e.tail>;
+  (#Brackets e.in) e.tail = (<GetHardPattern-Aux e.in>) <GetHardPattern-Aux e.tail>;
+  /* empty */ = /* empty */;
+}
+
+$ENTRY GetHardPattern {
+  e.all = <GetHardPattern-Aux <CreateHardPattern-Aux <PreparePatternsHS-Aux e.all> ('_')>>;
+}

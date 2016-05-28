@@ -1,128 +1,162 @@
-$EXTERN WriteLine, Map, Fetch, Add;
+$EXTERN WriteLine, Map, Fetch, Inc;
 
-$LABEL S, E, T, Atom, Brackets, Alt;
+//From HardSent
+$EXTERN CreateHardPattern;
 
-//FROM Lexer
-// $EXTERN #TkChar, #TkNumber, #TkName, #TkVariable, #TkOpenBracket, #TkCloseBracket;
-// $EXTERN #TkIdentifier;
-  
-LinkBrackets {
-  e.left (#TkOpenBracket s.Num) e.body (#TkCloseBracket s.Num) e.right =
-    <LinkBrackets e.left> 
-    (#Brackets <LinkBrackets e.body>)    
-    <LinkBrackets e.right>;
-  e.smth = e.smth;
+
+$ENTRY ReverseFastGen {
+  e.all = <ReverseFastGen-Aux (1) e.all>;
+}
+
+ReverseFastGen-Aux {
+  (s.num)(#Atom s.type s.value) e.tail = (s.type s.value) <ReverseFastGen-Aux (s.num) e.tail>;
+  (s.num)(#Brackets e.inBrackets) e.tail = 
+    (#Brackets <ReverseFastGen-Aux (s.num) e.inBrackets>) <ReverseFastGen-Aux (s.num) e.tail>;
+  (s.num)(s.mode) e.tail =
+    (#TkVariable <Fetch s.mode { #E = 'e'; #T = 't'; #S = 's'; }> 'idx' s.num)
+    <ReverseFastGen-Aux (<Inc s.num>) e.tail>;
+  (s.num)(e.else) e.tail = (e.else) <ReverseFastGen-Aux (s.num) e.tail>;
+  (s.num) = ;
+}
+
+$ENTRY ReversePattern {
+  (#Atom s.type s.value) e.tail = (s.type s.value) <ReversePattern e.tail>;
+  (#Brackets (e.inBrackets)) e.tail = 
+    ( #Brackets <ReversePattern (e.inBrackets)> ) <ReversePattern e.tail>;
+  (s.mode (e.name) e.any) e.tail =
+    (#TkVariable <Fetch s.mode { #E = 'e'; #T = 't'; #S = 's'; }> e.name)
+    <ReversePattern e.tail>;
+  (e.else) e.tail = (e.else) <ReversePattern e.tail>;
+   = ;
 }
   
-ChangePatt {
+PreparePatternsFG-Aux {
   e.Pattern = 
-    <LinkBrackets
-      <Map
-        {
-          (#TkChar s.char) = (#Atom #TkChar s.char);
-          (#TkNumber s.value) = (#Atom #TkNumber s.value);
-          (#TkName s.name) = (#Atom #TkName s.name);
-          (#TkIdentifier s.ident) = (#Atom #TkIdentifier s.ident);
-          (#TkVariable s.Mode e.Index) = 
-            (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
-          (#TkOpenBracket s.num) = (#TkOpenBracket s.num);
-          (#TkCloseBracket s.num) = (#TkCloseBracket s.num);
-        }
-        e.Pattern
-      >
+    <Map
+      {
+        (e.type (e.idx) (( e.replacement)) ) = (e.type '$' ((e.replacement)) );
+        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsFG-Aux e.inBrackets>);
+        (e.any) = (e.any);
+      }
+      e.Pattern
     >;
 }
 
-ReversePattern {
-  s.BracketNum s.VarNum (#Brackets e.body) e.tail = 
-    (#TkOpenBracket s.BracketNum)
-    <ReversePattern
-      <Add s.BracketNum 1>
-      s.VarNum
-      e.body (#TkCloseBracket s.BracketNum) e.tail
+PreparePatternsFG {
+  e.all = 
+    <Map
+      { (e.sent) = (<PreparePatternsFG-Aux e.sent>); }
+      e.all
     >;
-  s.BracketNum s.VarNum (#Atom s.type s.value) e.tail =
-    (s.type s.value) 
-    <ReversePattern s.BracketNum s.VarNum e.tail>;
-  s.BracketNum s.VarNum (s.mode (e.name) t.pattern) e.tail =
-    (#TkVariable <Fetch s.mode { #E = 'e'; #T = 't'; #S = 's'; }> s.VarNum)
-    <ReversePattern 
-      s.BracketNum 
-      <Add s.VarNum 1> 
-      e.tail
-    >;
-  s.BracketNum s.VarNum t.other e.tail = 
-    t.other <ReversePattern s.BracketNum s.VarNum e.tail>;
-  s.BracketNum s.VarNum = (s.BracketNum s.VarNum);
 }
-
-MakePatterns-new {
-  ((e.Pattern) (e.Result)) e.Tail = 
-	(e.Pattern)
-    <MakePatterns-new e.Tail>;
-  = ;
-}
-
-MakePatterns {
-  ((e.Pattern) (e.Result)) e.Tail = 
-    (<ChangePatt e.Pattern>)
-    <MakePatterns e.Tail>;
-  = ;
-}
-
-CreateHardSent {
-  /* предлажение имеет вид (P') */
-  (#Brackets e.body) ( e.tek_index ) = 
-    (#Brackets <CreateHardSent e.body (e.tek_index)>);
-    
-  /* отщипнуть терм слева или справа */
-  (#Brackets e.body) e.smth ( e.tek_index ) = 
-    (#Brackets <CreateHardSent e.body (e.tek_index'l')>) 
-    <CreateHardSent e.smth (e.tek_index'r')>;
-    
-  e.smth (#Brackets e.body) ( e.tek_index ) = 
-    <CreateHardSent e.smth (e.tek_index'l')> 
-    (#Brackets <CreateHardSent e.body (e.tek_index'r')>);
-  
-  /* переменные */
-  (#S (e.name) (e.pattern)) e.smth ( e.tek_index ) = 
-    (#S ('Index' e.tek_index) ( ((#S (e.name) ()))))
-    <CreateHardSent e.smth (e.tek_index'r')>;
-  
-  e.smth (#S (e.name) (e.pattern)) ( e.tek_index ) = 
-    <CreateHardSent e.smth (e.tek_index'l')>
-    (#S ('Index' e.tek_index) ( ((#S (e.name) ()))));
-  
-  (#T (e.name) (e.pattern)) e.smth ( e.tek_index ) = 
-    (#T ('Index' e.tek_index) ( ((#T (e.name) ()))))
-    <CreateHardSent e.smth (e.tek_index'r')>;
-  
-  e.smth (#T (e.name) (e.pattern)) ( e.tek_index ) = 
-    <CreateHardSent e.smth (e.tek_index'l')>
-    (#T ('Index' e.tek_index) ( ((#T (e.name) ()))));
-  
-  /* атом */
-  (#Atom e.attr) e.smth ( e.tek_index ) = 
-    (#Atom e.attr)
-    <CreateHardSent e.smth (e.tek_index'r')>;
-  
-  e.smth (#Atom e.attr) ( e.tek_index ) = 
-    <CreateHardSent e.smth (e.tek_index'l')>
-    (#Atom e.attr);
-    
-  /* пусто */
-  ( e.tek_index ) = ;
-  
-  /* все остальное */
-  e.smth ( e.tek_index ) = 
-    (#E ('Index' e.tek_index) ( (e.smth)));
-}
-
-$FORWARD FastGen-Terms, FastGen-MeN, FastGen-M, Check;
 
 EraseBr {
   ( e.1 ) = e.1;
   e.1 = e.1;
+}
+
+FastGen-Terms {
+  /* с #E переменной - все #E переменная */
+  ((#E '$' e.pattern1 )) ((#E '$' e.pattern2 )) =
+    (#E '$' e.pattern1 e.pattern2 );
+    
+  ((#E '$' e.pattern )) ((s.type e.body)) =
+    (#E '$' e.pattern ((s.type e.body)) );
+    
+  ((s.type e.body)) ((#E '$' e.pattern)) =
+    (#E '$' ((s.type e.body)) e.pattern );
+  
+  /* скобки с атомами */
+  ((#Brackets e.1)) ((#Atom e.val)) =
+    (#T '$' (( #Brackets e.1 )) (( #Atom e.val )) );
+  
+  ((#Atom e.val)) ((#Brackets e.1)) =
+    (#T '$' ((#Atom e.val)) ((#Brackets e.1 )) );
+  
+  /* скобки с #S переменной */
+  ((#S '$' e.pattern)) ((#Brackets e.body)) =
+    (#T '$' ((#S '$' e.pattern)) ((#Brackets e.body)) );
+  
+  ((#Brackets e.body)) ((#S '$' e.pattern)) =
+    (#T '$' ((#Brackets e.body)) ((#S '$' e.pattern)) );
+  
+  /* и там и там скобки, разбираем содержимое */
+  ((#Brackets e.1)) ((#Brackets e.2)) =
+    (#Brackets <EraseBr <FastGen (e.1 ) (e.2 )>>);
+  
+  /* скобки с #T переменной */
+  ((#T '$' e.pattern)) ((#Brackets e.inBr)) =
+    (#T '$' e.pattern (((#Brackets e.inBr))) );
+    
+  ((#Brackets e.inBr)) ((#T '$' e.pattern)) =
+    (#T '$' (((#Brackets e.inBr))) e.pattern );
+  
+  /* Атом */
+  ((#Atom e.val)) ((#Atom e.val)) = (#Atom e.val);
+  
+  ((#Atom e.val1)) ((#Atom e.val2)) = 
+    (#S '$' ((#Atom e.val1)) ((#Atom e.val2)) );
+  
+  ((#Atom e.val)) ((#S '$' e.pattern)) =
+    (#S '$' (( (#Atom e.val) )) e.pattern );
+  
+  ((#S '$' e.pattern)) ((#Atom e.val)) =
+    (#S '$' e.pattern (( (#Atom e.val) )) );
+  
+  ((#Atom e.val)) ((#T '$' e.pattern)) =
+    (#T '$' (( (#Atom e.val) )) e.pattern );
+  
+  ((#T '$' e.pattern)) ((#Atom e.val)) =
+    (#T '$' e.pattern (( (#Atom e.val) )) );
+  
+  /* #T переменная */
+  ((#T '$' e.pattern1)) ((#T '$' e.pattern2)) =
+    (#T '$' e.pattern1 e.pattern2);
+    
+  ((#T '$' e.pattern1)) ((#S '$' e.pattern2)) =
+    (#T '$' e.pattern1 e.pattern2);
+    
+  ((#S '$' e.pattern1)) ((#T '$' e.pattern2)) =
+    (#T '$' e.pattern1 e.pattern2);
+  
+  /* #S переменная */
+  
+  ((#S '$' e.pattern1)) ((#S '$' e.pattern2)) =
+    (#S '$' e.pattern1 e.pattern2 );
+}
+
+FastGen-MeN {
+  (t.left1 e.1 (#E e.inE1) e.2 )(t.left2 e.3 (#E e.inE2) e.4 ) = 
+    <FastGen-Terms (t.left1) (t.left2) > 
+    <FastGen-MeN 
+        (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )
+    >;
+  
+  (e.1 (#E e.inE1) e.2 t.right1)(e.3 (#E e.inE2) e.4 t.right2) = 
+    <FastGen-MeN 
+        (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )
+    >
+    <FastGen-Terms (t.right1) (t.right2)>;
+  
+  ((#E '$' e.inE1)) ((#E '$' e.inE2)) = 
+    (#E '$' ((e.inE1)) ((e.inE2)) );
+  
+  (e.in1)(e.in2) = 
+    (#E '$' ((e.in1)) ((e.in2)) );
+}
+
+LengthComp {
+  (t.1 e.tail1) (t.2 e.tail2) = <LengthComp (e.tail1) (e.tail2)>;
+  () () = 1;
+  e.1 = 0;
+}
+
+FastGen-K {
+  1 (t.1 e.tail1) (t.2 e.tail2) = 
+    <FastGen-Terms (t.1 ) (t.2 )> 
+    <FastGen-K 1 (e.tail1) (e.tail2)>;
+  1 () () = ;
+  0 (e.1) (e.2) = (#E '$' ((e.1 )) ((e.2 )));
 }
 
 FastGen {
@@ -134,523 +168,105 @@ FastGen {
   (t.1) (t.2) e.Tail = <FastGen (<FastGen-Terms (t.1) (t.2)>) e.Tail>;
   
   /* 2. Предложения класса (M,N) */
-  (t.left1 e.1 (#E (e.name1) (e.pattern1)) e.2 t.right1)
-  (t.left2 e.3 (#E (e.name2) (e.pattern2)) e.4 t.right2)
+  ( e.1 (#E '$' (e.pattern1)) e.2 )
+  ( e.3 (#E '$' (e.pattern2)) e.4 )
   e.Tail = 
     <FastGen 
       (<FastGen-MeN
-        (t.left1 e.1 (#E (e.name1) (e.pattern1)) e.2 t.right1)
-        (t.left2 e.3 (#E (e.name2) (e.pattern2)) e.4 t.right2)
+        ( e.1 (#E '$' (e.pattern1)) e.2 )
+        ( e.3 (#E '$' (e.pattern2)) e.4 )
       >)
       e.Tail
     >;
   
-  /* 3. Предложения класса (M) */
-  (t.term1 e.1) (t.term2 e.2) e.Tail = 
+  /* 3. Предложения класса (K) */
+  ( e.1 ) ( e.2 ) e.Tail = 
     <FastGen 
-      (<FastGen-M 
-        <Check (t.term1 e.1) (t.term2 e.2)> 
-        (t.term1 e.1) (t.term2 e.2)
+      (<FastGen-K 
+        <LengthComp ( e.1 ) ( e.2 )> 
+        ( e.1 ) ( e.2 )
       >) 
       e.Tail
     >;
   
   /* 4. Все остальное */ 
-  (e.1) (e.2) = ((#E ('$') ( (e.1) (e.2))));
+  (e.1) (e.2) = ((#E '$' ((e.1 )) ((e.2 )) ));
 }
 
-FastGen-Terms {
-  /* и там и там скобки, разбираем содержимое */
-  ((#Brackets e.1)) ((#Brackets e.2)) =
-    (#Brackets <EraseBr <FastGen (e.1) (e.2)>>);
-  
-  /* скобки с атомами */
-  ((#Brackets e.1)) ((#Atom e.val)) =
-    (#T ('$') ( ((#Brackets e.1)) ((#Atom e.val))));
-  
-  ((#Atom e.val)) ((#Brackets e.1)) =
-    (#T ('$') ( ((#Atom e.val)) ((#Brackets e.1))));
-  
-  /* с #E переменной - все #E переменная */
-  ((#E (e.name) (e.pattern))) ((s.type e.body)) =
-    (#E ('$') ( ((#E (e.name) (e.pattern))) ((s.type e.body))));
-    
-  ((s.type e.body)) ((#E (e.name) (e.pattern))) =
-    (#E ('$') ( ((s.type e.body)) ((#E (e.name) (e.pattern)))));
-  
-  /* с #T переменной - все #T переменная */
-  ((#T (e.name) (e.pattern))) ((s.type e.body)) =
-    (#T ('$') ( ((#T (e.name) (e.pattern))) ((s.type e.body))));
-  
-  ((s.type e.body)) ((#T (e.name) (e.pattern))) =
-    (#T ('$') ( ((s.type e.body)) ((#T (e.name) (e.pattern)))));
-  
-  /* #S переменная */
-  ((#S (e.name) (e.pattern))) ((#Brackets e.body)) =
-    (#T ('$') ( ((#S (e.name) (e.pattern))) ((#Brackets e.body))));
-  
-  ((#Brackets e.body)) ((#S (e.name) (e.pattern))) =
-    (#T ('$') ( ((#Brackets e.body)) ((#S (e.name) (e.pattern)))));
-  
-  ((#S (e.name) (e.pattern))) ((s.type e.body)) =
-    (#S ('$') ( ((#S (e.name) (e.pattern))) ((s.type e.body))));
-  
-  ((s.type e.body)) ((#S (e.name) (e.pattern))) =
-    (#S ('$') ( ((s.type e.body)) ((#S (e.name) (e.pattern)))));
-  
-  /* Атом */
-  ((#Atom e.val)) ((#Atom e.val)) = (#Atom e.val);
-  ((#Atom e.val1)) ((#Atom e.val2)) = 
-    (#S ('$') ( ((#Atom e.val1)) ((#Atom e.val2))));
+
+
+GetGeneralization {
+  (e.scanned) (e.gen '$' e.rep) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
+  (e.scanned) (#Brackets e.inBrackets) e.tail = 
+    <GetGeneralization (e.scanned (#Brackets <EraseBr <GetGeneralization () e.inBrackets>>)) e.tail>;
+  (e.scanned) (e.gen) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
+  (e.scanned) = (e.scanned);
 }
 
-FastGen-MeN {
-  (t.left1 e.1 (#E (e.name1) (e.pattern1)) e.2)
-  (t.left2 e.3 (#E (e.name2) (e.pattern2)) e.4)
-  = 
-    <FastGen-Terms (t.left1) (t.left2) > 
-    <FastGen-MeN 
-        (e.1 (#E ('$') (e.pattern1)) e.2)
-        (e.3 (#E ('$') (e.pattern2)) e.4)
+GetReplacement-Aux {
+  (e.gen '$') e.tail = ;
+  (#T '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned <BracketsPrepare e.rep>) (e.else ( #T '$' e.otherRep))>;
+  (e.gen '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned e.rep) (e.else ( e.gen '$' e.otherRep))>;
+  (#Brackets (e.rep) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned (#Brackets e.rep)) (e.else (#Brackets e.otherRep))>;
+  (e.gen) e.tail (e.scanned) (e.else) = <GetReplacement-Aux e.tail (e.scanned (e.gen)) (e.else (e.gen))>;
+  (e.scanned) (e.else) = (<ReversePattern e.scanned>) <GetReplacement e.else>;
+}
+
+GetReplacement {
+  e.all =
+    <GetReplacement-Aux e.all (/*scanned*/) (/*else*/)>;
+}
+
+BracketsPrepare {
+  e.all =
+    <Map
+      {
+        (#Brackets e.inBrackets) = 
+          (#Brackets <GetReplacement <BracketsPrepare e.inBrackets>>);
+        (e.any) = (e.any);
+      }
+      e.all
     >;
-  
-  (e.1 (#E (e.name1) (e.pattern1)) e.2 t.right1)
-  (e.3 (#E (e.name2) (e.pattern2)) e.4 t.right2)
-  = 
-    <FastGen-MeN 
-        (e.1 (#E ('$') (e.pattern1)) e.2)
-        (e.3 (#E ('$') (e.pattern2)) e.4)
-    >
-    <FastGen-Terms (t.right1) (t.right2) > ;
-  
-  (e.1) (e.2) = (#E ('$') ( (e.1) (e.2)));
 }
 
-Check {
-  (t.1 e.tail1) (t.2 e.tail2) = <Check (e.tail1) (e.tail2)>;
-  () () = 1;
-  e.1 = 0;
+CreateFastGen-Aux {
+  () = (())(());
+  (e.all) = <GetGeneralization () e.all>(<GetReplacement <BracketsPrepare e.all>>);
 }
 
-FastGen-M {
-  1 (t.1 e.tail1) (t.2 e.tail2) = 
-    <FastGen-Terms (t.1) (t.2)> 
-    <FastGen-M 1 (e.tail1) (e.tail2)>;
-  1 () () = ;
-  0 (e.1) (e.2) = (#E ('$') ( (e.1) (e.2)));
-}
 
-$ENTRY GetFastGen {
-  e.Sentence = 
-    // <WriteLine 'FastGen:'<MakePatterns-new e.Sentence>>
-    // <WriteLine
-      // <ReversePattern 
-        // 1 1
-        // <EraseBr
-          // <FastGen
-            // <Map 
-              // { (e.sent) = (<CreateHardSent e.sent ('_')>); }
-              // <MakePatterns e.Sentence>
-            // >
-          // >
+$ENTRY CreateFastGen {
+  e.patterns = 
+    // <WriteLine 'pp\n'
+      // <PreparePatternsFG
+        // <CreateHardPattern e.patterns>
+      // >
+    // >
+    // <WriteLine 'fg\n'
+      // <FastGen
+        // <PreparePatternsFG
+          // <CreateHardPattern e.patterns>
         // >
       // >
     // >
-    <FastGen
-      <Map 
-        { (e.sent) = (<CreateHardSent e.sent ('_')>); }
-        <MakePatterns e.Sentence>
-      >
-    >;
-}
-
-$EXTERN Compare, Sub;
-
-Min {
-  s.1 s.2 =
-    <Fetch
-      <Compare s.1 s.2>
-      {
-        '<' = s.1;
-        s.Other = s.2;
-      }
-    >;
-}
-
-Max {
-  s.1 s.2 =
-    <Fetch
-      <Compare s.1 s.2>
-      {
-        '>' = s.1;
-        s.Other = s.2;
-      }
-    >;
-}
-
-/* ( (e.pat 1 ... N-1) (e.pat N)) */
-ParseVar {
-  ( t.1 t.2) = <ParseVar t.1> <ParseVar t.2>;
-  ( t.1) = <ParseVar t.1>;
-  ((#Atom e.body)) = ;
-  /* brackets */
-  ((#Brackets e.body)) = ((#Brackets e.body));
-  /* step overs renamed vars */
-  ((s.VarType t.name ())) = ((s.VarType t.name ()));
-  ((s.VarType t.name t.patt)) = <ParseVar t.patt>;
-  /* bottom */
-  t.1 = t.1;
-}
-
-/* e.sent = T1 ... TN */
-GetAllVars {
-  e.sent =
-    < Map
-      {
-        (#Atom e.body) = ;
-        (#Brackets e.body) = <GetAllVars e.body>;
-        (s.VarType t.name t.pat) = (<ParseVar t.pat>);
-      }
-      e.sent
-    >;
-}
-
-$LABEL K, MN;
-
-Minimize {
-  (#K s.1) e.classes (s.K s.M s.N) =
-    <Minimize
-      e.classes
-      (<Min s.K s.1> s.M s.N)
-    >;
-  (#MN s.1 s.2) e.classes (s.K s.M s.N) =
-    <Minimize
-      e.classes
-      (s.K <Min s.M s.1> <Min s.N s.2>)
-    >;
-  t.answer = t.answer;
-}
-
-/* e.patt (s.K) */
-CalcClassK {
-  s.1 = s.1;
-  t.1 e.2 s.3 = <CalcClassK e.2 <Add s.3 1>>;
-}
-
-/* e.patt (s.M s.N) */
-CalcClassMN {
-  (#E t.name t.patts) s.1 s.2 = s.1 s.2;
-  (#E t.name1 t.patts1) e.smth (#E t.name2 t.patts2) s.1 s.2 = s.1 s.2;
-  (#E t.name t.patts) e.smth t.right s.1 s.2 =
-    <CalcClassMN (#E t.name t.patts) e.smth s.1 <Add s.2 1>>;
-  t.left e.smth (#E t.name t.patts) s.1 s.2 =
-    <CalcClassMN e.smth (#E t.name t.patts) <Add s.1 1> s.2>;
-  t.left e.smth t.right s.1 s.2 =
-    <CalcClassMN e.smth <Add s.1 1> <Add s.2 1>>;
-}
-
-/* (j, k - j) j <= s.right */
-GetClasses {
-  s.j s.k s.right =
-    <Fetch
-      <Compare s.j s.right>
-        {
-          '>' = ;
-          s.other = (s.j <Sub s.k s.j>) <GetClasses <Add s.j 1> s.k s.right>;
-        }
-    >;
-}
-
-CalcClasses-Aux {
-  e.classes =
-    < Map
-      {
-        (#K (s.1 0 0)) = (<GetClasses 0 s.1 s.1>);
-        (#MN (0 s.1 s.2)) = ((s.1 s.2));
-        (#K #MN (s.k s.m s.n)) =
-          <Fetch
-            <Compare s.k <Add s.m s.n>>
-            <Compare s.k s.m>
-            <Compare s.k s.n>
-            {
-              '>' e.tail = ((s.m s.n));
-              '=' e.tail = ((s.m s.n));
-              '<' '>' '>' =
-                (<GetClasses
-                <Min <Sub s.k s.n> s.m>
-                s.k
-                <Max <Sub s.k s.n> s.m>>
-                );
-              '<' '<' '>' =
-                (<GetClasses
-                <Min <Sub s.k s.n> s.k>
-                s.k
-                <Max <Sub s.k s.n> s.k>>
-                );
-              '<' '<' '=' =
-                (<GetClasses
-                <Min <Sub s.k s.n> s.k>
-                s.k
-                <Max <Sub s.k s.n> s.k>>
-                );
-              '<' '=' '>' =
-                (<GetClasses
-                <Min <Sub s.k s.n> s.k>
-                s.k
-                <Max <Sub s.k s.n> s.k>>
-                );
-              '<' '>' '<' = (<GetClasses 0 s.k s.m>);
-              '<' '>' '=' = (<GetClasses 0 s.k s.m>);
-              '<' '<' '<' = (<GetClasses 0 s.k s.k>);
-              '<' '<' '=' = (<GetClasses 0 s.k s.k>);
-            }
-          >;
-      }
-      e.classes
-    >;
-}
-
-CalcClasses {
-  e.patterns =
-    < CalcClasses-Aux
-      < Map
-      {
-        (e.1 (#K s.k) e.2 (#MN s.m s.n) e.3) =
-        (#K #MN <Minimize e.1 (#K s.k) e.2 (#MN s.m s.n) e.3 (100 100 100)>);
-        (e.1 (#MN s.m s.n) e.2 (#K s.k) e.3) =
-        (#K #MN <Minimize e.1 (#MN s.m s.n) e.2 (#K s.k) e.3 (100 100 100)>);
-        (e.1 (#MN s.m s.n) e.2) =
-        (#MN <Minimize e.1 (#MN s.m s.n) e.2 (0 100 100)>);
-        (e.1 (#K s.k) e.2) =
-        (#K <Minimize e.1 (#K s.k) e.2 (100 0 0)>);
-      }
-      < Map
-      {
-        (e.patts) =
-          (< Map
-          {
-            (e.left (#E t.name t.p) e.right) =
-            (#MN <CalcClassMN e.left (#E t.name t.p) e.right 0 0>);
-            (e.patt) = (#K <CalcClassK e.patt 0>);
-          }
-          e.patts
-          >);
-      }
-      e.patterns
-      >
-      >
-    >;
-}
-
-/* ( e.pattern ) t.class */
-Superposition {
-  () (s.1 s.2) = (#E ('$') ());
-  ( e.smth ) (0 0) = (#E ('$') ( (e.smth)));
-  ( t.left e.smth ) (s.1 0) = t.left <Superposition (e.smth) (<Sub s.1 1> 0)>;
-  ( e.smth t.right ) (0 s.2) = <Superposition (e.smth) (0 <Sub s.2 1>)> t.right;
-  ( t.left e.smth t.right ) (s.1 s.2) =
-    t.left <Superposition (e.smth) (<Sub s.1 1> <Sub s.2 1>)> t.right;
-}
-
-IndexSuper {
-  s.index t.pattern t.class e.tail =
-    s.index
-    (<Superposition t.pattern t.class>)
-    <IndexSuper <Add s.index 1> t.pattern e.tail>;
-  s.index t.pattern = ;
-}
-
-SplitArgs {
-  t.pattern e.1 '|' e.classes =
-    <IndexSuper 0 t.pattern e.classes>
-    <SplitArgs e.1 '|' e.classes>;
-  '|' e.classes = ;
-}
-
-/*
-( подстановки образцы ) . . . ( классы образцов )
-п е р е м е н н ы е
-*/
-CreateSuperposition {
-  (t.var e.tail1) (t.classes e.tail2) =
-    (<SplitArgs <EraseBr t.var> '|' <EraseBr t.classes>>)
-    <CreateSuperposition (e.tail1) (e.tail2)>;
-  () () = ;
-}
-
-GSOagain {
-  s.index t.term1 e.tail1 s.index t.term2 e.tail2 =
-    <GSOagain s.index <FastGen t.term1 t.term2> e.tail1 e.tail2>;
-  s.index t.term1 e.tail =
-    t.term1 <GSOagain e.tail>;
-  = ;
-}
-
-CalcComplexity-aux {
-  s.comp (#S e.body) e.tail =
-    <CalcComplexity-aux <Add s.comp 2> e.tail>;
-  s.comp (#E e.body) e.tail =
-    <CalcComplexity-aux <Sub s.comp 1> e.tail>;
-  s.comp (#T e.body) e.tail =
-    <CalcComplexity-aux <Add s.comp 1> e.tail>;
-  s.comp (#Atom e.body) e.tail =
-    <CalcComplexity-aux <Add s.comp 3> e.tail>;
-  s.comp (#Brackets e.body) e.tail =
-    <CalcComplexity-aux <Add s.comp 3> e.body e.tail>;
-  s.comp = s.comp;
-}
-
-CalcComplexity {
-  (e.body) e.tail =
-    <CalcComplexity-aux 1 e.body> (e.body)
-    <CalcComplexity e.tail>;
-  = ;
-}
-
-GetMax {
-  s.score1 t.1 s.score2 t.2 e.tail =
-  <Fetch
-    <Compare s.score1 s.score2>
-    {
-      '>' = <GetMax s.score1 t.1 e.tail>;
-      s.another = <GetMax s.score2 t.2 e.tail>;
-    }
-    >;
-  s.score t.1 = t.1;
-}
-
-GlobalGen {
-  (e.FastGen) = 
-    <Map
-      { (e.body) = <GetMax <CalcComplexity <GSOagain e.body>>>; }
-      <CreateSuperposition 
-        (<GetAllVars e.FastGen>) 
-        (<CalcClasses <GetAllVars e.FastGen>>)
-      >
-    >;
-}
-
-$ENTRY GetGlobalGen {
-  e.Sentence = <GlobalGen <GetFastGen e.Sentence>>
-  <WriteLine 'e: 'e.Sentence'\n'>
-  <WriteLine 'g: '<GlobalGen <GetFastGen e.Sentence>>'\n'>;
-    /*
-    <Map
-      //по всем переменным
-      { (e.var_i) = <WriteLine <ReversePattern 1 1 e.var_i>>; }
-      <GlobalGen
-        <FastGen
-          <Map 
-            { (e.sent) = (<CreateHardSent e.sent ('_')>); }
-            <MakePatterns e.Sentence>
-          >
+    <CreateFastGen-Aux
+      <FastGen
+        <PreparePatternsFG
+          <CreateHardPattern e.patterns>
         >
       >
-    >
-    <WriteLine>;
-    */
-}
-
-GetCommonPattern-Aux {
-  ((t.pattern e.smth1) e.smth2) (#TkVariable 's' s.num) e.tail (s.BracketNum s.VarNum) =
-    <Fetch
-      <ReversePattern s.BracketNum s.VarNum t.pattern> 
-      {
-        e.body (s.BN s.VN) =
-          e.body
-          <GetCommonPattern-Aux (e.smth2) e.tail (s.BN s.VN)>;
-      }
-    >;
-  ((t.pattern e.smth1) e.smth2) 
-  (#TkVariable 't' s.num) e.tail 
-  (s.BracketNum s.VarNum) =
-    <Fetch
-      <ReversePattern s.BracketNum s.VarNum t.pattern> 
-      {
-        e.body (s.BN s.VN) =
-          e.body
-          <GetCommonPattern-Aux (e.smth2) e.tail (s.BN s.VN)>;
-      }
-    >;
-  ((e.pattern) e.smth) 
-  (#TkVariable 'e' s.num) e.tail
-  (s.BracketNum s.VarNum) =
-    <Fetch
-      <ReversePattern s.BracketNum s.VarNum e.pattern> 
-      {
-        e.body (s.BN s.VN) =
-          e.body
-          <GetCommonPattern-Aux (e.smth) e.tail (s.BN s.VN)>;
-      }
-    >;
-  t.patterns t.another e.tail (s.BracketNum s.VarNum) = 
-    t.another <GetCommonPattern-Aux t.patterns e.tail (s.BracketNum s.VarNum)>;
-  () (s.BracketNum s.VarNum) = ; 
-}
-
-$ENTRY GetCommonPattern {
-  e.Sentence =
-    <GetCommonPattern-Aux
-      (<GetGlobalGen e.Sentence>)
-      <ReversePattern 1 1 <EraseBr<GetFastGen e.Sentence>>>
     >;
 }
 
-$EENUM LeftPtr, RightPtr;
-
-// <UpdatePattern
-//   (<GetCommonPattern e.Sentences>)
-//   (e.Pattern) 
-// >
-$ENTRY UpdatePattern {
-  //Brackets
-  ((#TkOpenBracket s.num1) e.body1 (#TkCloseBracket s.num1) e.tail1)
-  ((#TkOpenBracket s.num2) e.body2 (#TkCloseBracket s.num2) e.tail2)
-  =
-    <UpdatePattern (e.body1) (e.body2)> <UpdatePattern (e.tail1) (e.tail2)>;
-  (e.head1 (#TkOpenBracket s.num1) e.body1 (#TkCloseBracket s.num1))
-  (e.head2 (#TkOpenBracket s.num2) e.body2 (#TkCloseBracket s.num2))
-  =
-    <UpdatePattern (e.head1) (e.head2)> <UpdatePattern (e.body1) (e.body2)>;
-  //Characters
-  ((#TkChar s.val) e.tail1) ((#TkChar s.val) e.tail2) =
-    <UpdatePattern (e.tail1) (e.tail2)>;
-  (e.head1 (#TkChar s.val)) (e.head2 (#TkChar s.val)) =
-    <UpdatePattern (e.head1) (e.head2)>;
-  //S VAR
-  ((#TkVariable 's' s.num) e.tail1) (t.s_term e.tail2) =
-    (LeftPtr s.num) t.s_term (RightPtr s.num) 
-    <UpdatePattern (e.tail1) (e.tail2)>;
-  (e.head1 (#TkVariable 's' s.num)) (e.head2 t.s_term) =
-    <UpdatePattern (e.head1) (e.head2)>
-    (LeftPtr s.num) t.s_term (RightPtr s.num);
-  //T VAR
-  ((#TkVariable 't' s.num) e.tail1) 
-  ((#TkOpenBracket s.index) e.body (#TkCloseBracket s.index) e.tail2) =
-    (LeftPtr s.num) 
-      (#TkOpenBracket s.index) e.body (#TkCloseBracket s.index) 
-    (RightPtr s.num) 
-    <UpdatePattern (e.tail1) (e.tail2)>;
-  (e.head1 (#TkVariable 't' s.num)) 
-  (e.head2 (#TkOpenBracket s.index) e.body (#TkCloseBracket s.index)) =
-    <UpdatePattern (e.head1) (e.head2)>
-    (LeftPtr s.num) 
-      (#TkOpenBracket s.index) e.body (#TkCloseBracket s.index) 
-    (RightPtr s.num);
-  ((#TkVariable 't' s.num) e.tail1) (t.s_term e.tail2) =
-    (LeftPtr s.num) t.s_term (RightPtr s.num) 
-    <UpdatePattern (e.tail1) (e.tail2)>;
-  (e.head1 (#TkVariable 't' s.num)) (e.head2 t.s_term) =
-    <UpdatePattern (e.head1) (e.head2)>
-    (LeftPtr s.num) t.s_term (RightPtr s.num);
-  //E VAR
-  ((#TkVariable 'e' s.num)) (e.body) = (LeftPtr s.num) e.body (RightPtr s.num);
-  //Nothing
-  () () = ;
-}
-
-$ENTRY GetVars {
-  e.head (#TkVariable s.type s.num) e.tail =
-    s.num <GetVars e.tail>;
-  e.smth = ;
+$ENTRY GetFastGen {
+  (#Atom #TkChar s.char) e.tail = '\'' s.char '\'' <GetFastGen e.tail>;
+  (#Atom #TkNumber s.value) e.tail = '\'' s.value '\'' <GetFastGen e.tail>;
+  (#Atom #TkName s.name) e.tail = '\'' s.name '\'' <GetFastGen e.tail>;
+  (#Atom #TkIdentifier s.ident) e.tail = '\'' s.ident '\'' <GetFastGen e.tail>;
+  (#Brackets e.in) e.tail = '('<GetFastGen e.in>')' <GetFastGen e.tail>;
+  (e.name) e.tail = e.name <GetFastGen e.tail>;
+  /* empty */ = /* empty */;
 }
