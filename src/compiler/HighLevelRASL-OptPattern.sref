@@ -43,6 +43,21 @@ MapToSentence-Aux {
   ()() = ;
 }
 
+FastGenForming-Aux {
+    (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+      e.PatternCommands;
+}
+
+FastGenForming {
+  (()) e.tail = (()) e.tail;
+  (e.comment) s.MaxMemory e.PreparedSentences =
+    <WriteLine 'GP\n' <FastGenForming-Aux <GenPattern <ReverseFastGen e.comment>>>>
+    (e.comment)
+    s.MaxMemory
+    // e.PreparedSentences;
+    (#CmdSentence <FastGenForming-Aux <GenPattern <ReverseFastGen e.comment>>> e.PreparedSentences );
+}
+
 /**
   <HighLevelRASL e.AST>
     == e.RASLAST
@@ -93,12 +108,13 @@ HighLevelRASL-Function {
     <Fetch
       e.Sentences
       <Seq
+        // ({e.all = e.all <WriteLine 'start:'><WriteLine e.all>;})
         ({e.all = <Separate e.all>; })
-        ({e.all = e.all <WriteLine 'start:'><WriteLine e.all>;})
+        // ({e.all = e.all <WriteLine 'sep:'><WriteLine e.all>;})
         ({(e.patterns)(e.results) = <CreateFastGen e.patterns> (e.results); })
-        ({e.all = e.all <WriteLine 'FG:\n'><WriteLine e.all>;})
+        // ({e.all = e.all <WriteLine 'FG:\n'><WriteLine e.all>;})
         (MapToSentence)
-        ({e.all = e.all <WriteLine 'map:\n'><WriteLine e.all>;})
+        // ({e.all = e.all <WriteLine 'map:\n'><WriteLine e.all>;})
         {
           (e.comment) e.tail = 
             (e.comment)
@@ -120,14 +136,8 @@ HighLevelRASL-Function {
             >;
         }
         ({e.all = e.all <WriteLine 'mapreduce:\n'><WriteLine e.all>; })
-        // {
-          // (e.comment) s.MaxMemory e.PreparedSentences =
-            // <WriteLine 'GP\n' <GenPattern <ReverseFastGen e.comment>>>
-            // (e.comment)
-            // s.MaxMemory
-            // (#CmdSentence <GenPattern <ReverseFastGen e.comment>> e.PreparedSentences);
-        // }
-        // ({e.all = e.all <WriteLine 'sit:\n'><WriteLine e.all>; })
+        (FastGenForming)
+        ({e.all = e.all <WriteLine 'sit:\n'><WriteLine e.all>; })
         {
           (e.comment) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
@@ -143,6 +153,7 @@ HighLevelRASL-Function {
                   e.LastSentence^ = e.LastSentence;
                 }
               >
+              (#CmdFail)
             );
             (e.comment) 0 /* нет предложений */ =
             (#CmdEnum s.ScopeClass e.Name);
@@ -219,14 +230,14 @@ FoldOpenELoops {
 
 GenPattern {
   e.Pattern =
-    <WriteLine 'genPat\n' e.Pattern>
     <Fetch
       <DoGenPattern
         2 (#Junk) (#E 0 e.Pattern) (#Junk) (/* vars */)
               ((#CmdComment 'HardPattern: ' <GetHardPattern e.Pattern>))
       >
       <Seq
-        {
+         {e.all = e.all <WriteLine 'after do gen\n' e.all>;}
+         {
           s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
             (e.Vars) (e.MarkedPattern)
             <FreezeRanges s.ContextOffset e.Commands>;
