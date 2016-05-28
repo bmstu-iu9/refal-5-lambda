@@ -240,6 +240,7 @@ CreateFastGen-Aux {
 
 $ENTRY CreateFastGen {
   e.patterns = 
+    <WriteLine 'CFG\n' e.patterns>
     // <WriteLine 'pp\n'
       // <PreparePatternsFG
         // <CreateHardPattern e.patterns>

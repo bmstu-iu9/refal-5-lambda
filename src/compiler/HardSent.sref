@@ -2,7 +2,7 @@ $EXTERN WriteLine, Map, Fetch;
 
   
 PreparePatternsHS-Aux {
-  e.Pattern = 
+  e.Pattern =
     <Map
       {
         (#TkChar s.char) = (#Atom #TkChar s.char);
@@ -74,11 +74,11 @@ CreateHardPattern-Aux {
 }
 
 $ENTRY CreateHardPattern {
-    e.patterns =
-      <Map 
-        { (e.sent) = (<CreateHardPattern-Aux e.sent ('_')>); }
-        <PreparePatternsHS e.patterns>
-      >;
+  e.patterns =
+    <Map 
+      { (e.sent) = (<CreateHardPattern-Aux e.sent ('_')>); }
+      <PreparePatternsHS e.patterns>
+    >;
 }
 
 GetHardPattern-Aux {
