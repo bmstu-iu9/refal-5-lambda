@@ -1,7 +1,41 @@
-$EXTERN WriteLine, Map, Fetch, Inc;
 
-//From HardSent
+//FROM LibraryEx
+$EXTERN UnBracket, Map, Fetch, Inc;
+
+//FROM Library
+$EXTERN WriteLine;
+
+//FROM HardSent
 $EXTERN CreateHardPattern;
+
+ModifyE-Aux {
+  (e.gen '$') e.tail = ;
+  (#T '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <ModifyE-Aux e.tail (e.scanned <ModifyBrackets e.rep>) (e.else ( #T '$' e.otherRep))>;
+  (e.gen '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <ModifyE-Aux e.tail (e.scanned e.rep) (e.else ( e.gen '$' e.otherRep))>;
+  (#Brackets (e.rep) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <ModifyE-Aux e.tail (e.scanned (#Brackets e.rep)) (e.else (#Brackets e.otherRep))>;
+  (e.gen) e.tail (e.scanned) (e.else) = <ModifyE-Aux e.tail (e.scanned (e.gen)) (e.else (e.gen))>;
+  (e.scanned) (e.else) = (e.scanned) <ModifyE e.else>;
+}
+
+$ENTRY ModifyE {
+  e.all =
+    <ModifyE-Aux e.all (/*scanned*/) (/*else*/)>;
+}
+
+$ENTRY ModifyBrackets {
+  e.all =
+    <Map
+      {
+        (#Brackets e.inBrackets) = 
+          (#Brackets <ModifyE <ModifyBrackets e.inBrackets>>);
+        (e.any) = (e.any);
+      }
+      e.all
+    >;
+}
 
 
 $ENTRY ReverseFastGen {
@@ -21,8 +55,8 @@ ReverseFastGen-Aux {
 
 $ENTRY ReversePattern {
   (#Atom s.type s.value) e.tail = (s.type s.value) <ReversePattern e.tail>;
-  (#Brackets (e.inBrackets)) e.tail = 
-    ( #Brackets <ReversePattern (e.inBrackets)> ) <ReversePattern e.tail>;
+  (#Brackets e.inBrackets) e.tail = 
+    ( #Brackets <ReversePattern e.inBrackets> ) <ReversePattern e.tail>;
   (s.mode (e.name) e.any) e.tail =
     (#TkVariable <Fetch s.mode { #E = 'e'; #T = 't'; #S = 's'; }> e.name)
     <ReversePattern e.tail>;
@@ -30,29 +64,24 @@ $ENTRY ReversePattern {
    = ;
 }
   
-PreparePatternsFG-Aux {
+PreparePatternsFastGen-Aux {
   e.Pattern = 
     <Map
       {
         (e.type (e.idx) (( e.replacement)) ) = (e.type '$' ((e.replacement)) );
-        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsFG-Aux e.inBrackets>);
+        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsFastGen-Aux e.inBrackets>);
         (e.any) = (e.any);
       }
       e.Pattern
     >;
 }
 
-PreparePatternsFG {
+PreparePatternsFastGen {
   e.all = 
     <Map
-      { (e.sent) = (<PreparePatternsFG-Aux e.sent>); }
+      { (e.sent) = (<PreparePatternsFastGen-Aux e.sent>); }
       e.all
     >;
-}
-
-EraseBr {
-  ( e.1 ) = e.1;
-  e.1 = e.1;
 }
 
 FastGen-Terms {
@@ -60,11 +89,11 @@ FastGen-Terms {
   ((#E '$' e.pattern1 )) ((#E '$' e.pattern2 )) =
     (#E '$' e.pattern1 e.pattern2 );
     
-  ((#E '$' e.pattern )) ((s.type e.body)) =
-    (#E '$' e.pattern ((s.type e.body)) );
+  ((#E '$' e.pattern )) ((e.any)) =
+    (#E '$' e.pattern ((e.any)) );
     
-  ((s.type e.body)) ((#E '$' e.pattern)) =
-    (#E '$' ((s.type e.body)) e.pattern );
+  ((e.any)) ((#E '$' e.pattern)) =
+    (#E '$' ((e.any)) e.pattern );
   
   /* скобки с атомами */
   ((#Brackets e.1)) ((#Atom e.val)) =
@@ -82,7 +111,7 @@ FastGen-Terms {
   
   /* и там и там скобки, разбираем содержимое */
   ((#Brackets e.1)) ((#Brackets e.2)) =
-    (#Brackets <EraseBr <FastGen (e.1 ) (e.2 )>>);
+    (#Brackets <UnBracket <FastGen (e.1 ) (e.2 )>>);
   
   /* скобки с #T переменной */
   ((#T '$' e.pattern)) ((#Brackets e.inBr)) =
@@ -142,7 +171,7 @@ FastGen-MeN {
     (#E '$' ((e.inE1)) ((e.inE2)) );
   
   (e.in1)(e.in2) = 
-    (#E '$' ((e.in1)) ((e.in2)) );
+    (#E '$' ((<UnBracket <ModifyE e.in1>>)) ((<UnBracket <ModifyE e.in2>>)) );
 }
 
 LengthComp {
@@ -156,10 +185,10 @@ FastGen-K {
     <FastGen-Terms (t.1 ) (t.2 )> 
     <FastGen-K 1 (e.tail1) (e.tail2)>;
   1 () () = ;
-  0 (e.1) (e.2) = (#E '$' ((e.1 )) ((e.2 )));
+  0 (e.1) (e.2) = (#E '$' ((e.1 )) ((e.2 )) );
 }
 
-FastGen {
+$ENTRY FastGen {
   /* 0. Тело функции состоит из одного предложения или из пустых образцов */
   (e.1) = (e.1);
   () () = ();
@@ -171,6 +200,7 @@ FastGen {
   ( e.1 (#E '$' (e.pattern1)) e.2 )
   ( e.3 (#E '$' (e.pattern2)) e.4 )
   e.Tail = 
+    <WriteLine 'beatch'>
     <FastGen 
       (<FastGen-MeN
         ( e.1 (#E '$' (e.pattern1)) e.2 )
@@ -179,6 +209,19 @@ FastGen {
       e.Tail
     >;
   
+  /* 2.5. Что-то среднее между (M, N) и (K) */
+  ((#E '$' e.pattern )) (e.any) e.Tail =
+    <FastGen
+      ((#E '$' e.pattern ((e.any)) ))
+      e.Tail
+    >;
+    
+  (e.any) ((#E '$' e.pattern)) e.Tail =
+    <FastGen
+      ((#E '$' ((e.any)) e.pattern ))
+      e.Tail
+    >;
+
   /* 3. Предложения класса (K) */
   ( e.1 ) ( e.2 ) e.Tail = 
     <FastGen 
@@ -190,84 +233,53 @@ FastGen {
     >;
   
   /* 4. Все остальное */ 
-  (e.1) (e.2) = ((#E '$' ((e.1 )) ((e.2 )) ));
+  (e.1) (e.2) = ((#E '$' ((<ModifyE e.1> )) ((<ModifyE e.2> )) ));
 }
 
-
-
-GetGeneralization {
-  (e.scanned) (e.gen '$' e.rep) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
-  (e.scanned) (#Brackets e.inBrackets) e.tail = 
-    <GetGeneralization (e.scanned (#Brackets <EraseBr <GetGeneralization () e.inBrackets>>)) e.tail>;
-  (e.scanned) (e.gen) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
-  (e.scanned) = (e.scanned);
+Repare {
+   = ;
+  (s.Mode '$' ((e.Rep)) ) e.Tail = <Repare e.Rep> <Repare e.Tail>;
+  (s.Mode '$' e.Reps ) e.Tail = (s.Mode '$' <Repare e.Reps>) <Repare e.Tail>;
+  ((e.Rep)) e.Tail = ((<Repare e.Rep>)) <Repare e.Tail>;
+  (#Brackets e.inBrackets) e.Tail = (#Brackets <Repare e.inBrackets>) <Repare e.Tail>;
+  (e.Any) e.Tail = (e.Any) <Repare e.Tail>;
 }
-
-GetReplacement-Aux {
-  (e.gen '$') e.tail = ;
-  (#T '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <GetReplacement-Aux e.tail (e.scanned <BracketsPrepare e.rep>) (e.else ( #T '$' e.otherRep))>;
-  (e.gen '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <GetReplacement-Aux e.tail (e.scanned e.rep) (e.else ( e.gen '$' e.otherRep))>;
-  (#Brackets (e.rep) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <GetReplacement-Aux e.tail (e.scanned (#Brackets e.rep)) (e.else (#Brackets e.otherRep))>;
-  (e.gen) e.tail (e.scanned) (e.else) = <GetReplacement-Aux e.tail (e.scanned (e.gen)) (e.else (e.gen))>;
-  (e.scanned) (e.else) = (<ReversePattern e.scanned>) <GetReplacement e.else>;
-}
-
-GetReplacement {
-  e.all =
-    <GetReplacement-Aux e.all (/*scanned*/) (/*else*/)>;
-}
-
-BracketsPrepare {
-  e.all =
-    <Map
-      {
-        (#Brackets e.inBrackets) = 
-          (#Brackets <GetReplacement <BracketsPrepare e.inBrackets>>);
-        (e.any) = (e.any);
-      }
-      e.all
-    >;
-}
-
-CreateFastGen-Aux {
-  () = (())(());
-  (e.all) = <GetGeneralization () e.all>(<GetReplacement <BracketsPrepare e.all>>);
-}
-
 
 $ENTRY CreateFastGen {
   e.patterns = 
-    <WriteLine 'CFG\n' e.patterns>
-    // <WriteLine 'pp\n'
-      // <PreparePatternsFG
+    // <WriteLine 'CFG\n' e.patterns>
+    // <WriteLine 'PreFastGen\n'
+      // <PreparePatternsFastGen
         // <CreateHardPattern e.patterns>
       // >
     // >
-    // <WriteLine 'fg\n'
-      // <FastGen
-        // <PreparePatternsFG
-          // <CreateHardPattern e.patterns>
+    // <WriteLine 'FastGen\n'
+      // <UnBracket
+        // <FastGen
+          // <PreparePatternsFastGen
+            // <CreateHardPattern e.patterns>
+          // >
         // >
       // >
     // >
-    <CreateFastGen-Aux
-      <FastGen
-        <PreparePatternsFG
-          <CreateHardPattern e.patterns>
+    // <WriteLine 'Repared\n'
+        // <Repare
+          // <UnBracket
+            // <FastGen
+              // <PreparePatternsFastGen
+                // <CreateHardPattern e.patterns>
+              // >
+            // >
+          // >
+        // >
+    // >
+    (<Repare
+      <UnBracket
+        <FastGen
+          <PreparePatternsFastGen
+            <CreateHardPattern e.patterns>
+          >
         >
       >
-    >;
-}
-
-$ENTRY GetFastGen {
-  (#Atom #TkChar s.char) e.tail = '\'' s.char '\'' <GetFastGen e.tail>;
-  (#Atom #TkNumber s.value) e.tail = '\'' s.value '\'' <GetFastGen e.tail>;
-  (#Atom #TkName s.name) e.tail = '\'' s.name '\'' <GetFastGen e.tail>;
-  (#Atom #TkIdentifier s.ident) e.tail = '\'' s.ident '\'' <GetFastGen e.tail>;
-  (#Brackets e.in) e.tail = '('<GetFastGen e.in>')' <GetFastGen e.tail>;
-  (e.name) e.tail = e.name <GetFastGen e.tail>;
-  /* empty */ = /* empty */;
+    >);
 }

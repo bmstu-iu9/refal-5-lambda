@@ -1,0 +1,408 @@
+
+//FROM LibraryEx
+$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare;
+
+//FROM Library
+$EXTERN Add, Sub, WriteLine;
+
+//FROM FastGen
+$EXTERN FastGen, CreateFastGen, ReversePattern, ModifyE, ModifyBrackets;
+
+
+$ENTRY GetGlobalGen {
+  e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        CreateFastGen
+        {e.all = e.all <WriteLine 'GGG1:\n' e.all>;}
+        {(e.all) = <InspectFastGen e.all> (e.all);}
+        {e.all = e.all <WriteLine 'GGG2:\n' e.all>;}
+        {
+          s.Mode e.FastGenReps = 
+          <Fetch
+            s.Mode
+            {
+              1 = e.FastGenReps;
+              0 = <GlobalGen (e.FastGenReps)>;
+            }
+          >;
+        }
+      >
+    >;
+}
+
+InspectFastGen {
+  (#E '$' e.EReplacements ) e.Tail =
+    (#E 
+    <Fetch
+      <ReplacmentsCounter 0 () e.EReplacements>
+      {
+        1 = <InspectFastGen e.Tail>;
+        s.Num = 0;
+      }
+    >
+    '$'
+    e.EReplacements
+    )
+    <InspectFastGen e.Tail>;
+  (e.Any) e.Tail = (e.Any) <InspectFastGen e.Tail>;
+   = ;
+}
+
+ReplacmentsCounter {
+  s.Counter (e.Scanned) ((e.Replacement)) e.Tail =
+    <Fetch
+      <InList (<PrepRep e.Replacement>) (e.Scanned)>
+      {
+        0 (e.PrepReplacement) =
+          <ReplacmentsCounter <Inc s.Counter> (e.Scanned (e.PrepReplacement)) e.Tail>;
+        1 (e.PrepReplacement) = <ReplacmentsCounter s.Counter (e.Scanned) e.Tail>;
+      }
+    >;
+  s.Counter (e.Scanned) = s.Counter;
+}
+
+PrepRep {
+  (#Atom e.Body) e.Tail = (#Atom e.Body) <PrepRep e.Tail>;
+  (#Brackets e.inBrackets) e.Tail = 
+    ( #Brackets <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
+  (s.Mode e.Body) e.Tail = (s.Mode) <PrepRep e.Tail>;
+  (e.Else) e.Tail = (e.Else) <PrepRep e.Tail>;
+   = ;
+}
+
+InList {
+  (e.Elem) () = 0 (e.Elem);
+  (e.Elem) (t.ListElem e.List) = 
+    <Fetch
+      <Compare (t.ListElem) (e.Elem)>
+      {
+        '=' = 1 ();
+        s.Else = <InList (e.Elem) (e.List)>;
+      }
+    >;
+}
+
+
+GlobalGen {
+  (e.FastGenReps) =
+    // <WriteLine 'GP:\n'(<GetPatterns e.FastGenReps>)>
+    // <WriteLine 'CPC:\n'(<ComputePossibleClasses <GetPatterns e.FastGenReps>>)>
+    // <WriteLine 'CS:\n'
+      // <CreateSuperposition 
+        // (<GetPatterns e.FastGenReps>)
+        // (<ComputePossibleClasses <GetPatterns e.FastGenReps>>)
+      // >
+    // >
+    <Map
+      { ((e.Class) e.body) = <WriteLine 'ebody\n' e.body><Generalization e.body>; }
+      <CreateSuperposition 
+        (<GetPatterns e.FastGenReps>)
+        (<ComputePossibleClasses <GetPatterns e.FastGenReps>>)
+      >
+    >;
+}
+
+/* e.sent = T1 ... TN */
+GetPatterns {
+  (e.FastGenReps) =
+    <ModifyE <ModifyBrackets e.FastGenReps>>;
+}
+
+ComputePossibleClasses {
+  e.Patterns = 
+    <Fetch
+      e.Patterns
+      <Seq
+        ComputeClasses
+        {e.Classes = <GetMinKMN (100 100 100) e.Classes>;}
+        ComputePossibleClasses-Aux
+      >
+    >;
+}
+
+ComputeClasses {
+  e.Patterns =
+    <Map
+      {
+        (e.Left (#E e.Body) e.Right) =
+          (#MN <ComputeClassMN e.Left (#E e.Body) e.Right 0 0>);
+        (e.Pattern) = (#K <ComputeClassK e.Pattern 0>);
+      }
+      e.Patterns
+    >;
+}
+
+GetMinKMN {
+  (s.K s.M s.N) (#K s.KNum) e.OtherClasses =
+    <GetMinKMN (<Min s.K s.KNum> s.M s.N) e.OtherClasses>;
+  (s.K s.M s.N) (#MN s.MNum s.NNum) e.OtherClasses =
+    <GetMinKMN (s.K <Min s.M s.MNum> <Min s.N s.NNum>) e.OtherClasses>;
+  (s.K s.M s.N) = (s.K s.M s.N);
+}
+
+ComputePossibleClasses-Aux {
+  (s.K 100 100) = <GetClasses 0 s.K s.K>;
+  (100 s.M s.N) = (s.M s.N);
+  (s.K s.M s.N) = 
+    <Fetch
+      <Compare s.K <Add s.M s.N>>
+      <Compare s.K s.M>
+      <Compare s.K s.N>
+      {
+        '>' e.tail = (s.M s.N);
+        '=' e.tail = (s.M s.N);
+        '<' '>' '>' =
+          (<GetClasses
+            <Min <Sub s.K s.N> s.M>
+            <Max <Sub s.K s.N> s.M>
+            s.K
+          >);
+        '<' '>' '=' = <GetClasses 0 s.M s.K>;
+        '<' '>' '<' = <GetClasses 0 s.M s.K>;
+        
+        '<' '<' '>' = <GetClasses <Sub s.K s.N> s.K s.K>;
+        '<' '<' '=' = <GetClasses 0 s.K s.K>;
+        '<' '<' '<' = <GetClasses 0 s.K s.K>;
+        
+        '<' '=' '>' = <GetClasses <Sub s.K s.N> s.K s.K>;
+        '<' '=' '=' = <GetClasses 0 s.K s.K>;
+        '<' '=' '<' = <GetClasses 0 s.K s.K>;
+      }
+    >;
+}
+
+/* (M, MplusN - M) till M <= MaxM */
+GetClasses {
+  s.M s.MaxM s.MplusN =
+    <Fetch
+      <Compare s.M s.MaxM>
+        {
+          '>' = ;
+          s.Else = (s.M <Sub s.MplusN s.M>) <GetClasses <Inc s.M> s.MaxM s.MplusN>;
+        }
+    >;
+}
+
+ComputeClassK {
+  s.K = s.K;
+  t.Term e.Tail s.K = <ComputeClassK e.Tail <Inc s.K>>;
+}
+
+ComputeClassMN {
+  (#E e.Body) s.M s.N = s.M s.N;
+  (#E e.Body1) e.Any (#E e.Body2) s.M s.N = s.M s.N;
+  (#E e.Body) e.Any t.Right s.M s.N =
+    <ComputeClassMN (#E e.Body) e.Any s.M <Inc s.N>>;
+  t.Left e.Any (#E e.Body) s.M s.N =
+    <ComputeClassMN e.Any (#E e.Body) <Inc s.M> s.N>;
+  t.Left e.Any t.Right s.M s.N =
+    <ComputeClassMN e.Any <Inc s.M> <Inc s.N>>;
+}
+
+Superposition {
+  () (s.Num1 s.Num2) = (#E (()));
+  (e.Any) (0 0) = (#E ((e.Any)));
+  
+  ((#Brackets e.inBrackets) e.Tail)(s.Num1 0) = 
+    (#Brackets e.inBrackets) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
+  ((#Atom e.Body) e.Tail)(s.Num1 0) = 
+    (#Atom e.Body) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
+  ((#S e.Body) e.Tail)(s.Num1 0) = 
+    (#S e.Body) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
+  ((#T e.Body) e.Tail)(s.Num1 0) = 
+    (#T e.Body) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
+    
+  (e.Head (#Brackets e.inBrackets)) (s.Num1 s.Num2) =
+    <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#Brackets e.inBrackets);
+  (e.Head (#Atom e.Body)) (s.Num1 s.Num2) =
+    <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#Atom e.Body);
+  (e.Head (#S e.Body)) (s.Num1 s.Num2) =
+    <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#S e.Body);
+  (e.Head (#T e.Body)) (s.Num1 s.Num2) =
+    <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#T e.Body);
+}
+
+CreateSuperposition-Aux {
+  ((e.Pattern) e.Tail) (e.Class) =
+    (<Superposition (e.Pattern) (e.Class)>)
+    <CreateSuperposition-Aux (e.Tail) (e.Class)>;
+  () (e.Class) = ;
+}
+
+CreateSuperposition {
+  (e.Patterns) ((e.Class) e.Tail) =
+    ((e.Class) <CreateSuperposition-Aux (e.Patterns)(e.Class)>)
+    <CreateSuperposition (e.Patterns) (e.Tail)>;
+  (e.Patterns) () = ;
+}
+
+Generalization-Aux {
+  (t.Term1 e.Tail1)(t.Term2 e.Tail2) =
+    <WriteLine 'terms\n'(t.Term1)'\n'(t.Term2)>
+    <GenTerm (t.Term1)(t.Term2)>
+    <Generalization-Aux (e.Tail1)(e.Tail2)>;
+  ((#E e.pattern ))() = (#E (e.pattern) ());
+  ()((#E e.pattern )) = (#E () (e.pattern));
+  ()() = ;
+}
+
+Generalization {
+  (e.Pattern1)(e.Pattern2) e.Tail =
+    <WriteLine 'Gen\n' (e.Pattern1) '\n-\n' (e.Pattern2)>
+    <Generalization
+      (<Generalization-Aux (e.Pattern1)(e.Pattern2)>)
+      e.Tail
+    >;
+  (e.Pattern) = (e.Pattern);
+}
+
+GenTerm {
+  /* с #E переменной - все #E переменная */
+  ((#E (e.name1)())) ((#E (e.name2)())) =
+    (#E ((#E (e.name1)())) ((#E (e.name2)())));
+    
+  ((#E e.pattern1)) ((#E e.pattern2)) =
+    (#E e.pattern1 e.pattern2);
+    
+  ((#E e.pattern )) ((e.any)) =
+    (#E e.pattern ((e.any)) );
+    
+  ((e.any)) ((#E e.pattern )) =
+    (#E ((e.any)) e.pattern );
+  
+  /* скобки с атомами */
+  ((#Brackets e.1)) ((#Atom e.val)) =
+    (#T (( #Brackets e.1 )) (( #Atom e.val )) );
+  
+  ((#Atom e.val)) ((#Brackets e.1)) =
+    (#T ((#Atom e.val)) ((#Brackets e.1 )) );
+  
+  /* скобки с #S переменной */
+  ((#S e.pattern)) ((#Brackets e.body)) =
+    (#T ((#S e.pattern)) ((#Brackets e.body)) );
+  
+  ((#Brackets e.body)) ((#S e.pattern)) =
+    (#T ((#Brackets e.body)) ((#S e.pattern)) );
+  
+  /* и там и там скобки, разбираем содержимое */
+  ((#Brackets e.1)) ((#Brackets e.2)) =
+    (#Brackets <Generalization-Aux (e.1 ) (e.2 )>);
+  
+  /* скобки с #T переменной */
+  ((#T e.pattern)) ((#Brackets e.inBr)) =
+    (#T e.pattern (((#Brackets e.inBr))) );
+    
+  ((#Brackets e.inBr)) ((#T e.pattern)) =
+    (#T (((#Brackets e.inBr))) e.pattern );
+  
+  /* Атом */
+  ((#Atom e.val)) ((#Atom e.val)) = (#Atom e.val);
+  
+  ((#Atom e.val1)) ((#Atom e.val2)) = 
+    (#S ((#Atom e.val1)) ((#Atom e.val2)) );
+  
+  ((#Atom e.val)) ((#S e.pattern)) =
+    (#S (( (#Atom e.val) )) e.pattern );
+  
+  ((#S e.pattern)) ((#Atom e.val)) =
+    (#S e.pattern (( (#Atom e.val) )) );
+  
+  ((#Atom e.val)) ((#T e.pattern)) =
+    (#T (( (#Atom e.val) )) e.pattern );
+  
+  ((#T e.pattern)) ((#Atom e.val)) =
+    (#T e.pattern (( (#Atom e.val) )) );
+  
+  /* #T переменная */
+  ((#T e.pattern1)) ((#T e.pattern2)) =
+    (#T e.pattern1 e.pattern2);
+    
+  ((#T e.pattern1)) ((#S e.pattern2)) =
+    (#T e.pattern1 e.pattern2);
+    
+  ((#S e.pattern1)) ((#T e.pattern2)) =
+    (#T e.pattern1 e.pattern2);
+  
+  /* #S переменная */
+  
+  ((#S e.pattern1)) ((#S e.pattern2)) =
+    (#S e.pattern1 e.pattern2 );
+}
+
+
+
+
+
+LinkBrackets {
+  e.Left (#TkOpenBracket s.Num) e.body (#TkCloseBracket s.Num) e.Right =
+    <LinkBrackets e.Left> 
+    (#Brackets <LinkBrackets e.body>)    
+    <LinkBrackets e.Right>;
+  e.Any = e.Any;
+}
+
+Min {
+  s.1 s.2 =
+    <Fetch
+      <Compare s.1 s.2>
+      {
+        '<' = s.1;
+        s.Other = s.2;
+      }
+    >;
+}
+
+Max {
+  s.1 s.2 =
+    <Fetch
+      <Compare s.1 s.2>
+      {
+        '>' = s.1;
+        s.Other = s.2;
+      }
+    >;
+}
+
+GetGeneralization {
+  (e.scanned) (e.gen '$' e.rep) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
+  (e.scanned) (#Brackets e.inBrackets) e.tail = 
+    <GetGeneralization (e.scanned (#Brackets <UnBracket <GetGeneralization () e.inBrackets>>)) e.tail>;
+  (e.scanned) (e.gen) e.tail = <GetGeneralization (e.scanned (e.gen)) e.tail>;
+  (e.scanned) = (e.scanned);
+}
+
+GetReplacement-Aux {
+  (e.gen '$') e.tail = ;
+  (#T '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned <BracketsPrepare e.rep>) (e.else ( #T '$' e.otherRep))>;
+  (e.gen '$' ((e.rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned e.rep) (e.else ( e.gen '$' e.otherRep))>;
+  (#Brackets (e.rep) e.otherRep ) e.tail (e.scanned) (e.else) =
+    <GetReplacement-Aux e.tail (e.scanned (#Brackets e.rep)) (e.else (#Brackets e.otherRep))>;
+  (e.gen) e.tail (e.scanned) (e.else) = <GetReplacement-Aux e.tail (e.scanned (e.gen)) (e.else (e.gen))>;
+  (e.scanned) (e.else) = (<ReversePattern e.scanned>) <GetReplacement e.else>;
+}
+
+GetReplacement {
+  e.all =
+    <GetReplacement-Aux e.all (/*scanned*/) (/*else*/)>;
+}
+
+BracketsPrepare {
+  e.all =
+    <Map
+      {
+        (#Brackets e.inBrackets) = 
+          (#Brackets <GetReplacement <BracketsPrepare e.inBrackets>>);
+        (e.any) = (e.any);
+      }
+      e.all
+    >;
+}
+
+$ENTRY Separator {
+  () = (())(());
+  (e.all) = <GetGeneralization () e.all>(<GetReplacement <BracketsPrepare e.all>>);
+}

@@ -8,10 +8,13 @@ $EXTERN Add, StrFromInt, WriteLine;
 $EXTERN EscapeChar;
 
 //FROM FastGen
-$EXTERN GetFastGen, CreateFastGen, ReverseFastGen, ReversePattern;
+$EXTERN CreateFastGen, ReverseFastGen, ReversePattern;
 
 //FROM HardSent
 $EXTERN GetHardPattern;
+
+//FROM GlobalGen
+$EXTERN GetGlobalGen, Separator;
 
 Dummy {
   e.any = ;
@@ -51,10 +54,9 @@ FastGenForming-Aux {
 FastGenForming {
   (()) e.tail = (()) e.tail;
   (e.comment) s.MaxMemory e.PreparedSentences =
-    <WriteLine 'GP\n' <FastGenForming-Aux <GenPattern <ReverseFastGen e.comment>>>>
+    // <WriteLine 'FGF\n' <FastGenForming-Aux <GenPattern <ReverseFastGen e.comment>>>>
     (e.comment)
     s.MaxMemory
-    // e.PreparedSentences;
     (#CmdSentence <FastGenForming-Aux <GenPattern <ReverseFastGen e.comment>>> e.PreparedSentences );
 }
 
@@ -110,8 +112,9 @@ HighLevelRASL-Function {
       <Seq
         // ({e.all = e.all <WriteLine 'start:'><WriteLine e.all>;})
         ({e.all = <Separate e.all>; })
+        ({(e.patterns)(e.results) = (e.patterns)(e.results) <WriteLine 'GCG:\n'<GetGlobalGen e.patterns>>;})
         // ({e.all = e.all <WriteLine 'sep:'><WriteLine e.all>;})
-        ({(e.patterns)(e.results) = <CreateFastGen e.patterns> (e.results); })
+        ({(e.patterns)(e.results) = 12345432345 <Separator <CreateFastGen e.patterns>> (e.results); })
         // ({e.all = e.all <WriteLine 'FG:\n'><WriteLine e.all>;})
         (MapToSentence)
         // ({e.all = e.all <WriteLine 'map:\n'><WriteLine e.all>;})
@@ -143,7 +146,7 @@ HighLevelRASL-Function {
             (#Function
               s.ScopeClass (e.Name)
               (#CmdIssueMem s.MaxMemory)
-              (#CmdComment 'FastGen: ' <GetFastGen e.comment>)
+              (#CmdComment 'FastGen: ' <CreateFastGen e.comment>)
               e.Sentences
               <Fetch
                 e.LastSentence

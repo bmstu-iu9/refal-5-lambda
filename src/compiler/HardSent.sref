@@ -1,7 +1,11 @@
-$EXTERN WriteLine, Map, Fetch;
 
+//FROM LibraryEx
+$EXTERN Map, Fetch;
+
+//FROM Library
+$EXTERN WriteLine;
   
-PreparePatternsHS-Aux {
+PreparePatternsHardSent-Aux {
   e.Pattern =
     <Map
       {
@@ -11,17 +15,17 @@ PreparePatternsHS-Aux {
         (#TkIdentifier s.ident) = (#Atom #TkIdentifier s.ident);
         (#TkVariable s.Mode e.Index) = 
           (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
-        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsHS-Aux e.inBrackets>);
+        (#Brackets e.inBrackets) = (#Brackets <PreparePatternsHardSent-Aux e.inBrackets>);
         /* пусто */ = /* пусто */;
       }
       e.Pattern
     >;
 }
 
-PreparePatternsHS {
+PreparePatternsHardSent {
   (e.Pattern) e.Tail = 
-    (<PreparePatternsHS-Aux e.Pattern>)
-    <PreparePatternsHS e.Tail>;
+    (<PreparePatternsHardSent-Aux e.Pattern>)
+    <PreparePatternsHardSent e.Tail>;
   = ;
 }
 
@@ -77,7 +81,7 @@ $ENTRY CreateHardPattern {
   e.patterns =
     <Map 
       { (e.sent) = (<CreateHardPattern-Aux e.sent ('_')>); }
-      <PreparePatternsHS e.patterns>
+      <PreparePatternsHardSent e.patterns>
     >;
 }
 
@@ -92,5 +96,5 @@ GetHardPattern-Aux {
 }
 
 $ENTRY GetHardPattern {
-  e.all = <GetHardPattern-Aux <CreateHardPattern-Aux <PreparePatternsHS-Aux e.all> ('_')>>;
+  e.all = <GetHardPattern-Aux <CreateHardPattern-Aux <PreparePatternsHardSent-Aux e.all> ('_')>>;
 }

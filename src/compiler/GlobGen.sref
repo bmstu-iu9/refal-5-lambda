@@ -1,2 +1,0 @@
-$EXTERN WriteLine, Map, Fetch, Add, UnBracket;
-
