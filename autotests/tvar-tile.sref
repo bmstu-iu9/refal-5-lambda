@@ -1,0 +1,7 @@
+ 
+$ENTRY Go {
+  =
+    <{ '<Faaaa>' = ; }
+      <{ t.X = '<F' t.X t.X t.X t.X '>'; } 'a'>
+    >;
+}

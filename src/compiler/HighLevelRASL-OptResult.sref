@@ -196,6 +196,9 @@ GenResult {
       {
         (#Tile e.Tile) = ;
 
+        (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
+          (#CmdCopyVar 'e' s.Offset s.SampleOffset);
+
         (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
           (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
@@ -405,11 +408,25 @@ CollectTiles {
     <CollectTiles e.Other> (e.Tile);
 
   e.Allocated (#Tile e.Tile) e.Other =
-    <CollectTiles e.Other> (e.Tile) (e.Allocated);
+    <CollectTiles e.Other> (e.Tile) <CollectTiles-Alloc e.Allocated>;
 
   /* пусто */ = /* пусто */;
 
-  e.Allocated = (e.Allocated);
+  e.Allocated = <CollectTiles-Alloc e.Allocated>;
+}
+
+CollectTiles-Alloc {
+  (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
+    <CollectTiles-Alloc e.Alloc>
+    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset));
+
+  e.Alloc (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) =
+    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset))
+    <CollectTiles-Alloc e.Alloc>;
+
+  /* пусто */ = /* пусто */;
+
+  e.Alloc = (e.Alloc);
 }
 
 GenTrashComment {

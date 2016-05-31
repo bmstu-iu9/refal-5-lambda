@@ -379,6 +379,7 @@ GenCommand {
   (e.Indent) (#CmdSetRes s.Offset) =
     (e.Indent)
     (e.Indent 'refalrts::Iter trash_prev = arg_begin->prev;')
+    (e.Indent 'refalrts::use(trash_prev);')
     <Fetch
       s.Offset
       {

@@ -1,0 +1,10 @@
+$ENTRY Go {
+  =
+    <CopyE ('abc') #X><CopyE (/* пусто */) #X>;
+}
+
+NIL { e.Any = ; }
+
+CopyE {
+  (e.Arg) t.X = <NIL (e.Arg) '-' e.Arg t.X>;
+}
