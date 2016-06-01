@@ -6,9 +6,9 @@ goto :EOF
 setlocal
   call ..\c-plus-plus.conf.bat
   if {%1}=={} (
-    for %%s in (*.sref) do call :RUN_TEST %%s
+    for %%s in (*.sref) do call :RUN_TEST %%s || exit /b 1
   ) else (
-    for %%s in (%*) do call :RUN_TEST %%s
+    for %%s in (%*) do call :RUN_TEST %%s || exit /b 1
   )
 endlocal
 goto :EOF
@@ -16,15 +16,15 @@ goto :EOF
 :RUN_TEST
 setlocal
   set SRFLAGS=
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=-OP
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=-OR
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=--gen=direct
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=--gen=interp
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1
+  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
 
