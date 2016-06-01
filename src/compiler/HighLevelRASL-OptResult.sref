@@ -392,6 +392,7 @@ GenSplicesComment {
       }
       <CollectTiles e.Result>
     >
+    (#CmdUseRes)
     <GenTrashComment (e.LeftTile) e.Trash>;
 
   (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);

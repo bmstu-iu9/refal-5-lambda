@@ -477,6 +477,10 @@ GenCommand {
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     <GenReturn #Success e.Indent>;
 
+  (e.Indent) (#CmdUseRes) =
+    (e.Indent)
+    (e.Indent 'refalrts::use( res );');
+
   (e.Indent) (#CmdReturnResult-NoTrash) =
     (e.Indent)
     <GenReturn #Success e.Indent>;
