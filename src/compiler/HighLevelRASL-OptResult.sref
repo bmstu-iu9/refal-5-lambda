@@ -803,7 +803,7 @@ DoGenPattern {
       )
       e.Ranges-E
       (e.Vars)
-      (e.Commands (#CmdCallSave #AlgLeft s.Num s.ContextOffset e.Name))
+      (e.Commands (#CmdCallSave #AlgLeft s.Num s.ContextOffset))
     >;
 
   // Распознавание структурных скобок

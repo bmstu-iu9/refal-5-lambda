@@ -432,12 +432,16 @@ void refalrts::adt_pointers(
 
 refalrts::Iter refalrts::call_left(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
-  refalrts::RefalFunctionPtr tag,
   refalrts::Iter first, refalrts::Iter last
 ) {
+  assert( (first != 0) && (last != 0) );
+  assert( cDataOpenCall == first->tag );
+
   refalrts::Iter left_bracket = first;
-  refalrts::Iter right_bracket = left_bracket->link_info;
+  refalrts::Iter right_bracket = last;
   refalrts::Iter function = next( left_bracket );
+
+  assert( left_bracket->link_info == right_bracket );
 
   if( next( function ) != right_bracket ) {
     res_first = next( function );
@@ -1395,7 +1399,6 @@ void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
     default:
       assert( SWITCH_DEFAULT_VIOLATION );
       throw refalrts::UnexpectedTypeException();
-      break;
   }
 }
 

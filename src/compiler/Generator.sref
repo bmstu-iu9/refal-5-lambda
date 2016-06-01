@@ -298,7 +298,7 @@ GenCommand {
     >
     ;
 
-  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
     (e.Indent
@@ -306,7 +306,7 @@ GenCommand {
       'refalrts::call_' <StrFromDirection s.Direction>
       '( '
       <ContextRange s.InnerBrackets> ', '
-      e.Name ', ' <ContextRange s.BracketNumber> ' );'
+      <ContextRange s.BracketNumber> ' );'
     );
 
   (e.Indent) (#CmdEmpty s.Direction s.BracketNumber) =

@@ -208,7 +208,6 @@ extern Iter adt_right(
 
 extern Iter call_left(
   Iter& res_first, Iter& res_last,
-  RefalFunctionPtr tag,
   Iter first, Iter last
 );
 
