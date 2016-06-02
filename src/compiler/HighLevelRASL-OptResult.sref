@@ -580,7 +580,6 @@ FoldOpenELoops {
 
 GenPattern {
   e.Pattern =
-    //<WriteLine 'Pattern: ' e.Pattern>
     <Fetch
       <DoGenPattern
         2 /*5*/
