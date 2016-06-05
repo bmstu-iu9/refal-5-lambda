@@ -781,6 +781,20 @@ PrintMatchRepeated {
 }
 
 PrintMatch {
+  (e.Indent) #AlgTerm s.Offset (e.Function) e.TextRep =
+    (e.Indent
+      'if( ! refalrts::' e.Function '_left( ' e.TextRep ', '
+      <ContextItem s.Offset> ', ' <ContextItem s.Offset> ' ) )'
+    )
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+    
+  // (e.Indent) #AlgTerm s.Offset (e.Function) e.TextRep =
+    // (e.Indent
+      // 'if( ! refalrts::' e.Function '_term( ' e.TextRep ', '
+      // <ContextItem s.Offset> ' ) )'
+    // )
+    // (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
   (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>

@@ -251,6 +251,7 @@ Trim-R {
   e.Line = e.Line;
 }
 
+
 /**
   <Seq s.F1 s.F2 ... s.Fn> == s.Compose
 
