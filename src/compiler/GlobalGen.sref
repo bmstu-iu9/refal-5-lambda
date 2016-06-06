@@ -14,9 +14,7 @@ $ENTRY CreateGlobalGen {
     <Fetch
       <CreateFastGen e.HardSentences>
       <Seq
-        {e.all = e.all <WriteLine 'CGG1\n' e.all>;}
         {(e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
-        {e.all = e.all <WriteLine 'CGG2\n' e.all>;}
         {
           (e.FastGen)(e.Inspected) =
             (e.FastGen)
@@ -28,7 +26,6 @@ $ENTRY CreateGlobalGen {
 
 InspectFastGen {
   (#E '$' e.EReplacements ) e.Tail =
-    <WriteLine 'IFG1\n' (#E '$' e.EReplacements )>
     (#E 
       <Fetch
         <ReplacmentsCounter 0 () e.EReplacements>
@@ -42,15 +39,13 @@ InspectFastGen {
     )
     <InspectFastGen e.Tail>;
   (#Brackets e.inBrackets) e.Tail =
-    <WriteLine 'IFG2\n' (#Brackets e.inBrackets)>
     (#Brackets  <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
-  (e.Any) e.Tail = <WriteLine 'IFG3\n' e.Any> (e.Any) <InspectFastGen e.Tail>;
+  (e.Any) e.Tail = (e.Any) <InspectFastGen e.Tail>;
    = ;
 }
 
 ReplacmentsCounter {
   s.Counter (e.Scanned) ((e.Replacement)) e.Tail =
-    <WriteLine 'RC\n' s.Counter (e.Scanned) ((e.Replacement)) e.Tail>
     <Fetch
       <InList (<PrepRep e.Replacement>) (e.Scanned)>
       {
@@ -87,7 +82,6 @@ InList {
 GlobalGen {
   /* empty */ = ();
   e.Inspected =
-    <WriteLine 'Inspected\n' e.Inspected>
     <Map
       {
         (#E 0 '$' e.Body) = <GlobalGen-Aux e.Body>;
@@ -409,7 +403,6 @@ GetReplacement-Aux {
     <GetReplacement-Aux e.Tail (e.Scanned) (e.Else)>;
   (/*Scanned*/) (/*Else*/) = ();
   (e.Scanned) (e.Else) =
-    <WriteLine 'reverse\n' e.Scanned>
     (<ReversePattern e.Scanned>) <GetReplacement e.Else>;
 }
 

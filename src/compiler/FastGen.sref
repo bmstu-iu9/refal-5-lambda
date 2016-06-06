@@ -99,7 +99,6 @@ SplitReps-Stop {
 
 SplitReps {
   e.Reps =
-    <WriteLine 'in\n' e.Reps>
     <Fetch
       <SplitReps-Stop () <SplitReps-Brackets e.Reps>>
       {
@@ -292,10 +291,6 @@ $ENTRY CreateFastGen {
   // args   e.Patterns
   // return FastGen with replacements
   e.Patterns =
-    <WriteLine 'PPFG\n'
-      <PreparePatternsFastGen
-        e.Patterns
-      >>
     <FastGen
       <PreparePatternsFastGen
         e.Patterns

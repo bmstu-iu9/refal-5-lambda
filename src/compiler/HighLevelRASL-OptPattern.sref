@@ -85,7 +85,7 @@ HighLevelRASL-MulFunction {
     <Fetch
       e.Sentences
       <Seq
-        ({e.all = e.all <WriteLine 'start:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'start:\n' e.all>;})
         (MapReduce
           {
             (e.HardGens) ((e.Pattern) (e.Result)) =
@@ -100,12 +100,12 @@ HighLevelRASL-MulFunction {
           }
           (/* hard gens */)
         )
-        ({e.all = e.all <WriteLine 'HL1:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'HL1:\n' e.all>;})
         {
           (e.HardPatterns) e.SentenceTails =
             <CreateGlobalGen e.HardPatterns> e.SentenceTails;
         }
-        ({e.all = e.all <WriteLine 'HL2:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'HL2:\n' e.all>;})
         {
           (e.FastGen) (e.GlobalGen) e.SentenceTails =
             (
@@ -115,7 +115,7 @@ HighLevelRASL-MulFunction {
             (<SplitGen (e.GlobalGen)>)
             e.SentenceTails;
         }
-        ({e.all = e.all <WriteLine 'HL3:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'HL3:\n' e.all>;})
         {
           (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
             (e.Comments)
@@ -131,7 +131,7 @@ HighLevelRASL-MulFunction {
               >
             >;
         }
-        {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
+        // {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
         {
           (e.Comments^) ((e.Vars) s.ContextSize (e.CommonMatchCommands)) e.SentencesWithSubst =
             (e.Comments e.CommonMatchCommands)
@@ -153,7 +153,7 @@ HighLevelRASL-MulFunction {
               s.ContextSize e.SentencesWithSubst
             >;
         }
-        ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
         {
           (e.Prefix) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
@@ -175,7 +175,7 @@ HighLevelRASL-MulFunction {
           (e.Prefix) 0 /* нет предложений */ =
             (#CmdEnum s.ScopeClass e.Name);
         }
-        ({e.all = e.all <WriteLine 'End:\n' e.all>;})
+        // ({e.all = e.all <WriteLine 'End:\n' e.all>;})
       >
     >;
 }
@@ -305,7 +305,6 @@ GenPattern {
         2 (#E 0 e.Pattern) (/* vars */) (/* commands */)
       >
       <Seq
-         // {e.all = e.all <WriteLine 'after do gen\n' e.all>;}
          {
           s.ContextOffset (e.Vars) e.Commands =
             (e.Vars)
@@ -338,7 +337,6 @@ GenPattern-New {
         s.MaxMemory e.Substitutes (/* vars */) (e.Saves)
       >
       <Seq
-         // {e.all = e.all <WriteLine 'after do gen\n' e.all>;}
          {
           s.ContextOffset (e.Vars) e.Commands =
             (e.Vars)
