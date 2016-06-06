@@ -1,0 +1,15 @@
+MakeClosure {
+  e.X = { = e.X; };
+}
+
+TestCopyClosure {
+  s.X '>' '<' 's' =
+    <s.X> <s.X>;
+}
+
+$ENTRY Go {
+  =
+    <TestCopyClosure
+      <MakeClosure 'Hello'> '><s'
+    >;
+}
