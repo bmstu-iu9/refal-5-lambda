@@ -152,46 +152,80 @@ extern void use( Iter& );
 
 void zeros( Iter context[], int size );
 
+//операции реинициализации
+
+extern void reinit_svar(Iter res, Iter sample);
+extern void reinit_char(Iter res, char ch);
+extern void update_char(Iter res, char ch);
+extern void reinit_number(Iter res, RefalNumber num);
+extern void update_number(Iter res, RefalNumber num);
+extern void reinit_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
+extern void update_name(Iter res, RefalFunctionPtr func, RefalFuncName name = 0);
+extern void reinit_ident(Iter res, RefalIdentifier ident);
+extern void update_ident(Iter res, RefalIdentifier ident);
+
+extern void reinit_open_bracket(Iter res);
+extern void reinit_close_bracket(Iter res);
+
+extern void reinit_open_adt(Iter res);
+extern void reinit_close_adt(Iter res);
+
+extern void reinit_open_call(Iter res);
+extern void reinit_close_call(Iter res);
+
+
+//операции
+
+
 // Операции распознавания образца
 
 extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
 extern bool empty_seq( Iter begin, Iter end );
 
-extern bool function_left( RefalFunctionPtr func, Iter& first, Iter& last );
-extern bool function_right( RefalFunctionPtr func, Iter& first, Iter& last );
+extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
+extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
 
 extern Iter char_left( char ch, Iter& first, Iter& last );
 extern Iter char_right( char ch, Iter& first, Iter& last );
 
-extern bool number_left( RefalNumber num, Iter& first, Iter& last );
-extern bool number_right( RefalNumber num, Iter& first, Iter& last );
+extern Iter number_left( RefalNumber num, Iter& first, Iter& last );
+extern Iter number_right( RefalNumber num, Iter& first, Iter& last );
 
-extern bool ident_left( RefalIdentifier ident, Iter& first, Iter& last );
-extern bool ident_right( RefalIdentifier ident, Iter& first, Iter& last );
+extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
+extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
 
-extern bool adt_left(
+extern Iter adt_left(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
-extern bool adt_right(
+extern Iter adt_right(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter& first, Iter& last
 );
 
-extern bool brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
-extern bool brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter call_left(
+  Iter& res_first, Iter& res_last,
+  Iter first, Iter last
+);
+
+extern void call_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
+extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
+extern void bracket_pointers(Iter left_bracket, Iter& right_bracket);
+
+extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
+extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 
-extern bool tvar_left( Iter& tvar, Iter& first, Iter& last );
-extern bool tvar_right( Iter& tvar, Iter& first, Iter& last );
+extern refalrts::Iter tvar_left( Iter& tvar, Iter& first, Iter& last );
+extern refalrts::Iter tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
-extern bool repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
+extern refalrts::Iter repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
+extern refalrts::Iter repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
 extern bool repeated_evar_left(
   Iter& evar_b, Iter& evar_e,
@@ -263,6 +297,7 @@ extern Iter splice_elem( Iter res, Iter elem );
 extern Iter splice_stvar( Iter res, Iter var );
 extern Iter splice_evar( Iter res, Iter first, Iter last );
 extern void splice_to_freelist( Iter first, Iter last );
+extern void splice_to_freelist_open( Iter before_first, Iter after_last );
 extern void splice_from_freelist( Iter pos );
 
 extern FnResult create_closure( Iter begin, Iter end );

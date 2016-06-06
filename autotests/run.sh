@@ -6,7 +6,7 @@ run_test_aux() {
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
-  ../bin/srefc-core $SREF 2>__error.txt
+  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
   if [ $? -gt 0 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit
@@ -17,7 +17,7 @@ run_test_aux() {
     exit
   fi
 
-  g++ -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE $CPP ../srlib/refalrts.cpp
+  g++ -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE -g $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED

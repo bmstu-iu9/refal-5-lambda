@@ -17,6 +17,7 @@ setlocal
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
     -s srefc-core.exe ^
+    %SRMAKE_FLAGS% ^
     -c "%CPPLINE% %CPPLINE_FLAGS%" ^
     %* -D "%LIBDIR%"
 endlocal
