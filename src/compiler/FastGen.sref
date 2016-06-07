@@ -41,6 +41,7 @@ PreparePatternsFastGen-Aux {
       {
         (s.type (e.idx) (( e.Replacement)) ) = (s.type '$' ((e.Replacement)) );
         (#Brackets e.inBrackets) = (#Brackets <PreparePatternsFastGen-Aux e.inBrackets>);
+        (#ADT-Brackets (e.Name) e.inBrackets) = (#ADT-Brackets (e.Name) <PreparePatternsFastGen-Aux e.inBrackets>);
         (e.any) = (e.any);
       }
       e.Pattern
@@ -113,6 +114,10 @@ $ENTRY FastGen-Terms {
   /* с #E переменной - все #E переменная */
   ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) =
     (#E '$' e.Pattern1 e.Pattern2 );
+  
+  /* скобки с атомами */
+  ((#ADT-Brackets (e.Name) e.1)) ((#Atom e.val)) =
+    (#T '$' ((#ADT-Brackets (e.Name) e.1 )) (( #Atom e.val )) );
     
   ((#E '$' e.Pattern )) ((e.any)) =
     (#E '$' e.Pattern (((e.any))));
@@ -120,7 +125,9 @@ $ENTRY FastGen-Terms {
   ((e.any)) ((#E '$' e.Pattern)) =
     (#E '$' (((e.any))) e.Pattern );
   
-  /* скобки с атомами */
+  ((#Atom e.val)) ((#ADT-Brackets (e.Name) e.1)) =
+    (#T '$' ((#Atom e.val)) ((#ADT-Brackets (e.Name) e.1 )) );
+ 
   ((#Brackets e.1)) ((#Atom e.val)) =
     (#T '$' (( #Brackets e.1 )) (( #Atom e.val )) );
   
@@ -138,12 +145,24 @@ $ENTRY FastGen-Terms {
   ((#Brackets e.1)) ((#Brackets e.2)) =
     (#Brackets <UnBracket <FastGen (e.1 ) (e.2 )>>);
   
+  ((#ADT-Brackets (e.Name) e.1 )) ((#ADT-Brackets (e.Name) e.2 )) =
+    (#ADT-Brackets (e.Name) <UnBracket <FastGen (e.1 ) (e.2 )>>);
+  
+  ((#ADT-Brackets (e.Name1) e.1 )) ((#ADT-Brackets (e.Name2) e.2 )) =
+    (#T '$' (((#ADT-Brackets (e.Name1) e.1 ))) (((#ADT-Brackets (e.Name2) e.2 ))) );
+    
   /* скобки с #T переменной */
   ((#T '$' e.Pattern)) ((#Brackets e.inBr)) =
     (#T '$' e.Pattern (((#Brackets e.inBr))) );
     
   ((#Brackets e.inBr)) ((#T '$' e.Pattern)) =
     (#T '$' (((#Brackets e.inBr))) e.Pattern );
+  
+  ((#T '$' e.Pattern)) ((#ADT-Brackets (e.Name) e.inBr)) =
+    (#T '$' e.Pattern (((#ADT-Brackets (e.Name) e.inBr))) );
+    
+  ((#ADT-Brackets (e.Name) e.inBr)) ((#T '$' e.Pattern)) =
+    (#T '$' (((#ADT-Brackets (e.Name) e.inBr))) e.Pattern );
   
   /* Атом */
   ((#Atom e.val)) ((#Atom e.val)) = (#Atom e.val);
@@ -205,8 +224,7 @@ FastGen-MeN {
     (#E '$' ((e.inE1)) ((e.inE2)) );
   
   (e.in1)(e.in2) = 
-    // (#E '$' ((<UnBracket <ModifyE e.in1>>)) ((<UnBracket <ModifyE e.in2>>)) );
-    (#E '$' ((e.in1)) ((e.in2)) );
+    (#E '$' <SplitReps e.in1> <SplitReps e.in2> );
 }
 
 LengthComp {
@@ -231,23 +249,10 @@ FastGen {
   /* 1. Предложения являются термами; cтроим БО согласно таблице */
   (t.1) (t.2) e.Tail = <FastGen (<FastGen-Terms (t.1) (t.2)>) e.Tail>;
   
-  /* 1.25. Пара Е-шек */
+  /* 1.5. Пара Е-шек */
   ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) e.Tail =
     <FastGen
       ((#E '$' e.Pattern1 e.Pattern2 ))
-      e.Tail
-    >;
-
-  /* 1.5. Что-то среднее между (M, N) и (K) */
-  ((#E '$' e.Pattern )) (e.any) e.Tail =
-    <FastGen
-      ((#E '$' e.Pattern <SplitReps e.any> ))
-      e.Tail
-    >;
-
-  (e.any) ((#E '$' e.Pattern)) e.Tail =
-    <FastGen
-      ((#E '$' <SplitReps e.any> e.Pattern ))
       e.Tail
     >;
 
@@ -260,6 +265,19 @@ FastGen {
         ( e.1 (#E '$' (e.Pattern1)) e.2 )
         ( e.3 (#E '$' (e.Pattern2)) e.4 )
       >)
+      e.Tail
+    >;
+
+  /* 2.5. Что-то среднее между (M, N) и (K) */
+  ((#E '$' e.Pattern )) (e.any) e.Tail =
+    <FastGen
+      ((#E '$' e.Pattern <SplitReps e.any> ))
+      e.Tail
+    >;
+
+  (e.any) ((#E '$' e.Pattern)) e.Tail =
+    <FastGen
+      ((#E '$' <SplitReps e.any> e.Pattern ))
       e.Tail
     >;
 
@@ -276,15 +294,6 @@ FastGen {
   /* 4. Все остальное */ 
   // (e.1) (e.2) = ((#E '$' ((<ModifyE e.1> )) ((<ModifyE e.2> )) ));
   (e.1) (e.2) = ((#E '$' ((e.1)) ((e.2)) ));
-}
-
-Repare {
-   = ;
-  (s.Mode '$' ((e.Rep)) ) e.Tail = <Repare e.Rep> <Repare e.Tail>;
-  (s.Mode '$' e.Reps ) e.Tail = (s.Mode '$' <Repare e.Reps>) <Repare e.Tail>;
-  ((e.Rep)) e.Tail = ((<Repare e.Rep>)) <Repare e.Tail>;
-  (#Brackets e.inBrackets) e.Tail = (#Brackets <Repare e.inBrackets>) <Repare e.Tail>;
-  (e.Any) e.Tail = (e.Any) <Repare e.Tail>;
 }
 
 $ENTRY CreateFastGen {

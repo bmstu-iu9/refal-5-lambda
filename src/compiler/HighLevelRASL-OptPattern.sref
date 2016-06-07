@@ -119,7 +119,7 @@ HighLevelRASL-MulFunction {
         {
           (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
             (e.Comments)
-            (<GenPattern <ReverseGen e.CommonPattern>>) //GenPattern-New
+            (<GenPattern <ReverseGen e.CommonPattern>>)
             <DelAccumulator
               <MapReduce
                 {
@@ -431,30 +431,30 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
     >;
   s.ContextOffset
-  e.Substs-B (#T s.Num (#TkName s.Char)) e.Substs-E
+  e.Substs-B (#T s.Num (#TkName e.Name)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name)) //
     >;
 
   s.ContextOffset
-  e.Substs-B (#T s.Num (#TkIdentifier s.Char)) e.Substs-E
+  e.Substs-B (#T s.Num (#TkIdentifier e.Ident)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
     >;
 
   s.ContextOffset
-  e.Substs-B (#T s.Num (#TkNumber s.Char)) e.Substs-E
+  e.Substs-B (#T s.Num (#TkNumber s.Value)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
     >;
 
   s.ContextOffset
@@ -509,30 +509,30 @@ DoGenPattern {
       (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
     >;
   s.ContextOffset
-  e.Substs-B (#S s.Num (#TkName s.Char)) e.Substs-E
+  e.Substs-B (#S s.Num (#TkName e.Name)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num s.Char))  //
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name))  //
     >;
 
   s.ContextOffset
-  e.Substs-B (#S s.Num (#TkIdentifier s.Char)) e.Substs-E
+  e.Substs-B (#S s.Num (#TkIdentifier e.Ident)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
     >;
 
   s.ContextOffset
-  e.Substs-B (#S s.Num (#TkNumber s.Char)) e.Substs-E
+  e.Substs-B (#S s.Num (#TkNumber s.Value)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
     >;
 
   s.ContextOffset
