@@ -19,6 +19,8 @@ PreparePatternHardSent {
         (#TkVariable s.Mode e.Index) = 
           (<Fetch s.Mode { 'e' = #E; 't' = #T; 's' = #S; }> (e.Index) ());
         (#Brackets e.inBrackets) = (#Brackets <PreparePatternHardSent e.inBrackets>);
+        (#ADT-Brackets (e.Name) e.inBrackets) =
+          (#ADT-Brackets (e.Name) <PreparePatternHardSent e.inBrackets>);
         /* пусто */ = /* пусто */;
       }
       e.Pattern
@@ -29,6 +31,19 @@ CreateHardPattern-Aux {
   // args   t.Token1 ... t.TokenN - Prepared pattern
   // return t.Term1 ... t.TermN - Hard Sentence pattern
 
+  /* предлажение имеет вид [P'] */
+  (#ADT-Brackets (e.Name) e.body) ( e.tek_index ) = 
+    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body ()>);
+    
+  /* отщипнуть терм слева или справа */
+  (#ADT-Brackets (e.Name) e.body) e.smth ( e.tek_index ) = 
+    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body ('l')>) 
+    <CreateHardPattern-Aux e.smth ('r')>;
+    
+  e.smth (#ADT-Brackets (e.Name) e.body) ( e.tek_index ) = 
+    <CreateHardPattern-Aux e.smth ('l')> 
+    (#ADT-Brackets (e.Name) <CreateHardPattern-Aux e.body ('r')>);
+    
   /* предлажение имеет вид (P') */
   (#Brackets e.body) ( e.tek_index ) = 
     (#Brackets <CreateHardPattern-Aux e.body ()>);
@@ -52,7 +67,7 @@ CreateHardPattern-Aux {
     (#S('idx') ( ((#S (e.name) )) ));
   
   (#T (e.name) (e.pattern)) e.smth ( e.tek_index ) = 
-    (#T('idx') ( ((#T (e.name))) ))
+    (#T('idx') (( (#T (e.name)) )))
     <CreateHardPattern-Aux e.smth ('r')>;
   
   e.smth (#T (e.name) (e.pattern)) ( e.tek_index ) = 
@@ -98,6 +113,8 @@ $ENTRY HardPatternComment {
         (#Atom #TkIdentifier e.Ident) e.Tail = '\"' e.Ident '\"' <HardPatternComment e.Tail>;
         (#Brackets e.inBrackets) e.Tail =
           (<HardPatternComment e.inBrackets>) <HardPatternComment e.Tail>;
+        (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
+          '['e.Name ' '<HardPatternComment e.inBrackets>']' <HardPatternComment e.Tail>;
         (s.Tag e.Any) e.Tail = s.Tag <HardPatternComment e.Tail>;
       }
       e.Pattern

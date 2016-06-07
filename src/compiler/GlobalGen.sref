@@ -40,6 +40,8 @@ InspectFastGen {
     <InspectFastGen e.Tail>;
   (#Brackets e.inBrackets) e.Tail =
     (#Brackets  <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
+  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
+    (#ADT-Brackets (e.Name)  <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
   (e.Any) e.Tail = (e.Any) <InspectFastGen e.Tail>;
    = ;
 }
@@ -61,6 +63,8 @@ PrepRep {
   (#Atom e.Body) e.Tail = (#Atom e.Body) <PrepRep e.Tail>;
   (#Brackets e.inBrackets) e.Tail = 
     ( #Brackets <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
+  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail = 
+    ( #ADT-Brackets (e.Name) <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
   (s.Mode e.Body) e.Tail = (s.Mode) <PrepRep e.Tail>;
   (e.Else) e.Tail = (e.Else) <PrepRep e.Tail>;
    = ;
@@ -88,6 +92,8 @@ GlobalGen {
         (#E 1 '$' e.Body) = (#E '$' e.Body);
         (#Brackets e.inBrackets) =
           (#Brackets <GlobalGen e.inBrackets>);
+        (#ADT-Brackets (e.Name) e.inBrackets) =
+          (#ADT-Brackets (e.Name) <GlobalGen e.inBrackets>);
         (e.Any) = (e.Any);
       }
       e.Inspected
@@ -218,8 +224,11 @@ Superposition {
   () (s.Num1 s.Num2) = (#E '$' (()) );
   (e.Any) (0 0) = (#E '$' ((e.Any)));
   
-  ((#Brackets e.inBrackets) e.Tail)(s.Num1 0) = 
+  ((#Brackets e.inBrackets) e.Tail)(s.Num1 0) =
     (#Brackets e.inBrackets) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
+  ((#ADT-Brackets (e.Name) e.inBrackets) e.Tail)(s.Num1 0) =
+    (#ADT-Brackets (e.Name) e.inBrackets)
+    <Superposition (e.Tail) (<Dec s.Num1> 0)>;
   ((#Atom e.Body) e.Tail)(s.Num1 0) = 
     (#Atom e.Body) <Superposition (e.Tail) (<Dec s.Num1> 0)>;
   ((#S e.Body) e.Tail)(s.Num1 0) = 
@@ -229,6 +238,9 @@ Superposition {
     
   (e.Head (#Brackets e.inBrackets)) (s.Num1 s.Num2) =
     <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#Brackets e.inBrackets);
+  (e.Head (#ADT-Brackets (e.Name) e.inBrackets)) (s.Num1 s.Num2) =
+    <Superposition (e.Head) (s.Num1 <Dec s.Num2>)>
+    (#ADT-Brackets (e.Name) e.inBrackets);
   (e.Head (#Atom e.Body)) (s.Num1 s.Num2) =
     <Superposition (e.Head) (s.Num1 <Dec s.Num2>)> (#Atom e.Body);
   (e.Head (#S e.Body)) (s.Num1 s.Num2) =
@@ -280,6 +292,8 @@ CalcComplexity-aux {
     <CalcComplexity-aux <Add s.Comp 3> e.Tail>;
   s.Comp (#Brackets e.Body) e.Tail =
     <CalcComplexity-aux <Add s.Comp 3> e.Body e.Tail>;
+  s.Comp (#ADT-Brackets (e.Name) e.Body) e.Tail =
+    <CalcComplexity-aux <Add s.Comp 3> e.Body e.Tail>;
   s.Comp = s.Comp;
 }
 
@@ -314,6 +328,8 @@ $ENTRY PatternComment {
         (#Atom #TkIdentifier e.Ident) e.Tail = '\"' e.Ident '\"' <PatternComment e.Tail>;
         (#Brackets e.inBrackets) e.Tail =
           (<PatternComment e.inBrackets>) <PatternComment e.Tail>;
+        (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
+          '[' e.Name ' ' <PatternComment e.inBrackets>']' <PatternComment e.Tail>;
         (s.Tag e.Any) e.Tail = s.Tag <PatternComment e.Tail>;
       }
       e.Pattern
@@ -323,6 +339,8 @@ $ENTRY PatternComment {
 $ENTRY ReverseGen {
   (#Brackets e.inBrackets) e.Tail = 
     (#Brackets <ReverseGen e.inBrackets>) <ReverseGen e.Tail>;
+  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail = 
+    (#ADT-Brackets (e.Name) <ReverseGen e.inBrackets>) <ReverseGen e.Tail>;
   (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReverseGen e.Tail>;
   (s.Mode (e.Name) e.Any) e.Tail =
     (#TkVariable <Fetch s.Mode { #E = 'e'; #T = 't'; #S = 's'; }> e.Name)
@@ -342,6 +360,9 @@ ReversePattern-Aux {
   (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReversePattern-Aux e.Tail>;
   (#Brackets e.inBrackets) e.Tail = 
     ( #Brackets <ReversePattern-Aux e.inBrackets> ) <ReversePattern-Aux e.Tail>;
+  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail = 
+    ( #ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets> )
+    <ReversePattern-Aux e.Tail>;
   (s.Mode (e.Name) e.Any) e.Tail =
     (#TkVariable <Fetch s.Mode { #E = 'e'; #T = 't'; #S = 's'; }> e.Name)
     <ReversePattern-Aux e.Tail>;
@@ -375,6 +396,9 @@ DoSplitGen {
   (e.Idx)(#Brackets e.inBrackets) e.Tail =
     (#Brackets <DoSplitGen (e.Idx 'B') e.inBrackets>)
     <DoSplitGen (e.Idx 'T') e.Tail>;
+  (e.Idx)(#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
+    (#ADT-Brackets (e.Name) <DoSplitGen (e.Idx 'D') e.inBrackets>)
+    <DoSplitGen (e.Idx 't') e.Tail>;
   (e.Idx)(e.Any) e.Tail =
     (e.Any) <DoSplitGen (e.Idx 'A') e.Tail>;
   (e.Idx) = ;
@@ -384,7 +408,15 @@ GetGeneralization {
   (e.Scanned) (s.gen (e.name)'$' ((e.rep)) e.reps) e.Tail =
     <GetGeneralization (e.Scanned (s.gen (e.name))) e.Tail>;
   (e.Scanned) (#Brackets e.inBrackets) e.Tail =
-    <GetGeneralization (e.Scanned (#Brackets <UnBracket <GetGeneralization () e.inBrackets>>)) e.Tail>;
+    <GetGeneralization 
+      (e.Scanned (#Brackets <UnBracket <GetGeneralization () e.inBrackets>>))
+      e.Tail
+    >;
+  (e.Scanned) (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
+    <GetGeneralization
+      (e.Scanned (#ADT-Brackets (e.Name) <UnBracket <GetGeneralization () e.inBrackets>>))
+      e.Tail
+    >;
   (e.Scanned) (e.gen) e.Tail = <GetGeneralization (e.Scanned (e.gen)) e.Tail>;
   (e.Scanned) = (e.Scanned);
 }
@@ -393,13 +425,15 @@ GetReplacement-Aux {
   (s.Mode (e.Name) '$') e.Tail = ;
   (#Brackets e.Replacements) e.Tail (e.Scanned) (e.Else) =
     <GetReplacement-Aux e.Replacements e.Tail (e.Scanned) (e.Else)>;
+  (#ADT-Brackets (e.Name) e.Replacements) e.Tail (e.Scanned) (e.Else) =
+    <GetReplacement-Aux e.Replacements e.Tail (e.Scanned) (e.Else)>;
   (s.Mode (e.Name) '$' ((e.rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else) =
     <GetReplacement-Aux
       e.Tail 
       (e.Scanned (s.Mode (e.Name) '$' e.rep))
       (e.Else (s.Mode (e.Name) '$' e.otherRep))
     >;
-  (s.Mode e.gen) e.Tail (e.Scanned) (e.Else) =
+  (s.Mode s.Type e.gen) e.Tail (e.Scanned) (e.Else) =
     <GetReplacement-Aux e.Tail (e.Scanned) (e.Else)>;
   (/*Scanned*/) (/*Else*/) = ();
   (e.Scanned) (e.Else) =
