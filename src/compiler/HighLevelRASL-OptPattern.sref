@@ -478,7 +478,7 @@ DoGenPattern {
       )
       (
         e.Commands
-        (#CmdRepeated #AlgTerm s.Num s.Mode s.SampleOffset) //
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.ContextOffset s.SampleOffset) //
       )
     >;
 
@@ -547,7 +547,7 @@ DoGenPattern {
       )
       (
         e.Commands
-        (#CmdRepeated #AlgTerm s.Num s.Mode s.SampleOffset) //
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.ContextOffset s.SampleOffset) //
       )
     >;
 
