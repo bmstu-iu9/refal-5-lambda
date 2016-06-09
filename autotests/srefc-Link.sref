@@ -1,0 +1,8 @@
+$ENTRY Go { = ; }
+
+Link {
+  #NoCppCompiler e.Files =
+    /* ничего не делаем */;
+
+  (e.CommandLine) e.Files = ;
+}

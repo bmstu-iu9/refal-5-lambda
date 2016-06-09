@@ -1,0 +1,10 @@
+$ENTRY Go {
+  =
+    <{ #A = ; } <BracketVsAtom (#A)>>
+    <{ #B = ; } <BracketVsAtom #B>>;
+}
+
+BracketVsAtom {
+  (#A) = #A;
+  #B = #B;
+}
