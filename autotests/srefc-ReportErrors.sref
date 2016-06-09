@@ -1,0 +1,31 @@
+ReportErrors {
+  #CommandLine t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+
+  (e.ConfigFile) t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+}
+
+$ENTRY Go { = ; }
+
+$ENUM Map, StrFromInt, Exit, WriteLine, CreateErrorFileMark;
