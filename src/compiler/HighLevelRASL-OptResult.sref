@@ -321,15 +321,15 @@ GenResult {
     >
 
     //Генерируем команды связывания скобок
-    <GenPushLinkComment
+    <GenPushLink
       <ModifyResult e.MarkedResult>
     >
 
     //Генерируем команды переноса из списка свободных узлов
-    <GenSplicesComment (e.Trash) e.MarkedResult>;
+    <GenSplices (e.Trash) e.MarkedResult>;
 }
 
-GenPushLinkComment {
+GenPushLink {
   e.MarkedResult =
     <Fetch
       <MapReduce
@@ -377,7 +377,7 @@ ModifyTile {
   /*пусто*/ = ;
 }
 
-GenSplicesComment {
+GenSplices {
   (e.Trash) (#Tile e.LeftTile) e.Result (#Tile e.RightTile) =
     (#CmdSetRes <CalcRes e.RightTile>)
     <Map
@@ -393,7 +393,7 @@ GenSplicesComment {
       <CollectTiles e.Result>
     >
     (#CmdUseRes)
-    <GenTrashComment (e.LeftTile) e.Trash>;
+    <GenTrash (e.LeftTile) e.Trash>;
 
   (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
 }
@@ -430,9 +430,9 @@ CollectTiles-Alloc {
   e.Alloc = (e.Alloc);
 }
 
-GenTrashComment {
+GenTrash {
   (e.LeftTile) e.Trash-B #RemovedTile e.Trash-E =
-    <GenTrashComment (e.LeftTile) e.Trash-B e.Trash-E>;
+    <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
 
   (e.LeftTile) /* пусто */ =
     (#CmdReturnResult-NoTrash);
