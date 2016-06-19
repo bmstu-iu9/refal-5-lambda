@@ -74,10 +74,17 @@ HighLevelRASL-Function {
       <ListLen (0) e.Sentences>
       {
         0 = (#CmdEnum s.ScopeClass e.Name);
+        1 = 
+          <HighLevelRASL-OneFunction s.ScopeClass (e.Name) e.Sentences>;
         s.Else =
           <HighLevelRASL-MulFunction s.ScopeClass (e.Name) e.Sentences>;
       }
     >;
+}
+
+HighLevelRASL-OneFunction {
+  s.ScopeClass (e.Name) e.Sentences =
+    <HighLevelRASL-MulFunction s.ScopeClass (e.Name) e.Sentences>;
 }
 
 HighLevelRASL-MulFunction {
@@ -85,7 +92,7 @@ HighLevelRASL-MulFunction {
     <Fetch
       e.Sentences
       <Seq
-        // ({e.all = e.all <WriteLine 'start:\n' e.all>;})
+        {e.all = e.all <WriteLine '\n\nstart:\n' s.ScopeClass (e.Name)>;}
         (MapReduce
           {
             (e.HardGens) ((e.Pattern) (e.Result)) =
@@ -100,22 +107,22 @@ HighLevelRASL-MulFunction {
           }
           (/* hard gens */)
         )
-        // ({e.all = e.all <WriteLine 'HL1:\n' e.all>;})
+        {e.all = e.all <WriteLine 'HL1:\n' e.all>;}
         {
           (e.HardPatterns) e.SentenceTails =
             <CreateGlobalGen e.HardPatterns> e.SentenceTails;
         }
-        // ({e.all = e.all <WriteLine 'HL2:\n' e.all>;})
+        {e.all = e.all <WriteLine 'HL2:\n' e.all>;}
         {
           (e.FastGen) (e.GlobalGen) e.SentenceTails =
             (
               (#CmdComment 'FAST GEN:' <PatternComment e.FastGen>)
               (#CmdComment 'GLOBAL GEN:' <PatternComment e.GlobalGen>)
             )
-            (<SplitGen (e.GlobalGen)>)
+            (<SplitGen (e.GlobalGen) e.SentenceTails>)
             e.SentenceTails;
         }
-        // ({e.all = e.all <WriteLine 'HL3:\n' e.all>;})
+        {e.all = e.all <WriteLine 'HL3:\n' e.all>;}
         {
           (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
             (e.Comments)
@@ -131,7 +138,7 @@ HighLevelRASL-MulFunction {
               >
             >;
         }
-        // {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
+        {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
         {
           (e.Comments^) ((e.Vars) s.ContextSize (e.CommonMatchCommands)) e.SentencesWithSubst =
             (e.Comments e.CommonMatchCommands)
@@ -153,7 +160,7 @@ HighLevelRASL-MulFunction {
               s.ContextSize e.SentencesWithSubst
             >;
         }
-        // ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
+        ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
         {
           (e.Prefix) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
@@ -193,12 +200,14 @@ GenSentence {
             <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
             e.Tail;
         }
+        {e.all = e.all <WriteLine 'GS1\n' e.all>;}
         // 2. #E #CmdSave
         {
           s.ContextSize (e.Substitutes) e.Tail^ =
             <ReassignEs s.ContextSize e.Substitutes>
             e.Tail;
         }
+        {e.all = e.all <WriteLine 'GS2\n' e.all>;}
         // 3. GenPattern-New
         // 3.1. GenResult
         {

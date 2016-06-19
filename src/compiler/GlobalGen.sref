@@ -14,7 +14,8 @@ $ENTRY CreateGlobalGen {
     <Fetch
       <CreateFastGen e.HardSentences>
       <Seq
-        {(e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
+        {e.all = e.all <WriteLine 'CGG\n'e.all>;}
+        {s.Num (e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
         {
           (e.FastGen)(e.Inspected) =
             (e.FastGen)
@@ -38,10 +39,10 @@ InspectFastGen {
       e.EReplacements
     )
     <InspectFastGen e.Tail>;
-  (#Brackets e.inBrackets) e.Tail =
-    (#Brackets  <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
-  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
-    (#ADT-Brackets (e.Name)  <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
+  (#Brackets s.Num e.inBrackets) e.Tail =
+    (#Brackets s.Num <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
+  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail =
+    (#ADT-Brackets (e.Name) s.Num <InspectFastGen e.inBrackets>) <InspectFastGen e.Tail>;
   (e.Any) e.Tail = (e.Any) <InspectFastGen e.Tail>;
    = ;
 }
@@ -61,10 +62,10 @@ ReplacmentsCounter {
 
 PrepRep {
   (#Atom e.Body) e.Tail = (#Atom e.Body) <PrepRep e.Tail>;
-  (#Brackets e.inBrackets) e.Tail = 
-    ( #Brackets <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
-  (#ADT-Brackets (e.Name) e.inBrackets) e.Tail = 
-    ( #ADT-Brackets (e.Name) <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
+  (#Brackets s.Num e.inBrackets) e.Tail = 
+    ( #Brackets s.Num <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
+  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail = 
+    ( #ADT-Brackets (e.Name) s.Num <PrepRep e.inBrackets> ) <PrepRep e.Tail>;
   (s.Mode e.Body) e.Tail = (s.Mode) <PrepRep e.Tail>;
   (e.Else) e.Tail = (e.Else) <PrepRep e.Tail>;
    = ;
@@ -90,9 +91,9 @@ GlobalGen {
       {
         (#E 0 '$' e.Body) = <GlobalGen-Aux e.Body>;
         (#E 1 '$' e.Body) = (#E '$' e.Body);
-        (#Brackets e.inBrackets) =
+        (#Brackets s.Num e.inBrackets) =
           (#Brackets <GlobalGen e.inBrackets>);
-        (#ADT-Brackets (e.Name) e.inBrackets) =
+        (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
           (#ADT-Brackets (e.Name) <GlobalGen e.inBrackets>);
         (e.Any) = (e.Any);
       }
@@ -275,7 +276,7 @@ Generalization-Aux {
 Generalization {
   (e.Pattern1)(e.Pattern2) e.Tail =
     <Generalization
-      (<Generalization-Aux (e.Pattern1)(e.Pattern2)>)
+      (<WriteLine 'Gen\n'(e.Pattern1)'\n'(e.Pattern2) ><Generalization-Aux (e.Pattern1)(e.Pattern2)>)
       e.Tail
     >;
   (e.Pattern) = (e.Pattern);
@@ -290,9 +291,9 @@ CalcComplexity-aux {
     <CalcComplexity-aux <Add s.Comp 1> e.Tail>;
   s.Comp (#Atom e.Body) e.Tail =
     <CalcComplexity-aux <Add s.Comp 3> e.Tail>;
-  s.Comp (#Brackets e.Body) e.Tail =
+  s.Comp (#Brackets s.Num e.Body) e.Tail =
     <CalcComplexity-aux <Add s.Comp 3> e.Body e.Tail>;
-  s.Comp (#ADT-Brackets (e.Name) e.Body) e.Tail =
+  s.Comp (#ADT-Brackets (e.Name) s.Num e.Body) e.Tail =
     <CalcComplexity-aux <Add s.Comp 3> e.Body e.Tail>;
   s.Comp = s.Comp;
 }
@@ -325,7 +326,11 @@ $ENTRY PatternComment {
         (#Atom #TkChar s.Char) e.Tail = '\'' s.Char '\'' <PatternComment e.Tail>;
         (#Atom #TkNumber s.Value) e.Tail = s.Value <PatternComment e.Tail>;
         (#Atom #TkName e.Name) e.Tail = '&' e.Name <PatternComment e.Tail>;
-        (#Atom #TkIdentifier e.Ident) e.Tail = '\"' e.Ident '\"' <PatternComment e.Tail>;
+        (#Atom #TkIdentifier e.Ident) e.Tail = '#' e.Ident <PatternComment e.Tail>;
+        (#Brackets s.Num e.inBrackets) e.Tail =
+          (<PatternComment e.inBrackets>) <PatternComment e.Tail>;
+        (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail =
+          '[' e.Name ' ' <PatternComment e.inBrackets>']' <PatternComment e.Tail>;
         (#Brackets e.inBrackets) e.Tail =
           (<PatternComment e.inBrackets>) <PatternComment e.Tail>;
         (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
@@ -349,7 +354,7 @@ $ENTRY ReverseGen {
   /* empty */ = /* empty */;
 }
 
-$ENTRY ReversePattern {
+ReversePattern {
   (s.Mode (e.name) '$' e.Replacements) e.Tail =
     (s.Mode (e.name) '$' <ReversePattern-Aux e.Replacements>)
     <ReversePattern e.Tail>;
@@ -358,6 +363,11 @@ $ENTRY ReversePattern {
 
 ReversePattern-Aux {
   (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReversePattern-Aux e.Tail>;
+  (#Brackets s.Num e.inBrackets) e.Tail = 
+    ( #Brackets <ReversePattern-Aux e.inBrackets> ) <ReversePattern-Aux e.Tail>;
+  (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail = 
+    ( #ADT-Brackets (e.Name) <ReversePattern-Aux e.inBrackets> )
+    <ReversePattern-Aux e.Tail>;
   (#Brackets e.inBrackets) e.Tail = 
     ( #Brackets <ReversePattern-Aux e.inBrackets> ) <ReversePattern-Aux e.Tail>;
   (#ADT-Brackets (e.Name) e.inBrackets) e.Tail = 
@@ -374,12 +384,14 @@ ReversePattern-Aux {
 }
 
 $ENTRY SplitGen {
-  (()) = ()();
-  (e.Any) =
+  (()) e.SentenceTails = () <SplitGen-Empty e.SentenceTails>;
+  (e.Any) e.SentenceTails =
     <Fetch
       e.Any
       <Seq
+        { e.al = e.al <WriteLine 'SG1\n' e.al>;}
         { e.All = <DoSplitGen ('idx') e.All>; }
+        { e.al = e.al <WriteLine 'SG2\n' e.al>;}
         {
           e.All =
             <GetGeneralization () e.All>
@@ -389,18 +401,30 @@ $ENTRY SplitGen {
     >;
 }
 
+
+SplitGen-Empty {
+  (e.Sentence) e.Tail = () <SplitGen-Empty e.Tail>;
+   = ;
+}
+
 DoSplitGen {
   (e.Idx)(s.Mode '$' e.Replacements) e.Tail =
     (s.Mode (e.Idx 0) '$' e.Replacements)
     <DoSplitGen (e.Idx 'V') e.Tail>;
+  (e.Idx)(#Brackets s.Num e.inBrackets) e.Tail =
+    (#Brackets <DoSplitGen (e.Idx 'B') e.inBrackets>)
+    <DoSplitGen (e.Idx 'T') e.Tail>;
+  (e.Idx)(#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail =
+    (#ADT-Brackets (e.Name) <DoSplitGen (e.Idx 'D') e.inBrackets>)
+    <DoSplitGen (e.Idx 't') e.Tail>;
   (e.Idx)(#Brackets e.inBrackets) e.Tail =
     (#Brackets <DoSplitGen (e.Idx 'B') e.inBrackets>)
     <DoSplitGen (e.Idx 'T') e.Tail>;
   (e.Idx)(#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
     (#ADT-Brackets (e.Name) <DoSplitGen (e.Idx 'D') e.inBrackets>)
     <DoSplitGen (e.Idx 't') e.Tail>;
-  (e.Idx)(e.Any) e.Tail =
-    (e.Any) <DoSplitGen (e.Idx 'A') e.Tail>;
+  (e.Idx)(#Atom e.Body) e.Tail =
+    (#Atom e.Body) <DoSplitGen (e.Idx 'A') e.Tail>;
   (e.Idx) = ;
 }
 
