@@ -29,7 +29,7 @@ InspectFastGen {
   (#E '$' e.EReplacements ) e.Tail =
     (#E 
       <Fetch
-        <ReplacmentsCounter 0 () e.EReplacements>
+        <WriteLine 'ER\n' e.EReplacements><ReplacmentsCounter 0 () e.EReplacements>
         {
           1 = 1;
           s.Num = 0;

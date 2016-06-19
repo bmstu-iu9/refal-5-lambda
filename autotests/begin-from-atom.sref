@@ -5,12 +5,14 @@ StrFromToken {
   #TkCloseBlock = '"}"';
   #TkCloseBracket = '")"';
   #TkComma = '","';
-  #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
+  // #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
+  #TkDirective s.Directive = '"$' s.Directive '"';
   #TkEOF = 'end of file';
   #TkError e.Message = 'LEXER ERROR: ' e.Message;
   #TkIdentMarker = '"#"';
   #TkName e.Name = 'Name ' e.Name;
-  #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  // #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  #TkNumber s.Number = 'Number ' s.Number;
   #TkOpenADT = '"["';
   #TkOpenCall = '"<"';
   #TkOpenBlock = '"{"';
