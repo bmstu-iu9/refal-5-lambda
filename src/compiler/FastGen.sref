@@ -279,6 +279,32 @@ FastGen {
       ((#E '$' (()) e.Any ))
       e.Tail
     >;
+  
+  /* 0.5. Пара Е-шек */
+  s.Num
+  ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) e.Tail =
+    <FastGen
+      <Inc s.Num>
+      ((#E '$' e.Pattern1 e.Pattern2 ))
+      e.Tail
+    >;
+
+  /* 0.75. Что-то среднее между (M, N) и (K) */
+  s.Num
+  ((#E '$' e.Pattern )) (e.any) e.Tail =
+    <FastGen
+      <Inc s.Num>
+      ((#E '$' e.Pattern ((e.any)) ))
+      e.Tail
+    >;
+
+  s.Num
+  (e.any) ((#E '$' e.Pattern)) e.Tail =
+    <FastGen
+      <Inc s.Num>
+      ((#E '$' <SplitReps s.Num e.any> e.Pattern ))
+      e.Tail
+    >;
 
   /* 1. Предложения являются термами; cтроим БО согласно таблице */
   s.Num
@@ -286,15 +312,6 @@ FastGen {
     <FastGen 
       <Inc s.Num> 
       (<FastGen-Terms (t.1) (t.2)>)
-      e.Tail
-    >;
-  
-  /* 1.5. Пара Е-шек */
-  s.Num
-  ((#E '$' e.Pattern1 )) ((#E '$' e.Pattern2 )) e.Tail =
-    <FastGen
-      <Inc s.Num>
-      ((#E '$' e.Pattern1 e.Pattern2 ))
       e.Tail
     >;
 
@@ -310,23 +327,6 @@ FastGen {
         ( e.1 (#E '$' (e.Pattern1)) e.2 )
         ( e.3 (#E '$' (e.Pattern2)) e.4 )
       >)
-      e.Tail
-    >;
-
-  /* 2.5. Что-то среднее между (M, N) и (K) */
-  s.Num
-  ((#E '$' e.Pattern )) (e.any) e.Tail =
-    <FastGen
-      <Inc s.Num>
-      ((#E '$' e.Pattern e.any ))
-      e.Tail
-    >;
-
-  s.Num
-  (e.any) ((#E '$' e.Pattern)) e.Tail =
-    <FastGen
-      <Inc s.Num>
-      ((#E '$' <SplitReps s.Num e.any> e.Pattern ))
       e.Tail
     >;
 
