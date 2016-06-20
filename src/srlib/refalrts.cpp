@@ -529,7 +529,9 @@ void refalrts::call_pointers(
   right_bracket = left_bracket->link_info;
 }
 
-bool refalrts::svar_term(refalrts::Iter& pos ) {
+bool refalrts::svar_term(
+  refalrts::Iter& svar, refalrts::Iter& pos
+) {
   return ! is_open_bracket( pos );
 }
 
@@ -731,8 +733,8 @@ bool equal_expressions(
 bool refalrts::repeated_stvar_term(
   refalrts::Iter stvar_sample, refalrts::Iter& pos
 ) {
-  if (svar_term(stvar_sample)) {
-    return svar_term(pos) && equal_nodes(pos, stvar_sample);
+  if (svar_term(pos, stvar_sample)) {
+    return svar_term(stvar_sample, pos) && equal_nodes(pos, stvar_sample);
   } else if (is_open_bracket(pos)) {
     refalrts::Iter pos_e = pos->link_info;
     refalrts::Iter stvar_sample_e = stvar_sample->link_info;

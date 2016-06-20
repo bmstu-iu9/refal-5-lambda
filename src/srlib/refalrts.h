@@ -228,7 +228,7 @@ extern bool brackets_term( Iter& res_first, Iter& res_last, Iter& pos );
 extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 
-extern bool svar_term( Iter& pos );
+extern bool svar_term( Iter& svar, Iter& pos );
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 

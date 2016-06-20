@@ -21,7 +21,6 @@ PreparePatternHardSent {
         (#Brackets e.inBrackets) = (#Brackets <PreparePatternHardSent e.inBrackets>);
         (#ADT-Brackets (e.Name) e.inBrackets) =
           (#ADT-Brackets (e.Name) <PreparePatternHardSent e.inBrackets>);
-        /* пусто */ = /* пусто */;
       }
       e.Pattern
     >;
