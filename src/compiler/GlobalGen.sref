@@ -5,6 +5,9 @@ $EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare;
 //FROM Library
 $EXTERN Add, Sub, WriteLine;
 
+//FROM Escape
+$EXTERN EscapeChar;
+
 //FROM FastGen
 $EXTERN FastGen-Terms, CreateFastGen, ModifyE, ModifyBrackets;
 
@@ -14,7 +17,7 @@ $ENTRY CreateGlobalGen {
     <Fetch
       <CreateFastGen e.HardSentences>
       <Seq
-        {e.all = e.all <WriteLine 'CGG\n'e.all>;}
+        {e.all = e.all <WriteLine 'CGG1\n'e.all>;}
         {s.Num (e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
         {
           (e.FastGen)(e.Inspected) =
@@ -29,7 +32,8 @@ InspectFastGen {
   (#E '$' e.EReplacements ) e.Tail =
     (#E 
       <Fetch
-        <WriteLine 'ER\n' e.EReplacements><ReplacmentsCounter 0 () e.EReplacements>
+        // <WriteLine 'ER\n' e.EReplacements>
+        <ReplacmentsCounter 0 () e.EReplacements>
         {
           1 = 1;
           s.Num = 0;
@@ -113,7 +117,10 @@ GlobalGen-Aux {
           e.All =
             <GetComplex
               <Map
-                { ((e.Class) e.Body) = <CalcComplexity <Generalization e.Body>>; }
+                { ((e.Class) e.Body) =
+                  <WriteLine 'ToGen\n' e.Body>
+                  <WriteLine 'AfGen\n' <CalcComplexity <Generalization 1 e.Body>>>
+                  <CalcComplexity <Generalization 1 e.Body>>; }
                 <CreateSuperposition 
                   (e.All)
                   (<ComputePossibleClasses e.All>)
@@ -265,21 +272,23 @@ CreateSuperposition {
 }
 
 Generalization-Aux {
-  (t.Term1 e.Tail1)(t.Term2 e.Tail2) =
-    <FastGen-Terms (t.Term1)(t.Term2)>
-    <Generalization-Aux (e.Tail1)(e.Tail2)>;
-  ((#E e.Pattern ))() = (#E '$' (e.Pattern) ());
-  ()((#E e.Pattern )) = (#E '$' () (e.Pattern));
-  ()() = ;
+  s.Num (t.Term1 e.Tail1)(t.Term2 e.Tail2) =
+    <FastGen-Terms s.Num (t.Term1)(t.Term2)>
+    <Generalization-Aux s.Num (e.Tail1)(e.Tail2)>;
+  s.Num ((#E e.Pattern ))() = (#E '$' (e.Pattern) ());
+  s.Num ()((#E e.Pattern )) = (#E '$' () (e.Pattern));
+  s.Num ()() = ;
 }
 
 Generalization {
-  (e.Pattern1)(e.Pattern2) e.Tail =
+  s.Num (e.Pattern1)(e.Pattern2) e.Tail =
     <Generalization
-      (<WriteLine 'Gen\n'(e.Pattern1)'\n'(e.Pattern2) ><Generalization-Aux (e.Pattern1)(e.Pattern2)>)
+      <WriteLine 'Gen\n'(e.Pattern1)'\n'(e.Pattern2) >
+      <Inc s.Num>
+      (<Generalization-Aux s.Num (e.Pattern1)(e.Pattern2)>)
       e.Tail
     >;
-  (e.Pattern) = (e.Pattern);
+  s.Num (e.Pattern) = (e.Pattern);
 }
 
 CalcComplexity-aux {
@@ -323,7 +332,7 @@ $ENTRY PatternComment {
   e.Pattern =
     <Map
       {
-        (#Atom #TkChar s.Char) e.Tail = '\'' s.Char '\'' <PatternComment e.Tail>;
+        (#Atom #TkChar s.Char) e.Tail = '\'' <EscapeChar s.Char> '\'' <PatternComment e.Tail>;
         (#Atom #TkNumber s.Value) e.Tail = s.Value <PatternComment e.Tail>;
         (#Atom #TkName e.Name) e.Tail = '&' e.Name <PatternComment e.Tail>;
         (#Atom #TkIdentifier e.Ident) e.Tail = '#' e.Ident <PatternComment e.Tail>;
@@ -379,6 +388,9 @@ ReversePattern-Aux {
   (s.Mode '$' ((e.Rep)) e.Any) e.Tail =
     <ReversePattern-Aux e.Rep>
     <ReversePattern-Aux e.Tail>;
+  (s.Mode '$' ) e.Tail =
+    (s.Mode '$' )
+    <ReversePattern-Aux e.Tail>;
   (e.Else) e.Tail = (<ReversePattern-Aux e.Else>) <ReversePattern-Aux e.Tail>;
    = ;
 }
@@ -425,6 +437,7 @@ DoSplitGen {
     <DoSplitGen (e.Idx 't') e.Tail>;
   (e.Idx)(#Atom e.Body) e.Tail =
     (#Atom e.Body) <DoSplitGen (e.Idx 'A') e.Tail>;
+  (e.Idx) () e.Tail = <DoSplitGen (e.Idx 'E') e.Tail>;
   (e.Idx) = ;
 }
 

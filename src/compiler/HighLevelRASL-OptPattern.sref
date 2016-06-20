@@ -84,7 +84,71 @@ HighLevelRASL-Function {
 
 HighLevelRASL-OneFunction {
   s.ScopeClass (e.Name) e.Sentences =
-    <HighLevelRASL-MulFunction s.ScopeClass (e.Name) e.Sentences>;
+    <Fetch
+      e.Sentences
+      <Seq
+        {
+          ((e.Pattern) (e.Result)) =
+            (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+        }
+        { e.all = e.all <WriteLine 'aaa!\n' e.all>;}
+        (MapReduce
+          {
+            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
+              <Fetch
+                <Compare s.MaxMemory s.Memory> {
+                  '<' = s.Memory;
+                  s.Other = s.MaxMemory;
+                }
+              >
+              (#CmdSentence e.Sentence);
+          }
+          0
+        )
+        {
+          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
+            (#Function
+              s.ScopeClass (e.Name)
+              (#CmdIssueMem s.MaxMemory)
+              e.Sentences
+              <Fetch
+                e.LastSentence
+                {
+                  e.Commands (#CmdOpenELoop e.OpenELoop) =
+                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+
+                  e.LastSentence^ = e.LastSentence;
+                }
+              >
+            );
+
+          0 /* нет предложений */ =
+            (#CmdEnum s.ScopeClass e.Name);
+        }
+      >
+    >;
+}
+
+HighLevelRASL-Sentence {
+  (e.Pattern) (e.Result) =
+    <Fetch
+      <GenPattern e.Pattern>
+      {
+        (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+          <Fetch
+            <GenResult s.ContextOffset (e.PatternVars) e.Result>
+            {
+              s.ContextCount e.ResultCommands =
+                <FoldOpenELoops
+                  (#CmdIssueMem s.ContextCount)
+                  (#CmdInitB0)
+                  e.PatternCommands
+                  e.ResultCommands
+                >;
+            }
+          >;
+      }
+    >;
 }
 
 HighLevelRASL-MulFunction {
@@ -200,14 +264,14 @@ GenSentence {
             <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
             e.Tail;
         }
-        {e.all = e.all <WriteLine 'GS1\n' e.all>;}
+        // {e.all = e.all <WriteLine 'GS1\n' e.all>;}
         // 2. #E #CmdSave
         {
           s.ContextSize (e.Substitutes) e.Tail^ =
             <ReassignEs s.ContextSize e.Substitutes>
             e.Tail;
         }
-        {e.all = e.all <WriteLine 'GS2\n' e.all>;}
+        // {e.all = e.all <WriteLine 'GS2\n' e.all>;}
         // 3. GenPattern-New
         // 3.1. GenResult
         {
@@ -342,6 +406,7 @@ GenPattern {
 GenPattern-New {
   s.MaxMemory (e.Saves) (e.Substitutes) =
     <Fetch
+      <WriteLine 'GPN\n' e.Substitutes>
       <DoGenPattern
         s.MaxMemory e.Substitutes (/* vars */) (e.Saves)
       >
@@ -358,14 +423,9 @@ GenPattern-New {
         }
         {
           (e.Vars) s.ContextOffset (e.Reassigns) e.Commands =
+            <WriteLine 'Vars\n' (e.Vars)>
             (<FixupEVarIndexes (e.Reassigns) e.Vars>)
-            s.ContextOffset e.Commands;
-        }
-        {
-          (e.Vars) s.ContextOffset e.Commands =
-            (e.Vars)
-            s.ContextOffset
-            (e.Commands);
+            s.ContextOffset (e.Commands);
         }
       >
     >;
@@ -1012,6 +1072,19 @@ TextFromPattern-Char {
 GenResult {
   s.ContextOffset (e.PatternVars) e.Result =
     <Fetch
+      <WriteLine 'GR\n' 
+        (
+          <Map
+            {
+              (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+            }
+            e.PatternVars
+          >
+        )
+        (/* alloc commands */) (/* other commands */)
+        s.ContextOffset // счётчик новых элементов
+        <CollectStrings e.Result>
+      >
       <DoGenResult
         (
           <Map
