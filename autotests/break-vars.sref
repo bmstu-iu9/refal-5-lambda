@@ -1,0 +1,21 @@
+ComposeVars-Debug {
+  (e.Substitute-B (e.Name) e.Substitute-E)
+  (e.Vars-B (e.Name) e.Vars-E) =
+    <WriteLine-1 'Full\n'
+      e.Vars-E '\n'
+      e.Vars-E
+    >;
+  () () = ;
+}
+
+WriteLine-1 {
+  'Full\n'  '\n' = ;
+}
+
+$ENTRY Go {
+  =
+    <ComposeVars-Debug
+      (('idx'))
+      (('idx'))
+    >;
+}

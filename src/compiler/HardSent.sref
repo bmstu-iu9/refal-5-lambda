@@ -3,7 +3,7 @@
 $EXTERN Map, Fetch;
 
 //FROM Library
-$EXTERN WriteLine;
+// $EXTERN WriteLine;
 
 
 PreparePatternHardSent {
