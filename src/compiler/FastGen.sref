@@ -3,7 +3,7 @@
 $EXTERN UnBracket, Map, Fetch, Inc, Dec;
 
 //FROM Library
-$EXTERN WriteLine;
+// $EXTERN WriteLine;
 
 ModifyE-Aux {
   (e.gen '$') e.tail = ;
@@ -121,7 +121,7 @@ SplitReps {
       {
         1 e.Any = ((e.Any));
         s.Other e.Any =
-          <WriteLine  'SR2\n' s.Other e.Any>
+          // <WriteLine  'SR2\n' s.Other e.Any>
           <SplitReps-Aux s.Other e.Any (/* Scanned */) (/* Else */)>;
       }
     >;
@@ -234,17 +234,16 @@ FastGen-MeN {
   s.Num ((#E '$' ((e.inE1)) )) ((#E '$' ((e.inE2)) )) =
     (#E '$' ((e.inE1)) ((e.inE2)) );
 
-  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' e.inE2)) = 
+  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' e.inE2)) =
     (#E '$' ((e.inE1)) ((e.inE2)) );
   
-  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) = 
+  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =
     (#E '$' ((e.inE1)) ((e.inE2)) );
   
-  s.Num ((#E '$' e.inE1)) ((#E '$' e.inE2)) = 
+  s.Num ((#E '$' e.inE1)) ((#E '$' e.inE2)) =
     (#E '$' ((e.inE1)) ((e.inE2)) );
   
-  s.Num (e.in1)(e.in2) = 
-    <WriteLine 'FGMN\n' (e.in1)'\n'(e.in2)>
+  s.Num (e.in1)(e.in2) =
     (#E '$' <SplitReps s.Num e.in1> ((e.in2)));
 }
 

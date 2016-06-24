@@ -3,7 +3,8 @@
 $EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare;
 
 //FROM Library
-$EXTERN Add, Sub, WriteLine;
+$EXTERN Add, Sub;
+// $EXTERN WriteLine;
 
 //FROM Escape
 $EXTERN EscapeChar;
@@ -17,7 +18,7 @@ $ENTRY CreateGlobalGen {
     <Fetch
       <CreateFastGen e.HardSentences>
       <Seq
-        {e.all = e.all <WriteLine 'CGG1\n'e.all>;}
+        // {e.all = e.all <WriteLine 'CGG1\n'e.all>;}
         {s.Num (e.FastGen) = (e.FastGen)(<InspectFastGen e.FastGen>);}
         {
           (e.FastGen)(e.Inspected) =
@@ -117,10 +118,7 @@ GlobalGen-Aux {
           e.All =
             <GetComplex
               <Map
-                { ((e.Class) e.Body) =
-                  <WriteLine 'ToGen\n' e.Body>
-                  <WriteLine 'AfGen\n' <CalcComplexity <Generalization 1 e.Body>>>
-                  <CalcComplexity <Generalization 1 e.Body>>; }
+                { ((e.Class) e.Body) = <CalcComplexity <Generalization 1 e.Body>>; }
                 <CreateSuperposition 
                   (e.All)
                   (<ComputePossibleClasses e.All>)
@@ -283,7 +281,7 @@ Generalization-Aux {
 Generalization {
   s.Num (e.Pattern1)(e.Pattern2) e.Tail =
     <Generalization
-      <WriteLine 'Gen\n'(e.Pattern1)'\n'(e.Pattern2) >
+      // <WriteLine 'Gen\n'(e.Pattern1)'\n'(e.Pattern2) >
       <Inc s.Num>
       (<Generalization-Aux s.Num (e.Pattern1)(e.Pattern2)>)
       e.Tail
@@ -401,9 +399,9 @@ $ENTRY SplitGen {
     <Fetch
       e.Any
       <Seq
-        { e.al = e.al <WriteLine 'SG1\n' e.al>;}
+        // { e.al = e.al <WriteLine 'SG1\n' e.al>;}
         { e.All = <DoSplitGen ('idx') e.All>; }
-        { e.al = e.al <WriteLine 'SG2\n' e.al>;}
+        // { e.al = e.al <WriteLine 'SG2\n' e.al>;}
         {
           e.All =
             <GetGeneralization () e.All>

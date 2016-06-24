@@ -228,14 +228,14 @@ extern bool brackets_term( Iter& res_first, Iter& res_last, Iter& pos );
 extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 
-extern bool svar_term( Iter& svar, Iter& pos );
+extern bool svar_term( Iter svar, Iter pos );
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 
 extern refalrts::Iter tvar_left( Iter& tvar, Iter& first, Iter& last );
 extern refalrts::Iter tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool repeated_stvar_term(Iter stvar_sample, Iter& pos);
+extern bool repeated_stvar_term(Iter stvar_sample, Iter pos);
 extern refalrts::Iter repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 extern refalrts::Iter repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
