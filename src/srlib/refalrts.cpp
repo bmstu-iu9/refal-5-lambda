@@ -530,7 +530,7 @@ void refalrts::call_pointers(
 }
 
 bool refalrts::svar_term(
-  refalrts::Iter svar, refalrts::Iter pos
+  refalrts::Iter /* svar */, refalrts::Iter pos
 ) {
   if (! is_open_bracket( pos )) {
     return true;
