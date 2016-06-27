@@ -545,6 +545,15 @@ DoGenPattern {
     >;
 
   s.ContextOffset
+  e.Substs-B (#T s.Num (#ADT-Brackets (e.Name) e.SubRange)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Inc2 s.ContextOffset>
+      e.Substs-B (#E s.ContextOffset e.SubRange) e.Substs-E
+      (e.Vars) (e.Commands (#CmdADT #AlgTerm s.Num s.ContextOffset))
+    >;
+
+  s.ContextOffset
   e.Substs-B (#T s.Num (#TkVariable s.Mode e.Index)) e.Substs-E
   (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
     <DoGenPattern
