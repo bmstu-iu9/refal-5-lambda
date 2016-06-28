@@ -1,0 +1,12 @@
+$EXTERN WriteLine;
+$EXTERN Inc, Dec;
+//FROM LibraryEx
+$EXTERN Fetch, LoadFile, Map;
+
+$ENTRY Go {
+    = <LoadFile 'text.txt'> ;
+}
+
+
+
+

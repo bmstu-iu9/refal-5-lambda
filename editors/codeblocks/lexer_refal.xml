@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Refal"
+                index="3"
+                filemasks="*.ref">
+                <Style name="Default"
+                        index="0,11"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment (normal)"
+                        index="1,23,65,87"
+                        fg="160,160,160"/>
+                <Style name="Comment line (normal)"
+                        index="2,66"
+                        fg="190,190,230"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="User keyword"
+                        index="16"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="String"
+                        index="6,12,20"
+                        fg="0,0,255"/>
+                <Style name="Character"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        fg="0,0,0"
+                        bg="128,255,255"
+                        bold="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        fg="255,255,255"
+                        bg="255,0,0"
+                        bold="1"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="$EXTERN $ENTRY $MODULE $END $IMPORT $SWAP $PROGRAM $ESWAP $DATA $LABEL $FORWARD $ENUM $EENUM"/>
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                            value=" "/>
+                        <!-- Documentation comment keywords -->
+                        <Set index="2"
+                            value="< > # { } ( ) [ ]"/>
+                        <!-- wxSmith block identifiers -->
+                </Keywords>
+                <SampleCode value="lexer_refal.sample"
+						breakpoint_line="3"
+						debug_line="6"
+						error_line="7"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>
