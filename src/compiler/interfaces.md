@@ -278,6 +278,32 @@
   * `(#CmdPushStack s.Offset)` — помещение угловой скобки на стек.
   * `(#CmdFail)` — возврат из функции значения «сопоставление невозможно».
   * `(#CmdReturnResult)` — возврат из функции признака успешного завершения.
+### Commands from OR
+  * `(#CmdCharSave s.Direction s.Num s.ContextOffset s.Char)` — сопоставление 
+    с символом, сохраняющее указатель на узел в context.
+  * `(#CmdNumberSave s.Direction s.Num s.ContextOffset s.Number)` — сопоставление 
+    с числом, сохраняющее указатель на узел в context.
+  * `(#CmdIdentSave s.Direction s.Num s.ContextOffset s.Ident)` — сопоставление 
+    с идентификатором, сохраняющее указатель на узел в context.
+  * `(#CmdNameSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
+    с указателем на функцию, сохраняющее указатель на узел в context.
+  * `(#CmdADTSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
+    с абстрактной скобкой, сохраняющее указатель на узел в context.
+  * `(#CmdBracketsSave s.Direction s.Num s.ContextOffset)` - опоставление 
+    с структурной скобкой, сохраняющее указатель на узел в context.
+  * `(#CmdCallSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
+    со скобкой кон6кретизации, сохраняющее указатель на узел в context.
+
+  * `(#CmdInsertTile t.BeginOffset t.EndOffset)` - команда переноса диапазона 
+    из списка свободных узлов в поле зрения.
+  * `(#CmdReinitElem s.Offset s.AllocType s.Value)` - изменяет тэг и значение узла.
+  * `(#CmdUpdateElem s.Offset s.AllocType s.Value)` - изменяет значение узла.
+  * `(#CmdTrash s.Offset)` - обработка неиспользованных узлов в образце и возврат результата.
+  * `(#CmdReturnResult-NoTrash)` - возврат результата, при отсутствии неиспользованных узлов.
+  * `(#CmdSetRes s.Offset)` - изменение переменной res.
+
+
+
 
 ### Вычислительная модель высокоуровневых команд
 Последовательность команд внутри функции должна начинаться с `#CmdIssueMem`,
