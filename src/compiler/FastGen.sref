@@ -5,35 +5,6 @@ $EXTERN UnBracket, Map, Fetch, Inc, Dec;
 //FROM Library
 // $EXTERN WriteLine;
 
-ModifyE-Aux {
-  (e.gen '$') e.tail = ;
-  (#T '$' ((e.Rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <ModifyE-Aux e.tail (e.scanned <ModifyBrackets e.Rep>) (e.else ( #T '$' e.otherRep))>;
-  (e.gen '$' ((e.Rep)) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <ModifyE-Aux e.tail (e.scanned e.Rep) (e.else ( e.gen '$' e.otherRep))>;
-  (#Brackets (e.Rep) e.otherRep ) e.tail (e.scanned) (e.else) =
-    <ModifyE-Aux e.tail (e.scanned (#Brackets e.Rep)) (e.else (#Brackets e.otherRep))>;
-  (e.gen) e.tail (e.scanned) (e.else) = <ModifyE-Aux e.tail (e.scanned (e.gen)) (e.else (e.gen))>;
-  (e.scanned) (e.else) = (e.scanned) <ModifyE e.else>;
-}
-
-$ENTRY ModifyE {
-  e.all =
-    <ModifyE-Aux e.all (/*scanned*/) (/*else*/)>;
-}
-
-$ENTRY ModifyBrackets {
-  e.all =
-    <Map
-      {
-        (#Brackets e.inBrackets) = 
-          (#Brackets <ModifyE <ModifyBrackets e.inBrackets>>);
-        (e.any) = (e.any);
-      }
-      e.all
-    >;
-}
-
 UnBracketAndNum {
   s.Num (e.Any) = s.Num e.Any;
 }
@@ -354,7 +325,6 @@ FastGen {
     >;
 
   /* 4. Все остальное */
-  // (e.1) (e.2) = ((#E '$' ((<ModifyE e.1> )) ((<ModifyE e.2> )) ));
   s.Num (e.1) (e.2) = ((#E '$' ((e.1)) ((e.2)) ));
 }
 

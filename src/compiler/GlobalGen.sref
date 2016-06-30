@@ -10,7 +10,7 @@ $EXTERN Add, Sub;
 $EXTERN EscapeChar;
 
 //FROM FastGen
-$EXTERN FastGen-Terms, CreateFastGen, ModifyE, ModifyBrackets;
+$EXTERN FastGen-Terms, CreateFastGen;
 
 
 $ENTRY CreateGlobalGen {
@@ -128,11 +128,6 @@ GlobalGen-Aux {
         }
       >
     >;
-}
-
-GetPatterns {
-  (e.FastGenReps) =
-    <ModifyE <ModifyBrackets e.FastGenReps>>;
 }
 
 ComputePossibleClasses {

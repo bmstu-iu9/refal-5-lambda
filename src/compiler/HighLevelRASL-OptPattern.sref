@@ -481,19 +481,6 @@ FixupEVarIndexes-PatchNumber {
   e.Reassigns s.Number = s.Number;
 }
 
-FixupMarkedPatternIndexes {
-  (e.Reassigns) e.MarkedPattern =
-    <Map (FixupMarkedPatternTerm e.Reassigns) e.MarkedPattern>;
-}
-
-FixupMarkedPatternTerm {
-  e.Reassigns-B (s.Old s.New) e.Reassigns-E
-  (#TkVariable 'e' e.Index s.Depth s.Old) =
-    (#TkVariable 'e' e.Index s.Depth s.New);
-
-  e.Reassigns^ t.OtherTerm = t.OtherTerm;
-}
-
 Inc2 {
   s.Num = <Add 2 s.Num>;
 }
