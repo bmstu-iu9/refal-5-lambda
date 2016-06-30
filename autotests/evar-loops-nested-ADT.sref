@@ -1,0 +1,7 @@
+Test {
+  [Test e.Begin (e.Inner) e.End [Test e.Left 'X' e.Inner]] = ;
+}
+
+$ENTRY Go {
+  = <Test [Test ('er') ('super') ('super') [Test 'abba' 'X' 'super']]>;
+}

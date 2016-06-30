@@ -1,3 +1,7 @@
+//FROM Library
+$EXTERN Add, WriteLine;
+
+
 FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
 }
@@ -203,6 +207,14 @@ GenCommand {
     (e.Indent '} while ( 0 );')
     ();
 
+  (e.Indent) (#CmdReinitElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('reinit') s.ElemNumber e.ElemInfo>;
+
+  (e.Indent) (#CmdUpdateElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('update') s.ElemNumber e.ElemInfo>;
+
   (e.Indent) (#CmdInitB0) =
     (e.Indent)
     (e.Indent <ContextRange-B 0> ' = arg_begin;')
@@ -210,6 +222,12 @@ GenCommand {
     (e.Indent 'refalrts::move_left( ' <ContextRange 0> ' );')
     (e.Indent 'refalrts::move_left( ' <ContextRange 0> ' );')
     (e.Indent 'refalrts::move_right( ' <ContextRange 0> ' );')
+    ;
+
+  (e.Indent) (#CmdInitB0-Lite) =
+    (e.Indent)
+    (e.Indent <ContextRange-B 0> ' = arg_begin;')
+    (e.Indent <ContextRange-E 0> ' = arg_end;')
     ;
 
   (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
@@ -227,9 +245,19 @@ GenCommand {
     <PrintMatchNumber (e.Indent) s.Direction s.BracketNumber s.Number>
     ;
 
+  (e.Indent) (#CmdNumberSave s.Direction s.BracketNumber s.Offset s.Number) =
+    (e.Indent)
+    <PrintMatchNumberSave (e.Indent) s.Offset s.Direction s.BracketNumber s.Number>
+    ;
+
   (e.Indent) (#CmdName s.Direction s.BracketNumber e.Name) =
     (e.Indent)
     <PrintMatchName (e.Indent) s.Direction s.BracketNumber e.Name>
+    ;
+
+  (e.Indent) (#CmdNameSave  s.Direction s.BracketNumber s.Offset e.Name) =
+    (e.Indent)
+    <PrintMatchNameSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
     ;
 
   (e.Indent) (#CmdIdent s.Direction s.BracketNumber e.Name) =
@@ -237,10 +265,21 @@ GenCommand {
     <PrintMatchIdent (e.Indent) s.Direction s.BracketNumber e.Name>
     ;
 
+  (e.Indent) (#CmdIdentSave s.Direction s.BracketNumber s.Offset e.Name) =
+    (e.Indent)
+    <PrintMatchIdentSave (e.Indent) s.Offset s.Direction s.BracketNumber e.Name>
+    ;
+
   (e.Indent) (#CmdBrackets s.Direction s.BracketNumber s.InnerBrackets) =
     (e.Indent)
     <PrintBracketsVarInit e.Indent s.InnerBrackets>
     <PrintMatchBrackets (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
+    ;
+
+  (e.Indent) (#CmdBracketsSave s.Direction s.BracketNumber s.InnerBrackets) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    <PrintMatchBracketsSave (e.Indent) s.Direction s.BracketNumber s.InnerBrackets>
     ;
 
   (e.Indent) (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
@@ -251,6 +290,25 @@ GenCommand {
     >
     ;
 
+  (e.Indent) (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    <PrintMatchADTSave
+      (e.Indent) s.Direction s.BracketNumber s.InnerBrackets e.Name
+    >
+    ;
+
+  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets) =
+    (e.Indent)
+    <PrintBracketsVarInit e.Indent s.InnerBrackets>
+    (e.Indent
+      <ContextItem <Add 2 s.InnerBrackets> > ' = '
+      'refalrts::call_' <StrFromDirection s.Direction>
+      '( '
+      <ContextRange s.InnerBrackets> ', '
+      <ContextRange s.BracketNumber> ' );'
+    );
+
   (e.Indent) (#CmdEmpty s.Direction s.BracketNumber) =
     (e.Indent)
     <PrintMatchEmpty (e.Indent) s.BracketNumber>
@@ -260,9 +318,19 @@ GenCommand {
     (e.Indent)
     <PrintMatchSTVar (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
 
+ (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (e.Indent)
+    <PrintMatchSTVarSave (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
+
   (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
     (e.Indent)
     <PrintMatchRepeated
+      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
+    >;
+
+  (e.Indent) (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
+    (e.Indent)
+    <PrintMatchRepeatedSave
       (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
     >;
 
@@ -303,6 +371,23 @@ GenCommand {
     (e.Indent 'refalrts::reset_allocator();')
     (e.Indent 'refalrts::Iter res = arg_begin;');
 
+  (e.Indent) (#CmdResetAllocator) =
+    (e.Indent)
+    ()
+    (e.Indent 'refalrts::reset_allocator();');
+
+  (e.Indent) (#CmdSetRes s.Offset) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter trash_prev = arg_begin->prev;')
+    (e.Indent 'refalrts::use(trash_prev);')
+    <Fetch
+      s.Offset
+      {
+        #RIGHT-EDGE = (e.Indent 'refalrts::Iter res = arg_end->next;');
+        s.Offset^ = (e.Indent 'refalrts::Iter res = ' <ContextItem s.Offset> ';');
+      }
+    >;
+
   (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
@@ -319,6 +404,14 @@ GenCommand {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
+  (e.Indent) (#CmdReinitSVar s.Offset s.Sample) =
+    (e.Indent)
+    (e.Indent
+      'refalrts::reinit_svar( '
+      <ContextItem s.Offset> ', ' <ContextItem s.Sample>
+      ' );'
+    );
+
   (e.Indent) (#CmdAllocateElem s.ElemNumber #ElString e.String) =
     (e.Indent)
     (e.Indent
@@ -330,7 +423,7 @@ GenCommand {
 
   (e.Indent) (#CmdAllocateElem s.ElemNumber e.ElemInfo) =
     (e.Indent)
-    <PrintAllocateElem (e.Indent) s.ElemNumber e.ElemInfo>;
+    <PrintCreateElem (e.Indent) ('alloc') s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
     (e.Indent)
@@ -370,11 +463,47 @@ GenCommand {
       ' );'
     );
 
+  (e.Indent) (#CmdInsertTile s.BeginOffset s.EndOffset) =
+    (e.Indent)
+    (e.Indent
+      'res = refalrts::splice_evar( res, '
+      <ContextItem s.BeginOffset> ', ' <ContextItem s.EndOffset>
+      ' );'
+    );
+
   (e.Indent) (#CmdReturnResult) =
     (e.Indent)
     (e.Indent 'refalrts::use( res );')
     (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
     <GenReturn #Success e.Indent>;
+
+  (e.Indent) (#CmdUseRes) =
+    (e.Indent)
+    (e.Indent 'refalrts::use( res );');
+
+  (e.Indent) (#CmdReturnResult-NoTrash) =
+    (e.Indent)
+    <GenReturn #Success e.Indent>;
+
+  (e.Indent) (#CmdTrash s.Offset) =
+    (e.Indent)
+    <Fetch
+      s.Offset
+      {
+        #LEFT-EDGE =
+          (e.Indent
+            'refalrts::splice_to_freelist_open( trash_prev, res );'
+          )
+          <GenReturn #Success e.Indent>;
+
+        s.Offset^ =
+          (e.Indent
+            'refalrts::splice_to_freelist_open( '
+            <ContextItem s.Offset> ', res );'
+          )
+          <GenReturn #Success e.Indent>;
+      }
+    >;
 
   (e.Indent) (#CmdIssueMem s.Number) =
     (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
@@ -693,10 +822,26 @@ PrintMatchChar {
     >;
 }
 
+PrintMatchCharSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber s.Char =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
+      ('char') '' <Escape s.Char> ''
+    >;
+}
+
 PrintMatchNumber {
   (e.Indent) s.Direction s.BracketNumber s.Number =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
+      ('number') <StrFromInt s.Number> 'UL'
+    >;
+}
+
+PrintMatchNumberSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber s.Number =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
       ('number') <StrFromInt s.Number> 'UL'
     >;
 }
@@ -709,10 +854,26 @@ PrintMatchName {
     >;
 }
 
+PrintMatchNameSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
+      ('function') e.Name
+    >;
+}
+
 PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
+      ('ident') ' & ident_' e.Name '<int>::name'
+    >;
+}
+
+PrintMatchIdentSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
+    <PrintMatchSave
+      (e.Indent) s.Offset s.Direction s.BracketNumber
       ('ident') ' & ident_' e.Name '<int>::name'
     >;
 }
@@ -726,6 +887,23 @@ PrintMatchBrackets {
     >;
 }
 
+PrintMatchBracketsSave {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum =
+    <PrintMatchSave
+      (e.Indent) s.InnerNum s.Direction s.BracketNumber
+      ('brackets')
+      <ContextRange s.InnerNum>
+      #Brackets
+    >
+    (
+      e.Indent
+      'refalrts::bracket_pointers('
+      <ContextItem <Add s.InnerNum 2> > ', '
+      <ContextItem <Add s.InnerNum 3> >
+      ');'
+    );
+}
+
 PrintMatchADT {
   (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
     <PrintMatch
@@ -734,6 +912,25 @@ PrintMatchADT {
       <ContextRange s.InnerNum> ', '
       e.Name
     >;
+}
+
+PrintMatchADTSave {
+  (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
+    <PrintMatchSave
+      (e.Indent) s.InnerNum s.Direction s.BracketNumber
+      ('adt')
+      <ContextRange s.InnerNum> ', '
+      e.Name
+      #Brackets
+    >
+    (
+      e.Indent
+      'refalrts::adt_pointers('
+      <ContextItem <Add s.InnerNum 2> > ', '
+      <ContextItem <Add s.InnerNum 3> > ', '
+      <ContextItem <Add s.InnerNum 4> >
+      ');'
+    );
 }
 
 BreakerFromIndent {
@@ -764,6 +961,14 @@ PrintMatchSTVar {
     >;
 }
 
+PrintMatchSTVarSave {
+  (e.Indent) s.Direction s.BracketNumber 't' s.VarNumber =
+    <PrintMatchSave
+      (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
+      (<VarMatchFunction 't'>) <ContextItem s.VarNumber>
+    >;
+}
+
 PrintMatchRepeated {
   (e.Indent) s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNumber =
     <PrintMatch
@@ -780,6 +985,20 @@ PrintMatchRepeated {
     >;
 }
 
+PrintMatchRepeatedSave {
+  (e.Indent) s.Direction s.BracketNumber 't' s.VarNumber s.SampleNumber =
+    <PrintMatchSave
+      (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
+      ('repeated_stvar')
+      <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
+    >;
+
+  (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
+    <PrintMatchRepeated
+      (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber
+    >;
+}
+
 PrintMatch {
   (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
@@ -789,15 +1008,17 @@ PrintMatch {
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
 
-PrintMatchCharSave {
-  (e.Indent) s.Offset s.Direction s.BracketNumber s.Char =
-    <PrintMatchSave
-      (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('char') '' <Escape s.Char> ''
-    >;
-}
 
 PrintMatchSave {
+  (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep #Brackets =
+    (e.Indent
+      <ContextItem <Add 2 s.Offset> > ' = '
+      'refalrts::' e.Function '_' <StrFromDirection s.Direction>
+      '( ' e.TextRep ', ' <ContextRange s.BracketNumber> ' );'
+    )
+    (e.Indent 'if( ! ' <ContextItem <Add 2 s.Offset>> ' )')
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
   (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
       <ContextItem s.Offset> ' = '
@@ -806,32 +1027,41 @@ PrintMatchSave {
     )
     (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+
 }
 
-PrintAllocateElem {
-  (e.Indent) s.ElemNumber s.ElementType e.Info =
+PrintCreateElem {
+  (e.Indent) ('alloc') s.ElemNumber s.ElementType e.Info =
     (e.Indent
-      'if( ! refalrts::' <AllocatorFuncName s.ElementType> '( '
+      'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
       ' ) )'
     )
     (e.Indent '  return refalrts::cNoMemory;');
+
+  (e.Indent) (e.Action) s.ElemNumber s.ElementType e.Info =
+    (e.Indent
+      'refalrts::' e.Action '_' <AllocatorFuncName s.ElementType> '( '
+      <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
+      ' );'
+    );
 }
 
 AllocatorFuncName {
-  #ElChar = 'alloc_char';
-  #ElName = 'alloc_name';
-  #ElNumber = 'alloc_number';
-  #ElIdent = 'alloc_ident';
+  #ElChar = 'char';
+  #ElName = 'name';
+  #ElNumber = 'number';
+  #ElIdent = 'ident';
 
-  #ElOpenADT = 'alloc_open_adt';
-  #ElCloseADT = 'alloc_close_adt';
+  #ElOpenADT = 'open_adt';
+  #ElCloseADT = 'close_adt';
 
-  #ElOpenBracket = 'alloc_open_bracket';
-  #ElCloseBracket = 'alloc_close_bracket';
+  #ElOpenBracket = 'open_bracket';
+  #ElCloseBracket = 'close_bracket';
 
-  #ElOpenCall = 'alloc_open_call';
-  #ElCloseCall = 'alloc_close_call';
+  #ElOpenCall = 'open_call';
+  #ElCloseCall = 'close_call';
 }
 
 AllocatorFuncArgument {
