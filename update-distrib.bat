@@ -11,6 +11,8 @@ md doc
 xcopy /e /i /y ..\doc\examples doc\examples
 copy ..\doc\*.pdf doc
 copy ..\doc\*.jpg doc
+md doc\OptPattern
+copy ..\doc\OptPattern\*.pdf doc\OptPattern
 md doc\historical
 copy ..\doc\historical\*.txt doc\historical
 copy ..\doc\historical\*.pdf doc\historical

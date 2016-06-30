@@ -12,6 +12,8 @@ mkdir doc
 cp -R ../doc/examples doc/examples
 cp ../doc/*.pdf doc
 cp ../doc/*.jpg doc
+mkdir doc/OptPattern
+cp ../doc/OptPattern/*.pdf doc/OptPattern
 mkdir doc/historical
 cp ../doc/historical/*.txt doc/historical
 cp ../doc/historical/*.pdf doc/historical
