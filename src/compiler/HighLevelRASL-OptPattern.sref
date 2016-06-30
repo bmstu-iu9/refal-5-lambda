@@ -708,7 +708,7 @@ DoGenPattern {
       (e.Vars)
       (
         e.Commands
-        (#CmdComment #CmdChar #AlgRight s.Num <EscapeChar s.Char>)
+        (#CmdComment #CmdChar #AlgRight s.Num '' <EscapeChar s.Char> '')
         (#CmdChar #AlgRight s.Num s.Char)
       )
     >;
