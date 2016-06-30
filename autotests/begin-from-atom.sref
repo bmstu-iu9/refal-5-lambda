@@ -1,0 +1,34 @@
+StrFromToken {
+  #TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
+  #TkCloseADT = '"]"';
+  #TkCloseCall = '">"';
+  #TkCloseBlock = '"}"';
+  #TkCloseBracket = '")"';
+  #TkComma = '","';
+  // #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
+  #TkDirective s.Directive = '"$' s.Directive '"';
+  #TkEOF = 'end of file';
+  #TkError e.Message = 'LEXER ERROR: ' e.Message;
+  #TkIdentMarker = '"#"';
+  #TkName e.Name = 'Name ' e.Name;
+  // #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  #TkNumber s.Number = 'Number ' s.Number;
+  #TkOpenADT = '"["';
+  #TkOpenCall = '"<"';
+  #TkOpenBlock = '"{"';
+  #TkOpenBracket = '"("';
+  #TkReplace = '"="';
+  #TkSemicolon = '";"';
+  #TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
+  #TkVariable s.Mode e.Index = s.Mode '.' e.Index;
+  #TkRedefinition = '"^"';
+
+  # Open s.OpenBracket = <StrFromToken s.OpenBracket>;
+  # Close s.CloseBracket = <StrFromToken s.CloseBracket>;
+}
+
+$ENTRY Go {
+  =
+    <{ '''A''' = ; } <StrFromToken #TkChar 'A'>>
+    <{ '"<"' = ; } <StrFromToken #Open #TkOpenCall>>;
+}

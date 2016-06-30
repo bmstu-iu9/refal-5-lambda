@@ -1,11 +1,18 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort;
+$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort, DelAccumulator;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
+$EXTERN WriteLine;
 
 //FROM Escape
 $EXTERN EscapeChar;
+
+//FROM HardSent
+$EXTERN CreateHardPattern;
+
+//FROM GlobalGen
+$EXTERN CreateGlobalGen, SplitGen, Max, PatternComment, ReverseGen;
 
 /**
   <HighLevelRASL e.AST>
@@ -52,17 +59,36 @@ $ENTRY HighLevelRASL-OptPattern {
     >;
 }
 
+ListLen {
+  (s.Len) t.Elem e.ListTail =
+    <ListLen (<Inc s.Len>) e.ListTail>;
+  (s.Len) = s.Len;
+}
+
 HighLevelRASL-Function {
+  s.ScopeClass (e.Name) e.Sentences =
+    <Fetch
+      <ListLen (0) e.Sentences>
+      {
+        0 = (#CmdEnum s.ScopeClass e.Name);
+        1 = 
+          <HighLevelRASL-OneFunction s.ScopeClass (e.Name) e.Sentences>;
+        s.Else =
+          <HighLevelRASL-MulFunction s.ScopeClass (e.Name) e.Sentences>;
+      }
+    >;
+}
+
+HighLevelRASL-OneFunction {
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
       <Seq
-        (Map
-          {
-            ((e.Pattern) (e.Result)) =
-              (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
-          }
-        )
+        {
+          ((e.Pattern) (e.Result)) =
+            (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+        }
+        // { e.all = e.all <WriteLine 'aaa!\n' e.all>;}
         (MapReduce
           {
             s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
@@ -122,6 +148,185 @@ HighLevelRASL-Sentence {
     >;
 }
 
+HighLevelRASL-MulFunction {
+  s.ScopeClass (e.Name) e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        // {e.all = e.all <WriteLine '\n\nstart:\n' s.ScopeClass (e.Name)>;}
+        (MapReduce
+          {
+            (e.HardGens) ((e.Pattern) (e.Result)) =
+              <Fetch
+                <CreateHardPattern e.Pattern>
+                {
+                  e.HardGen =
+                    (e.HardGens (e.HardGen))
+                    ((<PatternComment e.HardGen>) (e.Result));
+                }
+              >;
+          }
+          (/* hard gens */)
+        )
+        // {e.all = e.all <WriteLine 'HL1:\n' e.all>;}
+        {
+          (e.HardPatterns) e.SentenceTails =
+            <CreateGlobalGen e.HardPatterns> e.SentenceTails;
+        }
+        // {e.all = e.all <WriteLine 'HL2:\n' e.all>;}
+        {
+          (e.FastGen) (e.GlobalGen) e.SentenceTails =
+            (
+              (#CmdComment 'FAST GEN:' <PatternComment e.FastGen>)
+              (#CmdComment 'GLOBAL GEN:' <PatternComment e.GlobalGen>)
+            )
+            (<SplitGen (e.GlobalGen) e.SentenceTails>)
+            e.SentenceTails;
+        }
+        // {e.all = e.all <WriteLine 'HL3:\n' e.all>;}
+        {
+          (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
+            (e.Comments)
+            (<GenPattern <ReverseGen e.CommonPattern>>)
+            <DelAccumulator
+              <MapReduce
+                {
+                  ((e.Substitute) e.Substs) ((e.HardGenComment) (e.Result)) =
+                    (e.Substs)
+                    ((e.Substitute) (e.HardGenComment) (e.Result));
+                }
+                (e.SentSubsts) e.SentenceTails
+              >
+            >;
+        }
+        // {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
+        {
+          (e.Comments^) ((e.Vars) s.ContextSize (e.CommonMatchCommands)) e.SentencesWithSubst =
+            (e.Comments e.CommonMatchCommands)
+            <MapReduce
+              {
+                s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result)) =
+                  <Fetch
+                    <GenSentence s.ContextSize (e.Vars) (e.Substitute) (e.Result)>
+                    {
+                      (#CmdIssueMem s.Memory) e.Commands =
+                        <Max s.MaxMemory s.Memory>
+                        (#CmdSentence
+                          (#CmdComment e.HardGenComment)
+                          e.Commands
+                        );
+                    }
+                  >;
+              }
+              s.ContextSize e.SentencesWithSubst
+            >;
+        }
+        // ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
+        {
+          (e.Prefix) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
+            (#Function
+              s.ScopeClass (e.Name)
+              (#CmdIssueMem s.MaxMemory)
+                          (#CmdInitB0)
+              e.Prefix
+              e.Sentences
+              <Fetch
+                e.LastSentence
+                {
+                  e.Commands (#CmdOpenELoop e.OpenELoop) =
+                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+                  e.LastSentence^ = e.LastSentence;
+                }
+              >
+            );
+
+          (e.Prefix) 0 /* нет предложений */ =
+            (#CmdEnum s.ScopeClass e.Name);
+        }
+        // ({e.all = e.all <WriteLine 'End:\n' e.all>;})
+      >
+    >;
+}
+
+GenSentence {
+  // s.ContextSize (e.Vars) (e.Substitute) (e.Result) = (#CmdIssueMem s.ContextSize);
+  s.ContextSize (e.Vars) (e.Substitute) (e.Result) =
+    <Fetch
+      s.ContextSize (e.Vars) (e.Substitute) (e.Result)
+      <Seq
+        // 1. (e.Vars) (e.Substitute) => (e.PrepSubstitute)
+        {
+          e.Head (e.Vars) (e.Substitute) e.Tail =
+            e.Head
+            <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
+            e.Tail;
+        }
+        // {e.all = e.all <WriteLine 'GS1\n' e.all>;}
+        // 2. #E #CmdSave
+        {
+          s.ContextSize (e.Substitutes) e.Tail^ =
+            <ReassignEs s.ContextSize e.Substitutes>
+            e.Tail;
+        }
+        // {e.all = e.all <WriteLine 'GS2\n' e.all>;}
+        // 3. GenPattern-New
+        // 3.1. GenResult
+        {
+          s.MaxMemory (e.Saves) (e.Substitutes) (e.Result^) =
+            <Fetch
+              <GenPattern-New s.MaxMemory (e.Saves) (e.Substitutes)>
+              {
+                (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+                  <Fetch
+                    <GenResult s.ContextOffset (e.PatternVars) e.Result>
+                    {
+                      s.ContextCount e.ResultCommands =
+                        <FoldOpenELoops
+                          (#CmdIssueMem <Max s.MaxMemory s.ContextCount>)
+                          e.PatternCommands
+                          e.ResultCommands
+                        >;
+                    }
+                  >;
+              }
+            >;
+        }
+      >
+    >;
+}
+
+ComposeVars {
+  (e.Scanned)
+  (e.Substitute-B (s.Tag (e.Name) '$' e.Subst) e.Substitute-E)
+  (e.Vars-B (s.Mode (e.Name) s.Offset) e.Vars-E) =
+    <ComposeVars
+      (e.Scanned (s.Tag s.Offset e.Subst))
+      (e.Substitute-B e.Substitute-E) (e.Vars-B e.Vars-E)
+    >;
+  (e.Scanned) () () = (e.Scanned);
+}
+
+ReassignEs {
+  s.ContextOffset e.Substitutes =
+    <Fetch
+      <MapReduce
+        {
+          (s.Offset (e.Saves)) (#E s.Old e.Subst) =
+            (<Inc2 s.Offset> 
+            (e.Saves (#CmdSave s.Old s.Offset)))
+            (#E s.Offset e.Subst);
+          (s.Offset (e.Saves)) (e.Other) =
+            (s.Offset (e.Saves )) (e.Other);
+        }
+        (s.ContextOffset (/* Saves */)) e.Substitutes
+      >
+      {
+        (s.Offset (e.Saves)) e.Substitutes^ =
+          s.Offset (e.Saves) (e.Substitutes);
+      }
+    >;
+}
+
 FoldOpenELoops {
   e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
     e.Commands-B
@@ -167,30 +372,63 @@ GenPattern {
   e.Pattern =
     <Fetch
       <DoGenPattern
-        2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
+        2 (#E 0 e.Pattern) (/* vars */) (/* commands */)
       >
       <Seq
-        {
-          s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
-            (e.Vars) (e.MarkedPattern)
+         {
+          s.ContextOffset (e.Vars) e.Commands =
+            (e.Vars)
             <FreezeRanges s.ContextOffset e.Commands>;
         }
         {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
-            (e.Vars) (e.MarkedPattern) s.ContextOffset
+          (e.Vars) s.ContextOffset e.Commands =
+            (e.Vars) s.ContextOffset
             <GetRangeReassigns e.Commands>;
         }
         {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset (e.Reassigns) e.Commands =
+          (e.Vars) s.ContextOffset (e.Reassigns) e.Commands =
             (<FixupEVarIndexes (e.Reassigns) e.Vars>)
-            (<FixupMarkedPatternIndexes (e.Reassigns) e.MarkedPattern>)
             s.ContextOffset e.Commands;
         }
         {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
+          (e.Vars) s.ContextOffset e.Commands =
             (e.Vars)
             s.ContextOffset
-            ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
+            (e.Commands);
+        }
+      >
+    >;
+}
+
+GenPattern-New {
+  s.MaxMemory (e.Saves) (e.Substitutes) =
+    <Fetch
+      // <WriteLine 'GPN\n' e.Substitutes>
+      <DoGenPattern
+        s.MaxMemory e.Substitutes (/* vars */) (e.Saves)
+      >
+      <Seq
+         {
+          s.ContextOffset (e.Vars) e.Commands =
+            (e.Vars)
+            <FreezeRanges s.ContextOffset e.Commands>;
+        }
+        {
+          (e.Vars) s.ContextOffset e.Commands =
+            (e.Vars) s.ContextOffset
+            <GetRangeReassigns e.Commands>;
+        }
+        {
+          (e.Vars) s.ContextOffset (e.Reassigns) e.Commands =
+            // <WriteLine 'Vars\n' (e.Vars)>
+            (<FixupEVarIndexes (e.Reassigns) e.Vars>)
+            s.ContextOffset
+            (
+              e.Commands
+              (#CmdComment 'Vars: ' e.Vars)
+              (#CmdComment 'Reassigns: ' e.Reassigns)
+              (#CmdComment 'Fixup: ' <FixupEVarIndexes (e.Reassigns) e.Vars>)
+            );
         }
       >
     >;
@@ -200,13 +438,9 @@ GetRangeReassigns {
   e.Commands =
     <MapReduce
       {
-        (e.Reassigns-B (s.First s.Old) e.Reassigns-E)
-        (#CmdSave s.Old s.New) =
-          (e.Reassigns-B (s.First s.New) e.Reassigns-E (s.Old s.New))
-          (#CmdSave s.Old s.New);
-
         (e.Reassigns) (#CmdSave s.Old s.New) =
-          (e.Reassigns (s.Old s.New)) (#CmdSave s.Old s.New);
+          (<GetRangeReassigns-FixupChain e.Reassigns s.Old s.New> (s.Old s.New))
+          (#CmdSave s.Old s.New);
 
         (e.Reassigns) t.OtherCommand =
           (e.Reassigns) t.OtherCommand;
@@ -214,6 +448,16 @@ GetRangeReassigns {
       (/* переназначения диапазонов */)
       e.Commands
     >;
+}
+
+GetRangeReassigns-FixupChain {
+  e.Reassigns-B (s.First s.Old) e.Reassigns-E s.Old s.New =
+    e.Reassigns-B (s.First s.New)
+    <GetRangeReassigns-FixupChain
+      e.Reassigns-E s.Old s.New
+    >;
+    
+  e.Reassigns s.Old s.New = e.Reassigns;
 }
 
 FixupEVarIndexes {
@@ -255,186 +499,345 @@ Inc2 {
 }
 
 DoGenPattern {
-  // Распознавание литералов (символьных, целочисленных, имён)
+  // Распознавание Т-подстановки
   s.ContextOffset
-  e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkChar s.Char) e.Range) e.Ranges-E
+  e.Substs-B (#T s.Num (#TkChar s.Char)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Junk e.Junk (#TkChar s.Char)) (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
+    >;
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkName e.Name)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkIdentifier e.Ident)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkNumber s.Value)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#Brackets e.SubRange)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Inc2 s.ContextOffset>
+      e.Substs-B (#E s.ContextOffset e.SubRange) e.Substs-E
+      (e.Vars) (e.Commands (#CmdBrackets #AlgTerm s.Num s.ContextOffset)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#ADT-Brackets (e.Name) e.SubRange)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Inc2 s.ContextOffset>
+      e.Substs-B (#E s.ContextOffset e.SubRange) e.Substs-E
+      (e.Vars) (e.Commands (#CmdADT #AlgTerm s.Num s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkVariable s.Mode e.Index)) e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset e.Substs-B e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.Num)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset) //
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkVariable 't' e.Index)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset e.Substs-B e.Substs-E
+      (e.Vars ('t' (e.Index) s.Num)) (e.Commands)
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#T s.Num (#TkVariable 's' e.Index)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset e.Substs-B e.Substs-E
+      (e.Vars ('s' (e.Index) s.Num))
+      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.ContextOffset)) //
+    >;
+
+  // Распознавание S-подстановки
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkChar s.Char)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
+    >;
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkName e.Name)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name))  //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkIdentifier e.Ident)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkNumber s.Value)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B e.Substs-E
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkVariable s.Mode e.Index)) e.Substs-E
+  (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset e.Substs-B e.Substs-E
+      (
+        e.Vars-B
+        (s.Mode (e.Index) e.Offsets s.SampleOffset s.Num)
+        e.Vars-E
+      )
+      (
+        e.Commands
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset) //
+      )
+    >;
+
+  s.ContextOffset
+  e.Substs-B (#S s.Num (#TkVariable 's' e.Index)) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset e.Substs-B e.Substs-E
+      (e.Vars ('s' (e.Index) s.Num)) (e.Commands)
+    >;
+
+  // Распознавание литералов (символьных, целочисленных, имён)
+  s.ContextOffset
+  e.Substs-B (#E s.Num (#TkChar s.Char) e.Range) e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      s.ContextOffset
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdChar #AlgLeft s.Num s.Char))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkNumber s.Number) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkNumber s.Number) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Junk e.Junk (#TkNumber s.Number)) (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdNumber #AlgLeft s.Num s.Number))
     >;
 
   s.ContextOffset
-  e.Ranges-B (#Junk e.Junk) (#Range s.Num (#TkName e.Name) e.Range) e.Ranges-E
+  e.Substs-B (#E s.Num (#TkName e.Name) e.Range) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B (#Junk (#TkName e.Name)) (#Range s.Num e.Range) e.Ranges-E
+      e.Substs-B (#E s.Num e.Range) e.Substs-E
       (e.Vars) (e.Commands (#CmdName #AlgLeft s.Num e.Name))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkIdentifier e.Name) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkIdentifier e.Name) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Junk e.Junk (#TkIdentifier e.Name)) (#Range s.Num e.Range)
-      e.Ranges-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgLeft s.Num e.Name))
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
+      (e.Vars)
+      (e.Commands
+        (#CmdComment #CmdIdent #AlgLeft s.Num e.Name)
+        (#CmdIdent #AlgLeft s.Num e.Name)
+      )
     >;
 
   s.ContextOffset
-  e.Ranges-B (#Range s.Num e.Range (#TkChar s.Char)) (#Junk e.Junk) e.Ranges-E
+  e.Substs-B (#E s.Num e.Range (#TkChar s.Char)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkChar s.Char) e.Junk)
-      e.Ranges-E
-      (e.Vars) (e.Commands (#CmdChar #AlgRight s.Num s.Char))
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
+      (e.Vars)
+      (
+        e.Commands
+        (#CmdComment #CmdChar #AlgRight s.Num <EscapeChar s.Char>)
+        (#CmdChar #AlgRight s.Num s.Char)
+      )
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#TkNumber s.Number)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#TkNumber s.Number))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkNumber s.Number) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdNumber #AlgRight s.Num s.Number))
     >;
 
   s.ContextOffset
-  e.Ranges-B (#Range s.Num e.Range (#TkName e.Name)) (#Junk e.Junk) e.Ranges-E
+  e.Substs-B (#E s.Num e.Range (#TkName e.Name)) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkName e.Name) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdName #AlgRight s.Num e.Name))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#TkIdentifier e.Name)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#TkIdentifier e.Name))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkIdentifier e.Name) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdIdent #AlgRight s.Num e.Name))
     >;
 
   // Распознавание скобок
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#Brackets e.SubRange) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#Brackets e.SubRange) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc2 s.ContextOffset>
-      e.Ranges-B
-      (#Junk e.Junk (#TkOpenBracket)) (#Range s.ContextOffset e.SubRange)
-      (#Junk (#TkCloseBracket)) (#Range s.Num e.Range)
-      e.Ranges-E
-      (e.Vars) (e.Commands (#CmdBrackets #AlgLeft s.Num s.ContextOffset))
+      e.Substs-B
+      (#E s.ContextOffset e.SubRange)
+      (#E s.Num e.Range)
+      e.Substs-E
+      (e.Vars)
+      (
+        e.Commands
+        (#CmdComment #CmdBrackets s.Num s.ContextOffset)
+        (#CmdBrackets #AlgLeft s.Num s.ContextOffset)
+      )
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#Brackets e.SubRange)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#Brackets e.SubRange))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc2 s.ContextOffset>
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkOpenBracket))
-      (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseBracket) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      (#E s.ContextOffset e.SubRange)
+      e.Substs-E
       (e.Vars) (e.Commands (#CmdBrackets #AlgRight s.Num s.ContextOffset))
     >;
 
   // Распознавание АТД-скобок
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#ADT-Brackets (e.Name) e.SubRange) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc2 s.ContextOffset>
-      e.Ranges-B
-      (#Junk e.Junk (#TkOpenADT) (#TkName e.Name))
-      (#Range s.ContextOffset e.SubRange)
-      (#Junk (#TkCloseADT)) (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.ContextOffset e.SubRange)
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars)
       (e.Commands (#CmdADT #AlgLeft s.Num s.ContextOffset e.Name))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#ADT-Brackets (e.Name) e.SubRange)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#ADT-Brackets (e.Name) e.SubRange))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc2 s.ContextOffset>
-      e.Ranges-B
-      (#Range s.Num e.Range) (#Junk (#TkOpenADT) (#TkName e.Name))
-      (#Range s.ContextOffset e.SubRange) (#Junk (#TkCloseADT) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      (#E s.ContextOffset e.SubRange)
+      e.Substs-E
       (e.Vars)
       (e.Commands (#CmdADT #AlgRight s.Num s.ContextOffset e.Name))
     >;
 
   // Пустой диапазон
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk1) (#Range s.Num /* пусто */) (#Junk e.Junk2)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num /* пусто */)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B (#Junk e.Junk1 e.Junk2) e.Ranges-E
+      e.Substs-B e.Substs-E
       (e.Vars) (e.Commands (#CmdEmpty #AlgLeft s.Num))
     >;
 
   // Распознавание переменных
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkVariable s.Mode e.Index) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkVariable s.Mode e.Index) e.Range)
+  e.Substs-E
   (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
     <DoGenPattern
       <IncVarOffset s.ContextOffset s.Mode>
-      e.Ranges-B
-      (#Junk e.Junk (#TkVariable s.Mode e.Index s.ContextOffset))
-      (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (
         e.Vars-B
         (s.Mode (e.Index) e.Offsets s.SampleOffset s.ContextOffset)
@@ -447,16 +850,15 @@ DoGenPattern {
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#TkVariable s.Mode e.Index)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#TkVariable s.Mode e.Index))
+  e.Substs-E
   (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
     <DoGenPattern
       <IncVarOffset s.ContextOffset s.Mode>
-      e.Ranges-B
-      (#Range s.Num e.Range)
-      (#Junk (#TkVariable s.Mode e.Index s.ContextOffset) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (
         e.Vars-B
         (s.Mode (e.Index) e.Offsets s.SampleOffset s.ContextOffset)
@@ -470,15 +872,14 @@ DoGenPattern {
 
   // Диапазон с закрытой переменной
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk1) (#Range s.Num (#TkVariable 'e' e.Index)) (#Junk e.Junk2)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkVariable 'e' e.Index))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       s.ContextOffset
-      e.Ranges-B
-      (#Junk e.Junk1 (#TkVariable 'e' e.Index s.Num) e.Junk2)
-      e.Ranges-E
+      e.Substs-B
+      e.Substs-E
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (#CmdComment
@@ -488,83 +889,78 @@ DoGenPattern {
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkVariable 's' e.Index) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkVariable 's' e.Index) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc s.ContextOffset>
-      e.Ranges-B
-      (#Junk e.Junk (#TkVariable 's' e.Index s.ContextOffset))
-      (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars ('s' (e.Index) s.ContextOffset))
       (e.Commands (#CmdVar #AlgLeft s.Num 's' s.ContextOffset))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkVariable 't' e.Index) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num e.Range (#TkVariable 's' e.Index))
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc s.ContextOffset>
-      e.Ranges-B
-      (#Junk e.Junk (#TkVariable 't' e.Index s.ContextOffset))
-      (#Range s.Num e.Range)
-      e.Ranges-E
-      (e.Vars ('t' (e.Index) s.ContextOffset))
-      (e.Commands (#CmdVar #AlgLeft s.Num 't' s.ContextOffset))
-    >;
-
-  s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#TkVariable 's' e.Index)) (#Junk e.Junk)
-  e.Ranges-E
-  (e.Vars) (e.Commands) =
-    <DoGenPattern
-      <Inc s.ContextOffset>
-      e.Ranges-B
-      (#Range s.Num e.Range)
-      (#Junk (#TkVariable 's' e.Index s.ContextOffset) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars ('s' (e.Index) s.ContextOffset))
       (e.Commands (#CmdVar #AlgRight s.Num 's' s.ContextOffset))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Range s.Num e.Range (#TkVariable 't' e.Index)) (#Junk e.Junk)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkVariable 't' e.Index) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc s.ContextOffset>
-      e.Ranges-B
-      (#Range s.Num e.Range)
-      (#Junk (#TkVariable 't' e.Index s.ContextOffset) e.Junk)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
+      (e.Vars ('t' (e.Index) s.ContextOffset))
+      (e.Commands (#CmdVar #AlgLeft s.Num 't' s.ContextOffset))
+    >;
+
+  s.ContextOffset
+  e.Substs-B
+  (#E s.Num e.Range (#TkVariable 't' e.Index))
+  e.Substs-E
+  (e.Vars) (e.Commands) =
+    <DoGenPattern
+      <Inc s.ContextOffset>
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars ('t' (e.Index) s.ContextOffset))
       (e.Commands (#CmdVar #AlgRight s.Num 't' s.ContextOffset))
     >;
 
   s.ContextOffset
-  e.Ranges-B
-  (#Junk e.Junk) (#Range s.Num (#TkVariable 'e' e.Index) e.Range)
-  e.Ranges-E
+  e.Substs-B
+  (#E s.Num (#TkVariable 'e' e.Index) e.Range)
+  e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc2 s.ContextOffset>
-      e.Ranges-B
-      (#Junk e.Junk (#TkVariable 'e' e.Index s.ContextOffset))
-      (#Range s.Num e.Range)
-      e.Ranges-E
+      e.Substs-B
+      (#E s.Num e.Range)
+      e.Substs-E
       (e.Vars ('e' (e.Index) s.ContextOffset))
       (e.Commands (#CmdOpenedE #AlgLeft s.Num s.ContextOffset))
     >;
 
   // Завершение разбора.
-  s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
-    s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands;
+  s.ContextOffset (e.Vars) (e.Commands) =
+    s.ContextOffset (e.Vars) e.Commands;
 }
 
 IncVarOffset {
@@ -708,6 +1104,19 @@ TextFromPattern-Char {
 GenResult {
   s.ContextOffset (e.PatternVars) e.Result =
     <Fetch
+      // <WriteLine 'GR\n' 
+        // (
+          // <Map
+            // {
+              // (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+            // }
+            // e.PatternVars
+          // >
+        // )
+        // (/* alloc commands */) (/* other commands */)
+        // s.ContextOffset // счётчик новых элементов
+        // <CollectStrings e.Result>
+      // >
       <DoGenResult
         (
           <Map

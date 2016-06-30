@@ -1,0 +1,9 @@
+$ENTRY Go { = ; }
+
+Main-SwRenamedTargets-lambda {
+  (s.Pos #Collision (e.FirstTarget) e.SecondTarget) = ;
+
+  (s.Pos #Source (e.Source) e.Output) = ;
+
+  (s.Pos #Output e.Output) = ;
+}
