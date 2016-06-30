@@ -70,11 +70,6 @@ $ENTRY ParseCommandLine {
             (e.Errors) (e.Bag #Both) e.Options;
         }
         {
-          (e.Errors) (e.Bag) e.Options =
-            <WriteLine 'Before handle #Opt: ' (e.Errors) (e.Bag) e.Options>
-            (e.Errors) (e.Bag) e.Options;
-        }
-        {
           (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'P') e.Options-E =
             (e.Errors) (e.Bag #OptPattern) e.Options-B e.Options-E;
 
@@ -87,11 +82,6 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #OptNone) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options =
-            <WriteLine 'After handle #Opt: ' (e.Errors) (e.Bag) e.Options>
-            (e.Errors) (e.Bag) e.Options;
         }
         {
           (e.Errors) (e.Bag)
