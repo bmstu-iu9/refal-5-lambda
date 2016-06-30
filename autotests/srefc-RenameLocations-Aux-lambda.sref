@@ -1,9 +1,0 @@
-$ENTRY Go { = ; }
-
-RenameLocations-Aux-lambda {
-  0 (s.Pos #Source (e.Source) e.Output) = ;
-
-  s.Num (s.Pos #Source (e.Source) e.Output '.cpp') = ;
-
-  s.Num (s.Pos #Output e.Output) = ;
-}

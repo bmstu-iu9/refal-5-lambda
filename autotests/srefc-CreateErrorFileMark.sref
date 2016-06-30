@@ -1,9 +1,0 @@
-//FROM LibraryEx
-$ENUM SaveFile;
-
-$ENTRY Go { = ; }
-
-CreateErrorFileMark {
-  #NoErrorFile = /* ничего */;
-  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
-}

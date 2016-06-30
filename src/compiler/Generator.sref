@@ -1,5 +1,6 @@
 //FROM Library
-$EXTERN Add;
+$EXTERN Add, WriteLine;
+
 
 FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
@@ -320,12 +321,6 @@ GenCommand {
  (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
     (e.Indent)
     <PrintMatchSTVarSave (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber>;
-
-  (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
-    (e.Indent)
-    <PrintMatchRepeated
-      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
-    >;
 
   (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
     (e.Indent)
@@ -982,13 +977,6 @@ PrintMatchRepeated {
       <ContextRange s.VarNumber> ', ' <ContextRange s.SampleNumber>
     >;
 
-  (e.Indent) #AlgTerm s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
-    (e.Indent
-      'if( ! refalrts::repeated_stvar_term( ' <ContextItem s.VarNumber>
-      ', ' <ContextItem s.SampleNumber> ' ) )'
-    )
-    (e.Indent '  ' <BreakerFromIndent e.Indent>);
-
   (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
@@ -1012,13 +1000,6 @@ PrintMatchRepeatedSave {
 }
 
 PrintMatch {
-  (e.Indent) #AlgTerm s.Offset (e.Function) e.TextRep =
-    (e.Indent
-      'if( ! refalrts::' e.Function '_term( ' e.TextRep ', '
-      <ContextItem s.Offset> ' ) )'
-    )
-    (e.Indent '  ' <BreakerFromIndent e.Indent>);
-
   (e.Indent) s.Direction s.BracketNumber (e.Function) e.TextRep =
     (e.Indent
       'if( ! refalrts::' e.Function '_' <StrFromDirection s.Direction>
@@ -1026,6 +1007,7 @@ PrintMatch {
     )
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
 }
+
 
 PrintMatchSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber (e.Function) e.TextRep #Brackets =
@@ -1045,6 +1027,8 @@ PrintMatchSave {
     )
     (e.Indent 'if( ! ' <ContextItem s.Offset> ' )')
     (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
+
 }
 
 PrintCreateElem {

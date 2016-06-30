@@ -186,23 +186,14 @@ extern bool empty_seq( Iter begin, Iter end );
 extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
 extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
 
-extern bool char_term(char ch, Iter& pos );
 extern Iter char_left( char ch, Iter& first, Iter& last );
 extern Iter char_right( char ch, Iter& first, Iter& last );
 
-extern bool number_term( RefalNumber num, Iter& pos );
 extern Iter number_left( RefalNumber num, Iter& first, Iter& last );
 extern Iter number_right( RefalNumber num, Iter& first, Iter& last );
 
-extern bool ident_term( RefalIdentifier ident, Iter& pos );
 extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
 extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
-
-extern bool adt_term(
-  Iter& res_first, Iter& res_last,
-  RefalFunctionPtr tag,
-  Iter pos
-);
 
 extern Iter adt_left(
   Iter& res_first, Iter& res_last,
@@ -224,18 +215,15 @@ extern void call_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void bracket_pointers(Iter left_bracket, Iter& right_bracket);
 
-extern bool brackets_term( Iter& res_first, Iter& res_last, Iter& pos );
 extern Iter brackets_left( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 extern Iter brackets_right( Iter& res_first, Iter& res_last, Iter& first, Iter& last );
 
-extern bool svar_term( Iter svar, Iter pos );
 extern bool svar_left( Iter& svar, Iter& first, Iter& last );
 extern bool svar_right( Iter& svar, Iter& first, Iter& last );
 
 extern refalrts::Iter tvar_left( Iter& tvar, Iter& first, Iter& last );
 extern refalrts::Iter tvar_right( Iter& tvar, Iter& first, Iter& last );
 
-extern bool repeated_stvar_term(Iter stvar_sample, Iter pos);
 extern refalrts::Iter repeated_stvar_left( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 extern refalrts::Iter repeated_stvar_right( Iter& stvar, Iter stvar_sample, Iter& first, Iter& last );
 
