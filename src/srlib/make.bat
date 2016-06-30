@@ -12,7 +12,7 @@ call :PREPARE_SRCLIB GetOpt
 goto :EOF
 
 :PREPARE_SRCLIB
-  ..\..\bin\srefc-core %1
+  ..\..\bin\srefc-core %SREFC_FLAGS% %1
   echo //FROM Library>> %1.cpp
   move %1.cpp ..\..\srlib
   copy %1.sref ..\..\srlib\src
