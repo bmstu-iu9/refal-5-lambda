@@ -152,6 +152,10 @@ refalrts::Iter refalrts::function_right(
   }
 }
 
+bool refalrts::char_term(char ch, refalrts::Iter& pos) {
+  return (pos->tag == cDataChar) && (pos->char_info == ch);
+}
+
 refalrts::Iter refalrts::char_left(
   char ch, refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -189,6 +193,12 @@ refalrts::Iter refalrts::char_right(
 }
 
 
+bool refalrts::number_term(
+  refalrts::RefalNumber num, refalrts::Iter& pos
+) {
+    return (pos->tag == cDataNumber) && (pos->number_info == num);
+}
+
 refalrts::Iter refalrts::number_left(
   refalrts::RefalNumber num, refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -225,6 +235,12 @@ refalrts::Iter refalrts::number_right(
   }
 }
 
+bool refalrts::ident_term(
+  refalrts::RefalIdentifier ident, refalrts::Iter& pos
+) {
+    return (pos->tag == cDataIdentifier) && (pos->ident_info == ident);
+}
+
 refalrts::Iter refalrts::ident_left(
   refalrts::RefalIdentifier ident, refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -259,6 +275,27 @@ refalrts::Iter refalrts::ident_right(
     move_right( first, last );
     return ident_pos;
   }
+}
+
+bool refalrts::brackets_term(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::Iter& pos
+) {
+  if (pos->tag != cDataOpenBracket) {
+    return false;
+  }
+
+  refalrts::Iter right_bracket = pos->link_info;
+
+  if (next(pos) != right_bracket) {
+    res_first = next(pos);
+    res_last = prev(right_bracket);
+  } else {
+    res_first = 0;
+    res_last = 0;
+  }
+
+  return true;
 }
 
 refalrts::Iter refalrts::brackets_left(
@@ -332,6 +369,34 @@ void refalrts::bracket_pointers(
   refalrts::Iter& right_bracket)
 {
   right_bracket = left_bracket->link_info;
+}
+
+bool refalrts::adt_term(
+  refalrts::Iter& res_first, refalrts::Iter& res_last,
+  refalrts::RefalFunctionPtr tag,
+  refalrts::Iter pos
+) {
+  if (pos->tag != cDataOpenADT) {
+    return false;
+  }
+  
+  refalrts::Iter adt_tag = next(pos);
+  
+  if (adt_tag->tag != cDataFunction && adt_tag->function_info.ptr != tag) {
+    return false;
+  }
+  
+  refalrts::Iter right_bracket = pos->link_info;
+  
+  if (next(adt_tag) != right_bracket) {
+    res_first = next(adt_tag);
+    res_last = prev(right_bracket);
+  } else {
+    res_first = 0;
+    res_last = 0;
+  }
+  
+  return true;
 }
 
 refalrts::Iter refalrts::adt_left(
@@ -462,6 +527,15 @@ void refalrts::call_pointers(
   refalrts::Iter pnext = next( left_bracket );
   tag = pnext;
   right_bracket = left_bracket->link_info;
+}
+
+bool refalrts::svar_term(
+  refalrts::Iter svar, refalrts::Iter pos
+) {
+  if (! is_open_bracket( pos )) {
+    return true;
+  }
+  return false;
 }
 
 bool refalrts::svar_left(
@@ -658,6 +732,23 @@ bool equal_expressions(
 }
 
 } // unnamed namespace
+
+bool refalrts::repeated_stvar_term(
+  refalrts::Iter stvar_sample, refalrts::Iter pos
+) {
+  if (svar_term(stvar_sample, stvar_sample)) {
+    return svar_term(pos, pos) && equal_nodes(pos, stvar_sample);
+  } else if (is_open_bracket(pos)) {
+    refalrts::Iter pos_e = pos->link_info;
+    refalrts::Iter stvar_sample_e = stvar_sample->link_info;
+    
+    return equal_expressions(
+      stvar_sample, stvar_sample_e, pos, pos_e
+    );
+  } else {
+    return false;
+  }
+}
 
 refalrts::Iter refalrts::repeated_stvar_left(
   refalrts::Iter& stvar, refalrts::Iter stvar_sample,

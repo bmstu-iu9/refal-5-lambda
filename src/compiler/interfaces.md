@@ -173,7 +173,7 @@
       | #CmdVar s.Mode s.VarOffset
       | #CmdCharSave s.Offset s.Char
 
-    s.Direction ::= #AlgLeft | #AlgRight
+    s.Direction ::= #AlgLeft | #AlgRight | #AlgTerm
 
     s.AllocType e.AllocInfo ::=
         #ElChar s.Char

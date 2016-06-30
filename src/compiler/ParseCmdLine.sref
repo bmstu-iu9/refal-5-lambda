@@ -7,6 +7,9 @@ $EXTERN GetOpt-CheckRepeated;
 //FROM LibraryEx
 $EXTERN Fetch, Seq, MapReduce, Map;
 
+//FROM Library
+$EXTERN WriteLine;
+
 /**
   <ParseCommandLine e.Arguments>
     == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile
