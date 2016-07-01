@@ -160,6 +160,9 @@ PrintDirection {
 }
 
 GenCommand {
+  // ---------------------------------------------------------------------------
+  // Создания глобальных объектов, общие команды
+
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
   (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
@@ -196,6 +199,30 @@ GenCommand {
     (e.Indent)
     ('}') ();
 
+  // ---------------------------------------------------------------------------
+  // Общие команды тела функции
+
+  (e.Indent) (#CmdIssueMem s.Number) =
+    (e.Indent)
+    (e.Indent
+      '// issue here memory for vars with ' <StrFromInt s.Number> ' elems'
+    )
+    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
+    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
+    ;
+
+  (e.Indent) (#CmdIfDef) =
+    (e.Indent) ('#ifdef INTERPRET');
+
+  (e.Indent) (#CmdElse) =
+    (e.Indent) ('#else');
+
+  (e.Indent) (#CmdEndIf) =
+    (e.Indent) ('#endif');
+
+  // ---------------------------------------------------------------------------
+  // Команды режима прямой кодогенерации
+
   (e.Indent) (#CmdStartSentence) =
     (e.Indent '  ')
     (e.Indent 'do {')
@@ -205,14 +232,6 @@ GenCommand {
     (e.Indent)
     (e.Indent '} while ( 0 );')
     ();
-
-  (e.Indent) (#CmdReinitElem s.ElemNumber e.ElemInfo) =
-    (e.Indent)
-    <PrintCreateElem (e.Indent) ('reinit') s.ElemNumber e.ElemInfo>;
-
-  (e.Indent) (#CmdUpdateElem s.ElemNumber e.ElemInfo) =
-    (e.Indent)
-    <PrintCreateElem (e.Indent) ('update') s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdInitB0) =
     (e.Indent)
@@ -228,6 +247,9 @@ GenCommand {
     (e.Indent <ContextRange-B 0> ' = arg_begin;')
     (e.Indent <ContextRange-E 0> ' = arg_end;')
     ;
+
+  // ---------------------------------------------------------------------------
+  // Команды сопоставления с образцом (прямая кодогенерация)
 
   (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
@@ -327,12 +349,6 @@ GenCommand {
       (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
     >;
 
-  (e.Indent) (#CmdRepeated s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
-    (e.Indent)
-    <PrintMatchRepeated
-      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
-    >;
-
   (e.Indent) (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
     (e.Indent)
     <PrintMatchRepeatedSave
@@ -369,6 +385,17 @@ GenCommand {
       ' = ' <ContextRange-E s.OldBracketNumber> ';'
     )
     ;
+
+  // ---------------------------------------------------------------------------
+  // Команды построения результата (прямая кодогенерация)
+
+  (e.Indent) (#CmdReinitElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('reinit') s.ElemNumber e.ElemInfo>;
+
+  (e.Indent) (#CmdUpdateElem s.ElemNumber e.ElemInfo) =
+    (e.Indent)
+    <PrintCreateElem (e.Indent) ('update') s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdEmptyResult) =
     (e.Indent)
@@ -510,20 +537,12 @@ GenCommand {
       }
     >;
 
-  (e.Indent) (#CmdIssueMem s.Number) =
-    (e.Indent) (e.Indent '// issue here memory for vars with ' <StrFromInt s.Number> ' elems')
-    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
-    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
-    ;
+  (e.Indent) (#CmdFail) =
+    (e.Indent)
+    <GenReturn #Fail e.Indent>;
 
-  (e.Indent) (#CmdIfDef) =
-    (e.Indent) ('#ifdef INTERPRET');
-
-  (e.Indent) (#CmdElse) =
-    (e.Indent) ('#else');
-
-  (e.Indent) (#CmdEndIf) =
-    (e.Indent) ('#endif');
+  // ---------------------------------------------------------------------------
+  // Команды режима интерпретации
 
   (e.Indent) (#CmdiFuncArray) =
     (e.Indent)
@@ -593,6 +612,34 @@ GenCommand {
     >
     (e.Indent '  {' <PrintString e.LastString> '}')
     (e.Indent '};');
+
+  (e.Indent) (#CmdInitRAA) =
+    (e.Indent '  ')
+    (e.Indent 'static const refalrts::RASLCommand raa[] = {');
+
+  (e.Indent '  ') (#CmdFinRAA) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
+    (e.Indent '};');
+
+  (e.Indent) (#CmdiReserveStack 0) =
+    (e.Indent)
+    (e.Indent 'int open_e_stack[1];');
+
+  (e.Indent) (#CmdiReserveStack s.Depth) =
+    (e.Indent)
+    (e.Indent 'int open_e_stack[' <StrFromInt s.Depth> '];');
+
+  (e.Indent) (#CmdiRunInterpret) =
+    (e.Indent)
+    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
+    (e.Indent '  raa, context, arg_begin, arg_end,')
+    (e.Indent '  functions, idents, numbers, strings, open_e_stack')
+    (e.Indent ');')
+    (e.Indent 'return res;');
+
+  // ---------------------------------------------------------------------------
+  // Команды сопоставления с образцом (режим интерпретации)
 
   (e.Indent)
   (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
@@ -683,35 +730,6 @@ GenCommand {
     )
     ;
 
-  (e.Indent) (#CmdInitRAA) =
-    (e.Indent '  ')
-    (e.Indent 'static const refalrts::RASLCommand raa[] = {');
-
-  (e.Indent '  ') (#CmdFinRAA) =
-    (e.Indent)
-    (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
-    (e.Indent '};');
-
-  (e.Indent) (#CmdiReserveStack 0) =
-    (e.Indent)
-    (e.Indent 'int open_e_stack[1];');
-
-  (e.Indent) (#CmdiReserveStack s.Depth) =
-    (e.Indent)
-    (e.Indent 'int open_e_stack[' <StrFromInt s.Depth> '];');
-
-  (e.Indent) (#CmdiRunInterpret) =
-    (e.Indent)
-    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
-    (e.Indent '  raa, context, arg_begin, arg_end,')
-    (e.Indent '  functions, idents, numbers, strings, open_e_stack')
-    (e.Indent ');')
-    (e.Indent 'return res;');
-
-  (e.Indent) (#CmdiEmptyResult) =
-    (e.Indent)
-    (e.Indent '{refalrts::icEmptyResult, 0, 0, 0},');
-
   (e.Indent) (#CmdiBracket s.Direction s.Num s.NumRanges) =
     (e.Indent)
     (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
@@ -723,6 +741,21 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icEmpty, 0, 0, ' <StrFromInt s.Num> '},')
     ;
+
+  (e.Indent) (#CmdiOnFailGoTo s.Offset) =
+    (e.Indent)
+    (e.Indent '{refalrts::icOnFailGoTo, +' <StrFromInt s.Offset> ', 0, 0},');
+
+  (e.Indent) (#CmdiInitB0) =
+    (e.Indent)
+    (e.Indent '{refalrts::icInitB0, 0, 0, 0},');
+
+  // ---------------------------------------------------------------------------
+  // Команды построения результата (режим интерпретации)
+
+  (e.Indent) (#CmdiEmptyResult) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEmptyResult, 0, 0, 0},');
 
   (e.Indent) (#CmdiAllocateElem s.ElemNumber s.Type e.Info) =
     (e.Indent)
@@ -773,14 +806,6 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icPushStack, 0, 0, ' <StrFromInt s.ElemNumber> '},');
 
-  (e.Indent) (#CmdFail) =
-    (e.Indent)
-    <GenReturn #Fail e.Indent>;
-
-  (e.Indent) (#CmdiOnFailGoTo s.Offset) =
-    (e.Indent)
-    (e.Indent '{refalrts::icOnFailGoTo, +' <StrFromInt s.Offset> ', 0, 0},');
-
   (e.Indent) (#CmdiFail) =
     (e.Indent)
     (e.Indent '{refalrts::icFail, 0, 0, 0},');
@@ -788,10 +813,6 @@ GenCommand {
   (e.Indent) (#CmdiReturnResult) =
     (e.Indent)
     (e.Indent '{refalrts::icReturnResult, 0, 0, 0},');
-
-  (e.Indent) (#CmdiInitB0) =
-    (e.Indent)
-    (e.Indent '{refalrts::icInitB0, 0, 0, 0},');
 }
 
 //FROM Escape
