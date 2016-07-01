@@ -1,3 +1,0 @@
-$ENTRY GetEnv {
-  e.EnvName = 'res';
-}
