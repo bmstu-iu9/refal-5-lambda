@@ -64,8 +64,9 @@ run_test() {
   SRFLAGS= run_test_aux$SUFFIX $1
   SRFLAGS=-OP run_test_aux$SUFFIX $1
   SRFLAGS=-OR run_test_aux$SUFFIX $1
-  SRFLAGS=--gen=direct run_test_aux$SUFFIX $1
   SRFLAGS=--gen=interp run_test_aux$SUFFIX $1
+  SRFLAGS=-OP --gen=interp run_test_aux$SUFFIX $1
+  SRFLAGS=-OR --gen=interp run_test_aux$SUFFIX $1
 }
 
 if [ -z "$1" ]; then

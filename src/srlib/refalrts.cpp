@@ -116,6 +116,12 @@ bool refalrts::empty_seq( refalrts::Iter first, refalrts::Iter last ) {
   return (first == 0) && (last == 0);
 }
 
+bool refalrts::function_term(
+  refalrts::RefalFunctionPtr func, refalrts::Iter pos
+) {
+  return (pos->tag == cDataFunction) && (pos->function_info.ptr == func);
+}
+
 refalrts::Iter refalrts::function_left(
   refalrts::RefalFunctionPtr fn, refalrts::Iter& first, refalrts::Iter& last
 ) {
@@ -2790,6 +2796,14 @@ refalrts::FnResult refalrts::interpret_array(
           MATCH_FAIL
         break;
 
+      case icBracketTerm:
+        if( !refalrts::brackets_term( context[raa[i].val2],
+                                      context[raa[i].val2 + 1],
+                                      bb )
+        )
+          MATCH_FAIL
+        break;
+
       case ictVarRight:
         index = raa[i].val2;
         if( !refalrts::tvar_right( context[index], bb, be) )
@@ -2811,6 +2825,11 @@ refalrts::FnResult refalrts::interpret_array(
       case icsVarLeft:
         index = raa[i].val2;
         if( !refalrts::svar_left( context[index], bb, be) )
+          MATCH_FAIL
+        break;
+
+      case icsVarTerm:
+        if( !refalrts::svar_term( bb, bb ) )
           MATCH_FAIL
         break;
 
@@ -2838,6 +2857,18 @@ refalrts::FnResult refalrts::interpret_array(
           MATCH_FAIL
         break;
 
+      case icNumTerm:
+        if(
+          ! refalrts::number_term( static_cast<RefalNumber>(raa[i].val2), bb )
+        )
+          MATCH_FAIL
+        break;
+
+      case icHugeNumTerm:
+        if( ! refalrts::number_term( numbers[raa[i].val2], bb ) )
+          MATCH_FAIL
+        break;
+
       case icIdentRight:
         if( ! refalrts::ident_right( idents[raa[i].val2], bb, be ) )
           MATCH_FAIL
@@ -2845,6 +2876,11 @@ refalrts::FnResult refalrts::interpret_array(
 
       case icIdentLeft:
         if( ! refalrts::ident_left( idents[raa[i].val2], bb, be ) )
+          MATCH_FAIL
+        break;
+
+      case icIdentTerm:
+        if( ! refalrts::ident_term( idents[raa[i].val2], bb ) )
           MATCH_FAIL
         break;
 
@@ -2866,6 +2902,15 @@ refalrts::FnResult refalrts::interpret_array(
           MATCH_FAIL
         break;
 
+      case icADTTerm:
+        if( ! refalrts::adt_term( context[raa[i].val2],
+                                  context[raa[i].val2 + 1],
+                                  functions[raa[i].val1].ptr,
+                                  bb )
+        )
+          MATCH_FAIL
+        break;
+
       case icFuncRight:
         if ( !function_right( functions[raa[i].val2].ptr, bb, be ) )
           MATCH_FAIL
@@ -2876,6 +2921,11 @@ refalrts::FnResult refalrts::interpret_array(
           MATCH_FAIL
         break;
 
+      case icFuncTerm:
+        if ( !function_term( functions[raa[i].val2].ptr, bb ) )
+          MATCH_FAIL
+        break;
+
       case icCharRight:
         if ( !char_right( static_cast<char>(raa[i].val2), bb, be) )
           MATCH_FAIL
@@ -2883,6 +2933,11 @@ refalrts::FnResult refalrts::interpret_array(
 
       case icCharLeft:
         if ( !char_left( static_cast<char>(raa[i].val2), bb, be) )
+          MATCH_FAIL
+        break;
+
+      case icCharTerm:
+        if ( !char_term( static_cast<char>(raa[i].val2), bb ) )
           MATCH_FAIL
         break;
 
@@ -2934,6 +2989,13 @@ refalrts::FnResult refalrts::interpret_array(
                                                bb, be) )
             MATCH_FAIL
         }
+        break;
+
+      case icsRepeatTerm:
+      case ictRepeatTerm:
+        assert(raa[i].bracket == raa[i].val1);
+        if( ! refalrts::repeated_stvar_term( context[raa[i].val2], bb ) )
+          MATCH_FAIL
         break;
 
       case icSave:

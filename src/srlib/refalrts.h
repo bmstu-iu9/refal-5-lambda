@@ -84,29 +84,39 @@ typedef enum iCmd {
   icEnd,
   icBracketLeft,
   icBracketRight,
+  icBracketTerm,
   icEmpty,
   icsVarRight,
   icsVarLeft,
+  icsVarTerm,
   ictVarRight,
   ictVarLeft,
   icNumRight,
   icNumLeft,
+  icNumTerm,
   icHugeNumRight,
   icHugeNumLeft,
+  icHugeNumTerm,
   icIdentRight,
   icIdentLeft,
+  icIdentTerm,
   icADTRight,
   icADTLeft,
+  icADTTerm,
   icFuncRight,
   icFuncLeft,
+  icFuncTerm,
   icCharRight,
   icCharLeft,
+  icCharTerm,
   iceRepeatRight,
   iceRepeatLeft,
   icsRepeatRight,
   icsRepeatLeft,
+  icsRepeatTerm,
   ictRepeatRight,
   ictRepeatLeft,
+  ictRepeatTerm,
   icSave,
   icEPrepare,
   icEStart,
@@ -183,6 +193,7 @@ extern void move_left( Iter& begin, Iter& end );
 extern void move_right( Iter& begin, Iter& end );
 extern bool empty_seq( Iter begin, Iter end );
 
+extern bool function_term( RefalFunctionPtr func, Iter pos );
 extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
 extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
 

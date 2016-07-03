@@ -78,6 +78,6 @@ SelectRASL {
 
 SelectGenMode {
   s.GenMode #OptNone = s.GenMode;
-  s.GenMode #OptPattern = #OnlyDirect;
+  s.GenMode #OptPattern = s.GenMode;
   s.GenMode #OptResult = #OnlyDirect;
 }

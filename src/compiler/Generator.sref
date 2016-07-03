@@ -157,6 +157,7 @@ PrintBracketsVarInit {
 PrintDirection {
   #AlgLeft = 'Left';
   #AlgRight = 'Right';
+  #AlgTerm = 'Term';
 }
 
 GenCommand {
