@@ -133,8 +133,14 @@ DoLength {
 }
 
 ConvertInterpretCommand {
-  (#CmdBrackets s.Direction s.Num s.NumRanges) =
-    (#CmdiBracket s.Direction s.Num s.NumRanges);
+  (#CmdComment e.Text) = (#CmdComment e.Text);
+
+  (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
+
+  (#CmdInitB0) = (#CmdiInitB0);
+
+  (#CmdChar s.Direction s.BracketNumber s.Char) =
+    (#CmdiChar s.Direction s.BracketNumber s.Char);
 
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
@@ -145,29 +151,17 @@ ConvertInterpretCommand {
       }
     >;
 
-  (#CmdIdent s.Direction s.BracketNumber e.Name) =
-    (#CmdiIdent s.Direction s.BracketNumber e.Name);
-
-  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
-    (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
-
-  (#CmdiEPrepare s.BracketNum s.VarNumber) =
-    (#CmdiEPrepare s.BracketNum s.VarNumber);
-
-  (#CmdiEStart s.BracketNum s.VarNumber) =
-    (#CmdiEStart s.BracketNum s.VarNumber);
-
-  (#CmdChar s.Direction s.BracketNumber s.Char) =
-    (#CmdiChar s.Direction s.BracketNumber s.Char);
-
   (#CmdName s.Direction s.BracketNumber e.Name) =
     (#CmdiName s.Direction s.BracketNumber e.Name);
 
+  (#CmdIdent s.Direction s.BracketNumber e.Name) =
+    (#CmdiIdent s.Direction s.BracketNumber e.Name);
+
+  (#CmdBrackets s.Direction s.Num s.NumRanges) =
+    (#CmdiBracket s.Direction s.Num s.NumRanges);
+
   (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
     (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
-
-  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
-    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
   (#CmdEmpty #AlgLeft s.BracketNumber) =
     (#CmdiEmpty s.BracketNumber);
@@ -175,9 +169,22 @@ ConvertInterpretCommand {
   (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
     (#CmdiVar s.Direction s.BracketNumber s.Mode s.VarNumber);
 
-  (#CmdComment e.Text) = (#CmdComment e.Text);
+  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
+    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
+
+  (#CmdiEPrepare s.BracketNum s.VarNumber) =
+    (#CmdiEPrepare s.BracketNum s.VarNumber);
+
+  (#CmdiEStart s.BracketNum s.VarNumber) =
+    (#CmdiEStart s.BracketNum s.VarNumber);
+
+  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
+    (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
 
   (#CmdEmptyResult) = (#CmdiEmptyResult);
+
+  (#CmdCopyVar s.Mode s.Number s.Sample) =
+    (#CmdArrCopy s.Mode s.Number s.Sample);
 
   (#CmdAllocateElem s.ElemNo #ElNumber s.Number) =
     <Fetch
@@ -190,26 +197,19 @@ ConvertInterpretCommand {
   (#CmdAllocateElem s.ElemNo s.Type e.Info) =
     (#CmdiAllocateElem s.ElemNo s.Type e.Info);
 
-  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem s.ElemNo);
-
-  (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange s.ElemNo);
-
-  (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
-
   (#CmdLinkBrackets s.Left s.Right) = (#CmdiLinkBrackets s.Left s.Right);
 
   (#CmdPushStack s.ElemNo) = (#CmdiPushStack s.ElemNo);
 
-  (#CmdCopyVar s.Mode s.Number s.Sample) =
-    (#CmdArrCopy s.Mode s.Number s.Sample);
+  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem s.ElemNo);
 
-  (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
+  (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
 
-  (#CmdFail) = (#CmdiFail);
+  (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange s.ElemNo);
 
   (#CmdReturnResult) = (#CmdiReturnResult);
 
-  (#CmdInitB0) = (#CmdiInitB0);
+  (#CmdFail) = (#CmdiFail);
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }
