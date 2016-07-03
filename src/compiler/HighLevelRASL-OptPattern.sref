@@ -493,7 +493,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char))
     >;
   s.ContextOffset
   e.Substs-B (#T s.Num (#TkName e.Name)) e.Substs-E
@@ -501,7 +501,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name)) //
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name))
     >;
 
   s.ContextOffset
@@ -510,7 +510,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident))
     >;
 
   s.ContextOffset
@@ -519,7 +519,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value))
     >;
 
   s.ContextOffset
@@ -528,7 +528,7 @@ DoGenPattern {
     <DoGenPattern
       <Inc2 s.ContextOffset>
       e.Substs-B (#E s.ContextOffset e.SubRange) e.Substs-E
-      (e.Vars) (e.Commands (#CmdBrackets #AlgTerm s.Num s.ContextOffset)) //
+      (e.Vars) (e.Commands (#CmdBrackets #AlgTerm s.Num s.ContextOffset))
     >;
 
   s.ContextOffset
@@ -552,7 +552,7 @@ DoGenPattern {
       )
       (
         e.Commands
-        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset) //
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset)
       )
     >;
 
@@ -570,7 +570,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset e.Substs-B e.Substs-E
       (e.Vars ('s' (e.Index) s.Num))
-      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.ContextOffset)) //
+      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.ContextOffset))
     >;
 
   // Распознавание S-подстановки
@@ -580,7 +580,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char)) //
+      (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char))
     >;
   s.ContextOffset
   e.Substs-B (#S s.Num (#TkName e.Name)) e.Substs-E
@@ -588,7 +588,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name))  //
+      (e.Vars) (e.Commands (#CmdName #AlgTerm s.Num e.Name))
     >;
 
   s.ContextOffset
@@ -597,7 +597,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident)) //
+      (e.Vars) (e.Commands (#CmdIdent #AlgTerm s.Num e.Ident))
     >;
 
   s.ContextOffset
@@ -606,7 +606,7 @@ DoGenPattern {
     <DoGenPattern
       s.ContextOffset
       e.Substs-B e.Substs-E
-      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value)) //
+      (e.Vars) (e.Commands (#CmdNumber #AlgTerm s.Num s.Value))
     >;
 
   s.ContextOffset
@@ -621,7 +621,7 @@ DoGenPattern {
       )
       (
         e.Commands
-        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset) //
+        (#CmdRepeated #AlgTerm s.Num s.Mode s.Num s.SampleOffset)
       )
     >;
 
