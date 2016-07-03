@@ -54,7 +54,7 @@ $ENTRY CompileFile {
                     e.AST
                     <Seq
                       <SelectRASL s.Opt>
-                      (LowLevelRASL <SelectGenMode s.GenMode s.Opt>)
+                      (LowLevelRASL s.GenMode)
                       GenProgram
                       (SaveFile (e.OutputName))
                     >
@@ -74,10 +74,4 @@ SelectRASL {
   #OptNone = HighLevelRASL;
   #OptPattern = HighLevelRASL-OptPattern;
   #OptResult = HighLevelRASL-OptResult;
-}
-
-SelectGenMode {
-  s.GenMode #OptNone = s.GenMode;
-  s.GenMode #OptPattern = s.GenMode;
-  s.GenMode #OptResult = #OnlyDirect;
 }

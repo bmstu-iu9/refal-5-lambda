@@ -233,6 +233,8 @@ GenResult {
         (#TkIdentifier e.Name s.Offset) =
           (#CmdAllocateElem s.Offset #ElIdent e.Name);
 
+        (#TkString e.String s.Offset) =
+          (#CmdAllocateElem s.Offset #ElString e.String);
       }
       e.MarkedResult
     >
@@ -393,7 +395,8 @@ GenSplices {
       <CollectTiles e.Result>
     >
     (#CmdUseRes)
-    <GenTrash (e.LeftTile) e.Trash>;
+    <GenTrash (e.LeftTile) e.Trash>
+    (#CmdReturnResult-NoTrash);
 
   (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
 }
@@ -435,7 +438,7 @@ GenTrash {
     <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
 
   (e.LeftTile) /* пусто */ =
-    (#CmdReturnResult-NoTrash);
+    /* пусто */;
 
   ((#LEFT-EDGE)) e.Trash =
     (#CmdTrash #LEFT-EDGE);
@@ -462,6 +465,8 @@ EndOffset {
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
   (#TkVariableCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
+
+  (#TkString e.String s.Offset) = <Inc s.Offset>;
 
   (s.Tag e.Info s.Offset) = s.Offset;
 }
@@ -530,10 +535,12 @@ AddOffsets {
             }
           >;
 
-        s.Offset (s.Tag e.Info) = <Add s.Offset 1> (s.Tag e.Info s.Offset);
-      }
+        s.Offset (#TkString e.String) =
+          <Inc2 s.Offset> (#TkString e.String s.Offset);
 
-      s.ContextOffset e.MarkedResult
+        s.Offset (s.Tag e.Info) = <Inc s.Offset> (s.Tag e.Info s.Offset);
+      }
+      s.ContextOffset <CollectStrings e.MarkedResult>
     >;
 }
 
@@ -1167,6 +1174,9 @@ TextFromExpr {
 
   (#TkName e.Name s.Offset) e.Tail =
     ' & ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
+
+  (#TkString e.String s.Offset) e.Tail =
+    '"' <Map EscapeChar e.String> '"' <Offset s.Offset> <TextFromExpr e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
     ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
