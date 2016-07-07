@@ -39,22 +39,10 @@ LowLevelRASL-Function {
     (#CmdIssueMem s.Number)
     // Интерпретируемый код
     (#CmdIfDef)
-    <PrepareOpenEStack
-      <OutlineConstants
-        (0 /* функции */)
-        (0 /* идентификаторы */)
-        (0 /* большие числа */)
-        (0 /* строки */)
-        (#CmdInitRAA)
-        <PrepareInterpretCommands e.Commands>
-        (#CmdFinRAA)
-      >
-      0 /* начальная глубина */
-    >
-    (#CmdiRunInterpret)
+    <Function-Interpret e.Commands>
     (#CmdElse)
     // Компилируемый код
-    <GenerateResult-Sentences e.Commands>
+    <Function-Direct e.Commands>
     (#CmdEndIf)
     (#CmdFnEnd);
 
@@ -62,13 +50,19 @@ LowLevelRASL-Function {
     (#CmdFnStart s.ScopeClass e.Name)
     (#CmdIssueMem s.Number)
     // Компилируемый код
-    <GenerateResult-Sentences e.Commands>
+    <Function-Direct e.Commands>
     (#CmdFnEnd);
 
   #OnlyInterpret s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
     (#CmdFnStart s.ScopeClass e.Name)
     (#CmdIssueMem s.Number)
     // Интерпретируемый код
+    <Function-Interpret e.Commands>
+    (#CmdFnEnd);
+}
+
+Function-Interpret {
+  e.Commands =
     <PrepareOpenEStack
       <OutlineConstants
         (0 /* функции */)
@@ -81,8 +75,7 @@ LowLevelRASL-Function {
       >
       0 /* начальная глубина */
     >
-    (#CmdiRunInterpret)
-    (#CmdFnEnd);
+    (#CmdiRunInterpret);
 }
 
 PrepareInterpretCommands {
@@ -566,20 +559,20 @@ PrepareOpenEStack {
   s.Depth = (#CmdiReserveStack s.Depth);
 }
 
-GenerateResult-Sentences {
+Function-Direct {
   (#CmdSentence e.SubCommands) e.Tail =
     (#CmdStartSentence)
-    <GenerateResult-Sentences e.SubCommands>
+    <Function-Direct e.SubCommands>
     (#CmdEndSentence)
-    <GenerateResult-Sentences e.Tail>;
+    <Function-Direct e.Tail>;
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <GenerateResult-Sentences e.SubCommands>
+    <Function-Direct e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
-    <GenerateResult-Sentences e.Tail>;
+    <Function-Direct e.Tail>;
 
-  t.Command e.Tail = t.Command <GenerateResult-Sentences e.Tail>;
+  t.Command e.Tail = t.Command <Function-Direct e.Tail>;
 
   /* пусто */ = /* пусто */;
 }
