@@ -34,30 +34,30 @@ $ENTRY LowLevelRASL {
 }
 
 LowLevelRASL-Function {
-  #Both s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
+  s.GenMode s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
     (#CmdFnStart s.ScopeClass e.Name)
     (#CmdIssueMem s.Number)
-    // Интерпретируемый код
-    (#CmdIfDef)
-    <Function-Interpret e.Commands>
-    (#CmdElse)
-    // Компилируемый код
-    <Function-Direct e.Commands>
-    (#CmdEndIf)
-    (#CmdFnEnd);
+    <Fetch
+      s.GenMode
+      {
+        #Both =
+          // Интерпретируемый код
+          (#CmdIfDef)
+          <Function-Interpret e.Commands>
+          (#CmdElse)
+          // Компилируемый код
+          <Function-Direct e.Commands>
+          (#CmdEndIf);
 
-  #OnlyDirect s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
-    (#CmdFnStart s.ScopeClass e.Name)
-    (#CmdIssueMem s.Number)
-    // Компилируемый код
-    <Function-Direct e.Commands>
-    (#CmdFnEnd);
+        #OnlyDirect =
+          // Компилируемый код
+          <Function-Direct e.Commands>;
 
-  #OnlyInterpret s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
-    (#CmdFnStart s.ScopeClass e.Name)
-    (#CmdIssueMem s.Number)
-    // Интерпретируемый код
-    <Function-Interpret e.Commands>
+        #OnlyInterpret =
+          // Интерпретируемый код
+          <Function-Interpret e.Commands>;
+      }
+    >
     (#CmdFnEnd);
 }
 
