@@ -42,7 +42,7 @@ LowLevelRASL-Function {
       {
         #Both =
           // Интерпретируемый код
-          (#CmdIfDef)
+          (#CmdIfDef 'INTERPRET')
           <Function-Interpret e.Commands>
           (#CmdElse)
           // Компилируемый код

@@ -212,8 +212,8 @@ GenCommand {
     (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
     ;
 
-  (e.Indent) (#CmdIfDef) =
-    (e.Indent) ('#ifdef INTERPRET');
+  (e.Indent) (#CmdIfDef e.Macros) =
+    (e.Indent) ('#ifdef ' e.Macros);
 
   (e.Indent) (#CmdElse) =
     (e.Indent) ('#else');
