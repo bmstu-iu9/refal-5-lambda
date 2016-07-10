@@ -147,11 +147,12 @@
     t.SingleCommand ::=
         (#CmdIssueMem s.Offset)
       | (#CmdInitB0)
+      | (#CmdInitB0-Lite)
       | (s.MatchCommand s.Direction s.Offset e.MatchInfo)
       | (#CmdSave s.OldOffset s.NewOffset)
       | (#CmdComment e.Text)
       | (#CmdEmptyResult)
-      | (#CmdAllocateElem s.Offset s.AllocType e.AllocInfo)
+      | (s.CreateElemCommand s.Offset s.CreateType e.AllocInfo)
       | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset
       | (#CmdInsertElem s.Offset)
       | (#CmdInsertRange s.Offset)
@@ -160,6 +161,13 @@
       | (#CmdPushStack s.Offset)
       | (#CmdFail)
       | (#CmdReturnResult)
+      | (s.MatchSave s.Direction s.Offset e.MatchSaveInfo)
+      | (#CmdInsertTile s.BeginOffset s.EndOffset)
+      | (#CmdSetRes s.R-Offset)
+      | (#CmdTrash s.L-Offset)
+      | (#CmdReturnResult-NoTrash)
+      | (#CmdCallSave s.Direction s.Num s.ContextOffset s.Name)
+      | (#CmdUseRes)
 
     s.MatchCommand e.MatchInfo ::=
         #CmdBrackets s.NewBracketsOffset
@@ -171,11 +179,21 @@
       | #CmdRepeated s.Mode s.VarOffset s.SampleOffset
       | #CmdEmpty
       | #CmdVar s.Mode s.VarOffset
-      | #CmdCharSave s.Offset s.Char
+
+    s.MatchSaveCommand e.MatchSaveInfo
+        #CmdBracketsSave s.NewBracketsOffset
+      | #CmdADTSave s.NewBracketsOffset e.Name
+      | #CmdNumberSave s.SaveOffset s.Number
+      | #CmdIdentSave s.SaveOffset e.Name
+      | #CmdCharSave s.SaveOffset s.Char
+      | #CmdNameSave s.SaveOffset e.Name
+      | #CmdRepeatedSave 't' s.VarOffset s.SampleOffset
+      | #CmdVarSave 't' s.VarOffset
 
     s.Direction ::= #AlgLeft | #AlgRight | #AlgTerm
 
-    s.AllocType e.AllocInfo ::=
+    s.CreateElemCommand ::= #CmdAllocateElem | #CmdReinitElem | #CmdUpdateElem
+    s.CreateType e.AllocInfo ::=
         #ElChar s.Char
       | #ElName e.Name
       | #ElIdent e.Name
@@ -188,6 +206,9 @@
     s.VarOffset, s.SampleOffset ::= s.Offset
     s.OldOffset, s.NewOffset ::= s.Offset
     s.LeftOffset, s.RightOffset ::= s.Offset
+    s.SaveOffset ::= s.Offset
+    s.R-Offset ::= s.Offset | #RIGHT-EDGE
+    s.L-Offset ::= s.Offset | #LEFT-EDGE
 
 * `e.AST` — см. предыдущий раздел.
 * `e.RASLAST` — (сильно упрощая) синтаксическое дерево, в котором в функциях
@@ -222,7 +243,10 @@
 * `t.SingleCommand` — элементарная высокоуровневая команда.
   * `(#CmdIssueMem s.Offset)` — резервирование памяти для локальных переменных.
   * `(#CmdInitB0)` — инициализация нулевого диапазона на основе аргумента
-    функции (`arg_begin` и `arg_end` в сгенерированном коде C++).
+    функции (`arg_begin` и `arg_end` в сгенерированном коде C++). При этом
+    осуществляется пропуск скобок вызова и имени функции.
+  * `(#CmdInitB0-Lite)` — в нулевом диапазоне сохраняются только указатели
+    на `arg_begin` и `arg_end`.
   * `(s.MatchCommand s.Direction s.Offset e.MatchInfo)` — элементарная команда
     сопоставления с образцом.
     * `s.MatchCommand` — тип элементарной команды.
@@ -258,12 +282,13 @@
   * `(#CmdEmptyResult)` — подготавливает рантайм к формированию элементов
     результатного выражения в списке свободных узлов. Должно предшествовать
     любым командам распределения (включая копирование переменных).
-  * `(#CmdAllocateElem s.Offset s.AllocType e.AllocInfo)` — создание нового
-    объекта в списке свободных узлов. Указатель на созданный объект помещается
-    в контекст по смещению `s.Offset`. Поля `s.AllocType e.AllocInfo`
-    определяют тип и аргументы команды распределения. Их смысл очевиден,
-    за исключением `#ElString e.String` — она создаёт непрерывную
-    последовательность литер.
+  * `(s.CmdCreateElem s.Offset s.AllocType e.AllocInfo)` — создание нового
+    объекта в списке свободных узлов (указатель на созданный объект помещается
+    в контекст по смещению `s.Offset`), либо повторное использование имеющегося
+    (переиспользуется элемент по указателю `s.Offset`).
+    Поля `s.AllocType e.AllocInfo` определяют тип и аргументы команды
+    распределения. Их смысл очевиден, за исключением `#ElString e.String` — она
+    создаёт непрерывную последовательность литер.
   * `(#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)` — копирование переменной
     вида `s.Mode` в смещение `s.VarOffset`, используя как оригинал переменную
     по смещению `s.SampleOffset`.
@@ -277,30 +302,35 @@
     квадратных скобок с заданными смещениями.
   * `(#CmdPushStack s.Offset)` — помещение угловой скобки на стек.
   * `(#CmdFail)` — возврат из функции значения «сопоставление невозможно».
-  * `(#CmdReturnResult)` — возврат из функции признака успешного завершения.
-### Commands from OR
-  * `(#CmdCharSave s.Direction s.Num s.ContextOffset s.Char)` — сопоставление 
-    с символом, сохраняющее указатель на узел в context.
-  * `(#CmdNumberSave s.Direction s.Num s.ContextOffset s.Number)` — сопоставление 
-    с числом, сохраняющее указатель на узел в context.
-  * `(#CmdIdentSave s.Direction s.Num s.ContextOffset s.Ident)` — сопоставление 
-    с идентификатором, сохраняющее указатель на узел в context.
-  * `(#CmdNameSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
-    с указателем на функцию, сохраняющее указатель на узел в context.
-  * `(#CmdADTSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
-    с абстрактной скобкой, сохраняющее указатель на узел в context.
-  * `(#CmdBracketsSave s.Direction s.Num s.ContextOffset)` - опоставление 
+  * `(#CmdReturnResult)` — успешное завершение работы функции с удалением
+    содержимого скобок конкретизации (`arg_begin`…`arg_end`) в список свободных
+    узлов.
+  * `(s.MatchSave s.Direction s.Offset e.MatchInfo)` — смысл этих
+    команд аналогичен соответствующим командам без суффикса `…Save`, отличие
+    в том, что при выполнении сопоставления сохраняются в контексте сохраняется
+    смещение вновь сопоставленного объекта. Для круглых скобок смещения самих
+    скобок сохраняются в `s.NewBracketsOffset+2`, `…+3`, для квадратных —
+    вместе со скобками сохраняется смещение для идентификатора АТД. Поле
+    информации каждого атома содержит смещение `s.SaveOffset`, по которому
+    должен быть сохранён указатель на этот атом.
+    `#CmdVarSave` и `#CmdRepeatedSave` используются для сопоставления
+    c t-переменными, при этом они сохраняют начало и конец переменной (отрезка
+    поля зрения) в смежных ячейках контекста.
     с структурной скобкой, сохраняющее указатель на узел в context.
-  * `(#CmdCallSave s.Direction s.Num s.ContextOffset s.Name)` — сопоставление 
-    со скобкой кон6кретизации, сохраняющее указатель на узел в context.
-
-  * `(#CmdInsertTile t.BeginOffset t.EndOffset)` - команда переноса диапазона 
-    из списка свободных узлов в поле зрения.
-  * `(#CmdReinitElem s.Offset s.AllocType s.Value)` - изменяет тэг и значение узла.
-  * `(#CmdUpdateElem s.Offset s.AllocType s.Value)` - изменяет значение узла.
-  * `(#CmdTrash s.Offset)` - обработка неиспользованных узлов в образце и возврат результата.
-  * `(#CmdReturnResult-NoTrash)` - возврат результата, при отсутствии неиспользованных узлов.
-  * `(#CmdSetRes s.Offset)` - изменение переменной res.
+  * `(#CmdCallSave s.Direction s.Num s.ContextOffset s.Name)` — пропуск скобок
+    конкретизации и имени функции в нулевом диапазоне с сохранением указателей
+    на них в контексте (выполняется после команды `#CmdInitB0-Lite`).
+  * `(#CmdInsertTile s.BeginOffset s.EndOffset)` — команда переноса диапазона 
+    из списка свободных узлов в поле зрения.
+  * `(#CmdSetRes s.R-Offset)` — устанавливает начальное значение переменной
+    `res` (по указателю, равному смещению в контексте, либо по правой кромке).
+  * `(#CmdTrash s.L-Offset)` — удаляет диапазон от `s.L-Offset` до текущего
+    значения `res`. `s.L-Offset` равно либо смещению в контексте, либо левой
+    кромке.
+  * `(#CmdReturnResult-NoTrash)` — успешное завершение работы функции без
+    удаления терма конкретизации (предполагается, что оно либо не нужно, либо
+    удаляется при помощи `#CmdTrash`).
+  * `(#CmdUseRes)` — добавляет в целевой код команду `refalrts::use(res);`.
 
 
 
@@ -375,7 +405,7 @@ e-переменные, распределяемые последователь�
       | (#CmdiEStart s.RangeOffset s.VarOffset)
       | (#CmdiEmpty s.Offset)
       | (#CmdiEmptyResult)
-      | (#CmdiAllocateElem s.Offset s.iAllocType e.iAllocInfo)
+      | (#CmdiCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
       | (#CmdArrCopy s.Mode s.VarOffset s.SampleOffset)
       | (#CmdSpliceElem s.Offset)
       | (#CmdSpliceRange s.Offset)
@@ -385,6 +415,12 @@ e-переменные, распределяемые последователь�
       | (#CmdiFail)
       | (#CmdiReturnResult)
       | (#CmdiOnFailGoTo s.Delta)
+      | (#CmdiInitB0-Lite)
+      | (s.iMatchSaveCommand s.Direction s.Offset s.iMatchSaveInfo)
+      | (#CmdiSetRes s.R-Offset)
+      | (#CmdiTrash s.L-Offset)
+      | (#CmdiInsertTile s.BeginOffset s.EndOffset)
+      | (#CmdiReturnResult-NoTrash)
 
     s.iMatchCommand e.iMatchInfo ::=
         #CmdiRepeat s.Mode s.VarOffset s.SampleOffset
@@ -397,7 +433,20 @@ e-переменные, распределяемые последователь�
       | #CmdiHugeNum s.NumberId
       | #CmdiBracket s.NewRangeOffset
 
-    s.iAllocType e.iAllocInfo ::=
+    s.iMatchSaveCommand e.iMatchSaveInfo ::=
+        #CmdiRepeatedSave s.Mode s.VarOffset s.SampleOffset
+      | #CmdiADTSave s.NewRangeOffset s.NameId
+      | #CmdiCharSave s.SaveOffset s.Char
+      | #CmdiVarSave s.Mode s.VarOffset
+      | #CmdiNameSave s.SaveOffset s.NameId
+      | #CmdiIdentSave s.SaveOffset s.NameId
+      | #CmdiNumSave s.SaveOffset s.Number
+      | #CmdiHugeNumSave s.SaveOffset s.NumberId
+      | #CmdiBracketSave s.NewRangeOffset
+
+    s.CreateMode ::= #Allocate | #Reinit | #Update
+
+    s.iCreateType e.iCreateInfo ::=
         #ElChar s.Char
       | #ElName s.NameId
       | #ElIdent s.NameId
@@ -449,6 +498,7 @@ e-переменные, распределяемые последователь�
     Отдельное замечание: `#CmdiNum` соответствует числу, влезающему в 8 бит,
     её аргумент записывается непосредственно в массив. `#CmdHugeNum` ссылается
     на число в массиве `numbers` по индексу.
+  * `s.iMatchSaveCommand` → `s.iMatchCommand` × `s.MatchSave`.
   * `#CmdiSave` → `#CmdSave`
   * `#CmdiEPrepare` и `#CmdiEStart` в генерируемом коде всегда располагаются
     рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив
@@ -461,7 +511,8 @@ e-переменные, распределяемые последователь�
     если `s.RangeOffset` уже пустой. В противном случае кладёт на стек откатов
     свой адрес.
   * `#CmdiEmpty` → `#CmdEmpty`. При неудаче сопоставлениея запускает _откат._
-  * `(#CmdiAllocateElem s.Offset s.iAllocType e.iAllocInfo)` → `#CmdAllocateElem`.
+  * `(#CmdiCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`
+    → `#CmdAllocateElem`, `#CmdUpdateElem`, `#CmdReinitElem`.
     Оговорка о `#ElNumber` и `#ElHugeNumber` та же, что и для `#CmdiNum`
     и `#CmdHugeNum`.
   * `#CmdArrCopy` → `#CmdCopyVar`.
@@ -472,6 +523,11 @@ e-переменные, распределяемые последователь�
   * `#CmdiPushStack` → `#CmdPushStack`.
   * `#CmdiFail` → `#CmdFail`.
   * `#CmdiReturnResult` → `#CmdReturnResult`.
+  * `#CmdiInitB0-Lite` → `#CmdInitB0-Lite`.
+  * `#CmdiSetRes` → `#CmdSetRes`.
+  * `#CmdiTrash` → `#CmdTrash`.
+  * `#CmdiInsertTile` → `#CmdInsertTile`.
+  * `#CmdiReturnResult-NoTrash` → `#CmdReturnResult-NoTrash`.
   * `(#CmdiOnFailGoTo s.Delta)` — кладёт на стек откатов адрес команды,
     с которой начинается следующее предложение. Смещение этой команды
     задаётся относительно текущей команды `#CmdiOnFailGoTo`.
