@@ -48,7 +48,7 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE% -I../src/srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../src/srlib/refalrts.cpp
+  %CPPLINE% -I../src/srlib -DDUMP_FILE=\"__dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -57,14 +57,14 @@ setlocal
 
   %EXE%
   if errorlevel 1 (
-    echo TEST FAILED, SEE dump.txt
+    echo TEST FAILED, SEE __dump.txt
     exit /b 1
   )
 
   erase %CPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
-  if exist dump.txt erase dump.txt
+  if exist __dump.txt erase __dump.txt
   echo.
 endlocal
 

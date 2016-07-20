@@ -17,7 +17,7 @@ run_test_aux() {
     exit
   fi
 
-  g++ -I../srlib -DDUMP_FILE=\"dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE -g $CPP ../srlib/refalrts.cpp
+  g++ -I../srlib -DDUMP_FILE=\"__dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE -g $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -26,12 +26,12 @@ run_test_aux() {
 
   ./$EXE
   if [ $? -gt 0 ]; then
-    echo TEST FAILED, SEE dump.txt
+    echo TEST FAILED, SEE __dump.txt
     exit
   fi
 
   rm $CPP $EXE
-  [ -e dump.txt ] && rm dump.txt
+  [ -e __dump.txt ] && rm __dump.txt
 
   echo
 }
