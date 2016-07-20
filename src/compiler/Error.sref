@@ -1,3 +1,17 @@
+//FROM Library
+$EXTERN WriteLine, StrFromInt;
+
+//FROM Lexer
+$EXTERN StrFromToken;
+
+//FROM LibraryEx
+$EXTERN Map;
+
+/**
+  Внутренний формат:
+  [ErrorList (e.FileName) (s.LineNumber e.Message)*]
+  s.LineNumber ::= #NoLine | s.Number
+*/
 $ENUM ErrorList;
 
 $ENTRY EL-Create {
@@ -6,27 +20,13 @@ $ENTRY EL-Create {
 
 $ENTRY EL-AddError {
   [ErrorList (e.FileName) e.Errors] e.Message =
-    [ErrorList
-      (e.FileName)
-      e.Errors
-      ('  ERROR: ' e.Message)
-    ];
+    [ErrorList (e.FileName) e.Errors (#NoLine e.Message)];
 }
-
-//FROM Library
-$EXTERN StrFromInt;
 
 $ENTRY EL-AddErrorAt {
   [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
-    [ErrorList
-      (e.FileName)
-      e.Errors
-      (e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message)
-    ];
+    [ErrorList (e.FileName) e.Errors (s.LineNumber e.Message)];
 }
-
-//FROM Lexer
-$EXTERN StrFromToken;
 
 $ENTRY EL-AddUnexpected {
   t.ErrorList (#TkError s.LineNumber e.Message) e.Expected =
@@ -48,19 +48,19 @@ $ENTRY EL-AddUnexpected {
     >;
 }
 
-//FROM LibraryEx
-$EXTERN Map;
-
-//FROM Library
-$EXTERN WriteLine;
-
 $ENTRY EL-Destroy {
   [ErrorList (e.FileName)] = #EL-NoErrors;
 
   [ErrorList (e.FileName) e.Errors] =
     <Map
       {
-        (e.Line) = <WriteLine e.Line>;
+        (#NoLine e.Message) =
+          <WriteLine '  ERROR: ' e.Message>;
+
+        (s.LineNumber e.Message) =
+          <WriteLine
+            e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
+          >;
       }
       e.Errors
     >
