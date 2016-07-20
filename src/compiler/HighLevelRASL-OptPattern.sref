@@ -919,7 +919,7 @@ BuildString {
   (e.Chars) e.Tail = (e.Chars) e.Tail;
 }
 
-// Основные команды работы с образцом
+// Основные команды работы с результатом
 //  (#CmdAllocateElem s.Number s.ElType e.Info)
 //  (#CmdLinkBrackets s.Left s.Right)
 //  (#CmdPushStack s.Number)

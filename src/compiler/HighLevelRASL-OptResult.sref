@@ -103,7 +103,6 @@ HighLevelRASL-Function {
     >;
 }
 
-
 HighLevelRASL-Sentence {
   e.Name (e.Pattern) (e.Result) =
     <Fetch
@@ -111,439 +110,20 @@ HighLevelRASL-Sentence {
       {
         s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
           <Fetch
-            <GST
-              (
-                (#LEFT-EDGE)
-                e.MarkedPattern
-                (#RIGHT-EDGE)
-              )
-              ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
+            <GenResult
+              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
             >
             {
-              (e.Trash) (e.MarkedResult) =
-                <Fetch
-                  <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
-                  {
-                    s.ContextOffset^ e.MarkedResult^ =
-                      <FoldOpenELoops
-                        (#CmdIssueMem s.ContextOffset)
-                        (#CmdInitB0-Lite)
-                        e.PatternCommands
-                        (#CmdResetAllocator)
-                        <GenResult
-                          (e.Trash) (e.MarkedResult)
-                        >
-                      >;
-                  }
+              s.ContextCount e.ResultCommands =
+                <FoldOpenELoops
+                  (#CmdIssueMem s.ContextCount)
+                  (#CmdInitB0-Lite)
+                  e.PatternCommands
+                  e.ResultCommands
                 >;
             }
           >;
       }
-    >;
-}
-
-FlatResult {
-  e.Range-B (#CallBrackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenCall)
-    <FlatResult e.SubRange-E>
-    (#TkCloseCall)
-    <FlatResult e.Range-E>
-    ;
-
-  e.Range-B (#Brackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenBracket)
-    <FlatResult e.SubRange-E>
-    (#TkCloseBracket)
-    <FlatResult e.Range-E>
-    ;
-
-  e.Range-B (#ADT-Brackets (e.Name) e.SubRange-E) e.Range-E =
-    e.Range-B
-    (#TkOpenADT)
-    (#TkName e.Name)
-    <FlatResult e.SubRange-E>
-    (#TkCloseADT)
-    <FlatResult e.Range-E>
-    ;
-
-  e.Range = e.Range;
-}
-
-
-// Основные команды работы с результатом
-//  (#CmdAllocateElem s.Number s.ElType e.Info)
-//  (#CmdLinkBrackets s.Left s.Right)
-//  (#CmdPushStack s.Number)
-//  (#CmdInsertElem s.Number)
-//  (#CmdInsertVar s.Mode s.Number)
-
-/*
-  Порядок выполнения команд.
-  1. Все выделения памяти (в порядке перечисления)
-  2. Связывание крулых и угловых скобок и
-  построение результата (в обратном порядке)
-*/
-
-GenResult {
-  (e.Trash) (e.MarkedResult) =
-    (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-    (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
-
-    //генерируем команды аллокаций
-    <Map
-      {
-        (#Tile e.Tile) = ;
-
-        (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
-          (#CmdCopyVar 'e' s.Offset s.SampleOffset);
-
-        (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
-          (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
-
-
-        (#TkChar s.Char s.Offset) =
-          (#CmdAllocateElem s.Offset #ElChar s.Char);
-
-        (#TkNumber s.Number s.Offset) =
-          (#CmdAllocateElem s.Offset #ElNumber s.Number);
-
-        (#TkOpenBracket s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenBracket);
-
-        (#TkCloseBracket s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseBracket);
-
-        (#TkOpenADT s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenADT);
-
-        (#TkCloseADT s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseADT);
-
-        (#TkOpenCall s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenCall);
-
-        (#TkCloseCall s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseCall);
-
-        (#TkName e.Name s.Offset) =
-          (#CmdAllocateElem s.Offset #ElName e.Name);
-
-        (#TkIdentifier e.Name s.Offset) =
-          (#CmdAllocateElem s.Offset #ElIdent e.Name);
-
-        (#TkString e.String s.Offset) =
-          (#CmdAllocateElem s.Offset #ElString e.String);
-      }
-      e.MarkedResult
-    >
-
-    //Генерируем команды reinit/update
-    <Map
-      {
-        (#Tile e.Tile) =
-          <Map
-            {
-              (#AsIs t.Item) = /* пусто */;
-
-              (#HalfReuse (#TkChar s.Char s.Offset)) =
-                (#CmdReinitElem s.Offset #ElChar s.Char);
-
-              (#HalfReuse (#TkNumber s.Number s.Offset)) =
-                (#CmdReinitElem s.Offset #ElNumber s.Number);
-
-              (#HalfReuse (#TkOpenBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenBracket);
-
-              (#HalfReuse (#TkCloseBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseBracket);
-
-              (#HalfReuse (#TkOpenADT s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenADT);
-
-              (#HalfReuse (#TkCloseADT s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseADT);
-
-              (#HalfReuse (#TkOpenCall s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenCall);
-
-              (#HalfReuse (#TkCloseCall s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseCall);
-
-              (#HalfReuse (#TkName e.Name s.Offset)) =
-                (#CmdReinitElem s.Offset #ElName e.Name);
-
-              (#HalfReuse (#TkIdentifier e.Name s.Offset)) =
-                (#CmdReinitElem s.Offset #ElIdent e.Name);
-
-              (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
-                (#CmdReinitSVar s.Offset s.SampleOffset);
-
-
-              (#Reuse (#TkChar s.Char s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElChar s.Char);
-
-              (#Reuse (#TkNumber s.Number s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElNumber s.Number);
-
-              (#Reuse (#TkOpenBracket s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenBracket);
-
-              (#Reuse (#TkCloseBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseBracket);
-
-              (#Reuse (#TkOpenADT s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenADT);
-
-              (#Reuse (#TkCloseADT s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElCloseADT);
-
-              (#Reuse (#TkOpenCall s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenCall);
-
-              (#Reuse (#TkCloseCall s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElCloseCall);
-
-              (#Reuse (#TkName e.Name s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElName e.Name);
-
-              (#Reuse (#TkIdentifier e.Name s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElIdent e.Name);
-
-              (#LEFT-EDGE) = /* пусто */;
-              (#RIGHT-EDGE) = /* пусто */;
-            }
-            e.Tile
-          >;
-
-        t.Other = /* пусто */;
-      }
-      e.MarkedResult
-    >
-
-    //Генерируем команды связывания скобок
-    <GenPushLink
-      <ModifyResult e.MarkedResult>
-    >
-
-    //Генерируем команды переноса из списка свободных узлов
-    <GenSplices (e.Trash) e.MarkedResult>;
-}
-
-GenPushLink {
-  e.MarkedResult =
-    <Fetch
-      <MapReduce
-        {
-          (e.Stack) (#TkOpenCall s.Offset) = (e.Stack s.Offset);
-          (e.Stack) (#TkOpenADT s.Offset) = (e.Stack s.Offset);
-          (e.Stack) (#TkOpenBracket s.Offset) = (e.Stack s.Offset);
-          (e.Stack s.OpenOffset) (#TkCloseCall s.Offset) =
-            (e.Stack)
-            (#CmdPushStack s.OpenOffset)
-            (#CmdPushStack s.Offset);
-          (e.Stack s.OpenOffset) (#TkCloseADT s.Offset) =
-            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
-          (e.Stack s.OpenOffset) (#TkCloseBracket s.Offset) =
-            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
-          (e.Stack) (s.tag e.Info) = (e.Stack) ;
-        }
-        (/* стек */)
-        e.MarkedResult
-      >
-      {
-        () e.Commands = <Reverse e.Commands>;
-      }
-    >;
-}
-
-Reverse {
-  e.Items t.Last = t.Last <Reverse e.Items>;
-
-  /* empty */ = /* empty */;
-}
-
-ModifyResult {
-  (#Tile e.Tile) e.Result = <ModifyTile e.Tile> <ModifyResult e.Result> ;
-  (s.tag e.info) e.Result = (s.tag e.info) <ModifyResult e.Result> ;
-  /*пусто*/ = ;
-}
-
-ModifyTile {
-  (#RIGHT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#LEFT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#AsIs t.Item) e.Range = t.Item <ModifyTile e.Range>;
-  (#HalfReuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  (#Reuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  /*пусто*/ = ;
-}
-
-GenSplices {
-  (e.Trash) (#Tile e.LeftTile) e.Result (#Tile e.RightTile) =
-    (#CmdSetRes <CalcRes e.RightTile>)
-    <Map
-      {
-        ((#AsIs (#TkVariable 'e' e.Index s.Depth s.Offset))) =
-          (#CmdInsertVar 'e' s.Offset);
-
-        (t.OneItem) =
-          (#CmdInsertTile
-            <BeginOffset t.OneItem> <EndOffset t.OneItem>
-          );
-
-        (t.Begin e.Inner t.End) =
-          (#CmdInsertTile <BeginOffset t.Begin> <EndOffset t.End>);
-      }
-      <CollectTiles e.Result>
-    >
-    (#CmdUseRes)
-    <GenTrash (e.LeftTile) e.Trash>
-    (#CmdReturnResult-NoTrash);
-
-  (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
-}
-
-CalcRes {
-  (#RIGHT-EDGE) = #RIGHT-EDGE;
-
-  t.First e.Tile = <BeginOffset t.First>;
-}
-
-CollectTiles {
-  (#Tile e.Tile) e.Other =
-    <CollectTiles e.Other> (e.Tile);
-
-  e.Allocated (#Tile e.Tile) e.Other =
-    <CollectTiles e.Other> (e.Tile) <CollectTiles-Alloc e.Allocated>;
-
-  /* пусто */ = /* пусто */;
-
-  e.Allocated = <CollectTiles-Alloc e.Allocated>;
-}
-
-CollectTiles-Alloc {
-  (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
-    <CollectTiles-Alloc e.Alloc>
-    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset));
-
-  e.Alloc (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) =
-    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset))
-    <CollectTiles-Alloc e.Alloc>;
-
-  /* пусто */ = /* пусто */;
-
-  e.Alloc = (e.Alloc);
-}
-
-GenTrash {
-  (e.LeftTile) e.Trash-B #RemovedTile e.Trash-E =
-    <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
-
-  (e.LeftTile) /* пусто */ =
-    /* пусто */;
-
-  ((#LEFT-EDGE)) e.Trash =
-    (#CmdTrash #LEFT-EDGE);
-
-  (e.LeftTile t.Last) e.Trash =
-    (#CmdTrash <EndOffset t.Last>);
-}
-
-BeginOffset {
-  (#AsIs t.Item) = <BeginOffset t.Item>;
-  (#HalfReuse t.Item) = <BeginOffset t.Item>;
-  (#Reuse t.Item) = <BeginOffset t.Item>;
-
-  (s.Tag e.Info s.Offset) = s.Offset;
-}
-
-EndOffset {
-  (#AsIs t.Item) = <EndOffset t.Item>;
-  (#HalfReuse t.Item) = <EndOffset t.Item>;
-  (#Reuse t.Item) = <EndOffset t.Item>;
-
-  (#TkVariable 's' e.Index s.Depth s.Offset) = s.Offset;
-  (#TkVariableCopy 's' e.Index s.Depth s.Sample s.Offset) = s.Offset;
-
-  (#TkVariable s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
-  (#TkVariableCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
-
-  (#TkString e.String s.Offset) = <Inc s.Offset>;
-
-  (s.Tag e.Info s.Offset) = s.Offset;
-}
-/*
-  e.PatternVars ::= (s.Mode (e.Index) s.Offset*)*
-*/
-AddOffsets {
-  s.ContextOffset (e.PatternVars) e.MarkedResult =
-    /*
-      Для переменных смещение брать из e.PatternVars + добавляем смещение для копии
-      (+1 для s-переменных, +2 для t и e),
-      для остальных элементов --- смещение s.ContextOffset.
-    */
-    <MapReduce
-      {
-        s.Offset (#Tile e.Tile) =
-          s.Offset
-          (#Tile
-            <Map
-              {
-                (#HalfReuse (#TkVariable 's' e.Index s.Level s.Offset^)) =
-                  <Fetch
-                    e.PatternVars
-                    {
-                      e.Range-B
-                      ('s' (e.Index s.Level) e.Offsets s.SampleOffset)
-                      e.Range-E =
-                        (#HalfReuse
-                          (#TkVariable
-                            's' e.Index s.Level s.SampleOffset s.Offset
-                          )
-                        );
-                    }
-                  >;
-
-                t.Other = t.Other;
-              }
-              e.Tile
-            >
-          );
-
-        s.Offset (#TkVariable 's' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('s' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 1> (#TkVariableCopy 's' e.Index s.Level s.SampleOffset s.Offset);
-            }
-          >;
-
-        s.Offset (#TkVariable 't' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('t' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 2> (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset);
-            }
-          >;
-
-        s.Offset (#TkVariable 'e' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('e' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 2> (#TkVariableCopy 'e' e.Index  s.Level s.SampleOffset s.Offset);
-            }
-          >;
-
-        s.Offset (#TkString e.String) =
-          <Inc2 s.Offset> (#TkString e.String s.Offset);
-
-        s.Offset (s.Tag e.Info) = <Inc s.Offset> (s.Tag e.Info s.Offset);
-      }
-      s.ContextOffset <CollectStrings e.MarkedResult>
     >;
 }
 
@@ -1048,6 +628,57 @@ Offset {
 // Генерация результата
 //==============================================================================
 
+GenResult {
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
+    <Fetch
+      <GST
+        ((#LEFT-EDGE) e.MarkedPattern (#RIGHT-EDGE))
+        ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
+      >
+      {
+        (e.Trash) (e.MarkedResult) =
+          <Fetch
+            <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
+            {
+              s.ContextOffset^ e.MarkedResult^ =
+                (#CmdResetAllocator)
+                <GenResult-Aux
+                  (e.Trash) (e.MarkedResult)
+                >;
+            }
+          >;
+      }
+    >;
+}
+
+FlatResult {
+  e.Range-B (#CallBrackets e.SubRange-E) e.Range-E =
+    <FlatResult e.Range-B>
+    (#TkOpenCall)
+    <FlatResult e.SubRange-E>
+    (#TkCloseCall)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range-B (#Brackets e.SubRange-E) e.Range-E =
+    <FlatResult e.Range-B>
+    (#TkOpenBracket)
+    <FlatResult e.SubRange-E>
+    (#TkCloseBracket)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range-B (#ADT-Brackets (e.Name) e.SubRange-E) e.Range-E =
+    e.Range-B
+    (#TkOpenADT)
+    (#TkName e.Name)
+    <FlatResult e.SubRange-E>
+    (#TkCloseADT)
+    <FlatResult e.Range-E>
+    ;
+
+  e.Range = e.Range;
+}
 
 CollectStrings {
   (#TkChar s.Value1) (#TkChar s.Value2) e.Tail =
@@ -1077,5 +708,380 @@ BuildString {
     <BuildString (e.Chars s.Value) e.Tail>;
 
   (e.Chars) e.Tail = (e.Chars) e.Tail;
+}
+
+// Основные команды работы с результатом
+//  (#CmdAllocateElem s.Number s.ElType e.Info)
+//  (#CmdLinkBrackets s.Left s.Right)
+//  (#CmdPushStack s.Number)
+//  (#CmdInsertElem s.Number)
+//  (#CmdInsertVar s.Mode s.Number)
+
+/*
+  Порядок выполнения команд.
+  1. Все выделения памяти (в порядке перечисления)
+  2. Связывание крулых и угловых скобок и
+  построение результата (в обратном порядке)
+*/
+
+GenResult-Aux {
+  (e.Trash) (e.MarkedResult) =
+    (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
+    (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+
+    //генерируем команды аллокаций
+    <Map
+      {
+        (#Tile e.Tile) = ;
+
+        (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset) =
+          (#CmdCopyVar 'e' s.Offset s.SampleOffset);
+
+        (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
+          (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
+
+
+        (#TkChar s.Char s.Offset) =
+          (#CmdAllocateElem s.Offset #ElChar s.Char);
+
+        (#TkNumber s.Number s.Offset) =
+          (#CmdAllocateElem s.Offset #ElNumber s.Number);
+
+        (#TkOpenBracket s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenBracket);
+
+        (#TkCloseBracket s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseBracket);
+
+        (#TkOpenADT s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenADT);
+
+        (#TkCloseADT s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseADT);
+
+        (#TkOpenCall s.Offset) =
+          (#CmdAllocateElem s.Offset #ElOpenCall);
+
+        (#TkCloseCall s.Offset) =
+          (#CmdAllocateElem s.Offset #ElCloseCall);
+
+        (#TkName e.Name s.Offset) =
+          (#CmdAllocateElem s.Offset #ElName e.Name);
+
+        (#TkIdentifier e.Name s.Offset) =
+          (#CmdAllocateElem s.Offset #ElIdent e.Name);
+
+        (#TkString e.String s.Offset) =
+          (#CmdAllocateElem s.Offset #ElString e.String);
+      }
+      e.MarkedResult
+    >
+
+    //Генерируем команды reinit/update
+    <Map
+      {
+        (#Tile e.Tile) =
+          <Map
+            {
+              (#AsIs t.Item) = /* пусто */;
+
+              (#HalfReuse (#TkChar s.Char s.Offset)) =
+                (#CmdReinitElem s.Offset #ElChar s.Char);
+
+              (#HalfReuse (#TkNumber s.Number s.Offset)) =
+                (#CmdReinitElem s.Offset #ElNumber s.Number);
+
+              (#HalfReuse (#TkOpenBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenBracket);
+
+              (#HalfReuse (#TkCloseBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseBracket);
+
+              (#HalfReuse (#TkOpenADT s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenADT);
+
+              (#HalfReuse (#TkCloseADT s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseADT);
+
+              (#HalfReuse (#TkOpenCall s.Offset)) =
+                (#CmdReinitElem s.Offset #ElOpenCall);
+
+              (#HalfReuse (#TkCloseCall s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseCall);
+
+              (#HalfReuse (#TkName e.Name s.Offset)) =
+                (#CmdReinitElem s.Offset #ElName e.Name);
+
+              (#HalfReuse (#TkIdentifier e.Name s.Offset)) =
+                (#CmdReinitElem s.Offset #ElIdent e.Name);
+
+              (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
+                (#CmdReinitSVar s.Offset s.SampleOffset);
+
+
+              (#Reuse (#TkChar s.Char s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElChar s.Char);
+
+              (#Reuse (#TkNumber s.Number s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElNumber s.Number);
+
+              (#Reuse (#TkOpenBracket s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenBracket);
+
+              (#Reuse (#TkCloseBracket s.Offset)) =
+                (#CmdReinitElem s.Offset #ElCloseBracket);
+
+              (#Reuse (#TkOpenADT s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenADT);
+
+              (#Reuse (#TkCloseADT s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElCloseADT);
+
+              (#Reuse (#TkOpenCall s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElOpenCall);
+
+              (#Reuse (#TkCloseCall s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElCloseCall);
+
+              (#Reuse (#TkName e.Name s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElName e.Name);
+
+              (#Reuse (#TkIdentifier e.Name s.Offset)) =
+                (#CmdUpdateElem s.Offset #ElIdent e.Name);
+
+              (#LEFT-EDGE) = /* пусто */;
+              (#RIGHT-EDGE) = /* пусто */;
+            }
+            e.Tile
+          >;
+
+        t.Other = /* пусто */;
+      }
+      e.MarkedResult
+    >
+
+    //Генерируем команды связывания скобок
+    <GenPushLink
+      <ModifyResult e.MarkedResult>
+    >
+
+    //Генерируем команды переноса из списка свободных узлов
+    <GenSplices (e.Trash) e.MarkedResult>;
+}
+
+GenPushLink {
+  e.MarkedResult =
+    <Fetch
+      <MapReduce
+        {
+          (e.Stack) (#TkOpenCall s.Offset) = (e.Stack s.Offset);
+          (e.Stack) (#TkOpenADT s.Offset) = (e.Stack s.Offset);
+          (e.Stack) (#TkOpenBracket s.Offset) = (e.Stack s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseCall s.Offset) =
+            (e.Stack)
+            (#CmdPushStack s.OpenOffset)
+            (#CmdPushStack s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseADT s.Offset) =
+            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
+          (e.Stack s.OpenOffset) (#TkCloseBracket s.Offset) =
+            (e.Stack) (#CmdLinkBrackets s.OpenOffset s.Offset);
+          (e.Stack) (s.tag e.Info) = (e.Stack) ;
+        }
+        (/* стек */)
+        e.MarkedResult
+      >
+      {
+        () e.Commands = <Reverse e.Commands>;
+      }
+    >;
+}
+
+Reverse {
+  e.Items t.Last = t.Last <Reverse e.Items>;
+
+  /* empty */ = /* empty */;
+}
+
+ModifyResult {
+  (#Tile e.Tile) e.Result = <ModifyTile e.Tile> <ModifyResult e.Result> ;
+  (s.tag e.info) e.Result = (s.tag e.info) <ModifyResult e.Result> ;
+  /*пусто*/ = ;
+}
+
+ModifyTile {
+  (#RIGHT-EDGE) e.Range = <ModifyTile e.Range>;
+  (#LEFT-EDGE) e.Range = <ModifyTile e.Range>;
+  (#AsIs t.Item) e.Range = t.Item <ModifyTile e.Range>;
+  (#HalfReuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
+  (#Reuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
+  /*пусто*/ = ;
+}
+
+GenSplices {
+  (e.Trash) (#Tile e.LeftTile) e.Result (#Tile e.RightTile) =
+    (#CmdSetRes <CalcRes e.RightTile>)
+    <Map
+      {
+        ((#AsIs (#TkVariable 'e' e.Index s.Depth s.Offset))) =
+          (#CmdInsertVar 'e' s.Offset);
+
+        (t.OneItem) =
+          (#CmdInsertTile
+            <BeginOffset t.OneItem> <EndOffset t.OneItem>
+          );
+
+        (t.Begin e.Inner t.End) =
+          (#CmdInsertTile <BeginOffset t.Begin> <EndOffset t.End>);
+      }
+      <CollectTiles e.Result>
+    >
+    (#CmdUseRes)
+    <GenTrash (e.LeftTile) e.Trash>
+    (#CmdReturnResult-NoTrash);
+
+  (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
+}
+
+CalcRes {
+  (#RIGHT-EDGE) = #RIGHT-EDGE;
+
+  t.First e.Tile = <BeginOffset t.First>;
+}
+
+CollectTiles {
+  (#Tile e.Tile) e.Other =
+    <CollectTiles e.Other> (e.Tile);
+
+  e.Allocated (#Tile e.Tile) e.Other =
+    <CollectTiles e.Other> (e.Tile) <CollectTiles-Alloc e.Allocated>;
+
+  /* пусто */ = /* пусто */;
+
+  e.Allocated = <CollectTiles-Alloc e.Allocated>;
+}
+
+CollectTiles-Alloc {
+  (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) e.Alloc =
+    <CollectTiles-Alloc e.Alloc>
+    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset));
+
+  e.Alloc (#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset) =
+    ((#TkVariableCopy 'e' e.Index s.Level s.Sample s.Offset))
+    <CollectTiles-Alloc e.Alloc>;
+
+  /* пусто */ = /* пусто */;
+
+  e.Alloc = (e.Alloc);
+}
+
+GenTrash {
+  (e.LeftTile) e.Trash-B #RemovedTile e.Trash-E =
+    <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
+
+  (e.LeftTile) /* пусто */ =
+    /* пусто */;
+
+  ((#LEFT-EDGE)) e.Trash =
+    (#CmdTrash #LEFT-EDGE);
+
+  (e.LeftTile t.Last) e.Trash =
+    (#CmdTrash <EndOffset t.Last>);
+}
+
+BeginOffset {
+  (#AsIs t.Item) = <BeginOffset t.Item>;
+  (#HalfReuse t.Item) = <BeginOffset t.Item>;
+  (#Reuse t.Item) = <BeginOffset t.Item>;
+
+  (s.Tag e.Info s.Offset) = s.Offset;
+}
+
+EndOffset {
+  (#AsIs t.Item) = <EndOffset t.Item>;
+  (#HalfReuse t.Item) = <EndOffset t.Item>;
+  (#Reuse t.Item) = <EndOffset t.Item>;
+
+  (#TkVariable 's' e.Index s.Depth s.Offset) = s.Offset;
+  (#TkVariableCopy 's' e.Index s.Depth s.Sample s.Offset) = s.Offset;
+
+  (#TkVariable s.Mode e.Index s.Depth s.Offset) = <Inc s.Offset>;
+  (#TkVariableCopy s.Mode e.Index s.Depth s.Sample s.Offset) = <Inc s.Offset>;
+
+  (#TkString e.String s.Offset) = <Inc s.Offset>;
+
+  (s.Tag e.Info s.Offset) = s.Offset;
+}
+/*
+  e.PatternVars ::= (s.Mode (e.Index) s.Offset*)*
+*/
+AddOffsets {
+  s.ContextOffset (e.PatternVars) e.MarkedResult =
+    /*
+      Для переменных смещение брать из e.PatternVars + добавляем смещение для копии
+      (+1 для s-переменных, +2 для t и e),
+      для остальных элементов --- смещение s.ContextOffset.
+    */
+    <MapReduce
+      {
+        s.Offset (#Tile e.Tile) =
+          s.Offset
+          (#Tile
+            <Map
+              {
+                (#HalfReuse (#TkVariable 's' e.Index s.Level s.Offset^)) =
+                  <Fetch
+                    e.PatternVars
+                    {
+                      e.Range-B
+                      ('s' (e.Index s.Level) e.Offsets s.SampleOffset)
+                      e.Range-E =
+                        (#HalfReuse
+                          (#TkVariable
+                            's' e.Index s.Level s.SampleOffset s.Offset
+                          )
+                        );
+                    }
+                  >;
+
+                t.Other = t.Other;
+              }
+              e.Tile
+            >
+          );
+
+        s.Offset (#TkVariable 's' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('s' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 1> (#TkVariableCopy 's' e.Index s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (#TkVariable 't' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('t' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 2> (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (#TkVariable 'e' e.Index s.Level) =
+          <Fetch
+            e.PatternVars
+            {
+              e.Range-B ('e' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
+                <Add s.Offset 2> (#TkVariableCopy 'e' e.Index  s.Level s.SampleOffset s.Offset);
+            }
+          >;
+
+        s.Offset (#TkString e.String) =
+          <Inc2 s.Offset> (#TkString e.String s.Offset);
+
+        s.Offset (s.Tag e.Info) = <Inc s.Offset> (s.Tag e.Info s.Offset);
+      }
+      s.ContextOffset <CollectStrings e.MarkedResult>
+    >;
 }
 
