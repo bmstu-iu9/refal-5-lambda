@@ -79,6 +79,32 @@ DoAddSavers {
     >;
 
   s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdInitB0-Lite) e.Commands =
+    <DoAddSavers
+      s.ContextTop (e.Alive 0) (e.Frozen)
+      (e.Scanned (#CmdInitB0-Lite)) e.Commands
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdCallSave #AlgLeft s.BracketNumber s.InnerNum e.Name) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive s.InnerNum) (e.Frozen)
+            (
+              e.Scanned
+              e.Saver
+              (#CmdCallSave #AlgLeft s.BracketNumber s.InnerNum e.Name)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
   (e.Scanned)
   (#CmdBrackets s.Direction s.BracketNumber s.InnerNum) e.Commands =
     <Fetch
@@ -99,6 +125,25 @@ DoAddSavers {
 
   s.ContextTop (e.Alive) (e.Frozen)
   (e.Scanned)
+  (#CmdBracketsSave s.Direction s.BracketNumber s.InnerNum) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive s.InnerNum) (e.Frozen)
+            (
+              e.Scanned
+              e.Saver
+              (#CmdBracketsSave s.Direction s.BracketNumber s.InnerNum)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
   (#CmdADT s.Direction s.BracketNumber s.InnerNum e.Name) e.Commands =
     <Fetch
       <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
@@ -110,6 +155,25 @@ DoAddSavers {
               e.Scanned
               e.Saver
               (#CmdADT s.Direction s.BracketNumber s.InnerNum e.Name)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdADTSave s.Direction s.BracketNumber s.InnerNum e.Name) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive s.InnerNum) (e.Frozen)
+            (
+              e.Scanned
+              e.Saver
+              (#CmdADTSave s.Direction s.BracketNumber s.InnerNum e.Name)
             )
             e.Commands
           >;
@@ -145,6 +209,34 @@ DoAddSavers {
                     e.Scanned
                     e.Saver
                     (#CmdRepeated
+                      s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum
+                    )
+                  )
+                  e.Commands
+                >;
+            }
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdRepeatedSave s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum)
+  e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <Fetch
+            <CheckFrozen e.Frozen s.SampleNum>
+            {
+              s.SampleNum^ =
+                <DoAddSavers
+                  s.ContextTop (e.Alive) (e.Frozen)
+                  (
+                    e.Scanned
+                    e.Saver
+                    (#CmdRepeatedSave
                       s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum
                     )
                   )
