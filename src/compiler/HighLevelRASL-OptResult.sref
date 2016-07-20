@@ -111,7 +111,7 @@ HighLevelRASL-Sentence {
         s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
           <Fetch
             <GenResult
-              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
+              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
             >
             {
               s.ContextCount e.ResultCommands =
@@ -215,9 +215,7 @@ DoGenPattern {
     >;
 
   s.ContextOffset
-  e.Substs-B
-  (#Junk e.Junk) (#E s.Num (#TkName e.Name) e.Range)
-  e.Substs-E
+  e.Substs-B (#Junk e.Junk) (#E s.Num (#TkName e.Name) e.Range) e.Substs-E
   (e.Vars) (e.Commands) =
     <DoGenPattern
       <Inc s.ContextOffset>
@@ -629,7 +627,7 @@ Offset {
 //==============================================================================
 
 GenResult {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
     <Fetch
       <GST
         ((#LEFT-EDGE) e.MarkedPattern (#RIGHT-EDGE))
@@ -641,6 +639,7 @@ GenResult {
             <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
             {
               s.ContextOffset^ e.MarkedResult^ =
+                s.ContextOffset
                 (#CmdResetAllocator)
                 <GenResult-Aux
                   (e.Trash) (e.MarkedResult)
@@ -740,39 +739,10 @@ GenResult-Aux {
         (#TkVariableCopy s.Mode e.Index s.Level s.SampleOffset s.Offset) =
           (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
-
-        (#TkChar s.Char s.Offset) =
-          (#CmdAllocateElem s.Offset #ElChar s.Char);
-
-        (#TkNumber s.Number s.Offset) =
-          (#CmdAllocateElem s.Offset #ElNumber s.Number);
-
-        (#TkOpenBracket s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenBracket);
-
-        (#TkCloseBracket s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseBracket);
-
-        (#TkOpenADT s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenADT);
-
-        (#TkCloseADT s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseADT);
-
-        (#TkOpenCall s.Offset) =
-          (#CmdAllocateElem s.Offset #ElOpenCall);
-
-        (#TkCloseCall s.Offset) =
-          (#CmdAllocateElem s.Offset #ElCloseCall);
-
-        (#TkName e.Name s.Offset) =
-          (#CmdAllocateElem s.Offset #ElName e.Name);
-
-        (#TkIdentifier e.Name s.Offset) =
-          (#CmdAllocateElem s.Offset #ElIdent e.Name);
-
         (#TkString e.String s.Offset) =
           (#CmdAllocateElem s.Offset #ElString e.String);
+
+        (e.Elem) = (#CmdAllocateElem <CreateElemParam e.Elem>);
       }
       e.MarkedResult
     >
@@ -785,69 +755,12 @@ GenResult-Aux {
             {
               (#AsIs t.Item) = /* пусто */;
 
-              (#HalfReuse (#TkChar s.Char s.Offset)) =
-                (#CmdReinitElem s.Offset #ElChar s.Char);
-
-              (#HalfReuse (#TkNumber s.Number s.Offset)) =
-                (#CmdReinitElem s.Offset #ElNumber s.Number);
-
-              (#HalfReuse (#TkOpenBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenBracket);
-
-              (#HalfReuse (#TkCloseBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseBracket);
-
-              (#HalfReuse (#TkOpenADT s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenADT);
-
-              (#HalfReuse (#TkCloseADT s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseADT);
-
-              (#HalfReuse (#TkOpenCall s.Offset)) =
-                (#CmdReinitElem s.Offset #ElOpenCall);
-
-              (#HalfReuse (#TkCloseCall s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseCall);
-
-              (#HalfReuse (#TkName e.Name s.Offset)) =
-                (#CmdReinitElem s.Offset #ElName e.Name);
-
-              (#HalfReuse (#TkIdentifier e.Name s.Offset)) =
-                (#CmdReinitElem s.Offset #ElIdent e.Name);
-
               (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
                 (#CmdReinitSVar s.Offset s.SampleOffset);
 
+              (#HalfReuse (e.Elem)) = (#CmdReinitElem <CreateElemParam e.Elem>);
 
-              (#Reuse (#TkChar s.Char s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElChar s.Char);
-
-              (#Reuse (#TkNumber s.Number s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElNumber s.Number);
-
-              (#Reuse (#TkOpenBracket s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenBracket);
-
-              (#Reuse (#TkCloseBracket s.Offset)) =
-                (#CmdReinitElem s.Offset #ElCloseBracket);
-
-              (#Reuse (#TkOpenADT s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenADT);
-
-              (#Reuse (#TkCloseADT s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElCloseADT);
-
-              (#Reuse (#TkOpenCall s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElOpenCall);
-
-              (#Reuse (#TkCloseCall s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElCloseCall);
-
-              (#Reuse (#TkName e.Name s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElName e.Name);
-
-              (#Reuse (#TkIdentifier e.Name s.Offset)) =
-                (#CmdUpdateElem s.Offset #ElIdent e.Name);
+              (#Reuse (e.Elem)) = (#CmdUpdateElem <CreateElemParam e.Elem>);
 
               (#LEFT-EDGE) = /* пусто */;
               (#RIGHT-EDGE) = /* пусто */;
@@ -867,6 +780,19 @@ GenResult-Aux {
 
     //Генерируем команды переноса из списка свободных узлов
     <GenSplices (e.Trash) e.MarkedResult>;
+}
+
+CreateElemParam {
+  #TkChar s.Char s.Offset = s.Offset #ElChar s.Char;
+  #TkNumber s.Number s.Offset = s.Offset #ElNumber s.Number;
+  #TkOpenBracket s.Offset = s.Offset #ElOpenBracket;
+  #TkCloseBracket s.Offset = s.Offset #ElCloseBracket;
+  #TkOpenADT s.Offset = s.Offset #ElOpenADT;
+  #TkCloseADT s.Offset = s.Offset #ElCloseADT;
+  #TkOpenCall s.Offset = s.Offset #ElOpenCall;
+  #TkCloseCall s.Offset = s.Offset #ElCloseCall;
+  #TkName e.Name s.Offset = s.Offset #ElName e.Name;
+  #TkIdentifier e.Name s.Offset = s.Offset #ElIdent e.Name;
 }
 
 GenPushLink {
@@ -1011,14 +937,15 @@ EndOffset {
 
   (s.Tag e.Info s.Offset) = s.Offset;
 }
+
 /*
   e.PatternVars ::= (s.Mode (e.Index) s.Offset*)*
 */
 AddOffsets {
   s.ContextOffset (e.PatternVars) e.MarkedResult =
     /*
-      Для переменных смещение брать из e.PatternVars + добавляем смещение для копии
-      (+1 для s-переменных, +2 для t и e),
+      Для переменных смещение брать из e.PatternVars + добавляем смещение
+      для копии (+1 для s-переменных, +2 для t и e),
       для остальных элементов --- смещение s.ContextOffset.
     */
     <MapReduce
@@ -1029,19 +956,12 @@ AddOffsets {
             <Map
               {
                 (#HalfReuse (#TkVariable 's' e.Index s.Level s.Offset^)) =
-                  <Fetch
-                    e.PatternVars
-                    {
-                      e.Range-B
-                      ('s' (e.Index s.Level) e.Offsets s.SampleOffset)
-                      e.Range-E =
-                        (#HalfReuse
-                          (#TkVariable
-                            's' e.Index s.Level s.SampleOffset s.Offset
-                          )
-                        );
-                    }
-                  >;
+                  (#HalfReuse
+                    (#TkVariable
+                      <GetSampleOffset e.PatternVars ('s' e.Index s.Level)>
+                      s.Offset
+                    )
+                  );
 
                 t.Other = t.Other;
               }
@@ -1050,31 +970,22 @@ AddOffsets {
           );
 
         s.Offset (#TkVariable 's' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('s' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 1> (#TkVariableCopy 's' e.Index s.Level s.SampleOffset s.Offset);
-            }
-          >;
+          <Add s.Offset 1>
+          (#TkVariableCopy
+            <GetSampleOffset e.PatternVars ('s' e.Index s.Level)> s.Offset
+          );
 
         s.Offset (#TkVariable 't' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('t' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 2> (#TkVariableCopy 't' e.Index s.Level s.SampleOffset s.Offset);
-            }
-          >;
+          <Add s.Offset 2>
+          (#TkVariableCopy
+            <GetSampleOffset e.PatternVars ('t' e.Index s.Level)> s.Offset
+          );
 
         s.Offset (#TkVariable 'e' e.Index s.Level) =
-          <Fetch
-            e.PatternVars
-            {
-              e.Range-B ('e' (e.Index s.Level) e.Offsets s.SampleOffset) e.Range-E =
-                <Add s.Offset 2> (#TkVariableCopy 'e' e.Index  s.Level s.SampleOffset s.Offset);
-            }
-          >;
+          <Add s.Offset 2>
+          (#TkVariableCopy
+            <GetSampleOffset e.PatternVars ('e' e.Index s.Level)> s.Offset
+          );
 
         s.Offset (#TkString e.String) =
           <Inc2 s.Offset> (#TkString e.String s.Offset);
@@ -1085,3 +996,10 @@ AddOffsets {
     >;
 }
 
+GetSampleOffset {
+  e.PatternVars-B
+  (s.Mode (e.Index s.Level) e.Offsets s.SampleOffset)
+  e.PatternVars-E
+  (s.Mode e.Index s.Level) =
+    s.Mode e.Index s.Level s.SampleOffset;
+}
