@@ -5,7 +5,7 @@ $EXTERN WriteLine, StrFromInt;
 $EXTERN StrFromToken;
 
 //FROM LibraryEx
-$EXTERN Map;
+$EXTERN Map, Sort;
 
 /**
   Внутренний формат:
@@ -62,7 +62,7 @@ $ENTRY EL-Destroy {
             e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
           >;
       }
-      e.Errors
+      <Sort e.Errors>
     >
     #EL-HasErrors;
 }
