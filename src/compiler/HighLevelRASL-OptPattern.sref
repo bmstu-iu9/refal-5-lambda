@@ -262,19 +262,14 @@ GenSentence {
             e.Tail;
         }
         // {e.all = e.all <WriteLine 'GS1\n' e.all>;}
-        // 2. #E #CmdSave
-        {
-          s.ContextSize (e.Substitutes) e.Tail^ =
-            <ReassignEs s.ContextSize e.Substitutes>
-            e.Tail;
-        }
+        // 2. #E #CmdSave — removed
         // {e.all = e.all <WriteLine 'GS2\n' e.all>;}
         // 3. GenPattern-New
         // 3.1. GenResult
         {
-          s.MaxMemory (e.Saves) (e.Substitutes) (e.Result^) =
+          s.MaxMemory (e.Substitutes) (e.Result^) =
             <Fetch
-              <GenPattern-New s.MaxMemory (e.Saves) (e.Substitutes)>
+              <GenPattern-New s.MaxMemory (e.Substitutes)>
               {
                 (e.PatternVars) s.ContextOffset (e.PatternCommands) =
                   <Fetch
@@ -304,27 +299,6 @@ ComposeVars {
       (e.Substitute-B e.Substitute-E) (e.Vars-B e.Vars-E)
     >;
   (e.Scanned) () () = (e.Scanned);
-}
-
-ReassignEs {
-  s.ContextOffset e.Substitutes =
-    <Fetch
-      <MapReduce
-        {
-          (s.Offset (e.Saves)) (#E s.Old e.Subst) =
-            (<Inc2 s.Offset> 
-            (e.Saves (#CmdSave s.Old s.Offset)))
-            (#E s.Offset e.Subst);
-          (s.Offset (e.Saves)) (e.Other) =
-            (s.Offset (e.Saves )) (e.Other);
-        }
-        (s.ContextOffset (/* Saves */)) e.Substitutes
-      >
-      {
-        (s.Offset (e.Saves)) e.Substitutes^ =
-          s.Offset (e.Saves) (e.Substitutes);
-      }
-    >;
 }
 
 FoldOpenELoops {
@@ -370,115 +344,25 @@ FoldOpenELoops {
 
 GenPattern {
   e.Pattern =
+    <GenPattern-New 2 ((#E 0 e.Pattern))>;
+}
+
+GenPattern-New {
+  s.MaxMemory (e.Substitutes) =
     <Fetch
+      // <WriteLine 'GPN\n' e.Substitutes>
       <DoGenPattern
-        2 (#E 0 e.Pattern) (/* vars */) (/* commands */)
+        s.MaxMemory e.Substitutes (/* vars */) (/* commands */)
       >
       <Seq
          {
           s.ContextOffset (e.Vars) e.Commands =
-            (e.Vars)
-            <FreezeRanges s.ContextOffset e.Commands>;
-        }
-        {
-          (e.Vars) s.ContextOffset e.Commands =
-            (e.Vars) s.ContextOffset
-            <GetRangeReassigns e.Commands>;
-        }
-        {
-          (e.Vars) s.ContextOffset (e.Reassigns) e.Commands =
-            (<FixupEVarIndexes (e.Reassigns) e.Vars>)
-            s.ContextOffset e.Commands;
-        }
-        {
-          (e.Vars) s.ContextOffset e.Commands =
             (e.Vars)
             s.ContextOffset
             (e.Commands);
         }
       >
     >;
-}
-
-GenPattern-New {
-  s.MaxMemory (e.Saves) (e.Substitutes) =
-    <Fetch
-      // <WriteLine 'GPN\n' e.Substitutes>
-      <DoGenPattern
-        s.MaxMemory e.Substitutes (/* vars */) (e.Saves)
-      >
-      <Seq
-         {
-          s.ContextOffset (e.Vars) e.Commands =
-            (e.Vars)
-            <FreezeRanges s.ContextOffset e.Commands>;
-        }
-        {
-          (e.Vars) s.ContextOffset e.Commands =
-            (e.Vars) s.ContextOffset
-            <GetRangeReassigns e.Commands>;
-        }
-        {
-          (e.Vars) s.ContextOffset (e.Reassigns) e.Commands =
-            // <WriteLine 'Vars\n' (e.Vars)>
-            (<FixupEVarIndexes (e.Reassigns) e.Vars>)
-            s.ContextOffset
-            (
-              e.Commands
-              (#CmdComment 'Vars: ' e.Vars)
-              (#CmdComment 'Reassigns: ' e.Reassigns)
-              (#CmdComment 'Fixup: ' <FixupEVarIndexes (e.Reassigns) e.Vars>)
-            );
-        }
-      >
-    >;
-}
-
-GetRangeReassigns {
-  e.Commands =
-    <MapReduce
-      {
-        (e.Reassigns) (#CmdSave s.Old s.New) =
-          (<GetRangeReassigns-FixupChain e.Reassigns s.Old s.New> (s.Old s.New))
-          (#CmdSave s.Old s.New);
-
-        (e.Reassigns) t.OtherCommand =
-          (e.Reassigns) t.OtherCommand;
-      }
-      (/* переназначения диапазонов */)
-      e.Commands
-    >;
-}
-
-GetRangeReassigns-FixupChain {
-  e.Reassigns-B (s.First s.Old) e.Reassigns-E s.Old s.New =
-    e.Reassigns-B (s.First s.New)
-    <GetRangeReassigns-FixupChain
-      e.Reassigns-E s.Old s.New
-    >;
-    
-  e.Reassigns s.Old s.New = e.Reassigns;
-}
-
-FixupEVarIndexes {
-  (e.Reassigns) e.Vars =
-    <Map
-      {
-        ('e' (e.Index) e.Numbers) =
-          ('e' (e.Index)
-            <Map (FixupEVarIndexes-PatchNumber e.Reassigns) e.Numbers>
-          );
-
-        t.OtherVar = t.OtherVar;
-      }
-      e.Vars
-    >;
-}
-
-FixupEVarIndexes-PatchNumber {
-  e.Reassigns-B (s.Old s.New) e.Reassigns-E s.Old = s.New;
-
-  e.Reassigns s.Number = s.Number;
 }
 
 Inc2 {
@@ -870,7 +754,7 @@ DoGenPattern {
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (#CmdComment
-          ' closed ' <PrintVar 'e' e.Index> ' as range ' <StrFromInt s.Num>
+          ' closed ' <PrintVar 'e' e.Index> ' as range ' #Offset s.Num
         )
       )
     >;
@@ -956,93 +840,6 @@ IncVarOffset {
   s.ContextOffset 's' = <Inc s.ContextOffset>;
 }
 
-FreezeRanges {
-  s.ContextTop e.Commands = <DoFreezeRanges s.ContextTop () e.Commands>;
-}
-
-DoFreezeRanges {
-  s.ContextTop (e.Scanned)
-  e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset) e.Commands-E =
-    <Fetch
-      e.Scanned e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset)
-      {
-        e.CommandsBeforeEMatch =
-          <DoFreezeRanges-MakeSavers
-            s.ContextTop
-            ( <ExtractRanges e.CommandsBeforeEMatch> )
-            ( e.CommandsBeforeEMatch )
-            e.Commands-E
-          >;
-      }
-    >;
-
-  s.ContextTop (e.Scanned) e.Commands = s.ContextTop e.Scanned e.Commands;
-}
-
-DoFreezeRanges-MakeSavers {
-  s.ContextTop
-  (e.FrozenRanges-B s.Num e.FrozenRanges-E)
-  (e.Scanned)
-  e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E =
-    <DoFreezeRanges-MakeSavers
-      <Inc2 s.ContextTop>
-      (e.FrozenRanges-B e.FrozenRanges-E)
-      (e.Scanned (#CmdSave s.Num s.ContextTop))
-      <Map
-        {
-          /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
-          */
-          (s.Command^ s.Direction^ s.Num e.Info^) =
-            (s.Command s.Direction s.ContextTop e.Info);
-
-          (#CmdRepeated s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
-            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.ContextTop);
-
-          (s.Command^ s.Direction^ s.OtherNum e.Info^) =
-            (s.Command s.Direction s.OtherNum e.Info);
-        }
-        e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E
-      >
-    >;
-
-  s.ContextTop (e.UnusedFrozenRanges) (e.Scanned) e.Commands =
-    <DoFreezeRanges s.ContextTop (e.Scanned) e.Commands>;
-}
-
-ExtractRanges {
-  e.Commands =
-    <UniqueRanges
-      <Map
-        {
-          /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
-          */
-          (#CmdBrackets s.Direction s.BracketNum s.InnerNum) =
-            s.BracketNum s.InnerNum;
-
-          (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
-            s.BracketNum s.InnerNum;
-
-          (#CmdComment e.Comment) =
-            /* пусто */;
-
-          (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
-        }
-        e.Commands
-      >
-    >;
-}
-
-UniqueRanges {
-  e.Unique s.Repeated e.Middle s.Repeated e.Rest =
-    e.Unique <UniqueRanges s.Repeated e.Middle e.Rest>;
-
-  e.Unique = e.Unique;
-}
-
 TextFromPattern {
   (#TkOpenBracket) e.Tail = ' (' <TextFromPattern e.Tail>;
   (#TkCloseBracket) e.Tail = ' )' <TextFromPattern e.Tail>;
@@ -1060,7 +857,7 @@ TextFromPattern {
     ' & ' e.Name <TextFromPattern e.Tail>;
 
   (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth> '/' <StrFromInt s.Offset>
+    ' ' <PrintVar s.Mode e.Index s.Depth> '/' #Offset s.Offset
     <TextFromPattern e.Tail>;
 
   (#TkIdentifier e.Name) e.Tail =
@@ -1351,6 +1148,6 @@ ReplicateVar {
 MakeVariableComment {
   (s.Offset s.Mode e.Index s.Depth) =
     (#CmdComment
-      <StrFromInt s.Offset> ': ' <PrintVar s.Mode e.Index s.Depth>
+      #Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
     );
 }

@@ -104,6 +104,12 @@ DoAddSavers {
       }
     >;
 
+  /*
+    Эти предложения корректно обрабатывает и #AlgTerm:
+    s.BracketNumber, который в этом случае будет номером t-переменной,
+    просто не найдётся в таблицах e.Alive и e.Frozen, а функция
+    CheckSaved вернёт без изменения свой аргумент.
+  */
   s.ContextTop (e.Alive) (e.Frozen)
   (e.Scanned)
   (#CmdBrackets s.Direction s.BracketNumber s.InnerNum) e.Commands =
