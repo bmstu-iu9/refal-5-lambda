@@ -172,82 +172,12 @@ GenPattern {
       <Seq
         {
           s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
-            (e.Vars) (e.MarkedPattern)
-            <FreezeRanges s.ContextOffset e.Commands>;
-        }
-        {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
-            (e.Vars) (e.MarkedPattern) s.ContextOffset
-            <GetRangeReassigns e.Commands>;
-        }
-        {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset (e.Reassigns) e.Commands =
-            (<FixupEVarIndexes (e.Reassigns) e.Vars>)
-            (<FixupMarkedPatternIndexes (e.Reassigns) e.MarkedPattern>)
-            s.ContextOffset e.Commands;
-        }
-        {
-          (e.Vars) (e.MarkedPattern) s.ContextOffset e.Commands =
             (e.Vars)
             s.ContextOffset
             ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
         }
       >
     >;
-}
-
-GetRangeReassigns {
-  e.Commands =
-    <MapReduce
-      {
-        (e.Reassigns-B (s.First s.Old) e.Reassigns-E)
-        (#CmdSave s.Old s.New) =
-          (e.Reassigns-B (s.First s.New) e.Reassigns-E (s.Old s.New))
-          (#CmdSave s.Old s.New);
-
-        (e.Reassigns) (#CmdSave s.Old s.New) =
-          (e.Reassigns (s.Old s.New)) (#CmdSave s.Old s.New);
-
-        (e.Reassigns) t.OtherCommand =
-          (e.Reassigns) t.OtherCommand;
-      }
-      (/* переназначения диапазонов */)
-      e.Commands
-    >;
-}
-
-FixupEVarIndexes {
-  (e.Reassigns) e.Vars =
-    <Map
-      {
-        ('e' (e.Index) e.Numbers) =
-          ('e' (e.Index)
-            <Map (FixupEVarIndexes-PatchNumber e.Reassigns) e.Numbers>
-          );
-
-        t.OtherVar = t.OtherVar;
-      }
-      e.Vars
-    >;
-}
-
-FixupEVarIndexes-PatchNumber {
-  e.Reassigns-B (s.Old s.New) e.Reassigns-E s.Old = s.New;
-
-  e.Reassigns s.Number = s.Number;
-}
-
-FixupMarkedPatternIndexes {
-  (e.Reassigns) e.MarkedPattern =
-    <Map (FixupMarkedPatternTerm e.Reassigns) e.MarkedPattern>;
-}
-
-FixupMarkedPatternTerm {
-  e.Reassigns-B (s.Old s.New) e.Reassigns-E
-  (#TkVariable 'e' e.Index s.Depth s.Old) =
-    (#TkVariable 'e' e.Index s.Depth s.New);
-
-  e.Reassigns^ t.OtherTerm = t.OtherTerm;
 }
 
 Inc2 {
@@ -482,7 +412,7 @@ DoGenPattern {
       (e.Vars ('e' (e.Index) s.Num))
       (e.Commands
         (#CmdComment
-          ' closed ' <PrintVar 'e' e.Index> ' as range ' <StrFromInt s.Num>
+          ' closed ' <PrintVar 'e' e.Index> ' as range ' #Offset s.Num
         )
       )
     >;
@@ -573,132 +503,52 @@ IncVarOffset {
   s.ContextOffset 's' = <Inc s.ContextOffset>;
 }
 
-FreezeRanges {
-  s.ContextTop e.Commands = <DoFreezeRanges s.ContextTop () e.Commands>;
-}
-
-DoFreezeRanges {
-  s.ContextTop (e.Scanned)
-  e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset) e.Commands-E =
-    <Fetch
-      e.Scanned e.Commands-B (#CmdOpenedE #AlgLeft s.Num s.ContextOffset)
-      {
-        e.CommandsBeforeEMatch =
-          <DoFreezeRanges-MakeSavers
-            s.ContextTop
-            ( <ExtractRanges e.CommandsBeforeEMatch> )
-            ( e.CommandsBeforeEMatch )
-            e.Commands-E
-          >;
-      }
-    >;
-
-  s.ContextTop (e.Scanned) e.Commands = s.ContextTop e.Scanned e.Commands;
-}
-
-DoFreezeRanges-MakeSavers {
-  s.ContextTop
-  (e.FrozenRanges-B s.Num e.FrozenRanges-E)
-  (e.Scanned)
-  e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E =
-    <DoFreezeRanges-MakeSavers
-      <Inc2 s.ContextTop>
-      (e.FrozenRanges-B e.FrozenRanges-E)
-      (e.Scanned (#CmdSave s.Num s.ContextTop))
-      <Map
-        {
-          /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
-          */
-          (s.Command^ s.Direction^ s.Num e.Info^) =
-            (s.Command s.Direction s.ContextTop e.Info);
-
-          (#CmdRepeated s.Direction^ s.OtherNum 'e' s.NewOffset s.Num) =
-            (#CmdRepeated s.Direction s.OtherNum 'e' s.NewOffset s.ContextTop);
-
-          (s.Command^ s.Direction^ s.OtherNum e.Info^) =
-            (s.Command s.Direction s.OtherNum e.Info);
-        }
-        e.Commands-B (s.Command s.Direction s.Num e.Args) e.Commands-E
-      >
-    >;
-
-  s.ContextTop (e.UnusedFrozenRanges) (e.Scanned) e.Commands =
-    <DoFreezeRanges s.ContextTop (e.Scanned) e.Commands>;
-}
-
-ExtractRanges {
-  e.Commands =
-    <UniqueRanges
-      <Map
-        {
-          /*
-            Все команды распознавания содержат номер скобок третьим термом,
-            общий формат (s.Command s.Direction s.BracketNum e.Info)
-          */
-          (#CmdBrackets s.Direction s.BracketNum s.InnerNum) =
-            s.BracketNum s.InnerNum;
-
-          (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name) =
-            s.BracketNum s.InnerNum;
-
-          (#CmdComment e.Comment) =
-            /* пусто */;
-
-          (s.Command s.Direction s.BracketNum e.Info) = s.BracketNum;
-        }
-        e.Commands
-      >
-    >;
-}
-
-UniqueRanges {
-  e.Unique s.Repeated e.Middle s.Repeated e.Rest =
-    e.Unique <UniqueRanges s.Repeated e.Middle e.Rest>;
-
-  e.Unique = e.Unique;
-}
-
 TextFromPattern {
-  (#TkOpenBracket) e.Tail = ' (' <TextFromPattern e.Tail>;
-  (#TkCloseBracket) e.Tail = ' )' <TextFromPattern e.Tail>;
+  e.Pattern =
+    <Map
+      {
+        (#TkOpenBracket) = ' (';
+        (#TkCloseBracket) = ' )';
 
-  (#TkOpenADT) (#TkName e.Name) e.Tail = ' [' e.Name <TextFromPattern e.Tail>;
-  (#TkCloseADT) e.Tail = ' ]' <TextFromPattern e.Tail>;
+        (#TkOpenADT e.Name) = ' [' e.Name;
+        (#TkCloseADT) = ' ]';
 
-  (#TkChar s.Char) e.Tail =
-    ' ' '' <TextFromPattern-Char (#TkChar s.Char) e.Tail>;
+        (#TkChars e.Chars) = ' ''' e.Chars '';
 
-  (#TkNumber s.Number) e.Tail =
-    ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
+        (#TkNumber s.Number) = ' ' <StrFromInt s.Number>;
 
-  (#TkName e.Name) e.Tail =
-    ' & ' e.Name <TextFromPattern e.Tail>;
+        (#TkName e.Name) = ' & ' e.Name;
 
-  (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth> '/' <StrFromInt s.Offset>
-    <TextFromPattern e.Tail>;
+        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
+          ' ' <PrintVar s.Mode e.Index s.Depth> '/' #Offset s.Offset;
 
-  (#TkIdentifier e.Name) e.Tail =
-    ' # ' e.Name <TextFromPattern e.Tail>;
-
-  = ;
+        (#TkIdentifier e.Name) = ' # ' e.Name;
+      }
+      <TextFromPattern-Prepare e.Pattern>
+    >;
 }
 
 PrintVar {
   s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
-Escape {
-  s.Char = <EscapeChar s.Char>;
+TextFromPattern-Prepare {
+  (#TkChar s.Char) e.Tail =
+    <TextFromPattern-Prepare-Chars () (#TkChar s.Char) e.Tail>;
+
+  (#TkOpenADT) (#TkName e.Name) e.Tail =
+    (#TkOpenADT e.Name) <TextFromPattern-Prepare e.Tail>;
+
+  t.Other e.Tail = t.Other <TextFromPattern-Prepare e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
 
-TextFromPattern-Char {
-  (#TkChar s.Char) e.Tail =
-    <Escape s.Char> <TextFromPattern-Char e.Tail>;
+TextFromPattern-Prepare-Chars {
+  (e.Chars) (#TkChar s.Char) e.Tail =
+    <TextFromPattern-Prepare-Chars (e.Chars <EscapeChar s.Char>) e.Tail>;
 
-  e.Other = '' <TextFromPattern e.Other>;
+  (e.Chars) e.Tail = (#TkChars e.Chars) <TextFromPattern-Prepare e.Tail>;
 }
 
 //==============================================================================
@@ -955,6 +805,6 @@ ReplicateVar {
 MakeVariableComment {
   (s.Offset s.Mode e.Index s.Depth) =
     (#CmdComment
-      <StrFromInt s.Offset> ': ' <PrintVar s.Mode e.Index s.Depth>
+      #Offset s.Offset ': ' <PrintVar s.Mode e.Index s.Depth>
     );
 }

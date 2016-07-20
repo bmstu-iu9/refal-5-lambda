@@ -1,6 +1,9 @@
 //FROM LibraryEx
 $EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
 
+//FROM Library
+$EXTERN Add, StrFromInt;
+
 /**
   <LowLevelRASL s.GenMode e.RASLAST>
     == e.RASL
@@ -36,29 +39,325 @@ $ENTRY LowLevelRASL {
 LowLevelRASL-Function {
   s.GenMode s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
     (#CmdFnStart s.ScopeClass e.Name)
-    (#CmdIssueMem s.Number)
     <Fetch
-      s.GenMode
+      <AddSavers s.Number e.Commands>
       {
-        #Both =
-          // Интерпретируемый код
-          (#CmdIfDef 'INTERPRET')
-          <Function-Interpret e.Commands>
-          (#CmdElse)
-          // Компилируемый код
-          <Function-Direct e.Commands>
-          (#CmdEndIf);
-
-        #OnlyDirect =
-          // Компилируемый код
-          <Function-Direct e.Commands>;
-
-        #OnlyInterpret =
-          // Интерпретируемый код
-          <Function-Interpret e.Commands>;
+        s.Number^ e.Commands^ =
+          (#CmdIssueMem s.Number)
+          <Function-Body s.GenMode e.Commands>;
       }
     >
     (#CmdFnEnd);
+}
+
+AddSavers {
+  s.Number e.Commands =
+    <DoAddSavers
+      s.Number
+      (/* alive vars */) (/* frozen vars */)
+      (/* scanned */) e.Commands
+    >;
+}
+
+Max {
+  s.X s.Y =
+    <Fetch
+      <Compare s.X s.Y>
+      {
+        '<' = s.Y;
+        s.Other = s.X;
+      }
+    >;
+}
+
+DoAddSavers {
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdInitB0) e.Commands =
+    <DoAddSavers
+      s.ContextTop (e.Alive 0) (e.Frozen)
+      (e.Scanned (#CmdInitB0)) e.Commands
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdBrackets s.Direction s.BracketNumber s.InnerNum) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive s.InnerNum) (e.Frozen)
+            (
+              e.Scanned
+              e.Saver
+              (#CmdBrackets s.Direction s.BracketNumber s.InnerNum)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdADT s.Direction s.BracketNumber s.InnerNum e.Name) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive s.InnerNum) (e.Frozen)
+            (
+              e.Scanned
+              e.Saver
+              (#CmdADT s.Direction s.BracketNumber s.InnerNum e.Name)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdComment e.Comment) e.Commands =
+    <DoAddSavers
+      s.ContextTop (e.Alive) (e.Frozen)
+      (
+        e.Scanned
+        (#CmdComment <FixupFrozenComment (e.Frozen) e.Comment>)
+      )
+      e.Commands
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdRepeated s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum)
+  e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <Fetch
+            <CheckFrozen e.Frozen s.SampleNum>
+            {
+              s.SampleNum^ =
+                <DoAddSavers
+                  s.ContextTop (e.Alive) (e.Frozen)
+                  (
+                    e.Scanned
+                    e.Saver
+                    (#CmdRepeated
+                      s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum
+                    )
+                  )
+                  e.Commands
+                >;
+            }
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned)
+  (#CmdOpenELoop #AlgLeft s.BracketNumber s.VarNumber e.SubCommands)
+  /* обычно, последняя команда, но после неё может следовать #CmdFail */
+  e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <Fetch
+            <DoAddSavers
+              s.ContextTop () (e.Frozen <Freeze e.Alive>)
+              () e.SubCommands
+            >
+            {
+              s.ContextTop^ e.SubCommands^ =
+                s.ContextTop
+                e.Scanned
+                e.Saver
+                (#CmdOpenELoop
+                  #AlgLeft s.BracketNumber s.VarNumber e.SubCommands
+                )
+                <Fetch
+                  e.Commands
+                  {
+                    /* пусто */ = /* пусто */;
+                    (#CmdFail) = (#CmdFail);
+                  }
+                >;
+            }
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (s.MatchCommand #AlgLeft s.BracketNumber e.Info) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive) (e.Frozen)
+            (e.Scanned e.Saver (s.MatchCommand #AlgLeft s.BracketNumber e.Info))
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (s.MatchCommand #AlgRight s.BracketNumber e.Info) e.Commands =
+    <Fetch
+      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
+      {
+        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
+          <DoAddSavers
+            s.ContextTop (e.Alive) (e.Frozen)
+            (
+              e.Scanned e.Saver
+              (s.MatchCommand #AlgRight s.BracketNumber e.Info)
+            )
+            e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdCopyVar 'e' s.Target s.Sample) e.Commands =
+    <Fetch
+      <CheckFrozen e.Frozen s.Sample>
+      {
+        s.Sample^ =
+          <DoAddSavers
+            s.ContextTop (e.Alive) (e.Frozen)
+            (e.Scanned (#CmdCopyVar 'e' s.Target s.Sample)) e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdInsertVar 'e' s.Offset) e.Commands =
+    <Fetch
+      <CheckFrozen e.Frozen s.Offset>
+      {
+        s.Offset^ =
+          <DoAddSavers
+            s.ContextTop (e.Alive) (e.Frozen)
+            (e.Scanned (#CmdInsertVar 'e' s.Offset)) e.Commands
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen)
+  (e.Scanned) (#CmdSentence e.SubCommands) e.Commands =
+    <Fetch
+      <DoAddSavers
+        s.ContextTop () (e.Frozen <Freeze e.Alive>)
+        () e.SubCommands
+      >
+      {
+        s.InnerContextTop e.SubCommands^ =
+          <Fetch
+            <DoAddSavers
+              s.ContextTop (e.Alive) (e.Frozen)
+              (e.Scanned (#CmdSentence e.SubCommands))
+              e.Commands
+            >
+            {
+              s.OuterContextTop e.Scanned^ =
+                <Max s.InnerContextTop s.OuterContextTop> e.Scanned;
+            }
+          >;
+      }
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen) (e.Scanned) t.OtherCommand e.Commands =
+    <DoAddSavers
+      s.ContextTop (e.Alive) (e.Frozen)
+      (e.Scanned t.OtherCommand) e.Commands
+    >;
+
+  s.ContextTop (e.Alive) (e.Frozen) (e.Scanned) /* всё */ =
+    s.ContextTop e.Scanned;
+}
+
+CheckSaved {
+  s.ContextTop
+  (e.Alive-B s.BracketNumber e.Alive-E) (e.Frozen) s.BracketNumber =
+    s.ContextTop
+    (e.Alive-B s.BracketNumber e.Alive-E) (e.Frozen) s.BracketNumber;
+
+  s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber =
+    <CheckSaved-Fronen
+      s.ContextTop (e.Alive) () (e.Frozen) s.BracketNumber
+    >;
+}
+
+CheckSaved-Fronen {
+  s.ContextTop (e.Alive) (e.ScannedFrozen)
+  (e.Frozen-B (s.BracketNumber #Frozen) e.Frozen-E) s.BracketNumber =
+    <Add s.ContextTop 2>
+    (e.Alive s.ContextTop)
+    (e.ScannedFrozen e.Frozen-B (s.BracketNumber s.ContextTop) e.Frozen-E)
+    s.ContextTop (#CmdSave s.BracketNumber s.ContextTop);
+
+  s.ContextTop (e.Alive) (e.ScannedFrozen)
+  (e.Frozen-B (s.BracketNumber s.NewNumber) e.Frozen-E) s.BracketNumber =
+    <CheckSaved-Fronen
+      s.ContextTop (e.Alive)
+      (e.ScannedFrozen e.Frozen-B (s.BracketNumber s.NewNumber))
+      (e.Frozen-E) s.NewNumber
+    >;
+
+  s.ContextTop (e.Alive) (e.ScannedFrozen) (e.Frozen) s.BracketNumber =
+    s.ContextTop (e.Alive) (e.ScannedFrozen e.Frozen) s.BracketNumber;
+}
+
+FixupFrozenComment {
+  (e.Frozen) e.Comment-B #Offset s.Num e.Comment-E =
+    e.Comment-B
+    <Fetch
+      <CheckFrozen e.Frozen s.Num>
+      {
+        s.Num = <StrFromInt s.Num>;
+        s.Renum = <StrFromInt s.Renum> '(' <StrFromInt s.Num> ')';
+      }
+    >
+    <FixupFrozenComment (e.Frozen) e.Comment-E>;
+
+  (e.Frozen) e.Comment = e.Comment;
+}
+
+CheckFrozen {
+  e.Frozen-B (s.BracketNumber #Frozen) e.Frozen-E s.BracketNumber =
+    s.BracketNumber;
+
+  e.Frozen-B (s.BracketNumber s.NewNumber) e.Frozen-E s.BracketNumber =
+    <CheckFrozen e.Frozen-E s.NewNumber>;
+
+  e.Frozen s.BracketNumber = s.BracketNumber;
+}
+
+Freeze {
+  e.BracketNumbers =
+    <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
+}
+
+Function-Body {
+  #Both e.Commands =
+    // Интерпретируемый код
+    (#CmdIfDef 'INTERPRET')
+    <Function-Interpret e.Commands>
+    (#CmdElse)
+    // Компилируемый код
+    <Function-Direct e.Commands>
+    (#CmdEndIf);
+
+  #OnlyDirect e.Commands =
+    // Компилируемый код
+    <Function-Direct e.Commands>;
+
+  #OnlyInterpret e.Commands =
+    // Интерпретируемый код
+    <Function-Interpret e.Commands>;
 }
 
 Function-Interpret {
