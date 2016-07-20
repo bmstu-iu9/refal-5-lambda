@@ -3,7 +3,6 @@ $EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort, DelAccumulator;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
-$EXTERN WriteLine;
 
 //FROM Escape
 $EXTERN EscapeChar;
@@ -88,7 +87,6 @@ HighLevelRASL-OneFunction {
           ((e.Pattern) (e.Result)) =
             (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
         }
-        // { e.all = e.all <WriteLine 'aaa!\n' e.all>;}
         (MapReduce
           {
             s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
@@ -131,7 +129,7 @@ HighLevelRASL-Sentence {
     <Fetch
       <GenPattern e.Pattern>
       {
-        (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+        s.ContextOffset (e.PatternVars) e.PatternCommands =
           <Fetch
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
             {
@@ -153,7 +151,6 @@ HighLevelRASL-MulFunction {
     <Fetch
       e.Sentences
       <Seq
-        // {e.all = e.all <WriteLine '\n\nstart:\n' s.ScopeClass (e.Name)>;}
         (MapReduce
           {
             (e.HardGens) ((e.Pattern) (e.Result)) =
@@ -168,12 +165,10 @@ HighLevelRASL-MulFunction {
           }
           (/* hard gens */)
         )
-        // {e.all = e.all <WriteLine 'HL1:\n' e.all>;}
         {
           (e.HardPatterns) e.SentenceTails =
             <CreateGlobalGen e.HardPatterns> e.SentenceTails;
         }
-        // {e.all = e.all <WriteLine 'HL2:\n' e.all>;}
         {
           (e.FastGen) (e.GlobalGen) e.SentenceTails =
             (
@@ -183,7 +178,6 @@ HighLevelRASL-MulFunction {
             (<SplitGen (e.GlobalGen) e.SentenceTails>)
             e.SentenceTails;
         }
-        // {e.all = e.all <WriteLine 'HL3:\n' e.all>;}
         {
           (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
             (e.Comments)
@@ -199,9 +193,8 @@ HighLevelRASL-MulFunction {
               >
             >;
         }
-        // {e.all = e.all <WriteLine 'HL4:\n' e.all>;}
         {
-          (e.Comments^) ((e.Vars) s.ContextSize (e.CommonMatchCommands)) e.SentencesWithSubst =
+          (e.Comments^) (s.ContextSize (e.Vars) e.CommonMatchCommands) e.SentencesWithSubst =
             (e.Comments e.CommonMatchCommands)
             <MapReduce
               {
@@ -221,7 +214,6 @@ HighLevelRASL-MulFunction {
               s.ContextSize e.SentencesWithSubst
             >;
         }
-        // ({e.all = e.all <WriteLine 'HL5:\n' e.all>;})
         {
           (e.Prefix) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
@@ -243,13 +235,11 @@ HighLevelRASL-MulFunction {
           (e.Prefix) 0 /* нет предложений */ =
             (#CmdEnum s.ScopeClass e.Name);
         }
-        // ({e.all = e.all <WriteLine 'End:\n' e.all>;})
       >
     >;
 }
 
 GenSentence {
-  // s.ContextSize (e.Vars) (e.Substitute) (e.Result) = (#CmdIssueMem s.ContextSize);
   s.ContextSize (e.Vars) (e.Substitute) (e.Result) =
     <Fetch
       s.ContextSize (e.Vars) (e.Substitute) (e.Result)
@@ -261,9 +251,7 @@ GenSentence {
             <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
             e.Tail;
         }
-        // {e.all = e.all <WriteLine 'GS1\n' e.all>;}
         // 2. #E #CmdSave — removed
-        // {e.all = e.all <WriteLine 'GS2\n' e.all>;}
         // 3. GenPattern-New
         // 3.1. GenResult
         {
@@ -271,7 +259,7 @@ GenSentence {
             <Fetch
               <GenPattern-New s.MaxMemory (e.Substitutes)>
               {
-                (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+                s.ContextOffset (e.PatternVars) e.PatternCommands =
                   <Fetch
                     <GenResult s.ContextOffset (e.PatternVars) e.Result>
                     {
@@ -349,19 +337,8 @@ GenPattern {
 
 GenPattern-New {
   s.MaxMemory (e.Substitutes) =
-    <Fetch
-      // <WriteLine 'GPN\n' e.Substitutes>
-      <DoGenPattern
-        s.MaxMemory e.Substitutes (/* vars */) (/* commands */)
-      >
-      <Seq
-         {
-          s.ContextOffset (e.Vars) e.Commands =
-            (e.Vars)
-            s.ContextOffset
-            (e.Commands);
-        }
-      >
+    <DoGenPattern
+      s.MaxMemory e.Substitutes (/* vars */) (/* commands */)
     >;
 }
 
@@ -888,19 +865,6 @@ TextFromPattern-Char {
 GenResult {
   s.ContextOffset (e.PatternVars) e.Result =
     <Fetch
-      // <WriteLine 'GR\n' 
-        // (
-          // <Map
-            // {
-              // (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-            // }
-            // e.PatternVars
-          // >
-        // )
-        // (/* alloc commands */) (/* other commands */)
-        // s.ContextOffset // счётчик новых элементов
-        // <CollectStrings e.Result>
-      // >
       <DoGenResult
         (
           <Map

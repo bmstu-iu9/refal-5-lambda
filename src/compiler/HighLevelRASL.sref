@@ -105,7 +105,7 @@ HighLevelRASL-Sentence {
     <Fetch
       <GenPattern e.Pattern>
       {
-        (e.PatternVars) s.ContextOffset (e.PatternCommands) =
+        s.ContextOffset (e.PatternVars) e.PatternCommands =
           <Fetch
             <GenResult s.ContextOffset (e.PatternVars) e.Result>
             {
@@ -165,18 +165,8 @@ FoldOpenELoops {
 
 GenPattern {
   e.Pattern =
-    <Fetch
-      <DoGenPattern
-        2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
-      >
-      <Seq
-        {
-          s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands =
-            (e.Vars)
-            s.ContextOffset
-            ((#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands);
-        }
-      >
+    <DoGenPattern
+      2 (#Junk) (#Range 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
     >;
 }
 
@@ -494,7 +484,8 @@ DoGenPattern {
 
   // Завершение разбора.
   s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
-    s.ContextOffset (e.Vars) (e.MarkedPattern) e.Commands;
+    s.ContextOffset (e.Vars)
+    (#CmdComment <TextFromPattern e.MarkedPattern>) e.Commands;
 }
 
 IncVarOffset {
