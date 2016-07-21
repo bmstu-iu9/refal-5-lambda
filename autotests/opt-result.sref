@@ -1,0 +1,13 @@
+Test {
+  (#TkOpenBracket s.ContextOffset) = ;
+  (#TkCloseBracket s.ContextOffset) = ;
+
+  #RemovedTile = ;
+}
+
+$ENTRY Go {
+  =
+    <Test (#TkOpenBracket 1)>
+    <Test (#TkCloseBracket 1)>
+    <Test #RemovedTile>;
+}
