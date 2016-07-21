@@ -102,7 +102,7 @@ DoGenSubst {
       e.Substs-B (#Junk e.Junk1 (#TkOpenADT) (#TkName e.Name))
       (#E s.ContextOffset e.SubRange)
       (#Junk (#TkCloseADT) e.Junk2) e.Substs-E
-      (e.Vars) (e.Commands (#CmdADT #AlgTerm s.Num s.ContextOffset))
+      (e.Vars) (e.Commands (#CmdADT #AlgTerm s.Num s.ContextOffset e.Name))
     >;
 
   s.ContextOffset
@@ -113,7 +113,7 @@ DoGenSubst {
     <DoGenSubst
       s.ContextOffset
       e.Substs-B
-      (#Junk e.Junk1 (#TkVarialbe s.Mode e.Index s.Num) e.Junk2)
+      (#Junk e.Junk1 (#TkVariable s.Mode e.Index s.Num) e.Junk2)
       e.Substs-E
       (
         e.Vars-B
