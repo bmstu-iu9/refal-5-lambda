@@ -2,7 +2,7 @@
 $EXTERN Map, Fetch, Seq, MapReduce, Compare;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops;
+$EXTERN FoldOpenELoops, GenPattern, GenResult;
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -14,9 +14,9 @@ $ENTRY HighLevelRASL-Function-Disjoint {
           {
             ((e.Pattern) (e.Result)) =
               (
-                <HighLevelRASL-Sentence
-                  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-                  e.Name (e.Pattern) (e.Result)
+                <GenResult
+                  s.FnGenResult (e.Result)
+                  <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
                 >
               );
           }
@@ -50,41 +50,6 @@ $ENTRY HighLevelRASL-Function-Disjoint {
                 }
               >
             );
-        }
-      >
-    >;
-}
-
-HighLevelRASL-Sentence {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  e.Name (e.Pattern) (e.Result) =
-    <Fetch
-      <s.FnGenInitSubst e.Name>
-      <Seq
-        {
-          s.B0-Offset s.ContextTop
-          (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-            <s.FnGenSubst
-              s.ContextTop
-              (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-              (e.InitCommands)
-            >;
-        }
-        {
-          s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
-            <Fetch
-              <s.FnGenResult
-                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-              >
-              {
-                s.ContextCount e.ResultCommands =
-                  <FoldOpenELoops
-                    (#CmdIssueMem s.ContextCount)
-                    e.PatternCommands
-                    e.ResultCommands
-                  >;
-              }
-            >;
         }
       >
     >;

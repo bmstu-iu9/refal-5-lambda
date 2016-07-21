@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Compare, DelAccumulator;
+$EXTERN Fetch, Seq, MapReduce, DelAccumulator;
 
 //FROM HardSent
 $EXTERN CreateHardPattern;
@@ -8,7 +8,7 @@ $EXTERN CreateHardPattern;
 $EXTERN CreateGlobalGen, SplitGen, Max, PatternComment, ReverseGen;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops;
+$EXTERN FoldOpenELoops, GenPattern, GenResult;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -72,10 +72,13 @@ $ENTRY HighLevelRASL-Function-Conjoint {
               {
                 s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result)) =
                   <Fetch
-                    <GenSentence
-                      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-                      s.ContextSize (e.Vars) (e.MarkedPattern) (e.Substitute)
-                      e.Result
+                    <GenResult
+                      s.FnGenResult (e.Result)
+                      <s.FnGenSubst
+                        s.ContextSize
+                        <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
+                        (/* commands */)
+                      >
                     >
                     {
                       (#CmdIssueMem s.Memory) e.Commands =
@@ -108,50 +111,6 @@ $ENTRY HighLevelRASL-Function-Conjoint {
             );
         }
       >
-    >;
-}
-
-GenPattern {
-  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
-    <Fetch
-      <s.FnGenInitSubst e.Name>
-      {
-        s.B0-Offset s.ContextTop
-        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-          <s.FnGenSubst
-            s.ContextTop
-            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-            (e.InitCommands)
-          >;
-      }
-    >;
-}
-
-GenSentence {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ContextOffset (e.Vars) (e.MarkedPattern) (e.Substitute) e.Result =
-    <Fetch
-      <s.FnGenSubst
-        s.ContextOffset
-        <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
-        (/* commands */)
-      >
-      {
-        s.ContextOffset^ (e.PatternVars) (e.MarkedPattern^) e.PatternCommands =
-          <Fetch
-            <s.FnGenResult
-              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-            >
-            {
-              s.ContextCount e.ResultCommands =
-                <FoldOpenELoops
-                  (#CmdIssueMem s.ContextCount)
-                  e.PatternCommands
-                  e.ResultCommands
-                >;
-            }
-          >;
-      }
     >;
 }
 

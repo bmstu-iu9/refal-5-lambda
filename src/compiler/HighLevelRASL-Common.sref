@@ -2,7 +2,7 @@
 $EXTERN Add;
 
 //FROM LibraryEx
-$EXTERN Inc, StrFromInt, Map;
+$EXTERN Inc, StrFromInt, Map, Fetch;
 
 //FROM Escape
 $EXTERN EscapeChar;
@@ -120,7 +120,52 @@ Offset {
   s.Offset = '/' #Offset s.Offset;
 }
 
-$ENTRY FoldOpenELoops {
+/**
+  <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
+    == s.ContextOffset (e.Vars) (e.MarkedPattern) e.PatternCommands
+*/
+$ENTRY GenPattern {
+  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
+    <Fetch
+      <s.FnGenInitSubst e.Name>
+      {
+        s.B0-Offset s.ContextTop
+        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
+          <s.FnGenSubst
+            s.ContextTop
+            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
+            (e.InitCommands)
+          >;
+      }
+    >;
+}
+
+/**
+  <GenResult
+    s.FnGenResult (e.Result)
+    s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
+  >
+    == (#CmdIssueMem s.ContextSize) e.SentenceCommands
+*/
+$ENTRY GenResult {
+  s.FnGenResult (e.Result)
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
+    <Fetch
+      <s.FnGenResult
+        s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+      >
+      {
+        s.ContextCount e.ResultCommands =
+          <FoldOpenELoops
+            (#CmdIssueMem s.ContextCount)
+            e.PatternCommands
+            e.ResultCommands
+          >;
+      }
+    >;
+}
+
+FoldOpenELoops {
   e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
     e.Commands-B
     (#CmdOpenELoop
