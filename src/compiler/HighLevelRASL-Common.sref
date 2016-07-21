@@ -1,0 +1,19 @@
+//FROM Library
+$EXTERN Add;
+
+//FROM LibraryEx
+$EXTERN Inc, StrFromInt;
+
+$ENTRY Inc2 {
+  s.Num = <Add 2 s.Num>;
+}
+
+$ENTRY IncVarOffset {
+  s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
+  s.ContextOffset 't' = <Inc s.ContextOffset>;
+  s.ContextOffset 's' = <Inc s.ContextOffset>;
+}
+
+$ENTRY PrintVar {
+  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
+}

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Dec, Compare, Sort;
+$EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
 
 //FROM Library
 $EXTERN Add, StrFromInt, WriteLine;
@@ -9,6 +9,9 @@ $EXTERN EscapeChar;
 
 //FROM GST
 $EXTERN GST;
+
+//FROM HighLevelRASL-Common
+$EXTERN Inc2, PrintVar;
 
 /**
   <HighLevelRASL e.AST>
@@ -173,10 +176,6 @@ GenPattern {
     <DoGenPattern
       2 (#Junk) (#E 0 e.Pattern) (#Junk) (/* vars */) (/* commands */)
     >;
-}
-
-Inc2 {
-  s.Num = <Add 2 s.Num>;
 }
 
 /*
@@ -414,7 +413,7 @@ DoGenPattern {
   e.Substs-E
   (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      <IncVarOffset s.ContextOffset s.Mode>
+      <IncVarOffset-Saved s.ContextOffset s.Mode>
       e.Substs-B
       (#Junk e.Junk (#TkVariable s.Mode e.Index s.ContextOffset))
       (#E s.Num e.Range)
@@ -436,7 +435,7 @@ DoGenPattern {
   e.Substs-E
   (e.Vars-B (s.Mode (e.Index) e.Offsets s.SampleOffset) e.Vars-E) (e.Commands) =
     <DoGenPattern
-      <IncVarOffset s.ContextOffset s.Mode>
+      <IncVarOffset-Saved s.ContextOffset s.Mode>
       e.Substs-B
       (#E s.Num e.Range)
       (#Junk (#TkVariable s.Mode e.Index s.ContextOffset) e.Junk)
@@ -552,7 +551,7 @@ DoGenPattern {
     (#CmdComment <TextFromExpr e.MarkedPattern>) e.Commands;
 }
 
-IncVarOffset {
+IncVarOffset-Saved {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc2 s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
@@ -611,10 +610,6 @@ TextFromExpr {
   #RemovedTile e.Tail = ' {REMOVED TILE} ' <TextFromExpr e.Tail>;
 
   = ;
-}
-
-PrintVar {
-  s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
 Offset {
