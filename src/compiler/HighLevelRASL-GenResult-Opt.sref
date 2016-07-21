@@ -7,11 +7,8 @@ $EXTERN Add;
 //FROM GST
 $EXTERN GST;
 
-//откуда-то
-$EXTERN TextFromExpr;
-
 //FROM HighLevelRASL-Common
-$EXTERN Inc2;
+$EXTERN TextFromExpr, Inc2;
 
 
 /**

@@ -2,7 +2,10 @@
 $EXTERN Add;
 
 //FROM LibraryEx
-$EXTERN Inc, StrFromInt;
+$EXTERN Inc, StrFromInt, Map;
+
+//FROM Escape
+$EXTERN EscapeChar;
 
 $ENTRY Inc2 {
   s.Num = <Add 2 s.Num>;
@@ -16,4 +19,103 @@ $ENTRY IncVarOffset {
 
 $ENTRY PrintVar {
   s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
+}
+
+$ENTRY FakeOffset {
+  e.Expr =
+    <Map
+      {
+        (s.Bracket) = (s.Bracket #NoOffset);
+
+        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
+          // без изменений
+          (#TkVariable s.Mode e.Index s.Depth s.Offset);
+
+        (s.Token e.TokenInfo) = (s.Token e.TokenInfo #NoOffset);
+      }
+      e.Expr
+    >;
+}
+
+$ENTRY TextFromExpr {
+  e.Expr =
+    <Map
+      {
+        (#TkOpenBracket s.ContextOffset) =
+          ' (' <Offset s.ContextOffset>;
+        (#TkCloseBracket s.ContextOffset) =
+          ' )' <Offset s.ContextOffset>;
+
+        (#TkOpenCall s.ContextOffset) =
+          ' <' <Offset s.ContextOffset>;
+        (#TkCloseCall s.ContextOffset) =
+          ' >' <Offset s.ContextOffset>;
+
+        (#TkOpenADT s.ContextOffset e.Name s.NameOffset) =
+          ' [' <Offset s.ContextOffset> e.Name <Offset s.NameOffset>;
+        (#TkOpenADT s.ContextOffset) =
+          ' [' <Offset s.ContextOffset>;
+        (#TkCloseADT s.ContextOffset) =
+          ' ]' <Offset s.ContextOffset>;
+
+        (#TkChar s.Char s.Offset) =
+          ' ''' <EscapeChar s.Char> '' <Offset s.Offset>;
+
+        (#TkChars e.Chars) = ' ''' e.Chars '';
+
+        (#TkNumber s.Number s.Offset) =
+          ' ' <StrFromInt s.Number> <Offset s.Offset>;
+
+        (#TkName e.Name s.Offset) =
+          ' & ' e.Name <Offset s.Offset>;
+
+        (#TkString e.String s.Offset) =
+          '"' <Map EscapeChar e.String> '"' <Offset s.Offset>;
+
+        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
+          ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>;
+
+        (#TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) =
+          ' ' <PrintVar s.Mode e.Index s.Depth>
+          <Offset s.SampleOffset> <Offset s.CopyOffset>;
+
+        (#TkIdentifier e.Name s.Offset) =
+          ' # ' e.Name <Offset s.Offset>;
+
+        (#Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
+        (#AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
+        (#Reuse e.SubRange) = ' Reuse:' <TextFromExpr e.SubRange>;
+        (#HalfReuse e.SubRange) = ' HalfReuse:' <TextFromExpr e.SubRange>;
+
+        (#LEFT-EDGE) = ' [[';
+        (#RIGHT-EDGE) = ' ]]';
+        #RemovedTile = ' {REMOVED TILE} ';
+      }
+      <TextFromExpr-Prepare e.Expr>
+    >;
+}
+
+TextFromExpr-Prepare {
+  (#TkChar s.Char #NoOffset) e.Tail =
+    <TextFromExpr-Prepare-Chars () (#TkChar s.Char #NoOffset) e.Tail>;
+
+  (#TkOpenADT s.BracketOffset) (#TkName e.Name s.NameOffset) e.Tail =
+    (#TkOpenADT s.BracketOffset e.Name s.NameOffset)
+    <TextFromExpr-Prepare e.Tail>;
+
+  t.Other e.Tail = t.Other <TextFromExpr-Prepare e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+TextFromExpr-Prepare-Chars {
+  (e.Chars) (#TkChar s.Char #NoOffset) e.Tail =
+    <TextFromExpr-Prepare-Chars (e.Chars <EscapeChar s.Char>) e.Tail>;
+
+  (e.Chars) e.Tail = (#TkChars e.Chars) <TextFromExpr-Prepare e.Tail>;
+}
+
+Offset {
+  #NoOffset = ;
+  s.Offset = '/' #Offset s.Offset;
 }

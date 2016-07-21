@@ -4,14 +4,11 @@ $EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
 //FROM Library
 $EXTERN Add, StrFromInt, WriteLine;
 
-//FROM Escape
-$EXTERN EscapeChar;
-
 //FROM HighLevelRASL-GenResult-Opt
 $EXTERN GenResult-Opt;
 
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, PrintVar;
+$EXTERN Inc2, PrintVar, TextFromExpr;
 
 /**
   <HighLevelRASL e.AST>
@@ -555,65 +552,4 @@ IncVarOffset-Saved {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc2 s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
-}
-
-$ENTRY // временно
-TextFromExpr {
-  (#TkOpenBracket s.ContextOffset) e.Tail =
-    ' (' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-  (#TkCloseBracket s.ContextOffset) e.Tail =
-    ' )' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-
-  (#TkOpenCall s.ContextOffset) e.Tail =
-    ' <' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-  (#TkCloseCall s.ContextOffset) e.Tail =
-    ' >' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-
-  (#TkOpenADT s.ContextOffset) (#TkName e.Name s.NameOffset) e.Tail =
-    ' [' <Offset s.ContextOffset> e.Name <Offset s.NameOffset> <TextFromExpr e.Tail>;
-  (#TkOpenADT s.ContextOffset) e.Tail =
-    ' [' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-  (#TkCloseADT s.ContextOffset) e.Tail =
-    ' ]' <Offset s.ContextOffset> <TextFromExpr e.Tail>;
-
-  (#TkChar s.Char s.Offset) e.Tail =
-    ' ''' <EscapeChar s.Char> '' <Offset s.Offset>
-    <TextFromExpr e.Tail>;
-
-  (#TkNumber s.Number s.Offset) e.Tail =
-    ' ' <StrFromInt s.Number> <Offset s.Offset> <TextFromExpr e.Tail>;
-
-  (#TkName e.Name s.Offset) e.Tail =
-    ' & ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
-
-  (#TkString e.String s.Offset) e.Tail =
-    '"' <Map EscapeChar e.String> '"' <Offset s.Offset> <TextFromExpr e.Tail>;
-
-  (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth> <Offset s.Offset>
-    <TextFromExpr e.Tail>;
-
-  (#TkVariableCopy s.Mode e.Index s.Depth s.SampleOffset s.CopyOffset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth>
-    <Offset s.SampleOffset> <Offset s.CopyOffset>
-    <TextFromExpr e.Tail>;
-
-  (#TkIdentifier e.Name s.Offset) e.Tail =
-    ' # ' e.Name <Offset s.Offset> <TextFromExpr e.Tail>;
-
-  (#Tile e.SubRange) e.Tail = ' Tile{' <TextFromExpr e.SubRange> ' }' <TextFromExpr e.Tail>;
-  (#AsIs e.SubRange) e.Tail = ' AsIs:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
-  (#Reuse e.SubRange) e.Tail = ' Reuse:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
-  (#HalfReuse e.SubRange) e.Tail = ' HalfReuse:' <TextFromExpr e.SubRange> <TextFromExpr e.Tail>;
-
-  (#LEFT-EDGE) e.Tail = ' [[' <TextFromExpr e.Tail>;
-  (#RIGHT-EDGE) = ' ]]';
-  #RemovedTile e.Tail = ' {REMOVED TILE} ' <TextFromExpr e.Tail>;
-
-  = ;
-}
-
-Offset {
-  #NoOffset = '/-';
-  s.Offset = '/' #Offset s.Offset;
 }

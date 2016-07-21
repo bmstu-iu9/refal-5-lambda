@@ -4,9 +4,6 @@ $EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare, DelAccumulator;
 //FROM Library
 $EXTERN StrFromInt;
 
-//FROM Escape
-$EXTERN EscapeChar;
-
 //FROM HardSent
 $EXTERN CreateHardPattern;
 
@@ -17,7 +14,7 @@ $EXTERN CreateGlobalGen, SplitGen, Max, PatternComment, ReverseGen;
 $EXTERN GenResult-Simple;
 
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, PrintVar;
+$EXTERN Inc2, PrintVar, FakeOffset, TextFromExpr;
 
 /**
   <HighLevelRASL e.AST>
@@ -872,7 +869,7 @@ DoGenPattern {
   // Завершение разбора.
   s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
     s.ContextOffset (e.Vars) (e.MarkedPattern)
-    (#CmdComment <TextFromPattern e.MarkedPattern>)
+    (#CmdComment <TextFromExpr <FakeOffset e.MarkedPattern>>)
     e.Commands;
 }
 
@@ -880,41 +877,4 @@ IncVarOffset {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
-}
-
-TextFromPattern {
-  (#TkOpenBracket) e.Tail = ' (' <TextFromPattern e.Tail>;
-  (#TkCloseBracket) e.Tail = ' )' <TextFromPattern e.Tail>;
-
-  (#TkOpenADT) (#TkName e.Name) e.Tail = ' [' e.Name <TextFromPattern e.Tail>;
-  (#TkCloseADT) e.Tail = ' ]' <TextFromPattern e.Tail>;
-
-  (#TkChar s.Char) e.Tail =
-    ' ' '' <TextFromPattern-Char (#TkChar s.Char) e.Tail>;
-
-  (#TkNumber s.Number) e.Tail =
-    ' ' <StrFromInt s.Number> <TextFromPattern e.Tail>;
-
-  (#TkName e.Name) e.Tail =
-    ' & ' e.Name <TextFromPattern e.Tail>;
-
-  (#TkVariable s.Mode e.Index s.Depth s.Offset) e.Tail =
-    ' ' <PrintVar s.Mode e.Index s.Depth> '/' #Offset s.Offset
-    <TextFromPattern e.Tail>;
-
-  (#TkIdentifier e.Name) e.Tail =
-    ' # ' e.Name <TextFromPattern e.Tail>;
-
-  = ;
-}
-
-Escape {
-  s.Char = <EscapeChar s.Char>;
-}
-
-TextFromPattern-Char {
-  (#TkChar s.Char) e.Tail =
-    <Escape s.Char> <TextFromPattern-Char e.Tail>;
-
-  e.Other = '' <TextFromPattern e.Other>;
 }

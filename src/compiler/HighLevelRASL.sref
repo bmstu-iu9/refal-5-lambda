@@ -4,14 +4,11 @@ $EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
 //FROM Library
 $EXTERN StrFromInt;
 
-//FROM Escape
-$EXTERN EscapeChar;
-
 //FROM HighLevelRASL-GenResult-Simple
 $EXTERN GenResult-Simple;
 
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, PrintVar;
+$EXTERN Inc2, PrintVar, FakeOffset, TextFromExpr;
 
 /**
   <HighLevelRASL e.AST>
@@ -686,7 +683,7 @@ DoGenPattern {
   // Завершение разбора.
   s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =
     s.ContextOffset (e.Vars) (e.MarkedPattern)
-    (#CmdComment <TextFromPattern e.MarkedPattern>)
+    (#CmdComment <TextFromExpr <FakeOffset e.MarkedPattern>>)
     e.Commands;
 }
 
@@ -694,48 +691,4 @@ IncVarOffset {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
-}
-
-TextFromPattern {
-  e.Pattern =
-    <Map
-      {
-        (#TkOpenBracket) = ' (';
-        (#TkCloseBracket) = ' )';
-
-        (#TkOpenADT e.Name) = ' [' e.Name;
-        (#TkCloseADT) = ' ]';
-
-        (#TkChars e.Chars) = ' ''' e.Chars '';
-
-        (#TkNumber s.Number) = ' ' <StrFromInt s.Number>;
-
-        (#TkName e.Name) = ' & ' e.Name;
-
-        (#TkVariable s.Mode e.Index s.Depth s.Offset) =
-          ' ' <PrintVar s.Mode e.Index s.Depth> '/' #Offset s.Offset;
-
-        (#TkIdentifier e.Name) = ' # ' e.Name;
-      }
-      <TextFromPattern-Prepare e.Pattern>
-    >;
-}
-
-TextFromPattern-Prepare {
-  (#TkChar s.Char) e.Tail =
-    <TextFromPattern-Prepare-Chars () (#TkChar s.Char) e.Tail>;
-
-  (#TkOpenADT) (#TkName e.Name) e.Tail =
-    (#TkOpenADT e.Name) <TextFromPattern-Prepare e.Tail>;
-
-  t.Other e.Tail = t.Other <TextFromPattern-Prepare e.Tail>;
-
-  /* пусто */ = /* пусто */;
-}
-
-TextFromPattern-Prepare-Chars {
-  (e.Chars) (#TkChar s.Char) e.Tail =
-    <TextFromPattern-Prepare-Chars (e.Chars <EscapeChar s.Char>) e.Tail>;
-
-  (e.Chars) e.Tail = (#TkChars e.Chars) <TextFromPattern-Prepare e.Tail>;
 }
