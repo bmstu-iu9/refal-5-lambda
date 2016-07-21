@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare, DelAccumulator;
+$EXTERN Map, Fetch, Seq, MapReduce, Compare, DelAccumulator;
 
 //FROM HardSent
 $EXTERN CreateHardPattern;
@@ -7,85 +7,39 @@ $EXTERN CreateHardPattern;
 //FROM GlobalGen
 $EXTERN CreateGlobalGen, SplitGen, Max, PatternComment, ReverseGen;
 
-//FROM HighLevelRASL-GenResult-Simple
-$EXTERN GenResult-Simple;
+//FROM HighLevelRASL-Common
+$EXTERN FoldOpenELoops;
 
-//FROM HighLevelRASL-GenSubst-Simple
-$EXTERN GenInitSubst-Simple, GenSubst-Simple;
-
-/**
-  <HighLevelRASL e.AST>
-    == e.RASLAST
-
-  e.RASLAST ::= t.RASLFunction*
-  t.RASLFunction ::=
-      (#Function s.ScopeClass (e.Name) t.HiRASLCommand*)
-    | (s.SingularItem s.ScopeClass e.Name)
-    | (#Ident e.Name)
-    | (#Separator)
-  s.SingularItem ::= #Enum | #Swap | #Stub | #Declaration
-  t.HiRASLCommand ::=
-      (#Cmd… e.Value)
-    | (#CmdSentence t.HiRASLCommand*)
-    | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
-*/
-$ENTRY HighLevelRASL-OptPattern {
-  e.ProgramElements =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) e.Sentences) =
-          <HighLevelRASL-Function
-            s.ScopeClass (e.Name) e.Sentences
-          >;
-
-        (#Enum s.ScopeClass e.Name) =
-          (#CmdEnum s.ScopeClass e.Name);
-
-        (#Swap s.ScopeClass e.Name) =
-          (#CmdSwap s.ScopeClass e.Name);
-
-        (#Stub s.ScopeClass e.Name) =
-          /* пусто */;
-
-        (#Declaration s.ScopeClass e.Name) =
-          (#CmdDeclaration s.ScopeClass e.Name);
-
-        (#Ident e.Name) = (#CmdDefineIdent e.Name);
-
-        (#Separator) = (#CmdSeparator);
-      }
-      e.ProgramElements
+$ENTRY HighLevelRASL-Function-Conjoint {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.ScopeClass (e.Name) t.OneSentence =
+    <HighLevelRASL-OneFunction
+      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.ScopeClass (e.Name) t.OneSentence
     >;
-}
 
-ListLen {
-  (s.Len) t.Elem e.ListTail =
-    <ListLen (<Inc s.Len>) e.ListTail>;
-  (s.Len) = s.Len;
-}
-
-HighLevelRASL-Function {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
-    <Fetch
-      <ListLen (0) e.Sentences>
-      {
-        0 = (#CmdEnum s.ScopeClass e.Name);
-        1 = 
-          <HighLevelRASL-OneFunction s.ScopeClass (e.Name) e.Sentences>;
-        s.Else =
-          <HighLevelRASL-MulFunction s.ScopeClass (e.Name) e.Sentences>;
-      }
+    <HighLevelRASL-MulFunction
+      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.ScopeClass (e.Name) e.Sentences
     >;
 }
 
 HighLevelRASL-OneFunction {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
       <Seq
         {
           ((e.Pattern) (e.Result)) =
-            (<HighLevelRASL-Sentence (e.Pattern) (e.Result)>);
+            (
+              <HighLevelRASL-Sentence
+                s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+                (e.Name) (e.Pattern) (e.Result)
+              >
+            );
         }
         (MapReduce
           {
@@ -125,13 +79,14 @@ HighLevelRASL-OneFunction {
 }
 
 HighLevelRASL-Sentence {
-  (e.Pattern) (e.Result) =
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  (e.Name) (e.Pattern) (e.Result) =
     <Fetch
-      <GenPattern e.Pattern>
+      <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
       {
         s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
           <Fetch
-            <GenResult-Simple
+            <s.FnGenResult
               s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
             >
             {
@@ -147,7 +102,23 @@ HighLevelRASL-Sentence {
     >;
 }
 
+GenPattern {
+  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
+    <Fetch
+      <s.FnGenInitSubst e.Name>
+      {
+        s.B0-Offset s.ContextTop
+        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
+          <s.FnGenSubst
+            s.ContextTop
+            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
+            (e.InitCommands)
+          >;
+      }
+    >;
+}
 HighLevelRASL-MulFunction {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
@@ -182,7 +153,12 @@ HighLevelRASL-MulFunction {
         {
           (e.Comments) ((e.CommonPattern) e.SentSubsts) e.SentenceTails =
             (e.Comments)
-            (<GenPattern <ReverseGen e.CommonPattern>>)
+            (
+              <GenPattern
+                s.FnGenInitSubst s.FnGenSubst (e.Name)
+                <ReverseGen e.CommonPattern>
+              >
+            )
             <DelAccumulator
               <MapReduce
                 {
@@ -203,7 +179,10 @@ HighLevelRASL-MulFunction {
               {
                 s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result)) =
                   <Fetch
-                    <GenSentence s.ContextSize (e.Vars) (e.Substitute) (e.Result)>
+                    <GenSentence
+                      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+                      s.ContextSize (e.Vars) (e.Substitute) (e.Result)
+                    >
                     {
                       (#CmdIssueMem s.Memory) e.Commands =
                         <Max s.MaxMemory s.Memory>
@@ -242,6 +221,7 @@ HighLevelRASL-MulFunction {
 }
 
 GenSentence {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ContextSize (e.Vars) (e.Substitute) (e.Result) =
     <Fetch
       s.ContextSize (e.Vars) (e.Substitute) (e.Result)
@@ -259,7 +239,7 @@ GenSentence {
         {
           s.MaxMemory (e.Substitutes) (e.Result^) =
             <Fetch
-              <GenSubst-Simple
+              <s.FnGenSubst
                 s.MaxMemory
                 (#Junk)
                 <Map
@@ -274,7 +254,7 @@ GenSentence {
                 s.ContextOffset (e.PatternVars) (e.MarkedPattern)
                 e.PatternCommands =
                   <Fetch
-                    <GenResult-Simple
+                    <s.FnGenResult
                       s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
                     >
                     {
@@ -302,61 +282,4 @@ ComposeVars {
       (e.Substitute-B e.Substitute-E) (e.Vars-B e.Vars-E)
     >;
   (e.Scanned) () () = (e.Scanned);
-}
-
-FoldOpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
-    e.Commands-B
-    (#CmdOpenELoop
-      #AlgLeft s.BracketNum s.VarNumber
-      <FoldOpenELoops e.Commands-E>
-    );
-
-  e.Commands = e.Commands;
-}
-
-/*
-  e.Vars ::= (s.Count s.Mode e.Index)*
-*/
-
-//==============================================================================
-// Генерация образца
-//==============================================================================
-
-/*
-Команды распознавания
-  Литералы, формат (#Cmd*** s.Direction s.BracketNum e.Literal)
-  Скобки, формат (#CmdBrackets s.Direction s.BracketNum s.InnerNum)
-  АТД, формат
-    (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (#CmdEmpty #AlgLeft s.BracketNum),
-    направление добавлено для единнобразия, генератором не используется
-  Переменные:
-    повторные, формат
-      (#CmdRepeated s.Direction s.BracketNum s.Mode s.VarNumber s.SampleNumber)
-    новые s и t, формат (#CmdVar s.Direction s.BracketNum s.Mode s.VarNumber)
-    открытые e:
-      первоначальный формат (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber)
-      после обработки:
-        (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
-        (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
-  Команды сохранения скобок
-    (#CmdSave s.OldNumber e.NewNumber)
-  Комментарий, вносимый в исходный код (#CmdComment e.Text)
-*/
-
-GenPattern {
-  e.Pattern =
-    <Fetch
-      <GenInitSubst-Simple 'funcname'>
-      {
-        s.B0-Offset s.ContextTop
-        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-          <GenSubst-Simple
-            s.ContextTop
-            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-            (e.InitCommands)
-          >;
-      }
-    >;
 }

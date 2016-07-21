@@ -119,3 +119,14 @@ Offset {
   #NoOffset = ;
   s.Offset = '/' #Offset s.Offset;
 }
+
+$ENTRY FoldOpenELoops {
+  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
+    e.Commands-B
+    (#CmdOpenELoop
+      #AlgLeft s.BracketNum s.VarNumber
+      <FoldOpenELoops e.Commands-E>
+    );
+
+  e.Commands = e.Commands;
+}

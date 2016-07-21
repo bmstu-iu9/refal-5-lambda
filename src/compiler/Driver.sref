@@ -13,12 +13,6 @@ $EXTERN GenProgram;
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
-//FROM HighLevelRASL-OptPattern
-$EXTERN HighLevelRASL-OptPattern;
-
-//FROM HighLevelRASL-OptResult
-$EXTERN HighLevelRASL-OptResult;
-
 //FROM LowLevelRASL
 $EXTERN LowLevelRASL;
 
@@ -71,7 +65,7 @@ $ENTRY CompileFile {
 }
 
 SelectRASL {
-  #OptNone = HighLevelRASL;
-  #OptPattern = HighLevelRASL-OptPattern;
-  #OptResult = HighLevelRASL-OptResult;
+  #OptNone    = (HighLevelRASL #Disjoint #NoOpt);
+  #OptPattern = (HighLevelRASL #Conjoint #NoOpt);
+  #OptResult  = (HighLevelRASL #Disjoint #OptResult);
 }

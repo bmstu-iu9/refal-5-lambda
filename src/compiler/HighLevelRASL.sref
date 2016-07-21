@@ -1,11 +1,23 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Compare;
+$EXTERN Map;
+
+//FROM HighLevelRASL-DisjointFunc
+$EXTERN HighLevelRASL-Function-Disjoint;
+
+//FROM HighLevelRASL-ConjointFunc
+$EXTERN HighLevelRASL-Function-Conjoint;
+
+//FROM HighLevelRASL-GenSubst-Simple
+$EXTERN GenInitSubst-Simple, GenSubst-Simple;
 
 //FROM HighLevelRASL-GenResult-Simple
 $EXTERN GenResult-Simple;
 
-//FROM HighLevelRASL-GenSubst-Simple
-$EXTERN GenInitSubst-Simple, GenSubst-Simple;
+//FROM HighLevelRASL-GenSubst-Save
+$EXTERN GenInitSubst-Save, GenSubst-Save;
+
+//FROM HighLevelRASL-GenResult-Opt
+$EXTERN GenResult-Opt;
 
 /**
   <HighLevelRASL e.AST>
@@ -24,11 +36,16 @@ $EXTERN GenInitSubst-Simple, GenSubst-Simple;
     | (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber t.HiRASLCommand*)
 */
 $ENTRY HighLevelRASL {
-  e.ProgramElements =
+  s.Joint s.OptResult e.ProgramElements =
     <Map
       {
+        (#Function s.ScopeClass (e.Name) /* нет предложений */) =
+          (#CmdEnum s.ScopeClass e.Name);
+
         (#Function s.ScopeClass (e.Name) e.Sentences) =
           <HighLevelRASL-Function
+            <GenSentenceFunc s.Joint>
+            <GenResultFuncs s.OptResult>
             s.ScopeClass (e.Name) e.Sentences
           >;
 
@@ -53,129 +70,20 @@ $ENTRY HighLevelRASL {
 }
 
 HighLevelRASL-Function {
+  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        (Map
-          {
-            ((e.Pattern) (e.Result)) =
-              (<HighLevelRASL-Sentence e.Name (e.Pattern) (e.Result)>);
-          }
-        )
-        (MapReduce
-          {
-            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
-              <Fetch
-                <Compare s.MaxMemory s.Memory> {
-                  '<' = s.Memory;
-                  s.Other = s.MaxMemory;
-                }
-              >
-              (#CmdSentence e.Sentence);
-          }
-          0
-        )
-        {
-          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
-            (#Function
-              s.ScopeClass (e.Name)
-              (#CmdIssueMem s.MaxMemory)
-              e.Sentences
-              <Fetch
-                e.LastSentence
-                {
-                  e.Commands (#CmdOpenELoop e.OpenELoop) =
-                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
-
-                  e.LastSentence^ = e.LastSentence;
-                }
-              >
-            );
-
-          0 /* нет предложений */ =
-            (#CmdEnum s.ScopeClass e.Name);
-        }
-      >
+    <s.FnGenFunction
+      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.ScopeClass (e.Name) e.Sentences
     >;
 }
 
-HighLevelRASL-Sentence {
-  e.Name (e.Pattern) (e.Result) =
-    <Fetch
-      <GenPattern (e.Name) e.Pattern>
-      {
-        s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
-          <Fetch
-            <GenResult-Simple
-              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-            >
-            {
-              s.ContextCount e.ResultCommands =
-                <FoldOpenELoops
-                  (#CmdIssueMem s.ContextCount)
-                  e.PatternCommands
-                  e.ResultCommands
-                >;
-            }
-          >;
-      }
-    >;
+GenSentenceFunc {
+  #Conjoint = HighLevelRASL-Function-Conjoint;
+  #Disjoint = HighLevelRASL-Function-Disjoint;
 }
 
-FoldOpenELoops {
-  e.Commands-B (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber) e.Commands-E =
-    e.Commands-B
-    (#CmdOpenELoop
-      #AlgLeft s.BracketNum s.VarNumber
-      <FoldOpenELoops e.Commands-E>
-    );
-
-  e.Commands = e.Commands;
-}
-
-/*
-  e.Vars ::= (s.Count s.Mode e.Index)*
-*/
-
-//==============================================================================
-// Генерация образца
-//==============================================================================
-
-/*
-Команды распознавания
-  Литералы, формат (#Cmd*** s.Direction s.BracketNum e.Literal)
-  Скобки, формат (#CmdBrackets s.Direction s.BracketNum s.InnerNum)
-  АТД, формат
-    (#CmdADT s.Direction s.BracketNum s.InnerNum e.Name)
-  Пустые скобки, формат (#CmdEmpty #AlgLeft s.BracketNum),
-    направление добавлено для единнобразия, генератором не используется
-  Переменные:
-    повторные, формат
-      (#CmdRepeated s.Direction s.BracketNum s.Mode s.VarNumber s.SampleNumber)
-    новые s и t, формат (#CmdVar s.Direction s.BracketNum s.Mode s.VarNumber)
-    открытые e:
-      первоначальный формат (#CmdOpenedE #AlgLeft s.BracketNum s.VarNumber)
-      после обработки:
-        (#CmdOpenedE-Start #AlgLeft s.BracketNum 'e' e.Index)
-        (#CmdOpenedE-End #AlgLeft s.BracketNum 'e' e.Index)
-  Команды сохранения скобок
-    (#CmdSave s.OldNumber e.NewNumber)
-  Комментарий, вносимый в исходный код (#CmdComment e.Text)
-*/
-
-GenPattern {
-  (e.Name) e.Pattern =
-    <Fetch
-      <GenInitSubst-Simple e.Name>
-      {
-        s.B0-Offset s.ContextTop
-        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-          <GenSubst-Simple
-            s.ContextTop
-            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-            (e.InitCommands)
-          >;
-      }
-    >;
+GenResultFuncs {
+  #NoOpt     = GenInitSubst-Simple GenSubst-Simple GenResult-Simple;
+  #OptResult = GenInitSubst-Save   GenSubst-Save   GenResult-Opt;
 }

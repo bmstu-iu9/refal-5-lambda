@@ -1,0 +1,91 @@
+//FROM LibraryEx
+$EXTERN Map, Fetch, Seq, MapReduce, Compare;
+
+//FROM HighLevelRASL-Common
+$EXTERN FoldOpenELoops;
+
+$ENTRY HighLevelRASL-Function-Disjoint {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.ScopeClass (e.Name) e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        (Map
+          {
+            ((e.Pattern) (e.Result)) =
+              (
+                <HighLevelRASL-Sentence
+                  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+                  e.Name (e.Pattern) (e.Result)
+                >
+              );
+          }
+        )
+        (MapReduce
+          {
+            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
+              <Fetch
+                <Compare s.MaxMemory s.Memory> {
+                  '<' = s.Memory;
+                  s.Other = s.MaxMemory;
+                }
+              >
+              (#CmdSentence e.Sentence);
+          }
+          0
+        )
+        {
+          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
+            (#Function
+              s.ScopeClass (e.Name)
+              (#CmdIssueMem s.MaxMemory)
+              e.Sentences
+              <Fetch
+                e.LastSentence
+                {
+                  e.Commands (#CmdOpenELoop e.OpenELoop) =
+                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
+
+                  e.LastSentence^ = e.LastSentence;
+                }
+              >
+            );
+        }
+      >
+    >;
+}
+
+HighLevelRASL-Sentence {
+  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  e.Name (e.Pattern) (e.Result) =
+    <Fetch
+      <s.FnGenInitSubst e.Name>
+      <Seq
+        {
+          s.B0-Offset s.ContextTop
+          (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
+            <s.FnGenSubst
+              s.ContextTop
+              (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
+              (e.InitCommands)
+            >;
+        }
+        {
+          s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
+            <Fetch
+              <s.FnGenResult
+                s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+              >
+              {
+                s.ContextCount e.ResultCommands =
+                  <FoldOpenELoops
+                    (#CmdIssueMem s.ContextCount)
+                    e.PatternCommands
+                    e.ResultCommands
+                  >;
+              }
+            >;
+        }
+      >
+    >;
+}
