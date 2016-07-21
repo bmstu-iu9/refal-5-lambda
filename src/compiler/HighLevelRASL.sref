@@ -39,9 +39,6 @@ $ENTRY HighLevelRASL {
   s.Joint s.OptResult e.ProgramElements =
     <Map
       {
-        (#Function s.ScopeClass (e.Name) /* нет предложений */) =
-          (#CmdEnum s.ScopeClass e.Name);
-
         (#Function s.ScopeClass (e.Name) e.Sentences) =
           <HighLevelRASL-Function
             <GenSentenceFunc s.Joint>
@@ -70,6 +67,19 @@ $ENTRY HighLevelRASL {
 }
 
 HighLevelRASL-Function {
+  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.ScopeClass (e.Name) /* нет предложений */ =
+    (#CmdEnum s.ScopeClass e.Name);
+
+  s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+  s.ScopeClass (e.Name) t.OneSentence =
+    // Нет смысла вызывать оптимизацию совместного сопоставления
+    // с образцом
+    <HighLevelRASL-Function-Disjoint
+      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
+      s.ScopeClass (e.Name) t.OneSentence
+    >;
+
   s.FnGenFunction s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
     <s.FnGenFunction

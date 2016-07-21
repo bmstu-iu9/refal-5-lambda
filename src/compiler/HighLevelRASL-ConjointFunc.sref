@@ -12,113 +12,6 @@ $EXTERN FoldOpenELoops;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) t.OneSentence =
-    <HighLevelRASL-OneFunction
-      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) t.OneSentence
-    >;
-
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences =
-    <HighLevelRASL-MulFunction
-      s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-      s.ScopeClass (e.Name) e.Sentences
-    >;
-}
-
-HighLevelRASL-OneFunction {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ScopeClass (e.Name) e.Sentences =
-    <Fetch
-      e.Sentences
-      <Seq
-        {
-          ((e.Pattern) (e.Result)) =
-            (
-              <HighLevelRASL-Sentence
-                s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-                (e.Name) (e.Pattern) (e.Result)
-              >
-            );
-        }
-        (MapReduce
-          {
-            s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
-              <Fetch
-                <Compare s.MaxMemory s.Memory> {
-                  '<' = s.Memory;
-                  s.Other = s.MaxMemory;
-                }
-              >
-              (#CmdSentence e.Sentence);
-          }
-          0
-        )
-        {
-          s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
-            (#Function
-              s.ScopeClass (e.Name)
-              (#CmdIssueMem s.MaxMemory)
-              e.Sentences
-              <Fetch
-                e.LastSentence
-                {
-                  e.Commands (#CmdOpenELoop e.OpenELoop) =
-                    e.Commands (#CmdOpenELoop e.OpenELoop) (#CmdFail);
-
-                  e.LastSentence^ = e.LastSentence;
-                }
-              >
-            );
-
-          0 /* нет предложений */ =
-            (#CmdEnum s.ScopeClass e.Name);
-        }
-      >
-    >;
-}
-
-HighLevelRASL-Sentence {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  (e.Name) (e.Pattern) (e.Result) =
-    <Fetch
-      <GenPattern s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern>
-      {
-        s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands =
-          <Fetch
-            <s.FnGenResult
-              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-            >
-            {
-              s.ContextCount e.ResultCommands =
-                <FoldOpenELoops
-                  (#CmdIssueMem s.ContextCount)
-                  e.PatternCommands
-                  e.ResultCommands
-                >;
-            }
-          >;
-      }
-    >;
-}
-
-GenPattern {
-  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
-    <Fetch
-      <s.FnGenInitSubst e.Name>
-      {
-        s.B0-Offset s.ContextTop
-        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
-          <s.FnGenSubst
-            s.ContextTop
-            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
-            (e.InitCommands)
-          >;
-      }
-    >;
-}
-HighLevelRASL-MulFunction {
-  s.FnGenInitSubst s.FnGenSubst s.FnGenResult
   s.ScopeClass (e.Name) e.Sentences =
     <Fetch
       e.Sentences
@@ -212,11 +105,24 @@ HighLevelRASL-MulFunction {
                 }
               >
             );
-
-          (e.Prefix) 0 /* нет предложений */ =
-            (#CmdEnum s.ScopeClass e.Name);
         }
       >
+    >;
+}
+
+GenPattern {
+  s.FnGenInitSubst s.FnGenSubst (e.Name) e.Pattern =
+    <Fetch
+      <s.FnGenInitSubst e.Name>
+      {
+        s.B0-Offset s.ContextTop
+        (#Junk e.JunkLeft) (#Junk e.JunkRight) e.InitCommands =
+          <s.FnGenSubst
+            s.ContextTop
+            (#Junk e.JunkLeft) (#E s.B0-Offset e.Pattern) (#Junk e.JunkRight)
+            (e.InitCommands)
+          >;
+      }
     >;
 }
 
@@ -226,16 +132,13 @@ GenSentence {
     <Fetch
       s.ContextSize (e.Vars) (e.Substitute) (e.Result)
       <Seq
-        // 1. (e.Vars) (e.Substitute) => (e.PrepSubstitute)
+        // (e.Vars) (e.Substitute) => (e.PrepSubstitute)
         {
           e.Head (e.Vars) (e.Substitute) e.Tail =
             e.Head
             <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
             e.Tail;
         }
-        // 2. #E #CmdSave — removed
-        // 3. GenSubst-Simple
-        // 3.1. GenResult-Simple
         {
           s.MaxMemory (e.Substitutes) (e.Result^) =
             <Fetch

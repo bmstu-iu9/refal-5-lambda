@@ -1,5 +1,5 @@
 //FROM HighLevelRASL-Common
-$EXTERN Inc2, PrintVar, FakeOffset, TextFromExpr;
+$EXTERN Inc2, IncVarOffset, PrintVar, FakeOffset, TextFromExpr;
 
 //FROM LibraryEx
 $EXTERN Inc;
@@ -543,10 +543,4 @@ DoGenSubst {
     s.ContextOffset (e.Vars) (e.MarkedPattern)
     (#CmdComment <TextFromExpr <FakeOffset e.MarkedPattern>>)
     e.Commands;
-}
-
-IncVarOffset {
-  s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
-  s.ContextOffset 't' = <Inc s.ContextOffset>;
-  s.ContextOffset 's' = <Inc s.ContextOffset>;
 }
