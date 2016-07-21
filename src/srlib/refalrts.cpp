@@ -377,19 +377,19 @@ void refalrts::bracket_pointers(
   right_bracket = left_bracket->link_info;
 }
 
-bool refalrts::adt_term(
+refalrts::Iter refalrts::adt_term(
   refalrts::Iter& res_first, refalrts::Iter& res_last,
   refalrts::RefalFunctionPtr tag,
   refalrts::Iter pos
 ) {
   if (pos->tag != cDataOpenADT) {
-    return false;
+    return 0;
   }
   
   refalrts::Iter adt_tag = next(pos);
   
   if (adt_tag->tag != cDataFunction && adt_tag->function_info.ptr != tag) {
-    return false;
+    return 0;
   }
   
   refalrts::Iter right_bracket = pos->link_info;
@@ -402,7 +402,7 @@ bool refalrts::adt_term(
     res_last = 0;
   }
   
-  return true;
+  return adt_tag;
 }
 
 refalrts::Iter refalrts::adt_left(
@@ -3027,6 +3027,17 @@ refalrts::FnResult refalrts::interpret_array(
           if (! context[inner + 2])
             MATCH_FAIL
           adt_pointers(context[inner + 2], context[inner + 3], context[inner + 4]);
+        }
+        break;
+
+      case icADTTermSave:
+        {
+          int inner = raa[i].val2;
+          RefalFunctionPtr tag = functions[raa[i].val1].ptr;
+          context[inner + 2] =
+            adt_term(context[inner], context[inner + 1], tag, bb);
+          if (! context[inner + 2])
+            MATCH_FAIL
         }
         break;
 

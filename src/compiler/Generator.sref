@@ -1072,6 +1072,15 @@ PrintMatchADT {
 }
 
 PrintMatchADTSave {
+  (e.Indent) #AlgTerm s.Offset s.InnerNum e.Name =
+    (e.Indent
+      <ContextItem <Add s.InnerNum 2>> ' = '
+      'refalrts::adt_term('
+      <ContextRange s.InnerNum> ', ' e.Name ', ' <ContextItem s.Offset> ');'
+    )
+    (e.Indent 'if( ! ' <ContextItem <Add s.InnerNum 2>> ' )')
+    (e.Indent '  ' <BreakerFromIndent e.Indent>);
+
   (e.Indent) s.Direction s.BracketNumber s.InnerNum e.Name =
     <PrintMatchSave
       (e.Indent) <Add 2 s.InnerNum> s.Direction s.BracketNumber

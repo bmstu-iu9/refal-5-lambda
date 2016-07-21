@@ -1,0 +1,24 @@
+Test {
+  #A [Test e.X] = '<F#[T' e.X ']>';
+  1 t.X = '<F1' t.X '>';
+  (e.X) s.Y = '<F(' e.X ')' s.Y '>';
+  s.X s.X = '<F' s.X s.X '>';
+  [Test] [Test] = '<F[T][T]>';
+  t.X t.X = '<F' t.X t.X '>';
+  s.X s.Y = '<F' s.X s.Y '>';
+  t.X t.Y = '<F' t.X t.Y '>';
+}
+
+Eq { e.X (e.X) = ; }
+
+$ENTRY Go {
+  =
+    <Eq <Test #A [Test '~']> ('<F#[T~]>')>
+    <Eq <Test 1 '*'> ('<F1*>')>
+    <Eq <Test ('a') 'b'> ('<F(a)b>')>
+    <Eq <Test '**'> ('<F**>')>
+    <Eq <Test [Test] [Test]> ('<F[T][T]>')>
+    <Eq <Test ('aa') ('bb')> ('<F'('aa')('bb')'>')>
+    <Eq <Test '+-'> ('<F+->')>
+    <Eq <Test '*' ()> ('<F*'()'>')>;
+}

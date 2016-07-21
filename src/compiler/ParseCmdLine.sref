@@ -73,6 +73,9 @@ $ENTRY ParseCommandLine {
           (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'R') e.Options-E =
             (e.Errors) (e.Bag #OptResult) e.Options-B e.Options-E;
 
+          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'X') e.Options-E =
+            (e.Errors) (e.Bag #OptBoth) e.Options-B e.Options-E;
+
           (e.Errors) (e.Bag) e.Options-B (#Opt s.Num e.BadOpt) e.Options-E =
             (e.Errors (s.Num #BadValue-Opt e.BadOpt))
             (e.Bag #OptNone) e.Options-B e.Options-E;

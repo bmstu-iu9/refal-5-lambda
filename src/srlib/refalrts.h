@@ -108,6 +108,7 @@ typedef enum iCmd {
   icADTTerm,
   icADTLeftSave,
   icADTRightSave,
+  icADTTermSave,
   icCallSaveLeft,
   icEmpty,
   icsVarLeft,
@@ -247,7 +248,7 @@ extern bool ident_term( RefalIdentifier ident, Iter& pos );
 extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
 extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
 
-extern bool adt_term(
+extern Iter adt_term(
   Iter& res_first, Iter& res_last,
   RefalFunctionPtr tag,
   Iter pos

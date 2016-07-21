@@ -25,7 +25,7 @@ $EXTERN ParseProgram;
     == #Fails
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
-  s.Opt ::= #OptNone | #OptPattern | #OptResult
+  s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
 */
 $ENTRY CompileFile {
   s.GenMode s.Opt (e.SrcName) e.OutputName =
@@ -47,7 +47,7 @@ $ENTRY CompileFile {
                   <Fetch
                     e.AST
                     <Seq
-                      <SelectRASL s.Opt>
+                      (HighLevelRASL <SelectOptFlags s.Opt>)
                       (LowLevelRASL s.GenMode)
                       GenProgram
                       (SaveFile (e.OutputName))
@@ -64,8 +64,9 @@ $ENTRY CompileFile {
     >;
 }
 
-SelectRASL {
-  #OptNone    = (HighLevelRASL #Disjoint #NoOpt);
-  #OptPattern = (HighLevelRASL #Conjoint #NoOpt);
-  #OptResult  = (HighLevelRASL #Disjoint #OptResult);
+SelectOptFlags {
+  #OptNone    = #Disjoint #NoOpt;
+  #OptPattern = #Conjoint #NoOpt;
+  #OptResult  = #Disjoint #OptResult;
+  #OptBoth    = #Conjoint #OptResult;
 }
