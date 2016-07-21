@@ -74,7 +74,8 @@ $ENTRY HighLevelRASL-Function-Conjoint {
                   <Fetch
                     <GenSentence
                       s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-                      s.ContextSize (e.Vars) (e.Substitute) (e.Result)
+                      s.ContextSize (e.Vars) (e.MarkedPattern) (e.Substitute)
+                      e.Result
                     >
                     {
                       (#CmdIssueMem s.Memory) e.Commands =
@@ -128,61 +129,41 @@ GenPattern {
 
 GenSentence {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
-  s.ContextSize (e.Vars) (e.Substitute) (e.Result) =
+  s.ContextOffset (e.Vars) (e.MarkedPattern) (e.Substitute) e.Result =
     <Fetch
-      s.ContextSize (e.Vars) (e.Substitute) (e.Result)
-      <Seq
-        // (e.Vars) (e.Substitute) => (e.PrepSubstitute)
-        {
-          e.Head (e.Vars) (e.Substitute) e.Tail =
-            e.Head
-            <ComposeVars (/* Scanned */) (e.Substitute) (e.Vars)>
-            e.Tail;
-        }
-        {
-          s.MaxMemory (e.Substitutes) (e.Result^) =
-            <Fetch
-              <s.FnGenSubst
-                s.MaxMemory
-                (#Junk)
-                <Map
-                  {
-                    t.Subst = t.Subst (#Junk);
-                  }
-                  e.Substitutes
-                >
-                (/* commands */)
-              >
-              {
-                s.ContextOffset (e.PatternVars) (e.MarkedPattern)
-                e.PatternCommands =
-                  <Fetch
-                    <s.FnGenResult
-                      s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
-                    >
-                    {
-                      s.ContextCount e.ResultCommands =
-                        <FoldOpenELoops
-                          (#CmdIssueMem <Max s.MaxMemory s.ContextCount>)
-                          e.PatternCommands
-                          e.ResultCommands
-                        >;
-                    }
-                  >;
-              }
-            >;
-        }
+      <s.FnGenSubst
+        s.ContextOffset
+        <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
+        (/* commands */)
       >
+      {
+        s.ContextOffset^ (e.PatternVars) (e.MarkedPattern^) e.PatternCommands =
+          <Fetch
+            <s.FnGenResult
+              s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+            >
+            {
+              s.ContextCount e.ResultCommands =
+                <FoldOpenELoops
+                  (#CmdIssueMem s.ContextCount)
+                  e.PatternCommands
+                  e.ResultCommands
+                >;
+            }
+          >;
+      }
     >;
 }
 
 ComposeVars {
-  (e.Scanned)
+  (e.MarkedPattern-B (#TkVariable s.Mode e.Name s.Offset) e.MarkedPattern-E)
   (e.Substitute-B (s.Tag (e.Name) '$' e.Subst) e.Substitute-E)
   (e.Vars-B (s.Mode (e.Name) s.Offset) e.Vars-E) =
+    (#Junk e.MarkedPattern-B) (s.Tag s.Offset e.Subst)
     <ComposeVars
-      (e.Scanned (s.Tag s.Offset e.Subst))
+      (e.MarkedPattern-E)
       (e.Substitute-B e.Substitute-E) (e.Vars-B e.Vars-E)
     >;
-  (e.Scanned) () () = (e.Scanned);
+
+  (e.MarkedPattern) () () = (#Junk e.MarkedPattern);
 }
