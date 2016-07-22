@@ -1,13 +1,23 @@
-Test {
-  (#TkOpenBracket s.ContextOffset) = ;
-  (#TkCloseBracket s.ContextOffset) = ;
+TestB {
+  (#X s.Var) = ;
+  (#Y s.Var) = ;
 
-  #RemovedTile = ;
+  #Z = ;
+}
+
+TestA {
+  [TestA #X s.Var] = ;
+  [TestA #Y s.Var] = ;
+
+  #Z = ;
 }
 
 $ENTRY Go {
   =
-    <Test (#TkOpenBracket 1)>
-    <Test (#TkCloseBracket 1)>
-    <Test #RemovedTile>;
+    <TestB (#X 1)>
+    <TestB (#Y 1)>
+    <TestB #Z>
+    <TestA [TestA #X 1]>
+    <TestA [TestA #Y 1]>
+    <TestA #Z>;
 }

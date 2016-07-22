@@ -54,14 +54,18 @@ SplitReps-Aux {
       (e.Else (#Brackets s.ONum e.Replacements))
     >;
 
-  s.Num (#ADT-Brackets s.ONum ) e.Tail (e.Scanned) (e.Else) =
-    <SplitReps-Aux s.Num e.Tail (e.Scanned (#ADT-Brackets s.ONum ) ) (e.Else (#ADT-Brackets s.ONum ) )>;
-
-  s.Num (#ADT-Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else) =
+  s.Num (#ADT-Brackets (e.Name) s.ONum ) e.Tail (e.Scanned) (e.Else) =
     <SplitReps-Aux
       s.Num e.Tail
-      (e.Scanned (#ADT-Brackets s.ONum e.Rep))
-      (e.Else (#ADT-Brackets s.ONum e.Replacements))
+      (e.Scanned (#ADT-Brackets (e.Name) s.ONum))
+      (e.Else (#ADT-Brackets (e.Name) s.ONum))
+    >;
+
+  s.Num (#ADT-Brackets (e.Name) s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else) =
+    <SplitReps-Aux
+      s.Num e.Tail
+      (e.Scanned (#ADT-Brackets (e.Name) s.ONum e.Rep))
+      (e.Else (#ADT-Brackets (e.Name) s.ONum e.Replacements))
     >;
 
   s.Num (s.Mode '$' ((e.Rep)) e.otherRep ) e.Tail (e.Scanned) (e.Else) =
@@ -89,7 +93,15 @@ SplitReps-Brackets {
     <Map
       {
         (#Brackets s.Num e.inBrackets) =
-          (#Brackets 1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>);
+          (#Brackets
+            1 <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+          );
+
+        (#ADT-Brackets (e.Name) s.Num e.inBrackets) =
+          (#ADT-Brackets
+            (e.Name) 1
+            <UnBracketInBrackets s.Num <SplitReps s.Num e.inBrackets>>
+          );
 
         (e.Else) = (e.Else);
       }
@@ -122,13 +134,16 @@ $ENTRY FastGen-Terms {
 
   /* скобки с атомами */
   s.Num ((#ADT-Brackets (e.Name) s.NumB e.1)) ((#Atom e.val)) =
-    (#T '$' (((#ADT-Brackets (e.Name) s.NumB e.1 ))) ((( #Atom e.val ))) );
+    (#T '$'
+      <SplitReps s.Num (#ADT-Brackets (e.Name) s.NumB e.1 )>
+      ((( #Atom e.val )))
+    );
 
   s.Num ((#Atom e.val)) ((#ADT-Brackets (e.Name) s.NumB e.1)) =
     (#T '$' (((#Atom e.val))) (((#ADT-Brackets (e.Name) s.NumB e.1 ))) );
 
   s.Num ((#Brackets s.NumB e.1)) ((#Atom e.val)) =
-    (#T '$' ((( #Brackets s.NumB e.1 ))) ((( #Atom e.val ))) );
+    (#T '$' <SplitReps s.Num (#Brackets s.NumB e.1)> ((( #Atom e.val ))) );
 
   s.Num ((#Atom e.val)) ((#Brackets s.NumB e.1)) =
     (#T '$' (((#Atom e.val))) (((#Brackets s.NumB e.1 ))) );
