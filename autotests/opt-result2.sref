@@ -1,0 +1,47 @@
+ProcessOptionalFinalizers {
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num #Required-NotUsed e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num #Used e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num (#Optional) e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  s.HasMissedRequireds
+  t.hErrorList t.Collected (s.Num (#Optional t.FnOptionalHandler) e.Name)
+  e.Tail t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  #NoMissedRequireds
+  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
+    ;
+
+  #FoundMissedRequireds
+  t.hErrorList t.Collected t.EOG-Handler t.EOG-SrcPos =
+    ;
+}
+
+$ENTRY Go {
+  =
+    <ProcessOptionalFinalizers
+      '***' ('#' #Required-NotUsed 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' #Used 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' (#Optional) 'name') 't**'
+    >
+    <ProcessOptionalFinalizers
+      '***' ('#' (#Optional '@') 'name') 't**'
+    >
+    <ProcessOptionalFinalizers #NoMissedRequireds '****'>
+    <ProcessOptionalFinalizers #FoundMissedRequireds '****'>;
+}

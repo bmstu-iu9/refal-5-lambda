@@ -190,11 +190,11 @@ ComputePossibleClasses-Aux {
         '>' e.Tail = (s.M s.N);
         '=' e.Tail = (s.M s.N);
         '<' '>' '>' =
-          (<GetClasses
+          <GetClasses
             <Min <Sub s.K s.N> s.M>
             <Max <Sub s.K s.N> s.M>
             s.K
-          >);
+          >;
         '<' '>' '=' = <GetClasses 0 s.M s.K>;
         '<' '>' '<' = <GetClasses 0 s.M s.K>;
 
