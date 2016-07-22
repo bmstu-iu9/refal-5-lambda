@@ -244,13 +244,13 @@ FastGen-MeN {
   s.Num ((#E '$' ((e.inE1)) )) ((#E '$' ((e.inE2)) )) =
     (#E '$' ((e.inE1)) ((e.inE2)) );
 
-  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' e.inE2)) =
+  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' e.inE2)) =      // WTF?
     (#E '$' ((e.inE1)) ((e.inE2)) );
 
-  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =
+  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =      // WTF?
     (#E '$' ((e.inE1)) ((e.inE2)) );
 
-  s.Num ((#E '$' e.inE1)) ((#E '$' e.inE2)) =
+  s.Num ((#E '$' e.inE1)) ((#E '$' e.inE2)) =           // WTF?
     (#E '$' ((e.inE1)) ((e.inE2)) );
 
   s.Num (e.in1)(e.in2) =
