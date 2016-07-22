@@ -21,7 +21,7 @@ setlocal
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=-OR
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OX
+  set SRFLAGS=-OPR
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=--gen=interp
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
@@ -29,7 +29,7 @@ setlocal
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=-OR --gen=interp
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OX --gen=interp
+  set SRFLAGS=-OPR --gen=interp
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
