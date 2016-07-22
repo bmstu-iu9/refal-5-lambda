@@ -388,7 +388,8 @@ refalrts::Iter refalrts::adt_term(
   
   refalrts::Iter adt_tag = next(pos);
   
-  if (adt_tag->tag != cDataFunction && adt_tag->function_info.ptr != tag) {
+  assert (adt_tag->tag == cDataFunction);
+  if (adt_tag->function_info.ptr != tag) {
     return 0;
   }
   

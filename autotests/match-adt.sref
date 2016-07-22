@@ -1,0 +1,16 @@
+Test {
+  0 e.X = 0;
+  [Test] e.X = 1;
+  [Go] e.X = 2;
+  [Eq] e.X = 3;
+}
+
+Eq { s.X s.X = ; }
+
+$ENTRY Go {
+  =
+    <Eq <Test 0> 0>
+    <Eq <Test [Test]> 1>
+    <Eq <Test [Go]> 2>
+    <Eq <Test [Eq]> 3>;
+}
