@@ -17,11 +17,7 @@ $EXTERN IncVarOffset, PrintVar;
 */
 $ENTRY GenResult-Simple {
   s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
-    <GenResult s.ContextOffset (e.PatternVars) e.Result>;
-}
-
-GenResult {
-  s.ContextOffset (e.PatternVars) e.Result =
+    /* e.MarkedPattern не используется */
     <Fetch
       <DoGenResult
         (
