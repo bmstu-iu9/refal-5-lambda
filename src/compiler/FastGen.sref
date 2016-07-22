@@ -23,7 +23,7 @@ PreparePatternsFastGen-Aux {
         (#ADT-Brackets (e.Name) e.inBrackets) =
           (#ADT-Brackets (e.Name) 1 <PreparePatternsFastGen-Aux e.inBrackets>);
 
-        (e.any) = (e.any);
+        (#Atom e.any) = (#Atom e.any);
       }
       e.Pattern
     >;
@@ -41,7 +41,11 @@ SplitReps-Aux {
   0 e.Any (e.Scanned) (e.Else) = ;
 
   s.Num (#Brackets s.ONum ) e.Tail (e.Scanned) (e.Else) =
-    <SplitReps-Aux s.Num e.Tail (e.Scanned (#Brackets s.ONum ) ) (e.Else (#Brackets s.ONum ) )>;
+    <SplitReps-Aux
+      s.Num e.Tail
+      (e.Scanned (#Brackets s.ONum ))
+      (e.Else (#Brackets s.ONum ))
+    >;
 
   s.Num (#Brackets s.ONum ((e.Rep)) e.Replacements) e.Tail (e.Scanned) (e.Else) =
     <SplitReps-Aux
@@ -134,7 +138,10 @@ $ENTRY FastGen-Terms {
     (#T '$' e.Pattern (((#ADT-Brackets (e.Name) s.NumB e.inBr))) );
 
   s.Num ((#ADT-Brackets (e.Name) s.NumB e.inBr)) ((#S '$' e.Pattern)) =
-    (#T '$' <SplitReps s.Num (#ADT-Brackets (e.Name) s.NumB e.inBr)> (((#S '$' e.Pattern))) );
+    (#T '$'
+      <SplitReps s.Num (#ADT-Brackets (e.Name) s.NumB e.inBr)>
+      (((#S '$' e.Pattern)))
+    );
 
   s.Num ((#S '$' e.Pattern)) ((#Brackets s.NumB e.inBr)) =
     (#T '$' e.Pattern (((#Brackets s.NumB e.inBr))) );
@@ -146,10 +153,14 @@ $ENTRY FastGen-Terms {
   s.Num ((#Brackets s.Num1 e.1)) ((#Brackets s.Num2 e.2)) =
     (#Brackets <UnBracketAndNum <FastGen s.Num1 (e.1 ) (e.2 )>>);
 
-  s.Num ((#ADT-Brackets (e.Name) s.Num1 e.1 )) ((#ADT-Brackets (e.Name) s.Num2 e.2 )) =
+  s.Num
+  ((#ADT-Brackets (e.Name) s.Num1 e.1 ))
+  ((#ADT-Brackets (e.Name) s.Num2 e.2 )) =
     (#ADT-Brackets (e.Name) <UnBracketAndNum <FastGen s.Num1 (e.1 ) (e.2 )>>);
 
-  s.Num ((#ADT-Brackets (e.Name1) s.Num1 e.1 )) ((#ADT-Brackets (e.Name2) s.Num2 e.2 )) =
+  s.Num
+  ((#ADT-Brackets (e.Name1) s.Num1 e.1 ))
+  ((#ADT-Brackets (e.Name2) s.Num2 e.2 )) =
     (#T '$'
       <SplitReps s.Num (#ADT-Brackets (e.Name1) s.Num1 e.1)>
       (((#ADT-Brackets (e.Name2) s.Num2 e.2 )))
@@ -233,16 +244,16 @@ FastGen-MeN {
 
 LengthComp {
   (t.1 e.tail1) (t.2 e.tail2) = <LengthComp (e.tail1) (e.tail2)>;
-  () () = 1;
-  e.1 = 0;
+  () () = #Eq;
+  e.1 = #NotEq;
 }
 
 FastGen-K {
-  s.Num 1 (t.1 e.tail1) (t.2 e.tail2) =
+  s.Num #Eq (t.1 e.tail1) (t.2 e.tail2) =
     <FastGen-Terms s.Num (t.1 ) (t.2 )>
-    <FastGen-K s.Num 1 (e.tail1) (e.tail2)>;
-  s.Num 1 () () = ;
-  s.Num 0 (e.1) (e.2) = (#E '$' <SplitReps s.Num e.1> ((e.2)) );
+    <FastGen-K s.Num #Eq (e.tail1) (e.tail2)>;
+  s.Num #Eq () () = ;
+  s.Num #NotEq (e.1) (e.2) = (#E '$' <SplitReps s.Num e.1> ((e.2)) );
 }
 
 FastGen {

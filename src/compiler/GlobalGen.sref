@@ -453,7 +453,7 @@ $ENTRY SplitGen {
     <Fetch
       e.Any
       <Seq
-        { e.All = <DoSplitGen ('idx') e.All>; }
+        { e.All = <CreateIndexes ('idx') e.All>; }
         {
           e.All =
             <GetGeneralization () e.All>
@@ -470,31 +470,31 @@ SplitGen-Empty {
   = ;
 }
 
-DoSplitGen {
+CreateIndexes {
   (e.Idx)(s.Mode '$' e.Replacements) e.Tail =
     (s.Mode (e.Idx 0) '$' e.Replacements)
-    <DoSplitGen (e.Idx 'V') e.Tail>;
+    <CreateIndexes (e.Idx 'V') e.Tail>;
 
   (e.Idx)(#Brackets s.Num e.inBrackets) e.Tail =
-    (#Brackets <DoSplitGen (e.Idx 'B') e.inBrackets>)
-    <DoSplitGen (e.Idx 'T') e.Tail>;
+    (#Brackets <CreateIndexes (e.Idx 'B') e.inBrackets>)
+    <CreateIndexes (e.Idx 'T') e.Tail>;
 
   (e.Idx)(#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail =
-    (#ADT-Brackets (e.Name) <DoSplitGen (e.Idx 'D') e.inBrackets>)
-    <DoSplitGen (e.Idx 't') e.Tail>;
+    (#ADT-Brackets (e.Name) <CreateIndexes (e.Idx 'D') e.inBrackets>)
+    <CreateIndexes (e.Idx 't') e.Tail>;
 
   (e.Idx)(#Brackets e.inBrackets) e.Tail =
-    (#Brackets <DoSplitGen (e.Idx 'B') e.inBrackets>)
-    <DoSplitGen (e.Idx 'T') e.Tail>;
+    (#Brackets <CreateIndexes (e.Idx 'B') e.inBrackets>)
+    <CreateIndexes (e.Idx 'T') e.Tail>;
 
   (e.Idx)(#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
-    (#ADT-Brackets (e.Name) <DoSplitGen (e.Idx 'D') e.inBrackets>)
-    <DoSplitGen (e.Idx 't') e.Tail>;
+    (#ADT-Brackets (e.Name) <CreateIndexes (e.Idx 'D') e.inBrackets>)
+    <CreateIndexes (e.Idx 't') e.Tail>;
 
   (e.Idx)(#Atom e.Body) e.Tail =
-    (#Atom e.Body) <DoSplitGen (e.Idx 'A') e.Tail>;
+    (#Atom e.Body) <CreateIndexes (e.Idx 'A') e.Tail>;
 
-  (e.Idx) () e.Tail = <DoSplitGen (e.Idx 'E') e.Tail>;
+  (e.Idx) () e.Tail = <CreateIndexes (e.Idx 'E') e.Tail>;
 
   (e.Idx) = ;
 }
