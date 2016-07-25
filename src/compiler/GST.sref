@@ -1,54 +1,350 @@
 //FROM LibraryEx
-$EXTERN Fetch, Compare, Inc, Dec, WriteLine;
+$EXTERN Fetch, Compare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator;
 
 //FROM Library
 $EXTERN Add, Sub;
 
-//заменяем плитки, до тех пор, пока есть такая возможность
 $ENTRY GST {
   (e.Pattern) (e.Result) =
     <Fetch
-      <ReplaceMaxTile (e.Pattern) (e.Result)>
-      {
-        #TileReplaced (e.Pattern^) (e.Result^) =
-          <GST (e.Pattern) (e.Result)>;
+      (e.Pattern) (e.Result)
+      <Seq
+        TileCandidates
+        FilterOverlapped
+        {
+          e.Tiles =
+            ((<Enum e.Pattern>) (<Enum e.Result>)) e.Tiles;
+        }
+        (Reduce
+          {
+            ((e.Pattern^) (e.Result^)) t.Tile =
+              (<ReplaceTile (e.Pattern) (e.Result) t.Tile>);
+          }
+        )
+        {
+          ((e.Trash) (e.MarkedResult)) =
+            (<DeEnum e.Trash>) (<DeEnum e.MarkedResult>);
+        }
+      >
+    >;
+}
 
-        #NoTiles (e.Pattern) (e.Result) =
-          (e.Pattern) (e.Result);
+Enum {
+  e.Items =
+    <DelAccumulator
+      <MapReduce
+        { s.Num t.Item = <Inc s.Num> (#Num s.Num t.Item); }
+        0 e.Items
+      >
+    >;
+}
+
+DeEnum {
+  e.Items =
+    <Map
+      {
+        (#Num s.Num t.Item) = t.Item;
+
+        #RemovedTile = #RemovedTile;
+
+        (#Tile e.Tile) = (#Tile e.Tile);
+      }
+      e.Items
+    >;
+}
+
+/*
+  Функция вычисляет плитки для всех возможных смещений образца и результата
+  относительно друг друга:
+
+  Pattern: A B C
+  Result:      F G H
+
+  Pattern: A B C
+  Result:    F G H
+
+  . . .
+
+  Pattern:     A B C
+  Result   F G H
+*/
+TileCandidates {
+  (e.Pattern) (e.Result) =
+    <Fetch
+      <AlignEnumExprs 0 () (e.Pattern) () (e.Result)>
+      {
+        (e.AlignedPattern t.Last) (t.First e.AlignedResult) =
+          <DoOverlapOffsets
+            (e.AlignedPattern) (t.Last) (t.First) (e.AlignedResult)
+          >;
       }
     >;
 }
 
-//заменяем максимальную плитку
-ReplaceMaxTile {
+AlignEnumExprs {
+  s.Num
+  (e.ScannedPattern) (t.PatternItem e.Pattern)
+  (e.ScannedResult) (t.ResultItem e.Result) =
+    <AlignEnumExprs
+      <Inc s.Num>
+      (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
+      (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
+    >;
+
+  s.Num
+  (e.ScannedPattern) (/* пусто */)
+  (e.ScannedResult) (t.ResultItem e.Result) =
+    <AlignEnumExprs
+      <Inc s.Num>
+      (e.ScannedPattern (s.Num '*')) (/* пусто */)
+      (e.ScannedResult (s.Num t.ResultItem)) (e.Result)
+    >;
+
+  s.Num
+  (e.ScannedPattern) (t.PatternItem e.Pattern)
+  (e.ScannedResult) (/* пусто */) =
+    <AlignEnumExprs
+      <Inc s.Num>
+      (e.ScannedPattern (s.Num t.PatternItem)) (e.Pattern)
+      (e.ScannedResult (s.Num '*')) (/* пусто */)
+    >;
+
+  s.Num (e.ScannedPattern) (/* пусто */) (e.ScannedResult) (/* пусто */) =
+    (e.ScannedPattern) (e.ScannedResult);
+}
+
+DoOverlapOffsets {
+  (e.Pattern t.Last) (e.OverlappedPattern)
+  (e.OverlappedResult) (t.First e.Result) =
+    <OverlapChain (e.OverlappedPattern) (e.OverlappedResult)>
+    <DoOverlapOffsets
+      (e.Pattern) (t.Last e.OverlappedPattern)
+      (e.OverlappedResult t.First) (e.Result)
+    >;
+
+  (/* пусто */) (e.OverlappedPattern t.Last)
+  (t.First e.OverlappedResult) (/* пусто */) =
+    <OverlapChain (e.OverlappedPattern t.Last) (t.First e.OverlappedResult)>
+    <DoOverlapOffsets
+      (/* пусто */) (e.OverlappedPattern)
+      (e.OverlappedResult) (/* пусто */)
+    >;
+
+  (/* пусто */) (/* пусто */) (/* пусто */) (/* пусто */) =
+    /* пусто */;
+}
+
+OverlapChain {
   (e.Pattern) (e.Result) =
+    <GlueTiles <ZipItems (e.Pattern) (e.Result)>>;
+}
+
+ZipItems {
+  ((s.CurIndexP t.PatternItem) e.Pattern)
+  ((s.CurIndexR t.ResultItem) e.Result) =
+    (s.CurIndexP s.CurIndexR <OverlapItem t.PatternItem t.ResultItem>)
+    <ZipItems (e.Pattern) (e.Result)>;
+
+  (/* пусто */) (/* пусто */) = /* пусто */;
+}
+
+GlueTiles {
+  (s.CurIndexP s.CurIndexR #NoOverlap) e.Tail = <GlueTiles e.Tail>;
+
+  (s.CurIndexP s.CurIndexR s.Weight #AsIsE) e.Tail =
+    (
+      s.Weight s.CurIndexP s.CurIndexR
+      (s.CurIndexP s.CurIndexR s.Weight #AsIsE)
+    )
+    <GlueTiles e.Tail>;
+
+  (s.CurIndexP s.CurIndexR s.Weight s.Ident) e.Tail =
+    <GlueNextTile (s.Weight (s.CurIndexP s.CurIndexR s.Weight s.Ident)) e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+GlueNextTile {
+  (s.Weight e.Items) (s.CurIndexP s.CurIndexR #NoOverlap) e.Tail =
+    <FoldTile-EEnd s.Weight e.Items>
+    <GlueTiles e.Tail>;
+
+  (s.Weight e.Items)
+  (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Tail =
+    <GlueNextTile
+      (
+        <Add s.Weight s.ItemWeight>
+        e.Items (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident)
+      )
+      e.Tail
+    >;
+
+  (s.Weight e.Items) /* пусто */ =
+    <FoldTile-EEnd s.Weight e.Items>;
+}
+
+FoldTile-EEnd {
+  //если плитка оканчивается e-переменной, то ее нужно удалить из плитки
+  s.Weight e.Items (s.CurIndexP s.CurIndexR 3 #AsIsE) =
+    <FoldTile-EEnd <Sub s.Weight 3> e.Items>
+    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 #AsIsE));
+
+  s.Weight (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items =
+    (
+      s.Weight s.CurIndexP s.CurIndexR
+      (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
+    );
+
+  s.Weight /* пусто */ = /* пусто */;
+}
+
+FilterOverlapped {
+  t.NextTile e.Tiles =
     <Fetch
-      <DoReplaceMaxTile
-        (0 0 0 (/*Idents*/)) (0 () e.Pattern) (0 () e.Result)
+      <MapReduce
+        {
+          (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
+          (s.Weight s.CurIndexP s.CurIndexR e.Items) =
+            <Fetch
+              <Compare s.MaxWeight s.Weight>
+              {
+                '<' =
+                  (s.Weight s.CurIndexP s.CurIndexR e.Items)
+                  (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
+
+                s.Other =
+                  (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
+                  (s.Weight s.CurIndexP s.CurIndexR e.Items);
+              }
+            >;
+        }
+        t.NextTile e.Tiles
       >
-      {
-        #NoTiles = #NoTiles (e.Pattern) (e.Result);
+      <Seq
+        {
+          (s.MaxWeight s.IndexP s.IndexR e.MaxItems) e.Tiles^ =
+            (
+              s.IndexP s.IndexR s.MaxWeight
+              (
+                <Map
+                  {
+                    (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) = s.Ident;
+                  }
+                  e.MaxItems
+                >
+              )
+            )
+            <Reduce
+              {
+                (e.Tiles^) (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) =
+                  <Fetch
+                    e.Tiles
+                    <Seq
+                      (Map (FilterPatternPos s.CurIndexP))
+                      (Map (FilterResultPos s.CurIndexR))
+                      { e.Tiles^ = (e.Tiles); }
+                    >
+                  >;
+              }
+              (e.Tiles) e.MaxItems
+            >;
+        }
+        {
+          t.ReadyTile (e.Tiles^) =
+            t.ReadyTile <FilterOverlapped e.Tiles>;
+        }
+      >
+    >;
 
-        #TileReplaced (s.IndexP s.IndexR s.Weight (e.Idents)) =
-          //<WriteLine (s.IndexP s.IndexR s.Weight (e.Idents))>
-          #TileReplaced
-          <Fetch
-            <Skip s.IndexP (e.Pattern)>
-            <Skip s.IndexR (e.Result)>
-            {
-              (e.PatFirst) (e.PatSecond)
-              (e.ResFirst) (e.ResSecond) =
-                //<WriteLine (e.PatFirst) (e.PatSecond)>
-                //<WriteLine (e.ResFirst) (e.ResSecond)>
-                <Modify
-                  (e.Idents)
-                  (e.PatFirst) (e.PatSecond)
-                  (e.ResFirst) (e.ResSecond)
-                >;
+  /* пусто */ = /* пусто */;
+}
 
-            }
-          >;
-      }
+FilterPatternPos {
+  s.CurIndexP
+  (
+    s.Weight s.CurIndexP s.CurIndexR
+    (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
+  ) =
+    <FoldTile <Sub s.Weight s.ItemWeight> e.Items>;
+
+  s.CurIndexP
+  (
+    s.Weight s.IndexP s.IndexR
+    e.Items (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident)
+  ) =
+    <FoldTile <Sub s.Weight s.ItemWeight> e.Items>;
+
+  s.CurIndexP
+  (
+    s.Weight s.IndexP s.IndexR
+    e.Items-B (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items-E
+  ) =
+    <FoldTileW e.Items-B> <FoldTileW e.Items-E>;
+
+  s.CurIndexP t.Tile =
+    t.Tile;
+}
+
+FilterResultPos {
+  s.CurIndexR
+  (
+    s.Weight s.CurIndexP s.CurIndexR
+    (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
+  ) =
+    <FoldTile <Sub s.Weight s.ItemWeight> e.Items>;
+
+  s.CurIndexR
+  (
+    s.Weight s.IndexP s.IndexR
+    e.Items (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident)
+  ) =
+    <FoldTile <Sub s.Weight s.ItemWeight> e.Items>;
+
+  s.CurIndexR
+  (
+    s.Weight s.IndexP s.IndexR
+    e.Items-B (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items-E
+  ) =
+    <FoldTileW e.Items-B> <FoldTileW e.Items-E>;
+
+  s.CurIndexR t.Tile = t.Tile;
+}
+
+FoldTile {
+  s.Weight (s.CurIndexP s.CurIndexR 3 #AsIsE) e.Items =
+    (3 s.CurIndexP s.CurIndexR (s.CurIndexP s.CurIndexR 3 #AsIsE))
+    <FoldTile <Sub s.Weight 3> e.Items>;
+
+  s.Weight e.Items = <FoldTile-EEnd s.Weight e.Items>;
+
+  s.Weight /* пусто */ = /* пусто */;
+}
+
+FoldTileW {
+  (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items =
+    <FoldTile
+      <Reduce
+        {
+          s.Weight (s.IndexP s.IndexR s.ItemWeight^ s.Ident^) =
+            <Add s.Weight s.ItemWeight>;
+        }
+        s.ItemWeight e.Items
+      >
+      (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) e.Items
+    >;
+
+  // Предложение не должно выполняться
+  /* пусто */ = /* пусто */;
+}
+
+ReplaceTile {
+  (e.Pattern-B (#Num s.IndexP t.PatternItem) e.Pattern-E)
+  (e.Result-B (#Num s.IndexR t.ResultItem) e.Result-E)
+  (s.IndexP s.IndexR s.Weight (e.Idents)) =
+    <Modify
+      (e.Idents)
+      (e.Pattern-B) ((#Num s.IndexP t.PatternItem) e.Pattern-E)
+      (e.Result-B) ((#Num s.IndexR t.ResultItem) e.Result-E)
     >;
 }
 
@@ -76,8 +372,8 @@ DoModify {
   //избавляемся от идентификатора для е-переменных
   (#AsIsE e.Idents)
   (#Tile e.Tile)
-  ((s.TypeFromPat e.InfoFromPat s.Offset) e.PatSecond)
-  ((s.TypeFromRes e.InfoFromRes) e.ResSecond) =
+  ((#Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
+  ((#Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
     <DoModify
       (e.Idents)
       (#Tile e.Tile (#AsIs (s.TypeFromRes e.InfoFromRes s.Offset)))
@@ -87,8 +383,8 @@ DoModify {
 
   (#AsIs e.Idents)
   (#Tile e.Tile)
-  ((#LEFT-EDGE) e.PatSecond)
-  ((#LEFT-EDGE) e.ResSecond) =
+  ((#Num s.NumP (#LEFT-EDGE)) e.PatSecond)
+  ((#Num s.NumR (#LEFT-EDGE)) e.ResSecond) =
     <DoModify
       (e.Idents)
       (#Tile e.Tile (#LEFT-EDGE))
@@ -98,8 +394,8 @@ DoModify {
 
   (#AsIs e.Idents)
   (#Tile e.Tile)
-  ((#RIGHT-EDGE))
-  ((#RIGHT-EDGE)) =
+  ((#Num s.NumP (#RIGHT-EDGE)))
+  ((#Num s.NumR (#RIGHT-EDGE))) =
     <DoModify
       (e.Idents)
       (#Tile e.Tile (#RIGHT-EDGE))
@@ -110,8 +406,8 @@ DoModify {
 
   (s.Ident e.Idents)
   (#Tile e.Tile)
-  ((s.TypeFromPat e.InfoFromPat s.Offset) e.PatSecond)
-  ((s.TypeFromRes e.InfoFromRes) e.ResSecond) =
+  ((#Num s.NumP (s.TypeFromPat e.InfoFromPat s.Offset)) e.PatSecond)
+  ((#Num s.NumR (s.TypeFromRes e.InfoFromRes)) e.ResSecond) =
     <DoModify
       (e.Idents)
       (#Tile e.Tile (s.Ident (s.TypeFromRes e.InfoFromRes s.Offset)))
@@ -125,150 +421,6 @@ DoModify {
   (e.ResSecond) =
     (#RemovedTile e.PatSecond)
     ((#Tile e.Tile) e.ResSecond);
-}
-
-Skip {
-  s.Num (e.Str) = <Skip s.Num () (e.Str)>;
-
-  0 (e.Str-B) (e.Str-E) = (e.Str-B) (e.Str-E);
-
-  //s.Num (e.Str-E) () = (e.Str-E) ();
-
-  s.Num (e.Str-B) (t.Sym e.Str-E) =
-    <Skip
-      <Dec s.Num> (e.Str-B t.Sym) (e.Str-E )
-    >;
-}
-
-
-DoReplaceMaxTile {
-  //изменений нет, все просканированно
-  (0 0 0 ())
-  (s.CurIndexP (e.Pattern) /* пусто */)
-  (s.CurIndexR (e.Result) /* пусто */) =
-    #NoTiles;
-
-  //изменения есть, все просканированно
-  (s.MaxWeight s.IndexP s.IndexR (e.MaxIdents))
-  (s.CurIndexP (e.Pattern) /* пусто */)
-  (s.CurIndexR (e.Result) /* пусто */) =
-    #TileReplaced (s.IndexP s.IndexR s.MaxWeight (e.MaxIdents));
-
-  //результат просканирован, но образец нет, начинаем скан результата с начала
-  //для всех смещений из Pattern
-  (s.MaxWeight s.IndexP s.IndexR  (e.MaxIdents))
-  (s.CurIndexP (e.ScannedPattern) t.NextTerm e.Pattern)
-  (s.CurIndexR (e.ScannedResult)) =
-    <DoReplaceMaxTile
-      (s.MaxWeight s.IndexP s.IndexR (e.MaxIdents))
-      (<Inc s.CurIndexP> (e.ScannedPattern t.NextTerm) e.Pattern)
-      (0 () e.ScannedResult)
-    >;
-
-  //для всех смещений из Result
-  (s.MaxWeight s.IndexP s.IndexR (e.MaxIdents))
-  (s.CurIndexP (e.ScannedPattern) e.Pattern)
-  (s.CurIndexR (e.ScannedResult) t.NextItem e.Result) =
-    <Fetch
-      <FindTile (e.Pattern) (t.NextItem e.Result)>
-      {
-        s.Weight (e.Idents) (e.Pattern^) (t.NextItem^ e.Result^) =
-          <DoReplaceMaxTile
-            <Fetch
-              <Compare s.MaxWeight s.Weight>
-              {
-                '<' = (s.Weight s.CurIndexP s.CurIndexR (e.Idents));
-
-                s.Other = (s.MaxWeight s.IndexP s.IndexR (e.MaxIdents));
-              }
-            >
-            (s.CurIndexP (e.ScannedPattern) e.Pattern)
-            (<Inc s.CurIndexR> (e.ScannedResult t.NextItem) e.Result)
-          >;
-      }
-    >;
-}
-
-FindTile {
-  (e.Pattern) (e.Result) =
-    <FindTile-EEnd
-      <DoFindTile
-        0 (/*цепочка идентификаторов*/)
-        () (e.Pattern)
-        () (e.Result)
-      >
-    >;
-}
-
-//расширяет плитку максимально возможным способом
-//условия выхода:
-//опустошение результата или образца,
-//встреча плитки в результате или образце
-//встреча #NoOverlap термов
-
-DoFindTile {
-  //при сканировании встретили плитку в образце => Конец плитки
-  s.Weight (e.Idents)
-  (e.ScannedPattern) (#RemovedTile e.Pattern)
-  (e.ScannedResult) (e.Result) =
-    s.Weight (e.Idents)
-    (e.ScannedPattern #RemovedTile e.Pattern)
-    (e.ScannedResult e.Result);
-
-  //при сканировании встретили плитку в результате => Конец плитки
-  s.Weight (e.Idents)
-  (e.ScannedPattern) (e.Pattern)
-  (e.ScannedResult) ((#Tile e.NestedTile) e.Result) =
-    s.Weight (e.Idents)
-    (e.ScannedPattern e.Pattern)
-    (e.ScannedResult (#Tile e.NestedTile) e.Result);
-
-  //кончился образец => Конец плитки
-  s.Weight (e.Idents)
-  (e.ScannedPattern) (/* кончился образец */)
-  (e.ScannedResult) (e.Result) =
-    s.Weight (e.Idents)
-    (e.ScannedPattern)
-    (e.ScannedResult e.Result);
-
-  //кончился результат => Конец плитки
-  s.Weight (e.Idents)
-  (e.ScannedPattern) (e.Pattern)
-  (e.ScannedResult) (/* кончился результат */) =
-    s.Weight (e.Idents)
-    (e.ScannedPattern e.Pattern)
-    (e.ScannedResult);
-
-  //если плитка начинается с e-переменной, то на ней и заканчивается
-  s.Weight (#AsIsE)
-  (e.ScannedPattern) (e.Pattern)
-  (e.ScannedResult) (e.Result) =
-    s.Weight (#AsIsE)
-    (e.ScannedPattern e.Pattern)
-    (e.ScannedResult e.Result);
-
-
-  s.Weight (e.Idents)
-  (e.ScannedPattern) (t.PatternItem e.Pattern)
-  (e.ScannedResult) (t.ResultItem e.Result) =
-    <Fetch
-      <OverlapItem t.PatternItem t.ResultItem>
-      {
-        #NoOverlap =
-          s.Weight (e.Idents)
-          (e.ScannedPattern t.PatternItem e.Pattern)
-          (e.ScannedResult t.ResultItem e.Result);
-
-
-        s.ItemWeight s.Ident =
-          <DoFindTile
-            <Add s.Weight s.ItemWeight> (e.Idents s.Ident)
-            (e.ScannedPattern t.PatternItem) (e.Pattern)
-            (e.ScannedResult t.ResultItem) (e.Result)
-          >;
-
-      }
-    >;
 }
 
 //возвращает вес перекрытия
@@ -304,21 +456,7 @@ OverlapItem {
   (#RIGHT-EDGE) (#RIGHT-EDGE) = 3 #AsIs;
   (#LEFT-EDGE) t.Other = #NoOverlap;
   (#RIGHT-EDGE) t.Other = #NoOverlap;
+
+  t.AnyItem '*' = #NoOverlap;
+  '*' t.AnyItem = #NoOverlap;
 }
-
-FindTile-EEnd {
-  //если плитка состоит из одной e-переменной, это нормально
-  s.Weight (#AsIsE) (e.Pattern) (e.Result) =
-    s.Weight (#AsIsE) (e.Pattern) (e.Result);
-
-  //если плитка оканчивается e-переменной, то ее нужно удалить из плитки
-  s.Weight (e.Idents #AsIsE ) (e.Pattern) (e.Result) =
-    <FindTile-EEnd
-      <Sub s.Weight 3> (e.Idents)
-      (e.Pattern) (e.Result)
-    >;
-
-  s.Weight (e.Idents) (e.Pattern) (e.Result) =
-    s.Weight (e.Idents) (e.Pattern) (e.Result);
-}
-
