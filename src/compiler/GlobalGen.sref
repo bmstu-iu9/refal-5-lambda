@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare;
+$EXTERN UnBracket, Map, Fetch, Seq, Inc, Dec, Compare, Min, Max;
 
 //FROM Library
 $EXTERN Add, Sub;
@@ -548,31 +548,4 @@ GetReplacement-Aux {
 GetReplacement {
   e.All =
     <GetReplacement-Aux e.All (/*Scanned*/) (/*Else*/)>;
-}
-
-/*
-  Min and Max of two s-variables
-  'Compare' from LibraryEx.sref should work with this variables
-*/
-
-$ENTRY Min {
-  s.1 s.2 =
-    <Fetch
-      <Compare s.1 s.2>
-      {
-        '<' = s.1;
-        s.Other = s.2;
-      }
-    >;
-}
-
-$ENTRY Max {
-  s.1 s.2 =
-    <Fetch
-      <Compare s.1 s.2>
-      {
-        '>' = s.1;
-        s.Other = s.2;
-      }
-    >;
 }

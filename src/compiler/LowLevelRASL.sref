@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Inc, Compare;
+$EXTERN Map, Fetch, Max, Inc, Compare;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -56,17 +56,6 @@ AddSavers {
       s.Number
       (/* alive vars */) (/* frozen vars */)
       (/* scanned */) e.Commands
-    >;
-}
-
-Max {
-  s.X s.Y =
-    <Fetch
-      <Compare s.X s.Y>
-      {
-        '<' = s.Y;
-        s.Other = s.X;
-      }
     >;
 }
 

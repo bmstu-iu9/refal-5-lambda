@@ -1,8 +1,8 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, MapReduce, Compare;
+$EXTERN Map, Fetch, Seq, MapReduce, Max;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops, GenPattern, GenResult;
+$EXTERN GenPattern, GenResult;
 
 $ENTRY HighLevelRASL-Function-Disjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -24,12 +24,7 @@ $ENTRY HighLevelRASL-Function-Disjoint {
         (MapReduce
           {
             s.MaxMemory ((#CmdIssueMem s.Memory) e.Sentence) =
-              <Fetch
-                <Compare s.MaxMemory s.Memory> {
-                  '<' = s.Memory;
-                  s.Other = s.MaxMemory;
-                }
-              >
+              <Max s.MaxMemory s.Memory>
               (#CmdSentence e.Sentence);
           }
           0

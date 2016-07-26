@@ -294,3 +294,31 @@ $ENTRY Sort {
       >
     >;
 }
+
+$ENTRY Min {
+  t.X t.Y =
+    <Fetch
+      <Compare t.X t.Y>
+      {
+        '<' = t.X;
+        s.Other = t.Y;
+      }
+    >;
+
+  t.First e.Tail =
+    <Reduce Min t.First e.Tail>;
+}
+
+$ENTRY Max {
+  t.X t.Y =
+    <Fetch
+      <Compare t.X t.Y>
+      {
+        '>' = t.X;
+        s.Other = t.Y;
+      }
+    >;
+
+  t.First e.Tail =
+    <Reduce Max t.First e.Tail>;
+}

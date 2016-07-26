@@ -1,14 +1,14 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, DelAccumulator;
+$EXTERN Fetch, Seq, MapReduce, DelAccumulator, Max;
 
 //FROM HardSent
 $EXTERN CreateHardPattern;
 
 //FROM GlobalGen
-$EXTERN CreateGlobalGen, SplitGen, Max, PatternComment, ReverseGen;
+$EXTERN CreateGlobalGen, SplitGen, PatternComment, ReverseGen;
 
 //FROM HighLevelRASL-Common
-$EXTERN FoldOpenELoops, GenPattern, GenResult;
+$EXTERN GenPattern, GenResult;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
