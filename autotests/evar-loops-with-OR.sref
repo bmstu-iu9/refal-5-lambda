@@ -2,4 +2,7 @@
   s.Num ('--' e.Arg '=' e.Param) e.Tail = ;
 }
 
-$ENTRY Go { = ; }
+$ENTRY Go {
+  =
+    <MarkupArguments 10 ('--hello=world') 'tail'>;
+}

@@ -26,6 +26,24 @@ ReportErrors {
     <Exit 1>;
 }
 
-$ENTRY Go { = ; }
+$ENTRY Go {
+  =
+    <ReportErrors #CommandLine #ERROR-FILE (1 'hello') (2 'world')>
+    <ReportErrors ('file.txt') #ERROR-FILE (1 'hello') (2 'world')>;
+}
 
-$ENUM Map, StrFromInt, Exit, WriteLine, CreateErrorFileMark;
+Map {
+  s.Lambda (1 'hello') (2 'world') =
+    <
+      {
+        [WriteLine 'Command line argument 3: Error: hi'] = ;
+        [WriteLine 'file.txt:3: Error: hi'] = ;
+      }
+      <s.Lambda (3 'hi')>
+    >;
+}
+
+StrFromInt { 3 = '3'; }
+Exit { 1 = ; }
+WriteLine { e.Text = [WriteLine e.Text]; }
+CreateErrorFileMark { #ERROR-FILE = ; }

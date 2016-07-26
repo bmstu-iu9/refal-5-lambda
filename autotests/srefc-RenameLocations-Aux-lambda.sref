@@ -1,9 +1,14 @@
-$ENTRY Go { = ; }
-
 RenameLocations-Aux-lambda {
   0 (s.Pos #Source (e.Source) e.Output) = ;
 
   s.Num (s.Pos #Source (e.Source) e.Output '.cpp') = ;
 
   s.Num (s.Pos #Output e.Output) = ;
+}
+
+$ENTRY Go {
+  =
+    <RenameLocations-Aux-lambda 0 (1 #Source ('source') 'output')>
+    <RenameLocations-Aux-lambda 1 (2 #Source ('source') 'output.cpp')>
+    <RenameLocations-Aux-lambda 2 (3 #Output 'output')>;
 }

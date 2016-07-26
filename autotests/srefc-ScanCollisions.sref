@@ -1,5 +1,3 @@
-$ENTRY Go { = ; }
-
 ScanCollisions {
   ((e.BaseName) e.Locations1)
   e.Files-B ((e.BaseName) e.Locations2) e.Files-E = ;
@@ -9,4 +7,11 @@ ScanCollisions {
   /* пусто */ = /* всё */;
 }
 
-$ENUM RenameLocations;
+$ENTRY Go {
+  =
+    <ScanCollisions
+      (('base name') 'loc1') 'files-b' (('base name') 'loc2') 'files-e'
+    >
+    <ScanCollisions (('base name') 'loc') 'files'>
+    <ScanCollisions>;
+}

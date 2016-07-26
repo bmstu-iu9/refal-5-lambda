@@ -1,8 +1,14 @@
-$ENTRY Go { = ; }
-
 DoGetFileName {
   e.FileName '/' = ;
   e.FileName '\\' = ;
   e.FileName s.Last = ;
   = ;
+}
+
+$ENTRY Go {
+  =
+    <DoGetFileName 'test/'>
+    <DoGetFileName 'test\\'>
+    <DoGetFileName 'test'>
+    <DoGetFileName>;
 }
