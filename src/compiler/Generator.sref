@@ -856,14 +856,14 @@ GenCommand {
       }
     >;
 
-  (e.Indent) (#CmdArrCopy 'e' s.Target s.Sample) =
+  (e.Indent) (#CmdiCopyVar 'e' s.Target s.Sample) =
     (e.Indent)
     (e.Indent
       '{refalrts::icCopyEVar, '
       <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
     );
 
-  (e.Indent) (#CmdArrCopy s.Mode s.Target s.Sample) =
+  (e.Indent) (#CmdiCopyVar s.Mode s.Target s.Sample) =
     (e.Indent)
     (e.Indent
       '{refalrts::icCopySTVar, '
@@ -894,21 +894,21 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icPushStack, 0, 0, ' <StrFromInt s.ElemNumber> '},');
 
-  (e.Indent) (#CmdSpliceElem s.ElemNumber) =
+  (e.Indent) (#CmdiInsertElem s.ElemNumber) =
     (e.Indent)
     (e.Indent
       '{refalrts::icSpliceElem, 0, 0, ' <StrFromInt s.ElemNumber> '},'
     );
 
-  (e.Indent) (#CmdArrSplice 'e' s.Offset) =
+  (e.Indent) (#CmdiInsertVar 'e' s.Offset) =
     (e.Indent)
     (e.Indent '{refalrts::icSpliceEVar, 0, 0, ' <StrFromInt s.Offset> '},');
 
-  (e.Indent) (#CmdArrSplice s.Mode s.Offset) =
+  (e.Indent) (#CmdiInsertVar s.Mode s.Offset) =
     (e.Indent)
     (e.Indent '{refalrts::icSpliceSTVar, 0, 0, ' <StrFromInt s.Offset> '},');
 
-  (e.Indent) (#CmdSpliceRange s.ElemNumber) =
+  (e.Indent) (#CmdiInsertRange s.ElemNumber) =
     (e.Indent)
     (e.Indent
       '{refalrts::icSpliceRange, 0, 0, ' <StrFromInt s.ElemNumber> '},'

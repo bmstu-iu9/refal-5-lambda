@@ -582,7 +582,7 @@ ConvertOneInterpretCommand {
   (#CmdSetRes s.Offset) = (#CmdiSetRes s.Offset);
 
   (#CmdCopyVar s.Mode s.Number s.Sample) =
-    (#CmdArrCopy s.Mode s.Number s.Sample);
+    (#CmdiCopyVar s.Mode s.Number s.Sample);
 
   (#CmdReinitSVar s.Offset s.Sample) = (#CmdiReinitSVar s.Offset s.Sample);
 
@@ -623,11 +623,11 @@ ConvertOneInterpretCommand {
 
   (#CmdPushStack s.ElemNo) = (#CmdiPushStack s.ElemNo);
 
-  (#CmdInsertElem s.ElemNo) = (#CmdSpliceElem s.ElemNo);
+  (#CmdInsertElem s.ElemNo) = (#CmdiInsertElem s.ElemNo);
 
-  (#CmdInsertVar s.Mode s.Number) = (#CmdArrSplice s.Mode s.Number);
+  (#CmdInsertVar s.Mode s.Number) = (#CmdiInsertVar s.Mode s.Number);
 
-  (#CmdInsertRange s.ElemNo) = (#CmdSpliceRange s.ElemNo);
+  (#CmdInsertRange s.ElemNo) = (#CmdiInsertRange s.ElemNo);
 
   (#CmdInsertTile s.BeginOffset s.EndOffset) =
     (#CmdiInsertTile s.BeginOffset s.EndOffset);

@@ -406,10 +406,10 @@ e-переменные, распределяемые последователь�
       | (#CmdiEmpty s.Offset)
       | (#CmdiEmptyResult)
       | (#CmdiCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
-      | (#CmdArrCopy s.Mode s.VarOffset s.SampleOffset)
-      | (#CmdSpliceElem s.Offset)
-      | (#CmdSpliceRange s.Offset)
-      | (#CmdArrSplice s.Mode s.VarOffset)
+      | (#CmdiCopyVar s.Mode s.VarOffset s.SampleOffset)
+      | (#CmdiInsertElem s.Offset)
+      | (#CmdiInsertRange s.Offset)
+      | (#CmdiInsertVar s.Mode s.VarOffset)
       | (#CmdiLinkBrackets s.LeftOffset s.RightOffset)
       | (#CmdiPushStack s.Offset)
       | (#CmdiFail)
@@ -515,10 +515,10 @@ e-переменные, распределяемые последователь�
     → `#CmdAllocateElem`, `#CmdUpdateElem`, `#CmdReinitElem`.
     Оговорка о `#ElNumber` и `#ElHugeNumber` та же, что и для `#CmdiNum`
     и `#CmdHugeNum`.
-  * `#CmdArrCopy` → `#CmdCopyVar`.
-  * `#CmdSpliceElem` → `#CmdInsertElem`.
-  * `#CmdSpliceRange` → `#CmdInsertRange`.
-  * `#CmdArrSplice` → `#CmdInsertVar`.
+  * `#CmdiCopyVar` → `#CmdCopyVar`.
+  * `#CmdiInsertElem` → `#CmdInsertElem`.
+  * `#CmdiInsertRange` → `#CmdInsertRange`.
+  * `#CmdiInsertVar` → `#CmdInsertVar`.
   * `#CmdiLinkBrackets` → `#CmdLinkBrackets`.
   * `#CmdiPushStack` → `#CmdPushStack`.
   * `#CmdiFail` → `#CmdFail`.
