@@ -1,5 +1,6 @@
 //FROM LibraryEx
-$EXTERN Fetch, Compare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator;
+$EXTERN Fetch, Compare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
+  UnBracket;
 
 //FROM Library
 $EXTERN Add, Sub;
@@ -201,62 +202,70 @@ FoldTile-EEnd {
 FilterOverlapped {
   t.NextTile e.Tiles =
     <Fetch
-      <MapReduce
-        {
-          (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
-          (s.Weight s.CurIndexP s.CurIndexR e.Items) =
-            <Fetch
-              <Compare s.MaxWeight s.Weight>
-              {
-                '<' =
-                  (s.Weight s.CurIndexP s.CurIndexR e.Items)
-                  (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
-
-                s.Other =
-                  (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
-                  (s.Weight s.CurIndexP s.CurIndexR e.Items);
-              }
-            >;
-        }
-        t.NextTile e.Tiles
-      >
-      <Seq
-        {
-          (s.MaxWeight s.IndexP s.IndexR e.MaxItems) e.Tiles^ =
+      <FindHeavyTile t.NextTile e.Tiles>
+      {
+        (s.MaxWeight s.IndexP s.IndexR e.MaxItems) e.Tiles^ =
+          (
+            s.IndexP s.IndexR s.MaxWeight
             (
-              s.IndexP s.IndexR s.MaxWeight
-              (
-                <Map
-                  {
-                    (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) = s.Ident;
-                  }
-                  e.MaxItems
-                >
-              )
+              <Map
+                {
+                  (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) = s.Ident;
+                }
+                e.MaxItems
+              >
             )
-            <Reduce
-              {
-                (e.Tiles^) (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) =
-                  <Fetch
-                    e.Tiles
-                    <Seq
-                      (Map (FilterPatternPos s.CurIndexP))
-                      (Map (FilterResultPos s.CurIndexR))
-                      { e.Tiles^ = (e.Tiles); }
-                    >
-                  >;
-              }
-              (e.Tiles) e.MaxItems
-            >;
-        }
-        {
-          t.ReadyTile (e.Tiles^) =
-            t.ReadyTile <FilterOverlapped e.Tiles>;
-        }
-      >
+          )
+          <FilterOverlapped
+            <RejectTile (e.Tiles) e.MaxItems>
+          >;
+      }
     >;
 
   /* пусто */ = /* пусто */;
+}
+
+FindHeavyTile {
+  t.NextTile e.Tiles =
+    <MapReduce
+      {
+        (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
+        (s.Weight s.CurIndexP s.CurIndexR e.Items) =
+          <Fetch
+            <Compare s.MaxWeight s.Weight>
+            {
+              '<' =
+                (s.Weight s.CurIndexP s.CurIndexR e.Items)
+                (s.MaxWeight s.IndexP s.IndexR e.MaxItems);
+
+              s.Other =
+                (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
+                (s.Weight s.CurIndexP s.CurIndexR e.Items);
+            }
+          >;
+      }
+      t.NextTile e.Tiles
+    >;
+}
+
+RejectTile {
+  (e.Tiles) e.HeavyTileItems =
+    <UnBracket
+      <Reduce
+        {
+          (e.Tiles^) (s.CurIndexP s.CurIndexR s.ItemWeight s.Ident) =
+            <Fetch
+              e.Tiles
+              <Seq
+                (Map (FilterPatternPos s.CurIndexP))
+                (Map (FilterResultPos s.CurIndexR))
+                { e.Tiles^ = (e.Tiles); }
+              >
+            >;
+        }
+        (e.Tiles) e.HeavyTileItems
+      >
+    >;
 }
 
 FilterPatternPos {
