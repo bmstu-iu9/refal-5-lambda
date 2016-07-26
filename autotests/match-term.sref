@@ -1,0 +1,18 @@
+Test {
+  'a' = ;
+  Test = ;
+  1 = ;
+  #Test = ;
+  () = ;
+  [Test] = ;
+}
+
+$ENTRY Go {
+  =
+    <Test 'a'>
+    <Test Test>
+    <Test 1>
+    <Test #Test>
+    <Test ()>
+    <Test [Test]>;
+}
