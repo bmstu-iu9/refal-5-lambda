@@ -1,14 +1,14 @@
+//FROM LibraryEx
+$EXTERN Fetch, Seq, SaveFile;
+
 //FROM Lexer
 $EXTERN LexFolding;
 
-//FROM LibraryEx
-$EXTERN Map, Fetch, Seq, SaveFile;
+//FROM Parser
+$EXTERN ParseProgram;
 
 //FROM Error
 $EXTERN EL-Create, EL-Destroy;
-
-//FROM Generator
-$EXTERN GenProgram;
 
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
@@ -16,8 +16,8 @@ $EXTERN HighLevelRASL;
 //FROM LowLevelRASL
 $EXTERN LowLevelRASL;
 
-//FROM Parser
-$EXTERN ParseProgram;
+//FROM Generator
+$EXTERN GenProgram;
 
 /**
   <CompileFile s.GenMode s.Opt (e.SrcName) e.OutputName>
@@ -30,14 +30,10 @@ $EXTERN ParseProgram;
 $ENTRY CompileFile {
   s.GenMode s.Opt (e.SrcName) e.OutputName =
     <Fetch
-      <LexFolding e.SrcName>
+      e.SrcName
       <Seq
-        {
-          e.LexFolding =
-            <ParseProgram
-              <EL-Create e.SrcName> e.LexFolding
-            >;
-        }
+        LexFolding
+        (ParseProgram <EL-Create e.SrcName>)
         {
           t.ErrorList e.AST =
             <Fetch
