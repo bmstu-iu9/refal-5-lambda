@@ -1,0 +1,11 @@
+//FROM LibraryEx
+$EXTERN Fetch, Seq;
+
+$ENTRY Desugar {
+  e.AST =
+    <Fetch
+      e.AST
+      <Seq
+      >
+    >;
+}

@@ -10,6 +10,9 @@ $EXTERN ParseProgram;
 //FROM Error
 $EXTERN EL-Create, EL-Destroy;
 
+//FROM Desugaring
+$EXTERN Desugar;
+
 //FROM HighLevelRASL
 $EXTERN HighLevelRASL;
 
@@ -43,6 +46,7 @@ $ENTRY CompileFile {
                   <Fetch
                     e.AST
                     <Seq
+                      Desugar
                       (HighLevelRASL <SelectOptFlags s.Opt>)
                       (LowLevelRASL s.GenMode)
                       GenProgram
