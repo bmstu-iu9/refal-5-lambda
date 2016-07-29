@@ -56,7 +56,6 @@
         (#Function s.ScopeClass (e.Name) e.Sentences)
       | (#Enum s.ScopeClass e.Name)
       | (#Swap s.ScopeClass e.Name)
-      | (#Stub s.ScopeClass e.Name)
       | (#Declaration s.ScopeClass e.Name)
       | (#Ident e.Name)
       | (#Separator)
@@ -88,8 +87,6 @@
   * `#Function` — определение регулярной (обычной) функции,
   * `#Enum` — определение пустой функции,
   * `#Swap` — определение статического ящика,
-  * `#Stub` — артефакт работы синтаксического анализатора, генерируется
-    в пустое место.
   * `#Declaration` — объявление функции,
   * `#Ident` — объявление идентификатора,
   * `#Separator` — добавляет пустую строку в сгенерированный файл.

@@ -130,7 +130,25 @@ ParseElements {
       {
         (e.NewASTItems) t.ErrorList^ t.SymTable^ e.Tail^ =
           <ParseElements
-            t.ErrorList t.SymTable (e.AST e.NewASTItems) e.Tail
+            t.ErrorList t.SymTable
+            (
+              e.AST
+              <Map
+                {
+                  (#Function s.ScopeClass (e.Name) e.Body) =
+                    (#Function s.ScopeClass (e.Name) e.Body);
+
+                  (#Enum s.ScopeClass e.Name) = (#Enum s.ScopeClass e.Name);
+
+                  (#Swap s.ScopeClass e.Name) = (#Swap s.ScopeClass e.Name);
+
+                  (#Declaration s.ScopeClass e.Name) = /* пусто */;
+                  (#Ident s.ScopeClass e.Name) = /* пусто */;
+                }
+                e.NewASTItems
+              >
+            )
+            e.Tail
           >;
       }
     >;
@@ -161,17 +179,17 @@ ParseElements {
 }
 
 GenFunctionsFromDirective {
-  #EEnum   = #Enum ST-AddDefined  #GN-Entry;
-  #Enum    = #Enum ST-AddDefined  #GN-Local;
-  #ESwap   = #Swap ST-AddDefined  #GN-Entry;
-  #Swap    = #Swap ST-AddDefined  #GN-Local;
+  #EEnum   = #Enum        ST-AddDefined  #GN-Entry;
+  #Enum    = #Enum        ST-AddDefined  #GN-Local;
+  #ESwap   = #Swap        ST-AddDefined  #GN-Entry;
+  #Swap    = #Swap        ST-AddDefined  #GN-Local;
 
-  #Extern  = #Stub AddExtern      #GN-Entry;
+  #Extern  = #Declaration AddExtern      #GN-Entry;
 
   // Директивы $FORWARD и $LABEL эквивалентны пустому месту
-  #Forward = #Stub DontAdd        #GN-Local;
+  #Forward = #Declaration Skip           #GN-Local;
   // Для меток не важно: entry или local.
-  #Ident   = #Stub DontAdd        #GN-Entry;
+  #Ident   = #Ident       Skip           #GN-Entry;
 }
 
 //FROM SymTable
@@ -182,7 +200,7 @@ AddExtern {
     <ST-AddExtern t.ErrorList t.SymTable e.Name>;
 }
 
-DontAdd {
+Skip {
   t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
     t.ErrorList t.SymTable;
 }

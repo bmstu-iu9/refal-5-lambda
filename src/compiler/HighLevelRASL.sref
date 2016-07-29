@@ -52,9 +52,6 @@ $ENTRY HighLevelRASL {
         (#Swap s.ScopeClass e.Name) =
           (#CmdSwap s.ScopeClass e.Name);
 
-        (#Stub s.ScopeClass e.Name) =
-          /* пусто */;
-
         (#Declaration s.ScopeClass e.Name) =
           (#CmdDeclaration s.ScopeClass e.Name);
 
