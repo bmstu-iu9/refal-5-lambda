@@ -1,15 +1,107 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Sort, Reduce;
+$EXTERN Fetch, Seq, Map, MapReduce, Sort, Reduce, Inc;
+
+//FROM Library
+$EXTERN StrFromInt;
 
 $ENTRY Desugar {
   e.AST =
     <Fetch
       e.AST
       <Seq
+        Pass-NameNestedFuncs
         Pass-FlatNestedFuncs
         Pass-CreatePredeclarations
       >
     >;
+}
+
+Pass-NameNestedFuncs {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          <Fetch
+            <NameNestedBody 0 (e.Name) e.Body>
+            {
+              s.NextNumber e.Body^ =
+                (#Function s.ScopeClass (e.Name) e.Body);
+            }
+          >;
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+NameNestedBody {
+  s.StartNumber (e.MainName) e.Sentences =
+    <MapReduce
+      {
+        s.NextNumber ((e.Pattern) (e.Result)) =
+          <Fetch
+            <NameNestedResult s.NextNumber (e.MainName) e.Result>
+            {
+              s.NextNumber^ e.Result^ =
+                s.NextNumber ((e.Pattern) (e.Result));
+            }
+          >;
+      }
+      s.StartNumber e.Sentences
+    >;
+}
+
+NameNestedResult {
+  s.StartNumber (e.MainName) e.Result =
+    <MapReduce
+      {
+        s.NextNumber (#Brackets e.InBrackets) =
+          <Fetch
+            <NameNestedResult s.NextNumber (e.MainName) e.InBrackets>
+            {
+              s.NextNumber^ e.InBrackets^ =
+                s.NextNumber (#Brackets e.InBrackets);
+            }
+          >;
+
+        s.NextNumber (#ADT-Brackets (e.Name) e.InBrackets) =
+          <Fetch
+            <NameNestedResult s.NextNumber (e.MainName) e.InBrackets>
+            {
+              s.NextNumber^ e.InBrackets^ =
+                s.NextNumber (#ADT-Brackets (e.Name) e.InBrackets);
+            }
+          >;
+
+        s.NextNumber (#CallBrackets e.InBrackets) =
+          <Fetch
+            <NameNestedResult s.NextNumber (e.MainName) e.InBrackets>
+            {
+              s.NextNumber^ e.InBrackets^ =
+                s.NextNumber (#CallBrackets e.InBrackets);
+            }
+          >;
+
+        s.NextNumber (#Closure e.Sentences) =
+          <Fetch
+            (<CreateLambdaName e.MainName s.NextNumber>)
+            <NameNestedBody <Inc s.NextNumber> (e.MainName) e.Sentences>
+            {
+              (e.NestedName) s.NextNumber^ e.Sentences^ =
+                s.NextNumber (#Closure (e.NestedName) e.Sentences);
+            }
+          >;
+
+        s.NextNumber t.OtherTerm = s.NextNumber t.OtherTerm;
+      }
+      s.StartNumber e.Result
+    >;
+}
+
+CreateLambdaName {
+  e.Name s.Number =
+    'lambda_' e.Name '_' <StrFromInt s.Number>;
 }
 
 Pass-FlatNestedFuncs {
