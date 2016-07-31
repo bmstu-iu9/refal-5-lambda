@@ -1,5 +1,12 @@
+//FROM LibraryEx
+$EXTERN Fetch, MapReduce, Inc, Map;
+
 //FROM Library
-$EXTERN Add;
+$EXTERN StrFromInt, Add;
+
+//FROM Escape
+$EXTERN EscapeChar;
+
 
 FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
@@ -101,12 +108,6 @@ GenCommonTailer {
   = () ('//End of file');
 }
 
-//FROM LibraryEx
-$EXTERN Map, MapReduce, Fetch;
-
-//FROM Library
-$EXTERN StrFromInt;
-
 $ENTRY GenProgram {
   e.Algorithm =
     <GenCommonHeaders>
@@ -124,9 +125,6 @@ $ENTRY GenProgram {
 ContextRange-B {
   s.RangeOffset = 'context[' <StrFromInt s.RangeOffset> ']';
 }
-
-//FROM Library
-$EXTERN Inc;
 
 ContextRange-E {
   s.RangeOffset = 'context[' <StrFromInt <Inc s.RangeOffset>> ']';
@@ -946,9 +944,6 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icFail, 0, 0, 0},');
 }
-
-//FROM Escape
-$EXTERN EscapeChar;
 
 Escape {
   s.Char = <EscapeChar s.Char>;

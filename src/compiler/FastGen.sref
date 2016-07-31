@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN UnBracket, Map, Fetch, Inc, Dec;
+$EXTERN Map, Fetch, Inc, Dec;
 
 UnBracketAndNum {
   s.Num (e.Any) = s.Num e.Any;

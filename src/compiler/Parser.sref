@@ -1,8 +1,21 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, SaveFile;
+$EXTERN Fetch, Map, Inc, Seq, Dec;
 
 //FROM SymTable
-$EXTERN ST-Create, ST-AddUnresolved;
+$EXTERN ST-Create, ST-AddUnresolved, ST-AddDefined, ST-AddExtern,
+  ST-AddFunctionCall, ST-GetAnyName;
+
+//FROM Error
+$EXTERN EL-AddUnexpected, EL-AddErrorAt;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+//FROM Context
+$EXTERN Cntx-Create, Cntx-Destroy, Cntx-PushScope, Cntx-PopScope,
+  Cntx-ResetAfterSentence, Cntx-AddNewVariable, Cntx-AddVariable,
+  Cntx-CheckVariable;
+
 
 $ENTRY ParseProgram {
   t.ErrorList e.Tokens =
@@ -94,12 +107,6 @@ PrepareBracket {
     Function .
 */
 
-//FROM SymTable
-$EXTERN ST-AddDefined;
-
-//FROM Error
-$EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
-
 ParseElements {
   t.ErrorList t.SymTable (e.AST) (#TkEOF s.LnNum) =
     t.ErrorList t.SymTable e.AST;
@@ -158,9 +165,6 @@ GenFunctionsFromDirective {
   // Для меток не важно: entry или local.
   #Ident   = #Ident       Skip           #GN-Entry;
 }
-
-//FROM SymTable
-$EXTERN ST-AddExtern;
 
 AddExtern {
   t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name =
@@ -250,12 +254,6 @@ ParseNameList-Tail {
   Function = Name '{' Sentence* '}'
 */
 
-//FROM Context
-$EXTERN Cntx-Create, Cntx-Destroy;
-
-//FROM Library
-$EXTERN StrFromInt;
-
 CreateLambdaName {
   e.Name s.Number =
     'lambda_' e.Name '_' <StrFromInt s.Number>;
@@ -340,9 +338,6 @@ GenFunctionBody {
     );
 }
 
-//FROM Context
-$EXTERN Cntx-PushScope, Cntx-PopScope;
-
 /*
   <ParseBlock
     (e.FunctionBodies) t.ErrorList t.SymTable t.Context e.Tokens
@@ -364,9 +359,6 @@ ParseBlock {
       (/* sentences */) e.Tokens
     >;
 }
-
-//FROM LibraryEx
-$EXTERN Inc, Dec;
 
 DoParseBlock {
   (s.Number e.Functions)
@@ -437,9 +429,6 @@ CreateContext {
     >;
 }
 
-//FROM Context
-$EXTERN Cntx-ResetAfterSentence;
-
 ParseSentence {
   (e.Functions) t.ErrorList t.SymTable t.Context
   (e.Sentences) e.Tokens =
@@ -503,12 +492,6 @@ ParseSentence {
       >
     >;
 }
-
-//FROM SymTable
-$EXTERN ST-AddFunctionCall, ST-GetAnyName;
-
-//FROM Context
-$EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
 
 ParsePattern {
   // Обработка литералов атомов
@@ -763,9 +746,6 @@ StrFromBracket {
   #ADT-Brackets = '[';
   #CallBrackets = '<';
 }
-
-//FROM Context
-$EXTERN Cntx-CheckVariable;
 
 /*
   <ParseResult

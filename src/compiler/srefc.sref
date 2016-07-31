@@ -2,8 +2,7 @@
 $EXTERN CompileFile;
 
 //FROM LibraryEx
-$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Seq, Inc, DelAccumulator,
-  MapReduce;
+$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Inc, DelAccumulator, MapReduce;
 
 //FROM Library
 $EXTERN WriteLine, System, Exit, StrFromInt;

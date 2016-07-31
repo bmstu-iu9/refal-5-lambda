@@ -1,3 +1,10 @@
+//FROM LibraryEx
+$EXTERN Map, Reduce;
+
+//FROM Error
+$EXTERN EL-AddErrorAt;
+
+
 $ENUM SymTable;
 
 $ENTRY ST-Create {
@@ -11,12 +18,6 @@ $ENTRY ST-Create {
   e.Idents, e.Externs ::= (e.Name)*
   t.Function ::= (s.ScopeClass e.Name)
 */
-
-//FROM Error
-$EXTERN EL-AddErrorAt;
-
-//FROM LibraryEx
-$EXTERN Map, Reduce;
 
 PatchReferences {
   (e.References) e.Name =
