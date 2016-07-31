@@ -253,8 +253,7 @@ $ENTRY Cntx-PushScope {
 
 /**
   <Cntx-PopScope t.Context>
-    == t.Context e.ClosureContext
-  e.ClosureContext ::= (s.Mode e.Index)*
+    == t.Context
 */
 $ENTRY Cntx-PopScope {
   [Context
@@ -262,5 +261,5 @@ $ENTRY Cntx-PopScope {
     (#FreeVarsSent) (#FreeVarsFunc e.ClosureContext)
     e.Outers
   ] =
-    [Context <Dec s.StackDepth> e.Outers] e.ClosureContext;
+    [Context <Dec s.StackDepth> e.Outers];
 }

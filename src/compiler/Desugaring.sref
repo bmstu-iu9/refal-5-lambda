@@ -1,13 +1,292 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Sort;
+$EXTERN Fetch, Seq, Map, MapReduce, Sort, Reduce;
 
 $ENTRY Desugar {
   e.AST =
     <Fetch
       e.AST
       <Seq
+        Pass-FlatNestedFuncs
         Pass-CreatePredeclarations
       >
+    >;
+}
+
+Pass-FlatNestedFuncs {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          <Fetch
+            <ExtractNested e.Body>
+            {
+              (e.NestedFuncs) e.Body^ =
+                e.NestedFuncs
+                (#Function s.ScopeClass (e.Name) e.Body);
+            }
+          >;
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+ExtractNested {
+  e.Sentences =
+    <Fetch
+      <ExtractNestedRec (/* внешних переменных нет */) e.Sentences>
+      {
+        (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^ =
+          (e.NestedFuncs) e.Sentences;
+      }
+    >;
+}
+
+ExtractNestedRec {
+  (e.ScopeVars) e.Sentences =
+    <Fetch
+      <MapReduce
+        {
+          ((e.NestedFuncs) (e.BorrowedVars)) ((e.Pattern) (e.Result)) =
+            <Fetch
+              <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
+              {
+                (e.BorrowedVars^) e.LocalVars =
+                  <Fetch
+                    <ExtractNested-Result
+                      (e.NestedFuncs) (e.BorrowedVars)
+                      (e.ScopeVars) (e.LocalVars) e.Result
+                    >
+                    {
+                      (e.NestedFuncs^) (e.BorrowedVars^) e.Result^ =
+                        ((e.NestedFuncs) (e.BorrowedVars))
+                        ((e.Pattern) (e.Result));
+                    }
+                  >;
+              }
+            >;
+        }
+        ((/* вложенные функции */) (/* заимствованные переменные */))
+        e.Sentences
+      >
+      {
+        ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^ =
+          (e.BorrowedVars) (e.NestedFuncs) e.Sentences;
+      }
+    >;
+}
+
+ExtractNested-Pattern {
+  (e.ScopeVars) (e.BorrowedVars) e.Pattern =
+    <Fetch
+      e.Pattern
+      <Seq
+        ExtractAllVars
+        Uniq
+        (MapReduce RemoveBorrowedVars (e.BorrowedVars))
+        {
+          (e.BorrowedVars^) e.LocalVars =
+            <MapReduce
+              FindBorrowedVars
+              ((e.ScopeVars) (e.BorrowedVars))
+              e.LocalVars
+            >;
+        }
+        {
+          ((e.ScopeVars^) (e.BorrowedVars^)) e.LocalVars =
+            (e.BorrowedVars) e.LocalVars;
+        }
+      >
+    >;
+}
+
+ExtractAllVars {
+  (#TkVariable s.Mode e.Index) e.Tail =
+    (s.Mode e.Index) <ExtractAllVars e.Tail>;
+
+  (#Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
+  (#ADT-Brackets e.Inner) e.Tail = <ExtractAllVars e.Inner e.Tail>;
+
+  t.OtherTerm e.Tail = <ExtractAllVars e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
+Uniq {
+  e.Uniqs t.Repeated e.NotScanned-M t.Repeated e.NotScanned-E =
+    e.Uniqs <Uniq e.NotScanned-M t.Repeated e.NotScanned-E>;
+
+  e.Uniqs = e.Uniqs;
+}
+
+RemoveBorrowedVars {
+  (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E) (s.Mode e.Index) =
+    (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E)
+    /* отбрасываем */;
+
+  (e.BorrowedVars) (s.Mode e.Index) = (e.BorrowedVars) (s.Mode e.Index);
+}
+
+FindBorrowedVars {
+  (
+    (e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E)
+    (e.BorrowedVars)
+  )
+  (s.Mode e.Index) =
+    (
+      (e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E)
+      (e.BorrowedVars (s.Mode e.Index))
+    );
+
+  ((e.ScopeVars) (e.BorrowedVars)) (s.Mode e.Index) =
+    ((e.ScopeVars) (e.BorrowedVars)) (s.Mode e.Index);
+}
+
+ExtractNested-Result {
+  (e.OriginNestedFuncs) (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars)
+  e.OriginResult =
+    <Fetch
+      <MapReduce
+        (ExtractNested-Result-Term (e.ScopeVars) (e.LocalVars))
+        ((e.OriginNestedFuncs) (e.OriginBorrowedVars)) e.OriginResult
+      >
+      {
+        ((e.NestedFuncs) (e.BorrowedVars)) e.Result =
+          (e.NestedFuncs) (e.BorrowedVars) e.Result;
+      }
+    >;
+}
+
+ExtractNested-Result-Term {
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars)) (#TkVariable s.Mode e.Index) =
+    (
+      (e.NestedFuncs)
+      <CheckBorrowed (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index)>
+    )
+    (#TkVariable s.Mode e.Index);
+
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars)) (#Brackets e.InBrackets) =
+    <Fetch
+      <ExtractNested-Result
+        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.InBrackets
+      >
+      {
+        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
+          ((e.NestedFuncs) (e.BorrowedVars))
+          (#Brackets e.InBrackets);
+      }
+    >;
+
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars))
+  (#ADT-Brackets (e.Name) e.InBrackets) =
+    <Fetch
+      <ExtractNested-Result
+        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.InBrackets
+      >
+      {
+        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
+          ((e.NestedFuncs) (e.BorrowedVars))
+          (#ADT-Brackets (e.Name) e.InBrackets);
+      }
+    >;
+
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars))
+  (#CallBrackets e.InBrackets) =
+    <Fetch
+      <ExtractNested-Result
+        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.InBrackets
+      >
+      {
+        (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^ =
+          ((e.NestedFuncs) (e.BorrowedVars))
+          (#CallBrackets e.InBrackets);
+      }
+    >;
+
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars))
+  (#Closure (e.ClosureName) e.Body) =
+    <Fetch
+      <ExtractNestedRec (e.ScopeVars e.LocalVars) e.Body>
+      {
+        (/* свободные переменные в функции отсутствуют */)
+        (e.NestedNestedFuncs) e.Body^ =
+          (
+            (
+              e.NestedFuncs e.NestedNestedFuncs
+              (#Function #GN-Local (e.ClosureName) e.Body)
+            )
+            (e.BorrowedVars)
+          )
+          (#TkName e.ClosureName);
+
+        (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^ =
+          (
+            (
+              e.NestedFuncs e.NestedNestedFuncs
+              (#Function
+                #GN-Local (e.ClosureName)
+                <Map (AddContextToSentence e.NestedBorrowedVars) e.Body>
+              )
+            )
+            <Reduce
+              (CheckBorrowed (e.ScopeVars))
+              (e.BorrowedVars) e.NestedBorrowedVars
+            >
+          )
+          (#CallBrackets
+            (#TkName #CreateClosure)
+            (#TkName e.ClosureName)
+            <CreateContext e.NestedBorrowedVars>
+          );
+      }
+    >;
+
+  (e.ScopeVars) (e.LocalVars)
+  ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm =
+    ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm;
+}
+
+CheckBorrowed {
+  (e.ScopeVars) (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E)
+  (s.Mode e.Index) =
+    (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E);
+
+  (e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E) (e.BorrowedVars)
+  (s.Mode e.Index) =
+    (e.BorrowedVars (s.Mode e.Index));
+
+  (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) =
+    (e.BorrowedVars);
+}
+
+AddContextToSentence {
+  e.Context ((e.Pattern) (e.Result)) =
+    (
+      (
+        <CreateContext e.Context>
+        e.Pattern
+      )
+      (e.Result)
+    );
+}
+
+CreateContext {
+  e.Context =
+    <Map
+      {
+        ('e' e.Index) = (#Brackets (#TkVariable 'e' e.Index));
+        (s.Mode e.Index) = (#TkVariable s.Mode e.Index);
+      }
+      e.Context
     >;
 }
 
