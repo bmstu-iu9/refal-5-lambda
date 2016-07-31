@@ -95,31 +95,14 @@ PrepareBracket {
 */
 
 //FROM SymTable
-$EXTERN ST-AllFunctions, ST-AllIdents, ST-AddDefined;
+$EXTERN ST-AddDefined;
 
 //FROM Error
 $EXTERN EL-AddError, EL-AddErrorAt, EL-AddUnexpected;
 
-//FROM LibraryEx
-$EXTERN Sort;
-
 ParseElements {
   t.ErrorList t.SymTable (e.AST) (#TkEOF s.LnNum) =
-    t.ErrorList t.SymTable
-    <Map
-      {
-        (s.ScopeClass e.Name) = (#Declaration s.ScopeClass e.Name);
-      }
-      <Sort <ST-AllFunctions t.SymTable>>
-    >
-    (#Separator)
-    <Map
-      {
-        (e.Name) = (#Ident e.Name);
-      }
-      <Sort <ST-AllIdents t.SymTable>>
-    >
-    e.AST;
+    t.ErrorList t.SymTable e.AST;
 
   t.ErrorList t.SymTable (e.AST)
   (#TkDirective s.LnNum s.Directive) e.Tail =
@@ -131,23 +114,7 @@ ParseElements {
         (e.NewASTItems) t.ErrorList^ t.SymTable^ e.Tail^ =
           <ParseElements
             t.ErrorList t.SymTable
-            (
-              e.AST
-              <Map
-                {
-                  (#Function s.ScopeClass (e.Name) e.Body) =
-                    (#Function s.ScopeClass (e.Name) e.Body);
-
-                  (#Enum s.ScopeClass e.Name) = (#Enum s.ScopeClass e.Name);
-
-                  (#Swap s.ScopeClass e.Name) = (#Swap s.ScopeClass e.Name);
-
-                  (#Declaration s.ScopeClass e.Name) = /* пусто */;
-                  (#Ident s.ScopeClass e.Name) = /* пусто */;
-                }
-                e.NewASTItems
-              >
-            )
+            (e.AST e.NewASTItems)
             e.Tail
           >;
       }
@@ -236,7 +203,7 @@ ParseNameList {
   t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
-      (e.AST (s.ASTItem s.ScopeClass e.Name))
+      (e.AST <Wrap s.ASTItem s.ScopeClass e.Name>)
       <s.TableChangeFunc t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name>
       s.ASTItem s.TableChangeFunc s.ScopeClass
       e.Tail
@@ -248,6 +215,12 @@ ParseNameList {
     (e.AST)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.SymTable t.Unexpected e.Tail;
+}
+
+Wrap {
+  #Ident s.ScopeClass e.Name = (#Ident e.Name);
+
+  s.ASTItem s.ScopeClass e.Name = (s.ASTItem s.ScopeClass e.Name);
 }
 
 ParseNameList-Tail {
@@ -532,7 +505,7 @@ ParseSentence {
 }
 
 //FROM SymTable
-$EXTERN ST-AddFunctionCall, ST-AddIdent, ST-GetAnyName;
+$EXTERN ST-AddFunctionCall, ST-GetAnyName;
 
 //FROM Context
 $EXTERN Cntx-AddNewVariable, Cntx-AddVariable;
@@ -566,8 +539,7 @@ ParsePattern {
   (e.Scanned)
   (#TkIdentMarker s.LnNumMarker) (#TkName s.LnNumName e.Name) e.Tail =
     <ParsePattern
-      t.ErrorList <ST-AddIdent t.SymTable e.Name>
-      t.Context (e.MultiBrackets)
+      t.ErrorList t.SymTable t.Context (e.MultiBrackets)
       (e.Scanned (#TkIdentifier e.Name)) e.Tail
     >;
 
@@ -833,8 +805,7 @@ ParseResult {
   (#TkIdentMarker s.MarkerLnNum) (#TkName s.NameLnNum e.Name) e.Tail =
     <ParseResult
       (e.Functions)
-      t.ErrorList <ST-AddIdent t.SymTable e.Name>
-      t.Context
+      t.ErrorList t.SymTable t.Context
       (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
     >;
 

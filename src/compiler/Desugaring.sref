@@ -1,11 +1,218 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq;
+$EXTERN Fetch, Seq, Map, MapReduce, Sort;
 
 $ENTRY Desugar {
   e.AST =
     <Fetch
       e.AST
       <Seq
+        Pass-CreatePredeclarations
       >
     >;
+}
+
+Pass-CreatePredeclarations {
+  e.AST =
+    /*
+      Функция принимает абстрактное синтаксическое дерево
+      и формирует новое с устранением избыточных элементов
+      и созданием необходимых.
+    */
+    <Fetch
+      e.AST
+      <Seq
+        RemoveRedudandElements
+        FoldEnums
+        (Map
+          {
+            (#Swap s.ScopeClass e.Name) = (#SwapEnum #Swap s.ScopeClass e.Name);
+            (#Enum s.ScopeClass e.Name) = (#SwapEnum #Enum s.ScopeClass e.Name);
+
+            t.Other = t.Other;
+          }
+        )
+        (MapReduce
+          {
+            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (#Function s.ScopeClass (e.Name) e.Body) =
+              <Fetch
+                <ExtractIdents e.Body>
+                {
+                  (e.FuncIdents) e.Body^ =
+                    (
+                      (e.FuncDecls (#Declaration s.ScopeClass e.Name))
+                      (e.SwapsEnums)
+                      (e.Idents e.FuncIdents)
+                    )
+                    (#Function s.ScopeClass (e.Name) e.Body);
+                }
+              >;
+
+            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (#SwapEnum s.Type s.ScopeClass e.Name) =
+              (
+                (<FuncDeclsCleanup (e.Name) e.FuncDecls>)
+                (e.SwapsEnums (s.Type s.ScopeClass e.Name))
+                (e.Idents)
+              )
+              /* пусто */;
+
+            (
+              (e.FuncDecls)
+              (e.SwapEnums-B (s.Type s.ScopeClass e.Name) e.SwapEnums-E)
+              (e.Idents)
+            )
+            (#Declaration s.ScopeClass e.Name) =
+              (
+                (e.FuncDecls)
+                (e.SwapEnums-B (s.Type s.ScopeClass e.Name) e.SwapEnums-E)
+                (e.Idents)
+              )
+              /* пусто */;
+
+            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (#Declaration s.ScopeClass e.Name) =
+              (
+                (e.FuncDecls (#Declaration s.ScopeClass e.Name))
+                (e.SwapsEnums)
+                (e.Idents)
+              )
+              /* пусто */;
+
+            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (#Ident e.Name) =
+              ((e.FuncDecls) (e.SwapsEnums) (e.Idents (#Ident e.Name)))
+              /* пусто */;
+          }
+          ((/* объявления */) (/* swap’ы и enum’ы */) (/* идентификаторы */))
+        )
+        {
+          ((e.FuncDecls) (e.SwapsEnums) (e.Idents)) e.Functions =
+            <UniqSorted <Sort e.FuncDecls>>
+            (#Separator)
+            <UniqSorted <Sort e.Idents>>
+            e.SwapsEnums
+            e.Functions;
+        }
+      >
+    >;
+}
+
+RemoveRedudandElements {
+  /*
+    При реализации вставок кода на C++ функция
+    ничего не должна будет удалять, поскольку не известно,
+    какие именно сущности используются или объявляются в коде.
+  */
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          (#Function s.ScopeClass (e.Name) e.Body);
+
+        (#Enum s.ScopeClass e.Name) =
+          (#Enum s.ScopeClass e.Name);
+
+        (#Swap s.ScopeClass e.Name) =
+          (#Swap s.ScopeClass e.Name);
+
+        (#Declaration #GN-Entry e.Name) =
+          (#Declaration #GN-Entry e.Name);
+
+        (#Declaration #GN-Local e.Name) =
+          /* пусто */;
+
+        (#Ident e.Name) =
+          /* пусто */;
+      }
+      e.AST
+    >;
+}
+
+FoldEnums {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) /* пусто */) =
+          (#Enum s.ScopeClass e.Name);
+
+        t.Other = t.Other;
+      }
+      e.AST
+    >;
+}
+
+ExtractIdents {
+  e.Body =
+    <MapReduce
+      {
+        (e.Idents) ((e.Pattern) (e.Result)) =
+          <Fetch
+            (<ExtractIdent-Expr e.Pattern>)
+            (<ExtractIdent-Expr e.Result>)
+            {
+              ((e.PatternIdents) e.Pattern^) ((e.ResultIdents) e.Result^) =
+                (e.Idents e.PatternIdents e.ResultIdents)
+                ((e.Pattern) (e.Result));
+            }
+          >;
+      }
+      (/* idents */)
+      e.Body
+    >;
+}
+
+ExtractIdent-Expr {
+  e.Expr =
+    <MapReduce
+      {
+        (e.Idents) (#TkIdentifier e.Name) =
+          (e.Idents (#Ident e.Name)) (#TkIdentifier e.Name);
+
+        (e.Idents) (#Brackets e.SubExpr) =
+          <Fetch
+            <ExtractIdent-Expr e.SubExpr>
+            {
+              (e.SubIdents) e.SubExpr^ =
+                (e.Idents e.SubIdents) (#Brackets e.SubExpr);
+            }
+          >;
+
+        (e.Idents) (#ADT-Brackets (e.Name) e.SubExpr) =
+          <Fetch
+            <ExtractIdent-Expr e.SubExpr>
+            {
+              (e.SubIdents) e.SubExpr^ =
+                (e.Idents e.SubIdents) (#ADT-Brackets (e.Name) e.SubExpr);
+            }
+          >;
+
+        (e.Idents) (#CallBrackets e.SubExpr) =
+          <Fetch
+            <ExtractIdent-Expr e.SubExpr>
+            {
+              (e.SubIdents) e.SubExpr^ =
+                (e.Idents e.SubIdents) (#CallBrackets e.SubExpr);
+            }
+          >;
+
+        (e.Idents) t.OtherTerm = (e.Idents) t.OtherTerm;
+      }
+      (/* idents */)
+      e.Expr
+    >;
+}
+
+FuncDeclsCleanup {
+  (e.Name) e.FuncDecls-B (#Declaration s.ScopeClass e.Name) e.FuncDecls-E =
+    e.FuncDecls-B <FuncDeclsCleanup (e.Name) e.FuncDecls-E>;
+
+  (e.Name) e.FuncDecls = e.FuncDecls;
+}
+
+UniqSorted {
+  e.Uniqs t.Repeated t.Repeated e.NotScanned =
+    e.Uniqs <UniqSorted t.Repeated e.NotScanned>;
+
+  e.Uniqs = e.Uniqs;
 }

@@ -6,7 +6,7 @@ $ENTRY ST-Create {
 
 /*
   Внутренний формат
-  t.SymTable ::= [SymTable (t.Reference*) (e.Idents) (e.Externs) t.Function*]
+  t.SymTable ::= [SymTable (t.Reference*) (e.Externs) t.Function*]
   t.Reference ::= (s.LnNum e.Name)
   e.Idents, e.Externs ::= (e.Name)*
   t.Function ::= (s.ScopeClass e.Name)
@@ -42,34 +42,34 @@ PatchReferences {
 $ENTRY ST-AddDefined {
   t.ErrorList
   [SymTable
-    (e.References) (e.Idents) (e.Externs)
+    (e.References) (e.Externs)
     e.Names-B (s.AnyScopeClass e.Name) e.Names-E
   ]
   s.ScopeClass s.LnNum e.Name =
     <EL-AddErrorAt t.ErrorList s.LnNum 'Function ' e.Name ' already defined'>
     [SymTable
-      (e.References) (e.Idents) (e.Externs)
+      (e.References) (e.Externs)
       e.Names-B (s.AnyScopeClass e.Name) e.Names-E
     ];
 
   t.ErrorList
   [SymTable
-    (e.References) (e.Idents) (e.Externs-B (e.Name) e.Externs-E) e.Names
+    (e.References) (e.Externs-B (e.Name) e.Externs-E) e.Names
   ]
   s.ScopeClass s.LnNum e.Name =
     t.ErrorList
     [SymTable
       <PatchReferences (e.References) e.Name>
-      (e.Idents) (e.Externs-B e.Externs-E) e.Names (s.ScopeClass e.Name)
+      (e.Externs-B e.Externs-E) e.Names (s.ScopeClass e.Name)
     ];
 
   t.ErrorList
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names]
+  [SymTable (e.References) (e.Externs) e.Names]
   s.ScopeClass s.LnNum e.Name =
     t.ErrorList
     [SymTable
       <PatchReferences (e.References) e.Name>
-      (e.Idents) (e.Externs) e.Names (s.ScopeClass e.Name)
+      (e.Externs) e.Names (s.ScopeClass e.Name)
     ];
 }
 
@@ -80,73 +80,60 @@ $ENTRY ST-AddExtern {
   */
   t.ErrorList
   [SymTable
-    (e.References) (e.Idents) (e.Externs-B (e.Name) e.Externs-E) e.Names
+    (e.References) (e.Externs-B (e.Name) e.Externs-E) e.Names
   ]
   e.Name =
     t.ErrorList
     [SymTable
-      (e.References) (e.Idents) (e.Externs-B (e.Name) e.Externs-E) e.Names
+      (e.References) (e.Externs-B (e.Name) e.Externs-E) e.Names
     ];
 
   t.ErrorList
   [SymTable
-    (e.References) (e.Idents) (e.Externs)
+    (e.References) (e.Externs)
     e.Names-B (s.ScopeClass e.Name) e.Names-E
   ]
   e.Name =
     t.ErrorList
     [SymTable
-      (e.References) (e.Idents) (e.Externs)
+      (e.References) (e.Externs)
       e.Names-B (s.ScopeClass e.Name) e.Names-E
     ];
 
   t.ErrorList
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names] e.Name =
+  [SymTable (e.References) (e.Externs) e.Names] e.Name =
     t.ErrorList
     [SymTable
       <PatchReferences (e.References) e.Name>
-      (e.Idents) (e.Externs (e.Name)) e.Names
+      (e.Externs (e.Name)) e.Names
     ];
 }
 
 $ENTRY ST-AddFunctionCall {
   [SymTable
-    (e.References) (e.Idents) (e.Externs-B (e.Name) e.Externs-E) e.Names
+    (e.References) (e.Externs-B (e.Name) e.Externs-E) e.Names
   ]
   s.LnNum e.Name =
     [SymTable
-      (e.References) (e.Idents) (e.Externs-B (e.Name) e.Externs-E) e.Names
+      (e.References) (e.Externs-B (e.Name) e.Externs-E) e.Names
     ];
 
   [SymTable
-    (e.References) (e.Idents) (e.Externs)
+    (e.References) (e.Externs)
     e.Names-B (s.ScopeClass e.Name) e.Names-E
   ]
   s.LnNum e.Name =
     [SymTable
-      (e.References) (e.Idents) (e.Externs)
+      (e.References) (e.Externs)
       e.Names-B (s.ScopeClass e.Name) e.Names-E
     ];
 
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names] s.LnNum e.Name =
-    [SymTable (e.References (s.LnNum e.Name)) (e.Idents) (e.Externs) e.Names];
-}
-
-$ENTRY ST-AddIdent {
-  [SymTable (e.References) (e.Idents-B (e.Name) e.Idents-E) (e.Externs) e.Names]
-  e.Name =
-    [SymTable
-      (e.References) (e.Idents-B (e.Name) e.Idents-E) (e.Externs) e.Names
-    ];
-
-
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names]
-  e.Name =
-    [SymTable (e.References) (e.Idents (e.Name)) (e.Externs) e.Names];
+  [SymTable (e.References) (e.Externs) e.Names] s.LnNum e.Name =
+    [SymTable (e.References (s.LnNum e.Name)) (e.Externs) e.Names];
 }
 
 $ENTRY ST-AddUnresolved {
-  t.ErrorList [SymTable (e.References) (e.Idents) (e.Externs) e.Names] =
+  t.ErrorList [SymTable (e.References) (e.Externs) e.Names] =
     <Reduce
       {
         t.ErrorList^ (s.LnNum e.Name) =
@@ -158,25 +145,9 @@ $ENTRY ST-AddUnresolved {
     >;
 }
 
-/**
-  <ST-AllFunctions t.SymTable>
-    == (s.ScopeClass e.Name)*
-*/
-$ENTRY ST-AllFunctions {
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names] =
-    e.Names <Map { (e.Name) = (#GN-Entry e.Name); } e.Externs>;
-}
-
-/**
-  <ST-AllIdents t.SymTable> == (e.Name)*
-*/
-$ENTRY ST-AllIdents {
-  [SymTable (e.References) (e.Idents) (e.Externs) e.Names] = e.Idents;
-}
-
 $ENTRY ST-GetAnyName {
   [SymTable
-    (e.References) (e.Idents) (e.Externs)
+    (e.References) (e.Externs)
     e.Names-B (s.ScopeClass e.Name) e.Names-E
   ] =
     e.Name;
