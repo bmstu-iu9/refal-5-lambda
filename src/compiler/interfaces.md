@@ -46,21 +46,21 @@
 * `#TkUnexpected e.Unexpected` — лексема с последовательностью неопознанных
   символов.
 
-## Синтаксический анализ (проход 3-5)
+## Синтаксический анализ (проход 3-4)
 
     <ParseProgram t.ErrorList e.Tokens>
       == t.ErrorList e.AST
 
     e.AST ::= t.ProgramElement*
     t.ProgramElement ::=
-        (#Function s.ScopeClass (e.Name) e.Sentences)
-      | (#Enum s.ScopeClass e.Name)
-      | (#Swap s.ScopeClass e.Name)
-      | (#Declaration s.ScopeClass e.Name)
-      | (#Ident e.Name)
-      | (#Separator)
+        (#Function t.SrcPos s.ScopeClass (e.Name) e.Sentences)
+      | (#Enum t.SrcPos s.ScopeClass e.Name)
+      | (#Swap t.SrcPos s.ScopeClass e.Name)
+      | (#Declaration t.SrcPos s.ScopeClass e.Name)
+      | (#Ident t.SrcPos e.Name)
 
     s.ScopeClass ::= #GN-Entry | #GN-Local
+    t.SrcPos ::= s.LineNumber
 
     e.Sentences ::= t.Sentence*
     t.Sentence ::= ((e.Pattern) (e.Result))
@@ -70,26 +70,27 @@
     t.Term ::=
         (#TkChar s.Char)
       | (#TkNumber s.Number)
-      | (#TkName e.Name)
+      | (#TkName t.SrcPos e.Name)
       | (#TkIdentifier e.Name)
       | (#Brackets e.Expression)
-      | (#ADT-Brackets (e.Name) e.Expression)
+      | (#ADT-Brackets t.SrcPos (e.Name) e.Expression)
       | (#CallBrackets e.Expression)
-      | (#TkVariable s.Mode e.Index s.Depth)
+      | (#TkVariable t.SrcPos s.Mode e.Index)
+      | (#TkNewVariable t.SrcPos s.Mode e.Index)
+      | (#Closure e.Sentences)
 
 * `t.ErrorList` — список ошибок, определён в `Error.sref`.
 * `e.Tokens` — последовательность токенов (см. выше).
 * `e.AST` — синтаксическое дерево исходного текста.
 * `t.ProgramElement` — генерируемый элемент верхнего уровня. Предполагается, что
-  при генерации последовательно для каждого элемента программы генерируется свой
-  кусок кода: определение или объявление функции, определение идентификатора,
-  _ничего,_ пустая строка. Делится на
+  при генерации для каждого элемента программы генерируется свой кусок кода:
+  определение или объявление функции, определение идентификатора. Делится на
   * `#Function` — определение регулярной (обычной) функции,
   * `#Enum` — определение пустой функции,
   * `#Swap` — определение статического ящика,
   * `#Declaration` — объявление функции,
-  * `#Ident` — объявление идентификатора,
-  * `#Separator` — добавляет пустую строку в сгенерированный файл.
+  * `#Ident` — объявление идентификатора.
+* `t.SrcPos` — позиция данного объекта (требуется при семантической проверке).
 * `s.ScopeClass` — область видимости для функции.
 * `t.Sentence` — отдельное предложение.
 * `e.Pattern`, `e.Result` — левая и правая части соответственно, оба имеют
@@ -106,13 +107,62 @@
     которая является тегом для абстрактных скобок.
   * `#CallBrackets` — терм активации. Содержит подвыражение. Может находиться
     только в правой части.
-  * `#TkVariable` — переменная. `s.Depth` — глубина вложенности вложенной
-    функции, в которой эта переменная впервые определена. Для именованных
-    функций `s.Depth` равен нулю.
+  * `#TkVariable` — переменная.
+  * `#TkNewVariable` — переменная, помеченная знаком переопределения.
+  * `#Closure` — тело вложенной функции.
 
 Следует отметить, что в AST нет вложенных функций, поскольку они как
 синтаксический сахар разрешаются на уровне синтаксического анализа, превращаясь
 в глобальные именованные функции с именами `lambda_…_N`.
+
+## Редуктор до подмножества (обессахариватель) (проход 5)
+    <Desugar e.AST>
+      == e.ReducedAST
+
+    e.ReducedAST ::= t.ReducedProgramElement*
+
+    t.ReducedProgramElement ::=
+        (#Function s.ScopeClass (e.Name) e.ReducedSentences)
+      | (#Enum s.ScopeClass e.Name)
+      | (#Swap s.ScopeClass e.Name)
+      | (#Declaration s.ScopeClass e.Name)
+      | (#Ident e.Name)
+      | (#Separator)
+
+    e.ReducedSentences ::= t.ReducedSentence*
+    t.ReducedSentence ::= ((e.ReducedPattern) (e.ReducedResult))
+    e.ReducedPattern, e.ReducedResult ::= e.ReducedExpression
+
+    e.ReducedExpression ::= t.ReducedTerm*
+    t.ReducedTerm ::=
+        (#TkChar s.Char)
+      | (#TkNumber s.Number)
+      | (#TkName e.Name)
+      | (#TkIdentifier e.Name)
+      | (#Brackets e.ReducedExpression)
+      | (#ADT-Brackets (e.Name) e.Expression)
+      | (#CallBrackets e.Expression)
+      | (#TkVariable s.Mode e.Index s.Depth)
+
+Ниже описаны только отличия `e.ReducedAST` от `e.AST`.
+
+* `t.ReducedProgramElement` — генерируемый элемент верхнего уровня.
+  Предполагается, что при генерации последовательно для каждого элемента
+  программы генерируется свой кусок кода: определение или объявление функции,
+  определение идентификатора, пустая строка. В отличие от `t.ProgramElement`,
+  эти элементы уже не несут позиции. Редуктор гарантирует, что для каждой
+  функции создаётся ровно одно предобъявление, за исключением пустых функций
+  и статических ящиков. Смысл у элементов тот же, что и в `t.ProgramElement`
+  за исключением `#Separator` — он при генерации даёт пустую строку (за счёт
+  чего сгенерированный код читается лучше).
+* `t.ReducedTerm` — некоторые виды термов уже не несут позицию в исходном
+  тексте, `#TkNewVariable` и `#Closure` отсутствуют. Переменные имеют
+  дополнительный атрибут `s.Depth` — глубина вложенности вложенной функции,
+  в которой эта переменная впервые определена. Для именованных функций
+  `s.Depth` равен нулю. Таким образом, `#TkNewVariable` превращается
+  в `#TkVariable` с индексом глубины, равным глубине самой функции.
+  Вложенные функции из `#Closure` превращаются в глобальные функции
+  в `t.ReducedProgramElement`.
 
 ## Генерация высокоуровневого RASL’а (проход 6)
     <HighLevelRASL e.AST>
@@ -328,8 +378,6 @@
     удаления терма конкретизации (предполагается, что оно либо не нужно, либо
     удаляется при помощи `#CmdTrash`).
   * `(#CmdUseRes)` — добавляет в целевой код команду `refalrts::use(res);`.
-
-
 
 
 ### Вычислительная модель высокоуровневых команд
