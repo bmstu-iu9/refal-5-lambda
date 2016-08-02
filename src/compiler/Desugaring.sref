@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Sort, Reduce, Inc, DelAccumulator;
+$EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 
 //FROM Library
 $EXTERN StrFromInt;
