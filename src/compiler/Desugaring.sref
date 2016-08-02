@@ -9,10 +9,109 @@ $ENTRY Desugar {
     <Fetch
       e.AST
       <Seq
+        Pass-EnumerateVariables
         Pass-NameNestedFuncs
         Pass-FlatNestedFuncs
         Pass-CreatePredeclarations
       >
+    >;
+}
+
+Pass-EnumerateVariables {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          (#Function
+            s.ScopeClass (e.Name)
+            <EnumerateVars-Sentences 1 (/* переменные */) e.Body>
+          );
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+EnumerateVars-Sentences {
+  s.Depth (e.ScopeVars) e.Sentences =
+    <Map
+      {
+        ((e.Pattern) (e.Result)) =
+          <Fetch
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+            {
+              (e.ScopeVars^) e.Pattern^ =
+                <Fetch
+                  <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+                  {
+                    (e.ScopeVars^) e.Result^ =
+                      ((e.Pattern) (e.Result));
+                  }
+                >;
+            }
+          >;
+      }
+      e.Sentences
+    >;
+}
+
+EnumerateVars-Expr {
+  s.Depth (e.OriginScopeVars) e.Expr =
+    <MapReduce
+      {
+        (e.ScopeVars-B (s.Mode e.Index s.Depth^) e.ScopeVars-E)
+        (#TkVariable s.Mode e.Index) =
+          (e.ScopeVars-B (s.Mode e.Index s.Depth) e.ScopeVars-E)
+          (#TkVariable s.Mode e.Index s.Depth);
+
+        (e.ScopeVars) (#TkVariable s.Mode e.Index) =
+          ((s.Mode e.Index s.Depth) e.ScopeVars)
+          (#TkVariable s.Mode e.Index s.Depth);
+
+        (e.ScopeVars) (#TkNewVariable s.Mode e.Index) =
+          ((s.Mode e.Index s.Depth) e.ScopeVars)
+          (#TkVariable s.Mode e.Index s.Depth);
+
+        (e.ScopeVars) (#Brackets e.InBrackets) =
+          <Fetch
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
+            {
+              (e.ScopeVars^) e.InBrackets^ =
+                (e.ScopeVars) (#Brackets e.InBrackets);
+            }
+          >;
+
+        (e.ScopeVars) (#ADT-Brackets (e.Name) e.InBrackets) =
+          <Fetch
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
+            {
+              (e.ScopeVars^) e.InBrackets^ =
+                (e.ScopeVars) (#ADT-Brackets (e.Name) e.InBrackets);
+            }
+          >;
+
+        (e.ScopeVars) (#CallBrackets e.InBrackets) =
+          <Fetch
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.InBrackets>
+            {
+              (e.ScopeVars^) e.InBrackets^ =
+                (e.ScopeVars) (#CallBrackets e.InBrackets);
+            }
+          >;
+
+        (e.ScopeVars) (#Closure e.Sentences) =
+          <Fetch
+            <EnumerateVars-Sentences <Inc s.Depth> (e.ScopeVars) e.Sentences>
+            {
+              e.Sentences^ =
+                (e.ScopeVars) (#Closure e.Sentences);
+            }
+          >;
+
+        (e.ScopeVars) t.OtherTerm = (e.ScopeVars) t.OtherTerm;
+      }
+      (e.OriginScopeVars) e.Expr
     >;
 }
 

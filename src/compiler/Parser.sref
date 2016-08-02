@@ -426,10 +426,10 @@ ParsePattern {
         Cntx-AddNewVariable s.LnNumVar s.Mode e.Index
       >
       {
-        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+        t.ErrorList^ t.Context^ s.Mode^ =
           <ParsePattern
             t.ErrorList t.SymTable t.Context (e.MultiBracket)
-            (e.Scanned (#TkVariable s.Mode e.Index s.Depth)) e.Tail
+            (e.Scanned (#TkNewVariable s.Mode e.Index)) e.Tail
           >;
       }
     >;
@@ -442,10 +442,10 @@ ParsePattern {
         Cntx-AddVariable s.LnNum s.Mode e.Index
       >
       {
-        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+        t.ErrorList^ t.Context^ s.Mode^ =
           <ParsePattern
             t.ErrorList t.SymTable t.Context (e.MultiBracket)
-            (e.Scanned (#TkVariable s.Mode e.Index s.Depth)) e.Tail
+            (e.Scanned (#TkVariable s.Mode e.Index)) e.Tail
           >;
       }
     >;
@@ -597,22 +597,22 @@ CheckAddVariable {
     <Fetch
       <s.FnContextModifier t.Context s.Mode e.Index>
       {
-        t.Context^ # Success s.Depth =
-          t.ErrorList t.Context s.Mode s.Depth;
+        t.Context^ # Success =
+          t.ErrorList t.Context s.Mode;
 
-        t.Context^ # InvalidMode s.Depth s.OldMode =
+        t.Context^ # InvalidMode s.OldMode =
           <InvalidModeVariableError
             t.ErrorList s.LnNum s.OldMode s.Mode e.Index
           >
-          t.Context s.OldMode s.Depth;
+          t.Context s.OldMode;
 
-        t.Context^ # AlreadyBounded s.Depth =
+        t.Context^ # AlreadyBounded =
           <EL-AddErrorAt
             t.ErrorList s.LnNum
             'Variable hide operator^ must be applied to first occurence of '
             'variable ' s.Mode '.' e.Index
           >
-          t.Context s.Depth s.Mode;
+          t.Context s.Mode;
       }
     >;
 }
@@ -681,11 +681,11 @@ ParseResult {
     <Fetch
       <CheckUseVariable t.ErrorList t.Context s.LnNum s.Mode e.Index>
       {
-        t.ErrorList^ t.Context^ s.Mode^ s.Depth =
+        t.ErrorList^ t.Context^ s.Mode^ =
           <ParseResult
             t.ErrorList t.SymTable t.Context
             (e.MultiBracket)
-            (e.Scanned (#TkVariable s.Mode e.Index s.Depth)) e.Tail
+            (e.Scanned (#TkVariable s.Mode e.Index)) e.Tail
           >;
 
         t.ErrorList^ t.Context^ =
@@ -832,14 +832,14 @@ CheckUseVariable {
     <Fetch
       <Cntx-CheckVariable t.Context s.Mode e.Index>
       {
-        t.Context^ # ExistVariable s.Depth =
-          t.ErrorList t.Context s.Mode s.Depth;
+        t.Context^ # ExistVariable =
+          t.ErrorList t.Context s.Mode;
 
-        t.Context^ # InvalidMode s.Depth s.OldMode =
+        t.Context^ # InvalidMode s.OldMode =
           <InvalidModeVariableError
             t.ErrorList s.LnNum s.OldMode s.Mode e.Index
           >
-          t.Context s.OldMode s.Depth;
+          t.Context s.OldMode;
 
         t.Context^ # NotFound =
           <EL-AddErrorAt
