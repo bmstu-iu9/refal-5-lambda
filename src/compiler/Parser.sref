@@ -204,7 +204,7 @@ ParseNameList {
   t.ErrorList t.SymTable s.ASTItem s.TableChangeFunc s.ScopeClass
   (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
-      (e.AST <Wrap s.ASTItem s.ScopeClass e.Name>)
+      (e.AST <Wrap s.ASTItem s.LnNum s.ScopeClass e.Name>)
       <s.TableChangeFunc t.ErrorList t.SymTable s.ScopeClass s.LnNum e.Name>
       s.ASTItem s.TableChangeFunc s.ScopeClass
       e.Tail
@@ -219,9 +219,10 @@ ParseNameList {
 }
 
 Wrap {
-  #Ident s.ScopeClass e.Name = (#Ident e.Name);
+  #Ident s.LnNum s.ScopeClass e.Name = (#Ident s.LnNum e.Name);
 
-  s.ASTItem s.ScopeClass e.Name = (s.ASTItem s.ScopeClass e.Name);
+  s.ASTItem s.LnNum s.ScopeClass e.Name =
+    (s.ASTItem s.LnNum s.ScopeClass e.Name);
 }
 
 ParseNameList-Tail {
@@ -259,7 +260,7 @@ ParseFunction {
       {
         (e.Sentences) t.ErrorList^ t.SymTable^ t.Context e.Tail^ =
           <Cntx-Destroy t.Context>
-          ((#Function s.ScopeClass (e.Name) e.Sentences))
+          ((#Function s.LnNum s.ScopeClass (e.Name) e.Sentences))
           t.ErrorList t.SymTable e.Tail;
       }
     >;
@@ -394,7 +395,7 @@ ParsePattern {
     <ParsePattern
       t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNum e.Name>
       t.Context (e.MultiBrackets)
-      (e.Scanned (#TkName e.Name)) e.Tail
+      (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
     >;
 
   t.ErrorList t.SymTable t.Context (e.MultiBrackets)
@@ -429,7 +430,7 @@ ParsePattern {
         t.ErrorList^ t.Context^ s.Mode^ =
           <ParsePattern
             t.ErrorList t.SymTable t.Context (e.MultiBracket)
-            (e.Scanned (#TkNewVariable s.Mode e.Index)) e.Tail
+            (e.Scanned (#TkNewVariable s.LnNumVar s.Mode e.Index)) e.Tail
           >;
       }
     >;
@@ -445,7 +446,7 @@ ParsePattern {
         t.ErrorList^ t.Context^ s.Mode^ =
           <ParsePattern
             t.ErrorList t.SymTable t.Context (e.MultiBracket)
-            (e.Scanned (#TkVariable s.Mode e.Index)) e.Tail
+            (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
           >;
       }
     >;
@@ -488,7 +489,7 @@ ParsePattern {
         e.MultiBracket
         (#ADT-Brackets s.LnNumBracket #TkCloseADT e.Scanned)
       )
-      ((e.Name)) e.Tail
+      (s.LnNumName (e.Name)) e.Tail
     >;
 
   t.ErrorList t.SymTable t.Context (e.MultiBracket)
@@ -503,7 +504,7 @@ ParsePattern {
         e.MultiBracket
         (#ADT-Brackets s.LnNum #TkCloseADT e.Scanned)
       )
-      ((<ST-GetAnyName t.SymTable>)) e.Tail
+      (s.LnNum (<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
   t.ErrorList t.SymTable t.Context (e.MultiBracket)
@@ -654,7 +655,7 @@ ParseResult {
     <ParseResult
       t.ErrorList <ST-AddFunctionCall t.SymTable s.LnNum e.Name>
       t.Context
-      (e.MultiBracket) (e.Scanned (#TkName e.Name)) e.Tail
+      (e.MultiBracket) (e.Scanned (#TkName s.LnNum e.Name)) e.Tail
     >;
 
   t.ErrorList t.SymTable t.Context
@@ -685,7 +686,7 @@ ParseResult {
           <ParseResult
             t.ErrorList t.SymTable t.Context
             (e.MultiBracket)
-            (e.Scanned (#TkVariable s.Mode e.Index)) e.Tail
+            (e.Scanned (#TkVariable s.LnNum s.Mode e.Index)) e.Tail
           >;
 
         t.ErrorList^ t.Context^ =
@@ -718,7 +719,7 @@ ParseResult {
         e.MultiBracket
         (#ADT-Brackets s.LnNumADT #TkCloseADT e.Scanned)
       )
-      ((e.Name)) e.Tail
+      (s.LnNumName (e.Name)) e.Tail
     >;
 
   t.ErrorList t.SymTable t.Context
@@ -732,7 +733,7 @@ ParseResult {
         e.MultiBracket
         (#ADT-Brackets s.LnNum #TkCloseADT e.Scanned)
       )
-      ((<ST-GetAnyName t.SymTable>)) e.Tail
+      (s.LnNum (<ST-GetAnyName t.SymTable>)) e.Tail
     >;
 
   // Структурные и угловые скобки обрабатываются одинаково

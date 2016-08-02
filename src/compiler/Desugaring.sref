@@ -9,11 +9,70 @@ $ENTRY Desugar {
     <Fetch
       e.AST
       <Seq
+        Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
         Pass-FlatNestedFuncs
         Pass-CreatePredeclarations
       >
+    >;
+}
+
+Pass-RemovePos {
+  e.AST =
+    <Map
+      {
+        (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
+          (#Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
+
+        (#Ident t.SrcPos e.Name) =
+          (#Ident e.Name);
+
+        (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name) =
+          (s.EnumSwapDeclaration s.ScopeClass e.Name);
+      }
+      e.AST
+    >;
+}
+
+RemovePos-Body {
+  e.Sentences =
+    <Map
+      {
+        ((e.Pattern) (e.Result)) =
+          ((<RemovePos-Expr e.Pattern>) (<RemovePos-Expr e.Result>));
+      }
+      e.Sentences
+    >;
+}
+
+RemovePos-Expr {
+  e.Expr =
+    <Map
+      {
+        (#TkVariable t.SrcPos s.Mode e.Index) =
+          (#TkVariable s.Mode e.Index);
+
+        (#TkNewVariable t.SrcPos s.Mode e.Index) =
+          (#TkNewVariable s.Mode e.Index);
+
+        (#TkName t.SrcPos e.Name) = (#TkName e.Name);
+
+        (#Brackets e.InBrackets) =
+          (#Brackets <RemovePos-Expr e.InBrackets>);
+
+        (#ADT-Brackets t.SrcPos (e.Name) e.InBrackets) =
+          (#ADT-Brackets (e.Name) <RemovePos-Expr e.InBrackets>);
+
+        (#CallBrackets e.InBrackets) =
+          (#CallBrackets <RemovePos-Expr e.InBrackets>);
+
+        (#Closure e.Sentences) =
+          (#Closure <RemovePos-Body e.Sentences>);
+
+        t.OtherTerm = t.OtherTerm;
+      }
+      e.Expr
     >;
 }
 
