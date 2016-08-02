@@ -65,8 +65,8 @@ $ENTRY StrFromToken {
 }
 
 NormalizeName {
-  e.Name-B '-' e.Name-E =
-    <NormalizeName e.Name-B '_' e.Name-E>;
+  e.Name-B '_' e.Name-E =
+    <NormalizeName e.Name-B '-' e.Name-E>;
 
   e.Name = e.Name;
 }
