@@ -1,0 +1,280 @@
+//FROM LibraryEx
+$EXTERN Reduce, Fetch, Seq, MapReduce, Map;
+
+//FROM Error
+$EXTERN EL-AddErrorAt;
+
+$ENTRY CheckProgram {
+  t.ErrorList e.AST =
+    <Reduce
+      {
+        t.ErrorList^ (#Error t.SrcPos #AlreadyDefined e.Name) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos 'Function ' e.Name ' already defined'
+          >;
+
+        t.ErrorList^ (#Error t.SrcPos #ForwardForEntry e.Name) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos '$FORWARD ' e.Name ' for $ENTRY ' e.Name
+          >;
+
+        t.ErrorList^ (#Error t.SrcPos #ForwardNotDefined e.Name) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos
+            'Function for $FORWARD ' e.Name ' is not defined'
+          >;
+
+        t.ErrorList^ (#Error t.SrcPos #NotDefined e.Name) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos 'Function ' e.Name ' is not defined'
+          >;
+      }
+      t.ErrorList
+      <FindErrors e.AST>
+    >;
+}
+
+FindErrors {
+  e.AST =
+    <Fetch
+      e.AST
+      <Seq
+        (MapReduce
+          {
+            (e.Declarations)
+            (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
+              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name))
+              (e.Body);
+
+            (e.Declarations) (#Swap t.SrcPos s.ScopeClass e.Name) =
+              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
+
+            (e.Declarations) (#Enum t.SrcPos s.ScopeClass e.Name) =
+              (e.Declarations (#Define t.SrcPos s.ScopeClass e.Name));
+
+            (e.Declarations) (#Declaration t.SrcPos s.ScopeClass e.Name) =
+              (e.Declarations (#Declare t.SrcPos s.ScopeClass e.Name));
+
+            /* определения идентификаторов игнорируем */
+            (e.Declarations) (#Ident t.SrcPos e.Name) =
+              (e.Declarations);
+          }
+          (/* объявления */)
+        )
+        {
+          (e.Declarations) e.FunctionBodies =
+            <CheckValidUsings
+              (<CheckDeclarations e.Declarations>)
+              <Map CheckFunctionBody e.FunctionBodies>
+            >;
+        }
+      >
+    >;
+}
+
+CheckDeclarations {
+  e.Declarations =
+    <CheckRedefinitions
+      <CheckValidForward e.Declarations>
+    >;
+}
+
+CheckValidForward {
+  e.Declarations-B
+  (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-M
+  (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-E =
+    // Правильный $FORWARD, уничтожаем
+    <CheckValidForward
+      e.Declarations-B e.Declarations-M
+      (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-E
+    >;
+
+  e.Declarations-B
+  (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-M
+  (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
+    // Правильный $FORWARD, уничтожаем
+    <CheckValidForward
+      e.Declarations-B
+      (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-M
+      e.Declarations-E
+    >;
+
+  e.Declarations-B
+  (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-M
+  (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E =
+    <CheckValidForward
+      e.Declarations-B
+      (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-M
+      (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E
+    >;
+
+  e.Declarations-B
+  (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
+  (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
+    <CheckValidForward
+      e.Declarations-B
+      (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
+      (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-E
+    >;
+
+  e.Declarations-B
+  (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
+    <CheckValidForward
+      e.Declarations-B
+      (#Error t.SrcPosForward #ForwardNotDefined e.Name) e.Declarations-E
+    >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckRedefinitions {
+  e.Declarations-B
+  (#Define t.SrcPos1 s.ScopeClass1 e.Name) e.Declarations-M
+  (#Define t.SrcPos2 s.ScopeClass2 e.Name) e.Declarations-E =
+    e.Declarations-B
+    <CheckRedefinitions
+      (#Define t.SrcPos1 s.ScopeClass1 e.Name) e.Declarations-M
+      (#Error t.SrcPos2 #AlreadyDefined e.Name) e.Declarations-E
+    >;
+
+  e.Declarations = e.Declarations;
+}
+
+CheckFunctionBody {
+  (e.Sentences) =
+    <CheckFunctionBodyRec (/* vars */) e.Sentences>;
+}
+
+CheckFunctionBodyRec {
+  (e.ScopeVars) e.Sentences =
+    <Map (CheckSentence e.ScopeVars) e.Sentences>;
+}
+
+CheckSentence {
+  e.ScopeVars ((e.Pattern) (e.Result)) =
+    <Fetch
+      <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
+      {
+        (e.ScopeVars^) e.PatternFunctionsAndErrors =
+          e.PatternFunctionsAndErrors
+          <CheckResult (e.ScopeVars) <FlatExpr e.Result>>;
+      }
+    >;
+}
+
+FlatExpr {
+  e.Expr =
+    <Map
+      {
+        (#TkVariable t.SrcPos s.Mode e.Index) =
+          (#TkVariable t.SrcPos s.Mode e.Index);
+
+        (#TkNewVariable t.SrcPos s.Mode e.Index) =
+          (#TkNewVariable t.SrcPos s.Mode e.Index);
+
+        (#TkName t.SrcPos e.Name) = (#TkName t.SrcPos e.Name);
+
+        (#Brackets e.InBrackets) = <FlatExpr e.InBrackets>;
+
+        (#ADT-Brackets t.SrcPos (#UnnamedADT) e.InBrackets) =
+          <FlatExpr e.InBrackets>;
+
+        (#ADT-Brackets t.SrcPos (e.Name) e.InBrackets) =
+          (#TkName t.SrcPos e.Name) <FlatExpr e.InBrackets>;
+
+        (#CallBrackets e.InBrackets) = <FlatExpr e.InBrackets>;
+
+        (#Closure e.Sentences) = (#Closure e.Sentences);
+
+        t.OtherTerm = /* игнорируем, нам не интересен */;
+      }
+      e.Expr
+    >;
+}
+
+CheckPattern {
+  (e.ScopeVars) e.Items =
+    <MapReduce
+      {
+        (e.KnownVars) (#TkVariable t.SrcPos s.Mode e.Index) =
+          // Пока игнорируем
+          (e.KnownVars);
+
+        (e.KnownVars) (#TkNewVariable t.SrcPos s.Mode e.Index) =
+          // Пока игнорируем
+          (e.KnownVars);
+
+        (e.KnownVars) (#TkName t.SrcPos e.Name) =
+          (e.KnownVars) (#TkName t.SrcPos e.Name);
+
+        (e.KnownVars) (#Error t.SrcPos s.Type e.Info) =
+          (e.KnownVars) (#Error t.SrcPos s.Type e.Info);
+      }
+      (e.ScopeVars) e.Items
+    >;
+}
+
+CheckResult {
+  (e.ScopeVars) e.Items =
+    <Map
+      (
+        {
+          e.KnownVars (#TkVariable t.SrcPos s.Mode e.Index) =
+            /* пока игнорируем */;
+
+          e.KnownVars (#TkName t.SrcPos e.Name) =
+            (#TkName t.SrcPos e.Name);
+
+          e.KnownVars (#Closure e.Sentences) =
+            <CheckFunctionBodyRec (e.KnownVars) e.Sentences>;
+
+          e.KnownVars (#Error t.SrcPos s.Type e.Info) =
+            (#Error t.SrcPos s.Type e.Info);
+        }
+        e.ScopeVars
+      )
+      e.Items
+    >;
+}
+
+CheckValidUsings {
+  (
+    e.DeclarationsAndErrors-B
+    (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+    e.DeclarationsAndErrors-E
+  )
+  (#TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
+    <CheckValidUsings
+      (
+        e.DeclarationsAndErrors-B
+        (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+        e.DeclarationsAndErrors-E
+      )
+      e.NameRefsAndErrors
+    >;
+
+  (e.DeclarationsAndErrors)
+  (#TkName t.SrcPos e.Name) e.NameRefsAndErrors =
+    <CheckValidUsings
+      (e.DeclarationsAndErrors (#Error t.SrcPos #NotDefined e.Name))
+      e.NameRefsAndErrors
+    >;
+
+  (e.DeclarationsAndErrors)
+  (#Error t.SrcPos s.Type e.Info) e.NameRefsAndErrors =
+    <CheckValidUsings
+      (e.DeclarationsAndErrors (#Error t.SrcPos s.Type e.Info))
+      e.NameRefsAndErrors
+    >;
+
+  (e.DeclarationsAndErrors) /* кончились ошибки и имена */ =
+    <Map
+      {
+        (#Error t.SrcPos s.Type e.Info) =
+          (#Error t.SrcPos s.Type e.Info);
+
+        t.OtherItem = /* пропускаем */;
+      }
+      e.DeclarationsAndErrors
+    >;
+}
