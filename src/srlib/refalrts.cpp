@@ -2054,6 +2054,9 @@ int refalrts::profiler::reverse_compare(
 #endif // DONT_PRINT_STATISTICS
 
 void refalrts::profiler::end_profiler() {
+  // необходимо на случай аварийного останова, если функция сфейлилась
+  // на последнем предложении с открытой e-переменной
+  refalrts::profiler::stop_e_loop();
   refalrts::profiler::after_step();
 #ifndef DONT_PRINT_STATISTICS
 
