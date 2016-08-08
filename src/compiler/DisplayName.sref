@@ -1,0 +1,34 @@
+//FROM Library
+$EXTERN StrFromInt;
+
+//FROM Escape
+$EXTERN EscapeString;
+
+$ENTRY DisplayName {
+  #CreateClosure = '@create_closure@';
+  e.Name #SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
+  e.Name = e.Name;
+}
+
+DisplayNameSuf {
+  '\\' s.Num e.Suffix = '\\' <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
+  s.Tag s.Num e.Suffix = s.Tag <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
+  /* пусто */ = /* пусто */;
+}
+
+$ENTRY DisplayCName {
+  e.Name = <EscapeString <DisplayName e.Name>>;
+}
+
+$ENTRY CName {
+  #CreateClosure = 'refalrts::create_closure';
+  e.Name #SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
+  e.Name-B '-' e.Name-E = e.Name-B '_' <CName e.Name-E>;
+  e.Name = e.Name;
+}
+
+CNameSuf {
+  '$' s.Num e.Suffix = 'S' <StrFromInt s.Num> <CNameSuf e.Suffix>;
+  '\\' s.Num e.Suffix = 'L' <StrFromInt s.Num> <CNameSuf e.Suffix>;
+  /* пусто */ = /* пусто */;
+}
