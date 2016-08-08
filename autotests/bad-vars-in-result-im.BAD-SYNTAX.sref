@@ -1,0 +1,3 @@
+$ENTRY InvalidMode {
+  e.X = t.X;
+}

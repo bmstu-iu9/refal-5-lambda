@@ -1,0 +1,3 @@
+$ENTRY Test-AlreadyBounded-InvalidMode {
+  e.X t.X^ = ;
+}

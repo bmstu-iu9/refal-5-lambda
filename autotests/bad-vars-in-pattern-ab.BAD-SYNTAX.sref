@@ -1,0 +1,3 @@
+$ENTRY Test-AlreadyBounded {
+  e.X e.X^ = ;
+}

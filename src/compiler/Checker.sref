@@ -28,6 +28,26 @@ $ENTRY CheckProgram {
           <EL-AddErrorAt
             t.ErrorList t.SrcPos 'Function ' e.Name ' is not defined'
           >;
+
+        t.ErrorList^ (#Error t.SrcPos #AlreadyBounded s.Mode e.Index) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos
+            'Variable hide operator^ must be applied to first occurence of '
+            'variable ' s.Mode '.' e.Index
+          >;
+
+        t.ErrorList^
+        (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos
+            'Variables ' s.OldMode '.' e.Index ' and '
+            s.NewMode '.' e.Index ' has different modes'
+          >;
+
+        t.ErrorList^ (#Error t.SrcPos #VariableNotFound s.Mode e.Index) =
+          <EL-AddErrorAt
+            t.ErrorList t.SrcPos 'Variable ' s.Mode '.' e.Index ' not found'
+          >;
       }
       t.ErrorList
       <FindErrors e.AST>
@@ -193,16 +213,34 @@ FlatExpr {
 }
 
 CheckPattern {
+  (e.ScopeVars)
+  e.Items-B (#TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
+  (#TkNewVariable t.SrcPos2 s.Mode2 e.Index) e.Items-E =
+    <CheckPattern
+      (e.ScopeVars)
+      e.Items-B (#TkVariable t.SrcPos1 s.Mode1 e.Index) e.Items-M
+      (#TkVariable t.SrcPos2 s.Mode2 e.Index)
+      (#Error t.SrcPos2 #AlreadyBounded s.Mode2 e.Index)
+      e.Items-E
+    >;
+
   (e.ScopeVars) e.Items =
     <MapReduce
       {
+        (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E)
+        (#TkVariable t.SrcPos s.Mode e.Index) =
+          (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E);
+
+        (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
+        (#TkVariable t.SrcPos s.NewMode e.Index) =
+          (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
+          (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index);
+
         (e.KnownVars) (#TkVariable t.SrcPos s.Mode e.Index) =
-          // Пока игнорируем
-          (e.KnownVars);
+          (e.KnownVars (s.Mode e.Index));
 
         (e.KnownVars) (#TkNewVariable t.SrcPos s.Mode e.Index) =
-          // Пока игнорируем
-          (e.KnownVars);
+          (<FixupKnownVars e.KnownVars (s.Mode e.Index)>);
 
         (e.KnownVars) (#TkName t.SrcPos e.Name) =
           (e.KnownVars) (#TkName t.SrcPos e.Name);
@@ -214,13 +252,28 @@ CheckPattern {
     >;
 }
 
+FixupKnownVars {
+  e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E (s.NewMode e.Index) =
+    e.KnownVars-B (s.NewMode e.Index) e.KnownVars-E;
+
+  e.KnownVars (s.Mode e.Index) = e.KnownVars (s.Mode e.Index);
+}
+
 CheckResult {
   (e.ScopeVars) e.Items =
     <Map
       (
         {
+          e.KnownVars-B (s.Mode e.Index) e.KnownVars-E
+          (#TkVariable t.SrcPos s.Mode e.Index) =
+            /* пропускаем, правильная переменная */;
+
+          e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E
+          (#TkVariable t.SrcPos s.NewMode e.Index) =
+            (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index);
+
           e.KnownVars (#TkVariable t.SrcPos s.Mode e.Index) =
-            /* пока игнорируем */;
+            (#Error t.SrcPos #VariableNotFound s.Mode e.Index);
 
           e.KnownVars (#TkName t.SrcPos e.Name) =
             (#TkName t.SrcPos e.Name);
