@@ -1,0 +1,38 @@
+%%
+static int counter = 0;
+%%
+
+Native {
+%%
+  using namespace refalrts;
+  Iter content_left, content_right;
+  Iter func_ptr = call_left(content_left, content_right, arg_begin, arg_end);
+
+  reinit_number(arg_begin, ++counter);
+  reinit_number(func_ptr, ++counter);
+  reinit_number(arg_end, ++counter);
+
+  return cSuccess;
+%%
+}
+
+$ENTRY Go {
+  =
+    <{ 1 2 'hello' 3 = ; } <Native 'hello'>>
+    <{ 4 5 6 = ; } <Native /* пусто */>>
+    <
+      { 7 = ; }
+      <{
+%%
+  using namespace refalrts;
+  Iter content_left, content_right;
+  Iter func_ptr = call_left(content_left, content_right, arg_begin, arg_end);
+
+  reinit_number(arg_begin, ++counter);
+
+  splice_to_freelist(func_ptr, arg_end);
+  return cSuccess;
+%%
+      }>
+    >;
+}

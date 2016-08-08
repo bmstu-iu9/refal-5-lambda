@@ -61,7 +61,7 @@ $ENTRY CompileFile {
                       Desugar
                       (HighLevelRASL <SelectOptFlags s.Opt>)
                       (LowLevelRASL s.GenMode)
-                      GenProgram
+                      (GenProgram (e.SrcName) (e.OutputName))
                       (SaveFile (e.OutputName))
                     >
                   >

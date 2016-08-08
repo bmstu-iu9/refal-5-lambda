@@ -78,6 +78,9 @@ FindErrors {
             /* определения идентификаторов игнорируем */
             (e.Declarations) (#Ident t.SrcPos e.Name) =
               (e.Declarations);
+
+            (e.Declarations) (#NativeBlock e.Block) =
+              (e.Declarations #NativeBlockSign);
           }
           (/* объявления */)
         )
@@ -94,17 +97,28 @@ FindErrors {
 
 CheckDeclarations {
   e.Declarations =
-    <CheckRedefinitions
-      <CheckValidForward e.Declarations>
+    <Fetch
+      e.Declarations
+      <Seq
+        CleanupValidForwards
+        FindInvalidForwards
+        CheckRedefinitions
+        (Map
+          {
+            #NativeBlockSign = /* пусто */;
+            t.Other = t.Other;
+          }
+        )
+      >
     >;
 }
 
-CheckValidForward {
+CleanupValidForwards {
   e.Declarations-B
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-M
   (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-E =
     // Правильный $FORWARD, уничтожаем
-    <CheckValidForward
+    <CleanupValidForwards
       e.Declarations-B e.Declarations-M
       (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-E
     >;
@@ -113,16 +127,20 @@ CheckValidForward {
   (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-M
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
     // Правильный $FORWARD, уничтожаем
-    <CheckValidForward
+    <CleanupValidForwards
       e.Declarations-B
       (#Define t.SrcPosDefine #GN-Local e.Name) e.Declarations-M
       e.Declarations-E
     >;
 
+  e.Declarations = e.Declarations;
+}
+
+FindInvalidForwards {
   e.Declarations-B
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-M
   (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E =
-    <CheckValidForward
+    <FindInvalidForwards
       e.Declarations-B
       (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-M
       (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-E
@@ -131,15 +149,19 @@ CheckValidForward {
   e.Declarations-B
   (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
-    <CheckValidForward
+    <FindInvalidForwards
       e.Declarations-B
       (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
       (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-E
     >;
 
+  // Эта проверка не выполняется для файлов с нативными блоками
+  e.Declarations-B #NativeBlockSign e.Declarations-E =
+    e.Declarations-B e.Declarations-E;
+
   e.Declarations-B
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =
-    <CheckValidForward
+    <FindInvalidForwards
       e.Declarations-B
       (#Error t.SrcPosForward #ForwardNotDefined e.Name) e.Declarations-E
     >;
@@ -168,6 +190,9 @@ CheckFunctionBody {
 CheckFunctionBodyRec {
   (e.ScopeVars) #Sentences e.Sentences =
     <Map (CheckSentence e.ScopeVars) e.Sentences>;
+
+  (e.ScopeVars) #NativeBody e.Code =
+    /* пусто, нет ни имён функций, ни ошибок внутри */;
 }
 
 CheckSentence {

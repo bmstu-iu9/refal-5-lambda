@@ -28,6 +28,9 @@ Pass-RemovePos {
         (#Ident t.SrcPos e.Name) =
           (#Ident e.Name);
 
+        (#NativeBlock t.SrcPos e.Code) =
+          (#NativeBlock t.SrcPos e.Code);
+
         (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name) =
           (s.EnumSwapDeclaration s.ScopeClass e.Name);
       }
@@ -45,6 +48,8 @@ RemovePos-Body {
       }
       e.Sentences
     >;
+
+  #NativeBody t.SrcPos e.Code = #NativeBody t.SrcPos e.Code;
 }
 
 RemovePos-Expr {
@@ -115,6 +120,9 @@ EnumerateVars-Sentences {
       }
       e.Sentences
     >;
+
+  s.Depth (e.ScopeVars) #NativeBody t.SrcPos e.Code =
+    #NativeBody t.SrcPos e.Code;
 }
 
 EnumerateVars-Expr {
@@ -215,6 +223,9 @@ NameNestedBody {
         1 e.Sentences
       >
     >;
+
+  (e.MainName) #NativeBody t.SrcPos e.Code =
+    #NativeBody t.SrcPos e.Code;
 }
 
 NameNestedResult {
@@ -329,6 +340,10 @@ ExtractNestedRec {
           (e.BorrowedVars) (e.NestedFuncs) #Sentences e.Sentences;
       }
     >;
+
+  (e.ScopeVars) #NativeBody t.SrcPos e.Code =
+    (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
+    #NativeBody t.SrcPos e.Code;
 }
 
 ExtractNested-Pattern {
@@ -502,6 +517,18 @@ ExtractNested-Result-Term {
             (#TkName e.ClosureName)
             <CreateContext e.NestedBorrowedVars>
           );
+
+        (/* свободные переменные в нативной функции отсутствуют */)
+        (/* вложенные функции в нативной функции отсутствуют */)
+        #NativeBody t.SrcPos e.Code =
+          (
+            (
+              e.NestedFuncs
+              (#Function #GN-Local (e.ClosureName) #NativeBody t.SrcPos e.Code)
+            )
+            (e.BorrowedVars)
+          )
+          (#TkName e.ClosureName);
       }
     >;
 
@@ -617,6 +644,11 @@ Pass-CreatePredeclarations {
             (#Ident e.Name) =
               ((e.FuncDecls) (e.SwapsEnums) (e.Idents (#Ident e.Name)))
               /* пусто */;
+
+            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (#NativeBlock t.SrcPos e.Code) =
+              ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+              (#NativeBlock t.SrcPos e.Code);
           }
           ((/* объявления */) (/* swap’ы и enum’ы */) (/* идентификаторы */))
         )
@@ -639,27 +671,72 @@ RemoveRedudandElements {
     какие именно сущности используются или объявляются в коде.
   */
   e.AST =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) e.Body) =
-          (#Function s.ScopeClass (e.Name) e.Body);
-
-        (#Enum s.ScopeClass e.Name) =
-          (#Enum s.ScopeClass e.Name);
-
-        (#Swap s.ScopeClass e.Name) =
-          (#Swap s.ScopeClass e.Name);
-
-        (#Declaration #GN-Entry e.Name) =
-          (#Declaration #GN-Entry e.Name);
-
-        (#Declaration #GN-Local e.Name) =
-          /* пусто */;
-
-        (#Ident e.Name) =
-          /* пусто */;
-      }
+    <Fetch
       e.AST
+      <Seq
+        {
+          /*
+            Если есть хотя бы один нативный блок,
+            $LABEL и $FORWARD сохраняем.
+          */
+          e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E =
+            {
+              s.Type e.Info = (s.Type e.Info);
+            }
+            e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
+
+          /*
+            Если есть нативные функции, сохраняем только $LABEL.
+          */
+          e.AST-B
+          (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
+          e.AST-E =
+            {
+              #Ident e.Name^ = (#Ident e.Name);
+              #Declaration #GN-Local e.Name^ = /* пропускаем */;
+            }
+            e.AST-B
+            (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
+            e.AST-E;
+
+          /*
+            Если ничего нативного нет, то избыточные элементы отбрасываем.
+          */
+          e.AST^ =
+            {
+              s.Type e.Info = /* пропускаем */;
+            }
+            e.AST;
+        }
+        {
+          s.FnSelectiveSaver e.AST^ =
+            <Map
+              {
+                (#Function s.ScopeClass (e.Name) e.Body) =
+                  (#Function s.ScopeClass (e.Name) e.Body);
+
+                (#Enum s.ScopeClass e.Name) =
+                  (#Enum s.ScopeClass e.Name);
+
+                (#Swap s.ScopeClass e.Name) =
+                  (#Swap s.ScopeClass e.Name);
+
+                (#Declaration #GN-Entry e.Name) =
+                  (#Declaration #GN-Entry e.Name);
+
+                (#Declaration #GN-Local e.Name) =
+                  <s.FnSelectiveSaver #Declaration #GN-Local e.Name>;
+
+                (#Ident e.Name) =
+                  <s.FnSelectiveSaver #Ident e.Name>;
+
+                (#NativeBlock t.SrcPos e.Code) =
+                  (#NativeBlock t.SrcPos e.Code);
+              }
+              e.AST
+            >;
+        }
+      >
     >;
 }
 
@@ -702,6 +779,9 @@ ExtractIdents {
         }
       >
     >;
+
+  #NativeBody t.SrcPos e.Code =
+    (/* нет идентификаторов */) #NativeBody t.SrcPos e.Code;
 }
 
 ExtractIdent-Expr {

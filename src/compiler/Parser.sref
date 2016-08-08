@@ -104,6 +104,11 @@ ParseElements {
       }
     >;
 
+  t.ErrorList (e.AST) (#TkNativeBlock t.SrcPos e.Block) e.Tail =
+    <ParseElements
+      t.ErrorList (e.AST (#NativeBlock t.SrcPos e.Block)) e.Tail
+    >;
+
   t.ErrorList (e.AST) (#TkName s.LnNum e.Name) e.Tail =
     <Fetch
       <ParseFunction #GN-Local (e.Name) t.ErrorList e.Tail>
@@ -223,6 +228,20 @@ ParseFunction {
   Открывающая скобка должна отсутствовать во входном потоке.
 */
 ParseBlock {
+  t.ErrorList (#TkNativeBlock t.SrcPos e.Block) e.Tokens =
+    <Fetch
+      e.Tokens
+      {
+        (#TkCloseBlock t.CloseBlockSrcPos) e.Tokens^ =
+          (#NativeBody t.SrcPos e.Block) t.ErrorList e.Tokens;
+
+        t.Unexpected e.Tokens^ =
+          (#NativeBody t.SrcPos e.Block)
+          <EL-AddUnexpected t.ErrorList t.Unexpected '}'>
+          t.Unexpected e.Tokens;
+      }
+    >;
+
   t.ErrorList e.Tokens =
     <DoParseBlock
       t.ErrorList

@@ -46,6 +46,9 @@ $ENTRY HighLevelRASL {
             s.ScopeClass (e.Name) e.Sentences
           >;
 
+        (#Function s.ScopeClass (e.Name) #NativeBody t.SrcPos e.Code) =
+          (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+
         (#Enum s.ScopeClass e.Name) =
           (#CmdEnum s.ScopeClass e.Name);
 
@@ -56,6 +59,9 @@ $ENTRY HighLevelRASL {
           (#CmdDeclaration s.ScopeClass e.Name);
 
         (#Ident e.Name) = (#CmdDefineIdent e.Name);
+
+        (#NativeBlock t.SrcPos e.Code) =
+          (#CmdEmitNativeCode t.SrcPos e.Code);
 
         (#Separator) = (#CmdSeparator);
       }

@@ -1,6 +1,6 @@
 //FROM LibraryEx
-$EXTERN MapReduce, FastIntFromStr, DelAccumulator, Inc, Map,
-  Fetch, Reduce;
+$EXTERN FastIntFromStr, Trim-R, Reduce, Map, Fetch, Inc,
+  Seq, MapReduce, DelAccumulator;
 
 //FROM Library
 $EXTERN Chr, StrFromInt, Mul, Add;
@@ -45,6 +45,7 @@ $ENTRY StrFromToken {
   #TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
   #TkVariable s.Mode e.Index = s.Mode '.' e.Index;
   #TkRedefinition = '"^"';
+  #TkNativeBlock e.Block = 'native code insertion';
 
   # Open s.OpenBracket = <StrFromToken s.OpenBracket>;
   # Close s.CloseBracket = <StrFromToken s.CloseBracket>;
@@ -92,6 +93,8 @@ NormalizeToken {
 
   (#TkVariable s.Type '.' e.Index) =
     (#TkVariable s.Type <NormalizeName e.Index>);
+
+  (#TkNativeLine e.Line) = (#TkNativeLine <Trim-R e.Line>);
 
   (#TkUnexpected e.Unexpected) = (#TkUnexpected e.Unexpected);
 
@@ -153,18 +156,44 @@ AddLineNumber {
   s.LineNumber (#TkNewLine) =
     <Inc s.LineNumber>;
 
+  s.LineNumber (#TkNativeLine e.Line) =
+    <Inc s.LineNumber> (#TkNativeLine s.LineNumber e.Line);
+
   s.LineNumber (s.TokType e.Info) =
     s.LineNumber (s.TokType s.LineNumber e.Info);
 }
 
 NormalizeTokens {
   e.Tokens =
-    <DelAccumulator
-      <MapReduce
-        AddLineNumber 1
-        <Map NormalizeToken e.Tokens>
+    <Fetch
+      e.Tokens
+      <Seq
+        (Map NormalizeToken)
+        (MapReduce AddLineNumber 1)
+        DelAccumulator
+        CollectNativeLines
       >
     >;
+}
+
+CollectNativeLines {
+  e.SimpleTokens (#TkNativeLine s.LineNumber e.Line) e.Tail =
+    e.SimpleTokens
+    <CollectNativeLines-Aux s.LineNumber ((e.Line)) e.Tail>;
+
+  e.SimpleTokens = e.SimpleTokens;
+}
+
+CollectNativeLines-Aux {
+  s.StartLineNumber (e.Block)
+  (#TkNativeLine s.LineNumber e.Line) e.Tail =
+    <CollectNativeLines-Aux
+      s.StartLineNumber (e.Block (e.Line)) e.Tail
+    >;
+
+  s.StartLineNumber (e.Block) e.Tail =
+    (#TkNativeBlock s.StartLineNumber e.Block)
+    <CollectNativeLines e.Tail>;
 }
 
 /*GEN:TOKENS
@@ -187,8 +216,12 @@ NormalizeTokens {
 
 
   Root =
-    :Space:               !-                    Root                      |
-    :Punctuation:         !#TkPunctuation       Root                      |
+    '%'     !-                                  StartNative-Percent       |
+                                                Main                      .
+
+  Main =
+    :Space:               !-                    Main                      |
+    :Punctuation:         !#TkPunctuation       Main                      |
     :StartIdentifier:                           Name                      |
     :VarMode:                                   VariableStart             |
     :Digit:                                     Number                    |
@@ -197,44 +230,44 @@ NormalizeTokens {
     '/'                                         StartComment              |
     '\n'                  !#TkNewLine           Root                      |
                           !#TkEOF                                         |
-    :Other:               !#TkUnexpected        Root                      .
+    :Other:               !#TkUnexpected        Main                      .
 
   Name =
     :TailIdentifier:                            Name                      |
-            !#TkName                            Root                      .
+            !#TkName                            Main                      .
 
   Number =
     :Digit:                                     Number                    |
-            !#TkNumber                          Root                      .
+            !#TkNumber                          Main                      .
 
   VariableStart =
     '.'                                         VariableIndex             |
-            !"Expected dot"                     Root                      .
+            !"Expected dot"                     Main                      .
 
   VariableIndex =
     :VarName:                                   VariableIndexTail         |
-            !"Expected variable name"           Root                      .
+            !"Expected variable name"           Main                      .
 
   VariableIndexTail =
     :VarName:                                   VariableIndexTail         |
-            !#TkVariable                        Root                      .
+            !#TkVariable                        Main                      .
 
   Directive =
     :DirectiveBody:                             DirectiveTail             |
-            !"Expected directive name"          Root                      .
+            !"Expected directive name"          Main                      .
 
   DirectiveTail =
     :DirectiveBody:                             DirectiveTail             |
-            !#TkDirective                       Root                      .
+            !#TkDirective                       Main                      .
 
   StringLiteral-Start =
-    '\''    !#TkLiteral-Char                    Root                      |
+    '\''    !#TkLiteral-Char                    Main                      |
                                                 StringLiteral             .
 
   StringLiteral =
     '\\'    !-                                  StringLiteral-Escape      |
     '\''    !-                                  StringLiteral-Quote       |
-    '\n'    !"Unclosed quote"                   Root                      |
+    '\n'    !"Unclosed quote"                   Main                      |
             !"Unexpected EOF in string literal"                           |
     :Any:   !#TkLiteral-Char                    StringLiteral             .
 
@@ -254,7 +287,7 @@ NormalizeTokens {
     :ODigit:                                    StringLiteral-Escape-OCode|
     'x'     !-                                  StringLiteral-Escape-XCode|
     'X'     !-                                  StringLiteral-Escape-XCode|
-    '\n'    !"Unclosed quote"                   Root                      |
+    '\n'    !"Unclosed quote"                   Main                      |
             !"Unexpected escape sequence"       StringLiteral             .
 
   StringLiteral-Escape-Code =
@@ -287,52 +320,97 @@ NormalizeTokens {
 
   StringLiteral-Quote =
     '\''    !#TkLiteral-Char                    StringLiteral             |
-                                                Root                      .
+                                                Main                      .
 
   StartComment =
     '*'     !-                                  CComment                  |
     '/'     !-                                  CppComment                |
-            !#TkUnexpected                      Root                      .
+            !#TkUnexpected                      Main                      .
 
   CComment =
     '/'     !-                                  CComment-CheckNested      |
     '*'     !-                                  CComment-CheckEnd         |
     '\n'    !#TkNewLine                         CComment                  |
     :Any:   !-                                  CComment                  |
-            !"Unexpected EOF: unclosed comment" Root                      .
+            !"Unexpected EOF: unclosed comment" Main                      .
 
   CComment-CheckNested =
     '*'     !"Nested comments is disabled"      CComment                  |
                                                 CComment                  .
 
   CComment-CheckEnd =
-    '/'     !-                                  Root                      |
+    '/'     !-                                  Main                      |
                                                 CComment                  .
 
   CppComment =
-    '\n'    !#TkNewLine                         Root                      |
+    '\n'    !#TkNewLine                         Main                      |
             !#TkEOF                                                       |
     :Any:   !-                                  CppComment                .
 
+  StartNative-Percent =
+    '%'     !-                                  StartNative-NewLine       |
+            !"Native inlines expects two percents"
+                                                Main                      .
+
+  StartNative-NewLine =
+    '\r'    !-                                  StartNative-NewLine       |
+    '\n'    !#TkNewLine                         Native-Begin              |
+            !"Native inlines expects new line after two percents"
+                                                Main                      .
+
+  Native-Begin =
+    '%'                                         Native-CheckEnd           |
+                                                Native                    .
+
+  Native =
+    '\n'    !#TkNativeLine                      Native-Begin              |
+    :Any:                                       Native                    |
+            !"Unexpected EOF: unclosed native insertion"
+                                                Main                      .
+
+  Native-CheckEnd =
+    '%'                                         Native-CheckEnd2          |
+                                                Native                    .
+
+  Native-CheckEnd2 =
+    '\r'                                        Native-CheckEnd2          |
+    '\n'    !#TkNewLine                         Main                      |
+                                                Native                    .
 GEN:END*/
 
 Root {
-  (e.Accum) ' ' e.Text = <Root () e.Text>;
-  (e.Accum) '\t' e.Text = <Root () e.Text>;
-  (e.Accum) '\r' e.Text = <Root () e.Text>;
-  (e.Accum) '<' e.Text = (#TkPunctuation e.Accum '<') <Root () e.Text>;
-  (e.Accum) '>' e.Text = (#TkPunctuation e.Accum '>') <Root () e.Text>;
-  (e.Accum) '(' e.Text = (#TkPunctuation e.Accum '(') <Root () e.Text>;
-  (e.Accum) ')' e.Text = (#TkPunctuation e.Accum ')') <Root () e.Text>;
-  (e.Accum) '{' e.Text = (#TkPunctuation e.Accum '{') <Root () e.Text>;
-  (e.Accum) '}' e.Text = (#TkPunctuation e.Accum '}') <Root () e.Text>;
-  (e.Accum) '[' e.Text = (#TkPunctuation e.Accum '[') <Root () e.Text>;
-  (e.Accum) ']' e.Text = (#TkPunctuation e.Accum ']') <Root () e.Text>;
-  (e.Accum) '=' e.Text = (#TkPunctuation e.Accum '=') <Root () e.Text>;
-  (e.Accum) ';' e.Text = (#TkPunctuation e.Accum ';') <Root () e.Text>;
-  (e.Accum) ',' e.Text = (#TkPunctuation e.Accum ',') <Root () e.Text>;
-  (e.Accum) '#' e.Text = (#TkPunctuation e.Accum '#') <Root () e.Text>;
-  (e.Accum) '^' e.Text = (#TkPunctuation e.Accum '^') <Root () e.Text>;
+  (e.Accum) '%' e.Text = <StartNative-Percent () e.Text>;
+  (e.Accum) e.Text = <Main (e.Accum) e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+StartNative-Percent {
+  (e.Accum) '%' e.Text = <StartNative-NewLine () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Native inlines expects two percents') <Main () e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+Main {
+  (e.Accum) ' ' e.Text = <Main () e.Text>;
+  (e.Accum) '\t' e.Text = <Main () e.Text>;
+  (e.Accum) '\r' e.Text = <Main () e.Text>;
+  (e.Accum) '<' e.Text = (#TkPunctuation e.Accum '<') <Main () e.Text>;
+  (e.Accum) '>' e.Text = (#TkPunctuation e.Accum '>') <Main () e.Text>;
+  (e.Accum) '(' e.Text = (#TkPunctuation e.Accum '(') <Main () e.Text>;
+  (e.Accum) ')' e.Text = (#TkPunctuation e.Accum ')') <Main () e.Text>;
+  (e.Accum) '{' e.Text = (#TkPunctuation e.Accum '{') <Main () e.Text>;
+  (e.Accum) '}' e.Text = (#TkPunctuation e.Accum '}') <Main () e.Text>;
+  (e.Accum) '[' e.Text = (#TkPunctuation e.Accum '[') <Main () e.Text>;
+  (e.Accum) ']' e.Text = (#TkPunctuation e.Accum ']') <Main () e.Text>;
+  (e.Accum) '=' e.Text = (#TkPunctuation e.Accum '=') <Main () e.Text>;
+  (e.Accum) ';' e.Text = (#TkPunctuation e.Accum ';') <Main () e.Text>;
+  (e.Accum) ',' e.Text = (#TkPunctuation e.Accum ',') <Main () e.Text>;
+  (e.Accum) '#' e.Text = (#TkPunctuation e.Accum '#') <Main () e.Text>;
+  (e.Accum) '^' e.Text = (#TkPunctuation e.Accum '^') <Main () e.Text>;
   (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
   (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
   (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
@@ -377,7 +455,16 @@ Root {
   (e.Accum) '/' e.Text = <StartComment (e.Accum '/') e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) =  (#TkEOF e.Accum);
-  (e.Accum) s.Any e.Text = (#TkUnexpected e.Accum s.Any) <Root () e.Text>;
+  (e.Accum) s.Any e.Text = (#TkUnexpected e.Accum s.Any) <Main () e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+StartNative-NewLine {
+  (e.Accum) '\r' e.Text = <StartNative-NewLine () e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Native-Begin () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Native inlines expects new line after two percents') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -449,7 +536,7 @@ Name {
   (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
   (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
   (e.Accum) e.Text =
-    (#TkName e.Accum) <Root () e.Text>;
+    (#TkName e.Accum) <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -457,7 +544,7 @@ Name {
 
 VariableStart {
   (e.Accum) '.' e.Text = <VariableIndex (e.Accum '.') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected dot') <Root () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected dot') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -475,7 +562,7 @@ Number {
   (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
   (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
   (e.Accum) e.Text =
-    (#TkNumber e.Accum) <Root () e.Text>;
+    (#TkNumber e.Accum) <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -508,14 +595,14 @@ Directive {
   (e.Accum) 'X' e.Text = <DirectiveTail (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected directive name') <Root () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected directive name') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
 }
 
 StringLiteral-Start {
-  (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <Root () e.Text>;
+  (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <Main () e.Text>;
   (e.Accum) e.Text = <StringLiteral (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
@@ -526,7 +613,15 @@ StartComment {
   (e.Accum) '*' e.Text = <CComment () e.Text>;
   (e.Accum) '/' e.Text = <CppComment () e.Text>;
   (e.Accum) e.Text =
-    (#TkUnexpected e.Accum) <Root () e.Text>;
+    (#TkUnexpected e.Accum) <Main () e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+Native-Begin {
+  (e.Accum) '%' e.Text = <Native-CheckEnd (e.Accum '%') e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -597,7 +692,7 @@ VariableIndex {
   (e.Accum) 'Z' e.Text = <VariableIndexTail (e.Accum 'Z') e.Text>;
   (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
   (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected variable name') <Root () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected variable name') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -631,7 +726,7 @@ DirectiveTail {
   (e.Accum) 'Y' e.Text = <DirectiveTail (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <DirectiveTail (e.Accum 'Z') e.Text>;
   (e.Accum) e.Text =
-    (#TkDirective e.Accum) <Root () e.Text>;
+    (#TkDirective e.Accum) <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -640,7 +735,7 @@ DirectiveTail {
 StringLiteral {
   (e.Accum) '\\' e.Text = <StringLiteral-Escape () e.Text>;
   (e.Accum) '\'' e.Text = <StringLiteral-Quote () e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Root () e.Text >;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text >;
   (e.Accum) = (#TokenError 'Unexpected EOF in string literal');
   (e.Accum) s.Any e.Text = (#TkLiteral-Char e.Accum s.Any) <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text =
@@ -653,16 +748,33 @@ CComment {
   (e.Accum) '*' e.Text = <CComment-CheckEnd () e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <CComment () e.Text>;
   (e.Accum) s.Any e.Text = <CComment () e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed comment') <Root () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed comment') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
 }
 
 CppComment {
-  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Main () e.Text>;
   (e.Accum) =  (#TkEOF e.Accum);
   (e.Accum) s.Any e.Text = <CppComment () e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+Native-CheckEnd {
+  (e.Accum) '%' e.Text = <Native-CheckEnd2 (e.Accum '%') e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+Native {
+  (e.Accum) '\n' e.Text = (#TkNativeLine e.Accum '\n') <Native-Begin () e.Text>;
+  (e.Accum) s.Any e.Text = <Native (e.Accum s.Any) e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed native insertion') <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -734,7 +846,7 @@ VariableIndexTail {
   (e.Accum) '_' e.Text = <VariableIndexTail (e.Accum '_') e.Text>;
   (e.Accum) '-' e.Text = <VariableIndexTail (e.Accum '-') e.Text>;
   (e.Accum) e.Text =
-    (#TkVariable e.Accum) <Root () e.Text>;
+    (#TkVariable e.Accum) <Main () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -763,7 +875,7 @@ StringLiteral-Escape {
   (e.Accum) '7' e.Text = <StringLiteral-Escape-OCode (e.Accum '7') e.Text>;
   (e.Accum) 'x' e.Text = <StringLiteral-Escape-XCode () e.Text>;
   (e.Accum) 'X' e.Text = <StringLiteral-Escape-XCode () e.Text>;
-  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Root () e.Text >;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text >;
   (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <StringLiteral () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
@@ -772,7 +884,7 @@ StringLiteral-Escape {
 
 StringLiteral-Quote {
   (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
-  (e.Accum) e.Text = <Root (e.Accum) e.Text>;
+  (e.Accum) e.Text = <Main (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
@@ -787,8 +899,17 @@ CComment-CheckNested {
 }
 
 CComment-CheckEnd {
-  (e.Accum) '/' e.Text = <Root () e.Text>;
+  (e.Accum) '/' e.Text = <Main () e.Text>;
   (e.Accum) e.Text = <CComment (e.Accum) e.Text>;
+  (e.Accum) s.Unexpected e.Text =
+    (#TokenUnexpected s.Unexpected) <Root () e.Text>;
+  (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
+}
+
+Native-CheckEnd2 {
+  (e.Accum) '\r' e.Text = <Native-CheckEnd2 (e.Accum '\r') e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Main () e.Text>;
+  (e.Accum) e.Text = <Native (e.Accum) e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);

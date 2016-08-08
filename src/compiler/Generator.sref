@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, MapReduce, Inc, Map;
+$EXTERN Fetch, Seq, MapReduce, Inc, DelAccumulator, Map;
 
 //FROM DisplayName
 $EXTERN DisplayName, DisplayCName, CName;
@@ -28,8 +28,7 @@ SwGenFnStart {
     (
       <TextFromMemoryClass s.MemoryClass>
       'refalrts::FnResult ' <CName e.Name> '(' <s.FnArguments> ') {'
-    )
-    ('  refalrts::this_is_generated_function();');
+    );
 }
 
 GenFnStart {
@@ -64,6 +63,7 @@ GenReturn {
 GenSwap {
   s.MemoryClass e.Name =
     <GenFnStart s.MemoryClass e.Name>
+    ('  refalrts::this_is_generated_function();')
     ('  refalrts::Iter func_name = arg_begin;')
     ()
     ('  refalrts::move_left( func_name, arg_end );')
@@ -112,17 +112,42 @@ GenCommonTailer {
 }
 
 $ENTRY GenProgram {
-  e.Algorithm =
-    <GenCommonHeaders>
+  (e.SourceFileName) (e.TargetFileName) e.RASL =
     <Fetch
-      <MapReduce GenCommand (/* отступ */) e.Algorithm>
-      {
-        () /* отступ должен остаться тем же */
-        e.Generated =
-          e.Generated;
-      }
-    >
-    <GenCommonTailer>;
+      e.RASL
+      <Seq
+        (MapReduce GenCommand (/* отступ */))
+        {
+          () /* отступ должен остаться тем же */
+          e.Generated =
+            <GenCommonHeaders>
+            e.Generated
+            <GenCommonTailer>;
+        }
+        (MapReduce
+          {
+            s.LineNumber (#NativeInsertBegin s.SourceLineNumber) =
+              <Inc s.LineNumber>
+              (
+                '#line ' <StrFromInt s.SourceLineNumber> ' '
+                '"' <EscapeString e.SourceFileName> '"'
+              );
+
+            s.LineNumber (#NativeInsertEnd) =
+              <Inc s.LineNumber>
+              (
+                '#line ' <StrFromInt <Inc s.LineNumber>> ' '
+                '"' <EscapeString e.TargetFileName> '"'
+              );
+
+            s.LineNumber (e.OtherLine) =
+              <Inc s.LineNumber> (e.OtherLine);
+          }
+          1
+        )
+        DelAccumulator
+      >
+    >;
 }
 
 ContextRange-B {
@@ -187,6 +212,10 @@ GenCommand {
     (e.Indent '  ')
     <GenFnStart s.MemoryClass e.Name>;
 
+  (e.Indent) (#CmdProfileFunction) =
+    (e.Indent)
+    (e.Indent 'refalrts::this_is_generated_function();');
+
   (e.Indent) (#CmdSeparator) =
     (e.Indent)
     (e.Indent);
@@ -194,6 +223,12 @@ GenCommand {
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
     ('}') ();
+
+  (e.Indent) (#CmdEmitNativeCode s.LineNumber e.Code) =
+    (e.Indent)
+    (#NativeInsertBegin s.LineNumber)
+    e.Code
+    (#NativeInsertEnd);
 
   // ---------------------------------------------------------------------------
   // Общие команды тела функции

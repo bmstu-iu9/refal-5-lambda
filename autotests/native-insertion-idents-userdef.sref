@@ -1,0 +1,22 @@
+$FORWARD Native;
+$LABEL Hello;
+
+$ENTRY Go {
+  =
+    <{ s.X s.X s.X = ; } <Native>>;
+}
+
+%%
+static refalrts::FnResult Native(refalrts::Iter left_bracket, refalrts::Iter right_bracket) {
+  using namespace refalrts;
+
+  Iter func_name = left_bracket;
+  move_left(func_name, right_bracket);
+
+  reinit_ident(left_bracket, &ident_Hello<int>::name);
+  reinit_ident(func_name, &ident_Hello<int>::name);
+  reinit_ident(right_bracket, &ident_Hello<int>::name);
+
+  return cSuccess;
+}
+%%
