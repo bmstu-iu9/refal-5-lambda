@@ -36,7 +36,8 @@ Pass-RemovePos {
 }
 
 RemovePos-Body {
-  e.Sentences =
+  #Sentences e.Sentences =
+    #Sentences
     <Map
       {
         ((e.Pattern) (e.Result)) =
@@ -93,7 +94,8 @@ Pass-EnumerateVariables {
 }
 
 EnumerateVars-Sentences {
-  s.Depth (e.ScopeVars) e.Sentences =
+  s.Depth (e.ScopeVars) #Sentences e.Sentences =
+    #Sentences
     <Map
       {
         ((e.Pattern) (e.Result)) =
@@ -191,13 +193,15 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) ((e.Pattern) (e.Result)) =
+  (e.MainName) #Sentences ((e.Pattern) (e.Result)) =
+    #Sentences
     (
       (e.Pattern)
       (<NameNestedResult (e.MainName) e.Result>)
     );
 
-  (e.MainName) e.Sentences =
+  (e.MainName) #Sentences e.Sentences =
+    #Sentences
     <DelAccumulator
       <MapReduce
         {
@@ -294,7 +298,7 @@ ExtractNested {
 }
 
 ExtractNestedRec {
-  (e.ScopeVars) e.Sentences =
+  (e.ScopeVars) #Sentences e.Sentences =
     <Fetch
       <MapReduce
         {
@@ -322,7 +326,7 @@ ExtractNestedRec {
       >
       {
         ((e.NestedFuncs) (e.BorrowedVars)) e.Sentences^ =
-          (e.BorrowedVars) (e.NestedFuncs) e.Sentences;
+          (e.BorrowedVars) (e.NestedFuncs) #Sentences e.Sentences;
       }
     >;
 }
@@ -468,23 +472,24 @@ ExtractNested-Result-Term {
       <ExtractNestedRec (e.ScopeVars e.LocalVars) e.Body>
       {
         (/* свободные переменные в функции отсутствуют */)
-        (e.NestedNestedFuncs) e.Body^ =
+        (e.NestedNestedFuncs) #Sentences e.Sentences =
           (
             (
               e.NestedFuncs e.NestedNestedFuncs
-              (#Function #GN-Local (e.ClosureName) e.Body)
+              (#Function #GN-Local (e.ClosureName) #Sentences e.Sentences)
             )
             (e.BorrowedVars)
           )
           (#TkName e.ClosureName);
 
-        (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^ =
+        (e.NestedBorrowedVars) (e.NestedNestedFuncs) #Sentences e.Sentences =
           (
             (
               e.NestedFuncs e.NestedNestedFuncs
               (#Function
                 #GN-Local (e.ClosureName)
-                <Map (AddContextToSentence e.NestedBorrowedVars) e.Body>
+                #Sentences
+                <Map (AddContextToSentence e.NestedBorrowedVars) e.Sentences>
               )
             )
             <Reduce
@@ -672,22 +677,30 @@ FoldEnums {
 }
 
 ExtractIdents {
-  e.Body =
-    <MapReduce
-      {
-        (e.Idents) ((e.Pattern) (e.Result)) =
-          <Fetch
-            (<ExtractIdent-Expr e.Pattern>)
-            (<ExtractIdent-Expr e.Result>)
-            {
-              ((e.PatternIdents) e.Pattern^) ((e.ResultIdents) e.Result^) =
-                (e.Idents e.PatternIdents e.ResultIdents)
-                ((e.Pattern) (e.Result));
-            }
-          >;
-      }
-      (/* idents */)
-      e.Body
+  #Sentences e.Sentences =
+    <Fetch
+      e.Sentences
+      <Seq
+        (MapReduce
+          {
+            (e.Idents) ((e.Pattern) (e.Result)) =
+              <Fetch
+                (<ExtractIdent-Expr e.Pattern>)
+                (<ExtractIdent-Expr e.Result>)
+                {
+                  ((e.PatternIdents) e.Pattern^) ((e.ResultIdents) e.Result^) =
+                    (e.Idents e.PatternIdents e.ResultIdents)
+                    ((e.Pattern) (e.Result));
+                }
+              >;
+          }
+          (/* idents */)
+        )
+        {
+          (e.Idents) e.Sentences =
+            (e.Idents) #Sentences e.Sentences;
+        }
+      >
     >;
 }
 

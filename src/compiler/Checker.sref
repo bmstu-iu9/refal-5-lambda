@@ -161,12 +161,12 @@ CheckRedefinitions {
 }
 
 CheckFunctionBody {
-  (e.Sentences) =
-    <CheckFunctionBodyRec (/* vars */) e.Sentences>;
+  (e.Body) =
+    <CheckFunctionBodyRec (/* vars */) e.Body>;
 }
 
 CheckFunctionBodyRec {
-  (e.ScopeVars) e.Sentences =
+  (e.ScopeVars) #Sentences e.Sentences =
     <Map (CheckSentence e.ScopeVars) e.Sentences>;
 }
 
@@ -278,8 +278,8 @@ CheckResult {
           e.KnownVars (#TkName t.SrcPos e.Name) =
             (#TkName t.SrcPos e.Name);
 
-          e.KnownVars (#Closure e.Sentences) =
-            <CheckFunctionBodyRec (e.KnownVars) e.Sentences>;
+          e.KnownVars (#Closure e.Body) =
+            <CheckFunctionBodyRec (e.KnownVars) e.Body>;
 
           e.KnownVars (#Error t.SrcPos s.Type e.Info) =
             (#Error t.SrcPos s.Type e.Info);

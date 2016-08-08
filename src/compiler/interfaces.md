@@ -64,16 +64,17 @@
 
     e.AST ::= t.ProgramElement*
     t.ProgramElement ::=
-        (#Function t.SrcPos s.ScopeClass (e.Name) e.Sentences)
+        (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
       | (#Enum t.SrcPos s.ScopeClass e.Name)
       | (#Swap t.SrcPos s.ScopeClass e.Name)
       | (#Declaration t.SrcPos s.ScopeClass e.Name)
       | (#Ident t.SrcPos e.Name)
 
+
     s.ScopeClass ::= #GN-Entry | #GN-Local
     t.SrcPos ::= s.LineNumber
 
-    e.Sentences ::= t.Sentence*
+    e.Body ::= #Sentences t.Sentence*
     t.Sentence ::= ((e.Pattern) (e.Result))
     e.Pattern, e.Result ::= e.Expression
 
@@ -104,6 +105,7 @@
   * `#Ident` — объявление идентификатора.
 * `t.SrcPos` — позиция данного объекта (требуется при семантической проверке).
 * `s.ScopeClass` — область видимости для функции.
+* `e.Body` — тело функции.
 * `t.Sentence` — отдельное предложение.
 * `e.Pattern`, `e.Result` — левая и правая части соответственно, оба имеют
   одинаковую структуру (за исключением скобок активации, которые в образцах
@@ -140,14 +142,15 @@
     e.ReducedAST ::= t.ReducedProgramElement*
 
     t.ReducedProgramElement ::=
-        (#Function s.ScopeClass (e.Name) e.ReducedSentences)
+        (#Function s.ScopeClass (e.Name) e.ReducedBody)
       | (#Enum s.ScopeClass e.Name)
       | (#Swap s.ScopeClass e.Name)
       | (#Declaration s.ScopeClass e.Name)
       | (#Ident e.Name)
       | (#Separator)
 
-    e.ReducedSentences ::= t.ReducedSentence*
+
+    e.ReducedBody ::= #Sentences t.ReducedSentence*
     t.ReducedSentence ::= ((e.ReducedPattern) (e.ReducedResult))
     e.ReducedPattern, e.ReducedResult ::= e.ReducedExpression
 

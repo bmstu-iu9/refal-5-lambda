@@ -202,8 +202,8 @@ ParseFunction {
     <Fetch
       <ParseBlock t.ErrorList e.Tail>
       {
-        (e.Sentences) t.ErrorList^ e.Tail^ =
-          ((#Function s.LnNum s.ScopeClass (e.Name) e.Sentences))
+        (e.Block) t.ErrorList^ e.Tail^ =
+          ((#Function s.LnNum s.ScopeClass (e.Name) e.Block))
           t.ErrorList e.Tail;
       }
     >;
@@ -218,7 +218,7 @@ ParseFunction {
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
-  t.FunctionBody ::= (((e.Pattern) (e.Result))*)
+  t.FunctionBody ::= (#Sentences ((e.Pattern) (e.Result))*)
 
   Открывающая скобка должна отсутствовать во входном потоке.
 */
@@ -232,10 +232,10 @@ ParseBlock {
 
 DoParseBlock {
   t.ErrorList (e.Sentences) (#TkCloseBlock s.LnNumber) e.Tail =
-    (e.Sentences) t.ErrorList e.Tail;
+    (#Sentences e.Sentences) t.ErrorList e.Tail;
 
   t.ErrorList (e.Sentences) (#TkEOF s.LnNum) e.Tail =
-    (e.Sentences)
+    (#Sentences e.Sentences)
     <EL-AddErrorAt
       t.ErrorList s.LnNum 'Unexpected EOF, expected "}"'
     >
@@ -606,10 +606,10 @@ ParseResult {
     <Fetch
       <ParseBlock t.ErrorList e.Tail>
       {
-        (e.Sentences) t.ErrorList^ e.Tail^ =
+        (e.Block) t.ErrorList^ e.Tail^ =
           <ParseResult
             t.ErrorList (e.MultiBracket)
-            (e.Scanned (#Closure e.Sentences)) e.Tail
+            (e.Scanned (#Closure e.Block)) e.Tail
           >;
       }
     >;

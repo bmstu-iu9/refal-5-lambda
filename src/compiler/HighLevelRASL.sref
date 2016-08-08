@@ -39,7 +39,7 @@ $ENTRY HighLevelRASL {
   s.Joint s.OptResult e.ProgramElements =
     <Map
       {
-        (#Function s.ScopeClass (e.Name) e.Sentences) =
+        (#Function s.ScopeClass (e.Name) #Sentences e.Sentences) =
           <HighLevelRASL-Function
             <GenSentenceFunc s.Joint>
             <GenResultFuncs s.OptResult>
