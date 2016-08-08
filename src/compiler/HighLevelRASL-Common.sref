@@ -97,7 +97,7 @@ $ENTRY TextFromExpr {
 
         (#LEFT-EDGE) = ' [[';
         (#RIGHT-EDGE) = ' ]]';
-        #RemovedTile = ' {REMOVED TILE} ';
+        #RemovedTile = ' {REMOVED TILE}';
       }
       <TextFromExpr-Prepare e.Expr>
     >;
