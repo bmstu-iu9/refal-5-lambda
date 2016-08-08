@@ -1,6 +1,9 @@
 //FROM LibraryEx
 $EXTERN Fetch, Seq, SaveFile;
 
+//FROM LoadSource
+$EXTERN LoadSource;
+
 //FROM Lexer
 $EXTERN LexFolding;
 
@@ -38,6 +41,7 @@ $ENTRY CompileFile {
     <Fetch
       e.SrcName
       <Seq
+        LoadSource
         LexFolding
         (ParseProgram <EL-Create e.SrcName>)
         {

@@ -1,28 +1,14 @@
 //FROM LibraryEx
-$EXTERN LoadFile, MapReduce, FastIntFromStr, DelAccumulator, Inc, Map,
+$EXTERN MapReduce, FastIntFromStr, DelAccumulator, Inc, Map,
   Fetch, Reduce;
 
 //FROM Library
 $EXTERN Chr, StrFromInt, Mul, Add;
 
-LinearizeLine {
-  (e.Line) = e.Line '\n';
-}
-
 $ENTRY LexFolding {
-  e.FileName =
+  e.SourceText =
     <NormalizeTokens
-      <Root ()
-        <Fetch
-          <Map LinearizeLine <LoadFile e.FileName>>
-          {
-            // Игнорируем метку порядка байт для UTF-8
-            '\xEF\xBB\xBF' e.Content = e.Content;
-
-            e.Content = e.Content;
-          }
-        >
-      >
+      <Root () e.SourceText>
     >;
 }
 
