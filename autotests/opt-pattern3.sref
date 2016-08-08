@@ -1,0 +1,140 @@
+/*
+  Данный автотест аккумулирует ошибки, обнаруженные в ходе разработки
+  оптимизации совместного сопоставления с образцом.
+*/
+
+CreateErrorFileMark {
+  #NoErrorFile = /* ничего */;
+  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
+}
+
+SaveFile {
+  ('error.txt') = ;
+}
+
+//----
+
+DoGetFileName {
+  e.FileName '/' = ;
+  e.FileName '\\' = ;
+  e.FileName s.Last = ;
+  = ;
+}
+
+//----
+
+Link {
+  #NoCppCompiler e.Files =
+    /* ничего не делаем */;
+
+  (e.CommandLine) e.Files = ;
+}
+
+//----
+
+Main-SwRenamedTargets-lambda {
+  (s.Pos #Collision (e.FirstTarget) e.SecondTarget) = ;
+
+  (s.Pos #Source (e.Source) e.Output) = ;
+
+  (s.Pos #Output e.Output) = ;
+}
+
+//----
+
+RenameLocations-Aux-lambda {
+  0 (s.Pos #Source (e.Source) e.Output) = ;
+
+  s.Num (s.Pos #Source (e.Source) e.Output '.cpp') = ;
+
+  s.Num (s.Pos #Output e.Output) = ;
+}
+
+//----
+
+ReportErrors {
+  #CommandLine t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            'Command line argument ' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+
+  (e.ConfigFile) t.ErrorFile e.Errors =
+    <Map
+      {
+        (s.Pos e.Message) =
+          <WriteLine
+            e.ConfigFile ':' <StrFromInt s.Pos> ': Error: ' e.Message
+          >;
+      }
+      e.Errors
+    >
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
+}
+
+Map {
+  s.Lambda (1 'hello') (2 'world') =
+    <
+      {
+        [WriteLine 'Command line argument 3: Error: hi'] = ;
+        [WriteLine 'file.txt:3: Error: hi'] = ;
+      }
+      <s.Lambda (3 'hi')>
+    >;
+}
+
+StrFromInt { 3 = '3'; }
+Exit { 1 = ; }
+WriteLine { e.Text = [WriteLine e.Text]; }
+
+//----
+
+ScanCollisions {
+  ((e.BaseName) e.Locations1)
+  e.Files-B ((e.BaseName) e.Locations2) e.Files-E = ;
+
+  ((e.BaseName) e.Locations) e.Files = ;
+
+  /* пусто */ = /* всё */;
+}
+
+//----
+
+$ENTRY Go {
+  =
+    <CreateErrorFileMark #NoErrorFile>
+    <CreateErrorFileMark (#ErrorFile 'error.txt')>
+    //----
+    <DoGetFileName 'test/'>
+    <DoGetFileName 'test\\'>
+    <DoGetFileName 'test'>
+    <DoGetFileName>
+    //----
+    <Link #NoCppCompiler 'files'>
+    <Link ('command line') 'files'>
+    //----
+    <Main-SwRenamedTargets-lambda (1 #Collision ('first target') 'second target')>
+    <Main-SwRenamedTargets-lambda (1 #Source ('source') 'output')>
+    <Main-SwRenamedTargets-lambda (1 #Output 'output')>
+    //----
+    <RenameLocations-Aux-lambda 0 (1 #Source ('source') 'output')>
+    <RenameLocations-Aux-lambda 1 (2 #Source ('source') 'output.cpp')>
+    <RenameLocations-Aux-lambda 2 (3 #Output 'output')>
+    //----
+    <ReportErrors #CommandLine #NoErrorFile (1 'hello') (2 'world')>
+    <ReportErrors ('file.txt') #NoErrorFile (1 'hello') (2 'world')>
+    //----
+    <ScanCollisions
+      (('base name') 'loc1') 'files-b' (('base name') 'loc2') 'files-e'
+    >
+    <ScanCollisions (('base name') 'loc') 'files'>
+    <ScanCollisions>;
+}
