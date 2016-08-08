@@ -7,7 +7,7 @@ run_test_aux() {
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
-  if [ $? -gt 0 ]; then
+  if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit
   fi

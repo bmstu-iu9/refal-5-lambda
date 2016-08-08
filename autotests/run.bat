@@ -42,7 +42,7 @@ setlocal
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
-  if errorlevel 1 (
+  if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
