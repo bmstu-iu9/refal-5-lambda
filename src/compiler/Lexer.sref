@@ -299,7 +299,7 @@ NormalizeTokens {
     '*'     !-                                  CComment-CheckEnd         |
     '\n'    !#TkNewLine                         CComment                  |
     :Any:   !-                                  CComment                  |
-            !"Unexpected EOF: unclosed comment"                           .
+            !"Unexpected EOF: unclosed comment" Root                      .
 
   CComment-CheckNested =
     '*'     !"Nested comments is disabled"      CComment                  |
@@ -653,7 +653,7 @@ CComment {
   (e.Accum) '*' e.Text = <CComment-CheckEnd () e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <CComment () e.Text>;
   (e.Accum) s.Any e.Text = <CComment () e.Text>;
-  (e.Accum) = (#TokenError 'Unexpected EOF: unclosed comment');
+  (e.Accum) e.Text = (#TokenError 'Unexpected EOF: unclosed comment') <Root () e.Text>;
   (e.Accum) s.Unexpected e.Text =
     (#TokenUnexpected s.Unexpected) <Root () e.Text>;
   (e.Accum) = (#TokenAccum e.Accum) (#TokenUnexpectedEOF);
