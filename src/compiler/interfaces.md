@@ -1,14 +1,25 @@
 # Интерфейсы между отдельными проходами компиляции
 
-## Лексический анализ (проход 1-2)
+## Загрузка исходного текста (проход 1)
 
-    <LexFolding e.FileName>
+    <LoadSource e.FileName>
+      == e.SourceText
+
+    e.SourceText ::= s.Char*
+
+* `e.FileName` — имя файла исходного текста.
+* `e.SourceText` — исходный текст в виде непрерывного потока char’ов. Всегда
+  завершается символом перехода на новую строку `\n`, даже если в конце
+  последней строки файла его не было.
+
+## Лексический анализ (проход 2)
+
+    <LexFolding e.SourceText>
       == e.Tokens
 
     e.Tokens ::= (s.TokType s.LineNumber e.Info)*
 
 * `e.Tokens` — последовательность токенов.
-* `e.FileName` — имя файла исходного текста.
 * `s.TokType` — тег типа лексемы.
 * `s.LineNumber` — номер строки исходного текста с лексемой.
 * `e.Info` — атрибуты лексемы, зависят от тега типа.
@@ -46,7 +57,7 @@
 * `#TkUnexpected e.Unexpected` — лексема с последовательностью неопознанных
   символов.
 
-## Синтаксический анализ (проход 3-4)
+## Синтаксический анализ (проход 3)
 
     <ParseProgram t.ErrorList e.Tokens>
       == t.ErrorList e.AST
@@ -73,11 +84,12 @@
       | (#TkName t.SrcPos e.Name)
       | (#TkIdentifier e.Name)
       | (#Brackets e.Expression)
-      | (#ADT-Brackets t.SrcPos (e.Name) e.Expression)
+      | (#ADT-Brackets t.SrcPos (e.ADTName) e.Expression)
       | (#CallBrackets e.Expression)
       | (#TkVariable t.SrcPos s.Mode e.Index)
       | (#TkNewVariable t.SrcPos s.Mode e.Index)
       | (#Closure e.Sentences)
+    e.ADTName ::= e.Name | #UnnamedADT
 
 * `t.ErrorList` — список ошибок, определён в `Error.sref`.
 * `e.Tokens` — последовательность токенов (см. выше).
@@ -110,8 +122,18 @@
   * `#TkVariable` — переменная.
   * `#TkNewVariable` — переменная, помеченная знаком переопределения.
   * `#Closure` — тело вложенной функции.
+* `e.ADTName` — значение `#UnnamedADT` используется в случае синтаксической
+  ошибки: отсутствия метки АТД-терма после квадратной скобки.
+
+## Проверка контекстных зависимостей (проход 4)
+
+    <CheckProgram t.ErrorList e.AST>
+      == t.ErrorList
+
+Проверка только пополняет список ошибок контекстно-зависимыми ошибками.
 
 ## Редуктор до подмножества (обессахариватель) (проход 5)
+
     <Desugar e.AST>
       == e.ReducedAST
 
@@ -139,6 +161,9 @@
       | (#ADT-Brackets (e.Name) e.Expression)
       | (#CallBrackets e.Expression)
       | (#TkVariable s.Mode e.Index s.Depth)
+
+Нужно отметить, что в `#ADT-Brackets` на входе не может быть имени как `#UnnamedADT`,
+поскольку этот проход и последующие вызываются только при отсутствии ошибок.
 
 Ниже описаны только отличия `e.ReducedAST` от `e.AST`.
 
