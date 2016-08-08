@@ -259,11 +259,11 @@ ParseSentence {
           t.ErrorList^ (e.Pattern) (#TkReplace s.LnNum) e.Tokens^ =
             t.ErrorList (e.Pattern) e.Tokens;
 
-          t.ErrorList^ (e.Pattern) (s.NextResultTerm s.LnNum e.Info) e.Tokens^ =
-            <EL-AddErrorAt
-              t.ErrorList s.LnNum 'Incorrect pattern termination'
+          t.ErrorList^ (e.Pattern) t.NextResultToken e.Tokens^ =
+            <EL-AddUnexpected
+              t.ErrorList t.NextResultToken '='
             >
-            (e.Pattern) e.Tokens;
+            (e.Pattern) t.NextResultToken e.Tokens;
         }
         {
           t.ErrorList^ (e.Pattern) e.Tokens^ =
