@@ -10,6 +10,9 @@ $EXTERN EscapeChar;
 //FROM FastGen
 $EXTERN FastGen-Terms, CreateFastGen;
 
+//FROM HighLevelRASL-Common
+$EXTERN TextFromExpr;
+
 
 $ENTRY CreateGlobalGen {
   e.HardSentences =
@@ -364,26 +367,54 @@ GetComplex {
 
 $ENTRY PatternComment {
   () = ;
+  e.Pattern = <TextFromExpr <PatternCommentRec e.Pattern>>;
+}
 
+PatternCommentRec {
   e.Pattern =
     <Map
       {
-        (#Atom #TkChar s.Char) e.Tail = '\'' <EscapeChar s.Char> '\'' <PatternComment e.Tail>;
-        (#Atom #TkNumber s.Value) e.Tail = s.Value <PatternComment e.Tail>;
-        (#Atom #TkName e.Name) e.Tail = '&' e.Name <PatternComment e.Tail>;
-        (#Atom #TkIdentifier e.Ident) e.Tail = '#' e.Ident <PatternComment e.Tail>;
-        (#Brackets s.Num e.inBrackets) e.Tail =
-          (<PatternComment e.inBrackets>) <PatternComment e.Tail>;
-        (#ADT-Brackets (e.Name) s.Num e.inBrackets) e.Tail =
-          '[' e.Name ' ' <PatternComment e.inBrackets>']' <PatternComment e.Tail>;
-        (#Brackets e.inBrackets) e.Tail =
-          (<PatternComment e.inBrackets>) <PatternComment e.Tail>;
-        (#ADT-Brackets (e.Name) e.inBrackets) e.Tail =
-          '[' e.Name ' ' <PatternComment e.inBrackets>']' <PatternComment e.Tail>;
-        (s.Tag e.Any) e.Tail = s.Tag <PatternComment e.Tail>;
+        (#Atom #TkChar s.Char) = (#TkChar s.Char #NoOffset);
+        (#Atom #TkNumber s.Value) = (#TkNumber s.Value #NoOffset);
+        (#Atom #TkName e.Name) = (#TkName e.Name #NoOffset);
+        (#Atom #TkIdentifier e.Ident) = (#TkIdentifier e.Ident #NoOffset);
+
+        (#Brackets s.Num e.InBrackets) =
+          // Для отладки можно заменить #NoOffset на s.Num
+          (#TkOpenBracket #NoOffset)
+          <PatternCommentRec e.InBrackets>
+          (#TkCloseBracket #NoOffset);
+
+        (#ADT-Brackets (e.Name) s.Num e.InBrackets) =
+          // Для отладки можно заменить #NoOffset на s.Num
+          (#TkOpenADT #NoOffset e.Name #NoOffset)
+          <PatternCommentRec e.InBrackets>
+          (#TkCloseADT #NoOffset);
+
+        (#Brackets e.InBrackets) e.Tail =
+          (#TkOpenBracket #NoOffset)
+          <PatternCommentRec e.InBrackets>
+          (#TkCloseBracket #NoOffset);
+
+        (#ADT-Brackets (e.Name) e.InBrackets) e.Tail =
+          (#TkOpenADT #NoOffset e.Name #NoOffset)
+          <PatternCommentRec e.InBrackets>
+          (#TkCloseADT #NoOffset);
+
+        (s.Tag (e.Index) e.Any) =
+          (#TkVariable <ModeFromTag s.Tag> e.Index #NoDepth #NoOffset);
+
+        (s.Tag '$' e.Any) =
+          (#TkVariable <ModeFromTag s.Tag> '$' #NoDepth #NoOffset);
       }
       e.Pattern
     >;
+}
+
+ModeFromTag {
+  #E = 'e';
+  #T = 't';
+  #S = 's';
 }
 
 $ENTRY ReverseGen {
@@ -395,8 +426,8 @@ $ENTRY ReverseGen {
 
   (#Atom s.Type e.Value) e.Tail = (s.Type e.Value) <ReverseGen e.Tail>;
 
-  (s.Mode (e.Name) e.Any) e.Tail =
-    (#TkVariable <Fetch s.Mode { #E = 'e'; #T = 't'; #S = 's'; }> e.Name)
+  (s.Tag (e.Name) e.Any) e.Tail =
+    (#TkVariable <ModeFromTag s.Tag> e.Name)
     <ReverseGen e.Tail>;
 
   (e.Else) e.Tail = (e.Else) <ReverseGen e.Tail>;

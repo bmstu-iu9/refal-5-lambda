@@ -1,11 +1,14 @@
 //FROM LibraryEx
 $EXTERN Fetch, MapReduce, Inc, Map;
 
+//FROM DisplayName
+$EXTERN DisplayName, DisplayCName, CName;
+
 //FROM Library
 $EXTERN StrFromInt, Add;
 
 //FROM Escape
-$EXTERN EscapeChar;
+$EXTERN EscapeChar, EscapeString;
 
 
 FuncArguments {
@@ -92,7 +95,7 @@ GenIdent {
     ('template <typename SREFAL_PARAM_INT>')
     ('struct ident_' <CName e.Name> ' {')
     ('  static const char *name() {')
-    ('    return "' <DisplayName e.Name> '";')
+    ('    return "' <DisplayCName e.Name> '";')
     ('  }')
     ('};')
     ();
@@ -137,31 +140,6 @@ ContextRange {
 
 ContextItem {
   s.ItemNumber = 'context[' <StrFromInt s.ItemNumber> ']';
-}
-
-DisplayName {
-  #CreateClosure = '@create_closure@';
-  e.Name #SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
-  e.Name = e.Name;
-}
-
-DisplayNameSuf {
-  '\\' s.Num e.Suffix = '\\\\' <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
-  s.Tag s.Num e.Suffix = s.Tag <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
-  /* пусто */ = /* пусто */;
-}
-
-CName {
-  #CreateClosure = 'refalrts::create_closure';
-  e.Name #SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
-  e.Name-B '-' e.Name-E = e.Name-B '_' <CName e.Name-E>;
-  e.Name = e.Name;
-}
-
-CNameSuf {
-  '$' s.Num e.Suffix = 'S' <StrFromInt s.Num> <CNameSuf e.Suffix>;
-  '\\' s.Num e.Suffix = 'L' <StrFromInt s.Num> <CNameSuf e.Suffix>;
-  /* пусто */ = /* пусто */;
 }
 
 PrintBracketsVarInit {
@@ -573,13 +551,13 @@ GenCommand {
       {
         (e.Name) =
           (e.Indent
-            '  { ' <CName e.Name> ', "' <DisplayName e.Name> '" },'
+            '  { ' <CName e.Name> ', "' <DisplayCName e.Name> '" },'
           );
       }
       e.FuncNames
     >
     (e.Indent
-      '  { ' <CName e.LastName> ', "' <DisplayName e.LastName> '" }'
+      '  { ' <CName e.LastName> ', "' <DisplayCName e.LastName> '" }'
     )
     (e.Indent '};');
 
@@ -968,10 +946,6 @@ Escape {
   s.Char = <EscapeChar s.Char>;
 }
 
-EscapeString {
-  e.String = <Map EscapeChar e.String>;
-}
-
 PrintLength {
   e.String = <DoPrintLength 0 e.String>;
 }
@@ -1250,7 +1224,7 @@ AllocatorFuncName {
 AllocatorFuncArgument {
   #ElChar s.Char = ', ' '' <Escape s.Char> '';
 
-  #ElName e.Name = ', ' <CName e.Name> ', "' <DisplayName e.Name> '"';
+  #ElName e.Name = ', ' <CName e.Name> ', "' <DisplayCName e.Name> '"';
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 

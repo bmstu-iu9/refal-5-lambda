@@ -2,7 +2,7 @@
 $EXTERN Div, Mod, Ord, Compare;
 
 //FROM LibraryEx
-$EXTERN Fetch;
+$EXTERN Fetch, Map;
 
 OctDigit {
   0 = '0'; 1 = '1'; 2 = '2'; 3 = '3';
@@ -31,4 +31,8 @@ $ENTRY EscapeChar {
         s.Compare s.Code = s.Other;
       }
     >;
+}
+
+$ENTRY EscapeString {
+  e.String = <Map EscapeChar e.String>;
 }

@@ -4,8 +4,12 @@ $EXTERN Add;
 //FROM LibraryEx
 $EXTERN Inc, StrFromInt, Map, Fetch;
 
+//FROM DisplayName
+$EXTERN DisplayName;
+
 //FROM Escape
 $EXTERN EscapeChar;
+
 
 $ENTRY Inc2 {
   s.Num = <Add 2 s.Num>;
@@ -18,6 +22,8 @@ $ENTRY IncVarOffset {
 }
 
 $ENTRY PrintVar {
+  s.Mode e.Index #NoDepth = s.Mode '.' e.Index;
+
   s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth>;
 }
 
@@ -52,7 +58,9 @@ $ENTRY TextFromExpr {
           ' >' <Offset s.ContextOffset>;
 
         (#TkOpenADT s.ContextOffset e.Name s.NameOffset) =
-          ' [' <Offset s.ContextOffset> e.Name <Offset s.NameOffset>;
+          ' [' <Offset s.ContextOffset>
+          <DisplayName e.Name> <Offset s.NameOffset>;
+
         (#TkOpenADT s.ContextOffset) =
           ' [' <Offset s.ContextOffset>;
         (#TkCloseADT s.ContextOffset) =
@@ -67,7 +75,7 @@ $ENTRY TextFromExpr {
           ' ' <StrFromInt s.Number> <Offset s.Offset>;
 
         (#TkName e.Name s.Offset) =
-          ' & ' e.Name <Offset s.Offset>;
+          ' & ' <DisplayName e.Name> <Offset s.Offset>;
 
         (#TkString e.String s.Offset) =
           '"' <Map EscapeChar e.String> '"' <Offset s.Offset>;
@@ -80,7 +88,7 @@ $ENTRY TextFromExpr {
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
         (#TkIdentifier e.Name s.Offset) =
-          ' # ' e.Name <Offset s.Offset>;
+          ' # ' <DisplayName e.Name> <Offset s.Offset>;
 
         (#Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
         (#AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
