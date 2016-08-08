@@ -910,7 +910,7 @@ ErrorFlush {
   (e.Scanned) e.Tail =
     <NextInSet
       ErrorFlush ErrorFlushFail
-      (<NameTailSet> ' \t,.:;(){}[]*&')
+      (<NameTailSet> ' \t,.:;(){}[]*&!@#$%^-_=+/')
       (e.Scanned) e.Tail
     >;
 }
