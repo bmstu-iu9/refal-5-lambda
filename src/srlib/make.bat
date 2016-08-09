@@ -13,7 +13,7 @@ goto :EOF
 
 :PREPARE_SRCLIB
   ..\..\bin\srefc-core %SREFC_FLAGS% %1
-  echo //FROM Library>> %1.cpp
+  find "//FROM" < %1.sref >> %1.cpp
   move %1.cpp ..\..\srlib
   copy %1.sref ..\..\srlib\src
 goto :EOF

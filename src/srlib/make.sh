@@ -2,7 +2,7 @@
 
 prepare_srclib() {
   ../../bin/srefc-core $SREFC_FLAGS $1
-  echo '//FROM Library' >> $1.cpp
+  grep '//FROM' < $1.sref >> $1.cpp
   mv $1.cpp ../../srlib
   cp $1.sref ../../srlib/src
 }
