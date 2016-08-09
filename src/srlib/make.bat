@@ -6,6 +6,7 @@ if not exist ..\..\srlib\src\nul (
 copy LICENSE ..\..\srlib
 copy *.h ..\..\srlib
 copy *.cpp ..\..\srlib
+call :PREPARE_SRCLIB Library
 call :PREPARE_SRCLIB LibraryEx
 call :PREPARE_SRCLIB GetOpt
 

@@ -10,5 +10,6 @@ prepare_srclib() {
 
 mkdir -p ../../srlib/src
 cp LICENSE *.h *.cpp ../../srlib
+prepare_srclib Library
 prepare_srclib LibraryEx
 prepare_srclib GetOpt
