@@ -42,6 +42,7 @@ Iter free_ptr();
 } // namespace allocator
 
 } // namespace refalrts
+%%
 
 //==============================================================================
 // Библиотека "встроенных" функций
@@ -49,30 +50,25 @@ Iter free_ptr();
 
 // Основные перечисления
 
-#define DEFINE_IDENT(ident_name) \
-  template <typename SREFAL_PARAM_INT> \
-  struct ident_ ## ident_name { \
-    static const char *name() { \
-      return #ident_name; \
-    } \
-  };
-
+%%
 #define USE_IDENT(ident_name) \
   (& ident_ ## ident_name<int>::name)
+%%
 
-DEFINE_IDENT(Success);
-DEFINE_IDENT(Fails);
-DEFINE_IDENT(True);
-DEFINE_IDENT(False);
-DEFINE_IDENT(TypeNumber);
-DEFINE_IDENT(TypeCharacter);
-DEFINE_IDENT(TypeFunction);
-DEFINE_IDENT(TypeFile);
-DEFINE_IDENT(TypeIdentifier);
+$LABEL Success;
+$LABEL Fails;
+$LABEL True;
+$LABEL False;
+$LABEL TypeNumber;
+$LABEL TypeCharacter;
+$LABEL TypeFunction;
+$LABEL TypeFile;
+$LABEL TypeIdentifier;
 
 // Математические операции
 
-refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Add {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -109,9 +105,11 @@ refalrts::FnResult Add(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Sub {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -148,9 +146,11 @@ refalrts::FnResult Sub(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Mul {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -187,9 +187,11 @@ refalrts::FnResult Mul(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Div(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Div {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -226,9 +228,11 @@ refalrts::FnResult Div(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Mod {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -265,10 +269,12 @@ refalrts::FnResult Mod(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
 // Ввод-вывод
 
+%%
 refalrts::FnResult write_to_stream(
   FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
 ) {
@@ -412,8 +418,10 @@ refalrts::FnResult write_to_stream(
     return refalrts::cSuccess;
   }
 }
+%%
 
-refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY WriteLine {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -440,9 +448,11 @@ refalrts::FnResult WriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY FWriteLine {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -479,8 +489,10 @@ refalrts::FnResult FWriteLine(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
+%%
 refalrts::FnResult read_from_stream(
   FILE *input, refalrts::Iter& begin, refalrts::Iter& end
 ) {
@@ -521,10 +533,10 @@ refalrts::FnResult read_from_stream(
 
   return refalrts::cSuccess;
 }
+%%
 
-refalrts::FnResult ReadLine(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
+$ENTRY ReadLine {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -553,11 +565,11 @@ refalrts::FnResult ReadLine(
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult FReadLine(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
+$ENTRY FReadLine {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -595,8 +607,10 @@ refalrts::FnResult FReadLine(
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
+%%
 namespace {
 
 refalrts::FnResult string_from_seq(
@@ -638,8 +652,10 @@ refalrts::FnResult string_from_seq(
 }
 
 } // unnamed namespace
+%%
 
-refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY FOpen {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -698,9 +714,11 @@ refalrts::FnResult FOpen(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY FClose {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -734,6 +752,7 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
 /*
@@ -741,10 +760,13 @@ refalrts::FnResult FClose(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   (устанавливаются в refalrts.cpp).
 */
 
+%%
 extern char **g_argv;
 extern int g_argc;
+%%
 
-refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Arg {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -780,9 +802,11 @@ refalrts::FnResult Arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY ExistFile {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -831,9 +855,11 @@ refalrts::FnResult ExistFile(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult GetEnv(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY GetEnv {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -884,9 +910,11 @@ refalrts::FnResult GetEnv(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Exit {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -911,9 +939,11 @@ refalrts::FnResult Exit(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY System {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -950,11 +980,13 @@ refalrts::FnResult System(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
 // Работа с типами символов
 
-refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY IntFromStr {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1022,9 +1054,11 @@ refalrts::FnResult IntFromStr(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY StrFromInt {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1083,9 +1117,11 @@ refalrts::FnResult StrFromInt(refalrts::Iter arg_begin, refalrts::Iter arg_end) 
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Chr {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1116,9 +1152,11 @@ refalrts::FnResult Chr(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY Ord {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1150,8 +1188,10 @@ refalrts::FnResult Ord(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
+%%
 namespace {
 
 template <typename T>
@@ -1166,8 +1206,10 @@ char compare_char( T x, T y ) {
 }
 
 } // unnamed namespace
+%%
 
-refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY SymbCompare {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1379,9 +1421,11 @@ refalrts::FnResult SymbCompare(refalrts::Iter arg_begin, refalrts::Iter arg_end)
   } while ( 0 );
 
   return refalrts::cRecognitionImpossible;
+%%
 }
 
-refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
+$ENTRY SymbType {
+%%
   do {
     refalrts::Iter bb_0 = arg_begin;
     refalrts::Iter be_0 = arg_end;
@@ -1438,5 +1482,5 @@ refalrts::FnResult SymbType(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 
 
   return refalrts::cRecognitionImpossible;
-}
 %%
+}
