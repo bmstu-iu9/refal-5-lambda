@@ -744,7 +744,7 @@ FoldEnums {
   e.AST =
     <Map
       {
-        (#Function s.ScopeClass (e.Name) /* пусто */) =
+        (#Function s.ScopeClass (e.Name) #Sentences /* пусто */) =
           (#Enum s.ScopeClass e.Name);
 
         t.Other = t.Other;
