@@ -20,7 +20,8 @@ $ENTRY LowLevelRASL {
           >;
 
         (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-          (#CmdFnStart s.ScopeClass e.Name)
+          <CmdFuncDescrForEntry s.ScopeClass e.Name>
+          (#CmdFnStart e.Name)
           (#CmdEmitNativeCode t.SrcPos e.Code)
           (#CmdFnEnd);
 
@@ -28,10 +29,14 @@ $ENTRY LowLevelRASL {
           (#CmdEnum s.ScopeClass e.Name);
 
         (#CmdSwap s.ScopeClass e.Name) =
-          (#CmdSwap s.ScopeClass e.Name);
+          (#CmdFuncDescr s.ScopeClass e.Name)
+          (#CmdSwap e.Name);
 
-        (#CmdDeclaration s.ScopeClass e.Name) =
-          (#CmdDeclaration s.ScopeClass e.Name);
+        (#CmdDeclaration #GN-Entry e.Name) =
+          (#CmdExtern e.Name);
+
+        (#CmdDeclaration #GN-Local e.Name) =
+          (#CmdFuncDescr #GN-Local e.Name);
 
         (#CmdDefineIdent e.Name) = (#CmdDefineIdent e.Name);
 
@@ -46,7 +51,8 @@ $ENTRY LowLevelRASL {
 
 LowLevelRASL-Function {
   s.GenMode s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
-    (#CmdFnStart s.ScopeClass e.Name)
+    <CmdFuncDescrForEntry s.ScopeClass e.Name>
+    (#CmdFnStart e.Name)
     (#CmdProfileFunction)
     <Fetch
       <AddSavers s.Number e.Commands>
@@ -57,6 +63,11 @@ LowLevelRASL-Function {
       }
     >
     (#CmdFnEnd);
+}
+
+CmdFuncDescrForEntry {
+  #GN-Entry e.Name = (#CmdFuncDescr #GN-Entry e.Name);
+  #GN-Local e.Name = /* ничего не генерируем */;
 }
 
 AddSavers {

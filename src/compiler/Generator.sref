@@ -19,43 +19,21 @@ TextFromMemoryClass {
   #GN-Local = 'static '; #GN-Entry = ;
 }
 
-
-SwGenFnStart {
-  #GN-Local s.FnArguments e.Name =
-    <GenForward e.Name>
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <s.FnArguments> ') {');
-
-  #GN-Entry s.FnArguments e.Name =
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ');')
-    ()
-    ('refalrts::RefalFunction ' <CName e.Name> ' = {')
-    ('  func_' <CName e.Name> ', "' <DisplayCName e.Name> '"')
-    ('};')
-    ()
-    ('refalrts::FnResult func_' <CName e.Name> '(' <s.FnArguments> ') {');
-}
-
 GenFnStart {
+  e.Name =
+    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ') {');
+}
+
+GenFuncDescr {
   s.MemoryClass e.Name =
-    <SwGenFnStart s.MemoryClass FuncArguments e.Name>;
-}
-
-GenExtern {
-  e.Name =
-    ('extern refalrts::RefalFunction ' <CName e.Name> ';');
-}
-
-GenForward {
-  e.Name =
-    ('#ifndef defined_' <CName e.Name>)
-    ('#define defined_' <CName e.Name>)
     ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ');')
     ()
-    ('static refalrts::RefalFunction ' <CName e.Name> ' = {')
+    (
+      <TextFromMemoryClass s.MemoryClass>
+      'refalrts::RefalFunction ' <CName e.Name> ' = {'
+    )
     ('  func_' <CName e.Name> ', "' <DisplayCName e.Name> '"')
     ('};')
-    ()
-    ('#endif /* ' <CName e.Name> ' */')
     ();
 }
 
@@ -68,8 +46,8 @@ GenReturn {
 }
 
 GenSwap {
-  s.MemoryClass e.Name =
-    <GenFnStart s.MemoryClass e.Name>
+  e.Name =
+    <GenFnStart e.Name>
     ('  refalrts::this_is_generated_function();')
     ('  refalrts::Iter func_name = arg_begin;')
     ()
@@ -204,25 +182,25 @@ GenCommand {
     ('  refalrts::empty_function, "' <DisplayCName e.Name> '"')
     ('};');
 
-  (e.Indent) (#CmdSwap s.MemoryClass e.Name) =
+  (e.Indent) (#CmdSwap e.Name) =
     (e.Indent)
-    <GenSwap s.MemoryClass e.Name>;
+    <GenSwap e.Name>;
 
-  (e.Indent) (#CmdDeclaration #GN-Entry e.Name) =
+  (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
-    <GenExtern e.Name>;
+    ('extern refalrts::RefalFunction ' <CName e.Name> ';');
 
-  (e.Indent) (#CmdDeclaration #GN-Local e.Name) =
+  (e.Indent) (#CmdFuncDescr s.MemoryClass e.Name) =
     (e.Indent)
-    <GenForward e.Name>;
+    <GenFuncDescr s.MemoryClass e.Name>;
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
     <GenIdent e.Name>;
 
-  (e.Indent) (#CmdFnStart s.MemoryClass e.Name) =
+  (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
-    <GenFnStart s.MemoryClass e.Name>;
+    <GenFnStart e.Name>;
 
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
