@@ -1765,6 +1765,14 @@ refalrts::Iter refalrts::wrap_closure( refalrts::Iter closure ) {
 
 //------------------------------------------------------------------------------
 
+refalrts::FnResult refalrts::empty_function(
+  refalrts::Iter /* begin */, refalrts::Iter /* end */
+) {
+  return refalrts::cRecognitionImpossible;
+}
+
+//------------------------------------------------------------------------------
+
 // Инициализация головного узла статического ящика
 
 namespace refalrts {
@@ -2464,13 +2472,9 @@ refalrts::FnResult refalrts::vm::execute_active(
   refalrts::Iter function = next( begin );
   if( cDataFunction == function->tag ) {
 #ifdef MODULE_REFAL
-    return refalrts::FnResult(
-      (function->function_info.ptr)( begin, end ) & 0xFFU
-    );
+    return (function->function_info.ptr)( begin, end );
 #else
-    return refalrts::FnResult(
-      (function->function_info->ptr)( begin, end ) & 0xFFU
-    );
+    return (function->function_info->ptr)( begin, end );
 #endif
   } else if( cDataClosure == function->tag ) {
     refalrts::Iter head = function->link_info;

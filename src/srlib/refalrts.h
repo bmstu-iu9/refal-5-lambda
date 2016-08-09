@@ -399,6 +399,8 @@ extern RefalFunction create_closure;
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание
 Iter wrap_closure( Iter closure ); // Свернуть замыкание
 
+extern FnResult empty_function(Iter, Iter);
+
 // Работа со статическими ящиками
 
 #ifdef MODULE_REFAL

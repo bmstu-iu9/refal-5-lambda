@@ -15,14 +15,10 @@ FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
 }
 
-NakedArguments {
-  = 'refalrts::Iter, refalrts::Iter';
-}
-/*
 TextFromMemoryClass {
   #GN-Local = 'static '; #GN-Entry = ;
 }
-*/
+
 
 SwGenFnStart {
   #GN-Local s.FnArguments e.Name =
@@ -65,16 +61,10 @@ GenForward {
 
 GenReturn {
   #Success e.Indent =
-    (e.Indent
-      'return refalrts::FnResult(refalrts::cSuccess | (__LINE__ << 8));'
-    );
+    (e.Indent 'return refalrts::cSuccess;');
 
   #Fail e.Indent =
-    (e.Indent
-      'return refalrts::FnResult('
-        'refalrts::cRecognitionImpossible | (__LINE__ << 8)'
-      ');'
-    );
+    (e.Indent 'return refalrts::cRecognitionImpossible;');
 }
 
 GenSwap {
@@ -207,9 +197,12 @@ GenCommand {
 
   (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
     (e.Indent)
-    <SwGenFnStart s.MemoryClass NakedArguments e.Name>
-    <GenReturn #Fail '  '>
-    ('}') ();
+    (
+      <TextFromMemoryClass s.MemoryClass>
+      'refalrts::RefalFunction ' <CName e.Name> ' = {'
+    )
+    ('  refalrts::empty_function, "' <DisplayCName e.Name> '"')
+    ('};');
 
   (e.Indent) (#CmdSwap s.MemoryClass e.Name) =
     (e.Indent)
