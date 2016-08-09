@@ -23,6 +23,8 @@
     <region name="refalVariable" parent="def:Function"/>
     <region name="refalFunction" parent="def:Keyword"/>
 
+    <region name="refalInlineNative" parent="def:StringEdge"/>
+
     <scheme name="refalSymbolsCore">
       <regexp match='/\\\\$/' region0="def:Error"/>
       <regexp match='/\\[^xX0-7]/' region0="cString2"/>
@@ -55,9 +57,10 @@
              region00="refalSymbol" region01="refalOpenStruct"
              region10="refalSymbol" region11="refalCloseStruct"/>
 
-      <block start="/\/\*/" end="/\*\//" scheme="Comment" region="refalComment" region00="refalOpenStruct" region10="refalCloseStruct"/>
-      <block start="/\/\//" end="/$/" scheme="Comment" region="refalComment"/>
-      <block start="/^\*/" end="/$/" scheme="Comment" region="refalComment"/>
+      <block start="/\/\*/" end="/\*\//" scheme="Comment" region="refalComment"
+             region00="refalOpenStruct" region10="refalCloseStruct"/>
+      <block start="/\/\//" end="/$/" scheme="Comment" region="refalComment"
+             region00="refalOpenStruct" region10="refalCloseStruct"/>
       <regexp match='/\$\w*/' region0="refalDirective"/>
       <regexp match="/\c(0x[\da-fA-F]*?([^\s\W\da-fA-F]).*?)\B/i" region0="dError"/>
       <keywords region="refalSymbol">
@@ -85,6 +88,9 @@
 
       <block start="/'/" end="/'/" scheme="refalSymbolsCore" region="refalString"/>
       <block start='/"/' end='/"/' scheme="refalStringCore" region="refalString"/>
+
+      <block start="/^%%$/" end="/^%%$/" scheme="cpp:cpp"
+             region00="refalInlineNative" region10="refalInlineNative"/>
     </scheme>
   </type>
 </hrc>
