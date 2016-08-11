@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Max, Inc, Compare;
+$EXTERN Map, Fetch, Max, Inc, Compare, MapReduce;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -478,7 +478,6 @@ Function-Interpret {
         <PrepareInterpretCommands e.Commands>
         (#CmdFinRAA)
       >
-      0 /* начальная глубина */
     >
     (#CmdiRunInterpret);
 }
@@ -952,16 +951,21 @@ OutlineConstants {
 }
 
 PrepareOpenEStack {
-  (#CmdiEStart e.VarInfo) e.Commands s.Depth =
-    (#CmdiEStart e.VarInfo) <PrepareOpenEStack e.Commands <Inc s.Depth>>;
+  e.Commands =
+    <MapReduce
+      {
+        (#CmdiReserveStack s.Depth) (#CmdiEStart e.VarInfo) =
+          (#CmdiReserveStack <Inc s.Depth>) (#CmdiEStart e.VarInfo);
 
-  (#CmdiOnFailGoTo s.Offset) e.Commands s.Depth =
-    (#CmdiOnFailGoTo s.Offset) <PrepareOpenEStack e.Commands <Inc s.Depth>>;
+        (#CmdiReserveStack s.Depth) (#CmdiOnFailGoTo s.Offset) =
+          (#CmdiReserveStack <Inc s.Depth>) (#CmdiOnFailGoTo s.Offset);
 
-  t.OtherCommand e.Commands s.Depth =
-    t.OtherCommand <PrepareOpenEStack e.Commands s.Depth>;
-
-  s.Depth = (#CmdiReserveStack s.Depth);
+        (#CmdiReserveStack s.Depth) t.OtherCommand =
+          (#CmdiReserveStack s.Depth) t.OtherCommand;
+      }
+      (#CmdiReserveStack 0)
+      e.Commands
+    >;
 }
 
 Function-Direct {
