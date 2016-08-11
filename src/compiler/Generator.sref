@@ -618,21 +618,32 @@ GenCommand {
     (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
     (e.Indent '};');
 
-  (e.Indent) (#CmdiReserveStack 0) =
-    (e.Indent)
-    (e.Indent 'int open_e_stack[1];');
-
-  (e.Indent) (#CmdiReserveStack s.Depth) =
-    (e.Indent)
-    (e.Indent 'int open_e_stack[' <StrFromInt s.Depth> '];');
-
   (e.Indent) (#CmdiRunInterpret) =
     (e.Indent)
     (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
-    (e.Indent '  raa, context, arg_begin, arg_end,')
-    (e.Indent '  functions, idents, numbers, strings, open_e_stack')
+    (e.Indent '  raa, arg_begin, arg_end,')
+    (e.Indent '  functions, idents, numbers, strings')
     (e.Indent ');')
     (e.Indent 'return res;');
+
+  (e.Indent) (#CmdiProfileFunction) =
+    (e.Indent)
+    (e.Indent '{refalrts::icProfileFunction, 0, 0, 0},');
+
+  (e.Indent) (#CmdiIssueMem s.Memory) =
+    (e.Indent)
+    (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');
+
+  (e.Indent) (#CmdiReserveStack 0) =
+    (e.Indent)
+    /* ничего не генерируем */;
+
+  (e.Indent) (#CmdiReserveStack s.Depth) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icReserveBacktrackStack, '
+      <StrFromInt s.Depth> ', 0, 0},'
+    );
 
   (e.Indent) (#CmdiOnFailGoTo s.Offset) =
     (e.Indent)

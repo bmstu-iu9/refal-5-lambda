@@ -2383,6 +2383,60 @@ unsigned g_step_counter = 0;
 
 int g_ret_code;
 
+template <typename T>
+class Stack;
+
+} // namespace vm
+
+} // namespace refalrts
+
+template <typename T>
+class refalrts::vm::Stack {
+public:
+  Stack()
+    :m_memory(new T[1]), m_size(0), m_capacity(1)
+  {
+    /* пусто */
+  }
+
+  ~Stack() {
+    delete[] m_memory;
+  }
+
+  T& operator[](size_t offset) {
+    return m_memory[offset];
+  }
+
+  void reserve(size_t size);
+
+private:
+  T *m_memory;
+  size_t m_size;
+  size_t m_capacity;
+};
+
+template <typename T>
+void refalrts::vm::Stack<T>::reserve(size_t size) {
+  assert (size > 0);
+
+  if (m_capacity < size) {
+    T *new_memory = new T[size];
+    delete[] m_memory;
+    m_memory = new_memory;
+  }
+  m_size = size;
+  for (size_t i = 0; i < m_size; ++i) {
+    m_memory[i] = T();
+  }
+}
+
+namespace refalrts {
+
+namespace vm {
+
+Stack<int> g_open_e_stack;
+Stack<Iter> g_context;
+
 } // namespace vm
 
 } // namespace refalrts
@@ -2857,14 +2911,15 @@ void refalrts::vm::free_view_field() {
 #ifndef MODULE_REFAL
 refalrts::FnResult refalrts::interpret_array(
   const refalrts::RASLCommand raa[],
-  refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
   RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
-  const StringItem strings[],
-  int open_e_stack[]
+  const StringItem strings[]
 ) {
+  refalrts::vm::Stack<int>& open_e_stack = refalrts::vm::g_open_e_stack;
+  refalrts::vm::Stack<Iter>& context = refalrts::vm::g_context;
+
   int i = 0;
   Iter res = begin;
   Iter trash_prev = begin->prev;
@@ -2893,6 +2948,18 @@ refalrts::FnResult refalrts::interpret_array(
 
     switch(raa[i].cmd)
     {
+      case icProfileFunction:
+        this_is_generated_function();
+        break;
+
+      case icIssueMemory:
+        context.reserve(raa[i].val1);
+        break;
+
+      case icReserveBacktrackStack:
+        open_e_stack.reserve(raa[i].val1);
+        break;
+
       case icOnFailGoTo:
         open_e_stack[stack_top++] = i + raa[i].val1 + 1;
         break;

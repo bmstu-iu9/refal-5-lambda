@@ -113,6 +113,9 @@ struct Node {
 };
 
 enum iCmd {
+  icProfileFunction,
+  icIssueMemory,
+  icReserveBacktrackStack,
   icOnFailGoTo,
   icInitB0,
   icInitB0_Lite,
@@ -503,14 +506,12 @@ void debug_print_expr(void *file, Iter first, Iter last);
 #ifndef MODULE_REFAL
 extern FnResult interpret_array(
   const RASLCommand raa[],
-  Iter context[],
   Iter begin,
   Iter end,
   RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
-  const StringItem strings[],
-  int open_e_stack[]
+  const StringItem strings[]
 );
 #endif
 

@@ -475,18 +475,14 @@ Function-Interpret {
       e.FunctionBody
       <Seq
         ConvertInterpretCommands
-        {
-          e.FunctionBody^ =
-            (#CmdInitRAA)
-            e.FunctionBody
-            (#CmdFinRAA);
-        }
         PrepareOpenEStack
         {
           e.FunctionBody^ =
-            (#CmdProfileFunction)
-            (#CmdIssueMem s.Memory)
+            (#CmdInitRAA)
+            (#CmdiProfileFunction)
+            (#CmdiIssueMem s.Memory)
             e.FunctionBody
+            (#CmdFinRAA)
             (#CmdiRunInterpret);
         }
         (OutlineConstants
@@ -518,6 +514,10 @@ DoLength {
 
 ConvertOneInterpretCommand {
   (#CmdComment e.Text) = (#CmdComment e.Text);
+
+  (#CmdProfileFunction) = (#CmdiProfileFunction);
+
+  (#CmdIssueMem s.Memory) = (#CmdiIssueMem s.Memory);
 
   (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
 
