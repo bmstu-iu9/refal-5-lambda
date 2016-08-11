@@ -9,25 +9,25 @@ run_test_aux() {
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
-    exit
+    exit 1
   fi
   rm __error.txt
   if [ ! -e $CPP ]; then
     echo COMPILATION FAILED
-    exit
+    exit 1
   fi
 
   g++ -I../srlib -DDUMP_FILE=\"__dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE -g $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
-    exit
+    exit 1
   fi
 
   ./$EXE
   if [ $? -gt 0 ]; then
     echo TEST FAILED, SEE __dump.txt
-    exit
+    exit 1
   fi
 
   rm $CPP $EXE
@@ -45,13 +45,13 @@ run_test_aux.BAD-SYNTAX() {
   ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
-    exit
+    exit 1
   fi
   rm __error.txt
   if [ -e $CPP ]; then
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
     rm $CPP
-    exit
+    exit 1
   fi
 
   echo "Ok! Compiler didn't crash on invalid syntax"

@@ -1,5 +1,5 @@
 @echo off
-call :MAIN %*
+call :MAIN %* || exit /b 1
 goto :EOF
 
 :MAIN
