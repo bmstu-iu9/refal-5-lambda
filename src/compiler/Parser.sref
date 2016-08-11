@@ -305,10 +305,16 @@ ParseSentence {
             (#TkCloseBlock s.LnNum) e.Tokens;
 
           (e.Pattern) t.ErrorList^
+          (e.Result) (#TkEOF s.LnNum) =
+            <EL-AddErrorAt t.ErrorList s.LnNum 'Unexpected EOF in function'>
+            (e.Sentences ((e.Pattern) (e.Result)))
+            (#TkEOF s.LnNum);
+
+          (e.Pattern) t.ErrorList^
           (e.Result) t.Unexpected e.Tokens^ =
             <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
             (e.Sentences ((e.Pattern) (e.Result)))
-            t.Unexpected e.Tokens;
+            e.Tokens;
         }
       >
     >;
