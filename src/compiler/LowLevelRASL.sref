@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Max, Inc, Compare, MapReduce;
+$EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -467,24 +467,31 @@ Function-Body {
 }
 
 Function-Interpret {
-  e.Commands =
-    <PrepareOpenEStack
-      <OutlineConstants
-        (0 /* функции */)
-        (0 /* идентификаторы */)
-        (0 /* большие числа */)
-        (0 /* строки */)
-        (#CmdInitRAA)
-        <PrepareInterpretCommands e.Commands>
-        (#CmdFinRAA)
+  e.FunctionBody =
+    <Fetch
+      e.FunctionBody
+      <Seq
+        ConvertInterpretCommands
+        {
+          e.FunctionBody^ =
+            (#CmdInitRAA)
+            e.FunctionBody
+            (#CmdFinRAA);
+        }
+        (OutlineConstants
+          (0 /* функции */)
+          (0 /* идентификаторы */)
+          (0 /* большие числа */)
+          (0 /* строки */)
+        )
+        PrepareOpenEStack
+        {
+          e.FunctionBody^ =
+            e.FunctionBody
+            (#CmdiRunInterpret);
+        }
       >
-    >
-    (#CmdiRunInterpret);
-}
-
-PrepareInterpretCommands {
-  e.Commands =
-    <ConvertInterpretCommands e.Commands>;
+    >;
 }
 
 ConvertInterpretCommands {
