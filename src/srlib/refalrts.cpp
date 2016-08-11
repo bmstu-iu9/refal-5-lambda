@@ -1713,9 +1713,9 @@ refalrts::FnResult func_create_closure(
 }
 
 #ifndef MODULE_REFAL
-refalrts::RefalFunction refalrts::create_closure = {
+refalrts::RefalFunction refalrts::create_closure(
   func_create_closure, "@create_closure@"
-};
+);
 #endif
 
 /*
@@ -1765,11 +1765,13 @@ refalrts::Iter refalrts::wrap_closure( refalrts::Iter closure ) {
 
 //------------------------------------------------------------------------------
 
-refalrts::FnResult refalrts::empty_function(
+#ifndef MODULE_REFAL
+refalrts::FnResult refalrts::RefalEmptyFunction::run(
   refalrts::Iter /* begin */, refalrts::Iter /* end */
 ) {
   return refalrts::cRecognitionImpossible;
 }
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -1785,28 +1787,22 @@ extern NodePtr g_left_swap_ptr;
 
 } // namespace refalrts
 
-#ifdef MODULE_REFAL
 refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
-#else
-refalrts::Iter refalrts::initialize_swap_head(
-  refalrts::Iter head, refalrts::RefalSwapHead *swap
-) {
-#endif
   assert( cDataFunction == head->tag );
 
 #ifdef MODULE_REFAL
   RefalSwapHead *swap = &head->swap_info;
   refalrts::RefalFuncName name = head->function_info.name;
 #else
-  refalrts::RefalFuncName name = head->function_info->name;
+  assert( RefalSwap::run == head->function_info->ptr );
+  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
 #endif
   splice_elem( vm::g_left_swap_ptr, head );
   head->tag = cDataSwapHead;
-#ifndef MODULE_REFAL
-  head->swap_info = swap;
-#endif
   swap->next_head = vm::g_left_swap_ptr;
+#ifdef MODULE_REFAL
   swap->name = name;
+#endif
 
   vm::g_left_swap_ptr = head;
   return vm::g_left_swap_ptr;
@@ -1820,7 +1816,7 @@ void refalrts::swap_info_bounds(
 #ifdef MODULE_REFAL
   RefalSwapHead *swap = &head->swap_info;
 #else
-  RefalSwapHead *swap = head->swap_info;
+  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
 #endif
 
   first = head;
@@ -1837,11 +1833,42 @@ void refalrts::swap_save(
 #ifdef MODULE_REFAL
   RefalSwapHead *swap = &head->swap_info;
 #else
-  RefalSwapHead *swap = head->swap_info;
+  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
 #endif
 
   list_splice( swap->next_head, first, last );
 }
+
+#ifndef MODULE_REFAL
+refalrts::FnResult refalrts::RefalSwap::run(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
+  refalrts::this_is_generated_function();
+  refalrts::Iter info_b = 0;
+  refalrts::Iter info_e = 0;
+  refalrts::Iter func_name =
+    refalrts::call_left(info_b, info_e, arg_begin, arg_end);
+
+  refalrts::RefalSwap *swap =
+    static_cast<refalrts::RefalSwap*>(func_name->function_info);
+
+  refalrts::Iter& head = swap->head;
+
+  if (! head) {
+    head = refalrts::initialize_swap_head(func_name);
+  }
+
+  refalrts::Iter saved_b;
+  refalrts::Iter saved_e;
+
+  refalrts::swap_info_bounds( saved_b, saved_e, head );
+  refalrts::splice_evar( arg_begin, saved_b, saved_e );
+  refalrts::swap_save( head, info_b, info_e );
+  refalrts::splice_to_freelist( arg_begin, arg_end );
+
+  return refalrts::cSuccess;
+}
+#endif
 
 //------------------------------------------------------------------------------
 
@@ -2580,7 +2607,7 @@ void refalrts::vm::print_seq(
 #ifdef MODULE_REFAL
             fprintf( output, "\n\n*Swap %s:\n", (begin->swap_info.name)() );
 #else
-            fprintf( output, "\n\n*Swap %s:\n", begin->swap_info->name );
+            fprintf( output, "\n\n*Swap %s:\n", begin->function_info->name );
 #endif
             refalrts::move_left( begin, end );
             continue;

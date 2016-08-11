@@ -45,14 +45,51 @@ typedef const char * RefalFuncName;
 struct RefalFunction {
   RefalFunctionPtr ptr;
   RefalFuncName name;
+
+#ifndef MODULE_REFAL
+  RefalFunction(RefalFunctionPtr ptr, RefalFuncName name)
+    : ptr(ptr), name(name)
+  {
+    /* пусто */
+  }
+#endif
 };
 
 typedef unsigned long RefalNumber;
+
+#ifdef MODULE_REFAL
 
 struct RefalSwapHead {
   Iter next_head;
   RefalFuncName name;
 };
+
+#else
+
+struct RefalSwap: public RefalFunction {
+  Iter head;
+  Iter next_head;
+
+  RefalSwap(RefalFuncName name)
+    : RefalFunction(run, name), head(), next_head()
+  {
+    /* пусто */
+  }
+
+  static FnResult run(Iter arg_begin, Iter arg_end);
+};
+
+struct RefalEmptyFunction: public RefalFunction {
+  RefalEmptyFunction(RefalFuncName name)
+    : RefalFunction(run, name)
+  {
+    /* пусто */
+  }
+
+  static FnResult run(Iter, Iter);
+};
+
+#endif
 
 struct Node {
   NodePtr prev;
@@ -71,8 +108,6 @@ struct Node {
     void *file_info;
 #ifdef MODULE_REFAL
     RefalSwapHead swap_info;
-#else
-    RefalSwapHead *swap_info;
 #endif
   };
 };
@@ -399,15 +434,9 @@ extern RefalFunction create_closure;
 Iter unwrap_closure( Iter closure ); // Развернуть замыкание
 Iter wrap_closure( Iter closure ); // Свернуть замыкание
 
-extern FnResult empty_function(Iter, Iter);
-
 // Работа со статическими ящиками
 
-#ifdef MODULE_REFAL
 extern Iter initialize_swap_head( Iter head );
-#else
-extern Iter initialize_swap_head( Iter head, RefalSwapHead *holder );
-#endif
 extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
 extern void swap_save( Iter head, Iter first, Iter last );
 

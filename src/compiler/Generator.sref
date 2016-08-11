@@ -30,10 +30,21 @@ GenFuncDescr {
     ()
     (
       <TextFromMemoryClass s.MemoryClass>
-      'refalrts::RefalFunction ' <CName e.Name> ' = {'
+      'refalrts::RefalFunction ' <CName e.Name> '('
+      'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
+      ');'
     )
-    ('  func_' <CName e.Name> ', "' <DisplayCName e.Name> '"')
-    ('};')
+    ();
+}
+
+GenSwapDescr {
+  s.MemoryClass e.Name =
+    (
+      <TextFromMemoryClass s.MemoryClass>
+      'refalrts::RefalSwap ' <CName e.Name> '('
+      '"' <DisplayCName e.Name> '"'
+      ');'
+    )
     ();
 }
 
@@ -43,37 +54,6 @@ GenReturn {
 
   #Fail e.Indent =
     (e.Indent 'return refalrts::cRecognitionImpossible;');
-}
-
-GenSwap {
-  e.Name =
-    <GenFnStart e.Name>
-    ('  refalrts::this_is_generated_function();')
-    ('  refalrts::Iter func_name = arg_begin;')
-    ()
-    ('  refalrts::move_left( func_name, arg_end );')
-    ()
-    ('  refalrts::Iter info_b = func_name;')
-    ('  refalrts::Iter info_e = arg_end;')
-    ()
-    ('  refalrts::move_left( info_b, info_e );')
-    ('  refalrts::move_right( info_b, info_e );')
-    ()
-    ('  static refalrts::RefalSwapHead holder;')
-    ('  static refalrts::Iter s_head =')
-    ('    refalrts::initialize_swap_head( func_name, & holder );')
-    ()
-    ('  refalrts::Iter saved_b;')
-    ('  refalrts::Iter saved_e;')
-    ()
-    ('  refalrts::swap_info_bounds( saved_b, saved_e, s_head );')
-    ('  refalrts::splice_evar( arg_begin, saved_b, saved_e );')
-    ('  refalrts::swap_save( s_head, info_b, info_e );')
-    ('  refalrts::splice_to_freelist( arg_begin, arg_end );')
-    ()
-    <GenReturn #Success '  '>
-    ('}')
-    ();
 }
 
 GenIdent {
@@ -173,18 +153,14 @@ GenCommand {
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
-  (e.Indent) (#CmdEnum s.MemoryClass e.Name) =
+  (e.Indent) (#CmdEnumDescr s.MemoryClass e.Name) =
     (e.Indent)
     (
       <TextFromMemoryClass s.MemoryClass>
-      'refalrts::RefalFunction ' <CName e.Name> ' = {'
-    )
-    ('  refalrts::empty_function, "' <DisplayCName e.Name> '"')
-    ('};');
-
-  (e.Indent) (#CmdSwap e.Name) =
-    (e.Indent)
-    <GenSwap e.Name>;
+      'refalrts::RefalEmptyFunction ' <CName e.Name> '('
+      '"' <DisplayCName e.Name> '"'
+      ');'
+    );
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
@@ -193,6 +169,10 @@ GenCommand {
   (e.Indent) (#CmdFuncDescr s.MemoryClass e.Name) =
     (e.Indent)
     <GenFuncDescr s.MemoryClass e.Name>;
+
+  (e.Indent) (#CmdSwapDescr s.MemoryClass e.Name) =
+    (e.Indent)
+    <GenSwapDescr s.MemoryClass e.Name>;
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)

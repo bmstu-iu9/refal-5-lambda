@@ -26,11 +26,10 @@ $ENTRY LowLevelRASL {
           (#CmdFnEnd);
 
         (#CmdEnum s.ScopeClass e.Name) =
-          (#CmdEnum s.ScopeClass e.Name);
+          (#CmdEnumDescr s.ScopeClass e.Name);
 
         (#CmdSwap s.ScopeClass e.Name) =
-          (#CmdFuncDescr s.ScopeClass e.Name)
-          (#CmdSwap e.Name);
+          (#CmdSwapDescr s.ScopeClass e.Name);
 
         (#CmdDeclaration #GN-Entry e.Name) =
           (#CmdExtern e.Name);
