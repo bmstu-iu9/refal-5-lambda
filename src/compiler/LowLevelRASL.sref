@@ -52,13 +52,16 @@ LowLevelRASL-Function {
   s.GenMode s.ScopeClass (e.Name) (#CmdIssueMem s.Number) e.Commands =
     <CmdFuncDescrForEntry s.ScopeClass e.Name>
     (#CmdFnStart e.Name)
-    (#CmdProfileFunction)
     <Fetch
       <AddSavers s.Number e.Commands>
       {
         s.Number^ e.Commands^ =
-          (#CmdIssueMem s.Number)
-          <Function-Body s.GenMode e.Commands>;
+          <Function-Body
+            s.GenMode
+            (#CmdProfileFunction)
+            (#CmdIssueMem s.Number)
+            e.Commands
+          >;
       }
     >
     (#CmdFnEnd);
@@ -467,7 +470,7 @@ Function-Body {
 }
 
 Function-Interpret {
-  e.FunctionBody =
+  (#CmdProfileFunction) (#CmdIssueMem s.Memory) e.FunctionBody =
     <Fetch
       e.FunctionBody
       <Seq
@@ -478,18 +481,20 @@ Function-Interpret {
             e.FunctionBody
             (#CmdFinRAA);
         }
+        PrepareOpenEStack
+        {
+          e.FunctionBody^ =
+            (#CmdProfileFunction)
+            (#CmdIssueMem s.Memory)
+            e.FunctionBody
+            (#CmdiRunInterpret);
+        }
         (OutlineConstants
           (0 /* функции */)
           (0 /* идентификаторы */)
           (0 /* большие числа */)
           (0 /* строки */)
         )
-        PrepareOpenEStack
-        {
-          e.FunctionBody^ =
-            e.FunctionBody
-            (#CmdiRunInterpret);
-        }
       >
     >;
 }
