@@ -64,7 +64,7 @@ struct Node {
 #ifdef MODULE_REFAL
     RefalFunction function_info;
 #else
-    const RefalFunction *function_info;
+    RefalFunction *function_info;
 #endif
     RefalIdentifier ident_info;
     NodePtr link_info;
@@ -217,8 +217,8 @@ extern void reinit_char(Iter res, char ch);
 extern void update_char(Iter res, char ch);
 extern void reinit_number(Iter res, RefalNumber num);
 extern void update_number(Iter res, RefalNumber num);
-extern void reinit_name(Iter res, const RefalFunction *func);
-extern void update_name(Iter res, const RefalFunction *func);
+extern void reinit_name(Iter res, RefalFunction *func);
+extern void update_name(Iter res, RefalFunction *func);
 extern void reinit_ident(Iter res, RefalIdentifier ident);
 extern void update_ident(Iter res, RefalIdentifier ident);
 
@@ -355,7 +355,7 @@ extern bool alloc_name(
   Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
 );
 #else
-extern bool alloc_name(Iter& res, const RefalFunction *func);
+extern bool alloc_name(Iter& res, RefalFunction *func);
 #endif
 extern bool alloc_ident( Iter& res, RefalIdentifier ident );
 extern bool alloc_open_adt( Iter& res );
@@ -469,7 +469,7 @@ extern FnResult interpret_array(
   Iter context[],
   Iter begin,
   Iter end,
-  const RefalFunction *functions[],
+  RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
   const StringItem strings[],
@@ -477,7 +477,7 @@ extern FnResult interpret_array(
 );
 #endif
 
-extern const RefalFunction *functions[];
+extern RefalFunction *functions[];
 extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
 extern const StringItem strings[];

@@ -1295,7 +1295,7 @@ bool refalrts::alloc_name(
   refalrts::RefalFunctionPtr fn,
   refalrts::RefalFuncName name
 #else
-  const refalrts::RefalFunction *fn
+  refalrts::RefalFunction *fn
 #endif
 ) {
   if( allocator::alloc_node( res ) ) {
@@ -1577,7 +1577,7 @@ void refalrts::update_number(
 
 void refalrts::reinit_name(
   refalrts::Iter res,
-  const refalrts::RefalFunction *func
+  refalrts::RefalFunction *func
 ) {
   res->tag = cDataFunction;
   res->function_info = func;
@@ -1585,7 +1585,7 @@ void refalrts::reinit_name(
 
 void refalrts::update_name(
   refalrts::Iter res,
-  const refalrts::RefalFunction *func
+  refalrts::RefalFunction *func
 ) {
   res->function_info = func;
 }
@@ -2832,7 +2832,7 @@ refalrts::FnResult refalrts::interpret_array(
   const refalrts::RASLCommand raa[],
   refalrts::Iter context[],
   refalrts::Iter begin, refalrts::Iter end,
-  const RefalFunction *functions[],
+  RefalFunction *functions[],
   const RefalIdentifier idents[],
   const RefalNumber numbers[],
   const StringItem strings[],
@@ -3533,7 +3533,7 @@ refalrts::FnResult refalrts::interpret_array(
 #endif
 
 
-const refalrts::RefalFunction *refalrts::functions[] = { 0 };
+refalrts::RefalFunction *refalrts::functions[] = { 0 };
 const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 const refalrts::StringItem refalrts::strings[] = { { "", 0 } };

@@ -571,7 +571,7 @@ GenCommand {
 
   (e.Indent) (#CmdiFuncArray e.FuncNames (e.LastName)) =
     (e.Indent)
-    (e.Indent 'static const refalrts::RefalFunction *functions[] = {')
+    (e.Indent 'static refalrts::RefalFunction *functions[] = {')
     <Map
       {
         (e.Name) = (e.Indent '  & ' <CName e.Name> ',');
