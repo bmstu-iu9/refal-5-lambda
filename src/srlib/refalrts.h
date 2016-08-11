@@ -3,20 +3,20 @@
 
 namespace refalrts {
 
-typedef enum FnResult {
+enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
   cExit = 3
-} FnResult;
+};
 
-typedef struct Node Node;
+struct Node;
 
 typedef struct Node *NodePtr;
 
 typedef struct Node *Iter;
 
-typedef enum DataTag {
+enum DataTag {
   cDataIllegal = 0,
   cDataSwapHead,
   cDataChar,
@@ -30,7 +30,7 @@ typedef enum DataTag {
   cDataClosure,
   cDataUnwrappedClosure,
   cDataClosureHead
-} DataTag;
+};
 
 typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
 
@@ -42,19 +42,19 @@ typedef RefalIdentifier RefalFuncName;
 typedef const char * RefalFuncName;
 #endif
 
-typedef struct RefalFunction {
+struct RefalFunction {
   RefalFunctionPtr ptr;
   RefalFuncName name;
-} RefalFunction;
+};
 
 typedef unsigned long RefalNumber;
 
-typedef struct RefalSwapHead {
+struct RefalSwapHead {
   Iter next_head;
   RefalFuncName name;
-} RefalSwapHead;
+};
 
-typedef struct Node {
+struct Node {
   NodePtr prev;
   NodePtr next;
   DataTag tag;
@@ -75,9 +75,9 @@ typedef struct Node {
     RefalSwapHead *swap_info;
 #endif
   };
-} Node;
+};
 
-typedef enum iCmd {
+enum iCmd {
   icOnFailGoTo,
   icInitB0,
   icInitB0_Lite,
@@ -176,16 +176,16 @@ typedef enum iCmd {
   icTrash,
   icFail,
   icEnd
-} iCmd;
+};
 
-typedef enum BracketType {
+enum BracketType {
   ibOpenADT,
   ibOpenBracket,
   ibOpenCall,
   ibCloseADT,
   ibCloseBracket,
   ibCloseCall
-} BracketType;
+};
 
 /*
    Для эффективной обработки на современных процессорах
@@ -193,17 +193,17 @@ typedef enum BracketType {
    И получили ограничение на индексацию в 255.
    Анологичное ограничение присуствует в Рефал-5.
  */
-typedef struct RASLCommand {
+struct RASLCommand {
   unsigned char cmd;
   unsigned char val1;
   unsigned char val2;
   unsigned char bracket;
-} RASLCommand;
+};
 
-typedef struct StringItem {
+struct StringItem {
   const char *string;
   unsigned string_len;
-} StringItem;
+};
 
 extern void use( Iter& );
 
