@@ -1781,25 +1781,24 @@ extern NodePtr g_left_swap_ptr;
 refalrts::Iter refalrts::initialize_swap_head( refalrts::Iter head ) {
 #else
 refalrts::Iter refalrts::initialize_swap_head(
-  refalrts::Iter head, refalrts::RefalSwapHead *holder
+  refalrts::Iter head, refalrts::RefalSwapHead *swap
 ) {
 #endif
   assert( cDataFunction == head->tag );
 
 #ifdef MODULE_REFAL
-  splice_elem( vm::g_left_swap_ptr, head );
+  RefalSwapHead *swap = &head->swap_info;
   refalrts::RefalFuncName name = head->function_info.name;
-  head->tag = cDataSwapHead;
-  head->swap_info.next_head = vm::g_left_swap_ptr;
-  head->swap_info.name = name;
 #else
-  holder->next_head = vm::g_left_swap_ptr;
-  holder->name = head->function_info->name;
-
+  refalrts::RefalFuncName name = head->function_info->name;
+#endif
   splice_elem( vm::g_left_swap_ptr, head );
   head->tag = cDataSwapHead;
-  head->swap_info = holder;
+#ifndef MODULE_REFAL
+  head->swap_info = swap;
 #endif
+  swap->next_head = vm::g_left_swap_ptr;
+  swap->name = name;
 
   vm::g_left_swap_ptr = head;
   return vm::g_left_swap_ptr;
@@ -1810,12 +1809,14 @@ void refalrts::swap_info_bounds(
 ) {
   assert( cDataSwapHead == head->tag );
 
-  first = head;
 #ifdef MODULE_REFAL
-  last = head->swap_info.next_head;
+  RefalSwapHead *swap = &head->swap_info;
 #else
-  last = head->swap_info->next_head;
+  RefalSwapHead *swap = head->swap_info;
 #endif
+
+  first = head;
+  last = swap->next_head;
   move_left( first, last );
   move_right( first, last );
 }
@@ -1826,10 +1827,12 @@ void refalrts::swap_save(
   assert( cDataSwapHead == head->tag );
 
 #ifdef MODULE_REFAL
-  list_splice( head->swap_info.next_head, first, last );
+  RefalSwapHead *swap = &head->swap_info;
 #else
-  list_splice( head->swap_info->next_head, first, last );
+  RefalSwapHead *swap = head->swap_info;
 #endif
+
+  list_splice( swap->next_head, first, last );
 }
 
 //------------------------------------------------------------------------------
