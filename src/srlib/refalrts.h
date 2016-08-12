@@ -504,15 +504,33 @@ void debug_print_expr(void *file, Iter first, Iter last);
 // Интерпретатор
 
 #ifndef MODULE_REFAL
-extern FnResult interpret_array(
-  const RASLCommand raa[],
-  Iter begin,
-  Iter end,
-  RefalFunction *functions[],
-  const RefalIdentifier idents[],
-  const RefalNumber numbers[],
-  const StringItem strings[]
-);
+struct RASLFunction: public RefalFunction {
+  const RASLCommand *raa;
+  RefalFunction **functions;
+  const RefalIdentifier *idents;
+  const RefalNumber *numbers;
+  const StringItem *strings;
+
+  RASLFunction(
+    RefalFuncName name,
+    const RASLCommand raa[],
+    RefalFunction *functions[],
+    const RefalIdentifier idents[],
+    const RefalNumber numbers[],
+    const StringItem strings[]
+  )
+    : RefalFunction(run, name)
+    , raa(raa)
+    , functions(functions)
+    , idents(idents)
+    , numbers(numbers)
+    , strings(strings)
+  {
+    /* пусто */
+  }
+
+  static FnResult run(Iter begin, Iter end);
+};
 #endif
 
 extern RefalFunction *functions[];

@@ -21,7 +21,7 @@ $ENTRY LowLevelRASL {
             (#Function s.ScopeClass (e.Name) e.Commands) =
               (
                 e.Declarations
-                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
+                <Function-Extern s.GenMode s.ScopeClass e.Name>
               )
               <Function
                 s.GenMode s.ScopeClass (e.Name)
@@ -479,6 +479,25 @@ Freeze {
     <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
 }
 
+Function-Extern {
+  #Both s.ScopeClass e.Name =
+    // Интерпретируемый код
+    (#CmdIfDef 'INTERPRET')
+    <Function-Extern #OnlyInterpret s.ScopeClass e.Name>
+    (#CmdElse)
+    // Компилируемый код
+    <Function-Extern #OnlyDirect s.ScopeClass e.Name>
+    (#CmdEndIf);
+
+  #OnlyDirect s.ScopeClass e.Name =
+    // Компилируемый код
+    <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>;
+
+  #OnlyInterpret s.ScopeClass e.Name =
+    // Интерпретируемый код
+    <InUnnamedNamespace s.ScopeClass (#CmdExternInterpret e.Name)>;
+}
+
 Function {
   #Both s.ScopeClass (e.Name) e.Commands =
     // Интерпретируемый код
@@ -491,19 +510,15 @@ Function {
 
   #OnlyDirect s.ScopeClass (e.Name) e.Commands =
     // Компилируемый код
-    (#CmdFnStart e.Name)
-    <Function-Direct e.Commands>
-    (#CmdFnEnd)
-    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
+    <Function-Direct s.ScopeClass (e.Name) e.Commands>;
 
   #OnlyInterpret s.ScopeClass (e.Name) e.Commands =
     // Интерпретируемый код
-    <Function-Interpret (e.Name) e.Commands>
-    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
+    <Function-Interpret s.ScopeClass (e.Name) e.Commands>;
 }
 
 Function-Interpret {
-  (e.Name) (#CmdProfileFunction) (#CmdIssueMem s.Memory) e.FunctionBody =
+  s.ScopeClass (e.Name) e.FunctionBody =
     <Fetch
       e.FunctionBody
       <Seq
@@ -512,8 +527,6 @@ Function-Interpret {
         {
           e.FunctionBody^ =
             (#CmdInitRAA)
-            (#CmdiProfileFunction)
-            (#CmdiIssueMem s.Memory)
             e.FunctionBody
             (#CmdFinRAA);
         }
@@ -525,14 +538,15 @@ Function-Interpret {
         )
         {
           e.FunctionBody^ =
+            (#CmdNamespaceStart)
             (#CmdNamespaceStart e.Name)
             e.FunctionBody
             (#CmdNamespaceEnd e.Name)
-
-            (#CmdFnStart e.Name)
-            (#CmdAcceptNamespace e.Name)
-            (#CmdiRunInterpret)
-            (#CmdFnEnd);
+            (#CmdNamespaceEnd)
+            <InUnnamedNamespace
+              s.ScopeClass
+              (#CmdInterpretFuncDescr e.Name)
+            >;
         }
       >
     >;
@@ -1024,19 +1038,27 @@ PrepareOpenEStack {
 }
 
 Function-Direct {
+  s.ScopeClass (e.Name) e.Body =
+    (#CmdFnStart e.Name)
+    <Function-DirectRec e.Body>
+    (#CmdFnEnd)
+    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
+}
+
+Function-DirectRec {
   (#CmdSentence e.SubCommands) e.Tail =
     (#CmdStartSentence)
-    <Function-Direct e.SubCommands>
+    <Function-DirectRec e.SubCommands>
     (#CmdEndSentence)
-    <Function-Direct e.Tail>;
+    <Function-DirectRec e.Tail>;
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <Function-Direct e.SubCommands>
+    <Function-DirectRec e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
-    <Function-Direct e.Tail>;
+    <Function-DirectRec e.Tail>;
 
-  t.Command e.Tail = t.Command <Function-Direct e.Tail>;
+  t.Command e.Tail = t.Command <Function-DirectRec e.Tail>;
 
   /* пусто */ = /* пусто */;
 }

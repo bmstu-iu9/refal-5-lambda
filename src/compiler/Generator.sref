@@ -120,6 +120,10 @@ GenCommand {
     (e.Indent)
     ('extern refalrts::RefalFunction ' <CName e.Name> ';');
 
+  (e.Indent) (#CmdExternInterpret e.Name) =
+    (e.Indent)
+    ('extern refalrts::RASLFunction ' <CName e.Name> ';');
+
   (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
     (
@@ -129,6 +133,17 @@ GenCommand {
     )
     ();
 
+  (e.Indent) (#CmdInterpretFuncDescr e.Name) =
+    (e.Indent)
+    ('refalrts::RASLFunction ' <CName e.Name> '(')
+    ('  "' <DisplayCName e.Name> '",')
+    ('  scope_' <CName e.Name> '::raa,')
+    ('  scope_' <CName e.Name> '::functions,')
+    ('  scope_' <CName e.Name> '::idents,')
+    ('  scope_' <CName e.Name> '::numbers,')
+    ('  scope_' <CName e.Name> '::strings')
+    (');')
+    ();
 
   (e.Indent) (#CmdSwapDescr e.Name) =
     (e.Indent)
@@ -539,15 +554,6 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
 
-  (e.Indent) (#CmdAcceptNamespace e.Name) =
-    (e.Indent)
-    (e.Indent 'using scope_' <CName e.Name> '::functions;')
-    (e.Indent 'using scope_' <CName e.Name> '::idents;')
-    (e.Indent 'using scope_' <CName e.Name> '::numbers;')
-    (e.Indent 'using scope_' <CName e.Name> '::strings;')
-    (e.Indent 'using scope_' <CName e.Name> '::raa;')
-    ();
-
   (e.Indent) (#CmdiFuncArray) =
     (e.Indent)
     (e.Indent 'using refalrts::functions;');
@@ -620,14 +626,6 @@ GenCommand {
     (e.Indent)
     (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
     (e.Indent '};');
-
-  (e.Indent) (#CmdiRunInterpret) =
-    (e.Indent)
-    (e.Indent 'refalrts::FnResult res = refalrts::interpret_array(')
-    (e.Indent '  raa, arg_begin, arg_end,')
-    (e.Indent '  functions, idents, numbers, strings')
-    (e.Indent ');')
-    (e.Indent 'return res;');
 
   (e.Indent) (#CmdiProfileFunction) =
     (e.Indent)

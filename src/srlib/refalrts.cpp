@@ -2908,14 +2908,22 @@ void refalrts::vm::free_view_field() {
 //==============================================================================
 
 #ifndef MODULE_REFAL
-refalrts::FnResult refalrts::interpret_array(
-  const refalrts::RASLCommand raa[],
-  refalrts::Iter begin, refalrts::Iter end,
-  RefalFunction *functions[],
-  const RefalIdentifier idents[],
-  const RefalNumber numbers[],
-  const StringItem strings[]
+refalrts::FnResult refalrts::RASLFunction::run(
+  refalrts::Iter begin, refalrts::Iter end
 ) {
+  Iter info_b = 0;
+  Iter info_e = 0;
+  Iter func_name = call_left(info_b, info_e, begin, end);
+
+  assert( RASLFunction::run == func_name->function_info->ptr );
+  RASLFunction *descr = static_cast<RASLFunction*>(func_name->function_info);
+
+  const RASLCommand *raa = descr->raa;
+  RefalFunction **functions = descr->functions;
+  const RefalIdentifier *idents = descr->idents;
+  const RefalNumber *numbers = descr->numbers;
+  const StringItem *strings = descr->strings;
+
   refalrts::vm::Stack<int>& open_e_stack = refalrts::vm::g_open_e_stack;
   refalrts::vm::Stack<Iter>& context = refalrts::vm::g_context;
 
