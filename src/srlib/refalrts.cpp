@@ -404,16 +404,16 @@ refalrts::Iter refalrts::adt_term(
   if (pos->tag != cDataOpenADT) {
     return 0;
   }
-  
+
   refalrts::Iter adt_tag = next(pos);
-  
+
   assert (adt_tag->tag == cDataFunction);
   if (adt_tag->function_info != tag) {
     return 0;
   }
-  
+
   refalrts::Iter right_bracket = pos->link_info;
-  
+
   if (next(adt_tag) != right_bracket) {
     res_first = next(adt_tag);
     res_last = prev(right_bracket);
@@ -421,7 +421,7 @@ refalrts::Iter refalrts::adt_term(
     res_first = 0;
     res_last = 0;
   }
-  
+
   return adt_tag;
 }
 #endif
@@ -788,7 +788,7 @@ bool refalrts::repeated_stvar_term(
   } else if (is_open_bracket(pos)) {
     refalrts::Iter pos_e = pos->link_info;
     refalrts::Iter stvar_sample_e = stvar_sample->link_info;
-    
+
     return equal_expressions(
       stvar_sample, stvar_sample_e, pos, pos_e
     );
