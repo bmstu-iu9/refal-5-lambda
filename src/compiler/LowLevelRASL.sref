@@ -12,42 +12,84 @@ $EXTERN Add, StrFromInt;
 */
 $ENTRY LowLevelRASL {
   s.GenMode e.ProgramElements =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) e.Commands) =
-          <Function
-            s.GenMode s.ScopeClass (e.Name)
-            (#CmdProfileFunction)
-            <AddSavers e.Commands>
-          >;
-
-        (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-          <CmdFuncDescrForEntry s.ScopeClass e.Name>
-          (#CmdFnStart e.Name)
-          (#CmdEmitNativeCode t.SrcPos e.Code)
-          (#CmdFnEnd);
-
-        (#CmdEnum s.ScopeClass e.Name) =
-          (#CmdEnumDescr s.ScopeClass e.Name);
-
-        (#CmdSwap s.ScopeClass e.Name) =
-          (#CmdSwapDescr s.ScopeClass e.Name);
-
-        (#CmdDeclaration #GN-Entry e.Name) =
-          (#CmdExtern e.Name);
-
-        (#CmdDeclaration #GN-Local e.Name) =
-          (#CmdFuncDescr #GN-Local e.Name);
-
-        (#CmdDefineIdent e.Name) = (#CmdDefineIdent e.Name);
-
-        (#CmdEmitNativeCode t.SrcPos e.Code) =
-          (#CmdEmitNativeCode t.SrcPos e.Code);
-
-        (#CmdSeparator) = (#CmdSeparator);
-      }
+    <Fetch
       e.ProgramElements
+      <Seq
+        (MapReduce
+          {
+            (e.Declarations)
+            (#Function s.ScopeClass (e.Name) e.Commands) =
+              (
+                e.Declarations
+                <CmdFuncDescrForLocal s.ScopeClass e.Name>
+                <CmdFuncExternForEntry s.ScopeClass e.Name>
+              )
+              <Function
+                s.GenMode s.ScopeClass (e.Name)
+                (#CmdProfileFunction)
+                <AddSavers e.Commands>
+              >;
+
+            (e.Declarations)
+            (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+              (
+                e.Declarations
+                <CmdFuncDescrForLocal s.ScopeClass e.Name>
+                <CmdFuncExternForEntry s.ScopeClass e.Name>
+              )
+              <CmdFuncDescrForEntry s.ScopeClass e.Name>
+              (#CmdFnStart e.Name)
+              (#CmdEmitNativeCode t.SrcPos e.Code)
+              (#CmdFnEnd);
+
+            (e.Declarations)
+            (#CmdEnum s.ScopeClass e.Name) =
+              (e.Declarations (#CmdEnumDescr s.ScopeClass e.Name));
+
+            (e.Declarations)
+            (#CmdSwap s.ScopeClass e.Name) =
+              (e.Declarations (#CmdSwapDescr s.ScopeClass e.Name));
+
+            (e.Declarations)
+            (#CmdDeclaration #GN-Entry e.Name) =
+              (e.Declarations (#CmdExtern e.Name));
+
+            (e.Declarations)
+            (#CmdDeclaration #GN-Local e.Name) =
+              (e.Declarations (#CmdFuncDescr #GN-Local e.Name));
+
+            (e.Declarations)
+            (#CmdDefineIdent e.Name) =
+              (e.Declarations (#CmdDefineIdent e.Name));
+
+            (e.Declarations)
+            (#CmdEmitNativeCode t.SrcPos e.Code) =
+              (e.Declarations)
+              (#CmdEmitNativeCode t.SrcPos e.Code);
+
+            (e.Declarations)
+            (#CmdSeparator) =
+              (e.Declarations)
+              (#CmdSeparator);
+          }
+          (/* объявления и определения swap’ов и enum’ов */)
+        )
+        {
+          (e.Declarations) e.Definitions =
+            e.Declarations e.Definitions;
+        }
+      >
     >;
+}
+
+CmdFuncDescrForLocal {
+  #GN-Entry e.Name = /* ничего не генерируем */;
+  #GN-Local e.Name = (#CmdFuncDescr #GN-Local e.Name);
+}
+
+CmdFuncExternForEntry {
+  #GN-Entry e.Name = (#CmdExtern e.Name);
+  #GN-Local e.Name = /* ничего не генерируем */;
 }
 
 CmdFuncDescrForEntry {

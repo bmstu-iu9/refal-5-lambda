@@ -584,80 +584,40 @@ Pass-CreatePredeclarations {
       <Seq
         RemoveRedudandElements
         FoldEnums
-        (Map
-          {
-            (#Swap s.ScopeClass e.Name) = (#SwapEnum #Swap s.ScopeClass e.Name);
-            (#Enum s.ScopeClass e.Name) = (#SwapEnum #Enum s.ScopeClass e.Name);
-
-            t.Other = t.Other;
-          }
-        )
         (MapReduce
           {
-            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
+            (e.Idents)
             (#Function s.ScopeClass (e.Name) e.Body) =
               <Fetch
                 <ExtractIdents e.Body>
                 {
                   (e.FuncIdents) e.Body^ =
-                    (
-                      (e.FuncDecls (#Declaration s.ScopeClass e.Name))
-                      (e.SwapsEnums)
-                      (e.Idents e.FuncIdents)
-                    )
+                    (e.Idents e.FuncIdents)
                     (#Function s.ScopeClass (e.Name) e.Body);
                 }
               >;
 
-            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
-            (#SwapEnum s.Type s.ScopeClass e.Name) =
-              (
-                (<FuncDeclsCleanup (e.Name) e.FuncDecls>)
-                (e.SwapsEnums (s.Type s.ScopeClass e.Name))
-                (e.Idents)
-              )
+            (e.Idents) (#Swap s.ScopeClass e.Name) =
+              (e.Idents) (#Swap s.ScopeClass e.Name);
+
+            (e.Idents) (#Enum s.ScopeClass e.Name) =
+              (e.Idents) (#Enum s.ScopeClass e.Name);
+
+            (e.Idents) (#Declaration s.ScopeClass e.Name) =
+              (e.Idents) (#Declaration s.ScopeClass e.Name);
+
+            (e.Idents) (#Ident e.Name) =
+              (e.Idents (#Ident e.Name))
               /* пусто */;
 
-            (
-              (e.FuncDecls)
-              (e.SwapEnums-B (s.Type s.ScopeClass e.Name) e.SwapEnums-E)
-              (e.Idents)
-            )
-            (#Declaration s.ScopeClass e.Name) =
-              (
-                (e.FuncDecls)
-                (e.SwapEnums-B (s.Type s.ScopeClass e.Name) e.SwapEnums-E)
-                (e.Idents)
-              )
-              /* пусто */;
-
-            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
-            (#Declaration s.ScopeClass e.Name) =
-              (
-                (e.FuncDecls (#Declaration s.ScopeClass e.Name))
-                (e.SwapsEnums)
-                (e.Idents)
-              )
-              /* пусто */;
-
-            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
-            (#Ident e.Name) =
-              ((e.FuncDecls) (e.SwapsEnums) (e.Idents (#Ident e.Name)))
-              /* пусто */;
-
-            ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
-            (#NativeBlock t.SrcPos e.Code) =
-              ((e.FuncDecls) (e.SwapsEnums) (e.Idents))
-              (#NativeBlock t.SrcPos e.Code);
+            (e.Idents) (#NativeBlock t.SrcPos e.Code) =
+              (e.Idents) (#NativeBlock t.SrcPos e.Code);
           }
-          ((/* объявления */) (/* swap’ы и enum’ы */) (/* идентификаторы */))
+          (/* идентификаторы */)
         )
         {
-          ((e.FuncDecls) (e.SwapsEnums) (e.Idents)) e.Functions =
-            <UniqSorted <Sort e.FuncDecls>>
-            (#Separator)
+          (e.Idents) e.Functions =
             <UniqSorted <Sort e.Idents>>
-            e.SwapsEnums
             e.Functions;
         }
       >
@@ -665,46 +625,80 @@ Pass-CreatePredeclarations {
 }
 
 RemoveRedudandElements {
-  /*
-    При реализации вставок кода на C++ функция
-    ничего не должна будет удалять, поскольку не известно,
-    какие именно сущности используются или объявляются в коде.
-  */
   e.AST =
     <Fetch
       e.AST
       <Seq
+        /*
+          Собираем список всех определённых функций
+        */
+        (MapReduce
+          {
+            (e.Functions) (#Function s.ScopeClass (e.Name) e.Body) =
+              (e.Functions (e.Name)) (#Function s.ScopeClass (e.Name) e.Body);
+
+            (e.Functions) (#Enum s.ScopeClass e.Name) =
+              (e.Functions (e.Name)) (#Enum s.ScopeClass e.Name);
+
+            (e.Functions) (#Swap s.ScopeClass e.Name) =
+              (e.Functions (e.Name)) (#Swap s.ScopeClass e.Name);
+
+            (e.Functions) (#Declaration s.ScopeClass e.Name) =
+              (e.Functions) (#Declaration s.ScopeClass e.Name);
+
+            (e.Functions) (#Ident e.Name) =
+              (e.Functions) (#Ident e.Name);
+
+            (e.Functions) (#NativeBlock t.SrcPos e.Code) =
+              (e.Functions) (#NativeBlock t.SrcPos e.Code);
+          }
+          (/* функции */)
+        )
+        /*
+          Удаляем все предобъявления, для которых функция определена
+          Внимание: Аккумулятор старый!
+        */
+        (MapReduce
+          {
+            (e.Functions-B (e.Name) e.Functions-E)
+            (#Declaration s.ScopeClass e.Name) =
+              (e.Functions-B (e.Name) e.Functions-E)
+              /* пропускаем объявление */;
+
+            (e.Functions) t.OtherItem =
+              (e.Functions)
+              /*
+                t.OtherItem может быть и объявлением без определения,
+                например $EXTERN или $FORWARD в файле с нативными вставками.
+                Во всех случаях оставляем
+              */
+              t.OtherItem;
+          }
+        )
+        DelAccumulator
+        /*
+          Подчищаем $IDENT’ы только при отсутствии нативных вставок.
+        */
         {
-          /*
-            Если есть хотя бы один нативный блок,
-            $LABEL и $FORWARD сохраняем.
-          */
           e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E =
             {
-              s.Type e.Info = (s.Type e.Info);
+              #Ident e.Name^ = (#Ident e.Name);
             }
             e.AST-B (#NativeBlock t.SrcPos e.Code) e.AST-E;
 
-          /*
-            Если есть нативные функции, сохраняем только $LABEL.
-          */
           e.AST-B
           (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
           e.AST-E =
             {
               #Ident e.Name^ = (#Ident e.Name);
-              #Declaration #GN-Local e.Name^ = /* пропускаем */;
             }
             e.AST-B
             (#Function s.ScopeClass (e.Name) #NativeBody e.Code)
             e.AST-E;
 
-          /*
-            Если ничего нативного нет, то избыточные элементы отбрасываем.
-          */
           e.AST^ =
             {
-              s.Type e.Info = /* пропускаем */;
+              #Ident e.Name^ = /* пропускаем */;
             }
             e.AST;
         }
@@ -712,26 +706,9 @@ RemoveRedudandElements {
           s.FnSelectiveSaver e.AST^ =
             <Map
               {
-                (#Function s.ScopeClass (e.Name) e.Body) =
-                  (#Function s.ScopeClass (e.Name) e.Body);
+                (#Ident e.Name) = <s.FnSelectiveSaver #Ident e.Name>;
 
-                (#Enum s.ScopeClass e.Name) =
-                  (#Enum s.ScopeClass e.Name);
-
-                (#Swap s.ScopeClass e.Name) =
-                  (#Swap s.ScopeClass e.Name);
-
-                (#Declaration #GN-Entry e.Name) =
-                  (#Declaration #GN-Entry e.Name);
-
-                (#Declaration #GN-Local e.Name) =
-                  <s.FnSelectiveSaver #Declaration #GN-Local e.Name>;
-
-                (#Ident e.Name) =
-                  <s.FnSelectiveSaver #Ident e.Name>;
-
-                (#NativeBlock t.SrcPos e.Code) =
-                  (#NativeBlock t.SrcPos e.Code);
+                t.OtherItem = t.OtherItem;
               }
               e.AST
             >;
@@ -823,13 +800,6 @@ ExtractIdent-Expr {
       (/* idents */)
       e.Expr
     >;
-}
-
-FuncDeclsCleanup {
-  (e.Name) e.FuncDecls-B (#Declaration s.ScopeClass e.Name) e.FuncDecls-E =
-    e.FuncDecls-B <FuncDeclsCleanup (e.Name) e.FuncDecls-E>;
-
-  (e.Name) e.FuncDecls = e.FuncDecls;
 }
 
 UniqSorted {
