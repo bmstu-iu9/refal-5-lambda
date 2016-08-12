@@ -545,6 +545,23 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
 
+  (e.Indent) (#CmdStartFunctionScope e.Name) =
+    (e.Indent '  ')
+    (e.Indent 'namespace scope_' <CName e.Name> ' {');
+
+    (e.Indent)
+    (e.Indent '} // namespace scope_' <CName e.Name>)
+    ();
+
+  (e.Indent) (#CmdAcceptScope e.Name) =
+    (e.Indent)
+    (e.Indent 'using scope_' <CName e.Name> '::functions;')
+    (e.Indent 'using scope_' <CName e.Name> '::idents;')
+    (e.Indent 'using scope_' <CName e.Name> '::numbers;')
+    (e.Indent 'using scope_' <CName e.Name> '::strings;')
+    (e.Indent 'using scope_' <CName e.Name> '::raa;')
+    ();
+
   (e.Indent) (#CmdiFuncArray) =
     (e.Indent)
     (e.Indent 'using refalrts::functions;');
