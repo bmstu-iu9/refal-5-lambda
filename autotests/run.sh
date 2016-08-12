@@ -17,7 +17,7 @@ run_test_aux() {
     exit 1
   fi
 
-  g++ -I../srlib -DDUMP_FILE=\"__dump.txt\" -DDONT_PRINT_STATISTICS -o$EXE -g $CPP ../srlib/refalrts.cpp
+  g++ $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -59,6 +59,13 @@ run_test_aux.BAD-SYNTAX() {
 }
 
 run_test() {
+  TEST_CPP_FLAGS="
+    -I../srlib \
+    -DSTEP_LIMIT=1000 \
+    -DMEMORY_LIMIT=1000 \
+    -DDUMP_FILE=\"__dump.txt\"\
+    -DDONT_PRINT_STATISTICS \
+    -g"
   SREF=$1
   SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   SRFLAGS= run_test_aux$SUFFIX $1

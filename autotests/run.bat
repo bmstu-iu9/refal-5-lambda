@@ -15,6 +15,12 @@ goto :EOF
 
 :RUN_TEST
 setlocal
+  set TEST_CPP_FLAGS= ^
+    -I../src/srlib ^
+    -DSTEP_LIMIT=1000 ^
+    -DMEMORY_LIMIT=1000 ^
+    -DDUMP_FILE=\"__dump.txt\" ^
+    -DDONT_PRINT_STATISTICS
   set SRFLAGS=
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
   set SRFLAGS=-OP
@@ -52,7 +58,7 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE% -I../src/srlib -DDUMP_FILE=\"__dump.txt\" -DDONT_PRINT_STATISTICS %CPP% ../src/srlib/refalrts.cpp
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
