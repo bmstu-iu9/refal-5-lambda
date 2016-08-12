@@ -1843,30 +1843,29 @@ void refalrts::swap_save(
 refalrts::FnResult refalrts::RefalSwap::run(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
-  refalrts::this_is_generated_function();
-  refalrts::Iter info_b = 0;
-  refalrts::Iter info_e = 0;
-  refalrts::Iter func_name =
-    refalrts::call_left(info_b, info_e, arg_begin, arg_end);
+  this_is_generated_function();
+  Iter info_b = 0;
+  Iter info_e = 0;
+  Iter func_name = call_left(info_b, info_e, arg_begin, arg_end);
 
-  refalrts::RefalSwap *swap =
-    static_cast<refalrts::RefalSwap*>(func_name->function_info);
+  assert( RefalSwap::run == func_name->function_info->ptr );
+  RefalSwap *swap = static_cast<RefalSwap*>(func_name->function_info);
 
-  refalrts::Iter& head = swap->head;
+  Iter& head = swap->head;
 
   if (! head) {
-    head = refalrts::initialize_swap_head(func_name);
+    head = initialize_swap_head(func_name);
   }
 
-  refalrts::Iter saved_b;
-  refalrts::Iter saved_e;
+  Iter saved_b;
+  Iter saved_e;
 
-  refalrts::swap_info_bounds( saved_b, saved_e, head );
-  refalrts::splice_evar( arg_begin, saved_b, saved_e );
-  refalrts::swap_save( head, info_b, info_e );
-  refalrts::splice_to_freelist( arg_begin, arg_end );
+  swap_info_bounds( saved_b, saved_e, head );
+  splice_evar( arg_begin, saved_b, saved_e );
+  swap_save( head, info_b, info_e );
+  splice_to_freelist( arg_begin, arg_end );
 
-  return refalrts::cSuccess;
+  return cSuccess;
 }
 #endif
 

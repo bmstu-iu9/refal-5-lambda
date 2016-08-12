@@ -15,49 +15,12 @@ FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
 }
 
-GenFnStart {
-  e.Name =
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ') {');
-}
-
-GenFuncDescr {
-  e.Name =
-    (
-      'refalrts::RefalFunction ' <CName e.Name> '('
-      'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
-      ');'
-    )
-    ();
-}
-
-GenSwapDescr {
-  e.Name =
-    (
-      'refalrts::RefalSwap ' <CName e.Name> '('
-      '"' <DisplayCName e.Name> '"'
-      ');'
-    )
-    ();
-}
-
 GenReturn {
   #Success e.Indent =
     (e.Indent 'return refalrts::cSuccess;');
 
   #Fail e.Indent =
     (e.Indent 'return refalrts::cRecognitionImpossible;');
-}
-
-GenIdent {
-  e.Name =
-    ('// identifier #' <DisplayName e.Name>)
-    ('template <typename SREFAL_PARAM_INT>')
-    ('struct ident_' <CName e.Name> ' {')
-    ('  static const char *name() {')
-    ('    return "' <DisplayCName e.Name> '";')
-    ('  }')
-    ('};')
-    ();
 }
 
 GenCommonHeaders {
@@ -159,19 +122,37 @@ GenCommand {
 
   (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
-    <GenFuncDescr e.Name>;
+    (
+      'refalrts::RefalFunction ' <CName e.Name> '('
+      'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
+      ');'
+    )
+    ();
+
 
   (e.Indent) (#CmdSwapDescr e.Name) =
     (e.Indent)
-    <GenSwapDescr e.Name>;
+    (
+      'refalrts::RefalSwap ' <CName e.Name> '('
+      '"' <DisplayCName e.Name> '"'
+      ');'
+    )
+    ();
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
-    <GenIdent e.Name>;
+    ('// identifier #' <DisplayName e.Name>)
+    ('template <typename SREFAL_PARAM_INT>')
+    ('struct ident_' <CName e.Name> ' {')
+    ('  static const char *name() {')
+    ('    return "' <DisplayCName e.Name> '";')
+    ('  }')
+    ('};')
+    ();
 
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
-    <GenFnStart e.Name>;
+    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ') {');
 
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
