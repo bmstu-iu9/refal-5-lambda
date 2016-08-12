@@ -12,7 +12,12 @@ $EXTERN EscapeChar, EscapeString;
 
 
 FuncArguments {
-  = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
+  = '(refalrts::Iter arg_begin, refalrts::Iter arg_end)';
+}
+
+FuncReference {
+  e.Name =
+    ('refalrts::RefalFunction& ' <CName e.Name> ' = descr_' <CName e.Name> ';');
 }
 
 GenReturn {
@@ -121,31 +126,29 @@ GenCommand {
   (e.Indent) (#CmdEnumDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalEmptyFunction ' <CName e.Name> '('
+      'refalrts::RefalEmptyFunction descr_' <CName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
-    );
+    )
+    <FuncReference e.Name>;
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
-    ('extern refalrts::RefalFunction ' <CName e.Name> ';');
-
-  (e.Indent) (#CmdExternInterpret e.Name) =
-    (e.Indent)
-    ('extern refalrts::RASLFunction ' <CName e.Name> ';');
+    ('extern refalrts::RefalFunction& ' <CName e.Name> ';');
 
   (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalFunction ' <CName e.Name> '('
+      'refalrts::RefalFunction descr_' <CName e.Name> '('
       'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
       ');'
     )
+    <FuncReference e.Name>
     ();
 
   (e.Indent) (#CmdInterpretFuncDescr e.Name) =
     (e.Indent)
-    ('refalrts::RASLFunction ' <CName e.Name> '(')
+    ('refalrts::RASLFunction descr_' <CName e.Name> '(')
     ('  "' <DisplayCName e.Name> '",')
     ('  scope_' <CName e.Name> '::raa,')
     ('  scope_' <CName e.Name> '::functions,')
@@ -153,16 +156,17 @@ GenCommand {
     ('  scope_' <CName e.Name> '::numbers,')
     ('  scope_' <CName e.Name> '::strings')
     (');')
+    <FuncReference e.Name>
     ();
 
   (e.Indent) (#CmdSwapDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalSwap ' <CName e.Name> '('
+      'refalrts::RefalSwap descr_' <CName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
     )
-    ();
+    <FuncReference e.Name>;
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
@@ -177,7 +181,7 @@ GenCommand {
 
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ') {');
+    ('static refalrts::FnResult func_' <CName e.Name> <FuncArguments> ' {');
 
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
@@ -199,7 +203,7 @@ GenCommand {
 
   (e.Indent) (#CmdNativeForward e.Name) =
     (e.Indent)
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ');');
+    ('static refalrts::FnResult func_' <CName e.Name> <FuncArguments> ';');
 
   (e.Indent) (#CmdNamespaceStart /* пусто */) =
     (e.Indent '  ')

@@ -494,7 +494,7 @@ Function-Extern {
 
   #OnlyInterpret s.ScopeClass e.Name =
     // Интерпретируемый код
-    <InUnnamedNamespace s.ScopeClass (#CmdExternInterpret e.Name)>;
+    <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>;
 }
 
 Function {

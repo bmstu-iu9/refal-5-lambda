@@ -2469,7 +2469,7 @@ struct GoL_ {
 
 #else
 
-extern refalrts::RefalFunction Go;
+extern refalrts::RefalFunction& Go;
 
 #endif
 
