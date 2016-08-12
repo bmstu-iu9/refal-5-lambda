@@ -7,7 +7,8 @@ enum FnResult {
   cRecognitionImpossible = 0,
   cNoMemory = 1,
   cSuccess = 2,
-  cExit = 3
+  cExit = 3,
+  cStepLimit = 4
 };
 
 struct Node;

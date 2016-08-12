@@ -2510,6 +2510,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
     ++ g_step_counter;
 
+#ifdef STEP_LIMIT
+
+    if (g_step_counter >= STEP_LIMIT) {
+      res = refalrts::cStepLimit;
+    }
+
+#endif // ifdef STEP_LIMIT
+
     if( res != cSuccess ) {
       switch( res ) {
         case refalrts::cRecognitionImpossible:
@@ -2522,6 +2530,10 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
         case refalrts::cExit:
           return res;
+
+        case refalrts::cStepLimit:
+          fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
+          break;
 
         default:
           fprintf(stderr, "\nUNKNOWN ERROR\n\n");
@@ -3684,6 +3696,9 @@ int main(int argc, char **argv) {
 
     case refalrts::cExit:
       return refalrts::vm::g_ret_code;
+
+    case refalrts::cStepLimit:
+      return 103;
 
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main (res = %d)\n", res);
