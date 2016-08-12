@@ -113,7 +113,6 @@ struct Node {
 };
 
 enum iCmd {
-  icProfileFunction,
   icIssueMemory,
   icReserveBacktrackStack,
   icOnFailGoTo,

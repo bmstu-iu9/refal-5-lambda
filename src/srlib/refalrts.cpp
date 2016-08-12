@@ -2911,6 +2911,7 @@ void refalrts::vm::free_view_field() {
 refalrts::FnResult refalrts::RASLFunction::run(
   refalrts::Iter begin, refalrts::Iter end
 ) {
+  this_is_generated_function();
   Iter info_b = 0;
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, begin, end);
@@ -2955,10 +2956,6 @@ refalrts::FnResult refalrts::RASLFunction::run(
 
     switch(raa[i].cmd)
     {
-      case icProfileFunction:
-        this_is_generated_function();
-        break;
-
       case icIssueMemory:
         context.reserve(raa[i].val1);
         break;

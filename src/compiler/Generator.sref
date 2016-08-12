@@ -627,10 +627,6 @@ GenCommand {
     (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
     (e.Indent '};');
 
-  (e.Indent) (#CmdiProfileFunction) =
-    (e.Indent)
-    (e.Indent '{refalrts::icProfileFunction, 0, 0, 0},');
-
   (e.Indent) (#CmdiIssueMem s.Memory) =
     (e.Indent)
     (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');

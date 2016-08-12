@@ -25,7 +25,6 @@ $ENTRY LowLevelRASL {
               )
               <Function
                 s.GenMode s.ScopeClass (e.Name)
-                (#CmdProfileFunction)
                 <AddSavers e.Commands>
               >;
 
@@ -572,8 +571,6 @@ DoLength {
 ConvertOneInterpretCommand {
   (#CmdComment e.Text) = (#CmdComment e.Text);
 
-  (#CmdProfileFunction) = (#CmdiProfileFunction);
-
   (#CmdIssueMem s.Memory) = (#CmdiIssueMem s.Memory);
 
   (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
@@ -1040,6 +1037,7 @@ PrepareOpenEStack {
 Function-Direct {
   s.ScopeClass (e.Name) e.Body =
     (#CmdFnStart e.Name)
+    (#CmdProfileFunction)
     <Function-DirectRec e.Body>
     (#CmdFnEnd)
     <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
