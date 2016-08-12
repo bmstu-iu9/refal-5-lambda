@@ -77,7 +77,46 @@ setlocal
   if exist __dump.txt erase __dump.txt
   echo.
 endlocal
+goto :EOF
 
+:RUN_TEST_AUX.FAILURE
+setlocal
+  echo Passing %1 (expecting failure, flags %SRFLAGS%)...
+  set SREF=%1
+  set CPP=%~n1.cpp
+  set EXE=%~n1.exe
+
+  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  if errorlevel 100 (
+    echo COMPILER ON %1 FAILS, SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt
+  if not exist %CPP% (
+    echo COMPILATION FAILED
+    exit /b 1
+  )
+
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
+  if errorlevel 1 (
+    echo COMPILATION FAILED
+    exit /b 1
+  )
+  if exist a.exe move a.exe %EXE%
+
+  %EXE%
+  if not errorlevel 100 (
+    echo TEST NOT EXPECTATIVE FAILED, SEE __dump.txt
+    exit /b 1
+  )
+
+  erase %CPP% %EXE%
+  if exist *.obj erase *.obj
+  if exist *.tds erase *.tds
+  if exist __dump.txt erase __dump.txt
+  echo Ok! This failure was normal and expected
+  echo.
+endlocal
 goto :EOF
 
 :RUN_TEST_AUX.BAD-SYNTAX

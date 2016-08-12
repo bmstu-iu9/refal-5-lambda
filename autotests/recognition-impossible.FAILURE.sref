@@ -1,0 +1,3 @@
+$ENTRY Go {
+  #NOT-EMPTY-EXPR = ;
+}
