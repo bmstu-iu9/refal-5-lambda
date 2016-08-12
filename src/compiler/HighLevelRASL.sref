@@ -20,16 +20,17 @@ $EXTERN GenInitSubst-Save, GenSubst-Save;
 $EXTERN GenResult-Opt;
 
 /**
-  <HighLevelRASL e.AST>
+  <HighLevelRASL s.Joint s.OptResult e.AST>
     == e.RASLAST
 
   e.RASLAST ::= t.RASLFunction*
   t.RASLFunction ::=
       (#Function s.ScopeClass (e.Name) t.HiRASLCommand*)
+    | (#NativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code)
     | (s.SingularItem s.ScopeClass e.Name)
-    | (#Ident e.Name)
-    | (#Separator)
-  s.SingularItem ::= #Enum | #Swap | #Stub | #Declaration
+    | (#DefineIdent e.Name)
+    | (#CmdEmitNativeCode t.SrcPos e.Code)
+  s.SingularItem ::= #CmdEnum | #CmdSwap | #CmdDeclaration
   t.HiRASLCommand ::=
       (#Cmd… e.Value)
     | (#CmdSentence t.HiRASLCommand*)
@@ -62,8 +63,6 @@ $ENTRY HighLevelRASL {
 
         (#NativeBlock t.SrcPos e.Code) =
           (#CmdEmitNativeCode t.SrcPos e.Code);
-
-        (#Separator) = (#CmdSeparator);
       }
       e.ProgramElements
     >;
