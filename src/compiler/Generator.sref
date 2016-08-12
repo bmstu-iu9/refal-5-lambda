@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Inc, DelAccumulator, Map;
+$EXTERN Fetch, Seq, MapReduce, Inc, Map;
 
 //FROM DisplayName
 $EXTERN DisplayName, DisplayCName, CName;
@@ -46,30 +46,40 @@ $ENTRY GenProgram {
             e.Generated
             <GenCommonTailer>;
         }
-        (MapReduce
-          {
-            s.LineNumber (#NativeInsertBegin s.SourceLineNumber) =
-              <Inc s.LineNumber>
-              (
-                '#line ' <StrFromInt s.SourceLineNumber> ' '
-                '"' <EscapeString e.SourceFileName> '"'
-              );
+        {
+          e.Lines-B (#NativeInsertBegin s.SrcLineNum) e.Lines-E =
+            <SetLineNumbers
+              (e.SourceFileName) (e.TargetFileName) 1
+              e.Lines-B (#NativeInsertBegin s.SrcLineNum) e.Lines-E
+            >;
 
-            s.LineNumber (#NativeInsertEnd) =
-              <Inc s.LineNumber>
-              (
-                '#line ' <StrFromInt <Inc s.LineNumber>> ' '
-                '"' <EscapeString e.TargetFileName> '"'
-              );
-
-            s.LineNumber (e.OtherLine) =
-              <Inc s.LineNumber> (e.OtherLine);
-          }
-          1
-        )
-        DelAccumulator
+          e.Lines = e.Lines;
+        }
       >
     >;
+}
+
+SetLineNumbers {
+  (e.Source) (e.Target) s.LineNum (#NativeInsertBegin s.SrcLineNum) e.Lines =
+    ('#line ' <StrFromInt s.SrcLineNum> ' ' '"' <EscapeString e.Source> '"')
+    <SetLineNumbers
+      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
+    >;
+
+  (e.Source) (e.Target) s.LineNum (#NativeInsertEnd) e.Lines =
+    ('#line ' <StrFromInt <Inc s.LineNum>> ' ' '"' <EscapeString e.Target> '"')
+    <SetLineNumbers
+      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
+    >;
+
+  (e.Source) (e.Target) s.LineNum (e.OtherLine) e.Lines =
+    (e.OtherLine)
+    <SetLineNumbers
+      (e.Source) (e.Target) <Inc s.LineNum> e.Lines
+    >;
+
+  (e.Source) (e.Target) s.LineNum /* кончились строки */ =
+    /* пусто */;
 }
 
 ContextRange-B {
