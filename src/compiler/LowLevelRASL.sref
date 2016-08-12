@@ -21,8 +21,7 @@ $ENTRY LowLevelRASL {
             (#Function s.ScopeClass (e.Name) e.Commands) =
               (
                 e.Declarations
-                <CmdFuncDescrForLocal s.ScopeClass e.Name>
-                <CmdFuncExternForEntry s.ScopeClass e.Name>
+                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
               )
               <Function
                 s.GenMode s.ScopeClass (e.Name)
@@ -34,21 +33,26 @@ $ENTRY LowLevelRASL {
             (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
               (
                 e.Declarations
-                <CmdFuncDescrForLocal s.ScopeClass e.Name>
-                <CmdFuncExternForEntry s.ScopeClass e.Name>
+                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
               )
-              <CmdFuncDescrForEntry s.ScopeClass e.Name>
               (#CmdFnStart e.Name)
               (#CmdEmitNativeCode t.SrcPos e.Code)
-              (#CmdFnEnd);
+              (#CmdFnEnd)
+              <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
 
             (e.Declarations)
             (#CmdEnum s.ScopeClass e.Name) =
-              (e.Declarations (#CmdEnumDescr s.ScopeClass e.Name));
+              (
+                e.Declarations
+                <InUnnamedNamespace s.ScopeClass (#CmdEnumDescr e.Name)>
+              );
 
             (e.Declarations)
             (#CmdSwap s.ScopeClass e.Name) =
-              (e.Declarations (#CmdSwapDescr s.ScopeClass e.Name));
+              (
+                e.Declarations
+                <InUnnamedNamespace s.ScopeClass (#CmdSwapDescr e.Name)>
+              );
 
             (e.Declarations)
             (#CmdDeclaration #GN-Entry e.Name) =
@@ -56,7 +60,16 @@ $ENTRY LowLevelRASL {
 
             (e.Declarations)
             (#CmdDeclaration #GN-Local e.Name) =
-              (e.Declarations (#CmdFuncDescr #GN-Local e.Name));
+              (
+                e.Declarations
+                (#CmdNamespaceStart)
+                (#CmdExtern e.Name)
+                (#CmdNamespaceEnd)
+              )
+              (#CmdNativeForward e.Name)
+              (#CmdNamespaceStart)
+              (#CmdFuncDescr e.Name)
+              (#CmdNamespaceEnd);
 
             (e.Declarations)
             (#CmdDefineIdent e.Name) =
@@ -66,35 +79,25 @@ $ENTRY LowLevelRASL {
             (#CmdEmitNativeCode t.SrcPos e.Code) =
               (e.Declarations)
               (#CmdEmitNativeCode t.SrcPos e.Code);
-
-            (e.Declarations)
-            (#CmdSeparator) =
-              (e.Declarations)
-              (#CmdSeparator);
           }
           (/* объявления и определения swap’ов и enum’ов */)
         )
         {
           (e.Declarations) e.Definitions =
-            e.Declarations e.Definitions;
+            e.Declarations (#CmdSeparator) e.Definitions;
         }
       >
     >;
 }
 
-CmdFuncDescrForLocal {
-  #GN-Entry e.Name = /* ничего не генерируем */;
-  #GN-Local e.Name = (#CmdFuncDescr #GN-Local e.Name);
-}
+InUnnamedNamespace {
+  #GN-Entry e.RASL =
+    e.RASL;
 
-CmdFuncExternForEntry {
-  #GN-Entry e.Name = (#CmdExtern e.Name);
-  #GN-Local e.Name = /* ничего не генерируем */;
-}
-
-CmdFuncDescrForEntry {
-  #GN-Entry e.Name = (#CmdFuncDescr #GN-Entry e.Name);
-  #GN-Local e.Name = /* ничего не генерируем */;
+  #GN-Local e.RASL =
+    (#CmdNamespaceStart)
+    e.RASL
+    (#CmdNamespaceEnd);
 }
 
 AddSavers {
@@ -488,15 +491,15 @@ Function {
 
   #OnlyDirect s.ScopeClass (e.Name) e.Commands =
     // Компилируемый код
-    <CmdFuncDescrForEntry s.ScopeClass e.Name>
     (#CmdFnStart e.Name)
     <Function-Direct e.Commands>
-    (#CmdFnEnd);
+    (#CmdFnEnd)
+    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
 
   #OnlyInterpret s.ScopeClass (e.Name) e.Commands =
     // Интерпретируемый код
-    <CmdFuncDescrForEntry s.ScopeClass e.Name>
-    <Function-Interpret (e.Name) e.Commands>;
+    <Function-Interpret (e.Name) e.Commands>
+    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
 }
 
 Function-Interpret {
@@ -522,12 +525,12 @@ Function-Interpret {
         )
         {
           e.FunctionBody^ =
-            (#CmdStartFunctionScope e.Name)
+            (#CmdNamespaceStart e.Name)
             e.FunctionBody
-            (#CmdEndFunctionScope e.Name)
+            (#CmdNamespaceEnd e.Name)
 
             (#CmdFnStart e.Name)
-            (#CmdAcceptScope e.Name)
+            (#CmdAcceptNamespace e.Name)
             (#CmdiRunInterpret)
             (#CmdFnEnd);
         }

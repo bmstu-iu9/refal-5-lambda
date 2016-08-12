@@ -15,21 +15,14 @@ FuncArguments {
   = 'refalrts::Iter arg_begin, refalrts::Iter arg_end';
 }
 
-TextFromMemoryClass {
-  #GN-Local = 'static '; #GN-Entry = ;
-}
-
 GenFnStart {
   e.Name =
     ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ') {');
 }
 
 GenFuncDescr {
-  s.MemoryClass e.Name =
-    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ');')
-    ()
+  e.Name =
     (
-      <TextFromMemoryClass s.MemoryClass>
       'refalrts::RefalFunction ' <CName e.Name> '('
       'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
       ');'
@@ -38,9 +31,8 @@ GenFuncDescr {
 }
 
 GenSwapDescr {
-  s.MemoryClass e.Name =
+  e.Name =
     (
-      <TextFromMemoryClass s.MemoryClass>
       'refalrts::RefalSwap ' <CName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
@@ -153,10 +145,9 @@ GenCommand {
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
-  (e.Indent) (#CmdEnumDescr s.MemoryClass e.Name) =
+  (e.Indent) (#CmdEnumDescr e.Name) =
     (e.Indent)
     (
-      <TextFromMemoryClass s.MemoryClass>
       'refalrts::RefalEmptyFunction ' <CName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
@@ -166,13 +157,13 @@ GenCommand {
     (e.Indent)
     ('extern refalrts::RefalFunction ' <CName e.Name> ';');
 
-  (e.Indent) (#CmdFuncDescr s.MemoryClass e.Name) =
+  (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
-    <GenFuncDescr s.MemoryClass e.Name>;
+    <GenFuncDescr e.Name>;
 
-  (e.Indent) (#CmdSwapDescr s.MemoryClass e.Name) =
+  (e.Indent) (#CmdSwapDescr e.Name) =
     (e.Indent)
-    <GenSwapDescr s.MemoryClass e.Name>;
+    <GenSwapDescr e.Name>;
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
@@ -188,7 +179,7 @@ GenCommand {
 
   (e.Indent) (#CmdSeparator) =
     (e.Indent)
-    (e.Indent);
+    ();
 
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
@@ -199,6 +190,28 @@ GenCommand {
     (#NativeInsertBegin s.LineNumber)
     e.Code
     (#NativeInsertEnd);
+
+  (e.Indent) (#CmdNativeForward e.Name) =
+    (e.Indent)
+    ('static refalrts::FnResult func_' <CName e.Name> '(' <FuncArguments> ');');
+
+  (e.Indent) (#CmdNamespaceStart /* пусто */) =
+    (e.Indent '  ')
+    (e.Indent 'namespace /* unnamed */ {');
+
+  (e.Indent) (#CmdNamespaceStart e.Name) =
+    (e.Indent '  ')
+    (e.Indent 'namespace scope_' <CName e.Name> ' {');
+
+  (e.Indent '  ') (#CmdNamespaceEnd /* пусто */) =
+    (e.Indent)
+    (e.Indent '} // unnamed namespace')
+    ();
+
+  (e.Indent '  ') (#CmdNamespaceEnd e.Name) =
+    (e.Indent)
+    (e.Indent '} // namespace scope_' <CName e.Name>)
+    ();
 
   // ---------------------------------------------------------------------------
   // Общие команды тела функции
@@ -545,15 +558,7 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
 
-  (e.Indent) (#CmdStartFunctionScope e.Name) =
-    (e.Indent '  ')
-    (e.Indent 'namespace scope_' <CName e.Name> ' {');
-
-    (e.Indent)
-    (e.Indent '} // namespace scope_' <CName e.Name>)
-    ();
-
-  (e.Indent) (#CmdAcceptScope e.Name) =
+  (e.Indent) (#CmdAcceptNamespace e.Name) =
     (e.Indent)
     (e.Indent 'using scope_' <CName e.Name> '::functions;')
     (e.Indent 'using scope_' <CName e.Name> '::idents;')
