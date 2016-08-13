@@ -207,6 +207,14 @@ $ENTRY ParseCommandLine {
                     'option -O expects ''P'', ''R'' or both, '
                     'but got ''' e.BadValue ''
                   );
+
+                (s.Pos #FlagsForNoCompiler) =
+                  (
+                    s.Pos
+                    'options ''--cppflag'' (''-f'') and ''--cppflags'' '
+                    '(''-C'', ''-F'') must be appear only with option '
+                    '''--cppcommand'' (''-c'')'
+                  );
               }
               e.Errors
             >;
