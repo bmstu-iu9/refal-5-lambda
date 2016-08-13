@@ -3,13 +3,22 @@
 */
 
 //FROM LibraryEx
-$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile;
-
-//FROM Generator
-$EXTERN Transform;
+$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Inc, MapReduce;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
+
+//FROM Generator
+$EXTERN GenerateFromDFA;
+
+//FROM Parser
+$EXTERN Parse;
+
+//FROM Lexer
+$EXTERN Tokens;
+
+//FROM Error
+$EXTERN Error;
 
 
 $ENTRY Go {
@@ -43,4 +52,32 @@ $ENTRY Go {
         }
       >
     >;
+}
+
+Transform {
+  e.LinesBefore ('/*GEN:TOKENS') e.Description =
+    <Fetch
+      ( <Length-T e.LinesBefore ('/*GEN:TOKENS')> )
+      e.Description
+      {
+        ( s.Length e.LinesBefore^ )
+        e.Description^ ('GEN:END*/') e.Deleted =
+          e.LinesBefore e.Description ('GEN:END*/')
+          <GenerateFromDFA
+            <Parse <Tokens s.Length e.Description>>
+          >;
+
+       e.Other = <Error 'End of description not found'>;
+      }
+    >;
+
+  e.Other = <Error 'Lexer description not found'>;
+}
+
+NextNum {
+  s.Next (e.Line) = <Inc s.Next> (e.Line);
+}
+
+Length-T {
+  e.Line = <MapReduce NextNum 0 e.Line>;
 }
