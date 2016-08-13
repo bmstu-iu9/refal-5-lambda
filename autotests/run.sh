@@ -36,6 +36,51 @@ run_test_aux() {
   echo
 }
 
+run_test_aux.LEXGEN() {
+  echo Passing $1 \(lexgen, flags $SRFLAGS\)...
+  SREF=$1
+
+  ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
+  if [ $? -ge 100 ]; then
+    echo LEXGEN ON $SREF FAILS, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt
+  if [ ! -e _lexgen-out.sref ]; then
+    echo LEXGEN FAILED
+    exit 1
+  fi
+
+  ../bin/srefc-core _lexgen-out.sref $SRFLAGS 2>__error.txt
+  if [ $? -ge 100 ]; then
+    echo COMPILER ON $SREF FAILS, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt
+  if [ ! -e _lexgen-out.cpp ]; then
+    echo COMPILATION FAILED
+    exit 1
+  fi
+
+  g++ $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../srlib/refalrts.cpp
+
+  if [ $? -gt 0 ]; then
+    echo COMPILATION FAILED
+    exit 1
+  fi
+
+  ./_lexgen-out
+  if [ $? -gt 0 ]; then
+    echo TEST FAILED, SEE __dump.txt
+    exit 1
+  fi
+
+  rm _lexgen-out*
+  [ -e __dump.txt ] && rm __dump.txt
+
+  echo
+}
+
 run_test_aux.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
