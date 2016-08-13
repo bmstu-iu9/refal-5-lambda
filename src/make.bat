@@ -1,5 +1,18 @@
 @echo off
 setlocal
+  if {%RELEASE%}=={} (
+    rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
+    rem SREFC_FLAGS используются только для сборки библиотек
+    set SREFC_FLAGS_PLUS=
+    set SRMAKE_FLAGS_PLUS=-X-C-DMEMORY_LIMIT=2500000 -X-C-DSTEP_LIMIT=30000000
+  ) else (
+    set SREFC_FLAGS_PLUS=-OPR
+    set SRMAKE_FLAGS_PLUS=-X-OPR
+  )
+
+  set SREFC_FLAGS=%SREFC_FLAGS% %SREFC_FLAGS_PLUS%
+  set SRMAKE_FLAGS=%SRMAKE_FLAGS% %SRMAKE_FLAGS_PLUS%
+
   if not {%1}=={} goto :MAKE_PROJECT
 
   if not exist ..\bin\nul mkdir ..\bin

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+( cd src && RELEASE=1 ./make.sh )
+
 pushd distrib
 rm -rf bin compiler doc lexgen srlib srmake
 cp -R ../build/* .
@@ -23,4 +26,5 @@ mkdir doc/historical/Дрогунов
 cp ../doc/historical/Дрогунов/*.pdf doc/historical/Дрогунов
 cp ../LICENSE .
 cp ../README.md .
+./bootstrap.sh
 popd

@@ -1,4 +1,12 @@
 @echo off
+
+pushd src
+setlocal
+set RELEASE=1
+call make.bat
+endlocal
+popd
+
 pushd distrib
 rd /q /s bin compiler doc lexgen srlib srmake
 xcopy /e /y ..\build\*
@@ -22,4 +30,5 @@ md doc\historical\Дрогунов
 copy ..\doc\historical\Дрогунов\*.pdf doc\historical\Дрогунов
 copy ..\LICENSE .
 copy ..\README.md .
+call bootstrap.bat
 popd

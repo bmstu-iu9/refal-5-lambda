@@ -6,34 +6,51 @@ make_subdir() {
   (cd $DIR && source $MAKE)
 }
 
-if [ -z "$1" ]; then
-  mkdir -p ../bin
-  make_subdir scripts install-scripts.sh
-  make_subdir compiler makeself-s.sh
-  cp ../distrib/bin/srmake-core ../bin
-  make_subdir srlib make.sh
-  make_subdir srmake make.sh
-  make_subdir lexgen make.sh
-  make_subdir compiler makeself.sh
-else
-  DIR=$1
-  TARGET=$2
-  MAINSRC=$3
-  CPPLINE_FLAGS=$4
-  PATH_TO_SREFC=$5
-
-  if [ -z "$PATH_TO_SREFC" ]; then
-    PATH_TO_SREFC=../..
+(
+  if [ -z "$RELEASE" ]; then
+    # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
+    # SREFC_FLAGS используются только для сборки библиотек
+    SREFC_FLAGS_PLUS=
+    SRMAKE_FLAGS_PLUS="-X-C-DMEMORY_LIMIT=2500000 -X-C-DSTEP_LIMIT=30000000"
+  else
+    SREFC_FLAGS_PLUS=-OPR
+    SRMAKE_FLAGS_PLUS=-X-OPR
   fi
 
-  mkdir -p $PATH_TO_SREFC/bin
-  (
-    export CPPLINE_FLAGS="$CPPLINE_FLAGS -o../../bin/$TARGET"
-    $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC
-  )
+  if [ -z "$1" ]; then
+    mkdir -p ../bin
+    make_subdir scripts install-scripts.sh
+    make_subdir compiler makeself-s.sh
+    cp ../distrib/bin/srmake-core ../bin
+    (
+      export SREFC_FLAGS="$SREFC_FLAGS $SREFC_FLAGS_PLUS"
+      make_subdir srlib make.sh
+    )
+    make_subdir srmake make.sh
+    make_subdir lexgen make.sh
+    make_subdir compiler makeself.sh
+  else
+    DIR=$1
+    TARGET=$2
+    MAINSRC=$3
+    CPPLINE_FLAGS=$4
+    PATH_TO_SREFC=$5
 
-  mkdir -p ../../build/$DIR
-  mv *.cpp ../../build/$DIR
-  mv ../common/*.cpp ../../build/$DIR
-  cp $PATH_TO_SREFC/srlib/*.cpp ../../build/$DIR
-fi
+    if [ -z "$PATH_TO_SREFC" ]; then
+      PATH_TO_SREFC=../..
+    fi
+
+    mkdir -p $PATH_TO_SREFC/bin
+    (
+      export CPPLINE_FLAGS="$CPPLINE_FLAGS -o../../bin/$TARGET"
+      export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
+
+      $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC
+    )
+
+    mkdir -p ../../build/$DIR
+    mv *.cpp ../../build/$DIR
+    mv ../common/*.cpp ../../build/$DIR
+    cp $PATH_TO_SREFC/srlib/*.cpp ../../build/$DIR
+  fi
+)
