@@ -1,0 +1,21 @@
+//FROM Library
+$EXTERN WriteLine, Exit, StrFromInt;
+
+
+$ENTRY Error {
+  e.Text = <WriteLine e.Text> <Exit 1>;
+}
+
+$ENTRY ErrorAt {
+  s.Number e.Text =
+    <Error 'ERROR at ' <StrFromInt s.Number> ': ' e.Text>;
+}
+
+$ENTRY Warning {
+  e.Message = <WriteLine 'WARNING: ' e.Message>;
+}
+
+$ENTRY WarningAt {
+  s.Number e.Message =
+    <WriteLine 'WARNING at ' <StrFromInt s.Number> ' ' e.Message>;
+}

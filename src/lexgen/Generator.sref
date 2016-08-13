@@ -3,8 +3,11 @@ $EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
   DelAccumulator, Fetch, Seq;
 
 //FROM Library
-$EXTERN WriteLine, Exit, Chr, Ord, StrFromInt, IntFromStr,
-  StrFromInt;
+$EXTERN Chr, IntFromStr;
+
+//FROM Error
+$EXTERN Error, ErrorAt, Warning, WarningAt;
+
 
 $ENTRY Generate-SelfUpdate {
   e.FileName =
@@ -32,24 +35,6 @@ NextNum {
 
 Length-T {
   e.Line = <MapReduce NextNum 0 e.Line>;
-}
-
-Error {
-  e.Text = <WriteLine e.Text> <Exit 1>;
-}
-
-ErrorAt {
-  s.Number e.Text =
-    <Error 'ERROR at ' <StrFromInt s.Number> ': ' e.Text>;
-}
-
-Warning {
-  e.Message = <WriteLine 'WARNING: ' e.Message>;
-}
-
-WarningAt {
-  s.Number e.Message =
-    <WriteLine 'WARNING at ' <StrFromInt s.Number> ' ' e.Message>;
 }
 
 GenCode {
