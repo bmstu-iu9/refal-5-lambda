@@ -1,6 +1,21 @@
 #!/bin/bash
 
+run_test_all_modes() {
+  SRFLAGS= $2 $1
+  SRFLAGS=-OP $2 $1
+  SRFLAGS=-OR $2 $1
+  SRFLAGS=-OPR $2 $1
+  SRFLAGS=--gen=interp $2 $1
+  SRFLAGS='-OP --gen=interp' $2 $1
+  SRFLAGS='-OR --gen=interp' $2 $1
+  SRFLAGS='-OPR --gen=interp' $2 $1
+}
+
 run_test_aux() {
+  run_test_all_modes $1 run_test_aux_with_flags
+}
+
+run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
@@ -37,7 +52,7 @@ run_test_aux() {
 }
 
 run_test_aux.BAD-SYNTAX() {
-  echo Passing $1 \(syntax error recovering, flags $SRFLAGS\)...
+  echo Passing $1 \(syntax error recovering\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
@@ -59,6 +74,10 @@ run_test_aux.BAD-SYNTAX() {
 }
 
 run_test_aux.FAILURE() {
+  run_test_all_modes $1 run_test_aux_with_flags.FAILURE
+}
+
+run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
@@ -96,7 +115,7 @@ run_test_aux.FAILURE() {
 }
 
 run_test_aux.LEXGEN() {
-  echo Passing $1 \(lexgen, flags $SRFLAGS\)...
+  echo Passing $1 \(lexgen\)...
   SREF=$1
 
   ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
@@ -141,7 +160,7 @@ run_test_aux.LEXGEN() {
 }
 
 run_test_aux.BAD-SYNTAX-LEXGEN() {
-  echo Passing $1 \(lexgen, syntax error recovering, flags $SRFLAGS\)...
+  echo Passing $1 \(lexgen, syntax error recovering\)...
   SREF=$1
 
   ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
@@ -169,14 +188,7 @@ run_test() {
     -g"
   SREF=$1
   SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
-  SRFLAGS= run_test_aux$SUFFIX $1
-  SRFLAGS=-OP run_test_aux$SUFFIX $1
-  SRFLAGS=-OR run_test_aux$SUFFIX $1
-  SRFLAGS=-OPR run_test_aux$SUFFIX $1
-  SRFLAGS=--gen=interp run_test_aux$SUFFIX $1
-  SRFLAGS='-OP --gen=interp' run_test_aux$SUFFIX $1
-  SRFLAGS='-OR --gen=interp' run_test_aux$SUFFIX $1
-  SRFLAGS='-OPR --gen=interp' run_test_aux$SUFFIX $1
+  run_test_aux$SUFFIX $1
 }
 
 if [ -z "$1" ]; then

@@ -21,26 +21,38 @@ setlocal
     -DMEMORY_LIMIT=1000 ^
     -DDUMP_FILE=\"__dump.txt\" ^
     -DDONT_PRINT_STATISTICS
-  set SRFLAGS=
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OP
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OR
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OPR
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=--gen=interp
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OP --gen=interp
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OR --gen=interp
-  for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
-  set SRFLAGS=-OPR --gen=interp
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
 
+:RUN_TEST_ALL_MODES
+setlocal
+  set SRFLAGS=
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OP
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OR
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OPR
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=--gen=interp
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OP --gen=interp
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OR --gen=interp
+  call :%2 %1 || exit /b 1
+  set SRFLAGS=-OPR --gen=interp
+  call :%2 %1 || exit /b 1
+endlocal
+goto :EOF
+
 :RUN_TEST_AUX
+setlocal
+  call :RUN_TEST_ALL_MODES %1 RUN_TEST_AUX_WITH_FLAGS || exit /b 1
+endlocal
+goto :EOF
+
+:RUN_TEST_AUX_WITH_FLAGS
 setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
@@ -80,6 +92,12 @@ endlocal
 goto :EOF
 
 :RUN_TEST_AUX.FAILURE
+setlocal
+  call :RUN_TEST_ALL_MODES %1 RUN_TEST_AUX_WITH_FLAGS.FAILURE || exit /b 1
+endlocal
+goto :EOF
+
+:RUN_TEST_AUX_WITH_FLAGS.FAILURE
 setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
@@ -121,7 +139,7 @@ goto :EOF
 
 :RUN_TEST_AUX.BAD-SYNTAX
 setlocal
-  echo Passing %1 (syntax error recovering, flags %SRFLAGS%)...
+  echo Passing %1 (syntax error recovering)...
   set SREF=%1
   set CPP=%~n1.cpp
 
@@ -143,7 +161,7 @@ goto :EOF
 
 :RUN_TEST_AUX.LEXGEN
 setlocal
-  echo Passing %1 (lexgen, flags %SRFLAGS%)...
+  echo Passing %1 (lexgen)...
   set SREF=%1
 
   ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
@@ -191,7 +209,7 @@ goto :EOF
 
 :RUN_TEST_AUX.BAD-SYNTAX-LEXGEN
 setlocal
-  echo Passing %1 (lexgen, syntax error recovering, flags %SRFLAGS%)...
+  echo Passing %1 (lexgen, syntax error recovering)...
   set SREF=%1
 
   ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
