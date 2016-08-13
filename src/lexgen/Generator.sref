@@ -1,6 +1,5 @@
 //FROM LibraryEx
-$EXTERN LoadFile, SaveFile, MapReduce, Map, Inc, Reduce,
-  DelAccumulator, Fetch, Seq;
+$EXTERN MapReduce, Map, Inc, Reduce, DelAccumulator, Fetch, Seq;
 
 //FROM Library
 $EXTERN Chr, IntFromStr;
@@ -8,26 +7,6 @@ $EXTERN Chr, IntFromStr;
 //FROM Error
 $EXTERN Error, ErrorAt, Warning, WarningAt;
 
-
-$ENTRY Generate-SelfUpdate {
-  e.FileName =
-    <SaveFile
-      (e.FileName)
-      <GenCode <LoadFile e.FileName>>
-    >;
-}
-
-$ENTRY Generate-ToDifferent {
-  (e.From) e.To =
-    <SaveFile
-      (e.To)
-      ('// Automatically generated file, don''t edit!')
-      ('// Edit file ''' e.From '')
-      ()
-      ()
-      <GenCode <LoadFile e.From>>
-    >;
-}
 
 NextNum {
   s.Next (e.Line) = <Inc s.Next> (e.Line);
@@ -37,7 +16,7 @@ Length-T {
   e.Line = <MapReduce NextNum 0 e.Line>;
 }
 
-GenCode {
+$ENTRY Transform {
   e.LinesBefore ('/*GEN:TOKENS') e.Description =
     <Fetch
       ( <Length-T e.LinesBefore ('/*GEN:TOKENS')> )

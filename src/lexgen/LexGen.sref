@@ -3,86 +3,44 @@
 */
 
 //FROM LibraryEx
-$EXTERN ArgList, Fetch, Map;
-
-//FROM Library
-$EXTERN WriteLine, StrFromInt;
+$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile;
 
 //FROM Generator
-$EXTERN Generate-SelfUpdate, Generate-ToDifferent;
+$EXTERN Transform;
 
-//FROM GetOpt
-$EXTERN GetOpt;
+//FROM ParseCmdLine
+$EXTERN ParseCommandLine;
+
 
 $ENTRY Go {
-  = <Main <ArgList>>;
-}
+  =
+    <Fetch
+      <ArgList>
+      <Seq
+        {
+          (e.ProgName) e.Options =
+            <ParseCommandLine e.Options>;
+        }
+        {
+          #InPlace e.FileName =
+            <SaveFile
+              (e.FileName)
+              <Transform <LoadFile e.FileName>>
+            >;
 
-Main {
-  (e.ProgName) e.Options =
-    <Main-CheckArgs
-      <GetOpt
-        (
-          (#From #Required 'f' ('from'))
-          (#To #Required 'o' ('to'))
-        )
-        e.Options
+          #From (e.From) #To (e.To) =
+            <SaveFile
+              (e.To)
+              ('// Automatically generated file, don''t edit!')
+              ('// Edit file ''' e.From '')
+              ()
+              ()
+              <Transform <LoadFile e.From>>
+            >;
+
+          #BadCommandLine =
+            /* ничего не делаем, CheckOption уже вывел сообщение об ошибке */;
+        }
       >
     >;
-}
-
-Main-CheckArgs {
-  () (#FILE s.Pos e.FileName) =
-    <Generate-SelfUpdate e.FileName>;
-
-  () e.Begin (#From s.PosFrom e.From) e.End =
-    <Fetch
-      e.Begin e.End {
-        (#To s.PosTo e.To) =
-          <Generate-ToDifferent (e.From) e.To>;
-
-        e.Other =
-          <FormatError s.PosFrom 'expected argument --to'>
-          <Help>;
-      }
-    >;
-
-  () e.Begin (#To s.Pos e.To) e.End =
-    <FormatError s.Pos 'exptected argument --from'>
-    <Help>;
-
-  () e.AnyOther =
-    <WriteLine 'Command line error: unrecognized command line'>
-    <Help>;
-
-  (e.Errors) e.AnyOther =
-    <Map
-      {
-        (s.Pos #NoRequiredParam e.Opt) =
-          <FormatError s.Pos 'option ' e.Opt ' expects parameter'>;
-
-        (s.Pos #UnknownShortOption s.Option) =
-          <FormatError s.Pos 'unknown option -' s.Option>;
-
-        (s.Pos #UnknownLongOption e.Option) =
-          <FormatError s.Pos 'unknown option --' e.Option>;
-      }
-      e.Errors
-    >
-    <Help>;
-}
-
-FormatError {
-  s.Pos e.Message =
-    <WriteLine 'Command line argument ' <StrFromInt s.Pos> ': ' e.Message>;
-}
-
-Help {
-  =
-    <WriteLine 'Use:'>
-    <WriteLine '    lexgen filename.sref - for rewritting file\n'>
-    <WriteLine '    lexgen --from=file1.sref --to=file2.sref - for writting '
-               'to other target\n'>
-    <WriteLine '    --from, -f - source file'>
-    <WriteLine '    --to, -o - target file'>;
 }
