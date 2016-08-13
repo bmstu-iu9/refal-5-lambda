@@ -3,7 +3,7 @@
 */
 
 //FROM LibraryEx
-$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Inc, MapReduce;
+$EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -18,7 +18,7 @@ $EXTERN Parse;
 $EXTERN Tokens;
 
 //FROM Error
-$EXTERN Error;
+$EXTERN Error, ErrorAt;
 
 
 $ENTRY Go {
@@ -34,7 +34,7 @@ $ENTRY Go {
           #InPlace e.FileName =
             <SaveFile
               (e.FileName)
-              <Transform <LoadFile e.FileName>>
+              <Transform (e.FileName) <LoadFile e.FileName>>
             >;
 
           #From (e.From) #To (e.To) =
@@ -44,7 +44,7 @@ $ENTRY Go {
               ('// Edit file ''' e.From '')
               ()
               ()
-              <Transform <LoadFile e.From>>
+              <Transform (e.From) <LoadFile e.From>>
             >;
 
           #BadCommandLine =
@@ -55,7 +55,7 @@ $ENTRY Go {
 }
 
 Transform {
-  e.Lines =
+  (e.Source) e.Lines =
     <Fetch
       e.Lines
       <Seq
@@ -82,6 +82,15 @@ Transform {
               s.Length e.Description
               <Seq
                 Tokens
+                (Map
+                  {
+                    (#TError s.LineNumber e.Text) =
+                      <ErrorAt (s.LineNumber e.Source) e.Text>;
+
+                    (s.TokType s.LineNumber e.Info) =
+                      (s.TokType (s.LineNumber e.Source) e.Info);
+                  }
+                )
                 Parse
                 GenerateFromDFA
                 {

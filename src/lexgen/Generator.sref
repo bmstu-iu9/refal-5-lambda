@@ -89,18 +89,18 @@ NormalizeContent {
       (<NormingSet e.Chars e.Symbols>) e.Tail
     >;
 
-  (e.Chars) (#Set s.LineNumber e.Name) e.Tail =
-    (#Set s.LineNumber e.Name) <NormalizeContent (e.Chars) e.Tail>;
+  (e.Chars) (#Set t.SrcPos e.Name) e.Tail =
+    (#Set t.SrcPos e.Name) <NormalizeContent (e.Chars) e.Tail>;
 
   (e.Chars) = (#Chars e.Chars);
 }
 
 SetCheckRecursion {
   e.Sets-B
-  ((e.Name) e.Content-B (#Set s.LineNumber e.Name) e.Content-E)
+  ((e.Name) e.Content-B (#Set t.SrcPos e.Name) e.Content-E)
   e.Sets-E =
     // Рекурсивная зависимость множеств — не ошибка.
-    <WarningAt s.LineNumber 'Recursive depended set ' e.Name>
+    <WarningAt t.SrcPos 'Recursive depended set ' e.Name>
     <SetCheckRecursion
       e.Sets-B ((e.Name) e.Content-B e.Content-E) e.Sets-E
     >;
@@ -137,9 +137,9 @@ SetSubstitute {
     >;
 
   e.Sets-B
-  ( (e.Name) e.Content-B (#Set s.LineNumber e.IncName) e.Content-E )
+  ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
   e.Sets-E =
-    <ErrorAt s.LineNumber 'set ' e.IncName ' not defined'>;
+    <ErrorAt t.SrcPos 'set ' e.IncName ' not defined'>;
 
   e.Sets = e.Sets;
 }
@@ -236,12 +236,12 @@ SubstituteSetsToRules {
     e.Rules-B
     ((e.RuleName)
       e.Alternatives-B
-      ( (#Set s.LineNumber e.Name) t.Flush t.NextState )
+      ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
     )
     e.Rules-E
   ) =
-    <ErrorAt s.LineNumber 'Undeclared set ' e.Name>;
+    <ErrorAt t.SrcPos 'Undeclared set ' e.Name>;
 
   () (e.Rules) = <GenerateSentences e.Rules>;
 }
@@ -309,7 +309,7 @@ NormalizeRule {
 WriteCode {
   e.Rules =
     <WriteFunctions
-      (/* written */) (/* expected */ (0 'Root'))
+      (/* written */) (/* expected */ ((0 'runtime') 'Root'))
       e.Rules
     >;
 }
@@ -317,8 +317,8 @@ WriteCode {
 ExtractExpected {
   ( t.Head t.Flush #Finitive ) = ;
 
-  ( t.Head t.Flush ( s.LineNumber e.NextName ) ) =
-    ( s.LineNumber e.NextName );
+  ( t.Head t.Flush ( t.SrcPos e.NextName ) ) =
+    ( t.SrcPos e.NextName );
 }
 
 WriteFunctions {
@@ -328,13 +328,13 @@ WriteFunctions {
     <Warning 'Found unused rules ' e.Name ' ...'>;
 
   (e.Written-B (e.Next) e.Written-E)
-  ((s.LineNumber e.Next) e.Expected) e.Rules =
+  ((t.SrcPos e.Next) e.Expected) e.Rules =
     <WriteFunctions
       (e.Written-B (e.Next) e.Written-E)
       ( e.Expected ) e.Rules
     >;
 
-  (e.Written) ((s.LineNumber e.NextRule) e.Expected)
+  (e.Written) ((t.SrcPos e.NextRule) e.Expected)
   e.Rules-B ((e.NextRule) e.Alternatives) e.Rules-E =
     <WriteFunction
       (e.NextRule)
@@ -346,8 +346,8 @@ WriteFunctions {
       e.Rules-B e.Rules-E
     >;
 
-  ((s.LineNumber e.NextRule) e.Expected) e.Rules =
-    <ErrorAt s.LineNumber 'Rule ' e.NextRule ' not found'>;
+  ((t.SrcPos e.NextRule) e.Expected) e.Rules =
+    <ErrorAt t.SrcPos 'Rule ' e.NextRule ' not found'>;
 }
 
 WriteFunction {

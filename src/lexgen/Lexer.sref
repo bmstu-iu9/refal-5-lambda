@@ -4,9 +4,6 @@ $EXTERN EscapeString;
 //FROM LibraryEx
 $EXTERN Fetch, Seq, Map, MapReduce, Inc;
 
-//FROM Error
-$EXTERN ErrorAt;
-
 //FROM Library
 $EXTERN IntFromStr, Chr;
 
@@ -32,6 +29,8 @@ $ENTRY TextFromToken {
   <Tokens s.FirstLineNumber (e.Line)*>
     == t.Token*
 
+  t.Token ::= (s.TokType t.SrcPos e.Info)
+
   s.TokType e.Info ::=
       #TEquals
     | #TDot
@@ -42,8 +41,6 @@ $ENTRY TextFromToken {
     | #TNamedFlush e.TokTag
     | #TLiteral e.Chars
     | #TName e.Name
-
-  t.Token ::= (s.TokType t.SrcPos e.Info)
 */
 $ENTRY Tokens {
   s.FirstLineNumber e.Lines =
@@ -57,9 +54,6 @@ $ENTRY Tokens {
         (MapReduce
           {
             s.LineNumber (#TNewLine) = <Inc s.LineNumber>;
-
-            s.LineNumber (#TError e.Text) =
-              <ErrorAt s.LineNumber e.Text>;
 
             s.LineNumber (s.TokName e.Content) =
               s.LineNumber (s.TokName s.LineNumber e.Content);

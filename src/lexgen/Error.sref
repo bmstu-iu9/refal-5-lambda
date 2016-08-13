@@ -7,8 +7,8 @@ $ENTRY Error {
 }
 
 $ENTRY ErrorAt {
-  s.Number e.Text =
-    <Error 'ERROR at ' <StrFromInt s.Number> ': ' e.Text>;
+  (s.Number e.File) e.Text =
+    <Error e.File ':' <StrFromInt s.Number> ':ERROR: ' e.Text>;
 }
 
 $ENTRY Warning {
@@ -16,6 +16,6 @@ $ENTRY Warning {
 }
 
 $ENTRY WarningAt {
-  s.Number e.Message =
-    <WriteLine 'WARNING at ' <StrFromInt s.Number> ' ' e.Message>;
+  (s.Number e.File) e.Message =
+    <WriteLine e.File ':' <StrFromInt s.Number> ':WARNING: ' e.Message>;
 }

@@ -72,16 +72,16 @@ $ENTRY Parse {
 
 ParseElements {
   (e.SetNames-B (e.Name) e.SetNames-E) (e.RuleNames)
-  (#TSetName s.LineNumber e.Name) e.Tail =
-    <ErrorAt s.LineNumber 'Set name ' e.Name ' redeclared'>;
+  (#TSetName t.SrcPos e.Name) e.Tail =
+    <ErrorAt t.SrcPos 'Set name ' e.Name ' redeclared'>;
 
   (e.SetNames) (e.RuleNames)
   (#TSetName t.SrcPos e.Name) e.Tail =
     <ParseSetDescr (e.SetNames (e.Name)) (e.RuleNames) (e.Name) e.Tail>;
 
   (e.SetNames) (e.RuleNames-B (e.Name) e.RuleNames-E)
-  (#TName s.LineNumber e.Name) e.Tail =
-    <ErrorAt s.LineNumber 'Name ' e.Name ' redeclared'>;
+  (#TName t.SrcPos e.Name) e.Tail =
+    <ErrorAt t.SrcPos 'Name ' e.Name ' redeclared'>;
 
   (e.SetNames) (e.RuleNames)
   (#TName t.SrcPos e.Name) e.Tail =
@@ -101,8 +101,8 @@ ParseSetDescr {
     <Fetch
       <ExtractSets () e.Tail>
       {
-        () (#TDot s.LineNumber) e.Tail^ =
-          <ErrorAt s.LineNumber 'Set ' e.Name ' not have content'>;
+        () (#TDot t.SrcPos) e.Tail^ =
+          <ErrorAt t.SrcPos 'Set ' e.Name ' not have content'>;
 
         (e.Body) (#TDot t.SrcPos) e.Tail^ =
           (#Set (e.Name) e.Body)
@@ -219,9 +219,9 @@ ExtractAlternatives-NextState {
 }
 
 UnexpectedToken {
-  (s.Type s.LineNum e.Unexpected) e.Message =
+  (s.Type t.SrcPos e.Unexpected) e.Message =
     <ErrorAt
-      s.LineNum
+      t.SrcPos
       'Unexpected ' <TextFromToken s.Type e.Unexpected>
       ' expected ' e.Message
     >;
