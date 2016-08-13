@@ -2,13 +2,10 @@
 $EXTERN WriteLine, Exit, StrFromInt;
 
 
-$ENTRY Error {
-  e.Text = <WriteLine e.Text> <Exit 1>;
-}
-
 $ENTRY ErrorAt {
   (s.Number e.File) e.Text =
-    <Error e.File ':' <StrFromInt s.Number> ':ERROR: ' e.Text>;
+    <WriteLine e.File ':' <StrFromInt s.Number> ':ERROR: ' e.Text>
+    <Exit 1>;
 }
 
 $ENTRY Warning {

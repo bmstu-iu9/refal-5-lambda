@@ -18,7 +18,7 @@ $EXTERN Parse;
 $EXTERN Tokens;
 
 //FROM Error
-$EXTERN Error, ErrorAt;
+$EXTERN ErrorAt;
 
 
 $ENTRY Go {
@@ -65,7 +65,7 @@ Transform {
             (e.GenMode)
             e.DescriptionAndTail;
 
-          e.Other = <Error 'Lexer description not found'>;
+          e.Other = <ErrorAt (1 e.Source) 'Lexer description not found'>;
         }
         {
           (s.Length e.LinesBefore) (e.GenMode)
@@ -74,7 +74,7 @@ Transform {
 
           (s.Length e.LinesBefore) (e.GenMode)
            e.Other =
-             <Error 'End of description not found'>;
+             <ErrorAt (s.Length e.Source) 'End of description not found'>;
         }
         {
           (s.Length e.LinesBefore) ('TOKENS') e.Description =
@@ -104,7 +104,9 @@ Transform {
             >;
 
           (s.Length e.LinesBefore) (e.OtherGenMode) e.Description =
-            <Error 'Unknown generation mode ' e.OtherGenMode>;
+            <ErrorAt
+              (s.Length e.Source) 'Unknown generation mode ' e.OtherGenMode
+            >;
         }
       >
     >;
