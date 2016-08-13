@@ -40,54 +40,6 @@ setlocal
 endlocal
 goto :EOF
 
-:RUN_TEST_AUX.LEXGEN
-setlocal
-  echo Passing %1 (lexgen, flags %SRFLAGS%)...
-  set SREF=%1
-
-  ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
-  if errorlevel 100 (
-    echo LEXGEN ON %1 FAILS, SEE __error.txt
-    exit /b 1
-  )
-  erase __error.txt
-  if not exist _lexgen-out.sref (
-    echo LEXGEN FAILED
-    exit /b 1
-  )
-
-  ..\bin\srefc-core %SRFLAGS% _lexgen-out.sref 2> __error.txt
-  if errorlevel 100 (
-    echo COMPILER ON %1 FAILS, SEE __error.txt
-    exit /b 1
-  )
-  erase __error.txt
-  if not exist _lexgen-out.cpp (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-
-  %CPPLINE% %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-  if exist a.exe move a.exe _lexgen-out.exe
-
-  _lexgen-out.exe
-  if errorlevel 1 (
-    echo TEST FAILED, SEE __dump.txt
-    exit /b 1
-  )
-
-  erase _lexgen-out.*
-  if exist *.obj erase *.obj
-  if exist *.tds erase *.tds
-  if exist __dump.txt erase __dump.txt
-  echo.
-endlocal
-goto :EOF
-
 :RUN_TEST_AUX
 setlocal
   echo Passing %1 (flags %SRFLAGS%)...
@@ -185,6 +137,54 @@ setlocal
     exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax
+  echo.
+endlocal
+goto :EOF
+
+:RUN_TEST_AUX.LEXGEN
+setlocal
+  echo Passing %1 (lexgen, flags %SRFLAGS%)...
+  set SREF=%1
+
+  ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
+  if errorlevel 100 (
+    echo LEXGEN ON %1 FAILS, SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt
+  if not exist _lexgen-out.sref (
+    echo LEXGEN FAILED
+    exit /b 1
+  )
+
+  ..\bin\srefc-core %SRFLAGS% _lexgen-out.sref 2> __error.txt
+  if errorlevel 100 (
+    echo COMPILER ON %1 FAILS, SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt
+  if not exist _lexgen-out.cpp (
+    echo COMPILATION FAILED
+    exit /b 1
+  )
+
+  %CPPLINE% %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
+  if errorlevel 1 (
+    echo COMPILATION FAILED
+    exit /b 1
+  )
+  if exist a.exe move a.exe _lexgen-out.exe
+
+  _lexgen-out.exe
+  if errorlevel 1 (
+    echo TEST FAILED, SEE __dump.txt
+    exit /b 1
+  )
+
+  erase _lexgen-out.*
+  if exist *.obj erase *.obj
+  if exist *.tds erase *.tds
+  if exist __dump.txt erase __dump.txt
   echo.
 endlocal
 goto :EOF
