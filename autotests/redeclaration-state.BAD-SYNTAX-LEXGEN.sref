@@ -1,0 +1,7 @@
+/*GEN:TOKENS
+  Rule =
+    'a'     !-        .
+
+  Rule =
+    'b'     !-    Rule.
+GEN:END*/

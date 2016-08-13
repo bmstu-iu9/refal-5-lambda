@@ -188,3 +188,24 @@ setlocal
   echo.
 endlocal
 goto :EOF
+
+:RUN_TEST_AUX.BAD-SYNTAX-LEXGEN
+setlocal
+  echo Passing %1 (lexgen, syntax error recovering, flags %SRFLAGS%)...
+  set SREF=%1
+
+  ..\bin\lexgen --from=%SREF% --to=_lexgen-out.sref 2> __error.txt
+  if errorlevel 100 (
+    echo LEXGEN ON %1 FAILS, SEE __error.txt
+    exit /b 1
+  )
+  erase __error.txt
+  if exist _lexgen-out.sref (
+    echo LEXGEN SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    exit /b 1
+  )
+
+  echo Ok! LexGen didn't crash on invalid syntax
+  echo.
+endlocal
+goto :EOF

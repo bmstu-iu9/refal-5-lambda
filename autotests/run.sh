@@ -140,6 +140,25 @@ run_test_aux.LEXGEN() {
   echo
 }
 
+run_test_aux.BAD-SYNTAX-LEXGEN() {
+  echo Passing $1 \(lexgen, syntax error recovering, flags $SRFLAGS\)...
+  SREF=$1
+
+  ../bin/lexgen --from=$SREF --to=_lexgen-out.sref 2>__error.txt
+  if [ $? -ge 100 ]; then
+    echo LEXGEN ON $SREF FAILS, SEE __error.txt
+    exit 1
+  fi
+  rm __error.txt
+  if [ -e _lexgen-out.sref ]; then
+    echo LEXGEN SUCCESSED, BUT EXPECTED SYNTAX ERROR
+    exit 1
+  fi
+
+  echo "Ok! LexGen didn't crash on invalid syntax"
+  echo
+}
+
 run_test() {
   TEST_CPP_FLAGS="
     -I../srlib \
