@@ -1,0 +1,42 @@
+%%
+int x = 0;
+%%
+
+// Все возможные токены для компилятора версии 1.3.2
+
+/*
+  Регулярно обновлять при изменении лексики языка!!!
+*/
+
+$ENUM E;
+$EENUM EE;
+
+$ENTRY Go {
+  e.Empty =
+    <Check <Emit>>
+    <S (<ES [E EE #L #A #B #E #L 1000]>)>;
+
+  t.X^ s.Y = ;
+}
+
+$EXTERN Go;
+$FORWARD Emit;
+$SWAP S;
+$ESWAP ES;
+$LABEL L, A, B, E, L;
+
+%%
+int y = 0;
+%%
+
+Check {
+  '\d32\D032\d10\d13\d9\d09\d009\d7\d8\d12\d11\d1\d2!' = ;
+}
+
+Emit {
+  = '  \n\r\t\t\t\a\b\f\v\x01\X02!';
+}
+
+%%
+int z = 0;
+%%
