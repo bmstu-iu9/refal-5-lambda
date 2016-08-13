@@ -55,29 +55,58 @@ $ENTRY Go {
 }
 
 Transform {
-  e.LinesBefore ('/*GEN:TOKENS') e.Description =
+  e.Lines =
     <Fetch
-      ( <Length-T e.LinesBefore ('/*GEN:TOKENS')> )
-      e.Description
-      {
-        ( s.Length e.LinesBefore^ )
-        e.Description^ ('GEN:END*/') e.Deleted =
-          e.LinesBefore e.Description ('GEN:END*/')
-          <GenerateFromDFA
-            <Parse <Tokens s.Length e.Description>>
-          >;
+      e.Lines
+      <Seq
+        {
+          e.LinesBefore ('/*GEN:' e.GenMode) e.DescriptionAndTail =
+            (<Length-T e.LinesBefore ('/*GEN:' e.GenMode)>)
+            (e.GenMode)
+            e.DescriptionAndTail;
 
-       e.Other = <Error 'End of description not found'>;
-      }
+          e.Other = <Error 'Lexer description not found'>;
+        }
+        {
+          (s.Length e.LinesBefore) (e.GenMode)
+          e.Description ('GEN:END*/') e.Deleted =
+            (s.Length e.LinesBefore) (e.GenMode) e.Description;
+
+          (s.Length e.LinesBefore) (e.GenMode)
+           e.Other =
+             <Error 'End of description not found'>;
+        }
+        {
+          (s.Length e.LinesBefore) ('TOKENS') e.Description =
+            <Fetch
+              s.Length e.Description
+              <Seq
+                Tokens
+                Parse
+                GenerateFromDFA
+                {
+                  e.Generated =
+                    e.LinesBefore
+                    e.Description
+                    ('GEN:END*/')
+                    e.Generated;
+                }
+              >
+            >;
+
+          (s.Length e.LinesBefore) (e.OtherGenMode) e.Description =
+            <Error 'Unknown generation mode ' e.OtherGenMode>;
+        }
+      >
     >;
-
-  e.Other = <Error 'Lexer description not found'>;
-}
-
-NextNum {
-  s.Next (e.Line) = <Inc s.Next> (e.Line);
 }
 
 Length-T {
-  e.Line = <MapReduce NextNum 0 e.Line>;
+  e.Lines =
+    <MapReduce
+      {
+        s.Next (e.Line) = <Inc s.Next> (e.Line);
+      }
+      0 e.Lines
+    >;
 }
