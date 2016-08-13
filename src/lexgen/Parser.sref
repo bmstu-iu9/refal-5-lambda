@@ -66,6 +66,9 @@ $EXTERN TextFromToken;
      | #Finitive
 */
 $ENTRY Parse {
+  (#TEOF t.SrcPos) =
+    <ErrorAt t.SrcPos 'Illegal empty description'>;
+
   e.Tokens =
     <ParseElements (/* Set names */ ('Any')) (/* Rule names */) e.Tokens>;
 }
