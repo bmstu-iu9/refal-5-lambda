@@ -1,3 +1,6 @@
+//FROM Escape
+$EXTERN EscapeString;
+
 //FROM LibraryEx
 $EXTERN Fetch, Seq, Map, MapReduce, Inc;
 
@@ -12,9 +15,22 @@ $EXTERN IntFromStr, Chr;
 // Лексический разбор
 //==============================================================================
 
+$ENTRY TextFromToken {
+  #TSetName e.Name = 'set name ' e.Name;
+  #TLiteral e.Text = 'literal ''' <EscapeString e.Text> '';
+  #TName e.Name = 'name ' e.Name;
+  #TNamedFlush e.Name = 'named flush ' e.Name;
+  #TEquals = '"="';
+  #TDot = '"."';
+  #TAlternative = '"|"';
+  #TFlush = 'flush';
+  #TErrorFlush e.Text = 'error flush "' e.Text '"';
+  #TEOF = 'end of file';
+}
+
 /**
   <Tokens s.FirstLineNumber (e.Line)*>
-    == (s.TokType t.SrcPos e.Info)
+    == t.Token*
 
   s.TokType e.Info ::=
       #TEquals
@@ -26,6 +42,8 @@ $EXTERN IntFromStr, Chr;
     | #TNamedFlush e.TokTag
     | #TLiteral e.Chars
     | #TName e.Name
+
+  t.Token ::= (s.TokType t.SrcPos e.Info)
 */
 $ENTRY Tokens {
   s.FirstLineNumber e.Lines =

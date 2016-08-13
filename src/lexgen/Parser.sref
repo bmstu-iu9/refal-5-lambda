@@ -1,0 +1,292 @@
+//FROM Error
+$EXTERN ErrorAt, Error;
+
+//FROM Lexer
+$EXTERN TextFromToken;
+
+/*==============================================================================
+   Синтаксис:
+
+   Остальные строчки в свободном формате.
+   Description = Element* .
+   Element = SetDescr | Sentence .
+
+   SetDescr = SETNAME '=' Set* '.' .
+   Set = LITERAL | SETNAME .
+
+   Sentence = NAME '=' Alternative { '|' Alternative } '.' .
+   Alternative = [Set] [Flush] [NAME] .
+   Flush = '!-' | NAMEDFLUSH | ERRORFLUSH .
+
+   ERRORFLUSH = '!"' e.Name '"' .
+
+   Зарезервированные имена Root, :Any:.
+   Зарезервированные лексемы #TokenError, #TokenUnexpected, #TokenUnexpectedEOF,
+     #TokenAccum.
+
+==============================================================================*/
+
+//==============================================================================
+// Синтаксический разбор
+//==============================================================================
+
+/**
+  <Parse t.Token*>
+    == e.LexerDefinition
+
+   e.LexerDefinition ::= t.Element*
+
+   t.Element ::=
+       (#Set (e.Name) t.SetContent*)
+     | (#Sentence (e.Name) t.Alternative*)
+
+   t.SetContent ::=
+       (#Set t.SrcPos e.SetName)
+     | (#Chars e.Symbols)
+
+   t.Alternative ::=
+       (t.Head t.Flush t.NextState)
+
+   t.Head ::=
+       (#Chars e.Symbols)
+     | (#Set t.SrcPos e.SetName)
+     | #Empty
+
+   t.Flush ::=
+       #Unnamed
+     | (#Flush e.FlushName)
+     | (#FlushError e.Message)
+     | #None
+
+   t.NextState ::=
+       (t.SrcPos e.NextStateName)
+     | #Finitive
+*/
+$ENTRY Parse {
+  e.Tokens = <ParseElements (/* Sets */ ('Any')) (/* Rules */) e.Tokens>;
+}
+
+ParseElements {
+  (e.Sets-B (e.Name) e.Sets-E) (e.Rules)
+  (#TSetName s.LineNumber e.Name) e.Tail =
+    <ErrorAt s.LineNumber 'Set name ' e.Name ' redeclared'>;
+
+  (e.Sets) (e.Rules)
+  (#TSetName t.SrcPos e.Name) e.Tail =
+    <ParseSetDescr (e.Sets (e.Name)) (e.Rules) (e.Name) e.Tail>;
+
+  (e.Sets) (e.Rules-B (e.Name) e.Rules-E)
+  (#TName s.LineNumber e.Name) e.Tail =
+    <ErrorAt s.LineNumber 'Name ' e.Name ' redeclared'>;
+
+  (e.Sets) (e.Rules)
+  (#TName t.SrcPos e.Name) e.Tail =
+    <ParseSentence (e.Sets) (e.Rules (e.Name)) (e.Name) e.Tail>;
+
+  (e.Sets) (e.Rules)
+  (#TEOF t.SrcPos) e.Tail =
+    /* Ничего */;
+
+  (e.Sets) (e.Rules)
+  t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'name or set name'>;
+}
+
+ParseSetDescr {
+  (e.Sets) (e.Rules) (e.Name) (#TEquals t.SrcPos) e.Tail =
+    <ParseSetDescr-Sets
+      (e.Sets) (e.Rules) (e.Name) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected '"="'>;
+}
+
+ParseSetDescr-Sets {
+  (e.Sets) (e.Rules) (e.Name) e.Tail =
+    <ParseSetDescr-Sets-Aux
+      (e.Sets) (e.Rules) (e.Name)
+      <ExtractSets () e.Tail>
+    >;
+}
+
+ExtractSets {
+  (e.Found) (#TLiteral t.SrcPos e.Content) e.Tail =
+    <ExtractSets
+      (e.Found (#Chars e.Content)) e.Tail
+    >;
+
+  (e.Found) (#TSetName t.SrcPos e.Name) e.Tail =
+    <ExtractSets
+      (e.Found (#Set t.SrcPos e.Name)) e.Tail
+    >;
+
+  (e.Found) e.OtherTail = (e.Found) e.OtherTail;
+}
+
+ParseSetDescr-Sets-Aux {
+  (e.Sets) (e.Rules) (e.Name) ()
+  (#TDot s.LineNumber) e.Tail =
+    <ErrorAt s.LineNumber 'Set ' e.Name ' not have content'>;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body)
+  (#TDot t.SrcPos) e.Tail =
+    (#Set (e.Name) e.Body)
+    <ParseElements
+      (e.Sets) (e.Rules) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body)
+  t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'dot at end of set'>;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body) =
+    <Error 'Unexpected eof'>;
+}
+
+ParseSentence {
+  (e.Sets) (e.Rules) (e.Name) (#TEquals t.SrcPos) e.Tail =
+    <ParseSentence-Body
+      (e.Sets) (e.Rules) (e.Name)
+      <ExtractAlternatives () e.Tail>
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected '"="'>;
+}
+
+ParseSentence-Body {
+  (e.Sets) (e.Rules) (e.Name) (e.Body) (#TDot t.SrcPos) e.Tail =
+    (#Sentence (e.Name) e.Body)
+    <ParseElements
+      (e.Sets) (e.Rules) e.Tail
+    >;
+
+  (e.Sets) (e.Rules) (e.Name) (e.Body) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'end of sentence'>;
+}
+
+ExtractAlternatives {
+  (e.Found) (#TLiteral t.SrcPos e.Content) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) (#Chars e.Content) e.Tail
+    >;
+
+  (e.Found) (#TSetName t.SrcPos e.Content) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) (#Set t.SrcPos e.Content) e.Tail
+    >;
+
+  (e.Found) (#TFlush t.SrcPos) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TFlush t.SrcPos) e.Tail
+    >;
+
+  (e.Found) (#TNamedFlush t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TNamedFlush t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) (#TErrorFlush t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TErrorFlush t.SrcPos e.Message) e.Tail
+    >;
+
+  (e.Found) (#TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TName t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) (#TAlternative t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TAlternative t.SrcPos e.Message) e.Tail
+    >;
+
+  (e.Found) (#TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-Flush
+      (e.Found) #Empty (#TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected ' definition of state'>;
+
+  (e.Found) = (e.Found);
+}
+
+ExtractAlternatives-Flush {
+  (e.Found) t.Head (#TFlush t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head #Unnamed e.Tail
+    >;
+
+  (e.Found) t.Head (#TNamedFlush t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head (#Flush e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head (#TErrorFlush t.SrcPos e.Message) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head (#FlushError e.Message) e.Tail
+    >;
+
+  (e.Found) t.Head (#TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head #None (#TName t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head (#TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head #None (#TAlternative t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head (#TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-NextState
+      (e.Found) t.Head #None (#TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'flush or next state name'>;
+
+  (e.Found) t.Head = (e.Found);
+}
+
+ExtractAlternatives-NextState {
+  (e.Found) t.Head t.Flush (#TName t.SrcPos e.Name) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush (t.SrcPos e.Name) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush (#TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush #Finitive (#TAlternative t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush (#TDot t.SrcPos) e.Tail =
+    <ExtractAlternatives-Finish
+      (e.Found) t.Head t.Flush #Finitive (#TDot t.SrcPos) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush t.Unexpected e.Tail =
+    <UnexpectedToken t.Unexpected 'next state name or next alternative'>;
+
+  (e.Found) t.Head t.Flush = (e.Found);
+}
+
+ExtractAlternatives-Finish {
+  (e.Found) t.Head t.Flush t.NextState (#TAlternative t.SrcPos) e.Tail =
+    <ExtractAlternatives
+      (e.Found (t.Head t.Flush t.NextState)) e.Tail
+    >;
+
+  (e.Found) t.Head t.Flush t.NextState e.Tail =
+    (e.Found (t.Head t.Flush t.NextState)) e.Tail;
+}
+
+UnexpectedToken {
+  (s.Type s.LineNum e.Unexpected) e.Message =
+    <ErrorAt
+      s.LineNum
+      'Unexpected ' <TextFromToken s.Type e.Unexpected>
+      ' expected ' e.Message
+    >;
+}
