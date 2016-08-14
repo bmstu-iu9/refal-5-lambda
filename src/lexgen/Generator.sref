@@ -346,7 +346,7 @@ WriteFunctions {
       e.Rules-B e.Rules-E
     >;
 
-  ((t.SrcPos e.NextRule) e.Expected) e.Rules =
+  (e.Written) ((t.SrcPos e.NextRule) e.Expected) e.Rules =
     <ErrorAt t.SrcPos 'Rule ' e.NextRule ' not found'>;
 }
 
