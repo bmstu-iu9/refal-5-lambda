@@ -307,7 +307,7 @@ FastGen {
   s.Num () (e.Any) e.Tail =
     <FastGen
       <Inc s.Num>
-      ((#E '$' (()) ((e.Any)) ))
+      ((#E '$' <SplitReps s.Num /* пусто */> ((e.Any)) ))
       e.Tail
     >;
 

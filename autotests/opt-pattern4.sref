@@ -1,0 +1,16 @@
+WriteFunctions {
+  () () = 1;
+
+  () () () = 2;
+
+  () (#X) = 3;
+}
+
+Eq { s.X s.X = ; }
+
+$ENTRY Go {
+  =
+    <Eq 1 <WriteFunctions () ()>>
+    <Eq 2 <WriteFunctions () () ()>>
+    <Eq 3 <WriteFunctions () (#X)>>;
+}
