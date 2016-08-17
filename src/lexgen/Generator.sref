@@ -19,7 +19,7 @@ $EXTERN EscapeChar;
 // Генератор автомата
 //==============================================================================
 
-$ENTRY GenerateFromDFA {
+$ENTRY PrepareDFA {
   e.Elements =
     <Fetch
       e.Elements
@@ -44,23 +44,20 @@ $ENTRY GenerateFromDFA {
         )
         {
           ((e.Sets) (e.Rules)) =
-            (<ResolvingSets e.Sets>)
+            (<Map SimplifySet <ResolvingSets e.Sets>>)
             (e.Rules);
         }
-        {
-          (e.Sets) (e.Rules) =
-            <SubstituteSetsToRules
-              (<Map SimplifySet e.Sets>)
-              (e.Rules)
-            >;
-        }
+        SubstituteSetsToRules
+        /* e.Rules */
+        (Map NormalizeRule)
+        PrepareFunctions
       >
     >;
 }
 
-NormingSet {
+UniqueSet {
   e.Set-B s.Repeated e.Set-M s.Repeated e.Set-E =
-    e.Set-B <NormingSet s.Repeated e.Set-M e.Set-E>;
+    e.Set-B <UniqueSet s.Repeated e.Set-M e.Set-E>;
 
   e.Set = e.Set;
 }
@@ -79,6 +76,11 @@ ResolvingSets {
         )
         SetCheckRecursion
         SetSubstitute
+        {
+          #Changed e.Sets^ = <ResolvingSets e.Sets>;
+
+          #NotChanged e.Sets^ = e.Sets;
+        }
       >
     >;
 }
@@ -86,7 +88,7 @@ ResolvingSets {
 NormalizeContent {
   (e.Chars) (#Chars e.Symbols) e.Tail =
     <NormalizeContent
-      (<NormingSet e.Chars e.Symbols>) e.Tail
+      (<UniqueSet e.Chars e.Symbols>) e.Tail
     >;
 
   (e.Chars) (#Set t.SrcPos e.Name) e.Tail =
@@ -112,36 +114,32 @@ SetSubstitute {
   e.Sets-B
   ( (e.Name) e.Content-B (#Set t.SrcPos 'Any') e.Content-E )
   e.Sets-E =
-    <ResolvingSets
-      e.Sets-B ( (e.Name) #Any ) e.Sets-E
-    >;
+    #Changed e.Sets-B ( (e.Name) #Any ) e.Sets-E;
 
   e.Sets-B
   ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
   e.Sets-M
   ( (e.IncName) e.IncContent )
   e.Sets-E =
-    <ResolvingSets
-      e.Sets-B ( (e.Name) e.Content-B e.IncContent e.Content-E )
-      e.Sets-M ( (e.IncName) e.IncContent ) e.Sets-E
-    >;
+    #Changed
+    e.Sets-B ( (e.Name) e.Content-B e.IncContent e.Content-E )
+    e.Sets-M ( (e.IncName) e.IncContent ) e.Sets-E;
 
   e.Sets-B
   ( (e.IncName) e.IncContent )
   e.Sets-M
   ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
   e.Sets-E =
-    <ResolvingSets
-      e.Sets-B ( (e.IncName) e.IncContent ) e.Sets-M
-      ( (e.Name) e.Content-B e.IncContent e.Content-E ) e.Sets-E
-    >;
+    #Changed
+    e.Sets-B ( (e.IncName) e.IncContent ) e.Sets-M
+    ( (e.Name) e.Content-B e.IncContent e.Content-E ) e.Sets-E;
 
   e.Sets-B
   ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
   e.Sets-E =
     <ErrorAt t.SrcPos 'set ' e.IncName ' not defined'>;
 
-  e.Sets = e.Sets;
+  e.Sets = #NotChanged e.Sets;
 }
 
 SimplifySet {
@@ -243,14 +241,7 @@ SubstituteSetsToRules {
   ) =
     <ErrorAt t.SrcPos 'Undeclared set ' e.Name>;
 
-  () (e.Rules) = <GenerateSentences e.Rules>;
-}
-
-GenerateSentences {
-  e.Rules =
-    <WriteCode
-      <Map NormalizeRule e.Rules>
-    >;
+  () (e.Rules) = e.Rules;
 }
 
 SetDiff {
@@ -264,7 +255,7 @@ SetDiff {
 
 NormalizeAlternative {
   (e.Diff) ((#Chars e.Alternative) t.Flush t.Next) =
-    (<NormingSet e.Diff e.Alternative>)
+    (<UniqueSet e.Diff e.Alternative>)
     ((<SetDiff (e.Alternative) (e.Diff)>) t.Flush t.Next);
 
   (e.Diff) (#Any t.Flush t.Next) =
@@ -306,9 +297,9 @@ NormalizeRule {
     >;
 }
 
-WriteCode {
+PrepareFunctions {
   e.Rules =
-    <WriteFunctions
+    <DoPrepareFunctions
       (/* written */) (/* expected */ ((0 'runtime') 'Root'))
       e.Rules
     >;
@@ -321,7 +312,7 @@ ExtractExpected {
     ( t.SrcPos e.NextName );
 }
 
-WriteFunctions {
+DoPrepareFunctions {
   (e.Written) () = ;
 
   (e.Written) () ((e.Name) e.Content) e.Rules =
@@ -329,18 +320,15 @@ WriteFunctions {
 
   (e.Written-B (e.Next) e.Written-E)
   ((t.SrcPos e.Next) e.Expected) e.Rules =
-    <WriteFunctions
+    <DoPrepareFunctions
       (e.Written-B (e.Next) e.Written-E)
       ( e.Expected ) e.Rules
     >;
 
   (e.Written) ((t.SrcPos e.NextRule) e.Expected)
   e.Rules-B ((e.NextRule) e.Alternatives) e.Rules-E =
-    <WriteFunction
-      (e.NextRule)
-      e.Alternatives
-    >
-    <WriteFunctions
+    ((e.NextRule) e.Alternatives)
+    <DoPrepareFunctions
       (e.Written (e.NextRule))
       ( e.Expected <Map ExtractExpected e.Alternatives> )
       e.Rules-B e.Rules-E
@@ -350,8 +338,13 @@ WriteFunctions {
     <ErrorAt t.SrcPos 'Rule ' e.NextRule ' not found'>;
 }
 
+$ENTRY GenerateFromDFA {
+  e.Rules =
+    <Map WriteFunction e.Rules>;
+}
+
 WriteFunction {
-  (e.NextRule) e.Alternatives =
+  ((e.NextRule) e.Alternatives) =
     ()
     (e.NextRule ' {')
     <Map WriteAlternative e.Alternatives>

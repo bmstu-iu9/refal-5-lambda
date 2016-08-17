@@ -9,7 +9,7 @@ $EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
 $EXTERN ParseCommandLine;
 
 //FROM Generator
-$EXTERN GenerateFromDFA;
+$EXTERN PrepareDFA, GenerateFromDFA;
 
 //FROM Parser
 $EXTERN Parse;
@@ -92,6 +92,7 @@ Transform {
                   }
                 )
                 Parse
+                PrepareDFA
                 GenerateFromDFA
                 {
                   e.Generated =
