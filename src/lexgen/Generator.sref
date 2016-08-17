@@ -33,7 +33,7 @@ WriteFunction {
 
 WriteAlternative {
   (#Empty #None #Finitive) =
-    ('  (e.Accum) = (#TokenAccum e.Accum) ;');
+    ('  (e.Accum) = (#TokenAccum e.Accum);');
 
   (#Empty #None (t.SrcPos e.NextStateName)) =
     ('  (e.Accum) e.Text = <' e.NextStateName ' (e.Accum) e.Text>;');
@@ -45,11 +45,13 @@ WriteAlternative {
     ('  (e.Accum) e.Text = <' e.NextStateName ' () e.Text>;');
 
   (#Empty (#Flush e.FlushName) #Finitive) =
-    ('  (e.Accum) =  (' e.FlushName ' e.Accum);');
+    ('  (e.Accum) = (' e.FlushName ' e.Accum);');
 
   (#Empty (#Flush e.FlushName) (t.SrcPos e.NextStateName)) =
-    ('  (e.Accum) e.Text =')
-    ('    (' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;');
+    (
+      '  (e.Accum) e.Text = '
+      '(' e.FlushName ' e.Accum) <' e.NextStateName ' () e.Text>;'
+    );
 
   (#Empty (#FlushError e.Message) #Finitive) =
     ('  (e.Accum) = (#TokenError ' '' e.Message '' ');');
@@ -94,7 +96,7 @@ WriteAlternative {
   (s.Char (#FlushError e.Message) (t.SrcPos e.NextStateName)) =
     (
       '  (e.Accum) ' <EC s.Char> ' e.Text = '
-      '(#TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text >;'
+      '(#TokenError ' '' e.Message '' ') <' e.NextStateName ' () e.Text>;'
     );
 }
 
