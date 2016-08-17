@@ -8,8 +8,11 @@ $EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
+//FROM Compiler
+$EXTERN PrepareDFA;
+
 //FROM Generator
-$EXTERN PrepareDFA, GenerateFromDFA;
+$EXTERN GenerateFromDFA;
 
 //FROM Parser
 $EXTERN Parse;
