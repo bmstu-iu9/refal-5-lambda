@@ -1,0 +1,13 @@
+$ENTRY Go {
+  = <Root () 'abcdefghi'>;
+}
+
+/*GEN:TOKENS
+  :FirstSet: = 'abc' :SecondSet: 'def'.
+  :SecondSet: = :Any:.
+
+  Root =
+    :FirstSet:   !-      Root |
+                 !-           .
+  
+GEN:END*/

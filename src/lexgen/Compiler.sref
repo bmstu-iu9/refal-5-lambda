@@ -93,6 +93,8 @@ NormalizeContent {
   (e.Chars) (#Set t.SrcPos e.Name) e.Tail =
     (#Set t.SrcPos e.Name) <NormalizeContent (e.Chars) e.Tail>;
 
+  (e.Chars) #Any e.Tail = #Any;
+
   (e.Chars) = (#Chars e.Chars);
 }
 
