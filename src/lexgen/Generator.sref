@@ -37,11 +37,6 @@ WriteAlternative {
 }
 
 WriteAlternative-Aux {
-  (s.Head #None #Finitive) =
-    <Head s.Head>
-    <NextState-L #Finitive>
-    ' (#TokenAccum e.Accum' <Head s.Head> ')';
-
   (s.Head #None t.NextState) =
     <Head s.Head>
     <NextState-L t.NextState>

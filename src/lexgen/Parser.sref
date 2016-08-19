@@ -18,7 +18,11 @@ $EXTERN TextFromToken;
    Set = LITERAL | SETNAME .
 
    Sentence = NAME '=' Alternative { '|' Alternative } '.' .
-   Alternative = [Set] [Flush] [NAME] .
+   Alternative =
+       [Set] Flush NAME
+     | [Set] Flush
+     | [Set]       NAME
+     .
    Flush = '!-' | NAMEDFLUSH | ERRORFLUSH .
 
    ERRORFLUSH = '!"' e.Name '"' .
@@ -164,16 +168,30 @@ ExtractAlternatives {
       e.Tail
       <Seq
         {
-          t.NextToken e.Tail^ =
+          (s.TokType t.SrcPos e.Info) e.Tail^ =
+            t.SrcPos (s.TokType t.SrcPos e.Info) e.Tail;
+        }
+        {
+          t.BeginSrcPos t.NextToken e.Tail^ =
+            t.BeginSrcPos
             <ExtractAlternatives-Head t.NextToken> e.Tail;
         }
         {
-          t.Head t.NextToken e.Tail^ =
-            t.Head <ExtractAlternatives-Flush t.NextToken> e.Tail;
+          t.BeginSrcPos t.Head t.NextToken e.Tail^ =
+            t.BeginSrcPos t.Head
+            <ExtractAlternatives-Flush t.NextToken> e.Tail;
         }
         {
-          t.Head t.Flush t.NextToken e.Tail^ =
-            t.Head t.Flush <ExtractAlternatives-NextState t.NextToken> e.Tail;
+          t.BeginSrcPos t.Head t.Flush t.NextToken e.Tail^ =
+            t.BeginSrcPos t.Head t.Flush
+            <ExtractAlternatives-NextState t.NextToken> e.Tail;
+        }
+        {
+          t.BeginSrcPos t.Head #None #Finitive e.Tail^ =
+            <ErrorAt t.BeginSrcPos 'EOF alternative must have flush'>;
+
+          t.BeginSrcPos t.Head t.Flush t.NextState e.Tail^ =
+            t.Head t.Flush t.NextState e.Tail;
         }
         {
           t.Head t.Flush t.NextState (#TAlternative t.SrcPos) e.Tail^ =
