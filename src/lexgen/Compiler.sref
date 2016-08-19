@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Map, Reduce, DelAccumulator;
+$EXTERN Fetch, Seq, MapReduce, Map, Reduce;
 
 //FROM Error
 $EXTERN ErrorAt, WarningAt;
@@ -298,7 +298,16 @@ NormalizeRule {
           NormalizeAlternative
           ()
         )
-        DelAccumulator
+        {
+          (e.CatchedChars) e.Alternatives^ =
+            e.Alternatives
+            (#Any
+              (#Flush '#TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root')
+            )
+            (#Empty
+              (#Flush '#TokenLexerInternalError-UnexpectedEOF') #Finitive
+            );
+        }
         (Map (SplitAlternatives t.SentNamePos (e.Name)))
         {
           e.Alternatives^ =

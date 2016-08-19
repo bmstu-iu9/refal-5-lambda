@@ -25,12 +25,6 @@ WriteFunction {
     ()
     (e.NextRule ' {')
     <Map WriteAlternative e.Alternatives>
-    (
-      '  (e.Accum) s.Any e.Text = '
-      '(#TokenLexerInternalError-Unexpected e.Accum s.Any) '
-      '<Root () e.Text>;'
-    )
-    ('  (e.Accum) = (#TokenLexerInternalError-UnexpectedEOF e.Accum);')
     ('}');
 }
 
