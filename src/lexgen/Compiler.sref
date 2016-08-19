@@ -258,16 +258,19 @@ SetDiff {
 }
 
 NormalizeAlternative {
-  (e.Diff) ((#Chars e.Alternative) t.Flush t.Next) =
-    (<UniqueSet e.Diff e.Alternative>)
-    ((<SetDiff (e.Alternative) (e.Diff)>) t.Flush t.Next);
+  (s.CatchedEOF e.CatchedChars) ((#Chars e.Alternative) t.Flush t.Next) =
+    (s.CatchedEOF <UniqueSet e.CatchedChars e.Alternative>)
+    ((<SetDiff (e.Alternative) (e.CatchedChars)>) t.Flush t.Next);
 
-  (e.Diff) (#Any t.Flush t.Next) =
-    (#Any)
+  (s.CatchedEOF e.CatchedChars) (#Any t.Flush t.Next) =
+    (s.CatchedEOF #Any)
     (#Any t.Flush t.Next);
 
-  (e.Diff) ( #Empty t.Flush t.Next ) =
-    (e.Diff) ( #Empty t.Flush t.Next );
+  (s.CatchedEOF e.CatchedChars) (#Empty t.Flush #Finitive) =
+    (#EOF-Catched e.CatchedChars) (#Empty t.Flush #Finitive);
+
+  (s.CatchedEOF e.CatchedChars) (#Empty t.Flush t.NextRule) =
+    (#EOF-Catched #Any) (#Empty t.Flush t.NextRule);
 }
 
 SplitAlternatives {
@@ -296,17 +299,16 @@ NormalizeRule {
       <Seq
         (MapReduce
           NormalizeAlternative
-          ()
+          (#EOF-NotCatched)
         )
         {
-          (e.CatchedChars) e.Alternatives^ =
+          (s.CatchedEOF e.CatchedChars) e.Alternatives^ =
+            <WarningIfUncatched
+              t.SentNamePos e.Name s.CatchedEOF e.CatchedChars
+            >
             e.Alternatives
-            (#Any
-              (#Flush '#TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root')
-            )
-            (#Empty
-              (#Flush '#TokenLexerInternalError-UnexpectedEOF') #Finitive
-            );
+            <DefaultCatchAnyChar t.SentNamePos e.CatchedChars>
+            <DefaultCatchEOF s.CatchedEOF>;
         }
         (Map (SplitAlternatives t.SentNamePos (e.Name)))
         {
@@ -315,6 +317,46 @@ NormalizeRule {
         }
       >
     >;
+}
+
+WarningIfUncatched {
+  t.SentNamePos e.Name #EOF-Catched #Any =
+    /* нет предупреждения */;
+
+  t.SentNamePos e.Name #EOF-Catched e.CharSet =
+    <WarningAt
+      t.SentNamePos
+      'In rule ' e.Name ' some chars not catched, default alternative added'
+    >;
+
+  t.SentNamePos e.Name #EOF-NotCatched #Any =
+    <WarningAt
+      t.SentNamePos
+      'In rule ' e.Name ' EOF not catched, default alternative added'
+    >;
+
+  t.SentNamePos e.Name #EOF-NotCatched e.CharSet =
+    <WarningAt
+      t.SentNamePos
+      'In rule ' e.Name ' some chars and EOF not catched, '
+      'default alternatives added'
+    >;
+}
+
+DefaultCatchAnyChar {
+  t.SentNamePos #Any =
+    /* все символы обработаны пользователем, ничего не добавляем */;
+
+  t.SentNamePos e.CatchedChars =
+    (#Any (#Flush '#TokenLexerInternalError-Unexpected') (t.SentNamePos 'Root'));
+}
+
+DefaultCatchEOF {
+  #EOF-Catched =
+    /* конец текста обработан пользователем, ничего не добавляем */;
+
+  #EOF-NotCatched =
+    (#Empty (#Flush '#TokenLexerInternalError-UnexpectedEOF') #Finitive);
 }
 
 PrepareFunctions {
