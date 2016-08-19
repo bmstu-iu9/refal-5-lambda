@@ -4,8 +4,8 @@ $EXTERN ErrorAt;
 //FROM LibraryEx
 $EXTERN Fetch, Seq;
 
-//FROM Lexer
-$EXTERN TextFromToken;
+//FROM DFA-Lexer
+$EXTERN DFA-TextFromToken;
 
 /*==============================================================================
    Синтаксис:
@@ -40,7 +40,7 @@ $EXTERN TextFromToken;
 //==============================================================================
 
 /**
-  <Parse t.Token*>
+  <DFA-Parse t.Token*>
     == e.LexerDefinition
 
    e.LexerDefinition ::= t.Element*
@@ -71,7 +71,7 @@ $EXTERN TextFromToken;
        (t.SrcPos e.NextStateName)
      | #Finitive
 */
-$ENTRY Parse {
+$ENTRY DFA-Parse {
   (#TEOF t.SrcPos) =
     <ErrorAt t.SrcPos 'Illegal empty description'>;
 
@@ -247,7 +247,7 @@ UnexpectedToken {
   (s.Type t.SrcPos e.Unexpected) e.Message =
     <ErrorAt
       t.SrcPos
-      'Unexpected ' <TextFromToken s.Type e.Unexpected>
+      'Unexpected ' <DFA-TextFromToken s.Type e.Unexpected>
       ' expected ' e.Message
     >;
 }

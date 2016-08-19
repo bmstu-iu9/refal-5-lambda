@@ -8,17 +8,17 @@ $EXTERN ArgList, Fetch, Seq, LoadFile, SaveFile, Map, Inc, MapReduce;
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
-//FROM Compiler
-$EXTERN PrepareDFA;
+//FROM DFA-Lexer
+$EXTERN DFA-Tokens;
+
+//FROM DFA-Parser
+$EXTERN DFA-Parse;
+
+//FROM DFA-Compiler
+$EXTERN DFA-Compile;
 
 //FROM Generator
 $EXTERN GenerateFromDFA;
-
-//FROM Parser
-$EXTERN Parse;
-
-//FROM Lexer
-$EXTERN Tokens;
 
 //FROM Error
 $EXTERN ErrorAt;
@@ -84,7 +84,7 @@ Transform {
             <Fetch
               s.Length e.Description
               <Seq
-                Tokens
+                DFA-Tokens
                 (Map
                   {
                     (#TError s.LineNumber e.Text) =
@@ -94,8 +94,8 @@ Transform {
                       (s.TokType (s.LineNumber e.Source) e.Info);
                   }
                 )
-                Parse
-                PrepareDFA
+                DFA-Parse
+                DFA-Compile
                 GenerateFromDFA
                 {
                   e.Generated =

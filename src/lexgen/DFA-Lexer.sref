@@ -12,7 +12,7 @@ $EXTERN IntFromStr, Chr;
 // Лексический разбор
 //==============================================================================
 
-$ENTRY TextFromToken {
+$ENTRY DFA-TextFromToken {
   #TSetName e.Name = 'set name ' e.Name;
   #TLiteral e.Text = 'literal ''' <EscapeString e.Text> '';
   #TName e.Name = 'name ' e.Name;
@@ -26,7 +26,7 @@ $ENTRY TextFromToken {
 }
 
 /**
-  <Tokens s.FirstLineNumber (e.Line)*>
+  <DFA-Tokens s.FirstLineNumber (e.Line)*>
     == t.Token*
 
   t.Token ::= (s.TokType t.SrcPos e.Info)
@@ -42,7 +42,7 @@ $ENTRY TextFromToken {
     | #TLiteral e.Chars
     | #TName e.Name
 */
-$ENTRY Tokens {
+$ENTRY DFA-Tokens {
   s.FirstLineNumber e.Lines =
     <Fetch
       e.Lines

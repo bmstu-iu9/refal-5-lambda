@@ -17,7 +17,7 @@ $EXTERN ErrorAt, WarningAt;
 // Генератор автомата
 //==============================================================================
 
-$ENTRY PrepareDFA {
+$ENTRY DFA-Compile {
   e.Elements =
     <Fetch
       e.Elements
