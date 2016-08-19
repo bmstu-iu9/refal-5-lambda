@@ -1,0 +1,7 @@
+/*GEN:TOKENS
+  :Any: = 'abc'.
+
+  Root =
+    ':Any:'    !-     Root |
+               !-          .
+GEN:END*/
