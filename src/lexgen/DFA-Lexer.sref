@@ -61,6 +61,9 @@ $ENTRY DFA-Tokens {
           <Inc s.FirstLineNumber>
         )
         {
+          s.LineNumber e.Tokens (#EOF s.EOFLineNumber) =
+            e.Tokens (#TEOF s.EOFLineNumber);
+
           s.LineNumber e.Tokens =
             e.Tokens (#TEOF s.LineNumber);
         }
@@ -69,187 +72,543 @@ $ENTRY DFA-Tokens {
 }
 
 LoTokens {
-  ' ' e.Text = <LoTokens e.Text>;
-  '\t' e.Text = <LoTokens e.Text>;
-  '\r' e.Text = <LoTokens e.Text>;
-
-  '\n' e.Text = (#TNewLine) <LoTokens e.Text>;
-
-  ':' e.Text = <SetName () e.Text>;
-  '!' e.Text = <FlushName e.Text>;
-  '\'' e.Text = <Literal () e.Text>;
-
-  '=' e.Text = (#TEquals) <LoTokens e.Text>;
-  '.' e.Text = (#TDot) <LoTokens e.Text>;
-  '|' e.Text = (#TAlternative) <LoTokens e.Text>;
-
-  s.Next e.Text = <Name s.Next e.Text>;
-
-  = ;
+  e.Text = <FilterTokens <Root () e.Text>>;
 }
 
-NextInSet {
-  s.SuccessHandler s.FailHandler
-  (e.Set-B s.Next e.Set-E) (e.Scanned) s.Next e.Text =
-    <s.SuccessHandler (e.Scanned s.Next) e.Text>;
-
-  s.SuccessHandler s.FailHandler (e.Set) (e.Scanned) e.Text =
-    <s.FailHandler (e.Scanned) e.Text>;
-}
-
-HiLetters { = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; }
-LoLetters { = 'abcdefghijklmnopqrstuvwxyz'; }
-Digits { = '0123456789'; }
-NameTailSet { = <HiLetters> <LoLetters> <Digits> '-_'; }
-
-SetName {
-  (e.Scanned) ':' e.Text =
-    (#TSetName e.Scanned) <LoTokens e.Text>;
-
-  (e.Scanned) e.Text =
-    <NextInSet
-      SetName SetNameFail
-      (<NameTailSet>)
-      (e.Scanned) e.Text
+FilterTokens {
+  e.Tokens =
+    <Map
+      {
+        (#TNewLine '\n') = (#TNewLine);
+        (#TSetName e.SetName ':') = (#TSetName e.SetName);
+        (#TFlush '-') = (#TFlush);
+        (#TErrorFlush e.Message '"') = (#TErrorFlush e.Message);
+        (#TNamedFlush e.FlushName) = (#TNamedFlush e.FlushName);
+        (#TLiteral e.Content '') = (#TLiteral <Unescape e.Content>);
+        (#TokenError e.Message) = (#TError e.Message);
+        (#TPunctuation '=') = (#TEquals);
+        (#TPunctuation '.') = (#TDot);
+        (#TPunctuation '|') = (#TAlternative);
+        (#TName e.Name) = (#TName e.Name);
+        (#TUnexpectedChar s.Char) = (#TError 'Unexpected character ' s.Char);
+        (#TEOF) = (#TEOF);
+      }
+      e.Tokens
     >;
 }
 
-SetNameFail {
-  (e.Scanned) = (#TError 'expected end of set name, got EOF');
+Unescape {
+  '\\n' e.Tail = '\n' <Unescape e.Tail>;
+  '\\r' e.Tail = '\r' <Unescape e.Tail>;
+  '\\\\' e.Tail = '\\' <Unescape e.Tail>;
+  '\\t' e.Tail = '\t' <Unescape e.Tail>;
+  '\\''' e.Tail = '' <Unescape e.Tail>;
 
-  (e.Scanned) s.Next e.Text =
-    (#TError 'expected end of set name, got ' s.Next);
-}
-
-FlushName {
-  '-' e.Text = (#TFlush) <LoTokens e.Text>;
-
-  '"' e.Text =
-    <NextInSet
-      ErrorFlush ErrorFlushFail
-      (<NameTailSet> ' \t,.:;(){}[]*&')
-      () e.Text
-    >;
-
-  '#' e.Text =
-    <NextInSet
-      FlushNameTail FlushNameFail
-      (<HiLetters>) ('#') e.Text
-    >;
-
-  e.Text =
-    <NextInSet
-      FlushNameTail FlushNameFail
-      (<HiLetters>) () e.Text
-    >;
-}
-
-ErrorFlush {
-  (e.Scanned) e.Tail =
-    <NextInSet
-      ErrorFlush ErrorFlushFail
-      (<NameTailSet> ' \t,.:;(){}[]*&!@#$%^-_=+/')
-      (e.Scanned) e.Tail
-    >;
-}
-
-ErrorFlushFail {
-  (e.Scanned) '"' e.Text =
-    (#TErrorFlush e.Scanned) <LoTokens e.Text>;
-
-  (e.Scanned) s.Other e.Text =
-    (#TError 'Expected error text or "') <LoTokens e.Text>;
-}
-
-FlushNameFail {
-  () e.Text = (#TError 'expected flush name');
-}
-
-EndFlushName {
-  (e.Scanned) e.Text = (#TNamedFlush e.Scanned) <LoTokens e.Text>;
-}
-
-FlushNameTail {
-  (e.Scanned) e.Tail =
-    <NextInSet
-      FlushNameTail EndFlushName
-      ( <NameTailSet> ) (e.Scanned) e.Tail
-    >;
-}
-
-Literal {
-  (e.Scanned) '\\' e.Text = <Escape (e.Scanned) e.Text>;
-
-  (e.Scanned) '\'\'' e.Text = <Literal (e.Scanned '\'') e.Text>;
-
-  (e.Scanned) '\'' e.Text = (#TLiteral e.Scanned) <LoTokens e.Text>;
-
-  (e.Scanned) '\n' e.Text =
-    (#TError 'Unexpected end of line at literal') <LoTokens e.Text>;
-
-  (e.Scanned) =
-    (#TError 'Unexpected end of file at literal');
-
-  (e.Scanned) s.Other e.Text =
-    <Literal (e.Scanned s.Other) e.Text>;
-}
-
-Escape {
-  (e.Scanned) 'n' e.Text = <Literal (e.Scanned '\n') e.Text>;
-
-  (e.Scanned) 'r' e.Text = <Literal (e.Scanned '\r') e.Text>;
-
-  (e.Scanned) 't' e.Text = <Literal (e.Scanned '\t') e.Text>;
-
-  (e.Scanned) '\\' e.Text = <Literal (e.Scanned '\\') e.Text>;
-
-  (e.Scanned) 'd' e.Text = <Literal-DecCode (e.Scanned) e.Text>;
-
-  (e.Scanned) '\'' e.Text = <Literal (e.Scanned '\'') e.Text>;
-
-  (e.Scanned) s.Other e.Text =
-    (#TError 'Unexpected escaped character') <LoTokens e.Text>;
-}
-
-Literal-DecCode {
-  (e.Scanned) e.Tail =
+  '\\d' e.Tail =
     <Fetch
       <IntFromStr e.Tail>
       {
         #Success s.Number e.Tail^ =
-          <Literal (e.Scanned <Chr s.Number>) e.Tail>;
+          <Chr s.Number> <Unescape e.Tail>;
 
-        #Fails e.Tail^ =
-          (#TError 'Expected digits') <LoTokens e.Tail>;
+        // #Fails невозможен
       }
     >;
 
-  (e.Scanned) =
-    (#TError 'Unexpected end of file');
+  '''' e.Tail = '' <Unescape e.Tail>;
+
+  s.Other e.Tail = s.Other <Unescape e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
 
-NameFail {
-  () s.Next e.Tail =
-    (#TError 'Unexpected character ' s.Next) <LoTokens e.Tail>;
+/*GEN:TOKENS
+  :Space: = ' \t\r'.
+  :HiLetters: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+  :LoLetters: = 'abcdefghijklmnopqrstuvwxyz'.
+  :Digits: = '0123456789'.
+  :NameTailSet: = :HiLetters: :LoLetters: :Digits: '-_'.
+  :ErrorFlush: = :NameTailSet: ' \t,.:;(){}[]*&!@#$%^-_=+/'.
+
+  Root =
+    :Space:         !-                                Root               |
+    '\n'            !#TNewLine                        Root               |
+
+    ':'             !-                                SetName            |
+    '!'             !-                                Flush              |
+    '\''            !-                                Literal            |
+
+    '=.|'           !#TPunctuation                    Root               |
+
+    :HiLetters:                                       Name               |
+
+    :Any:           !#TUnexpectedChar                 Root               |
+                    !#TEOF                                               .
+
+  SetName =
+    ':'             !#TSetName                        Root               |
+    :NameTailSet:                                     SetName            |
+                    !"expected end of set name, got EOF"                 |
+                    !"expected end of set name"       Root               .
+
+  Flush =
+    '-'             !#TFlush                          Root               |
+    '"'             !-                                ErrorFlush         |
+    '#'                                               FlushName          |
+                                                      FlushName          .
+
+  ErrorFlush =
+    :ErrorFlush:                                      ErrorFlush         |
+    '"'             !#TErrorFlush                     Root               |
+                    !"Expected error text or double quote"
+                                                      Root               .
+
+  FlushName =
+    :HiLetters:                                       FlushNameTail      |
+                    !"Expected flush name"            Root               .
+
+  FlushNameTail =
+    :NameTailSet:                                     FlushNameTail      |
+                    !#TNamedFlush                     Root               .
+
+  Literal =
+    '\\'                                              Literal-Escape     |
+    '\''                                              Literal-Quote      |
+    '\n'            !"Unexpected end of line at literal"
+                                                      Root               |
+                    !"Unexpected end of file at literal"                 |
+    :Any:                                             Literal            .
+
+  Literal-Escape =
+    'nr\\t\''                                         Literal            |
+    'd'                                               Literal-DecCode    |
+                    !"Unexpected escaped character"   Root               .
+
+  Literal-DecCode =
+    :Digits:                                          Literal            |
+                    !"Expected digits"                Root               |
+                    !"Unexpected end of file"                            .
+
+  Literal-Quote =
+    '\''                                              Literal            |
+                    !#TLiteral                        Root               .
+
+  Name =
+    :NameTailSet:                                     Name               |
+                    !#TName                           Root               .
+
+GEN:END*/
+
+Root {
+  (e.Accum) ' ' e.Text = <Root () e.Text>;
+  (e.Accum) '\t' e.Text = <Root () e.Text>;
+  (e.Accum) '\r' e.Text = <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (#TNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) ':' e.Text = <SetName () e.Text>;
+  (e.Accum) '!' e.Text = <Flush () e.Text>;
+  (e.Accum) '\'' e.Text = <Literal () e.Text>;
+  (e.Accum) '=' e.Text = (#TPunctuation e.Accum '=') <Root () e.Text>;
+  (e.Accum) '.' e.Text = (#TPunctuation e.Accum '.') <Root () e.Text>;
+  (e.Accum) '|' e.Text = (#TPunctuation e.Accum '|') <Root () e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) s.Any e.Text = (#TUnexpectedChar e.Accum s.Any) <Root () e.Text>;
+  (e.Accum) = (#TEOF e.Accum);
 }
 
-NameTailFail {
-  (e.Scanned) e.Tail =
-    (#TName e.Scanned) <LoTokens e.Tail>;
+SetName {
+  (e.Accum) ':' e.Text = (#TSetName e.Accum ':') <Root () e.Text>;
+  (e.Accum) '0' e.Text = <SetName (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <SetName (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <SetName (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <SetName (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <SetName (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <SetName (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <SetName (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <SetName (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <SetName (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <SetName (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <SetName (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <SetName (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <SetName (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <SetName (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <SetName (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <SetName (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <SetName (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <SetName (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <SetName (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <SetName (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <SetName (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <SetName (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <SetName (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <SetName (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <SetName (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <SetName (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <SetName (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <SetName (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <SetName (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <SetName (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <SetName (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <SetName (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <SetName (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <SetName (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <SetName (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <SetName (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <SetName (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <SetName (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <SetName (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <SetName (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <SetName (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <SetName (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <SetName (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <SetName (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <SetName (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <SetName (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <SetName (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <SetName (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <SetName (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <SetName (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <SetName (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <SetName (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <SetName (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <SetName (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <SetName (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <SetName (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <SetName (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <SetName (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <SetName (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <SetName (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <SetName (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <SetName (e.Accum 'Z') e.Text>;
+  (e.Accum) '-' e.Text = <SetName (e.Accum '-') e.Text>;
+  (e.Accum) '_' e.Text = <SetName (e.Accum '_') e.Text>;
+  (e.Accum) = (#TokenError 'expected end of set name, got EOF');
+  (e.Accum) e.Text = (#TokenError 'expected end of set name') <Root () e.Text>;
 }
 
-NameTail {
-  (e.Scanned) e.Tail =
-    <NextInSet
-      NameTail NameTailFail
-      ( <NameTailSet> )
-      (e.Scanned) e.Tail
-    >;
+Flush {
+  (e.Accum) '-' e.Text = (#TFlush e.Accum '-') <Root () e.Text>;
+  (e.Accum) '\"' e.Text = <ErrorFlush () e.Text>;
+  (e.Accum) '#' e.Text = <FlushName (e.Accum '#') e.Text>;
+  (e.Accum) e.Text = <FlushName (e.Accum) e.Text>;
+}
+
+Literal {
+  (e.Accum) '\\' e.Text = <Literal-Escape (e.Accum '\\') e.Text>;
+  (e.Accum) '\'' e.Text = <Literal-Quote (e.Accum '\'') e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unexpected end of line at literal') <Root () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected end of file at literal');
+  (e.Accum) s.Any e.Text = <Literal (e.Accum s.Any) e.Text>;
 }
 
 Name {
-  e.Tail =
-    <NextInSet
-      NameTail NameFail ( <HiLetters> ) () e.Tail
-    >;
+  (e.Accum) '0' e.Text = <Name (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Name (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Name (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Name (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Name (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Name (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Name (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Name (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Name (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Name (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <Name (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <Name (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <Name (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
+  (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
+  (e.Accum) e.Text = (#TName e.Accum) <Root () e.Text>;
+}
+
+ErrorFlush {
+  (e.Accum) '0' e.Text = <ErrorFlush (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <ErrorFlush (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <ErrorFlush (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <ErrorFlush (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <ErrorFlush (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <ErrorFlush (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <ErrorFlush (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <ErrorFlush (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <ErrorFlush (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <ErrorFlush (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <ErrorFlush (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <ErrorFlush (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <ErrorFlush (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <ErrorFlush (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <ErrorFlush (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <ErrorFlush (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <ErrorFlush (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <ErrorFlush (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <ErrorFlush (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <ErrorFlush (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <ErrorFlush (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <ErrorFlush (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <ErrorFlush (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <ErrorFlush (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <ErrorFlush (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <ErrorFlush (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <ErrorFlush (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <ErrorFlush (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <ErrorFlush (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <ErrorFlush (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <ErrorFlush (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <ErrorFlush (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <ErrorFlush (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <ErrorFlush (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <ErrorFlush (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <ErrorFlush (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <ErrorFlush (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <ErrorFlush (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <ErrorFlush (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <ErrorFlush (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <ErrorFlush (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <ErrorFlush (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <ErrorFlush (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <ErrorFlush (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <ErrorFlush (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <ErrorFlush (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <ErrorFlush (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <ErrorFlush (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <ErrorFlush (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <ErrorFlush (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <ErrorFlush (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <ErrorFlush (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <ErrorFlush (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <ErrorFlush (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <ErrorFlush (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <ErrorFlush (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <ErrorFlush (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <ErrorFlush (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <ErrorFlush (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <ErrorFlush (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <ErrorFlush (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <ErrorFlush (e.Accum 'Z') e.Text>;
+  (e.Accum) '-' e.Text = <ErrorFlush (e.Accum '-') e.Text>;
+  (e.Accum) '_' e.Text = <ErrorFlush (e.Accum '_') e.Text>;
+  (e.Accum) ' ' e.Text = <ErrorFlush (e.Accum ' ') e.Text>;
+  (e.Accum) '\t' e.Text = <ErrorFlush (e.Accum '\t') e.Text>;
+  (e.Accum) ',' e.Text = <ErrorFlush (e.Accum ',') e.Text>;
+  (e.Accum) '.' e.Text = <ErrorFlush (e.Accum '.') e.Text>;
+  (e.Accum) ':' e.Text = <ErrorFlush (e.Accum ':') e.Text>;
+  (e.Accum) ';' e.Text = <ErrorFlush (e.Accum ';') e.Text>;
+  (e.Accum) '(' e.Text = <ErrorFlush (e.Accum '(') e.Text>;
+  (e.Accum) ')' e.Text = <ErrorFlush (e.Accum ')') e.Text>;
+  (e.Accum) '{' e.Text = <ErrorFlush (e.Accum '{') e.Text>;
+  (e.Accum) '}' e.Text = <ErrorFlush (e.Accum '}') e.Text>;
+  (e.Accum) '[' e.Text = <ErrorFlush (e.Accum '[') e.Text>;
+  (e.Accum) ']' e.Text = <ErrorFlush (e.Accum ']') e.Text>;
+  (e.Accum) '*' e.Text = <ErrorFlush (e.Accum '*') e.Text>;
+  (e.Accum) '&' e.Text = <ErrorFlush (e.Accum '&') e.Text>;
+  (e.Accum) '!' e.Text = <ErrorFlush (e.Accum '!') e.Text>;
+  (e.Accum) '@' e.Text = <ErrorFlush (e.Accum '@') e.Text>;
+  (e.Accum) '#' e.Text = <ErrorFlush (e.Accum '#') e.Text>;
+  (e.Accum) '$' e.Text = <ErrorFlush (e.Accum '$') e.Text>;
+  (e.Accum) '%' e.Text = <ErrorFlush (e.Accum '%') e.Text>;
+  (e.Accum) '^' e.Text = <ErrorFlush (e.Accum '^') e.Text>;
+  (e.Accum) '=' e.Text = <ErrorFlush (e.Accum '=') e.Text>;
+  (e.Accum) '+' e.Text = <ErrorFlush (e.Accum '+') e.Text>;
+  (e.Accum) '/' e.Text = <ErrorFlush (e.Accum '/') e.Text>;
+  (e.Accum) '\"' e.Text = (#TErrorFlush e.Accum '\"') <Root () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected error text or double quote') <Root () e.Text>;
+}
+
+FlushName {
+  (e.Accum) 'A' e.Text = <FlushNameTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <FlushNameTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <FlushNameTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <FlushNameTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <FlushNameTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <FlushNameTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <FlushNameTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <FlushNameTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <FlushNameTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <FlushNameTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <FlushNameTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <FlushNameTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <FlushNameTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <FlushNameTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <FlushNameTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <FlushNameTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <FlushNameTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <FlushNameTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <FlushNameTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <FlushNameTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <FlushNameTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <FlushNameTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <FlushNameTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <FlushNameTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <FlushNameTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <FlushNameTail (e.Accum 'Z') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected flush name') <Root () e.Text>;
+}
+
+Literal-Escape {
+  (e.Accum) 'n' e.Text = <Literal (e.Accum 'n') e.Text>;
+  (e.Accum) 'r' e.Text = <Literal (e.Accum 'r') e.Text>;
+  (e.Accum) '\\' e.Text = <Literal (e.Accum '\\') e.Text>;
+  (e.Accum) 't' e.Text = <Literal (e.Accum 't') e.Text>;
+  (e.Accum) '\'' e.Text = <Literal (e.Accum '\'') e.Text>;
+  (e.Accum) 'd' e.Text = <Literal-DecCode (e.Accum 'd') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected escaped character') <Root () e.Text>;
+}
+
+Literal-Quote {
+  (e.Accum) '\'' e.Text = <Literal (e.Accum '\'') e.Text>;
+  (e.Accum) e.Text = (#TLiteral e.Accum) <Root () e.Text>;
+}
+
+FlushNameTail {
+  (e.Accum) '0' e.Text = <FlushNameTail (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <FlushNameTail (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <FlushNameTail (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <FlushNameTail (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <FlushNameTail (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <FlushNameTail (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <FlushNameTail (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <FlushNameTail (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <FlushNameTail (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <FlushNameTail (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <FlushNameTail (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <FlushNameTail (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <FlushNameTail (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <FlushNameTail (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <FlushNameTail (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <FlushNameTail (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <FlushNameTail (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <FlushNameTail (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <FlushNameTail (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <FlushNameTail (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <FlushNameTail (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <FlushNameTail (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <FlushNameTail (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <FlushNameTail (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <FlushNameTail (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <FlushNameTail (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <FlushNameTail (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <FlushNameTail (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <FlushNameTail (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <FlushNameTail (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <FlushNameTail (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <FlushNameTail (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <FlushNameTail (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <FlushNameTail (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <FlushNameTail (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <FlushNameTail (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <FlushNameTail (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <FlushNameTail (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <FlushNameTail (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <FlushNameTail (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <FlushNameTail (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <FlushNameTail (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <FlushNameTail (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <FlushNameTail (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <FlushNameTail (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <FlushNameTail (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <FlushNameTail (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <FlushNameTail (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <FlushNameTail (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <FlushNameTail (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <FlushNameTail (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <FlushNameTail (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <FlushNameTail (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <FlushNameTail (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <FlushNameTail (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <FlushNameTail (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <FlushNameTail (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <FlushNameTail (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <FlushNameTail (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <FlushNameTail (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <FlushNameTail (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <FlushNameTail (e.Accum 'Z') e.Text>;
+  (e.Accum) '-' e.Text = <FlushNameTail (e.Accum '-') e.Text>;
+  (e.Accum) '_' e.Text = <FlushNameTail (e.Accum '_') e.Text>;
+  (e.Accum) e.Text = (#TNamedFlush e.Accum) <Root () e.Text>;
+}
+
+Literal-DecCode {
+  (e.Accum) '0' e.Text = <Literal (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Literal (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Literal (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Literal (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Literal (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Literal (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Literal (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Literal (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Literal (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Literal (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected digits') <Root () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected end of file');
 }

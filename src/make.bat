@@ -18,10 +18,11 @@ setlocal
   if not exist ..\bin\nul mkdir ..\bin
   call :MAKE_SUBDIR scripts install-scripts.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
+  call :MAKE_SUBDIR lexgen makeself-s.bat
   copy ..\distrib\bin\srmake-core.exe ..\bin
   call :MAKE_SUBDIR srlib make.bat
   call :MAKE_SUBDIR srmake make.bat
-  call :MAKE_SUBDIR lexgen make.bat
+  call :MAKE_SUBDIR lexgen makeself.bat
   call :MAKE_SUBDIR compiler makeself.bat
 
   goto :END
