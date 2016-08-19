@@ -28,8 +28,10 @@ $EXTERN TextFromToken;
    ERRORFLUSH = '!"' e.Name '"' .
 
    Зарезервированные имена Root, :Any:.
-   Зарезервированные лексемы #TokenError, #TokenUnexpected, #TokenUnexpectedEOF,
-     #TokenAccum.
+   Зарезервированные лексемы:
+     * #TokenError,
+     * #TokenLexerInternalError-Unexpected,
+     * #TokenLexerInternalError-UnexpectedEOF.
 
 ==============================================================================*/
 

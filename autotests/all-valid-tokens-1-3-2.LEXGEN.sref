@@ -6,8 +6,9 @@ CheckForErrors {
   e.Tokens =
     <CheckForErrors-Aux
       (
-        #TkUnexpected #TokenError #TokenUnexpected #TokenUnexpectedEOF
-        #TokenAccum
+        #TkUnexpected #TokenError
+        #TokenLexerInternalError-Unexpected
+        #TokenLexerInternalError-UnexpectedEOF
       )
       e.Tokens
     >;
