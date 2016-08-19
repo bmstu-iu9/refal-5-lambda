@@ -268,15 +268,22 @@ NormalizeAlternative {
 }
 
 SplitAlternatives {
-  ( #Empty t.Flush t.Next ) = (#Empty t.Flush t.Next);
+  t.SentNamePos (e.Name) ( #Empty t.Flush t.Next ) =
+    (#Empty t.Flush t.Next);
 
-  ( #Any t.Flush t.Next ) = (#Any t.Flush t.Next);
+  t.SentNamePos (e.Name) ( #Any t.Flush t.Next ) =
+    (#Any t.Flush t.Next);
 
-  ( (s.Char) t.Flush t.Next ) = (s.Char t.Flush t.Next);
+  t.SentNamePos (e.Name) ( (/* пусто */) t.Flush t.Next ) =
+    /* пусто */
+    <WarningAt t.SentNamePos 'Rule ' e.Name ' has unreached alternatives'>;
 
-  ( (s.Char e.Tail) t.Flush t.Next ) =
+  t.SentNamePos (e.Name) ( (s.Char) t.Flush t.Next ) =
+    (s.Char t.Flush t.Next);
+
+  t.SentNamePos (e.Name) ( (s.Char e.Tail) t.Flush t.Next ) =
     (s.Char t.Flush t.Next)
-    <SplitAlternatives ( (e.Tail) t.Flush t.Next )>;
+    <SplitAlternatives t.SentNamePos (e.Name) ( (e.Tail) t.Flush t.Next )>;
 }
 
 NormalizeRule {
@@ -289,7 +296,7 @@ NormalizeRule {
           ()
         )
         DelAccumulator
-        (Map SplitAlternatives)
+        (Map (SplitAlternatives t.SentNamePos (e.Name)))
         {
           e.Alternatives^ =
             (t.SentNamePos (e.Name) e.Alternatives);

@@ -1,0 +1,11 @@
+$ENTRY Go {
+  = <Root () 'abcx'>;
+}
+
+/*GEN:TOKENS
+  Root =
+    'abc'         !-           Root |
+    'ab'          !-           Root |
+    :Any:         !-           Root |
+                  !-                .
+GEN:END*/
