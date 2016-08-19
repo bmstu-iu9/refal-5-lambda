@@ -13,7 +13,7 @@ $EXTERN EscapeChar;
   t.Alternative ::= (s.Head t.Flush t.NextState)
   s.Head ::= #Empty | #Any | s.Char
   t.Flush ::= #None | #Unnamed | (#Flush e.FlushName) | (#FlushError e.Message)
-  t.NextState ::= (t.SrcPos e.NextStateName) | #Finitive
+  t.NextState ::= (e.NextStateName) | #Finitive
 */
 $ENTRY GenerateFromDFA {
   e.Rules =
@@ -74,11 +74,11 @@ Flush {
 
 NextState-L {
   #Finitive = ' =';
-  (t.SrcPos e.NextStateName) = ' e.Text =';
+  (e.NextStateName) = ' e.Text =';
 }
 
 NextState-R {
   #Finitive e.NextStateAccum = /* пусто */;
-  (t.SrcPos e.NextStateName) e.NextStateAccum =
+  (e.NextStateName) e.NextStateAccum =
     ' <' e.NextStateName ' (' e.NextStateAccum ') e.Text>';
 }

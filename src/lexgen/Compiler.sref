@@ -2,7 +2,7 @@
 $EXTERN Fetch, Seq, MapReduce, Map, Reduce, DelAccumulator;
 
 //FROM Error
-$EXTERN ErrorAt, Warning, WarningAt;
+$EXTERN ErrorAt, WarningAt;
 
 
 /*==============================================================================
@@ -24,24 +24,24 @@ $ENTRY PrepareDFA {
         (Reduce
           {
             ((e.Sets) (e.Rules))
-            (#Set (e.Name) e.Content) =
+            (#Set t.SrcPos (e.Name) e.Content) =
               (
-                (e.Sets ((e.Name) e.Content))
+                (e.Sets (t.SrcPos (e.Name) #NotUsed e.Content))
                 (e.Rules)
               );
 
             ((e.Sets) (e.Rules))
-            (#Sentence (e.Name) e.Content) =
+            (#Sentence t.SrcPos (e.Name) e.Content) =
               (
                 (e.Sets)
-                (e.Rules ((e.Name) e.Content))
+                (e.Rules (t.SrcPos (e.Name) e.Content))
               );
           }
           ((/* sets */) (/* rules */))
         )
         {
           ((e.Sets) (e.Rules)) =
-            (<Map SimplifySet <ResolvingSets e.Sets>>)
+            (<ResolvingSets e.Sets>)
             (e.Rules);
         }
         SubstituteSetsToRules
@@ -66,9 +66,11 @@ ResolvingSets {
       <Seq
         (Map
           {
-            ((e.Name) #Any) = ((e.Name) #Any);
+            (t.SrcPos (e.Name) s.Used #Any) =
+              (t.SrcPos (e.Name) s.Used #Any);
 
-            ((e.Name) e.Content) = ((e.Name) <NormalizeContent () e.Content>);
+            (t.SrcPos (e.Name) s.Used e.Content) =
+              (t.SrcPos (e.Name) s.Used <NormalizeContent () e.Content>);
           }
         )
         SetCheckRecursion
@@ -96,12 +98,12 @@ NormalizeContent {
 
 SetCheckRecursion {
   e.Sets-B
-  ((e.Name) e.Content-B (#Set t.SrcPos e.Name) e.Content-E)
+  (t.SetNamePos (e.Name) s.Used e.Content-B (#Set t.SrcPos e.Name) e.Content-E)
   e.Sets-E =
     // Рекурсивная зависимость множеств — не ошибка.
     <WarningAt t.SrcPos 'Recursive depended set ' e.Name>
     <SetCheckRecursion
-      e.Sets-B ((e.Name) e.Content-B e.Content-E) e.Sets-E
+      e.Sets-B (t.SetNamePos (e.Name) s.Used e.Content-B e.Content-E) e.Sets-E
     >;
 
   e.Sets = e.Sets;
@@ -109,48 +111,52 @@ SetCheckRecursion {
 
 SetSubstitute {
   e.Sets-B
-  ( (e.Name) e.Content-B (#Set t.SrcPos 'Any') e.Content-E )
+  ( t.SetNamePos (e.Name) s.Used e.Content-B (#Set t.SrcPos 'Any') e.Content-E )
   e.Sets-E =
-    #Changed e.Sets-B ( (e.Name) #Any ) e.Sets-E;
+    #Changed e.Sets-B ( t.SetNamePos (e.Name) s.Used #Any ) e.Sets-E;
 
   e.Sets-B
-  ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
+  (
+    t.SetNamePos (e.Name) s.UsedOuter
+    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+  )
   e.Sets-M
-  ( (e.IncName) e.IncContent )
+  ( t.IncNamePos (e.IncName) s.UsedInner e.IncContent )
   e.Sets-E =
     #Changed
-    e.Sets-B ( (e.Name) e.Content-B e.IncContent e.Content-E )
-    e.Sets-M ( (e.IncName) e.IncContent ) e.Sets-E;
+    e.Sets-B
+    ( t.SetNamePos (e.Name) s.UsedOuter e.Content-B e.IncContent e.Content-E )
+    e.Sets-M ( t.IncNamePos (e.IncName) #Used e.IncContent ) e.Sets-E;
 
   e.Sets-B
-  ( (e.IncName) e.IncContent )
+  ( t.IncNamePos (e.IncName) s.UsedInner e.IncContent )
   e.Sets-M
-  ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
+  (
+    t.SetNamePos (e.Name) s.UsedOuter
+    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+  )
   e.Sets-E =
     #Changed
-    e.Sets-B ( (e.IncName) e.IncContent ) e.Sets-M
-    ( (e.Name) e.Content-B e.IncContent e.Content-E ) e.Sets-E;
+    e.Sets-B ( t.IncNamePos (e.IncName) #Used e.IncContent ) e.Sets-M
+    ( t.SetNamePos (e.Name) s.UsedOuter e.Content-B e.IncContent e.Content-E )
+    e.Sets-E;
 
   e.Sets-B
-  ( (e.Name) e.Content-B (#Set t.SrcPos e.IncName) e.Content-E )
+  (
+    t.SetNamePos (e.Name) s.Used
+    e.Content-B (#Set t.SrcPos e.IncName) e.Content-E
+  )
   e.Sets-E =
     <ErrorAt t.SrcPos 'set ' e.IncName ' not defined'>;
 
   e.Sets = #NotChanged e.Sets;
 }
 
-SimplifySet {
-  ((e.Name) #Any) = ((e.Name) #NotUsed #Any);
-
-  ((e.Name) (#Chars e.Content)) =
-    ((e.Name) #NotUsed #Chars e.Content);
-}
-
 SubstituteSetsToRules {
-  ( ((e.Name) s.Used #Chars e.Content) e.Sets )
+  ( (t.SetNamePos (e.Name) s.Used (#Chars e.Content)) e.Sets )
   (
     e.Rules-B
-    ((e.RuleName)
+    (t.SentNamePos (e.RuleName)
       e.Alternatives-B
       ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
@@ -158,10 +164,10 @@ SubstituteSetsToRules {
     e.Rules-E
   ) =
     <SubstituteSetsToRules
-      ( ((e.Name) #Used #Chars e.Content) e.Sets )
+      ( (t.SetNamePos (e.Name) #Used (#Chars e.Content)) e.Sets )
       (
         e.Rules-B
-        ((e.RuleName)
+        (t.SentNamePos (e.RuleName)
           e.Alternatives-B
           ( (#Chars e.Content) t.Flush t.NextState )
           e.Alternatives-E
@@ -170,10 +176,10 @@ SubstituteSetsToRules {
       )
     >;
 
-  ( ((e.Name) s.Used #Any) e.Sets )
+  ( (t.SetNamePos (e.Name) s.Used #Any) e.Sets )
   (
     e.Rules-B
-    ((e.RuleName)
+    (t.SentNamePos (e.RuleName)
       e.Alternatives-B
       ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
@@ -181,10 +187,10 @@ SubstituteSetsToRules {
     e.Rules-E
   ) =
     <SubstituteSetsToRules
-      ( ((e.Name) s.Used #Any) e.Sets )
+      ( (t.SetNamePos (e.Name) #Used #Any) e.Sets )
       (
         e.Rules-B
-        ((e.RuleName)
+        (t.SentNamePos (e.RuleName)
           e.Alternatives-B
           ( #Any t.Flush t.NextState )
           e.Alternatives-E
@@ -193,20 +199,18 @@ SubstituteSetsToRules {
       )
     >;
 
-  ( ((e.Name) #NotUsed e.Content) e.Sets ) (e.Rules) =
-    // Строчка закомментирована, т.к. часты ложноположительные
-    // срабатывания, а значит предупреждение смысла не несёт.
-    // <Warning 'Set ' e.Name ' not used'>
+  // Для первого в списке множества не найдено вхождения
+  ( (t.SetNamePos (e.Name) #NotUsed e.Content) e.Sets ) (e.Rules) =
+    <WarningAt t.SetNamePos 'Set :' e.Name ': is not used'>
     <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
-  // Для первого в списке множества не найдено вхождения
-  ( ((e.Name) #Used e.Content) e.Sets ) (e.Rules) =
+  ( (t.SetNamePos (e.Name) #Used e.Content) e.Sets ) (e.Rules) =
     <SubstituteSetsToRules (e.Sets) (e.Rules)>;
 
   ()
   (
     e.Rules-B
-    ((e.RuleName)
+    (t.SentNamePos (e.RuleName)
       e.Alternatives-B
       ( (#Set t.SrcPos 'Any') t.Flush t.NextState )
       e.Alternatives-E
@@ -217,7 +221,7 @@ SubstituteSetsToRules {
       ()
       (
         e.Rules-B
-        ((e.RuleName)
+        (t.SentNamePos (e.RuleName)
           e.Alternatives-B
           ( #Any t.Flush t.NextState )
           e.Alternatives-E
@@ -229,7 +233,7 @@ SubstituteSetsToRules {
   ()
   (
     e.Rules-B
-    ((e.RuleName)
+    (t.SentNamePos (e.RuleName)
       e.Alternatives-B
       ( (#Set t.SrcPos e.Name) t.Flush t.NextState )
       e.Alternatives-E
@@ -276,7 +280,7 @@ SplitAlternatives {
 }
 
 NormalizeRule {
-  ((e.Name) e.Alternatives) =
+  (t.SentNamePos (e.Name) e.Alternatives) =
     <Fetch
       e.Alternatives
       <Seq
@@ -288,7 +292,7 @@ NormalizeRule {
         (Map SplitAlternatives)
         {
           e.Alternatives^ =
-            ((e.Name) e.Alternatives);
+            (t.SentNamePos (e.Name) e.Alternatives);
         }
       >
     >;
@@ -312,8 +316,14 @@ ExtractExpected {
 DoPrepareFunctions {
   (e.Written) () = ;
 
-  (e.Written) () ((e.Name) e.Content) e.Rules =
-    <Warning 'Found unused rules ' e.Name ' ...'>;
+  (e.Written) () e.Rules =
+    <Map
+      {
+        (t.SentNamePos (e.Name) e.Content) =
+          <WarningAt t.SentNamePos 'Found unused rule ' e.Name>;
+      }
+      e.Rules
+    >;
 
   (e.Written-B (e.Next) e.Written-E)
   ((t.SrcPos e.Next) e.Expected) e.Rules =
@@ -323,8 +333,19 @@ DoPrepareFunctions {
     >;
 
   (e.Written) ((t.SrcPos e.NextRule) e.Expected)
-  e.Rules-B ((e.NextRule) e.Alternatives) e.Rules-E =
-    ((e.NextRule) e.Alternatives)
+  e.Rules-B (t.SentNamePos (e.NextRule) e.Alternatives) e.Rules-E =
+    ((e.NextRule)
+      <Map
+        {
+          (t.Head t.Flush #Finitive) =
+            (t.Head t.Flush #Finitive);
+
+          (t.Head t.Flush (t.GotoPos e.NextName)) =
+            (t.Head t.Flush (e.NextName));
+        }
+        e.Alternatives
+      >
+    )
     <DoPrepareFunctions
       (e.Written (e.NextRule))
       ( e.Expected <Map ExtractExpected e.Alternatives> )

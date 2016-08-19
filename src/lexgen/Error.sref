@@ -8,10 +8,6 @@ $ENTRY ErrorAt {
     <Exit 1>;
 }
 
-$ENTRY Warning {
-  e.Message = <WriteLine 'WARNING: ' e.Message>;
-}
-
 $ENTRY WarningAt {
   (s.Number e.File) e.Message =
     <WriteLine e.File ':' <StrFromInt s.Number> ':WARNING: ' e.Message>;

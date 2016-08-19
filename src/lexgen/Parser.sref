@@ -40,8 +40,8 @@ $EXTERN TextFromToken;
    e.LexerDefinition ::= t.Element*
 
    t.Element ::=
-       (#Set (e.Name) t.SetContent*)
-     | (#Sentence (e.Name) t.Alternative*)
+       (#Set t.SrcPos (e.Name) t.SetContent*)
+     | (#Sentence t.SrcPos (e.Name) t.Alternative*)
 
    t.SetContent ::=
        (#Set t.SrcPos e.SetName)
@@ -76,11 +76,13 @@ $ENTRY Parse {
 ParseElements {
   (e.SetNames-B (e.Name) e.SetNames-E) (e.RuleNames)
   (#TSetName t.SrcPos e.Name) e.Tail =
-    <ErrorAt t.SrcPos 'Set name ' e.Name ' redeclared'>;
+    <ErrorAt t.SrcPos 'Set name :' e.Name ': redeclared'>;
 
   (e.SetNames) (e.RuleNames)
   (#TSetName t.SrcPos e.Name) e.Tail =
-    <ParseSetDescr (e.SetNames (e.Name)) (e.RuleNames) (e.Name) e.Tail>;
+    <ParseSetDescr
+      (e.SetNames (e.Name)) (e.RuleNames) t.SrcPos (e.Name) e.Tail
+    >;
 
   (e.SetNames) (e.RuleNames-B (e.Name) e.RuleNames-E)
   (#TName t.SrcPos e.Name) e.Tail =
@@ -88,7 +90,7 @@ ParseElements {
 
   (e.SetNames) (e.RuleNames)
   (#TName t.SrcPos e.Name) e.Tail =
-    <ParseSentence (e.SetNames) (e.RuleNames (e.Name)) (e.Name) e.Tail>;
+    <ParseSentence (e.SetNames) (e.RuleNames (e.Name)) t.SrcPos (e.Name) e.Tail>;
 
   (e.SetNames) (e.RuleNames)
   (#TEOF t.SrcPos) e.Tail =
@@ -100,15 +102,15 @@ ParseElements {
 }
 
 ParseSetDescr {
-  (e.SetNames) (e.RuleNames) (e.Name) (#TEquals t.SrcPos) e.Tail =
+  (e.SetNames) (e.RuleNames) t.SetNamePos (e.Name) (#TEquals t.SrcPos) e.Tail =
     <Fetch
       <ExtractSets () e.Tail>
       {
-        () (#TDot t.SrcPos) e.Tail^ =
-          <ErrorAt t.SrcPos 'Set ' e.Name ' not have content'>;
+        () (#TDot t.SrcPos^) e.Tail^ =
+          <ErrorAt t.SrcPos 'Set :' e.Name ': not have content'>;
 
-        (e.Body) (#TDot t.SrcPos) e.Tail^ =
-          (#Set (e.Name) e.Body)
+        (e.Body) (#TDot t.SrcPos^) e.Tail^ =
+          (#Set t.SetNamePos (e.Name) e.Body)
           <ParseElements
             (e.SetNames) (e.RuleNames) e.Tail
           >;
@@ -118,7 +120,7 @@ ParseSetDescr {
       }
     >;
 
-  (e.SetNames) (e.RuleNames) (e.Name) t.Unexpected e.Tail =
+  (e.SetNames) (e.RuleNames) t.SetNamePos (e.Name) t.Unexpected e.Tail =
     <UnexpectedToken t.Unexpected '"="'>;
 }
 
@@ -137,12 +139,12 @@ ExtractSets {
 }
 
 ParseSentence {
-  (e.SetNames) (e.RuleNames) (e.Name) (#TEquals t.SrcPos) e.Tail =
+  (e.SetNames) (e.RuleNames) t.SentNamePos (e.Name) (#TEquals t.SrcPos) e.Tail =
     <Fetch
       <ExtractAlternatives () e.Tail>
       {
         (e.Body) (#TDot t.SrcPos^) e.Tail^ =
-          (#Sentence (e.Name) e.Body)
+          (#Sentence t.SentNamePos (e.Name) e.Body)
           <ParseElements
             (e.SetNames) (e.RuleNames) e.Tail
           >;
@@ -152,7 +154,7 @@ ParseSentence {
       }
     >;
 
-  (e.SetNames) (e.RuleNames) (e.Name) t.Unexpected e.Tail =
+  (e.SetNames) (e.RuleNames) t.SentNamePos (e.Name) t.Unexpected e.Tail =
     <UnexpectedToken t.Unexpected '"="'>;
 }
 
