@@ -3632,7 +3632,7 @@ refalrts::FnResult refalrts::RASLFunction::run(
 
       default:
         printf( "bad command: %d\n", raa[i].cmd );
-        assert( SWITCH_DEFAULT_VIOLATION );
+        // assert( SWITCH_DEFAULT_VIOLATION );
         throw UnexpectedTypeException();
     }
     i++;
@@ -3669,13 +3669,13 @@ int main(int argc, char **argv) {
     fflush(stdout);
   } catch (refalrts::UnexpectedTypeException) {
     fprintf(stderr, "INTERNAL ERROR: check all switches\n");
-    return 3;
+    return 151;
   } catch (std::exception& e) {
     fprintf(stderr, "INTERNAL ERROR: std::exception %s\n", e.what());
-    return 4;
+    return 152;
   } catch (...) {
     fprintf(stderr, "INTERNAL ERROR: unknown exception\n");
-    return 5;
+    return 153;
   }
 
   refalrts::profiler::end_profiler();

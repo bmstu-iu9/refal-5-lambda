@@ -1,0 +1,21 @@
+$ENTRY Go {
+%%
+  const refalrts::RASLCommand raa[] = {
+    {refalrts::icEnd + 5, 0, 0, 0}
+  };
+
+  refalrts::RASLFunction func(
+    "Test", raa,
+    refalrts::functions,
+    refalrts::idents,
+    refalrts::numbers,
+    refalrts::strings
+  );
+
+  refalrts::Iter inner_begin, inner_end;
+  refalrts::Iter func_name =
+    call_left(inner_begin, inner_end, arg_begin, arg_end);
+  func_name->function_info = &func;
+  return refalrts::RASLFunction::run(arg_begin, arg_end);
+%%
+}
