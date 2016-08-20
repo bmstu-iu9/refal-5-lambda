@@ -3,8 +3,11 @@ setlocal
   if {%RELEASE%}=={} (
     rem Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     rem SREFC_FLAGS используются только для сборки библиотек
-    set SREFC_FLAGS_PLUS=
-    set SRMAKE_FLAGS_PLUS=-X-C-DMEMORY_LIMIT=2500000 -X-C-DSTEP_LIMIT=30000000
+    set SREFC_FLAGS_PLUS=--markup-context
+    set SRMAKE_FLAGS_PLUS= ^
+      -X--markup-context ^
+      -X-C-DMEMORY_LIMIT=2500000 ^
+      -X-C-DSTEP_LIMIT=30000000
   ) else (
     set SREFC_FLAGS_PLUS=-OPR
     set SRMAKE_FLAGS_PLUS=-X-OPR
