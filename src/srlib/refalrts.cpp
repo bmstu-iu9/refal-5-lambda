@@ -17,8 +17,6 @@
 #define SHOW_DEBUG 0
 #endif // ifdef SHOW_DEBUG
 
-enum { SWITCH_DEFAULT_VIOLATION = 0 };
-
 void valid_linked_aux( const char *text, refalrts::Iter i ) {
   printf("checking %s\n", text);
   if( 0 == i ) {
@@ -656,17 +654,11 @@ refalrts::Iter refalrts::tvar_right(
   }
 }
 
-namespace refalrts {
-
-class UnexpectedTypeException { };
-
-} // namespace refalrts
-
 namespace {
 
 bool equal_nodes(
   refalrts::Iter node1, refalrts::Iter node2
-) // throws refalrts::UnexpectedTypeException
+) // throws refalrts::SwitchDefaultViolation
 {
   if( node1->tag != node2->tag ) {
     return false;
@@ -716,8 +708,7 @@ bool equal_nodes(
         познавания образца. Поэтому других узлов мы тут не ожидаем.
       */
       default:
-        assert( SWITCH_DEFAULT_VIOLATION );
-        throw refalrts::UnexpectedTypeException();
+        refalrts_switch_default_violation(node1->tag);
         // break;
     }
     // Все ветви в case завершаются либо return, либо throw.
@@ -742,7 +733,7 @@ namespace {
 bool equal_expressions(
   refalrts::Iter first1, refalrts::Iter last1,
   refalrts::Iter first2, refalrts::Iter last2
-) // throws refalrts::UnexpectedTypeException
+) // throws refalrts::SwitchDefaultViolation
 {
   assert( (first1 == 0) == (last1 == 0) );
   assert( (first2 == 0) == (last2 == 0) );
@@ -1140,8 +1131,7 @@ bool copy_node( refalrts::Iter& res, refalrts::Iter sample ) {
       быть не должно.
     */
     default:
-      assert( SWITCH_DEFAULT_VIOLATION );
-      throw refalrts::UnexpectedTypeException();
+      refalrts_switch_default_violation(sample->tag);
       // break;
   }
 }
@@ -1548,8 +1538,7 @@ void refalrts::reinit_svar(refalrts::Iter res, refalrts::Iter sample) {
       Копируем только атом, скобок быть не должно.
     */
     default:
-      assert( SWITCH_DEFAULT_VIOLATION );
-      throw refalrts::UnexpectedTypeException();
+      refalrts_switch_default_violation(sample->tag);
   }
 }
 
@@ -2785,8 +2774,7 @@ void refalrts::vm::print_seq(
             continue;
 
           default:
-            assert( SWITCH_DEFAULT_VIOLATION );
-            throw refalrts::UnexpectedTypeException();
+            refalrts_switch_default_violation(begin->tag);
             // break;
         }
 
@@ -2839,8 +2827,7 @@ void refalrts::vm::print_seq(
         continue;
 
       default:
-        assert( SWITCH_DEFAULT_VIOLATION );
-        throw refalrts::UnexpectedTypeException();
+        refalrts_switch_default_violation(state);
     }
   }
 
@@ -3497,7 +3484,7 @@ refalrts::FnResult refalrts::RASLFunction::run(
             break;
 
           default:
-            throw UnexpectedTypeException();
+            refalrts_switch_default_violation(raa[i].val2);
         }
         break;
 
@@ -3560,7 +3547,7 @@ refalrts::FnResult refalrts::RASLFunction::run(
             break;
 
           default:
-            throw UnexpectedTypeException();
+            refalrts_switch_default_violation(raa[i].val2);
         }
         break;
 
@@ -3631,9 +3618,7 @@ refalrts::FnResult refalrts::RASLFunction::run(
         MATCH_FAIL;
 
       default:
-        printf( "bad command: %d\n", raa[i].cmd );
-        // assert( SWITCH_DEFAULT_VIOLATION );
-        throw UnexpectedTypeException();
+        refalrts_switch_default_violation(raa[i].cmd);
     }
     i++;
   }
@@ -3648,6 +3633,15 @@ const refalrts::RefalIdentifier refalrts::idents[] = { 0 };
 const refalrts::RefalNumber refalrts::numbers[] = { 0 };
 const refalrts::StringItem refalrts::strings[] = { { "", 0 } };
 
+
+//==============================================================================
+
+void refalrts::SwitchDefaultViolation::print() {
+  fprintf(
+    stderr, "%s:%d:INTERNAL ERROR: switch value %s == %ld not handled\n",
+    m_filename, m_line, m_bad_expr, m_bad_switch_value
+  );
+}
 
 //==============================================================================
 
@@ -3667,8 +3661,8 @@ int main(int argc, char **argv) {
     res = refalrts::vm::main_loop();
     fflush(stderr);
     fflush(stdout);
-  } catch (refalrts::UnexpectedTypeException) {
-    fprintf(stderr, "INTERNAL ERROR: check all switches\n");
+  } catch (refalrts::SwitchDefaultViolation& error) {
+    error.print();
     return 151;
   } catch (std::exception& e) {
     fprintf(stderr, "INTERNAL ERROR: std::exception %s\n", e.what());

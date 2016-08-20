@@ -9,12 +9,6 @@
 
 //FROM refalrts
 
-namespace refalrts {
-
-class UnexpectedTypeException { };
-
-} // namespace refalrts
-
 namespace {
 
 static refalrts::Iter next( refalrts::Iter current ) {
@@ -401,7 +395,7 @@ refalrts::FnResult write_to_stream(
       }
 
       default:
-        throw refalrts::UnexpectedTypeException();
+        refalrts_switch_default_violation(p->tag);
         // break;
     }
   }

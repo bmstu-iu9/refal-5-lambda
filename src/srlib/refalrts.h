@@ -538,6 +538,37 @@ extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
 extern const StringItem strings[];
 
+class SwitchDefaultViolation {
+  const char *m_filename;
+  int m_line;
+  long m_bad_switch_value;
+  const char *m_bad_expr;
+
+public:
+  SwitchDefaultViolation(
+    const char *filename,
+    int line,
+    long bad_switch_value,
+    const char *bad_expr
+  )
+    : m_filename(filename)
+    , m_line(line)
+    , m_bad_switch_value(bad_switch_value)
+    , m_bad_expr(bad_expr)
+  {
+    /* пусто */
+  }
+
+  void print();
+};
+
+#define refalrts_switch_default_violation(bad_switch_value) \
+  ( \
+    throw ::refalrts::SwitchDefaultViolation( \
+      __FILE__, __LINE__, (bad_switch_value), #bad_switch_value \
+    ) \
+  )
+
 } //namespace refalrts
 
 #endif //RefalRTS_H_
