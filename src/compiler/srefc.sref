@@ -33,10 +33,11 @@ Main {
 
 Main-SwValidCommandLine {
   t.CommandLineSource
-  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile (e.Folders) e.Files =
+  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  (e.Folders) e.Files =
     <Main-SwFoundFiles
       t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
       <LookupSourceFiles (e.Folders) e.Files>
     >;
 
@@ -79,7 +80,7 @@ CreateErrorFileMark {
 
 Main-SwFoundFiles {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
   e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
@@ -99,17 +100,17 @@ Main-SwFoundFiles {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile e.Files =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
       <RenameTargets t.CppCompiler e.Files>
     >;
 }
 
 Main-SwRenamedTargets {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
   e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
@@ -132,10 +133,10 @@ Main-SwRenamedTargets {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile e.Files =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext e.Files =
     <Main-SwCompiledFiles
       t.CppCompiler t.ErrorFile
-      <CompileFiles s.GenMode s.Opt e.Files>
+      <CompileFiles s.GenMode s.Opt s.MarkupContext e.Files>
     >;
 }
 
@@ -229,7 +230,7 @@ RenameLocations-Aux {
 }
 
 CompileFiles {
-  s.GenMode s.Opt e.Files =
+  s.GenMode s.Opt s.MarkupContext e.Files =
     <Map
       {
         (s.Pos #Output e.OutputName) =
@@ -238,7 +239,9 @@ CompileFiles {
         (s.Pos #Source (e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
           <Fetch
-            <CompileFile s.GenMode s.Opt (e.Source) e.OutputName>
+            <CompileFile
+              s.GenMode s.Opt s.MarkupContext (e.Source) e.OutputName
+            >
             {
               #Success e.OutputName^ = (e.OutputName);
 

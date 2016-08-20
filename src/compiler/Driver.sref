@@ -29,15 +29,16 @@ $EXTERN LowLevelRASL;
 $EXTERN GenProgram;
 
 /**
-  <CompileFile s.GenMode s.Opt (e.SrcName) e.OutputName>
+  <CompileFile s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName>
     == #Success e.OutputName
     == #Fails
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
   s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
+  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
 */
 $ENTRY CompileFile {
-  s.GenMode s.Opt (e.SrcName) e.OutputName =
+  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName =
     <Fetch
       e.SrcName
       <Seq
@@ -58,7 +59,7 @@ $ENTRY CompileFile {
                   <Fetch
                     e.AST
                     <Seq
-                      Desugar
+                      (Desugar s.MarkupContext)
                       (HighLevelRASL <SelectOptFlags s.Opt>)
                       (LowLevelRASL s.GenMode)
                       (GenProgram (e.SrcName) (e.OutputName))

@@ -5,14 +5,14 @@ $EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 $EXTERN StrFromInt;
 
 $ENTRY Desugar {
-  e.AST =
+  s.MarkupContext e.AST =
     <Fetch
       e.AST
       <Seq
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
-        Pass-FlatNestedFuncs
+        (Pass-FlatNestedFuncs s.MarkupContext)
         Pass-CreatePredeclarations
       >
     >;
@@ -278,12 +278,12 @@ NameNestedResultRec {
 }
 
 Pass-FlatNestedFuncs {
-  e.AST =
+  s.MarkupContext e.AST =
     <Map
       {
         (#Function s.ScopeClass (e.Name) e.Body) =
           <Fetch
-            <ExtractNested e.Body>
+            <ExtractNested s.MarkupContext e.Body>
             {
               (e.NestedFuncs) e.Body^ =
                 e.NestedFuncs
@@ -298,9 +298,11 @@ Pass-FlatNestedFuncs {
 }
 
 ExtractNested {
-  e.Sentences =
+  s.MarkupContext e.Sentences =
     <Fetch
-      <ExtractNestedRec (/* внешних переменных нет */) e.Sentences>
+      <ExtractNestedRec
+        s.MarkupContext (/* внешних переменных нет */) e.Sentences
+      >
       {
         (/* заимстовованных переменных нет */) (e.NestedFuncs) e.Sentences^ =
           (e.NestedFuncs) e.Sentences;
@@ -309,7 +311,7 @@ ExtractNested {
 }
 
 ExtractNestedRec {
-  (e.ScopeVars) #Sentences e.Sentences =
+  s.MarkupContext (e.ScopeVars) #Sentences e.Sentences =
     <Fetch
       <MapReduce
         {
@@ -320,6 +322,7 @@ ExtractNestedRec {
                 (e.BorrowedVars^) e.LocalVars =
                   <Fetch
                     <ExtractNested-Result
+                      s.MarkupContext
                       (e.NestedFuncs) (e.BorrowedVars)
                       (e.ScopeVars) (e.LocalVars) e.Result
                     >
@@ -341,7 +344,7 @@ ExtractNestedRec {
       }
     >;
 
-  (e.ScopeVars) #NativeBody t.SrcPos e.Code =
+  s.MarkupContext (e.ScopeVars) #NativeBody t.SrcPos e.Code =
     (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
     #NativeBody t.SrcPos e.Code;
 }
@@ -392,11 +395,12 @@ UpdateBorrowedVars {
 }
 
 ExtractNested-Result {
+  s.MarkupContext
   (e.OriginNestedFuncs) (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars)
   e.OriginResult =
     <Fetch
       <MapReduce
-        (ExtractNested-Result-Term (e.ScopeVars) (e.LocalVars))
+        (ExtractNested-Result-Term s.MarkupContext (e.ScopeVars) (e.LocalVars))
         ((e.OriginNestedFuncs) (e.OriginBorrowedVars)) e.OriginResult
       >
       {
@@ -407,7 +411,7 @@ ExtractNested-Result {
 }
 
 ExtractNested-Result-Term {
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) (#TkVariable s.Mode e.Index) =
     (
       (e.NestedFuncs)
@@ -415,10 +419,11 @@ ExtractNested-Result-Term {
     )
     (#TkVariable s.Mode e.Index);
 
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) (#Brackets e.InBrackets) =
     <Fetch
       <ExtractNested-Result
+        s.MarkupContext
         (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
         e.InBrackets
       >
@@ -429,11 +434,12 @@ ExtractNested-Result-Term {
       }
     >;
 
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
   (#ADT-Brackets (e.Name) e.InBrackets) =
     <Fetch
       <ExtractNested-Result
+        s.MarkupContext
         (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
         e.InBrackets
       >
@@ -444,11 +450,12 @@ ExtractNested-Result-Term {
       }
     >;
 
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
   (#CallBrackets e.InBrackets) =
     <Fetch
       <ExtractNested-Result
+        s.MarkupContext
         (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
         e.InBrackets
       >
@@ -459,11 +466,11 @@ ExtractNested-Result-Term {
       }
     >;
 
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
   (#Closure (e.ClosureName) e.Body) =
     <Fetch
-      <ExtractNestedRec (e.ScopeVars e.LocalVars) e.Body>
+      <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
       {
         (/* свободные переменные в функции отсутствуют */)
         (e.NestedNestedFuncs) #Sentences e.Sentences =
@@ -483,7 +490,10 @@ ExtractNested-Result-Term {
               (#Function
                 #GN-Local (e.ClosureName)
                 #Sentences
-                <Map (AddContextToSentence e.NestedBorrowedVars) e.Sentences>
+                <Map
+                  (AddContextToSentence s.MarkupContext e.NestedBorrowedVars)
+                  e.Sentences
+                >
               )
             )
             <Reduce
@@ -494,7 +504,7 @@ ExtractNested-Result-Term {
           (#CallBrackets
             (#TkName #CreateClosure)
             (#TkName e.ClosureName)
-            <CreateContext e.NestedBorrowedVars>
+            <CreateContext s.MarkupContext e.NestedBorrowedVars>
           );
 
         (/* свободные переменные в нативной функции отсутствуют */)
@@ -511,7 +521,7 @@ ExtractNested-Result-Term {
       }
     >;
 
-  (e.ScopeVars) (e.LocalVars)
+  s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm =
     ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm;
 }
@@ -530,12 +540,26 @@ CheckBorrowed {
 }
 
 AddContextToSentence {
-  e.Context ((e.Pattern) (e.Result)) =
-    ((<CreateContext e.Context> e.Pattern) (e.Result));
+  s.MarkupContext e.Context ((e.Pattern) (e.Result)) =
+    ((<CreateContext s.MarkupContext e.Context> e.Pattern) (e.Result));
 }
 
 CreateContext {
-  e.Context =
+  #MarkupContext e.Context =
+    <Map
+      {
+        ('e' e.Index) =
+          (#TkIdentifier #VAR 'e' e.Index)
+          (#Brackets (#TkVariable 'e' e.Index));
+
+        (s.Mode e.Index) =
+          (#TkIdentifier #VAR s.Mode e.Index)
+          (#TkVariable s.Mode e.Index);
+      }
+      e.Context
+    >;
+
+  #NoMarkupContext e.Context =
     <Map
       {
         ('e' e.Index) = (#Brackets (#TkVariable 'e' e.Index));

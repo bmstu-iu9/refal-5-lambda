@@ -9,7 +9,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 
 /**
   <ParseCommandLine e.Arguments>
-    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile
+    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
        ((e.Folder)*) (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
 
@@ -17,6 +17,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
+  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
@@ -27,6 +28,7 @@ $ENTRY ParseCommandLine {
           (#GenMode #Required ('gen'))
           (#Opt #Required 'O')
           (#ErrorFile #Required 'e' ('error-file'))
+          (#MarkupContext #None ('markup-context'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#CppFlags #Required 'CF' ('cppflags'))
           (#CppFlag #Required 'f' ('cppflag'))
@@ -38,7 +40,8 @@ $ENTRY ParseCommandLine {
         {
           (e.Errors) e.Options =
             <GetOpt-CheckRepeated
-              (#CppCompiler #GenMode #Opt #ErrorFile) (e.Errors) e.Options
+              (#CppCompiler #GenMode #Opt #ErrorFile #MarkupContext)
+              (e.Errors) e.Options
             >;
         }
         {
@@ -93,6 +96,14 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #NoErrorFile) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#MarkupContext s.Num) e.Options-E =
+            (e.Errors) (e.Bag #MarkupContext) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #NoMarkupContext) e.Options;
         }
         {
           (e.Errors) (e.Bag) e.Options =

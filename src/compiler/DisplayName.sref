@@ -6,6 +6,7 @@ $EXTERN EscapeString;
 
 $ENTRY DisplayName {
   #CreateClosure = '@create_closure@';
+  #VAR s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth> ':';
   e.Name #SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
   e.Name = e.Name;
 }
@@ -22,6 +23,8 @@ $ENTRY DisplayCName {
 
 $ENTRY CName {
   #CreateClosure = 'refalrts::create_closure';
+  #VAR s.Mode e.Index s.Depth =
+    'var_' s.Mode <CName e.Index> '_' <StrFromInt s.Depth>;
   e.Name #SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;
   e.Name-B '-' e.Name-E = e.Name-B '_' <CName e.Name-E>;
   e.Name = e.Name;

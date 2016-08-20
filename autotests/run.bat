@@ -29,6 +29,8 @@ goto :EOF
 setlocal
   set SRFLAGS=
   call :%2 %1 || exit /b 1
+  set SRFLAGS=--markup-context
+  call :%2 %1 || exit /b 1
   set SRFLAGS=-OP
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OR

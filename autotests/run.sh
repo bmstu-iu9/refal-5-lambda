@@ -2,6 +2,7 @@
 
 run_test_all_modes() {
   SRFLAGS= $2 $1
+  SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
