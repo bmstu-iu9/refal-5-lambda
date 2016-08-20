@@ -348,24 +348,11 @@ ExtractNestedRec {
 
 ExtractNested-Pattern {
   (e.ScopeVars) (e.BorrowedVars) e.Pattern =
-    <Fetch
-      e.Pattern
-      <Seq
-        ExtractAllVars
-        Uniq
-        (MapReduce RemoveBorrowedVars (e.BorrowedVars))
-        {
-          (e.BorrowedVars^) e.LocalVars =
-            <MapReduce
-              FindBorrowedVars
-              ((e.ScopeVars) (e.BorrowedVars))
-              e.LocalVars
-            >;
-        }
-        {
-          ((e.ScopeVars^) (e.BorrowedVars^)) e.LocalVars =
-            (e.BorrowedVars) e.LocalVars;
-        }
+    <MapReduce
+      (UpdateBorrowedVars e.ScopeVars)
+      (e.BorrowedVars)
+      <Uniq
+        <ExtractAllVars e.Pattern>
       >
     >;
 }
@@ -389,27 +376,19 @@ Uniq {
   e.Uniqs = e.Uniqs;
 }
 
-RemoveBorrowedVars {
-  (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E) (s.Mode e.Index) =
-    (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E)
-    /* отбрасываем */;
-
-  (e.BorrowedVars) (s.Mode e.Index) = (e.BorrowedVars) (s.Mode e.Index);
-}
-
-FindBorrowedVars {
-  (
-    (e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E)
-    (e.BorrowedVars)
-  )
+UpdateBorrowedVars {
+  e.ScopeVars
+  (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E)
   (s.Mode e.Index) =
-    (
-      (e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E)
-      (e.BorrowedVars (s.Mode e.Index))
-    );
+    (e.BorrowedVars-B (s.Mode e.Index) e.BorrowedVars-E);
 
-  ((e.ScopeVars) (e.BorrowedVars)) (s.Mode e.Index) =
-    ((e.ScopeVars) (e.BorrowedVars)) (s.Mode e.Index);
+  e.ScopeVars-B (s.Mode e.Index) e.ScopeVars-E
+  (e.BorrowedVars) (s.Mode e.Index) =
+    (e.BorrowedVars (s.Mode e.Index));
+
+  e.ScopeVars
+  (e.BorrowedVars) (s.Mode e.Index) =
+    (e.BorrowedVars) (s.Mode e.Index);
 }
 
 ExtractNested-Result {
@@ -552,13 +531,7 @@ CheckBorrowed {
 
 AddContextToSentence {
   e.Context ((e.Pattern) (e.Result)) =
-    (
-      (
-        <CreateContext e.Context>
-        e.Pattern
-      )
-      (e.Result)
-    );
+    ((<CreateContext e.Context> e.Pattern) (e.Result));
 }
 
 CreateContext {
