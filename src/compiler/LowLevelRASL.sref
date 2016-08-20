@@ -21,7 +21,7 @@ $ENTRY LowLevelRASL {
             (#Function s.ScopeClass (e.Name) e.Commands) =
               (
                 e.Declarations
-                <Function-Extern s.GenMode s.ScopeClass e.Name>
+                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
               )
               <Function
                 s.GenMode s.ScopeClass (e.Name)
@@ -476,25 +476,6 @@ CheckFrozen {
 Freeze {
   e.BracketNumbers =
     <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
-}
-
-Function-Extern {
-  #Both s.ScopeClass e.Name =
-    // Интерпретируемый код
-    (#CmdIfDef 'INTERPRET')
-    <Function-Extern #OnlyInterpret s.ScopeClass e.Name>
-    (#CmdElse)
-    // Компилируемый код
-    <Function-Extern #OnlyDirect s.ScopeClass e.Name>
-    (#CmdEndIf);
-
-  #OnlyDirect s.ScopeClass e.Name =
-    // Компилируемый код
-    <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>;
-
-  #OnlyInterpret s.ScopeClass e.Name =
-    // Интерпретируемый код
-    <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>;
 }
 
 Function {
