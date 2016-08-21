@@ -192,10 +192,32 @@ run_test() {
   run_test_aux$SUFFIX $1
 }
 
+run_test_dir() {
+  DIR=$(dirname $1)
+  echo Passing special test in dir $DIR
+  cd $DIR
+  ./run.sh
+  if [ $? -gt 0 ]; then
+    echo TEST FAILED
+    cd ..
+    exit 1
+  fi
+  cd ..
+}
+
+run_all_dir_tests() {
+  for d in */run.sh; do
+    run_test_dir $d
+  done
+}
+
 if [ -z "$1" ]; then
   for s in *.sref; do
     run_test $s
   done
+  run_all_dir_tests
+elif [ "$1"="--dir" ]; then
+  run_all_dir_tests
 else
   for s in $*; do
     run_test $s
