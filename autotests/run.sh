@@ -1,4 +1,5 @@
 #!/bin/bash
+source ../c-plus-plus.conf.sh
 
 run_test_all_modes() {
   SRFLAGS= $2 $1
@@ -33,7 +34,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  g++ $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -95,7 +96,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  g++ $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -141,7 +142,7 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  g++ $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
