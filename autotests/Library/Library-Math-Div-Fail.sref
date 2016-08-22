@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN Div;
+
+$ENTRY Go {
+  = <Div 1 0>;
+}

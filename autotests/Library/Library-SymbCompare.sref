@@ -1,0 +1,45 @@
+//FROM Library
+$EXTERN SymbCompare, FOpen, FClose;
+
+LT { '<' = ; }
+EQ { '=' = ; }
+GT { '>' = ; }
+
+$ENTRY Go {
+  = <CompareTypes <FOpen 'r' '2lines.txt'>>;
+}
+
+CompareTypes {
+  s.FileHandle =
+    <LT <SymbCompare 42 666>>
+    <EQ <SymbCompare 42 42>>
+    <GT <SymbCompare 666 42>>
+
+    <LT <SymbCompare 'a' 'b'>>
+    <EQ <SymbCompare '5' '5'>>
+    <GT <SymbCompare 'Z' 'A'>>
+
+    // сравнение функций: сначала по имени, потом по указателю
+    <LT <SymbCompare EQ LT>>
+    <EQ <SymbCompare EQ EQ>>
+    <GT <SymbCompare GT EQ>>
+
+    <LT <SymbCompare #AA #ZZ>>
+    <EQ <SymbCompare #EE #EE>>
+    <GT <SymbCompare #ZZ #ZA>>
+
+    // ради простоты теста сравниваем только равенство
+    <EQ <SymbCompare s.FileHandle s.FileHandle>>
+
+    <GT <SymbCompare 1 'a'>>
+    <GT <SymbCompare 'a' Go>>
+    <GT <SymbCompare Go #Name>>
+    <GT <SymbCompare #Name s.FileHandle>>
+
+    <LT <SymbCompare s.FileHandle #Name>>
+    <LT <SymbCompare #Name Go>>
+    <LT <SymbCompare Go 'a'>>
+    <LT <SymbCompare 'a' 1>>
+
+    <FClose s.FileHandle>;
+}

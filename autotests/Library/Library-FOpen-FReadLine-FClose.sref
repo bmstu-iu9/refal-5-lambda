@@ -1,0 +1,33 @@
+//FROM Library
+$EXTERN FOpen, FReadLine, FClose;
+
+$ENTRY Go {
+  =
+    <CheckContent ('2lines.txt') ('Hello') ('World') (0)>
+    <CheckContent ('2lines-no-eol.txt') ('Hello') ('World' 0)>;
+}
+
+Handle { s.FileHandle = s.FileHandle; }
+
+CheckContent {
+  (e.FileName) e.Lines =
+    <DoCheckContent <Handle <FOpen 'r' e.FileName>> e.Lines>;
+}
+
+DoCheckContent {
+  s.FileHandle e.Lines =
+    <DoCheckContent-EatLine
+      s.FileHandle (<FReadLine s.FileHandle>) e.Lines
+    >;
+}
+
+Empty { /* пусто */ = ; }
+
+DoCheckContent-EatLine {
+  s.FileHandle (s.FileHandle e.NextLine 0) (e.NextLine 0) =
+    /* всё, все строчки прочтены */
+    <Empty <FClose s.FileHandle>>;
+
+  s.FileHandle (s.FileHandle e.NextLine) (e.NextLine) e.Lines =
+    <DoCheckContent s.FileHandle e.Lines>;
+}

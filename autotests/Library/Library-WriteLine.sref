@@ -1,0 +1,10 @@
+//FROM Library
+$EXTERN WriteLine;
+
+Empty { /* пусто */ = ; }
+
+$ENTRY Go {
+  =
+    <Empty <WriteLine 'Hello'>>
+    <Empty <WriteLine 'World'>>;
+}

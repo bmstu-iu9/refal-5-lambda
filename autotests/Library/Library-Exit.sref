@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN Exit;
+
+$ENTRY Go {
+  = <Exit 42>;
+}

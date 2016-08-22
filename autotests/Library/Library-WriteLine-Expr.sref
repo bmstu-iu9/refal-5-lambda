@@ -1,0 +1,11 @@
+//FROM Library
+$EXTERN WriteLine;
+
+Empty { /* пусто */ = ; }
+
+$ENTRY Go {
+  e.Context =
+    <Empty
+      <WriteLine 100 #Ident Go (1 2) 'abc' [Go] { = e.Context; } '!'>
+    >;
+}

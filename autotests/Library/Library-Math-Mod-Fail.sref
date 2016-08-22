@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN Mod;
+
+$ENTRY Go {
+  = <Mod 1 0>;
+}

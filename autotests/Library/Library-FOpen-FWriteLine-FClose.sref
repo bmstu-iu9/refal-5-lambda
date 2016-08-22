@@ -1,0 +1,16 @@
+//FROM Library
+$EXTERN FOpen, FWriteLine, FClose;
+
+$ENTRY Go {
+  = <FillFile <FOpen 'w' '__written_file.txt'>>;
+}
+
+Handle { s.FileHandle = ; }
+Empty { /* пусто */ = ; }
+
+FillFile {
+  s.FileHandle =
+    <Handle <FWriteLine s.FileHandle 'Hello'>>
+    <Handle <FWriteLine s.FileHandle 'World'>>
+    <Empty <FClose s.FileHandle>>;
+}

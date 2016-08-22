@@ -1,0 +1,10 @@
+//FROM Library
+$EXTERN SymbCompare;
+
+/*
+  Функция SymbCompare не поддерживает атомы-замыкания.
+*/
+
+$ENTRY Go {
+  e.VarInContext = <SymbCompare 'X' { = e.VarInContext; }>;
+}

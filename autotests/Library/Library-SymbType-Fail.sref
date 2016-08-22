@@ -1,0 +1,10 @@
+//FROM Library
+$EXTERN SymbType;
+
+/*
+  Функция SymbType не поддерживает атомы-замыкания.
+*/
+
+$ENTRY Go {
+  e.VarInContext = <SymbType { = e.VarInContext; }>;
+}

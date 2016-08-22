@@ -1,0 +1,9 @@
+//FROM Library
+$EXTERN ReadLine;
+
+$ENTRY Go {
+  =
+    <{ 'Hello' = ; } <ReadLine>>
+    <{ 'World' = ; } <ReadLine>>
+    <{ 0 = ; } <ReadLine>>;
+}
