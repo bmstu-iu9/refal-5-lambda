@@ -61,214 +61,66 @@ $LABEL TypeIdentifier;
 
 // Математические операции
 
+%%
+#define ARITHM(op, check) \
+  refalrts::Iter pX = 0, pY = 0; \
+  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
+  \
+  if ( \
+    ! refalrts::empty_seq(pX, pY) \
+    && pX->next != pY \
+    && refalrts::cDataNumber != pX->tag \
+    && refalrts::cDataNumber != pY->tag \
+  ) { \
+    return refalrts::cRecognitionImpossible; \
+  } \
+  \
+  check \
+  \
+  pX->number_info op##= pY->number_info; \
+  \
+  refalrts::splice_to_freelist(arg_begin, pFunc); \
+  refalrts::splice_to_freelist(pY, arg_end); \
+  return refalrts::cSuccess;
+
+#define ARITHM_NO_CHECK \
+  /* пусто */
+
+#define ARITHM_ZERODIV \
+  if (0 == pY->number_info) { \
+    /* деление на нуль */ \
+    return refalrts::cRecognitionImpossible; \
+  }
+
+%%
+
 $ENTRY Add {
 %%
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info + sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
+  ARITHM(+, ARITHM_NO_CHECK);
 %%
 }
 
 $ENTRY Sub {
 %%
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info - sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
+  ARITHM(-, ARITHM_NO_CHECK);
 %%
 }
 
 $ENTRY Mul {
 %%
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info * sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
+  ARITHM(*, ARITHM_NO_CHECK);
 %%
 }
 
 $ENTRY Div {
 %%
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    if( sNumber2_1->number_info == 0 )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info / sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
+  ARITHM(/, ARITHM_ZERODIV);
 %%
 }
 
 $ENTRY Mod {
 %%
-  do {
-    refalrts::Iter bb_0 = arg_begin;
-    refalrts::Iter be_0 = arg_end;
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_left( bb_0, be_0 );
-    refalrts::move_right( bb_0, be_0 );
-
-    refalrts::Iter sNumber1_1;
-    refalrts::Iter sNumber2_1;
-    if( ! refalrts::svar_left( sNumber1_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::svar_left( sNumber2_1, bb_0, be_0 ) )
-      break;
-    if( ! refalrts::empty_seq( bb_0, be_0 ) )
-      break;
-
-    if( sNumber1_1->tag != refalrts::cDataNumber )
-      break;
-    if( sNumber2_1->tag != refalrts::cDataNumber )
-      break;
-
-    if( sNumber2_1->number_info == 0 )
-      break;
-
-    refalrts::RefalNumber result =
-      sNumber1_1->number_info % sNumber2_1->number_info;
-
-    refalrts::reset_allocator();
-    refalrts::Iter res = arg_begin;
-    refalrts::Iter n0 = 0;
-    if( ! refalrts::alloc_number( n0, result ) )
-      return refalrts::cNoMemory;
-    res = refalrts::splice_elem( res, n0 );
-    refalrts::use( res );
-    refalrts::splice_to_freelist( arg_begin, arg_end );
-    return refalrts::cSuccess;
-  } while ( 0 );
-
-  return refalrts::cRecognitionImpossible;
+  ARITHM(%, ARITHM_ZERODIV);
 %%
 }
 
