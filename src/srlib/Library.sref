@@ -207,6 +207,9 @@ $ENTRY Div {
     if( sNumber2_1->tag != refalrts::cDataNumber )
       break;
 
+    if( sNumber2_1->number_info == 0 )
+      break;
+
     refalrts::RefalNumber result =
       sNumber1_1->number_info / sNumber2_1->number_info;
 
@@ -246,6 +249,9 @@ $ENTRY Mod {
     if( sNumber1_1->tag != refalrts::cDataNumber )
       break;
     if( sNumber2_1->tag != refalrts::cDataNumber )
+      break;
+
+    if( sNumber2_1->number_info == 0 )
       break;
 
     refalrts::RefalNumber result =
