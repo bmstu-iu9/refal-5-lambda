@@ -67,10 +67,9 @@ $LABEL TypeIdentifier;
   refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
   \
   if ( \
-    ! refalrts::empty_seq(pX, pY) \
-    && pX->next != pY \
-    && refalrts::cDataNumber != pX->tag \
-    && refalrts::cDataNumber != pY->tag \
+    pX->next != pY \
+    || refalrts::cDataNumber != pX->tag \
+    || refalrts::cDataNumber != pY->tag \
   ) { \
     return refalrts::cRecognitionImpossible; \
   } \

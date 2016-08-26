@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN Add, WriteLine;
+
+$ENTRY Go {
+  = <WriteLine '1+2=' <Add '1' '2'>>;
+}

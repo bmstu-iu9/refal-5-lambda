@@ -35,6 +35,7 @@ setlocal
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^
+    Library-Math-Fail ^
     Library-Math-Div-Fail ^
     Library-Math-Mod-Fail ^
     Library-FOpen-Fail ^
