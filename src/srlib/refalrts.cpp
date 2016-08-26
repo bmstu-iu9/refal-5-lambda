@@ -1906,12 +1906,23 @@ namespace vm {
 extern int g_ret_code;
 extern void print_seq(FILE *output, refalrts::Iter begin, refalrts::Iter end);
 
+char **g_argv = 0;
+unsigned int g_argc = 0;
+
 } // namespace vm
 
 } // namespace refalrts
 
 void refalrts::set_return_code( int code ) {
   refalrts::vm::g_ret_code = code;
+}
+
+const char* refalrts::arg(unsigned int param) {
+  if (param < vm::g_argc) {
+    return vm::g_argv[param];
+  } else {
+    return "";
+  }
 }
 
 void refalrts::debug_print_expr(
@@ -3645,14 +3656,9 @@ void refalrts::SwitchDefaultViolation::print() {
 
 //==============================================================================
 
-// Используются в Library.cpp
-
-char **g_argv = 0;
-int g_argc = 0;
-
 int main(int argc, char **argv) {
-  g_argc = argc;
-  g_argv = argv;
+  refalrts::vm::g_argc = argc;
+  refalrts::vm::g_argv = argv;
 
   refalrts::FnResult res;
   try {

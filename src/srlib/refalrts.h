@@ -490,6 +490,8 @@ inline void set_return_code( RefalNumber retcode ) {
   set_return_code( static_cast<int>(retcode) );
 }
 
+const char* arg(unsigned int param);
+
 /*
   Функция производит печать рефал-выражения в поток file
   в том же формате, как и при отладочном дампе памяти.
