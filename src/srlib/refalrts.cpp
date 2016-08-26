@@ -1682,7 +1682,7 @@ refalrts::FnResult func_create_closure(
   refalrts::move_left( closure_b, closure_e ); // пропуск имени функции
   refalrts::move_right( closure_b, closure_e ); // пропуск >
 
-  if( empty_seq( closure_b, closure_e ) )
+  if( refalrts::empty_seq( closure_b, closure_e ) )
     return refalrts::cRecognitionImpossible;
 
   refalrts::Iter closure = 0;
