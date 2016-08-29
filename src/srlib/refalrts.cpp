@@ -2383,14 +2383,7 @@ unsigned g_step_counter = 0;
 int g_ret_code;
 
 template <typename T>
-class Stack;
-
-} // namespace vm
-
-} // namespace refalrts
-
-template <typename T>
-class refalrts::vm::Stack {
+class Stack {
 public:
   Stack()
     :m_memory(new T[1]), m_size(0), m_capacity(1)
@@ -2413,6 +2406,11 @@ private:
   size_t m_size;
   size_t m_capacity;
 };
+
+
+} // namespace vm
+
+} // namespace refalrts
 
 template <typename T>
 void refalrts::vm::Stack<T>::reserve(size_t size) {
