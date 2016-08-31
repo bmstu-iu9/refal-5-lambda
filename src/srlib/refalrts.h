@@ -33,7 +33,7 @@ enum DataTag {
   cDataClosureHead
 };
 
-typedef FnResult (*RefalFunctionPtr) ( Iter begin, Iter end );
+typedef FnResult (*RefalFunctionPtr) (Iter begin, Iter end);
 
 typedef const char *(*RefalIdentifier) ();
 
@@ -243,9 +243,9 @@ struct StringItem {
   unsigned string_len;
 };
 
-extern void use( Iter& );
+extern void use(Iter&);
 
-void zeros( Iter context[], int size );
+void zeros(Iter context[], int size);
 
 //операции реинициализации
 
@@ -276,30 +276,30 @@ extern void reinit_close_call(Iter res);
 
 // Операции распознавания образца
 
-extern void move_left( Iter& begin, Iter& end );
-extern void move_right( Iter& begin, Iter& end );
-extern bool empty_seq( Iter begin, Iter end );
+extern void move_left(Iter& begin, Iter& end);
+extern void move_right(Iter& begin, Iter& end);
+extern bool empty_seq(Iter begin, Iter end);
 
 #ifdef MODULE_REFAL
-extern Iter function_left( RefalFunctionPtr func, Iter& first, Iter& last );
-extern Iter function_right( RefalFunctionPtr func, Iter& first, Iter& last );
+extern Iter function_left(RefalFunctionPtr func, Iter& first, Iter& last);
+extern Iter function_right(RefalFunctionPtr func, Iter& first, Iter& last);
 #else
-extern bool function_term( const RefalFunction *func, Iter pos );
-extern Iter function_left( const RefalFunction *func, Iter& first, Iter& last );
-extern Iter function_right( const RefalFunction *func, Iter& first, Iter& last );
+extern bool function_term(const RefalFunction *func, Iter pos);
+extern Iter function_left(const RefalFunction *func, Iter& first, Iter& last);
+extern Iter function_right(const RefalFunction *func, Iter& first, Iter& last);
 #endif
 
-extern bool char_term(char ch, Iter& pos );
-extern Iter char_left( char ch, Iter& first, Iter& last );
-extern Iter char_right( char ch, Iter& first, Iter& last );
+extern bool char_term(char ch, Iter& pos);
+extern Iter char_left(char ch, Iter& first, Iter& last);
+extern Iter char_right(char ch, Iter& first, Iter& last);
 
-extern bool number_term( RefalNumber num, Iter& pos );
-extern Iter number_left( RefalNumber num, Iter& first, Iter& last );
-extern Iter number_right( RefalNumber num, Iter& first, Iter& last );
+extern bool number_term(RefalNumber num, Iter& pos);
+extern Iter number_left(RefalNumber num, Iter& first, Iter& last);
+extern Iter number_right(RefalNumber num, Iter& first, Iter& last);
 
-extern bool ident_term( RefalIdentifier ident, Iter& pos );
-extern Iter ident_left( RefalIdentifier ident, Iter& first, Iter& last );
-extern Iter ident_right( RefalIdentifier ident, Iter& first, Iter& last );
+extern bool ident_term(RefalIdentifier ident, Iter& pos);
+extern Iter ident_left(RefalIdentifier ident, Iter& first, Iter& last);
+extern Iter ident_right(RefalIdentifier ident, Iter& first, Iter& last);
 
 #ifdef MODULE_REFAL
 extern Iter adt_left(
@@ -339,7 +339,7 @@ extern void call_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void adt_pointers(Iter left_bracket, Iter& tag, Iter& right_bracket);
 extern void bracket_pointers(Iter left_bracket, Iter& right_bracket);
 
-extern bool brackets_term( Iter& res_first, Iter& res_last, Iter& pos );
+extern bool brackets_term(Iter& res_first, Iter& res_last, Iter& pos);
 extern Iter brackets_left(
   Iter& res_first, Iter& res_last, Iter& first, Iter& last
 );
@@ -347,12 +347,12 @@ extern Iter brackets_right(
   Iter& res_first, Iter& res_last, Iter& first, Iter& last
 );
 
-extern bool svar_term( Iter svar, Iter pos );
-extern bool svar_left( Iter& svar, Iter& first, Iter& last );
-extern bool svar_right( Iter& svar, Iter& first, Iter& last );
+extern bool svar_term(Iter svar, Iter pos);
+extern bool svar_left(Iter& svar, Iter& first, Iter& last);
+extern bool svar_right(Iter& svar, Iter& first, Iter& last);
 
-extern refalrts::Iter tvar_left( Iter& tvar, Iter& first, Iter& last );
-extern refalrts::Iter tvar_right( Iter& tvar, Iter& first, Iter& last );
+extern refalrts::Iter tvar_left(Iter& tvar, Iter& first, Iter& last);
+extern refalrts::Iter tvar_right(Iter& tvar, Iter& first, Iter& last);
 
 extern bool repeated_stvar_term(Iter stvar_sample, Iter pos);
 extern refalrts::Iter repeated_stvar_left(
@@ -392,10 +392,10 @@ extern bool copy_evar(
   Iter evar_b_sample, Iter evar_e_sample
 );
 
-extern bool copy_stvar( Iter& stvar_res, Iter stvar_sample );
+extern bool copy_stvar(Iter& stvar_res, Iter stvar_sample);
 
-extern bool alloc_char( Iter& res, char ch );
-extern bool alloc_number( Iter& res, RefalNumber num );
+extern bool alloc_char(Iter& res, char ch);
+extern bool alloc_number(Iter& res, RefalNumber num);
 #ifdef MODULE_REFAL
 extern bool alloc_name(
   Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
@@ -403,13 +403,13 @@ extern bool alloc_name(
 #else
 extern bool alloc_name(Iter& res, RefalFunction *func);
 #endif
-extern bool alloc_ident( Iter& res, RefalIdentifier ident );
-extern bool alloc_open_adt( Iter& res );
-extern bool alloc_close_adt( Iter& res );
-extern bool alloc_open_bracket( Iter& res );
-extern bool alloc_close_bracket( Iter& res );
-extern bool alloc_open_call( Iter& res );
-extern bool alloc_close_call( Iter& res );
+extern bool alloc_ident(Iter& res, RefalIdentifier ident);
+extern bool alloc_open_adt(Iter& res);
+extern bool alloc_close_adt(Iter& res);
+extern bool alloc_open_bracket(Iter& res);
+extern bool alloc_close_bracket(Iter& res);
+extern bool alloc_open_call(Iter& res);
+extern bool alloc_close_call(Iter& res);
 
 #ifndef alloc_copy_svar
 #define alloc_copy_svar alloc_copy_svar_
@@ -422,34 +422,34 @@ extern bool alloc_close_call( Iter& res );
 extern bool alloc_copy_evar(
   Iter& res, Iter evar_b_sample, Iter evar_e_sample
 );
-extern bool alloc_copy_svar_( Iter& svar_res, Iter svar_sample );
+extern bool alloc_copy_svar_(Iter& svar_res, Iter svar_sample);
 
 extern bool alloc_chars(
   Iter& res_b, Iter& res_e, const char buffer[], unsigned buflen
 );
-extern bool alloc_string( Iter& res_b, Iter& res_e, const char *string );
+extern bool alloc_string(Iter& res_b, Iter& res_e, const char *string);
 
-extern void push_stack( Iter call_bracket );
-extern void link_brackets( Iter left, Iter right );
+extern void push_stack(Iter call_bracket);
+extern void link_brackets(Iter left, Iter right);
 
-extern Iter splice_elem( Iter res, Iter elem );
-extern Iter splice_stvar( Iter res, Iter var );
-extern Iter splice_evar( Iter res, Iter first, Iter last );
-extern void splice_to_freelist( Iter first, Iter last );
-extern void splice_to_freelist_open( Iter before_first, Iter after_last );
-extern void splice_from_freelist( Iter pos );
+extern Iter splice_elem(Iter res, Iter elem);
+extern Iter splice_stvar(Iter res, Iter var);
+extern Iter splice_evar(Iter res, Iter first, Iter last);
+extern void splice_to_freelist(Iter first, Iter last);
+extern void splice_to_freelist_open(Iter before_first, Iter after_last);
+extern void splice_from_freelist(Iter pos);
 
 #ifndef MODULE_REFAL
 extern RefalFunction create_closure;
 #endif
-Iter unwrap_closure( Iter closure ); // Развернуть замыкание
-Iter wrap_closure( Iter closure ); // Свернуть замыкание
+Iter unwrap_closure(Iter closure); // Развернуть замыкание
+Iter wrap_closure(Iter closure); // Свернуть замыкание
 
 // Работа со статическими ящиками
 
-extern Iter initialize_swap_head( Iter head );
-extern void swap_info_bounds( Iter& first, Iter& last, Iter head );
-extern void swap_save( Iter head, Iter first, Iter last );
+extern Iter initialize_swap_head(Iter head);
+extern void swap_info_bounds(Iter& first, Iter& last, Iter head);
+extern void swap_save(Iter head, Iter first, Iter last);
 
 // Профилирование
 
@@ -483,11 +483,11 @@ extern void read_performance_counters(unsigned long counters[]);
 
 // Прочие функции
 
-extern void set_return_code( int retcode );
-extern void use_counter( unsigned& counter );
+extern void set_return_code(int retcode);
+extern void use_counter(unsigned& counter);
 
-inline void set_return_code( RefalNumber retcode ) {
-  set_return_code( static_cast<int>(retcode) );
+inline void set_return_code(RefalNumber retcode) {
+  set_return_code(static_cast<int>(retcode));
 }
 
 const char* arg(unsigned int param);
