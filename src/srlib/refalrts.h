@@ -37,35 +37,21 @@ typedef FnResult (*RefalFunctionPtr) (Iter begin, Iter end);
 
 typedef const char *(*RefalIdentifier) ();
 
-#ifdef MODULE_REFAL
-typedef RefalIdentifier RefalFuncName;
-#else
 typedef const char * RefalFuncName;
-#endif
 
 struct RefalFunction {
   RefalFunctionPtr ptr;
   RefalFuncName name;
 
-#ifndef MODULE_REFAL
   RefalFunction(RefalFunctionPtr ptr, RefalFuncName name)
     : ptr(ptr), name(name)
   {
     /* пусто */
   }
-#endif
 };
 
 typedef unsigned long RefalNumber;
 
-#ifdef MODULE_REFAL
-
-struct RefalSwapHead {
-  Iter next_head;
-  RefalFuncName name;
-};
-
-#else
 
 struct RefalSwap: public RefalFunction {
   Iter head;
@@ -90,7 +76,6 @@ struct RefalEmptyFunction: public RefalFunction {
   static FnResult run(Iter, Iter);
 };
 
-#endif
 
 struct Node {
   NodePtr prev;
@@ -99,17 +84,10 @@ struct Node {
   union {
     char char_info;
     RefalNumber number_info;
-#ifdef MODULE_REFAL
-    RefalFunction function_info;
-#else
     RefalFunction *function_info;
-#endif
     RefalIdentifier ident_info;
     NodePtr link_info;
     void *file_info;
-#ifdef MODULE_REFAL
-    RefalSwapHead swap_info;
-#endif
   };
 };
 
@@ -249,7 +227,6 @@ void zeros(Iter context[], int size);
 
 //операции реинициализации
 
-#ifndef MODULE_REFAL
 extern void reinit_svar(Iter res, Iter sample);
 extern void reinit_char(Iter res, char ch);
 extern void update_char(Iter res, char ch);
@@ -268,7 +245,6 @@ extern void reinit_close_adt(Iter res);
 
 extern void reinit_open_call(Iter res);
 extern void reinit_close_call(Iter res);
-#endif
 
 
 //операции
@@ -280,14 +256,9 @@ extern void move_left(Iter& begin, Iter& end);
 extern void move_right(Iter& begin, Iter& end);
 extern bool empty_seq(Iter begin, Iter end);
 
-#ifdef MODULE_REFAL
-extern Iter function_left(RefalFunctionPtr func, Iter& first, Iter& last);
-extern Iter function_right(RefalFunctionPtr func, Iter& first, Iter& last);
-#else
 extern bool function_term(const RefalFunction *func, Iter pos);
 extern Iter function_left(const RefalFunction *func, Iter& first, Iter& last);
 extern Iter function_right(const RefalFunction *func, Iter& first, Iter& last);
-#endif
 
 extern bool char_term(char ch, Iter& pos);
 extern Iter char_left(char ch, Iter& first, Iter& last);
@@ -301,18 +272,6 @@ extern bool ident_term(RefalIdentifier ident, Iter& pos);
 extern Iter ident_left(RefalIdentifier ident, Iter& first, Iter& last);
 extern Iter ident_right(RefalIdentifier ident, Iter& first, Iter& last);
 
-#ifdef MODULE_REFAL
-extern Iter adt_left(
-  Iter& res_first, Iter& res_last,
-  RefalFunctionPtr tag,
-  Iter& first, Iter& last
-);
-extern Iter adt_right(
-  Iter& res_first, Iter& res_last,
-  RefalFunctionPtr tag,
-  Iter& first, Iter& last
-);
-#else
 extern Iter adt_term(
   Iter& res_first, Iter& res_last,
   const RefalFunction *tag,
@@ -328,7 +287,6 @@ extern Iter adt_right(
   const RefalFunction *tag,
   Iter& first, Iter &last
 );
-#endif
 
 extern Iter call_left(
   Iter& res_first, Iter& res_last,
@@ -396,13 +354,7 @@ extern bool copy_stvar(Iter& stvar_res, Iter stvar_sample);
 
 extern bool alloc_char(Iter& res, char ch);
 extern bool alloc_number(Iter& res, RefalNumber num);
-#ifdef MODULE_REFAL
-extern bool alloc_name(
-  Iter& res, RefalFunctionPtr func, RefalFuncName name = 0
-);
-#else
 extern bool alloc_name(Iter& res, RefalFunction *func);
-#endif
 extern bool alloc_ident(Iter& res, RefalIdentifier ident);
 extern bool alloc_open_adt(Iter& res);
 extern bool alloc_close_adt(Iter& res);
@@ -439,9 +391,7 @@ extern void splice_to_freelist(Iter first, Iter last);
 extern void splice_to_freelist_open(Iter before_first, Iter after_last);
 extern void splice_from_freelist(Iter pos);
 
-#ifndef MODULE_REFAL
 extern RefalFunction create_closure;
-#endif
 Iter unwrap_closure(Iter closure); // Развернуть замыкание
 Iter wrap_closure(Iter closure); // Свернуть замыкание
 
@@ -505,7 +455,6 @@ void debug_print_expr(void *file, Iter first, Iter last);
 
 // Интерпретатор
 
-#ifndef MODULE_REFAL
 struct RASLFunction: public RefalFunction {
   const RASLCommand *raa;
   RefalFunction **functions;
@@ -533,7 +482,6 @@ struct RASLFunction: public RefalFunction {
 
   static FnResult run(Iter begin, Iter end);
 };
-#endif
 
 extern RefalFunction *functions[];
 extern const RefalIdentifier idents[];
