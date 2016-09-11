@@ -137,7 +137,6 @@ ValidDirective {
   'ESWAP' = (#TkDirective #ESwap);
   'LABEL' = (#TkDirective #Ident);
   'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
-  'easteregg' = <ValidDirective 'EASTEREGG'>;
   e.Other = (#TkError 'Unknown directive $' e.Other);
 }
 
