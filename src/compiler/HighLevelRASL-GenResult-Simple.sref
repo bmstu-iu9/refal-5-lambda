@@ -5,7 +5,7 @@ $EXTERN Fetch, Map, Inc, Sort, Seq;
 $EXTERN Add;
 
 //FROM HighLevelRASL-Common
-$EXTERN IncVarOffset, PrintVar;
+$EXTERN CollectStrings, IncVarOffset, PrintVar;
 
 /**
   <GenResult-Simple
@@ -41,36 +41,6 @@ $ENTRY GenResult-Simple {
           (#CmdReturnResult);
       }
     >;
-}
-
-CollectStrings {
-  (#TkChar s.Value1) (#TkChar s.Value2) e.Tail =
-    <Fetch
-      <BuildString (s.Value1 s.Value2) e.Tail>
-      {
-        (e.Chars) e.Tail^ = (#TkString e.Chars) <CollectStrings e.Tail>;
-      }
-    >;
-
-  (#Brackets e.InBrackets) e.Tail =
-    (#Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
-
-  (#CallBrackets e.InBrackets) e.Tail =
-    (#CallBrackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
-
-  (#ADT-Brackets e.InBrackets) e.Tail =
-    (#ADT-Brackets <CollectStrings e.InBrackets>) <CollectStrings e.Tail>;
-
-  t.OtherTerm e.Tail = t.OtherTerm <CollectStrings e.Tail>;
-
-  /* пусто */ = /* пусто */;
-}
-
-BuildString {
-  (e.Chars) (#TkChar s.Value) e.Tail =
-    <BuildString (e.Chars s.Value) e.Tail>;
-
-  (e.Chars) e.Tail = (e.Chars) e.Tail;
 }
 
 DoGenResult {
