@@ -53,6 +53,14 @@ struct RefalFunction {
 typedef unsigned long RefalNumber;
 
 
+struct RefalNativeFunction: public RefalFunction {
+  RefalNativeFunction(RefalFunctionPtr ptr, RefalFuncName name)
+    : RefalFunction(ptr, name)
+  {
+    /* пусто */
+  }
+};
+
 struct RefalSwap: public RefalFunction {
   Iter head;
   Iter next_head;

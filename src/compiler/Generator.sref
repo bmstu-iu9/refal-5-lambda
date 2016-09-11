@@ -139,7 +139,7 @@ GenCommand {
   (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalFunction descr_' <CName e.Name> '('
+      'refalrts::RefalNativeFunction descr_' <CName e.Name> '('
       'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
       ');'
     )
