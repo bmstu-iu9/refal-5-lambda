@@ -24,7 +24,7 @@
             <Keywords name="Folders in comment, open"></Keywords>
             <Keywords name="Folders in comment, middle"></Keywords>
             <Keywords name="Folders in comment, close"></Keywords>
-            <Keywords name="Keywords1">$MODULE&#x000D;&#x000A;$ENTRY&#x000D;&#x000A;$END&#x000D;&#x000A;$IMPORT&#x000D;&#x000A;$SWAP&#x000D;&#x000A;$PROGRAM&#x000D;&#x000A;$ESWAP&#x000D;&#x000A;$DATA&#x000D;&#x000A;$EXTERN&#x000D;&#x000A;$LABEL&#x000D;&#x000A;$FORWARD&#x000D;&#x000A;$ENUM&#x000D;&#x000A;$EENUM</Keywords>
+            <Keywords name="Keywords1">$MODULE&#x000D;&#x000A;$ENTRY&#x000D;&#x000A;$END&#x000D;&#x000A;$IMPORT&#x000D;&#x000A;$SWAP&#x000D;&#x000A;$PROGRAM&#x000D;&#x000A;$ESWAP&#x000D;&#x000A;$DATA&#x000D;&#x000A;$EXTERN&#x000D;&#x000A;$LABEL&#x000D;&#x000A;$FORWARD&#x000D;&#x000A;$ENUM&#x000D;&#x000A;$EENUM&#x000D;&#x000A;$EASTEREGG</Keywords>
             <Keywords name="Keywords2">s.&#x000D;&#x000A;e.&#x000D;&#x000A;t.</Keywords>
             <Keywords name="Keywords3">$</Keywords>
             <Keywords name="Keywords4"></Keywords>

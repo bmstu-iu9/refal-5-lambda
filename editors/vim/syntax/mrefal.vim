@@ -2,6 +2,7 @@ syntax include @mrefalCpp $VIMRUNTIME/syntax/cpp.vim
 syntax case match
 syntax keyword mrefalKeyword $MODULE $ENTRY $END $IMPORT $SWAP $PROGRAM $ESWAP
 syntax keyword mrefalKeyword $DATA $EXTERN $FORWARD $LABEL $ENUM $EENUM $INIT $FINAL
+syntax keyword mrefalKeyword $EASTEREGG
 syntax match mrefalBrokenKeyword /\$\a*\>/
 syntax match mrefalVariable /\<[ste]\.[A-Za-z0-9!?_-]\+\>/
 syntax match mrefalIdentifier /\<[A-Z!?][A-Za-z0-9!?_-]*\>/

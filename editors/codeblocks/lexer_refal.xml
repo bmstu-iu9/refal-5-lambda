@@ -56,7 +56,7 @@
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
-                            value="$EXTERN $ENTRY $MODULE $END $IMPORT $SWAP $PROGRAM $ESWAP $DATA $LABEL $FORWARD $ENUM $EENUM"/>
+                            value="$EXTERN $ENTRY $MODULE $END $IMPORT $SWAP $PROGRAM $ESWAP $DATA $LABEL $FORWARD $ENUM $EENUM $EASTEREGG"/>
                         <!-- Secondary keywords and identifiers -->
                         <Set index="1"
                             value=" "/>

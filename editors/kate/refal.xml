@@ -28,6 +28,7 @@
       <item> $FORWARD </item>
       <item> $ENUM </item>
       <item> $EENUM </item>
+      <item> $EASTEREGG </item>
     </list>
     <contexts>
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">

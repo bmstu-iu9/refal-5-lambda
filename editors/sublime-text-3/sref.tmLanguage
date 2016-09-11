@@ -18,7 +18,7 @@
 			<key>comment</key>
 			<string>keywords</string>
 			<key>match</key>
-			<string>\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM</string>
+			<string>\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG</string>
 			<key>name</key>
 			<string>keyword.other.sref</string>
 		</dict>
