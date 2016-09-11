@@ -2019,6 +2019,16 @@ clock_t g_total_e_loop;
 clock_t g_total_match_repeated_tvar_time_outside_e;
 clock_t g_total_match_repeated_evar_time_outside_e;
 
+clock_t g_start_execute_active;
+clock_t g_end_execute_active;
+clock_t g_total_execute_active = 0;
+clock_t g_total_NOT_execute_active = 0;
+
+clock_t g_start_call_function;
+clock_t g_end_call_function;
+clock_t g_total_call_function = 0;
+clock_t g_total_NOT_call_function = 0;
+
 bool g_in_generated;
 int g_in_e_loop;
 
@@ -2102,6 +2112,16 @@ void refalrts::profiler::end_profiler() {
     {
       "Repeated t-var match time (outside e-loops)",
       cPerformanceCounter_RepeatTvarMatchTimeOutsideECycle
+    },
+    { "[runtime] execute_active()", cPerformanceCounter_DebugExecuteActive },
+    {
+      "[runtime] ! execute_active()",
+      cPerformanceCounter_DebugNotExecuteActive
+    },
+    { "[runtime] function->...->ptr()", cPerformanceCounter_DebugCallFunction },
+    {
+      "[runtime] ! function->...->ptr()",
+      cPerformanceCounter_DebugNotCallFunction
     },
     { "t- and e-var copy time", cPerformanceCounter_TEvarCopyTime }
   };
@@ -2209,6 +2229,13 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_LinearRefalTime] = refal_time;
   counters[cPerformanceCounter_LinearPatternTime] = pattern_time;
   counters[cPerformanceCounter_LinearResultTime] = result_time;
+
+  counters[cPerformanceCounter_DebugExecuteActive] = g_total_execute_active;
+  counters[cPerformanceCounter_DebugNotExecuteActive] =
+    g_total_NOT_execute_active;
+  counters[cPerformanceCounter_DebugCallFunction] = g_total_call_function;
+  counters[cPerformanceCounter_DebugNotCallFunction] =
+    g_total_NOT_call_function;
 }
 
 void refalrts::profiler::add_copy_tevar_time(clock_t duration) {
@@ -2383,12 +2410,21 @@ bool refalrts::vm::init_view_field() {
 
 refalrts::FnResult refalrts::vm::main_loop() {
   FnResult res = cSuccess;
+  profiler::g_end_execute_active = clock();
+  profiler::g_end_call_function = clock();
+
   while (! empty_stack()) {
     refalrts::Iter active_begin = pop_stack();
     assert(! empty_stack());
     refalrts::Iter active_end = pop_stack();
 
+    profiler::g_start_execute_active = clock();
+    profiler::g_total_NOT_execute_active +=
+      (profiler::g_start_execute_active - profiler::g_end_execute_active);
     res = execute_active(active_begin, active_end);
+    profiler::g_end_execute_active = clock();
+    profiler::g_total_execute_active +=
+      (profiler::g_end_execute_active - profiler::g_start_execute_active);
 
     ++ g_step_counter;
 
@@ -2445,7 +2481,14 @@ refalrts::FnResult refalrts::vm::execute_active(
 
   refalrts::Iter function = next(begin);
   if (cDataFunction == function->tag) {
-    return (function->function_info->ptr)(begin, end);
+    profiler::g_start_call_function = clock();
+    profiler::g_total_NOT_call_function +=
+      (profiler::g_start_call_function - profiler::g_end_call_function);
+    FnResult res = (function->function_info->ptr)(begin, end);
+    profiler::g_end_call_function = clock();
+    profiler::g_total_call_function +=
+      (profiler::g_end_call_function - profiler::g_start_call_function);
+    return res;
   } else if (cDataClosure == function->tag) {
     refalrts::Iter head = function->link_info;
 

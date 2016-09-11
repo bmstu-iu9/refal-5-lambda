@@ -433,6 +433,10 @@ enum PerformanceCounters {
   cPerformanceCounter_LinearRefalTime,
   cPerformanceCounter_LinearPatternTime,
   cPerformanceCounter_LinearResultTime,
+  cPerformanceCounter_DebugExecuteActive,
+  cPerformanceCounter_DebugNotExecuteActive,
+  cPerformanceCounter_DebugCallFunction,
+  cPerformanceCounter_DebugNotCallFunction,
   cPerformanceCounter_COUNTERS_NUMBER
 };
 
