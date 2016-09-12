@@ -2043,6 +2043,15 @@ void start_copy();
 void stop_copy();
 void stop_function();
 
+#ifndef NDEBUG
+#define refalrts_profiler_assert_eq(variable, constant) \
+  if ((variable) != (constant)) { \
+    refalrts_switch_default_violation(variable); \
+  }
+#else
+#define refalrts_profiler_assert_eq(variable, constant)
+#endif
+
 clock_t g_counters[cCounter_TOTAL] = { 0 };
 clock_t g_prev_cutoff;
 State g_current_state = cInRuntime;
@@ -2076,38 +2085,23 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  State next;
-  BaseCounter counter;
-
-  switch (g_current_state) {
-    case cInRuntime:
-      counter = cCounter_RuntimeTime;
-      next = cInPatternLinear;
-      break;
-
-    default:
-      refalrts_switch_default_violation(g_current_state);
-  }
-
-  g_counters[counter] += (now - g_prev_cutoff);
+  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
-  g_current_state = next;
+  g_current_state = cInPatternLinear;
 }
 
 void refalrts::profiler::start_sentence() {
   clock_t now = clock();
-  State next;
   BaseCounter counter;
 
   switch (g_current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
-      next = cInPatternLinear;
       break;
 
     case cInPatternELoop:
       counter = cCounter_ECycleClearTime;
-      next = cInPatternLinear;
       break;
 
     default:
@@ -2116,23 +2110,20 @@ void refalrts::profiler::start_sentence() {
 
   g_counters[counter] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
-  g_current_state = next;
+  g_current_state = cInPatternLinear;
 }
 
 void refalrts::profiler::start_e_loop() {
   clock_t now = clock();
-  State next;
   BaseCounter counter;
 
   switch (g_current_state) {
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
-      next = cInPatternELoop;
       break;
 
     case cInPatternELoop:
       counter = cCounter_ECycleClearTime;
-      next = cInPatternELoop;
       break;
 
     default:
@@ -2141,7 +2132,7 @@ void refalrts::profiler::start_e_loop() {
 
   g_counters[counter] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
-  g_current_state = next;
+  g_current_state = cInPatternELoop;
 }
 
 void refalrts::profiler::start_repeated_evar() {
@@ -2231,7 +2222,7 @@ void refalrts::profiler::stop_repeated() {
 
 void refalrts::profiler::start_result() {
   clock_t now = clock();
-  State next;
+  State next = cInResultLinear;
   BaseCounter counter;
 
   switch (g_current_state) {
@@ -2242,12 +2233,10 @@ void refalrts::profiler::start_result() {
 
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
-      next = cInResultLinear;
       break;
 
     case cInPatternELoop:
       counter = cCounter_ECycleClearTime;
-      next = cInResultLinear;
       break;
 
     default:
@@ -2311,28 +2300,23 @@ void refalrts::profiler::stop_copy() {
 
 void refalrts::profiler::stop_function() {
   clock_t now = clock();
-  State next;
   BaseCounter counter;
 
   switch (g_current_state) {
     case cInRuntime:
-      next = cInRuntime;
       counter = cCounter_NativeTime;
       break;
 
     case cInPatternLinear:
       counter = cCounter_LinearPatternTime;
-      next = cInRuntime;
       break;
 
     case cInPatternELoop:
       counter = cCounter_ECycleClearTime;
-      next = cInRuntime;
       break;
 
     case cInResultLinear:
       counter = cCounter_LinearResultTime;
-      next = cInRuntime;
       break;
 
     default:
@@ -2341,7 +2325,7 @@ void refalrts::profiler::stop_function() {
 
   g_counters[counter] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
-  g_current_state = next;
+  g_current_state = cInRuntime;
 }
 
 void refalrts::profiler::end_profiler() {
