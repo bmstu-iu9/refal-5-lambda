@@ -2074,186 +2074,199 @@ void refalrts::profiler::cutoff(CutOffPoint point) {
   State next;
   BaseCounter counter;
 
-  switch (g_current_state) {
-    case cInRuntime:
-      counter = cCounter_RuntimeTime;
-      switch(point) {
-        case cStartGeneratedFunction:
+  switch (point) {
+    case cStartGeneratedFunction:
+      switch (g_current_state) {
+        case cInRuntime:
+          counter = cCounter_RuntimeTime;
           next = cInPatternLinear;
           break;
 
-        case cStartCopy:
-          next = cInRuntimeCopy;
-          break;
-
-        case cStartResult:
-          next = cInRuntime;
-          break;
-
-        case cStopFunction:
-          next = cInRuntime;
-          counter = cCounter_NativeTime;
-          break;
-
         default:
-          refalrts_switch_default_violation(point);
+          refalrts_switch_default_violation(g_current_state);
       }
       break;
 
-    case cInRuntimeCopy:
-      switch(point) {
-        case cStopCopy:
-          next = cInRuntime;
-          counter = cCounter_ContextCopyTime;
-          break;
-
-        default:
-          refalrts_switch_default_violation(point);
-      }
-      break;
-
-    case cInPatternLinear:
-      counter = cCounter_LinearPatternTime;
-      switch(point) {
-        case cStartSentence:
+    case cStartSentence:
+      switch (g_current_state) {
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
           next = cInPatternLinear;
           break;
 
-        case cStartELoop:
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInPatternLinear;
+          break;
+
+        default:
+          refalrts_switch_default_violation(g_current_state);
+      }
+      break;
+
+    case cStartELoop:
+      switch (g_current_state) {
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
           next = cInPatternELoop;
           break;
 
-        case cStartRepeatedEvar:
-          next = cInPatternRepeatedEVar;
-          break;
-
-        case cStartRepeatedTvar:
-          next = cInPatternRepeatedTVar;
-          break;
-
-        case cStartResult:
-          next = cInResultLinear;
-          break;
-
-        case cStopFunction:
-          next = cInRuntime;
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInPatternELoop;
           break;
 
         default:
-          refalrts_switch_default_violation(point);
+          refalrts_switch_default_violation(g_current_state);
       }
       break;
 
-    case cInPatternRepeatedEVar:
-      switch(point) {
-        case cStopRepeated:
+    case cStartRepeatedEvar:
+      switch (g_current_state) {
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
+          next = cInPatternRepeatedEVar;
+          break;
+
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInPatternELoopRepeatedEVar;
+          break;
+
+        default:
+          refalrts_switch_default_violation(g_current_state);
+      }
+      break;
+
+    case cStartRepeatedTvar:
+      switch (g_current_state) {
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
+          next = cInPatternRepeatedTVar;
+          break;
+
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInPatternELoopRepeatedTVar;
+          break;
+
+        default:
+          refalrts_switch_default_violation(g_current_state);
+      }
+      break;
+
+    case cStopRepeated:
+      switch (g_current_state) {
+        case cInPatternRepeatedEVar:
           next = cInPatternLinear;
           counter = cCounter_RepeatedEvarOutsideECycle;
           break;
 
-        default:
-          refalrts_switch_default_violation(point);
-      }
-      break;
-
-    case cInPatternRepeatedTVar:
-      switch(point) {
-        case cStopRepeated:
+        case cInPatternRepeatedTVar:
           next = cInPatternLinear;
           counter = cCounter_RepeatedTvarOutsideECycle;
           break;
 
-        default:
-          refalrts_switch_default_violation(point);
-      }
-      break;
-
-    case cInPatternELoop:
-      counter = cCounter_ECycleClearTime;
-      switch(point) {
-        case cStartSentence:
-          next = cInPatternLinear;
-          break;
-
-        case cStartELoop:
-          next = cInPatternELoop;
-          break;
-
-        case cStartRepeatedEvar:
-          next = cInPatternELoopRepeatedEVar;
-          break;
-
-        case cStartRepeatedTvar:
-          next = cInPatternELoopRepeatedTVar;
-          break;
-
-        case cStartResult:
-          next = cInResultLinear;
-          break;
-
-        case cStopFunction:
-          next = cInRuntime;
-          break;
-
-        default:
-          refalrts_switch_default_violation(point);
-      }
-      break;
-
-    case cInPatternELoopRepeatedEVar:
-      switch(point) {
-        case cStopRepeated:
+        case cInPatternELoopRepeatedEVar:
           next = cInPatternELoop;
           counter = cCounter_RepeatedEvarInsideECycle;
           break;
 
-        default:
-          refalrts_switch_default_violation(point);
-      }
-      break;
-
-    case cInPatternELoopRepeatedTVar:
-      switch(point) {
-        case cStopRepeated:
+        case cInPatternELoopRepeatedTVar:
           next = cInPatternELoop;
           counter = cCounter_RepeatedTvarInsideECycle;
           break;
 
         default:
-          refalrts_switch_default_violation(point);
+          refalrts_switch_default_violation(g_current_state);
       }
       break;
 
-    case cInResultLinear:
-      counter = cCounter_LinearResultTime;
-      switch(point) {
-        case cStartCopy:
-          next = cInResultCopy;
-          break;
-
-        case cStopFunction:
+    case cStartResult:
+      switch (g_current_state) {
+        case cInRuntime:
+          counter = cCounter_RuntimeTime;
           next = cInRuntime;
           break;
 
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
+          next = cInResultLinear;
+          break;
+
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInResultLinear;
+          break;
+
         default:
-          refalrts_switch_default_violation(point);
+          refalrts_switch_default_violation(g_current_state);
       }
       break;
 
-    case cInResultCopy:
-      switch(point) {
-        case cStopCopy:
+    case cStartCopy:
+      switch (g_current_state) {
+        case cInRuntime:
+          counter = cCounter_RuntimeTime;
+          next = cInRuntimeCopy;
+          break;
+
+        case cInResultLinear:
+          counter = cCounter_LinearResultTime;
+          next = cInResultCopy;
+          break;
+
+        default:
+          refalrts_switch_default_violation(g_current_state);
+      }
+      break;
+
+    case cStopCopy:
+      switch (g_current_state) {
+        case cInRuntimeCopy:
+          next = cInRuntime;
+          counter = cCounter_ContextCopyTime;
+          break;
+
+        case cInResultCopy:
           next = cInResultLinear;
           counter = cCounter_TEvarCopyTime;
           break;
 
         default:
-          refalrts_switch_default_violation(point);
+          refalrts_switch_default_violation(g_current_state);
+      }
+      break;
+
+    case cStopFunction:
+      switch (g_current_state) {
+        case cInRuntime:
+          next = cInRuntime;
+          counter = cCounter_NativeTime;
+          break;
+
+        case cInPatternLinear:
+          counter = cCounter_LinearPatternTime;
+          next = cInRuntime;
+          break;
+
+        case cInPatternELoop:
+          counter = cCounter_ECycleClearTime;
+          next = cInRuntime;
+          break;
+
+        case cInResultLinear:
+          counter = cCounter_LinearResultTime;
+          next = cInRuntime;
+          break;
+
+        default:
+          refalrts_switch_default_violation(g_current_state);
       }
       break;
 
     default:
-      refalrts_switch_default_violation(g_current_state);
+      refalrts_switch_default_violation(point);
   }
 
   g_counters[counter] += (now - g_prev_cutoff);
