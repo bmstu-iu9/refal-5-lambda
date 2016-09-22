@@ -2227,7 +2227,7 @@ void refalrts::profiler::start_result() {
 
   switch (g_current_state) {
     case cInRuntime:
-      counter = cCounter_RuntimeTime;
+      counter = cCounter_NativeTime;
       next = cInRuntime;
       break;
 
