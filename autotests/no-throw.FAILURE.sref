@@ -1,10 +1,10 @@
 $ENTRY Go {
 %%
-  const refalrts::RASLCommand raa[] = {
+  static const refalrts::RASLCommand raa[] = {
     {refalrts::icEnd + 5, 0, 0, 0}
   };
 
-  refalrts::RASLFunction func(
+  static refalrts::RASLFunction func(
     "Test", raa,
     refalrts::functions,
     refalrts::idents,
@@ -16,6 +16,8 @@ $ENTRY Go {
   refalrts::Iter func_name =
     call_left(inner_begin, inner_end, arg_begin, arg_end);
   func_name->function_info = &func;
-  return refalrts::RASLFunction::run(arg_begin, arg_end);
+  refalrts::push_stack(arg_end);
+  refalrts::push_stack(arg_begin);
+  return refalrts::cSuccess;
 %%
 }
