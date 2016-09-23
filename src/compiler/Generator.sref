@@ -183,10 +183,6 @@ GenCommand {
     (e.Indent '  ')
     ('static refalrts::FnResult func_' <CName e.Name> <FuncArguments> ' {');
 
-  (e.Indent) (#CmdProfileFunction) =
-    (e.Indent)
-    (e.Indent 'refalrts::this_is_generated_function();');
-
   (e.Indent) (#CmdSeparator) =
     (e.Indent)
     ();
@@ -223,18 +219,6 @@ GenCommand {
     (e.Indent '} // namespace scope_' <CName e.Name>)
     ();
 
-  // ---------------------------------------------------------------------------
-  // Общие команды тела функции
-
-  (e.Indent) (#CmdIssueMem s.Number) =
-    (e.Indent)
-    (e.Indent
-      '// issue here memory for vars with ' <StrFromInt s.Number> ' elems'
-    )
-    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
-    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
-    ;
-
   (e.Indent) (#CmdIfDef e.Macros) =
     (e.Indent) ('#ifdef ' e.Macros);
 
@@ -247,14 +231,27 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
 
+  (e.Indent) (#CmdProfileFunction) =
+    (e.Indent)
+    (e.Indent 'refalrts::this_is_generated_function();');
+
+  (e.Indent) (#CmdIssueMem s.Number) =
+    (e.Indent)
+    (e.Indent
+      '// issue here memory for vars with ' <StrFromInt s.Number> ' elems'
+    )
+    (e.Indent 'refalrts::Iter context[' <StrFromInt s.Number> '];')
+    (e.Indent 'refalrts::zeros( context, ' <StrFromInt s.Number> ' );')
+    ;
+
   (e.Indent) (#CmdStartSentence) =
     (e.Indent '  ')
-    (e.Indent 'do {')
-    (e.Indent '  refalrts::start_sentence();');
+    (e.Indent 'do {');
 
   (e.Indent '  ') (#CmdEndSentence) =
     (e.Indent)
     (e.Indent '} while ( 0 );')
+    (e.Indent 'refalrts::stop_sentence();')
     ();
 
   (e.Indent) (#CmdInitB0) =
@@ -641,6 +638,10 @@ GenCommand {
     (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
     (e.Indent '};');
 
+  (e.Indent) (#CmdiProfileFunction) =
+    (e.Indent)
+    (e.Indent '{refalrts::icThisIsGeneratedFunction, 0, 0, 0},');
+
   (e.Indent) (#CmdiIssueMem s.Memory) =
     (e.Indent)
     (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');
@@ -659,6 +660,10 @@ GenCommand {
   (e.Indent) (#CmdiOnFailGoTo s.Offset) =
     (e.Indent)
     (e.Indent '{refalrts::icOnFailGoTo, +' <StrFromInt s.Offset> ', 0, 0},');
+
+  (e.Indent) (#CmdiProfilerStopSentence) =
+    (e.Indent)
+    (e.Indent '{refalrts::icProfilerStopSentence, 0, 0, 0},');
 
   (e.Indent) (#CmdiInitB0) =
     (e.Indent)

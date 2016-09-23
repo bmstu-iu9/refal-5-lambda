@@ -682,7 +682,7 @@ namespace refalrts {
 namespace profiler {
 
 void start_generated_function();
-void start_sentence();
+void stop_sentence();
 void start_e_loop();
 void start_repeated_evar();
 void start_repeated_tvar();
@@ -1729,7 +1729,6 @@ void refalrts::swap_save(
 refalrts::FnResult refalrts::perform_swap(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
-  this_is_generated_function();
   Iter info_b = 0;
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, arg_begin, arg_end);
@@ -1755,6 +1754,7 @@ refalrts::FnResult refalrts::perform_swap(
 }
 
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
+  { refalrts::icThisIsGeneratedFunction, 0, 0, 0 },
   { refalrts::icPerformSwap, 0, 0, 0 }
 };
 
@@ -1785,8 +1785,8 @@ void refalrts::read_performance_counters(unsigned long counters[]) {
   refalrts::profiler::read_counters(counters);
 }
 
-void refalrts::start_sentence() {
-  profiler::start_sentence();
+void refalrts::stop_sentence() {
+  profiler::stop_sentence();
 }
 
 void refalrts::start_e_loop() {
@@ -2045,7 +2045,7 @@ enum BaseCounter {
 };
 
 void start_generated_function();
-void start_sentence();
+void stop_sentence();
 void start_e_loop();
 void start_repeated_evar();
 void start_repeated_tvar();
@@ -2097,21 +2097,13 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  switch (g_current_state) {
-    case cInRuntime:
-    case cInPatternLinear:      /* TODO: временный костыль */
-      break;
-
-    default:
-      refalrts_switch_default_violation(g_current_state);
-  }
-  //refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
   g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
   g_current_state = cInPatternLinear;
 }
 
-void refalrts::profiler::start_sentence() {
+void refalrts::profiler::stop_sentence() {
   clock_t now = clock();
   BaseCounter counter;
 
@@ -3052,7 +3044,6 @@ void refalrts::vm::free_view_field() {
 refalrts::FnResult refalrts::vm::rasl_run(
   refalrts::Iter begin, refalrts::Iter end
 ) {
-  this_is_generated_function();
   Iter info_b = 0;
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, begin, end);
@@ -3082,7 +3073,6 @@ refalrts::FnResult refalrts::vm::rasl_run(
     continue; \
   }
 
-  start_sentence();
   while (raa[i].cmd != icEnd) {
     // Интерпретация команд
     // Для ряда команд эти переменные могут не иметь смысла
@@ -3097,6 +3087,10 @@ refalrts::FnResult refalrts::vm::rasl_run(
 
     switch(raa[i].cmd)
     {
+      case icThisIsGeneratedFunction:
+        this_is_generated_function();
+        break;
+
       case icIssueMemory:
         context.reserve(raa[i].val1);
         break;
@@ -3107,6 +3101,10 @@ refalrts::FnResult refalrts::vm::rasl_run(
 
       case icOnFailGoTo:
         open_e_stack[stack_top++] = i + raa[i].val1 + 1;
+        break;
+
+      case icProfilerStopSentence:
+        stop_sentence();
         break;
 
       case icInitB0:

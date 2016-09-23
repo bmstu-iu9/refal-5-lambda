@@ -106,9 +106,11 @@ struct Node {
 };
 
 enum iCmd {
+  icThisIsGeneratedFunction,
   icIssueMemory,
   icReserveBacktrackStack,
   icOnFailGoTo,
+  icProfilerStopSentence,
   icInitB0,
   icInitB0_Lite,
   icCharLeft,
@@ -422,7 +424,7 @@ extern FnResult perform_swap(Iter arg_begin, Iter arg_end);
 // Профилирование
 
 extern void this_is_generated_function();
-extern void start_sentence();
+extern void stop_sentence();
 extern void start_e_loop();
 
 enum PerformanceCounters {

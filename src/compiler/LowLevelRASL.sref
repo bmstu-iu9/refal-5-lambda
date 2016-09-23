@@ -507,6 +507,7 @@ Function-Interpret {
         {
           e.FunctionBody^ =
             (#CmdInitRAA)
+            (#CmdiProfileFunction)
             e.FunctionBody
             (#CmdFinRAA);
         }
@@ -715,7 +716,8 @@ ConvertOneInterpretCommand {
       {
         s.Length e.SubCommands^ =
           (#CmdiOnFailGoTo s.Length)
-          e.SubCommands;
+          e.SubCommands
+          (#CmdiProfilerStopSentence);
       }
     >;
 
