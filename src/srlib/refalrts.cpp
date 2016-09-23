@@ -2499,7 +2499,6 @@ bool empty_stack();
 bool init_view_field();
 
 refalrts::FnResult main_loop();
-refalrts::FnResult execute_active(refalrts::Iter begin, refalrts::Iter end);
 void make_dump(refalrts::Iter begin, refalrts::Iter end);
 FILE* dump_stream();
 
@@ -2624,12 +2623,68 @@ bool refalrts::vm::init_view_field() {
 
 refalrts::FnResult refalrts::vm::main_loop() {
   FnResult res = cSuccess;
-  while (! empty_stack()) {
-    refalrts::Iter active_begin = pop_stack();
+  refalrts::Iter active_begin;
+  refalrts::Iter active_end;
+  while (res == cSuccess && ! empty_stack()) {
+    active_begin = pop_stack();
     assert(! empty_stack());
-    refalrts::Iter active_end = pop_stack();
+    active_end = pop_stack();
 
-    res = execute_active(active_begin, active_end);
+#if SHOW_DEBUG
+    if (g_step_counter >= (unsigned) SHOW_DEBUG) {
+      make_dump(active_begin, active_end);
+    }
+#endif // if SHOW_DEBUG
+
+    refalrts::Iter function = next(active_begin);
+    refalrts::RefalFunction *callee = 0;
+    if (cDataFunction == function->tag) {
+      callee = function->function_info;
+    } else if (cDataClosure == function->tag) {
+      refalrts::Iter head = function->link_info;
+
+      if (1 == head->number_info) {
+        /*
+          Пользуемся тем, что при развёртке содержимое замыкания оказывается
+          в поле зрения между головой и (развёрнутым!) узлом замыкания.
+          Во избежание проблем, связанным с помещением развёрнутого замыкания
+          в список свободных блоков, проинициализируем его как голову замыкания.
+        */
+        unwrap_closure(function);
+        function->tag = cDataClosureHead;
+        function->number_info = 73501505; // :-)
+        splice_to_freelist(function, function);
+        splice_to_freelist(head, head);
+        res = cSuccess;
+      } else {
+        refalrts::Iter begin_argument = next(function);
+        refalrts::Iter closure_b = 0;
+        refalrts::Iter closure_e = 0;
+
+        if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
+          res = cNoMemory;
+        } else {
+          list_splice(begin_argument, closure_b, closure_e);
+          splice_to_freelist(function, function);
+          res = cSuccess;
+        }
+      }
+
+      if (res == cSuccess) {
+        ++ g_step_counter;
+        function = next(active_begin);
+        assert(cDataFunction == function->tag);
+        callee = function->function_info;
+      }
+    } else {
+      res = cRecognitionImpossible;
+    }
+
+    if (callee) {
+      res = (callee->ptr)(active_begin, active_end);
+    }
+
+    profiler::stop_function();
 
     ++ g_step_counter;
 
@@ -2640,88 +2695,33 @@ refalrts::FnResult refalrts::vm::main_loop() {
     }
 
 #endif // ifdef STEP_LIMIT
+  }
 
-    if (res != cSuccess) {
-      switch(res) {
-        case refalrts::cRecognitionImpossible:
-          fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
-          break;
+  if (res != cSuccess) {
+    switch(res) {
+      case refalrts::cRecognitionImpossible:
+        fprintf(stderr, "\nRECOGNITION IMPOSSIBLE\n\n");
+        break;
 
-        case refalrts::cNoMemory:
-          fprintf(stderr, "\nNO MEMORY\n\n");
-          break;
+      case refalrts::cNoMemory:
+        fprintf(stderr, "\nNO MEMORY\n\n");
+        break;
 
-        case refalrts::cExit:
-          return res;
+      case refalrts::cExit:
+        return res;
 
-        case refalrts::cStepLimit:
-          fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
-          break;
+      case refalrts::cStepLimit:
+        fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
+        break;
 
-        default:
-          fprintf(stderr, "\nUNKNOWN ERROR\n\n");
-          break;
-      }
-      make_dump(active_begin, active_end);
-      return res;
+      default:
+        fprintf(stderr, "\nUNKNOWN ERROR\n\n");
+        break;
     }
-
-    profiler::stop_function();
+    make_dump(active_begin, active_end);
   }
 
   return res;
-}
-
-refalrts::FnResult refalrts::vm::execute_active(
-  refalrts::Iter begin, refalrts::Iter end
-) {
-
-#if SHOW_DEBUG
-
-  if (g_step_counter >= (unsigned) SHOW_DEBUG) {
-    make_dump(begin, end);
-  }
-
-#endif // if SHOW_DEBUG
-
-  refalrts::Iter function = next(begin);
-  if (cDataFunction == function->tag) {
-    return (function->function_info->ptr)(begin, end);
-  } else if (cDataClosure == function->tag) {
-    refalrts::Iter head = function->link_info;
-
-    if (1 == head->number_info) {
-      /*
-        Пользуемся тем, что при развёртке содержимое замыкания оказывается
-        в поле зрения между головой и (развёрнутым!) узлом замыкания.
-        Во избежание проблем, связанным с помещением развёрнутого замыкания
-        в список свободных блоков, проинициализируем его как голову замыкания.
-      */
-      unwrap_closure(function);
-      function->tag = cDataClosureHead;
-      function->number_info = 73501505; // :-)
-      splice_to_freelist(function, function);
-      splice_to_freelist(head, head);
-    } else {
-      refalrts::Iter begin_argument = next(function);
-      refalrts::Iter closure_b = 0;
-      refalrts::Iter closure_e = 0;
-
-      if (! copy_evar(closure_b, closure_e, next(head), prev(head))) {
-        return cNoMemory;
-      }
-
-      list_splice(begin_argument, closure_b, closure_e);
-      splice_to_freelist(function, function);
-    }
-
-    refalrts::vm::push_stack(end);
-    refalrts::vm::push_stack(begin);
-
-    return cSuccess;
-  } else {
-    return cRecognitionImpossible;
-  }
 }
 
 namespace {
