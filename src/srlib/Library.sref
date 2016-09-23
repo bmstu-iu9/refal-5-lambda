@@ -817,8 +817,8 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
             } else {
               order =
                 compare_char(
-                  left->function_info->ptr,
-                  right->function_info->ptr
+                  left->function_info->raa,
+                  right->function_info->raa
                 );
             }
           }
