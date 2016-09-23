@@ -1611,10 +1611,14 @@ refalrts::FnResult func_create_closure(
   return refalrts::cSuccess;
 }
 
+const refalrts::RASLCommand rasl_create_closure[] = {
+  { refalrts::icPerformCreateClosure, 0, 0, 0 }
+};
+
 }
 
 refalrts::RefalFunction refalrts::create_closure(
-  func_create_closure, "@create_closure@"
+  rasl_create_closure, "@create_closure@"
 );
 
 /*
@@ -1664,11 +1668,15 @@ refalrts::Iter refalrts::wrap_closure(refalrts::Iter closure) {
 
 //------------------------------------------------------------------------------
 
-refalrts::FnResult refalrts::RefalEmptyFunction::run(
-  refalrts::Iter /* begin */, refalrts::Iter /* end */
-) {
-  return refalrts::cRecognitionImpossible;
-}
+const refalrts::RASLCommand refalrts::RefalNativeFunction::run[] = {
+  { refalrts::icPerformNative, 0, 0, 0 }
+};
+
+//------------------------------------------------------------------------------
+
+const refalrts::RASLCommand refalrts::RefalEmptyFunction::run[] = {
+  { refalrts::icFail, 0, 0, 0 }
+};
 
 //------------------------------------------------------------------------------
 
@@ -1686,7 +1694,7 @@ extern NodePtr g_left_swap_ptr;
 
 refalrts::Iter refalrts::initialize_swap_head(refalrts::Iter head) {
   assert(cDataFunction == head->tag);
-  assert(RefalSwap::run == head->function_info->ptr);
+  assert(RefalSwap::run == head->function_info->raa);
 
   RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
   splice_elem(vm::g_left_swap_ptr, head);
@@ -1718,7 +1726,7 @@ void refalrts::swap_save(
   list_splice(swap->next_head, first, last);
 }
 
-refalrts::FnResult refalrts::RefalSwap::run(
+refalrts::FnResult refalrts::perform_swap(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
   this_is_generated_function();
@@ -1726,7 +1734,7 @@ refalrts::FnResult refalrts::RefalSwap::run(
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, arg_begin, arg_end);
 
-  assert(RefalSwap::run == func_name->function_info->ptr);
+  assert(RefalSwap::run == func_name->function_info->raa);
   RefalSwap *swap = static_cast<RefalSwap*>(func_name->function_info);
 
   Iter& head = swap->head;
@@ -1745,6 +1753,10 @@ refalrts::FnResult refalrts::RefalSwap::run(
 
   return cSuccess;
 }
+
+const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
+  { refalrts::icPerformSwap, 0, 0, 0 }
+};
 
 //------------------------------------------------------------------------------
 
@@ -2085,7 +2097,15 @@ int refalrts::profiler::reverse_compare(
 
 void refalrts::profiler::start_generated_function() {
   clock_t now = clock();
-  refalrts_profiler_assert_eq(g_current_state, cInRuntime);
+  switch (g_current_state) {
+    case cInRuntime:
+    case cInPatternLinear:      /* TODO: временный костыль */
+      break;
+
+    default:
+      refalrts_switch_default_violation(g_current_state);
+  }
+  //refalrts_profiler_assert_eq(g_current_state, cInRuntime);
   g_counters[cCounter_RuntimeTime] += (now - g_prev_cutoff);
   g_prev_cutoff = now;
   g_current_state = cInPatternLinear;
@@ -2499,6 +2519,7 @@ bool empty_stack();
 bool init_view_field();
 
 refalrts::FnResult main_loop();
+refalrts::FnResult rasl_run(Iter begin, Iter end);
 void make_dump(refalrts::Iter begin, refalrts::Iter end);
 FILE* dump_stream();
 
@@ -2681,7 +2702,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
     }
 
     if (callee) {
-      res = (callee->ptr)(active_begin, active_end);
+      res = rasl_run(active_begin, active_end);
     }
 
     profiler::stop_function();
@@ -3022,7 +3043,7 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
-refalrts::FnResult refalrts::RASLFunction::run(
+refalrts::FnResult refalrts::vm::rasl_run(
   refalrts::Iter begin, refalrts::Iter end
 ) {
   this_is_generated_function();
@@ -3030,7 +3051,6 @@ refalrts::FnResult refalrts::RASLFunction::run(
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, begin, end);
 
-  assert(RASLFunction::run == func_name->function_info->ptr);
   RASLFunction *descr = static_cast<RASLFunction*>(func_name->function_info);
 
   const RASLCommand *raa = descr->raa;
@@ -3734,7 +3754,7 @@ refalrts::FnResult refalrts::RASLFunction::run(
         break;
 
       case icPushStack:
-        push_stack(elem);
+        ::refalrts::vm::push_stack(elem);
         break;
 
       case icSpliceElem:
@@ -3774,6 +3794,19 @@ refalrts::FnResult refalrts::RASLFunction::run(
 
       case icFail:
         MATCH_FAIL;
+
+      case icPerformSwap:
+        return perform_swap(begin, end);
+
+      case icPerformNative:
+        {
+          RefalNativeFunction *callee =
+            static_cast<RefalNativeFunction*>(func_name->function_info);
+          return (callee->ptr)(begin, end);
+        }
+
+      case icPerformCreateClosure:
+        return func_create_closure(begin, end);
 
       default:
         refalrts_switch_default_violation(raa[i].cmd);
