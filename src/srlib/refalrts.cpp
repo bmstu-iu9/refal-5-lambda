@@ -2643,6 +2643,12 @@ bool refalrts::vm::init_view_field() {
 }
 
 refalrts::FnResult refalrts::vm::main_loop() {
+  if (! init_view_field()) {
+    return cNoMemory;
+  }
+
+  profiler::start_profiler();
+
   FnResult res = cSuccess;
   refalrts::Iter active_begin;
   refalrts::Iter active_end;
@@ -3841,14 +3847,9 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    if (refalrts::vm::init_view_field()) {
-      refalrts::profiler::start_profiler();
-      res = refalrts::vm::main_loop();
-      fflush(stderr);
-      fflush(stdout);
-    } else {
-      res = refalrts::cNoMemory;
-    }
+    res = refalrts::vm::main_loop();
+    fflush(stderr);
+    fflush(stdout);
   } catch (refalrts::SwitchDefaultViolation& error) {
     error.print();
     return 151;
