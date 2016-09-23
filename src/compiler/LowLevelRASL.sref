@@ -508,6 +508,7 @@ Function-Interpret {
           e.FunctionBody^ =
             (#CmdInitRAA)
             (#CmdiProfileFunction)
+            (#CmdiLoadConstants)
             e.FunctionBody
             (#CmdFinRAA);
         }

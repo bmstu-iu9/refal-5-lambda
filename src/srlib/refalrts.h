@@ -107,6 +107,7 @@ struct Node {
 
 enum iCmd {
   icThisIsGeneratedFunction,
+  icLoadConstants,
   icIssueMemory,
   icReserveBacktrackStack,
   icOnFailGoTo,

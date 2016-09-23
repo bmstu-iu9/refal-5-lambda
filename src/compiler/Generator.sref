@@ -642,6 +642,10 @@ GenCommand {
     (e.Indent)
     (e.Indent '{refalrts::icThisIsGeneratedFunction, 0, 0, 0},');
 
+  (e.Indent) (#CmdiLoadConstants) =
+    (e.Indent)
+    (e.Indent '{refalrts::icLoadConstants, 0, 0, 0},');
+
   (e.Indent) (#CmdiIssueMem s.Memory) =
     (e.Indent)
     (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');

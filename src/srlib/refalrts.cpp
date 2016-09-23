@@ -3047,14 +3047,15 @@ refalrts::FnResult refalrts::vm::rasl_run(
   Iter info_b = 0;
   Iter info_e = 0;
   Iter func_name = call_left(info_b, info_e, begin, end);
+  RefalFunction *callee = func_name->function_info;
 
-  RASLFunction *descr = static_cast<RASLFunction*>(func_name->function_info);
+  const RASLCommand *raa;
+  RefalFunction **functions = 0;
+  const RefalIdentifier *idents = 0;
+  const RefalNumber *numbers = 0;
+  const StringItem *strings = 0;
 
-  const RASLCommand *raa = descr->raa;
-  RefalFunction **functions = descr->functions;
-  const RefalIdentifier *idents = descr->idents;
-  const RefalNumber *numbers = descr->numbers;
-  const StringItem *strings = descr->strings;
+  raa = callee->raa;
 
   vm::Stack<int>& open_e_stack = vm::g_open_e_stack;
   vm::Stack<Iter>& context = vm::g_context;
@@ -3089,6 +3090,16 @@ refalrts::FnResult refalrts::vm::rasl_run(
     {
       case icThisIsGeneratedFunction:
         this_is_generated_function();
+        break;
+
+      case icLoadConstants:
+        {
+          RASLFunction *descr = static_cast<RASLFunction*>(callee);
+          functions = descr->functions;
+          idents = descr->idents;
+          numbers = descr->numbers;
+          strings = descr->strings;
+        }
         break;
 
       case icIssueMemory:
@@ -3804,9 +3815,9 @@ refalrts::FnResult refalrts::vm::rasl_run(
 
       case icPerformNative:
         {
-          RefalNativeFunction *callee =
-            static_cast<RefalNativeFunction*>(func_name->function_info);
-          return (callee->ptr)(begin, end);
+          RefalNativeFunction *native_callee =
+            static_cast<RefalNativeFunction*>(callee);
+          return (native_callee->ptr)(begin, end);
         }
 
       case icPerformCreateClosure:
