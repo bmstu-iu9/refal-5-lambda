@@ -420,7 +420,7 @@ Iter wrap_closure(Iter closure); // Свернуть замыкание
 extern Iter initialize_swap_head(Iter head);
 extern void swap_info_bounds(Iter& first, Iter& last, Iter head);
 extern void swap_save(Iter head, Iter first, Iter last);
-extern FnResult perform_swap(Iter arg_begin, Iter arg_end);
+extern void perform_swap(Iter arg_begin, Iter arg_end);
 
 // Профилирование
 
