@@ -3769,11 +3769,11 @@ refalrts::FnResult refalrts::vm::rasl_run(
         res = splice_evar(res, context[raa[i].val1], context[raa[i].val2]);
         break;
 
-      case icReturnResult:
+      case icSpliceToFreeList:
         splice_to_freelist(begin, end);
-        return cSuccess;
+        break;
 
-      case icReturnResult_NoTrash:
+      case icNextStep:
         return cSuccess;
 
       case icTrashLeftEdge:

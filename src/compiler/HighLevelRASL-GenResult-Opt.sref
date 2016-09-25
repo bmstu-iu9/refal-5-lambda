@@ -226,9 +226,9 @@ GenSplices {
     >
     (#CmdUseRes)
     <GenTrash (e.LeftTile) e.Trash>
-    (#CmdReturnResult-NoTrash);
+    (#CmdNextStep);
 
-  (#RemovedTile) (#Tile e.OneTile) = (#CmdReturnResult-NoTrash);
+  (#RemovedTile) (#Tile e.OneTile) = (#CmdNextStep);
 }
 
 CalcRes {

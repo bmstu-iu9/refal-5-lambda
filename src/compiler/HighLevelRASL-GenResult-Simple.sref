@@ -38,7 +38,9 @@ $ENTRY GenResult-Simple {
           <MakeVariableCommentTable e.CommonVars>
           (#CmdEmptyResult)
           e.ResultCommands
-          (#CmdReturnResult);
+          (#CmdUseRes)
+          (#CmdSpliceToFreeList)
+          (#CmdNextStep);
       }
     >;
 }

@@ -526,17 +526,15 @@ GenCommand {
       ' );'
     );
 
-  (e.Indent) (#CmdReturnResult) =
-    (e.Indent)
-    (e.Indent 'refalrts::use( res );')
-    (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );')
-    <GenReturn #Success e.Indent>;
-
   (e.Indent) (#CmdUseRes) =
     (e.Indent)
     (e.Indent 'refalrts::use( res );');
 
-  (e.Indent) (#CmdReturnResult-NoTrash) =
+  (e.Indent) (#CmdSpliceToFreeList) =
+    (e.Indent)
+    (e.Indent 'refalrts::splice_to_freelist( arg_begin, arg_end );');
+
+  (e.Indent) (#CmdNextStep) =
     (e.Indent)
     <GenReturn #Success e.Indent>;
 
@@ -947,13 +945,13 @@ GenCommand {
       <StrFromInt s.BeginOffset> ', ' <StrFromInt s.EndOffset> ', 0},'
     );
 
-  (e.Indent) (#CmdiReturnResult) =
+  (e.Indent) (#CmdiSpliceToFreeList) =
     (e.Indent)
-    (e.Indent '{refalrts::icReturnResult, 0, 0, 0},');
+    (e.Indent '{refalrts::icSpliceToFreeList, 0, 0, 0},');
 
-  (e.Indent) (#CmdiReturnResult-NoTrash) =
+  (e.Indent) (#CmdiNextStep) =
     (e.Indent)
-    (e.Indent '{refalrts::icReturnResult_NoTrash, 0, 0, 0},');
+    (e.Indent '{refalrts::icNextStep, 0, 0, 0},');
 
   (e.Indent) (#CmdiTrash s.Offset) =
     (e.Indent)

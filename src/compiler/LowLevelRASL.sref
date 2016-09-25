@@ -699,11 +699,11 @@ ConvertOneInterpretCommand {
   (#CmdInsertTile s.BeginOffset s.EndOffset) =
     (#CmdiInsertTile s.BeginOffset s.EndOffset);
 
-  (#CmdReturnResult) = (#CmdiReturnResult);
-
   (#CmdUseRes) = /* пусто */;
 
-  (#CmdReturnResult-NoTrash) = (#CmdiReturnResult-NoTrash);
+  (#CmdSpliceToFreeList) = (#CmdiSpliceToFreeList);
+
+  (#CmdNextStep) = (#CmdiNextStep);
 
   (#CmdTrash s.Offset) = (#CmdiTrash s.Offset);
 
