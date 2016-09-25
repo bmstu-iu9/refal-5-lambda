@@ -1689,12 +1689,13 @@ namespace refalrts {
 namespace vm {
 
 extern NodePtr g_left_swap_ptr;
+Iter initialize_swap_head(refalrts::Iter head);
 
 } // namespace vm
 
 } // namespace refalrts
 
-refalrts::Iter refalrts::initialize_swap_head(refalrts::Iter head) {
+refalrts::Iter refalrts::vm::initialize_swap_head(refalrts::Iter head) {
   assert(cDataFunction == head->tag);
   assert(RefalSwap::run == head->function_info->rasl);
 
@@ -1707,55 +1708,17 @@ refalrts::Iter refalrts::initialize_swap_head(refalrts::Iter head) {
   return vm::g_left_swap_ptr;
 }
 
-void refalrts::swap_info_bounds(
-  refalrts::Iter& first, refalrts::Iter& last, refalrts::Iter head
-) {
-  assert(cDataSwapHead == head->tag);
-
-  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
-  first = head;
-  last = swap->next_head;
-  move_left(first, last);
-  move_right(first, last);
-}
-
-void refalrts::swap_save(
-  refalrts::Iter head, refalrts::Iter first, refalrts::Iter last
-) {
-  assert(cDataSwapHead == head->tag);
-
-  RefalSwap *swap = static_cast<RefalSwap*>(head->function_info);
-  list_splice(swap->next_head, first, last);
-}
-
-void refalrts::perform_swap(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  Iter info_b = 0;
-  Iter info_e = 0;
-  Iter func_name = call_left(info_b, info_e, arg_begin, arg_end);
-
-  assert(RefalSwap::run == func_name->function_info->rasl);
-  RefalSwap *swap = static_cast<RefalSwap*>(func_name->function_info);
-
-  Iter& head = swap->head;
-
-  if (! head) {
-    head = initialize_swap_head(func_name);
-  }
-
-  Iter saved_b;
-  Iter saved_e;
-
-  swap_info_bounds(saved_b, saved_e, head);
-  splice_evar(arg_begin, saved_b, saved_e);
-  swap_save(head, info_b, info_e);
-  splice_to_freelist(arg_begin, arg_end);
-}
-
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
   { refalrts::icThisIsGeneratedFunction, 0, 0, 0 },
-  { refalrts::icPerformSwap, 0, 0, 0 },
+  { refalrts::icIssueMemory, 8, 0, 0 },
+  { refalrts::icInitB0_Lite, 0, 0, 0 },
+  { refalrts::icCallSaveLeft, 0, 2, 0 },
+  { refalrts::icFetchSwapHead, 5, 0, 4 },
+  { refalrts::icFetchSwapInfoBounds, 5, 6, 0 },
+  { refalrts::icEmptyResult, 0, 0, 0 },
+  { refalrts::icSpliceEVar, 0, 0, 6 },
+  { refalrts::icSwapSave, 5, 0, 2 },
+  { refalrts::icSpliceToFreeList, 0, 0, 0 },
   { refalrts::icNextStep, 0, 0, 0 }
 };
 
@@ -2984,6 +2947,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
     Iter &be = context[rasl->bracket + 1];
     Iter &elem = context[rasl->bracket];
     Iter &save_pos = context[rasl->val1];
+    Iter &swap_head = save_pos;
 
     // Содержимое скобок
     Iter &res_b = context[rasl->val2];
@@ -3298,8 +3262,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icCallSaveLeft:
-        context[rasl->val2 + 2] =
-          call_left(res_b, context[rasl->val2 + 1], bb, be);
+        context[rasl->val2 + 2] = call_left(res_b, res_e, bb, be);
         break;
 
       case icEmpty:
@@ -3751,8 +3714,38 @@ refalrts::FnResult refalrts::vm::main_loop() {
       case icFail:
         MATCH_FAIL;
 
-      case icPerformSwap:
-        perform_swap(begin, end);
+      case icFetchSwapHead:
+        {
+          assert(RefalSwap::run == elem->function_info->rasl);
+          assert(elem->function_info == callee);
+          RefalSwap *swap = static_cast<RefalSwap*>(callee);
+
+          if (! swap->head) {
+            swap->head = initialize_swap_head(elem);
+          }
+          swap_head = swap->head;
+        }
+        break;
+
+      case icFetchSwapInfoBounds:
+        {
+          assert(cDataSwapHead == swap_head->tag);
+
+          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
+          res_b = swap_head;
+          res_e = swap->next_head;
+          move_left(res_b, res_e);
+          move_right(res_b, res_e);
+        }
+        break;
+
+      case icSwapSave:
+        {
+          assert(cDataSwapHead == swap_head->tag);
+
+          RefalSwap *swap = static_cast<RefalSwap*>(swap_head->function_info);
+          list_splice(swap->next_head, bb, be);
+        }
         break;
 
       case icPerformNative:

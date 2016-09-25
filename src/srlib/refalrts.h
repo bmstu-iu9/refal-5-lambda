@@ -208,7 +208,9 @@ enum iCmd {
   icTrashLeftEdge,
   icTrash,
   icFail,
-  icPerformSwap,
+  icFetchSwapHead,
+  icFetchSwapInfoBounds,
+  icSwapSave,
   icPerformNative,
   icPerformCreateClosure,
   icEnd
@@ -414,13 +416,6 @@ extern void splice_from_freelist(Iter pos);
 extern RefalFunction create_closure;
 Iter unwrap_closure(Iter closure); // Развернуть замыкание
 Iter wrap_closure(Iter closure); // Свернуть замыкание
-
-// Работа со статическими ящиками
-
-extern Iter initialize_swap_head(Iter head);
-extern void swap_info_bounds(Iter& first, Iter& last, Iter head);
-extern void swap_save(Iter head, Iter first, Iter last);
-extern void perform_swap(Iter arg_begin, Iter arg_end);
 
 // Профилирование
 
