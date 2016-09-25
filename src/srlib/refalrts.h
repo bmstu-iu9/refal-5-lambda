@@ -42,11 +42,11 @@ typedef const char * RefalFuncName;
 struct RASLCommand;
 
 struct RefalFunction {
-  const RASLCommand *raa;
+  const RASLCommand *rasl;
   RefalFuncName name;
 
-  RefalFunction(const RASLCommand raa[], RefalFuncName name)
-    : raa(raa), name(name)
+  RefalFunction(const RASLCommand rasl[], RefalFuncName name)
+    : rasl(rasl), name(name)
   {
     /* пусто */
   }
@@ -487,13 +487,13 @@ struct RASLFunction: public RefalFunction {
 
   RASLFunction(
     RefalFuncName name,
-    const RASLCommand raa[],
+    const RASLCommand rasl[],
     RefalFunction *functions[],
     const RefalIdentifier idents[],
     const RefalNumber numbers[],
     const StringItem strings[]
   )
-    : RefalFunction(raa, name)
+    : RefalFunction(rasl, name)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)
