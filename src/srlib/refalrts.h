@@ -152,6 +152,7 @@ enum iCmd {
   icADTTermSave,
   icCallSaveLeft,
   icEmpty,
+  icNotEmpty,
   icsVarLeft,
   icsVarRight,
   icsVarTerm,
@@ -191,6 +192,8 @@ enum iCmd {
   icReinitHugeInt,
   icReinitIdent,
   icReinitBracket,
+  icReinitClosureHead,
+  icReinitUnwrappedClosure,
   icUpdateChar,
   icUpdateFunc,
   icUpdateInt,
@@ -212,7 +215,7 @@ enum iCmd {
   icFetchSwapInfoBounds,
   icSwapSave,
   icPerformNative,
-  icPerformCreateClosure,
+  icWrapClosure,
   icEnd
 };
 

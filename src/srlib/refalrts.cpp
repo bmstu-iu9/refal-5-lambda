@@ -1555,35 +1555,17 @@ void refalrts::splice_from_freelist(refalrts::Iter pos) {
 
 namespace {
 
-refalrts::FnResult func_create_closure(
-  refalrts::Iter begin, refalrts::Iter end
-) {
-  refalrts::Iter closure_b = begin;
-  refalrts::Iter closure_e = end;
-
-  refalrts::Iter func = refalrts::call_left(closure_b, closure_e, begin, end);
-
-  if (refalrts::empty_seq(closure_b, closure_e)) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::Iter head = func;
-  head->tag = refalrts::cDataClosureHead;
-  head->number_info = 1;
-
-  refalrts::Iter closure = end;
-  closure->tag = refalrts::cDataUnwrappedClosure;
-  closure->link_info = head;
-
-  refalrts::wrap_closure(closure);
-  refalrts::splice_to_freelist(begin, begin);
-
-  return refalrts::cSuccess;
-}
-
 const refalrts::RASLCommand rasl_create_closure[] = {
-  { refalrts::icPerformCreateClosure, 0, 0, 0 },
-  { refalrts::icNextStep, 0, 0, 0 }
+  { refalrts::icIssueMemory, 5, 0, 0 },
+  { refalrts::icInitB0_Lite, 0, 0, 0 },
+  { refalrts::icCallSaveLeft, 0, 2, 0 },
+  { refalrts::icNotEmpty, 0, 0, 2 },
+  { refalrts::icReinitClosureHead, 0, 0, 4 },
+  { refalrts::icReinitUnwrappedClosure, 4, 0, 1 },
+  { refalrts::icWrapClosure, 0, 0, 1 },
+  { refalrts::icSetRes, 0, 0, 1 },
+  { refalrts::icTrashLeftEdge, 0, 0, 0 },
+  { refalrts::icNextStep, 0, 0, 0 },
 };
 
 }
@@ -3241,6 +3223,12 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
+      case icNotEmpty:
+        if (empty_seq(bb, be)) {
+          MATCH_FAIL;
+        }
+        break;
+
       case icsVarLeft:
         index = rasl->val2;
         if (! svar_left(context[index], bb, be)) {
@@ -3538,6 +3526,16 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
+      case icReinitClosureHead:
+        elem->tag = refalrts::cDataClosureHead;
+        elem->number_info = 1;
+        break;
+
+      case icReinitUnwrappedClosure:
+        elem->tag = cDataUnwrappedClosure;
+        elem->link_info = context[rasl->val1];
+        break;
+
       case icUpdateChar:
         update_char(elem, static_cast<char>(rasl->val2));
         break;
@@ -3729,13 +3727,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icPerformCreateClosure:
-        {
-          FnResult res = func_create_closure(begin, end);
-          if (res != cSuccess) {
-            return res;
-          }
-        }
+      case icWrapClosure:
+        wrap_closure(elem);
         break;
 
       case icEnd:
