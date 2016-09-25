@@ -2608,26 +2608,7 @@ bool refalrts::vm::empty_stack() {
 extern refalrts::RefalFunction& Go;
 
 refalrts::FnResult refalrts::vm::run() {
-  refalrts::Iter active_begin;
-  refalrts::Iter active_end;
-
-  refalrts::reset_allocator();
-  if (! refalrts::alloc_open_call(active_begin)) {
-    return cNoMemory;
-  }
-  refalrts::Iter go_name = 0;
-  if (! refalrts::alloc_name(go_name, & Go)) {
-    return cNoMemory;
-  }
-  if (! refalrts::alloc_close_call(active_end)) {
-    return cNoMemory;
-  }
-  ::refalrts::vm::push_stack(active_end);
-  ::refalrts::vm::push_stack(active_begin);
-  refalrts::splice_evar(& g_last_marker, active_begin, active_end);
-
-  FnResult res;
-  res = main_loop();
+  FnResult res = main_loop();
 
   if (res != cSuccess) {
     switch(res) {
@@ -2955,20 +2936,30 @@ void refalrts::vm::free_view_field() {
 //==============================================================================
 
 refalrts::FnResult refalrts::vm::main_loop() {
-  RefalFunction *callee = 0;
-  Iter begin = 0;
-  Iter end = 0;
-  const RASLCommand *raa;
-  RefalFunction **functions = 0;
-  const RefalIdentifier *idents = 0;
-  const RefalNumber *numbers = 0;
-  const StringItem *strings = 0;
-
-  RASLCommand startup[] = {
+  static const RASLCommand startup_rasl[] = {
+    { icIssueMemory, 3, 0, 0 },
+    { icEmptyResult, 0, 0, 0 },
+    { icAllocBracket, 0, ibOpenCall, 0 },
+    { icAllocFunc, 0, 0, 1 },
+    { icAllocBracket, 0, ibCloseCall, 2 },
+    { icSpliceTile, 0, 2, 0 },
+    { icPushStack, 0, 0, 2 },
+    { icPushStack, 0, 0, 0 },
     { icNextStep, 0, 0, 0 }
   };
 
-  raa = startup;
+  static RefalFunction *startup_func[] = {
+    & Go
+  };
+
+  RefalFunction *callee = 0;
+  Iter begin = & g_last_marker; /* нужно для icEmptyResult в startup_rasl */
+  Iter end = 0;
+  const RASLCommand *raa = startup_rasl;
+  RefalFunction **functions = startup_func;
+  const RefalIdentifier *idents = 0;
+  const RefalNumber *numbers = 0;
+  const StringItem *strings = 0;
 
   vm::Stack<int>& open_e_stack = vm::g_open_e_stack;
   vm::Stack<Iter>& context = vm::g_context;
