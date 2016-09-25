@@ -1251,33 +1251,6 @@ void link_adjacent(refalrts::Iter left, refalrts::Iter right) {
   }
 }
 
-bool alloc_closure(refalrts::Iter& res) {
-  bool allocated = refalrts::allocator::alloc_node(res);
-  if (allocated) {
-    refalrts::Iter head = 0;
-    allocated = refalrts::allocator::alloc_node(head);
-    if (allocated) {
-      refalrts::Iter prev_head = prev(head);
-      refalrts::Iter next_head = next(head);
-
-      link_adjacent(prev_head, next_head);
-      link_adjacent(head, head);
-
-      res->tag = refalrts::cDataClosure;
-      res->link_info = head;
-
-      head->tag = refalrts::cDataClosureHead;
-      head->number_info = 1;
-
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
-
 } // unnamed namespace
 
 bool refalrts::alloc_open_adt(refalrts::Iter& res) {
@@ -1588,25 +1561,22 @@ refalrts::FnResult func_create_closure(
   refalrts::Iter closure_b = begin;
   refalrts::Iter closure_e = end;
 
-  refalrts::move_left(closure_b, closure_e); // пропуск <
-  refalrts::move_left(closure_b, closure_e); // пропуск имени функции
-  refalrts::move_right(closure_b, closure_e); // пропуск >
+  refalrts::Iter func = refalrts::call_left(closure_b, closure_e, begin, end);
 
   if (refalrts::empty_seq(closure_b, closure_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::Iter closure = 0;
+  refalrts::Iter head = func;
+  head->tag = refalrts::cDataClosureHead;
+  head->number_info = 1;
 
-  if (! alloc_closure(closure)) {
-    return refalrts::cNoMemory;
-  }
+  refalrts::Iter closure = end;
+  closure->tag = refalrts::cDataUnwrappedClosure;
+  closure->link_info = head;
 
-  refalrts::Iter head = closure->link_info;
-
-  list_splice(head, closure_b, closure_e);
-  list_splice(begin, closure, closure);
-  refalrts::splice_to_freelist(begin, end);
+  refalrts::wrap_closure(closure);
+  refalrts::splice_to_freelist(begin, begin);
 
   return refalrts::cSuccess;
 }
