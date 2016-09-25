@@ -3447,18 +3447,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icEPrepare:
-        context[rasl->val2] = 0;
-        context[rasl->val2 + 1] = 0;
+        res_b = 0;
+        res_e = 0;
         open_e_stack[stack_top++] = ++rasl;
         start_e_loop();
         break;
 
       case icEStart:
         {
-          bool advance = open_evar_advance(
-            context[rasl->val2], context[rasl->val2 + 1], bb, be
-          );
-          if (! advance) {
+          if (! open_evar_advance(res_b, res_e, bb, be)) {
             MATCH_FAIL;
           }
           open_e_stack[stack_top++] = rasl;
@@ -3466,8 +3463,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icSave:
-        context[rasl->val2] = bb;
-        context[rasl->val2 + 1] = be;
+        res_b = bb;
+        res_e = be;
         break;
 
       case icEmptyResult:
@@ -3544,46 +3541,20 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icAllocBracket:
-        switch(rasl->val2)
         {
-          case ibOpenADT:
-            if (! alloc_open_adt(elem)) {
-              return cNoMemory;
-            }
-            break;
+          static bool (*const allocator[])(Iter& res) = {
+            alloc_open_adt,
+            alloc_open_bracket,
+            alloc_open_call,
+            alloc_close_adt,
+            alloc_close_bracket,
+            alloc_close_call
+          };
 
-          case ibOpenBracket:
-            if (! alloc_open_bracket(elem)) {
-              return cNoMemory;
-            }
-            break;
-
-          case ibOpenCall:
-            if (! alloc_open_call(elem)) {
-              return cNoMemory;
-            }
-            break;
-
-          case ibCloseADT:
-            if (! alloc_close_adt(elem)) {
-              return cNoMemory;
-            }
-            break;
-
-          case ibCloseBracket:
-            if (! alloc_close_bracket(elem)) {
-              return cNoMemory;
-            }
-            break;
-
-          case ibCloseCall:
-            if (! alloc_close_call(elem)) {
-              return cNoMemory;
-            }
-            break;
-
-          default:
-            refalrts_switch_default_violation(rasl->val2);
+          assert(rasl->val2 <= ibCloseCall);
+          if (! allocator[rasl->val2](elem)) {
+            return cNoMemory;
+          }
         }
         break;
 
@@ -3620,33 +3591,17 @@ refalrts::FnResult refalrts::vm::main_loop() {
         break;
 
       case icReinitBracket:
-        switch (rasl->val2) {
-          case ibOpenADT:
-            reinit_open_adt(elem);
-            break;
-
-          case ibOpenBracket:
-            reinit_open_bracket(elem);
-            break;
-
-          case ibOpenCall:
-            reinit_open_call(elem);
-            break;
-
-          case ibCloseADT:
-            reinit_close_adt(elem);
-            break;
-
-          case ibCloseBracket:
-            reinit_close_bracket(elem);
-            break;
-
-          case ibCloseCall:
-            reinit_close_call(elem);
-            break;
-
-          default:
-            refalrts_switch_default_violation(rasl->val2);
+        {
+          static void (*const reiniter[])(Iter res) = {
+            reinit_open_adt,
+            reinit_open_bracket,
+            reinit_open_call,
+            reinit_close_adt,
+            reinit_close_bracket,
+            reinit_close_call
+          };
+          assert(rasl->val2 <= ibCloseCall);
+          reiniter[rasl->val2](elem);
         }
         break;
 
