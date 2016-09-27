@@ -2879,8 +2879,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
   vm::Stack<const RASLCommand*>& open_e_stack = vm::g_open_e_stack;
   vm::Stack<Iter>& context = vm::g_context;
 
-  Iter res;
-  Iter trash_prev;
+  Iter res = 0;
+  Iter trash_prev = 0;
   unsigned int index;
   int stack_top = 0;
 
