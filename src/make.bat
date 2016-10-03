@@ -9,8 +9,13 @@ setlocal
       -X-C-DMEMORY_LIMIT=2500000 ^
       -X-C-DSTEP_LIMIT=30000000
   ) else (
-    set SREFC_FLAGS_PLUS=-OPR
-    set SRMAKE_FLAGS_PLUS=-X-OPR
+    if {%RELEASE%}=={Benchmark} (
+      set SREFC_FLAGS_PLUS=
+      set SRMAKE_FLAGS_PLUS=
+    ) else (
+      set SREFC_FLAGS_PLUS=-OPR
+      set SRMAKE_FLAGS_PLUS=-X-OPR
+    )
   )
 
   set SREFC_FLAGS=%SREFC_FLAGS% %SREFC_FLAGS_PLUS%
