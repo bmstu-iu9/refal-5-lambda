@@ -59,7 +59,7 @@ setlocal
     goto :EOF
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% Hash.cpp ../../src/srlib/refalrts.cpp lookup3.c
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1

@@ -24,7 +24,7 @@ struct NotAInteger;
 typedef If<
   sizeof(unsigned int) == 4,
   unsigned int,
-  typename If<
+  If<
     sizeof(unsigned long) == 4,
     unsigned long,
     NotAInteger

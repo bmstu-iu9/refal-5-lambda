@@ -4,8 +4,8 @@
 const char *example = "Quick brown fox jumps over lazy dog's tail";
 
 // Выбраны случайно, hexdump < /dev/urandom
-const refalrts::RefalNumber init_value_1 = 3696200979;
-const refalrts::RefalNumber init_value_2 = 2347154069;
+const refalrts::RefalNumber init_value_1 = 3696200979U;
+const refalrts::RefalNumber init_value_2 = 2347154069U;
 
 char assert_unsigned_int_32[sizeof(unsigned int) == 4 ? 1 : -1];
 typedef unsigned int uint32_t;
