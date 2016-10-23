@@ -1,0 +1,75 @@
+%%
+#include <string.h>
+
+const char *example = "Quick brown fox jumps over lazy dog's tail";
+
+// Выбраны случайно, hexdump < /dev/urandom
+const refalrts::RefalNumber init_value_1 = 3696200979;
+const refalrts::RefalNumber init_value_2 = 2347154069;
+
+char assert_unsigned_int_32[sizeof(unsigned int) == 4 ? 1 : -1];
+typedef unsigned int uint32_t;
+
+extern "C"
+void hashlittle2(
+  const void *key,       /* the key to hash */
+  size_t      length,    /* length of the key */
+  uint32_t   *pc,        /* IN: primary initval, OUT: primary hash */
+  uint32_t   *pb);       /* IN: secondary initval, OUT: secondary hash */
+
+%%
+
+Example {
+%%
+  refalrts::Iter str_b = 0, str_e = 0;
+  refalrts::reset_allocator();
+
+  if (! refalrts::alloc_string(str_b, str_e, example)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, str_b, str_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+InitValues {
+%%
+  arg_begin->tag = refalrts::cDataNumber;
+  arg_begin->number_info = init_value_1;
+  arg_end->tag = refalrts::cDataNumber;
+  arg_end->number_info = init_value_2;
+  refalrts::splice_to_freelist_open(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+CalcHashOriginal {
+%%
+  uint32_t pc = init_value_1;
+  uint32_t pb = init_value_2;
+
+  hashlittle2(example, strlen(example), &pc, &pb);
+
+  arg_begin->tag = refalrts::cDataNumber;
+  arg_begin->number_info = pc;
+  arg_end->tag = refalrts::cDataNumber;
+  arg_end->number_info = pb;
+  refalrts::splice_to_freelist_open(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+//FROM Hash
+$EXTERN HashLittle2-Chars;
+
+CalcHashRefal {
+  = <HashLittle2-Chars <InitValues> <Example>>;
+}
+
+Equal { s.Hash1 s.Hash2 s.Hash1 s.Hash2 = ; }
+
+$ENTRY Go {
+  = <Equal <CalcHashOriginal> <CalcHashRefal>>;
+}

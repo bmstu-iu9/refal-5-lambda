@@ -9,6 +9,7 @@ copy *.cpp ..\..\srlib
 call :PREPARE_SRCLIB Library
 call :PREPARE_SRCLIB LibraryEx
 call :PREPARE_SRCLIB GetOpt
+call :PREPARE_SRCLIB Hash
 
 goto :EOF
 
