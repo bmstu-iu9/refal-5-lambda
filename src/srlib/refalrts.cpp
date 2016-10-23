@@ -2624,7 +2624,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataNumber:
-            fprintf(output, "%ld ", begin->number_info);
+            fprintf(output, "%lu ", begin->number_info);
             refalrts::move_left(begin, end);
             continue;
 
