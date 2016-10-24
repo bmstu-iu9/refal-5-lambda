@@ -4,7 +4,6 @@
   переносимо получить тип uint32_t.
 */
 #include <stddef.h>
-#include <stdio.h>
 
 template <bool b, typename T, typename U>
 struct If;
@@ -42,7 +41,6 @@ $ENTRY HashLittle2-Chars {
   refalrts::Iter sPrimInitval = 0;
   refalrts::Iter sSecInitval = 0;
 
-  printf("---1");
   if (
     ! refalrts::svar_left(sPrimInitval, content_b, content_e)
     || refalrts::cDataNumber != sPrimInitval->tag
@@ -50,7 +48,6 @@ $ENTRY HashLittle2-Chars {
     return refalrts::cRecognitionImpossible;
   }
 
-  printf("---2");
   if (
     ! refalrts::svar_left(sSecInitval, content_b, content_e)
     || refalrts::cDataNumber != sSecInitval->tag
@@ -58,7 +55,6 @@ $ENTRY HashLittle2-Chars {
     return refalrts::cRecognitionImpossible;
   }
 
-  printf("---3");
   size_t length = 0;
   refalrts::Iter p = content_b;
   if (p != 0) {
@@ -72,7 +68,6 @@ $ENTRY HashLittle2-Chars {
     }
   }
 
-  printf("---4");
   /*
     Код ниже — результат переработки кода функции hashlittle2(),
     взятой со страницы http://www.burtleburtle.net/bob/c/lookup3.c.
