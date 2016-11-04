@@ -131,7 +131,12 @@ refalrts::FnResult write_to_stream(
         break;
 
       case refalrts::cDataFunction:
-        printf_res = fprintf(out, "%s ", p->function_info->name);
+        {
+          const char *name = p->function_info->name;
+          const char *hash_pos = strchr(name, '#');
+          size_t len = hash_pos ? hash_pos - name : strlen(name);
+          printf_res = fprintf(out, "%.*s ", static_cast<int>(len), name);
+        }
         break;
 
       case refalrts::cDataIdentifier:

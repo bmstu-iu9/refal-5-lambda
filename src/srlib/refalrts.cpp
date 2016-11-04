@@ -2520,7 +2520,7 @@ bool refalrts::vm::empty_stack() {
   return (g_stack_ptr == 0);
 }
 
-extern refalrts::RefalFunction& Go;
+extern refalrts::RefalFunction& Go_0_0;
 
 refalrts::FnResult refalrts::vm::run() {
   FnResult res = main_loop();
@@ -2864,7 +2864,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
   };
 
   static RefalFunction *startup_func[] = {
-    & Go
+    & Go_0_0
   };
 
   RefalFunction *callee = 0;

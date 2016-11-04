@@ -4,6 +4,12 @@ $EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce;
 //FROM Library
 $EXTERN Add, StrFromInt;
 
+//FROM Hash
+$EXTERN HashLittle2-Chars;
+
+//FROM DisplayName
+$EXTERN DisplayName;
+
 /**
   <LowLevelRASL s.GenMode e.RASLAST>
     == e.RASL
@@ -11,64 +17,48 @@ $EXTERN Add, StrFromInt;
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
 */
 $ENTRY LowLevelRASL {
-  s.GenMode e.ProgramElements =
+  s.GenMode (e.SrcName) e.ProgramElements =
     <Fetch
       e.ProgramElements
       <Seq
         (MapReduce
+          CalcDigest
+          // Числа выбраны случайно: hexdump /dev/urandom
+          (<HashLittle2-Chars 4001567069 291363191 e.SrcName>)
+        )
+        {
+          (s.Hash1 s.Hash2) e.Items =
+            <Map (SetCookies s.Hash1 s.Hash2) e.Items>;
+        }
+        (MapReduce
           {
             (e.Declarations)
-            (#Function s.ScopeClass (e.Name) e.Commands) =
-              (
-                e.Declarations
-                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
-              )
+            (#Function (e.Name) e.Commands) =
+              (e.Declarations (#CmdExtern e.Name))
               <Function
-                s.GenMode s.ScopeClass (e.Name)
+                s.GenMode (e.Name)
                 <AddSavers e.Commands>
               >;
 
             (e.Declarations)
-            (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-              (
-                e.Declarations
-                <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
-              )
+            (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
+              (e.Declarations (#CmdExtern e.Name))
               (#CmdFnStart e.Name)
               (#CmdEmitNativeCode t.SrcPos e.Code)
               (#CmdFnEnd)
-              <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
+              (#CmdFuncDescr e.Name);
 
             (e.Declarations)
-            (#CmdEnum s.ScopeClass e.Name) =
-              (
-                e.Declarations
-                <InUnnamedNamespace s.ScopeClass (#CmdEnumDescr e.Name)>
-              );
+            (#CmdEnum e.Name) =
+              (e.Declarations (#CmdEnumDescr e.Name));
 
             (e.Declarations)
-            (#CmdSwap s.ScopeClass e.Name) =
-              (
-                e.Declarations
-                <InUnnamedNamespace s.ScopeClass (#CmdSwapDescr e.Name)>
-              );
+            (#CmdSwap e.Name) =
+              (e.Declarations (#CmdSwapDescr e.Name));
 
             (e.Declarations)
-            (#CmdDeclaration #GN-Entry e.Name) =
-              (e.Declarations (#CmdExtern e.Name));
-
-            (e.Declarations)
-            (#CmdDeclaration #GN-Local e.Name) =
-              (
-                e.Declarations
-                (#CmdNamespaceStart)
-                (#CmdExtern e.Name)
-                (#CmdNamespaceEnd)
-              )
-              (#CmdNativeForward e.Name)
-              (#CmdNamespaceStart)
-              (#CmdFuncDescr e.Name)
-              (#CmdNamespaceEnd);
+            (#CmdDeclaration e.Name) =
+              (e.Declarations (#CmdDeclaration e.Name));
 
             (e.Declarations)
             (#CmdDefineIdent e.Name) =
@@ -89,14 +79,86 @@ $ENTRY LowLevelRASL {
     >;
 }
 
-InUnnamedNamespace {
-  #GN-Entry e.RASL =
-    e.RASL;
+CalcDigest {
+  (s.Hash1 s.Hash2) (#Function s.ScopeClass (e.Name) e.Commands) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'R'>)
+    (#Function s.ScopeClass (e.Name) e.Commands);
 
-  #GN-Local e.RASL =
-    (#CmdNamespaceStart)
-    e.RASL
-    (#CmdNamespaceEnd);
+  (s.Hash1 s.Hash2)
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'N'>)
+    (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
+
+  (s.Hash1 s.Hash2) (#CmdEnum s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
+    (#CmdEnum s.ScopeClass e.Name);
+
+  (s.Hash1 s.Hash2) (#CmdSwap s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
+    (#CmdSwap s.ScopeClass e.Name);
+
+  (s.Hash1 s.Hash2) (#CmdDeclaration s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
+    (#CmdDeclaration s.ScopeClass e.Name);
+
+  (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name) =
+    (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name);
+
+  (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+HashFuncName {
+  s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
+    <HashFuncName-Aux
+      s.Hash1 s.Hash2 s.ScopeClass <DisplayName e.Name> s.Sign
+    >;
+}
+
+HashFuncName-Aux {
+  s.Hash1 s.Hash2 #GN-Entry e.Name =
+    <HashLittle2-Chars s.Hash1 s.Hash2 'E' e.Name>;
+
+  s.Hash1 s.Hash2 #GN-Local e.Name =
+    <HashLittle2-Chars s.Hash1 s.Hash2 'L' e.Name>;
+}
+
+SetCookies {
+  s.Hash1 s.Hash2
+  (#Function s.ScopeClass (e.Name) e.Commands) =
+    (#Function
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (#CmdNativeFunction
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      t.SrcPos e.Code
+    );
+
+  s.Hash1 s.Hash2 (#CmdEnum s.ScopeClass e.Name) =
+    (#CmdEnum <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdSwap s.ScopeClass e.Name) =
+    (#CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdDeclaration s.ScopeClass e.Name) =
+    (#CmdDeclaration
+      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
+    );
+
+  s.Hash1 s.Hash2 (#CmdDefineIdent e.Name) =
+    (#CmdDefineIdent e.Name);
+
+  s.Hash1 s.Hash2 (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+MingleName {
+  #GN-Entry e.Name s.Hash1 s.Hash2 = e.Name #Hash 0 0;
+  #GN-Local e.Name s.Hash1 s.Hash2 = e.Name #Hash s.Hash1 s.Hash2;
 }
 
 AddSavers {
@@ -479,26 +541,26 @@ Freeze {
 }
 
 Function {
-  #Both s.ScopeClass (e.Name) e.Commands =
+  #Both (e.Name) e.Commands =
     // Интерпретируемый код
     (#CmdIfDef 'INTERPRET')
-    <Function #OnlyInterpret s.ScopeClass (e.Name) e.Commands>
+    <Function #OnlyInterpret (e.Name) e.Commands>
     (#CmdElse)
     // Компилируемый код
-    <Function #OnlyDirect s.ScopeClass (e.Name) e.Commands>
+    <Function #OnlyDirect (e.Name) e.Commands>
     (#CmdEndIf);
 
-  #OnlyDirect s.ScopeClass (e.Name) e.Commands =
+  #OnlyDirect (e.Name) e.Commands =
     // Компилируемый код
-    <Function-Direct s.ScopeClass (e.Name) e.Commands>;
+    <Function-Direct (e.Name) e.Commands>;
 
-  #OnlyInterpret s.ScopeClass (e.Name) e.Commands =
+  #OnlyInterpret (e.Name) e.Commands =
     // Интерпретируемый код
-    <Function-Interpret s.ScopeClass (e.Name) e.Commands>;
+    <Function-Interpret (e.Name) e.Commands>;
 }
 
 Function-Interpret {
-  s.ScopeClass (e.Name) e.FunctionBody =
+  (e.Name) e.FunctionBody =
     <Fetch
       e.FunctionBody
       <Seq
@@ -525,10 +587,7 @@ Function-Interpret {
             e.FunctionBody
             (#CmdNamespaceEnd e.Name)
             (#CmdNamespaceEnd)
-            <InUnnamedNamespace
-              s.ScopeClass
-              (#CmdInterpretFuncDescr e.Name)
-            >;
+            (#CmdInterpretFuncDescr e.Name);
         }
       >
     >;
@@ -1019,12 +1078,12 @@ PrepareOpenEStack {
 }
 
 Function-Direct {
-  s.ScopeClass (e.Name) e.Body =
+  (e.Name) e.Body =
     (#CmdFnStart e.Name)
     (#CmdProfileFunction)
     <Function-DirectRec e.Body>
     (#CmdFnEnd)
-    <InUnnamedNamespace s.ScopeClass (#CmdFuncDescr e.Name)>;
+    (#CmdFuncDescr e.Name);
 }
 
 Function-DirectRec {

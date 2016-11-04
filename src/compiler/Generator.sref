@@ -17,7 +17,15 @@ FuncArguments {
 
 FuncReference {
   e.Name =
-    ('refalrts::RefalFunction& ' <CName e.Name> ' = descr_' <CName e.Name> ';');
+    ('refalrts::RefalFunction& ' <CName e.Name> ' = descr_' <BaseCName e.Name> ';');
+}
+
+FuncAlias {
+  e.Name #Hash s.Cookie1 s.Cookie2 =
+    (
+      '#define ' <CName e.Name> '_alias '
+      <CName e.Name #Hash s.Cookie1 s.Cookie2>
+    );
 }
 
 GenReturn {
@@ -117,6 +125,16 @@ PrintDirection {
   #AlgTerm = 'Term';
 }
 
+CNameAlias {
+  #CreateClosure = <CName #CreateClosure>;
+  e.RegularName = <CName e.RegularName> '_alias';
+}
+
+BaseCName {
+  e.Name #Hash s.Cookie1 s.Cookie2 = <CName e.Name>;
+  e.Name = <CName e.Name>;
+}
+
 GenCommand {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
@@ -126,21 +144,32 @@ GenCommand {
   (e.Indent) (#CmdEnumDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalEmptyFunction descr_' <CName e.Name> '('
+      'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
     )
-    <FuncReference e.Name>;
+    <FuncReference e.Name>
+    <FuncAlias e.Name>
+    ();
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
-    ('extern refalrts::RefalFunction& ' <CName e.Name> ';');
+    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
+    <FuncAlias e.Name>
+    ();
+
+  (e.Indent) (#CmdDeclaration e.Name) =
+    (e.Indent)
+    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
+    <FuncAlias e.Name>
+    ('#define ' <BaseCName e.Name> '_str "' <DisplayCName e.Name> '"')
+    ();
 
   (e.Indent) (#CmdFuncDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalNativeFunction descr_' <CName e.Name> '('
-      'func_' <CName e.Name> ', "' <DisplayCName e.Name> '"'
+      'static refalrts::RefalNativeFunction descr_' <BaseCName e.Name> '('
+      'func_' <BaseCName e.Name> ', "' <DisplayCName e.Name> '"'
       ');'
     )
     <FuncReference e.Name>
@@ -148,13 +177,13 @@ GenCommand {
 
   (e.Indent) (#CmdInterpretFuncDescr e.Name) =
     (e.Indent)
-    ('refalrts::RASLFunction descr_' <CName e.Name> '(')
+    ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
     ('  "' <DisplayCName e.Name> '",')
-    ('  scope_' <CName e.Name> '::raa,')
-    ('  scope_' <CName e.Name> '::functions,')
-    ('  scope_' <CName e.Name> '::idents,')
-    ('  scope_' <CName e.Name> '::numbers,')
-    ('  scope_' <CName e.Name> '::strings')
+    ('  scope_' <BaseCName e.Name> '::raa,')
+    ('  scope_' <BaseCName e.Name> '::functions,')
+    ('  scope_' <BaseCName e.Name> '::idents,')
+    ('  scope_' <BaseCName e.Name> '::numbers,')
+    ('  scope_' <BaseCName e.Name> '::strings')
     (');')
     <FuncReference e.Name>
     ();
@@ -162,11 +191,13 @@ GenCommand {
   (e.Indent) (#CmdSwapDescr e.Name) =
     (e.Indent)
     (
-      'refalrts::RefalSwap descr_' <CName e.Name> '('
+      'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
       '"' <DisplayCName e.Name> '"'
       ');'
     )
-    <FuncReference e.Name>;
+    <FuncReference e.Name>
+    <FuncAlias e.Name>
+    ();
 
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
@@ -181,7 +212,7 @@ GenCommand {
 
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
-    ('static refalrts::FnResult func_' <CName e.Name> <FuncArguments> ' {');
+    ('static refalrts::FnResult func_' <BaseCName e.Name> <FuncArguments> ' {');
 
   (e.Indent) (#CmdSeparator) =
     (e.Indent)
@@ -197,17 +228,13 @@ GenCommand {
     e.Code
     (#NativeInsertEnd);
 
-  (e.Indent) (#CmdNativeForward e.Name) =
-    (e.Indent)
-    ('static refalrts::FnResult func_' <CName e.Name> <FuncArguments> ';');
-
   (e.Indent) (#CmdNamespaceStart /* пусто */) =
     (e.Indent '  ')
     (e.Indent 'namespace /* unnamed */ {');
 
   (e.Indent) (#CmdNamespaceStart e.Name) =
     (e.Indent '  ')
-    (e.Indent 'namespace scope_' <CName e.Name> ' {');
+    (e.Indent 'namespace scope_' <BaseCName e.Name> ' {');
 
   (e.Indent '  ') (#CmdNamespaceEnd /* пусто */) =
     (e.Indent)
@@ -572,11 +599,11 @@ GenCommand {
     (e.Indent 'static refalrts::RefalFunction *functions[] = {')
     <Map
       {
-        (e.Name) = (e.Indent '  & ' <CName e.Name> ',');
+        (e.Name) = (e.Indent '  & ' <CNameAlias e.Name> ',');
       }
       e.FuncNames
     >
-    (e.Indent '  & ' <CName e.LastName>)
+    (e.Indent '  & ' <CNameAlias e.LastName>)
     (e.Indent '};');
 
   (e.Indent) (#CmdiLabelArray) =
@@ -1025,7 +1052,7 @@ PrintMatchName {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('function') '& ' <CName e.Name>
+      ('function') '& ' <CNameAlias e.Name>
     >;
 }
 
@@ -1033,7 +1060,7 @@ PrintMatchNameSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('function') '& ' <CName e.Name>
+      ('function') '& ' <CNameAlias e.Name>
     >;
 }
 
@@ -1083,8 +1110,7 @@ PrintMatchADT {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('adt')
-      <ContextRange s.InnerNum> ', & '
-      <CName e.Name>
+      <ContextRange s.InnerNum> ', & ' <CNameAlias e.Name>
     >;
 }
 
@@ -1094,7 +1120,7 @@ PrintMatchADTSave {
       <ContextItem <Add s.InnerNum 2>> ' = '
       'refalrts::adt_term('
       <ContextRange s.InnerNum> ', '
-      '& ' <CName e.Name> ', '
+      '& ' <CNameAlias e.Name> ', '
       <ContextItem s.Offset> ');'
     )
     (e.Indent 'if( ! ' <ContextItem <Add s.InnerNum 2>> ' )')
@@ -1105,7 +1131,7 @@ PrintMatchADTSave {
       (e.Indent) <Add 2 s.InnerNum> s.Direction s.BracketNumber
       ('adt')
       <ContextRange s.InnerNum> ', '
-      '& ' <CName e.Name>
+      '& ' <CNameAlias e.Name>
     >
     (
       e.Indent
@@ -1253,7 +1279,7 @@ AllocatorFuncName {
 AllocatorFuncArgument {
   #ElChar s.Char = ', ' '' <Escape s.Char> '';
 
-  #ElName e.Name = ', & ' <CName e.Name>;
+  #ElName e.Name = ', & ' <CNameAlias e.Name>;
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
