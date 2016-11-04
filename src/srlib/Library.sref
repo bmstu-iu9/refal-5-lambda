@@ -390,7 +390,8 @@ $ENTRY FOpen {
   }
 
   char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len = read_chars(filename, FILENAME_MAX, content_b, content_e);
+  unsigned len =
+    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
 
   if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
     return refalrts::cRecognitionImpossible;
@@ -473,7 +474,8 @@ $ENTRY ExistFile {
     refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
   char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len = read_chars(filename, FILENAME_MAX, content_b, content_e);
+  unsigned len =
+    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
 
   if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
     return refalrts::cRecognitionImpossible;
