@@ -245,7 +245,7 @@ CompileFiles {
           (e.OutputName);
 
         (s.Pos #Output e.OutputName (e.NativeName)) =
-          <WriteLine '+Linking (with native functions)' e.OutputName>
+          <WriteLine '+Linking (+ natives) ' e.OutputName>
           (e.OutputName) (e.NativeName);
 
         (s.Pos #Source (e.Source) e.OutputName) =

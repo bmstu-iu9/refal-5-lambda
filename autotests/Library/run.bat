@@ -124,7 +124,7 @@ setlocal
     call :CLEANUP Library-System
   )
 
-  erase Library.cpp Library.sref
+  erase Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF
 
@@ -151,7 +151,7 @@ setlocal
     goto :EOF
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% Library.cpp ../../src/srlib/refalrts.cpp
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% Library.cpp Library.native.cpp ../../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1

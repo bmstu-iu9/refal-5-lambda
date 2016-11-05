@@ -18,13 +18,14 @@ run_all_tests() {
   simple_tests ok \
     Hash-HashLittle2-Chars
 
-  rm Hash.cpp Hash.sref
+  rm Hash.cpp Hash.native.cpp Hash.sref
 }
 
 compile() {
   echo Compiling $1
   SRC=$1
   CPP=${SRC%%.sref}.cpp
+  NATCPP=${SRC%%.sref}.native.cpp
   TARGET=${SRC%%.sref}
 
   ../../bin/srefc-core $SRC 2>__error.txt
@@ -39,7 +40,7 @@ compile() {
   fi
 
   if [ "$SRC" != "Hash.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP Hash.cpp ../../srlib/refalrts.cpp lookup3.cpp
+    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP $NATCPP Hash.cpp Hash.native.cpp ../../srlib/refalrts.cpp lookup3.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1
@@ -74,7 +75,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1 $1.cpp $1.native.cpp __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

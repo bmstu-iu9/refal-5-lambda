@@ -32,7 +32,7 @@ setlocal
   call :SIMPLE_TESTS FAIL ^
     || exit /b 1
 
-  erase Hash.cpp Hash.sref
+  erase Hash.cpp Hash.native.cpp Hash.sref
 endlocal
 goto :EOF
 
@@ -41,6 +41,7 @@ setlocal
   echo Compiling %1
   set SRC=%1
   set CPP=%~n1.cpp
+  set NATCPP=%~n1.native.cpp
   set TARGET=%~n1.exe
 
   ..\..\bin\srefc-core %SRC% 2>__error.txt
@@ -59,7 +60,7 @@ setlocal
     goto :EOF
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -120,6 +121,7 @@ goto :EOF
 
 :CLEANUP
   if exist %1.cpp erase %1.cpp
+  if exist %1.native.cpp erase %1.native.cpp
   if exist %1.exe erase %1.exe
   if exist __dump.txt erase __dump.txt
   if exist __out.txt erase __out.txt

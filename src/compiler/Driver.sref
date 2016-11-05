@@ -79,9 +79,14 @@ $ENTRY CompileFile {
                               () = #NoNative;
 
                               (e.NativeRASL^) =
-                                <Seq
-                                  {}
-                                  (SaveFile (e.OutputName '.native.cpp'))
+                                <Fetch
+                                  e.NativeRASL
+                                  <Seq
+                                    (GenProgram
+                                      (e.SrcName) (e.OutputName '.native.cpp')
+                                    )
+                                    (SaveFile (e.OutputName '.native.cpp'))
+                                  >
                                 >
                                 (e.OutputName '.native.cpp');
                             }

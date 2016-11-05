@@ -111,7 +111,7 @@ run_all_tests() {
     cleanup Library-System
   fi
 
-  rm Library.cpp Library.sref
+  rm Library.cpp Library.native.cpp Library.sref
 }
 
 compile() {
@@ -132,7 +132,7 @@ compile() {
   fi
 
   if [ "$SRC" != "Library.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP Library.cpp ../../srlib/refalrts.cpp
+    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP Library.cpp Library.native.cpp ../../srlib/refalrts.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1

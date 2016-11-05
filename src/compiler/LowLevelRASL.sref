@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce;
+$EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce, Reduce;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -14,7 +14,7 @@ $EXTERN DisplayName;
   <LowLevelRASL s.GenMode e.RASLAST>
     == e.RASL (e.NativeRASL)
 
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret
 */
 $ENTRY LowLevelRASL {
   s.GenMode (e.SrcName) e.ProgramElements =
@@ -30,51 +30,176 @@ $ENTRY LowLevelRASL {
           (s.Hash1 s.Hash2) e.Items =
             <Map (SetCookies s.Hash1 s.Hash2) e.Items>;
         }
-        (MapReduce
+        (Map
           {
-            (e.Declarations)
             (#Function (e.Name) e.Commands) =
-              (e.Declarations (#CmdExtern e.Name))
-              <Function
-                s.GenMode (e.Name)
-                <AddSavers e.Commands>
+              (#Function (e.Name) <AddSavers e.Commands>);
+
+            t.OtherItem = t.OtherItem;
+          }
+        )
+        (Reduce
+          {
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
+            (#Function (e.Name) e.Commands) =
+              <Fetch
+                s.GenMode
+                {
+                  #OnlyInterpret =
+                    (
+                      (e.RASL-Declarations (#CmdExtern e.Name))
+                      (
+                        e.RASL-Definitions
+                        <Function-Interpret (e.Name) e.Commands>
+                      )
+                      (e.Native-Declarations (#CmdExtern e.Name))
+                      (e.Native-Definitions)
+                    );
+
+                  #OnlyDirect =
+                    (
+                      (e.RASL-Declarations (#CmdExtern e.Name))
+                      (e.RASL-Definitions)
+                      (e.Native-Declarations (#CmdExtern e.Name))
+                      (
+                        e.Native-Definitions
+                        <Function-Direct (e.Name) e.Commands>
+                      )
+                    );
+                }
               >;
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
-              (e.Declarations (#CmdExtern e.Name))
-              (#CmdFnStart e.Name)
-              (#CmdEmitNativeCode t.SrcPos e.Code)
-              (#CmdFnEnd)
-              (#CmdNativeFuncDescr e.Name);
+              (
+                (e.RASL-Declarations (#CmdExtern e.Name))
+                (e.RASL-Definitions)
+                (e.Native-Declarations (#CmdExtern e.Name))
+                (
+                  e.Native-Definitions
+                  (#CmdFnStart e.Name)
+                  (#CmdEmitNativeCode t.SrcPos e.Code)
+                  (#CmdFnEnd)
+                  (#CmdNativeFuncDescr e.Name)
+                )
+              );
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdEnum e.Name) =
-              (e.Declarations (#CmdEnumDescr e.Name));
+              (
+                (e.RASL-Declarations (#CmdEnumDescr e.Name))
+                (e.RASL-Definitions)
+                (e.Native-Declarations (#CmdExtern e.Name))
+                (e.Native-Definitions)
+              );
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdSwap e.Name) =
-              (e.Declarations (#CmdSwapDescr e.Name));
+              (
+                (e.RASL-Declarations (#CmdSwapDescr e.Name))
+                (e.RASL-Definitions)
+                (e.Native-Declarations (#CmdExtern e.Name))
+                (e.Native-Definitions)
+              );
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdDeclaration e.Name) =
-              (e.Declarations (#CmdDeclaration e.Name));
+              (
+                (e.RASL-Declarations (#CmdExtern e.Name))
+                (e.RASL-Definitions)
+                (e.Native-Declarations (#CmdDeclaration e.Name))
+                (e.Native-Definitions)
+              );
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdDefineIdent e.Name) =
-              (e.Declarations (#CmdDefineIdent e.Name));
+              (
+                (e.RASL-Declarations (#CmdDefineIdent e.Name))
+                (e.RASL-Definitions)
+                (e.Native-Declarations (#CmdDefineIdent e.Name))
+                (e.Native-Definitions)
+              );
 
-            (e.Declarations)
+            (
+              (e.RASL-Declarations)
+              (e.RASL-Definitions)
+              (e.Native-Declarations)
+              (e.Native-Definitions)
+            )
             (#CmdEmitNativeCode t.SrcPos e.Code) =
-              (e.Declarations)
-              (#CmdEmitNativeCode t.SrcPos e.Code);
+              (
+                (e.RASL-Declarations)
+                (e.RASL-Definitions)
+                (e.Native-Declarations)
+                (
+                  e.Native-Definitions
+                  (#CmdEmitNativeCode t.SrcPos e.Code)
+                )
+              );
           }
-          (/* объявления и определения swap’ов и enum’ов */)
+          (
+            (/* объявления для генерации RASL’а */)
+            (/* определения для генерации RASL’а */)
+            (/* объявления для генерации нативного кода */)
+            (/* определения для генерации нативного кода */)
+          )
         )
         {
-          (e.Declarations) e.Definitions =
-            e.Declarations (#CmdSeparator) e.Definitions
-            (/* native RASL — нет его */);
+          (
+            (e.RASL-Declarations)
+            (e.RASL-Definitions)
+            (e.Native-Declarations)
+            (/* нет нативных определений */)
+          ) =
+            e.RASL-Declarations
+            (#CmdSeparator)
+            e.RASL-Definitions
+            (/* нет нативного RASL’а */);
+
+          (
+            (e.RASL-Declarations)
+            (e.RASL-Definitions)
+            (e.Native-Declarations)
+            (e.Native-Definitions)
+          ) =
+            e.RASL-Declarations
+            (#CmdSeparator)
+            e.RASL-Definitions
+            (
+              e.Native-Declarations
+              (#CmdSeparator)
+              e.Native-Definitions
+            );
         }
       >
     >;
@@ -537,25 +662,6 @@ CheckFrozen {
 Freeze {
   e.BracketNumbers =
     <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
-}
-
-Function {
-  #Both (e.Name) e.Commands =
-    // Интерпретируемый код
-    (#CmdIfDef 'INTERPRET')
-    <Function #OnlyInterpret (e.Name) e.Commands>
-    (#CmdElse)
-    // Компилируемый код
-    <Function #OnlyDirect (e.Name) e.Commands>
-    (#CmdEndIf);
-
-  #OnlyDirect (e.Name) e.Commands =
-    // Компилируемый код
-    <Function-Direct (e.Name) e.Commands>;
-
-  #OnlyInterpret (e.Name) e.Commands =
-    // Интерпретируемый код
-    <Function-Interpret (e.Name) e.Commands>;
 }
 
 Function-Interpret {
