@@ -32,7 +32,7 @@ FindImports {
   e.Folders ('//FROM ' e.Name) =
     <FindFiles (e.Folders) (<Trim e.Name>)>;
 
-  e.OtherLine = ;
+  e.Folders (e.OtherLine) = ;
 }
 
 LoadList {
@@ -45,7 +45,6 @@ LoadList {
     <Map
       (FindImports e.Folders) <LoadFile e.Output>
     >;
-
 
   (e.Folders) #NotFound e.Unit = ;
 }

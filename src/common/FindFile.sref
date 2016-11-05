@@ -1,5 +1,8 @@
 //FROM LibraryEx
-$EXTERN Map;
+$EXTERN Map, Fetch;
+
+//FROM Library
+$EXTERN ExistFile;
 
 /**
   <FindFiles (e.Folders) e.Files>
@@ -42,53 +45,44 @@ AnalyzeFile-CheckNotFound {
   (e.FileName) = (#NotFound e.FileName);
 }
 
-//------------------------------------------------------------------------------
-
-//FROM Library
-$EXTERN ExistFile;
-
 ExistFile-T {
   e.FileName = <ExistFile e.FileName> e.FileName;
 }
 
 AnalyzeFile {
   e.FileName '.sref' =
-    <AnalyzeSource-CheckExist
+    <Fetch
       <ExistFile-T e.FileName '.sref'>
+      {
+        #True e.UnitName '.sref' =
+          (#Source (e.UnitName '.sref') e.UnitName '.cpp');
+
+        #False e.SourceName = (#NotFound e.SourceName);
+      }
     >;
 
   e.FileName '.cpp' =
-    <AnalyzeOutput-CheckExist
+    <Fetch
       <ExistFile-T e.FileName '.cpp'>
+      {
+        #True e.OutName = (#Output e.OutName);
+
+        #False e.OutName = (#NotFound e.OutName);
+      }
     >;
 
   e.FileName =
-    <AnalyzeBoth-CheckExist
-      ( <ExistFile-T e.FileName '.sref'> )
-      <ExistFile-T e.FileName '.cpp'>
+    <Fetch
+      (<ExistFile-T e.FileName '.sref'>) <ExistFile-T e.FileName '.cpp'>
+      {
+        (#True e.SourceName) s.Res e.OutName =
+          (#Source (e.SourceName) e.OutName);
+
+        (#False e.SourceName) #True e.OutName =
+          (#Output e.OutName);
+
+        (#False e.UnitName '.sref') #False e.UnitName '.cpp' =
+          (#NotFound e.UnitName);
+      }
     >;
-}
-
-AnalyzeSource-CheckExist {
-  #True e.UnitName '.sref' =
-    (#Source (e.UnitName '.sref') e.UnitName '.cpp');
-
-  #False e.SourceName = (#NotFound e.SourceName);
-}
-
-AnalyzeOutput-CheckExist {
-  #True e.OutName = (#Output e.OutName);
-
-  #False e.OutName = (#NotFound e.OutName);
-}
-
-AnalyzeBoth-CheckExist {
-  ( #True e.SourceName ) s.Res e.OutName =
-    (#Source (e.SourceName) e.OutName);
-
-  ( #False e.SourceName ) #True e.OutName =
-    (#Output e.OutName);
-
-  ( #False e.UnitName '.sref' ) #False e.UnitName '.cpp' =
-    (#NotFound e.UnitName);
 }
