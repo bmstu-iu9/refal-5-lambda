@@ -1,0 +1,12 @@
+$ENTRY Go {
+  = ;
+}
+
+RenameLocations-Aux {
+  (e.Source) e.Output = ;
+
+  (e.Source) e.Output '.cpp' = ;
+
+  e.Output t.Native = ;
+}
+

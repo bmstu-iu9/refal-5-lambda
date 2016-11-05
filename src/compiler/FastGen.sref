@@ -241,17 +241,8 @@ FastGen-MeN {
     >
     <FastGen-Terms s.Num (t.right1) (t.right2)>;
 
-  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' ((e.inE2)) )) =
-    (#E '$' ((e.inE1)) ((e.inE2)) );
-
-  s.Num ((#E '$' ((e.inE1)) )) ((#E '$' e.inE2)) =      // WTF?
-    (#E '$' ((e.inE1)) ((e.inE2)) );
-
-  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =      // WTF?
-    (#E '$' ((e.inE1)) ((e.inE2)) );
-
-  s.Num ((#E '$' e.inE1)) ((#E '$' e.inE2)) =           // WTF?
-    (#E '$' ((e.inE1)) ((e.inE2)) );
+  s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =
+    (#E '$' e.inE1 ((e.inE2)) );
 
   s.Num (e.in1)(e.in2) =
     (#E '$' <SplitReps s.Num e.in1> ((e.in2)));
@@ -331,15 +322,15 @@ FastGen {
 
   /* 2. Предложения класса (M,N) */
   s.Num
-  ( e.1 (#E '$' (e.Pattern1)) e.2 )
-  ( e.3 (#E '$' (e.Pattern2)) e.4 )
+  ( e.1 (#E '$' e.Pattern1) e.2 )
+  ( e.3 (#E '$' e.Pattern2) e.4 )
   e.Tail =
     <FastGen
       <Inc s.Num>
       (<FastGen-MeN
         s.Num
-        ( e.1 (#E '$' (e.Pattern1)) e.2 )
-        ( e.3 (#E '$' (e.Pattern2)) e.4 )
+        ( e.1 (#E '$' e.Pattern1) e.2 )
+        ( e.3 (#E '$' e.Pattern2) e.4 )
       >)
       e.Tail
     >;
