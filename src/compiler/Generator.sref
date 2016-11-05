@@ -235,7 +235,7 @@ GenCommand {
 
   (e.Indent '  ') (#CmdNamespaceEnd e.Name) =
     (e.Indent)
-    (e.Indent '} // namespace scope_' <CName e.Name>)
+    (e.Indent '} // namespace scope_' <BaseCName e.Name>)
     ();
 
   (e.Indent) (#CmdIfDef e.Macros) =
