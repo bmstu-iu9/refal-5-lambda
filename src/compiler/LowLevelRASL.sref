@@ -110,17 +110,15 @@ CalcDigest {
 
 HashFuncName {
   s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
-    <HashFuncName-Aux
-      s.Hash1 s.Hash2 s.ScopeClass <DisplayName e.Name> s.Sign
+    <HashLittle2-Chars
+      s.Hash1 s.Hash2
+      <CharFromScopeClass s.ScopeClass> <DisplayName e.Name> s.Sign
     >;
 }
 
-HashFuncName-Aux {
-  s.Hash1 s.Hash2 #GN-Entry e.Name =
-    <HashLittle2-Chars s.Hash1 s.Hash2 'E' e.Name>;
-
-  s.Hash1 s.Hash2 #GN-Local e.Name =
-    <HashLittle2-Chars s.Hash1 s.Hash2 'L' e.Name>;
+CharFromScopeClass {
+  #GN-Entry = 'E';
+  #GN-Local = 'L';
 }
 
 SetCookies {
@@ -615,8 +613,6 @@ ConvertOneInterpretCommand {
 
   (#CmdIssueMem s.Memory) = (#CmdiIssueMem s.Memory);
 
-  (#CmdiOnFailGoTo s.Offset) = (#CmdiOnFailGoTo s.Offset);
-
   (#CmdInitB0) = (#CmdiInitB0);
 
   (#CmdInitB0-Lite) = (#CmdiInitB0-Lite);
@@ -692,12 +688,6 @@ ConvertOneInterpretCommand {
   (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
     (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
-  (#CmdiEPrepare s.BracketNum s.VarNumber) =
-    (#CmdiEPrepare s.BracketNum s.VarNumber);
-
-  (#CmdiEStart s.BracketNum s.VarNumber) =
-    (#CmdiEStart s.BracketNum s.VarNumber);
-
   (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
 
@@ -770,9 +760,7 @@ ConvertOneInterpretCommand {
 
   (#CmdSentence e.SubCommands) =
     <Fetch
-      <Length-T
-        <ConvertInterpretCommands e.SubCommands>
-      >
+      <Length-T <ConvertInterpretCommands e.SubCommands>>
       {
         s.Length e.SubCommands^ =
           (#CmdiOnFailGoTo s.Length)

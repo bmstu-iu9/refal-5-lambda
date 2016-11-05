@@ -28,14 +28,6 @@ FuncAlias {
     );
 }
 
-GenReturn {
-  #Success e.Indent =
-    (e.Indent 'return refalrts::cSuccess;');
-
-  #Fail e.Indent =
-    (e.Indent 'return refalrts::cRecognitionImpossible;');
-}
-
 GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"')
@@ -563,7 +555,7 @@ GenCommand {
 
   (e.Indent) (#CmdNextStep) =
     (e.Indent)
-    <GenReturn #Success e.Indent>;
+    (e.Indent 'return refalrts::cSuccess;');
 
   (e.Indent) (#CmdTrash s.Offset) =
     (e.Indent)
@@ -585,7 +577,7 @@ GenCommand {
 
   (e.Indent) (#CmdFail) =
     (e.Indent)
-    <GenReturn #Fail e.Indent>;
+    (e.Indent 'return refalrts::cRecognitionImpossible;');
 
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
@@ -708,7 +700,7 @@ GenCommand {
   (e.Indent) (#CmdiChar s.Direction s.BracketNumber s.Char) =
     (e.Indent)
     (e.Indent '{refalrts::icChar' <PrintDirection s.Direction> ', '
-              '0, static_cast<unsigned char>(' '' <Escape s.Char> '' '), '
+              '0, static_cast<unsigned char>(' '' <EscapeChar s.Char> '' '), '
               <StrFromInt s.BracketNumber> '},'
     );
 
@@ -717,7 +709,7 @@ GenCommand {
     (e.Indent
       '{refalrts::icChar' <PrintDirection s.Direction> 'Save, '
       <StrFromInt s.SaveOffset> ', '
-      'static_cast<unsigned char>(' '' <Escape s.Char> '' '), '
+      'static_cast<unsigned char>(' '' <EscapeChar s.Char> '' '), '
       <StrFromInt s.BracketNumber> '},'
     );
 
@@ -998,10 +990,6 @@ GenCommand {
     (e.Indent '{refalrts::icFail, 0, 0, 0},');
 }
 
-Escape {
-  s.Char = <EscapeChar s.Char>;
-}
-
 PrintLength {
   e.String = <DoPrintLength 0 e.String>;
 }
@@ -1020,7 +1008,7 @@ PrintMatchChar {
   (e.Indent) s.Direction s.BracketNumber s.Char =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('char') '' <Escape s.Char> ''
+      ('char') '' <EscapeChar s.Char> ''
     >;
 }
 
@@ -1028,7 +1016,7 @@ PrintMatchCharSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber s.Char =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('char') '' <Escape s.Char> ''
+      ('char') '' <EscapeChar s.Char> ''
     >;
 }
 
@@ -1277,7 +1265,7 @@ AllocatorFuncName {
 }
 
 AllocatorFuncArgument {
-  #ElChar s.Char = ', ' '' <Escape s.Char> '';
+  #ElChar s.Char = ', ' '' <EscapeChar s.Char> '';
 
   #ElName e.Name = ', & ' <CNameAlias e.Name>;
 
@@ -1326,7 +1314,7 @@ CreateCommandTag {
 }
 
 CreateCommandInfo {
-  #ElChar s.Char = '' <Escape s.Char> '';
+  #ElChar s.Char = '' <EscapeChar s.Char> '';
 
   #ElName s.NameId = <StrFromInt s.NameId>;
 
