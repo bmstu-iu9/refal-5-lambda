@@ -157,7 +157,7 @@ GenCommand {
     ('#define ' <BaseCName e.Name> '_str "' <DisplayCName e.Name> '"')
     ();
 
-  (e.Indent) (#CmdFuncDescr e.Name) =
+  (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
     (
       'static refalrts::RefalNativeFunction descr_' <BaseCName e.Name> '('

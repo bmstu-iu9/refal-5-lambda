@@ -46,7 +46,7 @@ $ENTRY LowLevelRASL {
               (#CmdFnStart e.Name)
               (#CmdEmitNativeCode t.SrcPos e.Code)
               (#CmdFnEnd)
-              (#CmdFuncDescr e.Name);
+              (#CmdNativeFuncDescr e.Name);
 
             (e.Declarations)
             (#CmdEnum e.Name) =
@@ -1071,7 +1071,7 @@ Function-Direct {
     (#CmdProfileFunction)
     <Function-DirectRec e.Body>
     (#CmdFnEnd)
-    (#CmdFuncDescr e.Name);
+    (#CmdNativeFuncDescr e.Name);
 }
 
 Function-DirectRec {
