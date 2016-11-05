@@ -7,10 +7,10 @@ run_test_all_modes() {
   SRFLAGS=-OP $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
-  SRFLAGS=--gen=interp $2 $1
-  SRFLAGS='-OP --gen=interp' $2 $1
-  SRFLAGS='-OR --gen=interp' $2 $1
-  SRFLAGS='-OPR --gen=interp' $2 $1
+  SRFLAGS=-Od $2 $1
+  SRFLAGS=-OdP $2 $1
+  SRFLAGS=-OdR $2 $1
+  SRFLAGS=-OdPR $2 $1
 }
 
 run_test_aux() {

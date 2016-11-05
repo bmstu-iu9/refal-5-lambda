@@ -14,7 +14,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
     == #Fails (s.ArgNum e.ErrorMessage)
 
   t.CppCompiler ::= #NoCppCompiler | (e.CppCompiler)
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
@@ -25,7 +25,6 @@ $ENTRY ParseCommandLine {
       <GetOpt
         (
           (#CppCompiler #Required 'c' ('cpp-command'))
-          (#GenMode #Required ('gen'))
           (#Opt #Required 'O')
           (#ErrorFile #Required 'e' ('error-file'))
           (#MarkupContext #None ('markup-context'))
@@ -40,7 +39,7 @@ $ENTRY ParseCommandLine {
         {
           (e.Errors) e.Options =
             <GetOpt-CheckRepeated
-              (#CppCompiler #GenMode #Opt #ErrorFile #MarkupContext)
+              (#CppCompiler #Opt #ErrorFile #MarkupContext)
               (e.Errors) e.Options
             >;
         }
@@ -53,41 +52,21 @@ $ENTRY ParseCommandLine {
             (e.Errors) (#NoCppCompiler) e.Options;
         }
         {
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'both') e.Options-E =
-            (e.Errors) (e.Bag #Both) e.Options-B e.Options-E;
+          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num e.Opt) e.Options-E =
+            <Fetch
+              <ParseOpt e.Opt>
+              {
+                #Success e.OptBag =
+                  (e.Errors) (e.Bag e.OptBag) e.Options-B e.Options-E;
 
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'direct') e.Options-E =
-            (e.Errors) (e.Bag #OnlyDirect) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num 'interp') e.Options-E =
-            (e.Errors) (e.Bag #OnlyInterpret) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#GenMode s.Num e.BadVal) e.Options-E =
-            (e.Errors (s.Num #BadValue-GenMode e.BadVal))
-            (e.Bag #Both) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #Both) e.Options;
-        }
-        {
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'P') e.Options-E =
-            (e.Errors) (e.Bag #OptPattern) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'R') e.Options-E =
-            (e.Errors) (e.Bag #OptResult) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'PR') e.Options-E =
-            (e.Errors) (e.Bag #OptBoth) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num 'RP') e.Options-E =
-            (e.Errors) (e.Bag #OptBoth) e.Options-B e.Options-E;
-
-          (e.Errors) (e.Bag) e.Options-B (#Opt s.Num e.BadOpt) e.Options-E =
-            (e.Errors (s.Num #BadValue-Opt e.BadOpt))
-            (e.Bag #OptNone) e.Options-B e.Options-E;
+                #Fails =
+                  (e.Errors (s.Num #BadValue-Opt e.Opt))
+                  (e.Bag #OnlyInterpret #OptNone) e.Options-B e.Options-E;
+              }
+            >;
 
           (e.Errors) (e.Bag) e.Options =
-            (e.Errors) (e.Bag #OptNone) e.Options;
+            (e.Errors) (e.Bag #OnlyInterpret #OptNone) e.Options;
         }
         {
           (e.Errors) (e.Bag)
@@ -197,7 +176,6 @@ $ENTRY ParseCommandLine {
                     <Fetch
                       s.Tag {
                         #CppCompiler = '-c or --cpp-command';
-                        #GenMode = '--gen';
                         #Opt = '-O';
                         #ErrorFile = '-e or --error-file';
                       }
@@ -205,18 +183,11 @@ $ENTRY ParseCommandLine {
                     ' must appear one time'
                   );
 
-                (s.Pos #BadValue-GenMode e.BadValue) =
-                  (
-                    s.Pos
-                    'option --gen expects ''both'', ''direct'' or ''interp'', '
-                    'but got ''' e.BadValue ''
-                  );
-
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
-                    'option -O expects ''P'', ''R'' or both, '
-                    'but got ''' e.BadValue ''
+                    'option -O expects ''P'', ''R'', ''d'' or '
+                    'it''s combination, but got ''' e.BadValue ''
                   );
 
                 (s.Pos #FlagsForNoCompiler) =
@@ -232,4 +203,19 @@ $ENTRY ParseCommandLine {
         }
       >
     >;
+}
+
+ParseOpt {
+  /* пустой список */ = #Fails;
+  e.Opt-B 'd' e.Opt-E = <ParseOpt-Aux #OnlyDirect e.Opt-B e.Opt-E>;
+  e.Opt = <ParseOpt-Aux #OnlyInterpret e.Opt>;
+}
+
+ParseOpt-Aux {
+  s.GenMode 'P' = #Success s.GenMode #OptPattern;
+  s.GenMode 'R' = #Success s.GenMode #OptResult;
+  s.GenMode 'PR' = #Success s.GenMode #OptBoth;
+  s.GenMode 'RP' = #Success s.GenMode #OptBoth;
+  s.GenMode /* пусто */ = #Success s.GenMode #OptNone;
+  s.GenMode e.Other = #Fails;
 }

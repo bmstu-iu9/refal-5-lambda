@@ -66,13 +66,13 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=--gen=interp
+  set SRFLAGS=-Od
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OP --gen=interp
+  set SRFLAGS=-OdP
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OR --gen=interp
+  set SRFLAGS=-OdR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=-OPR --gen=interp
+  set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
 endlocal
 goto :EOF
