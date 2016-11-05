@@ -30,15 +30,16 @@ $EXTERN GenProgram;
 
 /**
   <CompileFile s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName>
-    == #Success e.OutputName
+    == #Success e.OutputName t.Native
     == #Fails
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
   s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  t.Native ::= #NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName =
+  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName '.cpp' =
     <Fetch
       e.SrcName
       <Seq
@@ -62,11 +63,32 @@ $ENTRY CompileFile {
                       (Desugar s.MarkupContext)
                       (HighLevelRASL <SelectOptFlags s.Opt>)
                       (LowLevelRASL s.GenMode (e.SrcName))
-                      (GenProgram (e.SrcName) (e.OutputName))
-                      (SaveFile (e.OutputName))
+                      {
+                        e.RASL (e.NativeRASL) =
+                          <Fetch
+                            e.RASL
+                            <Seq
+                              (GenProgram (e.SrcName) (e.OutputName '.cpp'))
+                              (SaveFile (e.OutputName '.cpp'))
+                            >
+                          >
+                          #Success e.OutputName '.cpp'
+                          <Fetch
+                            (e.NativeRASL)
+                            {
+                              () = #NoNative;
+
+                              (e.NativeRASL^) =
+                                <Seq
+                                  {}
+                                  (SaveFile (e.OutputName '.native.cpp'))
+                                >
+                                (e.OutputName '.native.cpp');
+                            }
+                          >;
+                      }
                     >
-                  >
-                  #Success e.OutputName;
+                  >;
 
                 #EL-HasErrors =
                   #Fails;

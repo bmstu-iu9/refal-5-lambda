@@ -46,5 +46,10 @@ LoadList {
       (FindImports e.Folders) <LoadFile e.Output>
     >;
 
+  (e.Folders) #OutputWithNative (e.Output) e.Native =
+    <Map
+      (FindImports e.Folders) <LoadFile e.Output> <LoadFile e.Native>
+    >;
+
   (e.Folders) #NotFound e.Unit = ;
 }

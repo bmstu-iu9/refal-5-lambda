@@ -177,7 +177,13 @@ RenameTargets {
 
 GetFileName {
   (s.Pos #Output e.FileName) =
-    ((<GetBaseNameLowerCase e.FileName>) (s.Pos #Output e.FileName));
+    ((<GetBaseNameLowerCase e.FileName>) (s.Pos #Output e.FileName #NoNative));
+
+  (s.Pos #OutputWithNative (e.FileName) e.NativeFileName) =
+    (
+      (<GetBaseNameLowerCase e.FileName>)
+      (s.Pos #Output e.FileName (e.NativeFileName))
+    );
 
   (s.Pos #Source (e.Source) e.Output) =
     ((<GetBaseNameLowerCase e.Output>) (s.Pos #Source (e.Source) e.Output));
@@ -197,13 +203,14 @@ ScanCollisions {
 }
 
 RenameLocations {
-  e.Locations-B (s.Pos1 #Output e.FirstTarget)
-  e.Locations-M (s.Pos2 #Output e.SecondTarget) e.Locations-E =
+  e.Locations-B (s.Pos1 #Output e.FirstTarget t.FirstNative)
+  e.Locations-M (s.Pos2 #Output e.SecondTarget t.SecondNative)
+  e.Locations-E =
     (s.Pos2 #Collision (e.FirstTarget) e.SecondTarget);
 
-  e.Locations-B (s.Pos #Output e.Target) e.Locations-E =
+  e.Locations-B (s.Pos #Output e.Target t.Native) e.Locations-E =
     <RenameLocations-Aux
-      1 e.Locations-B (s.Pos #Output e.Target) e.Locations-E
+      1 e.Locations-B (s.Pos #Output e.Target t.Native) e.Locations-E
     >;
 
   e.Locations = <RenameLocations-Aux 0 e.Locations>;
@@ -221,8 +228,8 @@ RenameLocations-Aux {
             <Inc s.Num>
             (s.Pos #Source (e.Source) e.Output '@' <StrFromInt s.Num> '.cpp');
 
-          s.Num (s.Pos #Output e.Output) =
-            s.Num (s.Pos #Output e.Output);
+          s.Num (s.Pos #Output e.Output t.Native) =
+            s.Num (s.Pos #Output e.Output t.Native);
         }
         s.InitNumber e.Locations
       >
@@ -233,8 +240,13 @@ CompileFiles {
   s.GenMode s.Opt s.MarkupContext e.Files =
     <Map
       {
-        (s.Pos #Output e.OutputName) =
-          <WriteLine '+Linking ' e.OutputName> (e.OutputName);
+        (s.Pos #Output e.OutputName #NoNative) =
+          <WriteLine '+Linking ' e.OutputName>
+          (e.OutputName);
+
+        (s.Pos #Output e.OutputName (e.NativeName)) =
+          <WriteLine '+Linking (with native functions)' e.OutputName>
+          (e.OutputName) (e.NativeName);
 
         (s.Pos #Source (e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
@@ -243,7 +255,12 @@ CompileFiles {
               s.GenMode s.Opt s.MarkupContext (e.Source) e.OutputName
             >
             {
-              #Success e.OutputName^ = (e.OutputName);
+              #Success e.OutputName^ #NoNative =
+                (e.OutputName);
+
+              #Success e.OutputName^ (e.NativeOutputName) =
+                <WriteLine '   ... natives generated'>
+                (e.OutputName) (e.NativeOutputName);
 
               #Fails = #Fails;
             }

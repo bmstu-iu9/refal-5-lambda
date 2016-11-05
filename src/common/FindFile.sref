@@ -11,6 +11,7 @@ $EXTERN ExistFile;
   t.FoundFile ::=
     (#Source (e.Source) e.Output)
     (#Output e.Output)
+    (#OutputWithNative (e.Output) e.Native)
     (#NotFound e.FileName)
 */
 $ENTRY FindFiles {
@@ -39,6 +40,9 @@ AnalyzeFile-CheckNotFound {
   (e.FileName) (#Output e.Output) e.Variants =
     (#Output e.Output);
 
+  (e.FileName) (#OutputWithNative (e.Output) e.Native) e.Variants =
+    (#OutputWithNative (e.Output) e.Native);
+
   (e.FileName) (#NotFound e.NotFoundPath) e.Variants =
     <AnalyzeFile-CheckNotFound (e.FileName) e.Variants>;
 
@@ -65,7 +69,17 @@ AnalyzeFile {
     <Fetch
       <ExistFile-T e.FileName '.cpp'>
       {
-        #True e.OutName = (#Output e.OutName);
+        #True e.OutName =
+          <Fetch
+            <ExistFile-T e.FileName '.native.cpp'>
+            {
+              #True e.NativeName =
+                (#OutputWithNative (e.OutName) e.NativeName);
+
+              #False e.NativeName =
+                (#Output e.OutName);
+            }
+          >;
 
         #False e.OutName = (#NotFound e.OutName);
       }

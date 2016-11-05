@@ -88,6 +88,7 @@ setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
   set CPP=%~n1.cpp
+  set NATCPP=%~n1.native.cpp
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
@@ -101,7 +102,9 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
+  if not exist %NATCPP% set NATCPP=
+
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -114,7 +117,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %EXE%
+  erase %CPP% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -133,6 +136,7 @@ setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
   set CPP=%~n1.cpp
+  set NATCPP=%~n1.native.cpp
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
@@ -146,7 +150,9 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% ../src/srlib/refalrts.cpp
+  if not exist %NATCPP% set NATCPP=
+
+  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -159,7 +165,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %EXE%
+  erase %CPP% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt

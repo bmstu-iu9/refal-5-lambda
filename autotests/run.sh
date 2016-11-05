@@ -21,6 +21,7 @@ run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
+  NATCPP=${SREF%%.sref}.native.cpp
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
@@ -34,7 +35,11 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
+  if [ ! -e $NATCPP ]; then
+    NATCPP=
+  fi
+
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -47,7 +52,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  rm $CPP $EXE
+  rm $CPP $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo
@@ -83,6 +88,7 @@ run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
   CPP=${SREF%%.sref}.cpp
+  NATCPP=${SREF%%.sref}.native.cpp
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
@@ -96,7 +102,11 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP ../srlib/refalrts.cpp
+  if [ ! -e $NATCPP ]; then
+    NATCPP=
+  fi
+
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -109,7 +119,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  rm $CPP $EXE
+  rm $CPP $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo "Ok! This failure was normal and expected"

@@ -66,6 +66,7 @@ Make {
           >;
 
         (#Output e.Output) = ;
+        (#OutputWithNative (e.Output) e.Native) = ;
         (#Source (e.Source) e.Output) = ;
       }
       (#NotFound e.UnitName) e.Units-E

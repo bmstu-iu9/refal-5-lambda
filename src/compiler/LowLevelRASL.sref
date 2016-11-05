@@ -12,7 +12,7 @@ $EXTERN DisplayName;
 
 /**
   <LowLevelRASL s.GenMode e.RASLAST>
-    == e.RASL
+    == e.RASL (e.NativeRASL)
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
 */
@@ -73,7 +73,8 @@ $ENTRY LowLevelRASL {
         )
         {
           (e.Declarations) e.Definitions =
-            e.Declarations (#CmdSeparator) e.Definitions;
+            e.Declarations (#CmdSeparator) e.Definitions
+            (/* native RASL — нет его */);
         }
       >
     >;
