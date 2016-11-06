@@ -33,6 +33,12 @@ $ENTRY GenResult-Simple {
         <CollectStrings e.Result>
       >
       {
+        s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
+          s.ContextOffset
+          <MakeVariableCommentTable e.CommonVars>
+          (#CmdSpliceToFreeList)
+          (#CmdNextStep);
+
         s.ContextOffset^ (e.CommonVars) e.ResultCommands =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>

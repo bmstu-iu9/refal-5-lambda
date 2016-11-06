@@ -226,7 +226,6 @@ GenSplices {
       }
       <CollectTiles e.Result>
     >
-    (#CmdUseRes)
     <GenTrash (e.LeftTile) e.Trash>
     (#CmdNextStep);
 
@@ -270,7 +269,7 @@ GenTrash {
     <GenTrash (e.LeftTile) e.Trash-B e.Trash-E>;
 
   (e.LeftTile) /* пусто */ =
-    /* пусто */;
+    (#CmdUseRes);
 
   ((#LEFT-EDGE)) e.Trash =
     (#CmdTrash #LEFT-EDGE);
