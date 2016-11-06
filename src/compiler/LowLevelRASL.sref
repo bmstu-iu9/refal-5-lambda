@@ -674,8 +674,8 @@ Function-Interpret {
         {
           e.FunctionBody^ =
             (#CmdInitRAA)
-            (#CmdiProfileFunction)
-            (#CmdiLoadConstants)
+            (#CmdProfileFunction)
+            (#CmdLoadConstants)
             e.FunctionBody
             (#CmdFinRAA);
         }
@@ -718,24 +718,24 @@ DoLength {
 ConvertOneInterpretCommand {
   (#CmdComment e.Text) = (#CmdComment e.Text);
 
-  (#CmdIssueMem s.Memory) = (#CmdiIssueMem s.Memory);
+  (#CmdIssueMem s.Memory) = (#CmdIssueMem s.Memory);
 
-  (#CmdInitB0) = (#CmdiInitB0);
+  (#CmdInitB0) = (#CmdInitB0);
 
-  (#CmdInitB0-Lite) = (#CmdiInitB0-Lite);
+  (#CmdInitB0-Lite) = (#CmdInitB0-Lite);
 
   (#CmdChar s.Direction s.BracketNumber s.Char) =
-    (#CmdiChar s.Direction s.BracketNumber s.Char);
+    (#CmdChar s.Direction s.BracketNumber s.Char);
 
   (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
-    (#CmdiCharSave s.Direction s.BracketNumber s.SaveOffset s.Char);
+    (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char);
 
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (#CmdiNum s.Direction s.BracketNumber s.Number);
+        '<' = (#CmdNum s.Direction s.BracketNumber s.Number);
 
-        s.Other = (#CmdiHugeNum s.Direction s.BracketNumber s.Number);
+        s.Other = (#CmdHugeNum s.Direction s.BracketNumber s.Number);
       }
     >;
 
@@ -743,120 +743,120 @@ ConvertOneInterpretCommand {
     <Fetch
       <Compare s.Number 256> {
         '<' =
-          (#CmdiNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
+          (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
 
         s.Other =
-          (#CmdiHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
+          (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
       }
     >;
 
   (#CmdName s.Direction s.BracketNumber e.Name) =
-    (#CmdiName s.Direction s.BracketNumber e.Name);
+    (#CmdName s.Direction s.BracketNumber e.Name);
 
   (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset e.Name) =
-    (#CmdiNameSave s.Direction s.BracketNumber s.SaveOffset e.Name);
+    (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset e.Name);
 
   (#CmdIdent s.Direction s.BracketNumber e.Name) =
-    (#CmdiIdent s.Direction s.BracketNumber e.Name);
+    (#CmdIdent s.Direction s.BracketNumber e.Name);
 
   (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset e.Name) =
-    (#CmdiIdentSave s.Direction s.BracketNumber s.SaveOffset e.Name);
+    (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset e.Name);
 
   (#CmdBrackets s.Direction s.Num s.NumRanges) =
-    (#CmdiBracket s.Direction s.Num s.NumRanges);
+    (#CmdBracket s.Direction s.Num s.NumRanges);
 
   (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
-    (#CmdiBracketsSave s.Direction s.Num s.NumRanges);
+    (#CmdBracketsSave s.Direction s.Num s.NumRanges);
 
   (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
-    (#CmdiADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
+    (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
 
   (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
-    (#CmdiADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name);
+    (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name);
 
   (#CmdCallSave s.Direction s.Num s.NumRanges) =
-    (#CmdiCallSave s.Direction s.Num s.NumRanges);
+    (#CmdCallSave s.Direction s.Num s.NumRanges);
 
   (#CmdEmpty #AlgLeft s.BracketNumber) =
-    (#CmdiEmpty s.BracketNumber);
+    (#CmdEmpty s.BracketNumber);
 
   (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (#CmdiVar s.Direction s.BracketNumber s.Mode s.VarNumber);
+    (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
 
   (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (#CmdiVarSave s.Direction s.BracketNumber s.Mode s.VarNumber);
+    (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber);
 
   (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
-    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
+    (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
   (#CmdRepeatedSave s.Direction s.BracketNumber 't' s.VarNum s.SampleNum) =
-    (#CmdiRepeatedSave s.Direction s.BracketNumber 't' s.VarNum s.SampleNum);
+    (#CmdRepeatedSave s.Direction s.BracketNumber 't' s.VarNum s.SampleNum);
 
   (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
-    (#CmdiRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
+    (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
   (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
-    (#CmdiSave s.OldBracketNumber s.NewBracketNumber);
+    (#CmdSave s.OldBracketNumber s.NewBracketNumber);
 
-  (#CmdEmptyResult) = (#CmdiEmptyResult);
+  (#CmdEmptyResult) = (#CmdEmptyResult);
 
-  (#CmdResetAllocator) = (#CmdiEmptyResult);
+  (#CmdResetAllocator) = (#CmdEmptyResult);
 
-  (#CmdSetRes s.Offset) = (#CmdiSetRes s.Offset);
+  (#CmdSetRes s.Offset) = (#CmdSetRes s.Offset);
 
   (#CmdCopyVar s.Mode s.Number s.Sample) =
-    (#CmdiCopyVar s.Mode s.Number s.Sample);
+    (#CmdCopyVar s.Mode s.Number s.Sample);
 
-  (#CmdReinitSVar s.Offset s.Sample) = (#CmdiReinitSVar s.Offset s.Sample);
+  (#CmdReinitSVar s.Offset s.Sample) = (#CmdReinitSVar s.Offset s.Sample);
 
   (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (#CmdiCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
-        s.Other = (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
+        '<' = (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
+        s.Other = (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
       }
     >;
 
   (#CmdCreateElem s.CreateMode s.ElemNo s.Type e.Info) =
-    (#CmdiCreateElem s.CreateMode s.ElemNo s.Type e.Info);
+    (#CmdCreateElem s.CreateMode s.ElemNo s.Type e.Info);
 
-  (#CmdLinkBrackets s.Left s.Right) = (#CmdiLinkBrackets s.Left s.Right);
+  (#CmdLinkBrackets s.Left s.Right) = (#CmdLinkBrackets s.Left s.Right);
 
-  (#CmdPushStack s.ElemNo) = (#CmdiPushStack s.ElemNo);
+  (#CmdPushStack s.ElemNo) = (#CmdPushStack s.ElemNo);
 
-  (#CmdInsertElem s.ElemNo) = (#CmdiInsertElem s.ElemNo);
+  (#CmdInsertElem s.ElemNo) = (#CmdInsertElem s.ElemNo);
 
-  (#CmdInsertVar s.Mode s.Number) = (#CmdiInsertVar s.Mode s.Number);
+  (#CmdInsertVar s.Mode s.Number) = (#CmdInsertVar s.Mode s.Number);
 
-  (#CmdInsertRange s.ElemNo) = (#CmdiInsertRange s.ElemNo);
+  (#CmdInsertRange s.ElemNo) = (#CmdInsertRange s.ElemNo);
 
   (#CmdInsertTile s.BeginOffset s.EndOffset) =
-    (#CmdiInsertTile s.BeginOffset s.EndOffset);
+    (#CmdInsertTile s.BeginOffset s.EndOffset);
 
   (#CmdUseRes) = /* пусто */;
 
-  (#CmdSpliceToFreeList) = (#CmdiSpliceToFreeList);
+  (#CmdSpliceToFreeList) = (#CmdSpliceToFreeList);
 
-  (#CmdNextStep) = (#CmdiNextStep);
+  (#CmdNextStep) = (#CmdNextStep);
 
-  (#CmdTrash s.Offset) = (#CmdiTrash s.Offset);
+  (#CmdTrash s.Offset) = (#CmdTrash s.Offset);
 
-  (#CmdFail) = (#CmdiFail);
+  (#CmdFail) = (#CmdFail);
 
   (#CmdSentence e.SubCommands) =
     <Fetch
       <Length-T <ConvertInterpretCommands e.SubCommands>>
       {
         s.Length e.SubCommands^ =
-          (#CmdiOnFailGoTo s.Length)
+          (#CmdOnFailGoTo s.Length)
           e.SubCommands
-          (#CmdiProfilerStopSentence);
+          (#CmdProfilerStopSentence);
       }
     >;
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
-    (#CmdiEPrepare s.BracketNum s.VarNumber)
-    (#CmdiEStart s.BracketNum s.VarNumber)
+    (#CmdEPrepare s.BracketNum s.VarNumber)
+    (#CmdEStart s.BracketNum s.VarNumber)
     <ConvertInterpretCommands e.SubCommands>;
 }
 
@@ -868,262 +868,262 @@ OutlineConstants {
   (s.NextNumber e.Numbers)
   (s.NextString e.Strings)
   /* пусто */ =
-    (#CmdiFuncArray <Map RemoveNumber e.Funcs>)
-    (#CmdiLabelArray <Map RemoveNumber e.Labels>)
-    (#CmdiNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>)
-    (#CmdiStringArray <Map RemoveNumber e.Strings>);
+    (#CmdFuncArray <Map RemoveNumber e.Funcs>)
+    (#CmdLabelArray <Map RemoveNumber e.Labels>)
+    (#CmdNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>)
+    (#CmdStringArray <Map RemoveNumber e.Strings>);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiName s.Direction s.BracketNum e.Func) =
+  (#CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiName s.Direction s.BracketNum s.Num);
+    (#CmdName s.Direction s.BracketNum s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiName s.Direction s.BracketNum e.Func) =
+  (#CmdName s.Direction s.BracketNum e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiName s.Direction s.BracketNum s.NextFunc);
+    (#CmdName s.Direction s.BracketNum s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
+  (#CmdNameSave s.Direction s.BracketNum s.SaveOffset e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
+    (#CmdNameSave s.Direction s.BracketNum s.SaveOffset s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElName s.Num);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElName e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElName s.NextFunc);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElName s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdADT s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (#CmdADT s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
+    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.Num);
 
   (s.NextFunc e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
+  (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets e.Func) =
     <OutlineConstants
       (<Inc s.NextFunc> e.Funcs (s.NextFunc e.Func)) (e.Labels) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
+    (#CmdADTSave s.Direction s.BracketNum s.InnerBrackets s.NextFunc);
 
   (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiIdent s.Direction s.BracketNum e.Label) =
+  (#CmdIdent s.Direction s.BracketNum e.Label) =
     <OutlineConstants
       (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiIdent s.Direction s.BracketNum s.Num);
+    (#CmdIdent s.Direction s.BracketNum s.Num);
 
   (e.Funcs) (s.NextLabel e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiIdent s.Direction s.BracketNum e.Label) =
+  (#CmdIdent s.Direction s.BracketNum e.Label) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiIdent s.Direction s.BracketNum s.NextLabel);
+    (#CmdIdent s.Direction s.BracketNum s.NextLabel);
 
   (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiIdentSave s.Direction s.BracketNum s.SaveOffset e.Label) =
+  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Label) =
     <OutlineConstants
       (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
+    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.Num);
 
   (e.Funcs) (s.NextLabel e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiIdentSave s.Direction s.BracketNum s.SaveOffset e.Label) =
+  (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset e.Label) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiIdentSave s.Direction s.BracketNum s.SaveOffset s.NextLabel);
+    (#CmdIdentSave s.Direction s.BracketNum s.SaveOffset s.NextLabel);
 
   (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
   (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElIdent e.Label) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Label) =
     <OutlineConstants
       (e.Funcs) (s.NextLabel e.Labels-B (s.Num e.Label) e.Labels-E) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElIdent s.Num);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.Num);
 
   (e.Funcs) (s.NextLabel e.Labels) (e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElIdent e.Label) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent e.Label) =
     <OutlineConstants
       (e.Funcs) (<Inc s.NextLabel> e.Labels (s.NextLabel e.Label)) (e.Numbers)
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElIdent s.NextLabel);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElIdent s.NextLabel);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
   (e.Strings)
   e.Commands
-  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
+  (#CmdHugeNum s.Direction s.BracketNum s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdiHugeNum s.Direction s.BracketNum s.Id);
+    (#CmdHugeNum s.Direction s.BracketNum s.Id);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiHugeNum s.Direction s.BracketNum s.Number) =
+  (#CmdHugeNum s.Direction s.BracketNum s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
       (e.Strings)
       e.Commands
     >
-    (#CmdiHugeNum s.Direction s.BracketNum s.NextNumId);
+    (#CmdHugeNum s.Direction s.BracketNum s.NextNumId);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
   (e.Strings)
   e.Commands
-  (#CmdiHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
+  (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdiHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Id);
+    (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Id);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
+  (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
       (e.Strings)
       e.Commands
     >
-    (#CmdiHugeNumSave s.Direction s.BracketNum s.SaveOffset s.NextNumId);
+    (#CmdHugeNumSave s.Direction s.BracketNum s.SaveOffset s.NextNumId);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
   (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (s.NextNumId e.Numbers-B (s.Id s.Number) e.Numbers-E)
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Id);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Id);
 
   (e.Funcs) (e.Labels) (s.NextNumId e.Numbers) (e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (<Inc s.NextNumId> e.Numbers (s.NextNumId s.Number))
       (e.Strings)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.NextNumId);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.NextNumId);
 
   (e.Funcs) (e.Labels) (e.Numbers)
   (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (e.Numbers)
       (s.NextStringId e.Strings-B (s.Id e.String) e.Strings-E)
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElString s.Id);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.Id);
 
   (e.Funcs) (e.Labels) (e.Numbers) (s.NextStringId e.Strings)
   e.Commands
-  (#CmdiCreateElem s.CreateMode s.ElemNo #ElString e.String) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElString e.String) =
     <OutlineConstants
       (e.Funcs) (e.Labels) (e.Numbers)
       (<Inc s.NextStringId> e.Strings (s.NextStringId e.String))
       e.Commands
     >
-    (#CmdiCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
+    (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
 
   (e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
@@ -1136,16 +1136,16 @@ PrepareOpenEStack {
   e.Commands =
     <MapReduce
       {
-        (#CmdiReserveStack s.Depth) (#CmdiEStart e.VarInfo) =
-          (#CmdiReserveStack <Inc s.Depth>) (#CmdiEStart e.VarInfo);
+        (#CmdReserveStack s.Depth) (#CmdEStart e.VarInfo) =
+          (#CmdReserveStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
 
-        (#CmdiReserveStack s.Depth) (#CmdiOnFailGoTo s.Offset) =
-          (#CmdiReserveStack <Inc s.Depth>) (#CmdiOnFailGoTo s.Offset);
+        (#CmdReserveStack s.Depth) (#CmdOnFailGoTo s.Offset) =
+          (#CmdReserveStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
 
-        (#CmdiReserveStack s.Depth) t.OtherCommand =
-          (#CmdiReserveStack s.Depth) t.OtherCommand;
+        (#CmdReserveStack s.Depth) t.OtherCommand =
+          (#CmdReserveStack s.Depth) t.OtherCommand;
       }
-      (#CmdiReserveStack 0)
+      (#CmdReserveStack 0)
       e.Commands
     >;
 }

@@ -488,64 +488,64 @@ e-переменные, распределяемые последователь�
       | (#CmdEmitNativeCode t.SrcPos e.Code)
 
     t.InterpretCommand ::=
-        (#CmdiFuncArray (e.Name)*)
-      | (#CmdiLabelArray (e.Name)*)
-      | (#CmdiNumberArray s.Number*)
-      | (#CmdiStringArray (e.String)*)
+        (#CmdFuncArray (e.Name)*)
+      | (#CmdLabelArray (e.Name)*)
+      | (#CmdNumberArray s.Number*)
+      | (#CmdStringArray (e.String)*)
       | (#CmdInitRAA)
       | t.InterpretArrayLines
       | (#CmdFinRAA)
-      | (#CmdiIssueMem s.Memory)
-      | (#CmdiReserveStack s.Depth)
+      | (#CmdIssueMem s.Memory)
+      | (#CmdReserveStack s.Depth)
 
     t.InterpretArrayLines ::=
-        (#CmdiInitB0)
-      | (#CmdiProfileFunction)
-      | (#CmdiLoadConstants)
+        (#CmdInitB0)
+      | (#CmdProfileFunction)
+      | (#CmdLoadConstants)
       | (s.iMatchCommand s.Direction s.Offset e.iMatchInfo)
-      | (#CmdiSave s.OldOffset s.NewOffset)
-      | (#CmdiEPrepare s.RangeOffset s.VarOffset)
-      | (#CmdiEStart s.RangeOffset s.VarOffset)
-      | (#CmdiEmpty s.Offset)
-      | (#CmdiEmptyResult)
-      | (#CmdiCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
-      | (#CmdiCopyVar s.Mode s.VarOffset s.SampleOffset)
-      | (#CmdiInsertElem s.Offset)
-      | (#CmdiInsertRange s.Offset)
-      | (#CmdiInsertVar s.Mode s.VarOffset)
-      | (#CmdiLinkBrackets s.LeftOffset s.RightOffset)
-      | (#CmdiPushStack s.Offset)
-      | (#CmdiFail)
-      | (#CmdiOnFailGoTo s.Delta)
-      | (#CmdiInitB0-Lite)
+      | (#CmdSave s.OldOffset s.NewOffset)
+      | (#CmdEPrepare s.RangeOffset s.VarOffset)
+      | (#CmdEStart s.RangeOffset s.VarOffset)
+      | (#CmdEmpty s.Offset)
+      | (#CmdEmptyResult)
+      | (#CmdCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
+      | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)
+      | (#CmdInsertElem s.Offset)
+      | (#CmdInsertRange s.Offset)
+      | (#CmdInsertVar s.Mode s.VarOffset)
+      | (#CmdLinkBrackets s.LeftOffset s.RightOffset)
+      | (#CmdPushStack s.Offset)
+      | (#CmdFail)
+      | (#CmdOnFailGoTo s.Delta)
+      | (#CmdInitB0-Lite)
       | (s.iMatchSaveCommand s.Direction s.Offset s.iMatchSaveInfo)
-      | (#CmdiSetRes s.R-Offset)
-      | (#CmdiTrash s.L-Offset)
-      | (#CmdiInsertTile s.BeginOffset s.EndOffset)
-      | (#CmdiSpliceToFreeList)
-      | (#CmdiNextStep)
+      | (#CmdSetRes s.R-Offset)
+      | (#CmdTrash s.L-Offset)
+      | (#CmdInsertTile s.BeginOffset s.EndOffset)
+      | (#CmdSpliceToFreeList)
+      | (#CmdNextStep)
 
     s.iMatchCommand e.iMatchInfo ::=
-        #CmdiRepeat s.Mode s.VarOffset s.SampleOffset
-      | #CmdiADT s.NewRangeOffset s.NameId
-      | #CmdiChar s.Char
-      | #CmdiVar s.Mode s.VarOffset
-      | #CmdiName s.NameId
-      | #CmdiIdent s.NameId
-      | #CmdiNum s.Number
-      | #CmdiHugeNum s.NumberId
-      | #CmdiBracket s.NewRangeOffset
+        #CmdRepeat s.Mode s.VarOffset s.SampleOffset
+      | #CmdADT s.NewRangeOffset s.NameId
+      | #CmdChar s.Char
+      | #CmdVar s.Mode s.VarOffset
+      | #CmdName s.NameId
+      | #CmdIdent s.NameId
+      | #CmdNum s.Number
+      | #CmdHugeNum s.NumberId
+      | #CmdBracket s.NewRangeOffset
 
     s.iMatchSaveCommand e.iMatchSaveInfo ::=
-        #CmdiRepeatedSave s.Mode s.VarOffset s.SampleOffset
-      | #CmdiADTSave s.NewRangeOffset s.NameId
-      | #CmdiCharSave s.SaveOffset s.Char
-      | #CmdiVarSave s.Mode s.VarOffset
-      | #CmdiNameSave s.SaveOffset s.NameId
-      | #CmdiIdentSave s.SaveOffset s.NameId
-      | #CmdiNumSave s.SaveOffset s.Number
-      | #CmdiHugeNumSave s.SaveOffset s.NumberId
-      | #CmdiBracketSave s.NewRangeOffset
+        #CmdRepeatedSave s.Mode s.VarOffset s.SampleOffset
+      | #CmdADTSave s.NewRangeOffset s.NameId
+      | #CmdCharSave s.SaveOffset s.Char
+      | #CmdVarSave s.Mode s.VarOffset
+      | #CmdNameSave s.SaveOffset s.NameId
+      | #CmdIdentSave s.SaveOffset s.NameId
+      | #CmdNumSave s.SaveOffset s.Number
+      | #CmdHugeNumSave s.SaveOffset s.NumberId
+      | #CmdBracketSave s.NewRangeOffset
 
     s.iCreateType e.iCreateInfo ::=
         #ElChar s.Char
@@ -599,73 +599,57 @@ e-переменные, распределяемые последователь�
     массивы команд в качестве аргументов могут использовать только 8-битные
     целые, для аргуметов других типов описываются массивы, а в интерпретируемых
     командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
-    * `#CmdiFuncArray e.Name` — массив указателей на функции,
-    * `#CmdiLabelArray e.Name` — массив идентификаторов,
-    * `#CmdiNumberArray s.Number` — массив больших (>255) чисел,
-    * `#CmdiStringArray e.String` — массив строк.
+    * `#CmdFuncArray e.Name` — массив указателей на функции,
+    * `#CmdLabelArray e.Name` — массив идентификаторов,
+    * `#CmdNumberArray s.Number` — массив больших (>255) чисел,
+    * `#CmdStringArray e.String` — массив строк.
   * `(#CmdInitRAA)` — заголовок массива интерпретируемых команд.
   * `t.InterpretArrayLines` — команды, генерирующие строчки массива.
   * `(#CmdFinRAA)` — последняя строка массива и закрывающая фигурная скобка.
-  * `(#CmdiIssueMem s.Memory)` — резервирование памяти для указателей на узлы.
-  * `(#CmdiReserveStack s.Depth)` — резервирование стека для переходов
+  * `(#CmdIssueMem s.Memory)` — резервирование памяти для указателей на узлы.
+  * `(#CmdReserveStack s.Depth)` — резервирование стека для переходов
     по ошибкам сопоставления. Команды инициализации цикла по открытым
-    переменным (`#CmdiEPrepare`) и перехода к концу предложения
-    (`#CmdiOnFailGoTo`) помещают смещение в этот массив.
+    переменным (`#CmdEPrepare`) и перехода к концу предложения
+    (`#CmdOnFailGoTo`) помещают смещение в этот массив.
 * `t.InterpretArrayLines` — команды, генерирующие строчки массива
-  интерпретируемых команд. Во многом совпадают с командами прямой кодогенерации.
-  Для таких команд будет использоваться запись _команда → команда_ для
-  отсылки к соответствующей команде.
-  * `#CmdiInitB0` → `#CmdInitB0`.
-  * `(s.iMatchCommand s.Direction s.Offset e.iMatchInfo)` → `s.MatchCommand`.
+  интерпретируемых команд. Во многом совпадают с одноимёнными командами прямой
+  кодогенерации — такие команды будут пропускаться. При неудаче сопоставления
+  команды сопоставления запускают _откат._
+  * `(s.iMatchCommand s.Direction s.Offset e.iMatchInfo)`.
     При неудаче сопоставления эти команды запускают _откат._
-    Отдельное замечание: `#CmdiNum` соответствует числу, влезающему в 8 бит,
+    Отдельное замечание: `#CmdNum` соответствует числу, влезающему в 8 бит,
     её аргумент записывается непосредственно в массив. `#CmdHugeNum` ссылается
     на число в массиве `numbers` по индексу.
   * `s.iMatchSaveCommand` → `s.iMatchCommand` × `s.MatchSave`.
-  * `#CmdiSave` → `#CmdSave`
-  * `#CmdiEPrepare` и `#CmdiEStart` в генерируемом коде всегда располагаются
-    рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив
-  * `(#CmdiEPrepare s.RangeOffset s.VarOffset)` устанавливает для заданной
+  * `#CmdEPrepare` и `#CmdEStart` в генерируемом коде всегда располагаются
+    рядом (но заменить их одной командой нельзя). Интерпретатор, обнаружив…
+  * `(#CmdEPrepare s.RangeOffset s.VarOffset)` устанавливает для заданной
     переменной пустое значение (аргумент `s.RangeOffset` игнорируется),
     помещает адрес следующей команды в стек откатов и пропускает следующую
-    команду (это должна быть `#CmdiEStart`).
-  * `(#CmdiEStart s.RangeOffset s.VarOffset)` удлиняет переменную `s.VarOffset`
+    команду (это должна быть `#CmdEStart`).
+  * `(#CmdEStart s.RangeOffset s.VarOffset)` удлиняет переменную `s.VarOffset`
     на один терм, отрывая его от `s.RangeOffset`, либо запускает _откат,_
     если `s.RangeOffset` уже пустой. В противном случае кладёт на стек откатов
     свой адрес.
-  * `#CmdiEmpty` → `#CmdEmpty`. При неудаче сопоставлениея запускает _откат._
-  * `(#CmdiCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`
-    → `#CmdCreateElem`. Оговорка о `#ElNumber` и `#ElHugeNumber` та же,
-    что и для `#CmdiNum` и `#CmdHugeNum`.
-  * `#CmdiCopyVar` → `#CmdCopyVar`.
-  * `#CmdiInsertElem` → `#CmdInsertElem`.
-  * `#CmdiInsertRange` → `#CmdInsertRange`.
-  * `#CmdiInsertVar` → `#CmdInsertVar`.
-  * `#CmdiLinkBrackets` → `#CmdLinkBrackets`.
-  * `#CmdiPushStack` → `#CmdPushStack`.
-  * `#CmdiFail` → `#CmdFail`.
-  * `#CmdiInitB0-Lite` → `#CmdInitB0-Lite`.
-  * `#CmdiSetRes` → `#CmdSetRes`.
-  * `#CmdiTrash` → `#CmdTrash`.
-  * `#CmdiInsertTile` → `#CmdInsertTile`.
-  * `#CmdiSpliceToFreeList` → `#CmdSpliceToFreeList`.
-  * `#CmdiNextStep` → `#CmdNextStep`.
-  * `(#CmdiOnFailGoTo s.Delta)` — кладёт на стек откатов адрес команды,
+  * `(#CmdCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`.
+    Оговорка о `#ElNumber` и `#ElHugeNumber` та же,
+    что и для `#CmdNum` и `#CmdHugeNum`.
+  * `(#CmdOnFailGoTo s.Delta)` — кладёт на стек откатов адрес команды,
     с которой начинается следующее предложение. Смещение этой команды
-    задаётся относительно текущей команды `#CmdiOnFailGoTo`.
+    задаётся относительно текущей команды `#CmdOnFailGoTo`.
 
 **Понятие отката.** При неудаче сопоставления с образцом в интерпретируемом
 коде запускается откат: со стека откатов снимается адрес следующей команды
 и осуществляется на неё переход. Если стек откатов пустой, то интерпретатор
 функции завершается с ошибкой сопоставления.
 
-На стек откатов нужные значения кладутся командами `#CmdiEPrepare`
-(устанавливает откат следующую команду, которая должна быть `#CmdiEStart`),
-`#CmdiEStart` (кладёт свой адрес) и `#CmdiOnFailGoTo` (кладёт адрес команды
+На стек откатов нужные значения кладутся командами `#CmdEPrepare`
+(устанавливает откат следующую команду, которая должна быть `#CmdEStart`),
+`#CmdEStart` (кладёт свой адрес) и `#CmdOnFailGoTo` (кладёт адрес команды
 с заданным смещением). Механизм откатов позволяет реализовать семантику циклов
-по открытым e-переменным (команды внутри цикла откатываются к `#CmdiEStart`,
+по открытым e-переменным (команды внутри цикла откатываются к `#CmdEStart`,
 которая удлиняет переменную) и предложений (в начале каждого предложения
-выполняется `#CmdiOnFailGoTo`, которая устанавливает адрес перехода на следующее
+выполняется `#CmdOnFailGoTo`, которая устанавливает адрес перехода на следующее
 предложение).
 
 ## Генерация целевого кода на C++ (проход 8)
