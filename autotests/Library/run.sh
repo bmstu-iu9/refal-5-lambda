@@ -24,6 +24,7 @@ run_all_tests() {
     Library-SymbType
 
   simple_tests fail \
+    Library-Math-Fail \
     Library-Math-Div-Fail \
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
