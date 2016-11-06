@@ -39,7 +39,7 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -106,7 +106,7 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -152,7 +152,7 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../srlib/refalrts.cpp
+  $CPPLINE $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -192,7 +192,7 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 
 run_test() {
   TEST_CPP_FLAGS="
-    -I../srlib \
+    -I../src/srlib \
     -DSTEP_LIMIT=1000 \
     -DMEMORY_LIMIT=1000 \
     -DDUMP_FILE=\"__dump.txt\"\

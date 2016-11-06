@@ -3,7 +3,7 @@ source ../../c-plus-plus.conf.sh
 
 run_all_tests() {
   TEST_CPP_FLAGS="
-    -I../../srlib \
+    -I../../src/srlib \
     -DSTEP_LIMIT=1000 \
     -DMEMORY_LIMIT=1000 \
     -DDUMP_FILE=\"__dump.txt\"\
@@ -40,7 +40,7 @@ compile() {
   fi
 
   if [ "$SRC" != "Hash.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP $NATCPP Hash.cpp Hash.native.cpp ../../srlib/refalrts.cpp lookup3.cpp
+    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP $NATCPP Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1
