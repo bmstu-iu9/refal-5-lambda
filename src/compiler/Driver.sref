@@ -26,7 +26,7 @@ $EXTERN HighLevelRASL;
 $EXTERN LowLevelRASL;
 
 //FROM Generator
-$EXTERN GenProgram;
+$EXTERN GenProgram-RASL, GenProgram-Native;
 
 /**
   <CompileFile s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName>
@@ -68,7 +68,7 @@ $ENTRY CompileFile {
                           <Fetch
                             e.RASL
                             <Seq
-                              (GenProgram (e.SrcName) (e.OutputName '.cpp'))
+                              GenProgram-RASL
                               (SaveFile (e.OutputName '.cpp'))
                             >
                           >
@@ -82,7 +82,7 @@ $ENTRY CompileFile {
                                 <Fetch
                                   e.NativeRASL
                                   <Seq
-                                    (GenProgram
+                                    (GenProgram-Native
                                       (e.SrcName) (e.OutputName '.native.cpp')
                                     )
                                     (SaveFile (e.OutputName '.native.cpp'))

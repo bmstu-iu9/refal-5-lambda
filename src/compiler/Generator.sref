@@ -38,12 +38,29 @@ GenCommonTailer {
   = () ('//End of file');
 }
 
-$ENTRY GenProgram {
+$ENTRY GenProgram-RASL {
+  e.RASL =
+    <Fetch
+      e.RASL
+      <Seq
+        (MapReduce GenCommand-RASL (/* отступ */))
+        {
+          () /* отступ должен остаться тем же */
+          e.Generated =
+            <GenCommonHeaders>
+            e.Generated
+            <GenCommonTailer>;
+        }
+      >
+    >;
+}
+
+$ENTRY GenProgram-Native {
   (e.SourceFileName) (e.TargetFileName) e.RASL =
     <Fetch
       e.RASL
       <Seq
-        (MapReduce GenCommand (/* отступ */))
+        (MapReduce GenCommand-Native (/* отступ */))
         {
           () /* отступ должен остаться тем же */
           e.Generated =
@@ -127,28 +144,37 @@ BaseCName {
   e.Name = <CName e.Name>;
 }
 
-GenCommand {
+GenCommand-Common {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
-
-  (e.Indent) (#CmdEnumDescr e.Name) =
-    (e.Indent)
-    (
-      'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
-      '"' <DisplayCName e.Name> '"'
-      ');'
-    )
-    <FuncReference e.Name>
-    <FuncAlias e.Name>
-    ();
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
     ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
     <FuncAlias e.Name>
     ();
+
+  (e.Indent) (#CmdDefineIdent e.Name) =
+    (e.Indent)
+    ('// identifier #' <DisplayName e.Name>)
+    ('template <typename SREFAL_PARAM_INT>')
+    ('struct ident_' <CName e.Name> ' {')
+    ('  static const char *name() {')
+    ('    return "' <DisplayCName e.Name> '";')
+    ('  }')
+    ('};')
+    ();
+
+  (e.Indent) (#CmdSeparator) =
+    (e.Indent)
+    ();
+}
+
+GenCommand-Native {
+  // ---------------------------------------------------------------------------
+  // Создания глобальных объектов, общие команды
 
   (e.Indent) (#CmdDeclaration e.Name) =
     (e.Indent)
@@ -167,48 +193,9 @@ GenCommand {
     <FuncReference e.Name>
     ();
 
-  (e.Indent) (#CmdInterpretFuncDescr e.Name) =
-    (e.Indent)
-    ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
-    ('  "' <DisplayCName e.Name> '",')
-    ('  scope_' <BaseCName e.Name> '::raa,')
-    ('  scope_' <BaseCName e.Name> '::functions,')
-    ('  scope_' <BaseCName e.Name> '::idents,')
-    ('  scope_' <BaseCName e.Name> '::numbers,')
-    ('  scope_' <BaseCName e.Name> '::strings')
-    (');')
-    <FuncReference e.Name>
-    ();
-
-  (e.Indent) (#CmdSwapDescr e.Name) =
-    (e.Indent)
-    (
-      'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
-      '"' <DisplayCName e.Name> '"'
-      ');'
-    )
-    <FuncReference e.Name>
-    <FuncAlias e.Name>
-    ();
-
-  (e.Indent) (#CmdDefineIdent e.Name) =
-    (e.Indent)
-    ('// identifier #' <DisplayName e.Name>)
-    ('template <typename SREFAL_PARAM_INT>')
-    ('struct ident_' <CName e.Name> ' {')
-    ('  static const char *name() {')
-    ('    return "' <DisplayCName e.Name> '";')
-    ('  }')
-    ('};')
-    ();
-
   (e.Indent) (#CmdFnStart e.Name) =
     (e.Indent '  ')
     ('static refalrts::FnResult func_' <BaseCName e.Name> <FuncArguments> ' {');
-
-  (e.Indent) (#CmdSeparator) =
-    (e.Indent)
-    ();
 
   (e.Indent '  ') (#CmdFnEnd) =
     (e.Indent)
@@ -219,24 +206,6 @@ GenCommand {
     (#NativeInsertBegin s.LineNumber)
     e.Code
     (#NativeInsertEnd);
-
-  (e.Indent) (#CmdNamespaceStart /* пусто */) =
-    (e.Indent '  ')
-    (e.Indent 'namespace /* unnamed */ {');
-
-  (e.Indent) (#CmdNamespaceStart e.Name) =
-    (e.Indent '  ')
-    (e.Indent 'namespace scope_' <BaseCName e.Name> ' {');
-
-  (e.Indent '  ') (#CmdNamespaceEnd /* пусто */) =
-    (e.Indent)
-    (e.Indent '} // unnamed namespace')
-    ();
-
-  (e.Indent '  ') (#CmdNamespaceEnd e.Name) =
-    (e.Indent)
-    (e.Indent '} // namespace scope_' <BaseCName e.Name>)
-    ();
 
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
@@ -561,6 +530,67 @@ GenCommand {
   (e.Indent) (#CmdFail) =
     (e.Indent)
     (e.Indent 'return refalrts::cRecognitionImpossible;');
+
+  (e.Indent) (s.CommonCommand e.Args) =
+    <GenCommand-Common (e.Indent) (s.CommonCommand e.Args)>;
+}
+
+GenCommand-RASL {
+  // ---------------------------------------------------------------------------
+  // Создания глобальных объектов, общие команды
+
+  (e.Indent) (#CmdEnumDescr e.Name) =
+    (e.Indent)
+    (
+      'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
+      '"' <DisplayCName e.Name> '"'
+      ');'
+    )
+    <FuncReference e.Name>
+    <FuncAlias e.Name>
+    ();
+
+  (e.Indent) (#CmdInterpretFuncDescr e.Name) =
+    (e.Indent)
+    ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
+    ('  "' <DisplayCName e.Name> '",')
+    ('  scope_' <BaseCName e.Name> '::raa,')
+    ('  scope_' <BaseCName e.Name> '::functions,')
+    ('  scope_' <BaseCName e.Name> '::idents,')
+    ('  scope_' <BaseCName e.Name> '::numbers,')
+    ('  scope_' <BaseCName e.Name> '::strings')
+    (');')
+    <FuncReference e.Name>
+    ();
+
+  (e.Indent) (#CmdSwapDescr e.Name) =
+    (e.Indent)
+    (
+      'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
+      '"' <DisplayCName e.Name> '"'
+      ');'
+    )
+    <FuncReference e.Name>
+    <FuncAlias e.Name>
+    ();
+
+  (e.Indent) (#CmdNamespaceStart /* пусто */) =
+    (e.Indent '  ')
+    (e.Indent 'namespace /* unnamed */ {');
+
+  (e.Indent) (#CmdNamespaceStart e.Name) =
+    (e.Indent '  ')
+    (e.Indent 'namespace scope_' <BaseCName e.Name> ' {');
+
+  (e.Indent '  ') (#CmdNamespaceEnd /* пусто */) =
+    (e.Indent)
+    (e.Indent '} // unnamed namespace')
+    ();
+
+  (e.Indent '  ') (#CmdNamespaceEnd e.Name) =
+    (e.Indent)
+    (e.Indent '} // namespace scope_' <BaseCName e.Name>)
+    ();
 
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
@@ -971,6 +1001,9 @@ GenCommand {
   (e.Indent) (#CmdiFail) =
     (e.Indent)
     (e.Indent '{refalrts::icFail, 0, 0, 0},');
+
+  (e.Indent) (s.CommonCommand e.Args) =
+    <GenCommand-Common (e.Indent) (s.CommonCommand e.Args)>;
 }
 
 PrintLength {
