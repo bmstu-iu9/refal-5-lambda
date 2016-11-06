@@ -716,20 +716,6 @@ DoLength {
 }
 
 ConvertOneInterpretCommand {
-  (#CmdComment e.Text) = (#CmdComment e.Text);
-
-  (#CmdIssueMem s.Memory) = (#CmdIssueMem s.Memory);
-
-  (#CmdInitB0) = (#CmdInitB0);
-
-  (#CmdInitB0-Lite) = (#CmdInitB0-Lite);
-
-  (#CmdChar s.Direction s.BracketNumber s.Char) =
-    (#CmdChar s.Direction s.BracketNumber s.Char);
-
-  (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
-    (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char);
-
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
@@ -750,42 +736,6 @@ ConvertOneInterpretCommand {
       }
     >;
 
-  (#CmdName s.Direction s.BracketNumber e.Name) =
-    (#CmdName s.Direction s.BracketNumber e.Name);
-
-  (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset e.Name) =
-    (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset e.Name);
-
-  (#CmdIdent s.Direction s.BracketNumber e.Name) =
-    (#CmdIdent s.Direction s.BracketNumber e.Name);
-
-  (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset e.Name) =
-    (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset e.Name);
-
-  (#CmdBrackets s.Direction s.Num s.NumRanges) =
-    (#CmdBracket s.Direction s.Num s.NumRanges);
-
-  (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
-    (#CmdBracketsSave s.Direction s.Num s.NumRanges);
-
-  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name) =
-    (#CmdADT s.Direction s.BracketNumber s.InnerBrackets e.Name);
-
-  (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name) =
-    (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets e.Name);
-
-  (#CmdCallSave s.Direction s.Num s.NumRanges) =
-    (#CmdCallSave s.Direction s.Num s.NumRanges);
-
-  (#CmdEmpty #AlgLeft s.BracketNumber) =
-    (#CmdEmpty s.BracketNumber);
-
-  (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber);
-
-  (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber);
-
   (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
     (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
@@ -795,19 +745,7 @@ ConvertOneInterpretCommand {
   (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
     (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
-  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
-    (#CmdSave s.OldBracketNumber s.NewBracketNumber);
-
-  (#CmdEmptyResult) = (#CmdEmptyResult);
-
   (#CmdResetAllocator) = (#CmdEmptyResult);
-
-  (#CmdSetRes s.Offset) = (#CmdSetRes s.Offset);
-
-  (#CmdCopyVar s.Mode s.Number s.Sample) =
-    (#CmdCopyVar s.Mode s.Number s.Sample);
-
-  (#CmdReinitSVar s.Offset s.Sample) = (#CmdReinitSVar s.Offset s.Sample);
 
   (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
     <Fetch
@@ -817,31 +755,7 @@ ConvertOneInterpretCommand {
       }
     >;
 
-  (#CmdCreateElem s.CreateMode s.ElemNo s.Type e.Info) =
-    (#CmdCreateElem s.CreateMode s.ElemNo s.Type e.Info);
-
-  (#CmdLinkBrackets s.Left s.Right) = (#CmdLinkBrackets s.Left s.Right);
-
-  (#CmdPushStack s.ElemNo) = (#CmdPushStack s.ElemNo);
-
-  (#CmdInsertElem s.ElemNo) = (#CmdInsertElem s.ElemNo);
-
-  (#CmdInsertVar s.Mode s.Number) = (#CmdInsertVar s.Mode s.Number);
-
-  (#CmdInsertRange s.ElemNo) = (#CmdInsertRange s.ElemNo);
-
-  (#CmdInsertTile s.BeginOffset s.EndOffset) =
-    (#CmdInsertTile s.BeginOffset s.EndOffset);
-
   (#CmdUseRes) = /* пусто */;
-
-  (#CmdSpliceToFreeList) = (#CmdSpliceToFreeList);
-
-  (#CmdNextStep) = (#CmdNextStep);
-
-  (#CmdTrash s.Offset) = (#CmdTrash s.Offset);
-
-  (#CmdFail) = (#CmdFail);
 
   (#CmdSentence e.SubCommands) =
     <Fetch
@@ -858,6 +772,8 @@ ConvertOneInterpretCommand {
     (#CmdEPrepare s.BracketNum s.VarNumber)
     (#CmdEStart s.BracketNum s.VarNumber)
     <ConvertInterpretCommands e.SubCommands>;
+
+  t.Command = t.Command;
 }
 
 RemoveNumber { (s.Number e.Name) = (e.Name); }

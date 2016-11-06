@@ -793,7 +793,7 @@ GenCommand-RASL {
       <StrFromInt s.BracketNumber> '},'
     );
 
-  (e.Indent) (#CmdBracket s.Direction s.Num s.NumRanges) =
+  (e.Indent) (#CmdBrackets s.Direction s.Num s.NumRanges) =
     (e.Indent)
     (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
               '0, ' <StrFromInt s.NumRanges> ', ' <StrFromInt s.Num> '},'
@@ -831,7 +831,7 @@ GenCommand-RASL {
       '0, ' <StrFromInt s.InnerBrackets> ', ' <StrFromInt s.BracketNumber> '},'
     );
 
-  (e.Indent) (#CmdEmpty s.Num) =
+  (e.Indent) (#CmdEmpty s.Direction s.Num) =
     (e.Indent)
     (e.Indent '{refalrts::icEmpty, 0, 0, ' <StrFromInt s.Num> '},');
 
