@@ -238,15 +238,6 @@ GenCommand {
     (e.Indent '} // namespace scope_' <BaseCName e.Name>)
     ();
 
-  (e.Indent) (#CmdIfDef e.Macros) =
-    (e.Indent) ('#ifdef ' e.Macros);
-
-  (e.Indent) (#CmdElse) =
-    (e.Indent) ('#else');
-
-  (e.Indent) (#CmdEndIf) =
-    (e.Indent) ('#endif');
-
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
 
