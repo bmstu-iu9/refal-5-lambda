@@ -459,7 +459,7 @@ DoGenSubst {
       )
       (
         e.Commands
-        (#CmdRepeatedSave #AlgLeft s.Num s.Mode s.ContextOffset s.SampleOffset)
+        <MakeRepeatedSave #AlgLeft s.Num s.Mode s.ContextOffset s.SampleOffset>
       )
     >;
 
@@ -481,7 +481,7 @@ DoGenSubst {
       )
       (
         e.Commands
-        (#CmdRepeatedSave #AlgRight s.Num s.Mode s.ContextOffset s.SampleOffset)
+        <MakeRepeatedSave #AlgRight s.Num s.Mode s.ContextOffset s.SampleOffset>
       )
     >;
 
@@ -589,4 +589,13 @@ IncVarOffset-Saved {
   s.ContextOffset 'e' = <Inc2 s.ContextOffset>;
   s.ContextOffset 't' = <Inc2 s.ContextOffset>;
   s.ContextOffset 's' = <Inc s.ContextOffset>;
+}
+
+MakeRepeatedSave {
+  s.Direction s.Num 't' s.ContextOffset s.SampleOffset =
+    (#CmdRepeatedTVarSave s.Direction s.Num s.ContextOffset s.SampleOffset);
+
+  // Для других видов переменных особой команды не нужно
+  s.Direction s.Num s.Mode s.ContextOffset s.SampleOffset =
+    (#CmdRepeated s.Direction s.Num s.Mode s.ContextOffset s.SampleOffset);
 }

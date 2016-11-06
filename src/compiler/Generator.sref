@@ -352,10 +352,10 @@ GenCommand-Native {
     >;
 
   (e.Indent)
-  (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.Var s.Sample) =
+  (#CmdRepeatedTVarSave s.Direction s.BracketNumber s.Var s.Sample) =
     (e.Indent)
-    <PrintMatchRepeatedSave
-      (e.Indent) s.Direction s.BracketNumber s.Mode s.Var s.Sample
+    <PrintMatchRepeatedTVarSave
+      (e.Indent) s.Direction s.BracketNumber s.Var s.Sample
     >;
 
   (e.Indent)
@@ -850,7 +850,7 @@ GenCommand-RASL {
     );
 
   (e.Indent)
-  (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
+  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
     (e.Indent)
     (e.Indent
       '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
@@ -860,8 +860,8 @@ GenCommand-RASL {
     );
 
   (e.Indent)
-  (#CmdRepeatedSave
-    s.Direction s.BracketNumber 't' s.VarNumber s.SampleNumber
+  (#CmdRepeatedTVarSave
+    s.Direction s.BracketNumber s.VarNumber s.SampleNumber
   ) =
     (e.Indent)
     (e.Indent
@@ -1206,17 +1206,12 @@ PrintMatchRepeated {
     >;
 }
 
-PrintMatchRepeatedSave {
-  (e.Indent) s.Direction s.BracketNumber 't' s.VarNumber s.SampleNumber =
+PrintMatchRepeatedTVarSave {
+  (e.Indent) s.Direction s.BracketNumber s.VarNumber s.SampleNumber =
     <PrintMatchSave
       (e.Indent) <Inc s.VarNumber> s.Direction s.BracketNumber
       ('repeated_stvar')
       <ContextItem s.VarNumber> ', ' <ContextItem s.SampleNumber>
-    >;
-
-  (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber =
-    <PrintMatchRepeated
-      (e.Indent) s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber
     >;
 }
 

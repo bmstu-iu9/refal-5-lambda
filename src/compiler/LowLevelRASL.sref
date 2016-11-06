@@ -451,34 +451,6 @@ DoAddSavers {
 
   s.ContextTop (e.Alive) (e.Frozen)
   (e.Scanned)
-  (#CmdRepeatedSave s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum)
-  e.Commands =
-    <Fetch
-      <CheckSaved s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber>
-      {
-        s.ContextTop^ (e.Alive^) (e.Frozen^) s.BracketNumber^ e.Saver =
-          <Fetch
-            <CheckFrozen e.Frozen s.SampleNum>
-            {
-              s.SampleNum^ =
-                <DoAddSavers
-                  s.ContextTop (e.Alive) (e.Frozen)
-                  (
-                    e.Scanned
-                    e.Saver
-                    (#CmdRepeatedSave
-                      s.Direction s.BracketNumber 'e' s.VarNumber s.SampleNum
-                    )
-                  )
-                  e.Commands
-                >;
-            }
-          >;
-      }
-    >;
-
-  s.ContextTop (e.Alive) (e.Frozen)
-  (e.Scanned)
   (#CmdOpenELoop #AlgLeft s.BracketNumber s.VarNumber e.SubCommands)
   /* обычно, последняя команда, но после неё может следовать #CmdFail */
   e.Commands =
@@ -735,15 +707,6 @@ ConvertOneInterpretCommand {
           (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
       }
     >;
-
-  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
-    (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
-
-  (#CmdRepeatedSave s.Direction s.BracketNumber 't' s.VarNum s.SampleNum) =
-    (#CmdRepeatedSave s.Direction s.BracketNumber 't' s.VarNum s.SampleNum);
-
-  (#CmdRepeatedSave s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum) =
-    (#CmdRepeat s.Direction s.BracketNumber s.Mode s.VarNum s.SampleNum);
 
   (#CmdResetAllocator) = (#CmdEmptyResult);
 
