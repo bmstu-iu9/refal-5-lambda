@@ -50,7 +50,7 @@ DoGenResult {
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkChar s.Value) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElChar s.Value))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElChar s.Value))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -58,7 +58,7 @@ DoGenResult {
   (e.Vars) (e.AllocCommands) (e.Commands) s.Counter (#TkName e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElName e.Name))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElName e.Name))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -67,7 +67,7 @@ DoGenResult {
   s.Counter (#TkNumber s.Number) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElNumber s.Number))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElNumber s.Number))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -76,7 +76,7 @@ DoGenResult {
   s.Counter (#TkIdentifier e.Name) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElIdent e.Name))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElIdent e.Name))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.Result
     >;
@@ -85,7 +85,7 @@ DoGenResult {
   s.Counter (#TkString e.Chars) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElString e.Chars))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElString e.Chars))
       ((#CmdInsertRange s.Counter) e.Commands)
       <Add s.Counter 2> e.Result
     >;
@@ -97,7 +97,7 @@ DoGenResult {
   s.Counter (#Brackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenBracket))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenBracket))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.InBrackets (#TkCloseBracket s.Counter) e.Result
     >;
@@ -106,7 +106,7 @@ DoGenResult {
   s.Counter (#CallBrackets e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenCall))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenCall))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
     >;
@@ -115,7 +115,7 @@ DoGenResult {
   s.Counter (#ADT-Brackets (e.Name) e.InBrackets) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElOpenADT))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenADT))
       ((#CmdInsertElem s.Counter) e.Commands)
       <Inc s.Counter>
       (#TkName e.Name) e.InBrackets (#TkCloseADT s.Counter) e.Result
@@ -129,7 +129,7 @@ DoGenResult {
   s.Counter (#TkCloseBracket s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseBracket))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseBracket))
       (
         (#CmdLinkBrackets s.OpenCounter s.Counter)
         (#CmdInsertElem s.Counter)
@@ -142,7 +142,7 @@ DoGenResult {
   s.Counter (#TkCloseADT s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseADT))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseADT))
       (
         (#CmdLinkBrackets s.OpenCounter s.Counter)
         (#CmdInsertElem s.Counter)
@@ -155,7 +155,7 @@ DoGenResult {
   s.Counter (#CloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
-      (e.AllocCommands (#CmdAllocateElem s.Counter #ElCloseCall))
+      (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseCall))
       (
         (#CmdPushStack s.Counter)
         (#CmdPushStack s.OpenCounter)

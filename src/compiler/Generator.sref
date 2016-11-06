@@ -478,7 +478,7 @@ GenCommand {
       ' );'
     );
 
-  (e.Indent) (#CmdAllocateElem s.ElemNumber #ElString e.String) =
+  (e.Indent) (#CmdCreateElem #Allocate s.ElemNumber #ElString e.String) =
     (e.Indent)
     (e.Indent
       'if( ! refalrts::alloc_chars( '
@@ -487,17 +487,9 @@ GenCommand {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
-  (e.Indent) (#CmdAllocateElem s.ElemNumber e.ElemInfo) =
+  (e.Indent) (#CmdCreateElem s.CreateMode s.ElemNumber e.ElemInfo) =
     (e.Indent)
-    <PrintCreateElem (e.Indent) ('alloc') s.ElemNumber e.ElemInfo>;
-
-  (e.Indent) (#CmdReinitElem s.ElemNumber e.ElemInfo) =
-    (e.Indent)
-    <PrintCreateElem (e.Indent) ('reinit') s.ElemNumber e.ElemInfo>;
-
-  (e.Indent) (#CmdUpdateElem s.ElemNumber e.ElemInfo) =
-    (e.Indent)
-    <PrintCreateElem (e.Indent) ('update') s.ElemNumber e.ElemInfo>;
+    <PrintCreateElem (e.Indent) s.CreateMode s.ElemNumber e.ElemInfo>;
 
   (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
     (e.Indent)
@@ -1232,7 +1224,7 @@ PrintMatchSave {
 }
 
 PrintCreateElem {
-  (e.Indent) ('alloc') s.ElemNumber s.ElementType e.Info =
+  (e.Indent) #Allocate s.ElemNumber s.ElementType e.Info =
     (e.Indent
       'if( ! refalrts::alloc_' <AllocatorFuncName s.ElementType> '( '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
@@ -1240,12 +1232,18 @@ PrintCreateElem {
     )
     (e.Indent '  return refalrts::cNoMemory;');
 
-  (e.Indent) (e.Action) s.ElemNumber s.ElementType e.Info =
+  (e.Indent) s.CreateMode s.ElemNumber s.ElementType e.Info =
     (e.Indent
-      'refalrts::' e.Action '_' <AllocatorFuncName s.ElementType> '( '
+      'refalrts::' <AllocatorMode s.CreateMode> '_'
+      <AllocatorFuncName s.ElementType> '( '
       <ContextItem s.ElemNumber> <AllocatorFuncArgument s.ElementType e.Info>
       ' );'
     );
+}
+
+AllocatorMode {
+  #Reinit = 'reinit';
+  #Update = 'update';
 }
 
 AllocatorFuncName {

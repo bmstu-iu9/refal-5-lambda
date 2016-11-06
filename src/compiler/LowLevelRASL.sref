@@ -809,38 +809,16 @@ ConvertOneInterpretCommand {
 
   (#CmdReinitSVar s.Offset s.Sample) = (#CmdiReinitSVar s.Offset s.Sample);
 
-  (#CmdAllocateElem s.ElemNo #ElNumber s.Number) =
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
-        '<' = (#CmdiCreateElem #Allocate s.ElemNo #ElNumber s.Number);
-        s.Other = (#CmdiCreateElem #Allocate s.ElemNo #ElHugeNumber s.Number);
+        '<' = (#CmdiCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
+        s.Other = (#CmdiCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
       }
     >;
 
-  (#CmdAllocateElem s.ElemNo s.Type e.Info) =
-    (#CmdiCreateElem #Allocate s.ElemNo s.Type e.Info);
-
-  (#CmdReinitElem s.ElemNo #ElNumber s.Number) =
-    <Fetch
-      <Compare s.Number 256> {
-        '<' = (#CmdiCreateElem #Reinit s.ElemNo #ElNumber s.Number);
-        s.Other = (#CmdiCreateElem #Reinit s.ElemNo #ElHugeNumber s.Number);
-      }
-    >;
-
-  (#CmdReinitElem s.ElemNo s.Type e.Info) =
-    (#CmdiCreateElem #Reinit s.ElemNo s.Type e.Info);
-
-  (#CmdUpdateElem s.ElemNo #ElNumber s.Number) =
-    <Fetch
-      <Compare s.Number 256> {
-        '<' = (#CmdiCreateElem #Update s.ElemNo #ElNumber s.Number);
-        s.Other = (#CmdiCreateElem #Update s.ElemNo #ElHugeNumber s.Number);
-      }
-    >;
-
-  (#CmdUpdateElem s.ElemNo s.Type e.Info) =
-    (#CmdiCreateElem #Update s.ElemNo s.Type e.Info);
+  (#CmdCreateElem s.CreateMode s.ElemNo s.Type e.Info) =
+    (#CmdiCreateElem s.CreateMode s.ElemNo s.Type e.Info);
 
   (#CmdLinkBrackets s.Left s.Right) = (#CmdiLinkBrackets s.Left s.Right);
 

@@ -73,7 +73,7 @@ FlatResult {
 }
 
 // Основные команды работы с результатом
-//  (#CmdAllocateElem s.Number s.ElType e.Info)
+//  (#CmdCreateElem #Allocate s.Number s.ElType e.Info)
 //  (#CmdLinkBrackets s.Left s.Right)
 //  (#CmdPushStack s.Number)
 //  (#CmdInsertElem s.Number)
@@ -103,9 +103,9 @@ GenResult-Aux {
           (#CmdCopyVar s.Mode s.Offset s.SampleOffset);
 
         (#TkString e.String s.Offset) =
-          (#CmdAllocateElem s.Offset #ElString e.String);
+          (#CmdCreateElem #Allocate s.Offset #ElString e.String);
 
-        (e.Elem) = (#CmdAllocateElem <CreateElemParam e.Elem>);
+        (e.Elem) = (#CmdCreateElem #Allocate <CreateElemParam e.Elem>);
       }
       e.MarkedResult
     >
@@ -121,9 +121,11 @@ GenResult-Aux {
               (#HalfReuse (#TkVariable 's' e.Index s.SampleOffset s.Offset)) =
                 (#CmdReinitSVar s.Offset s.SampleOffset);
 
-              (#HalfReuse (e.Elem)) = (#CmdReinitElem <CreateElemParam e.Elem>);
+              (#HalfReuse (e.Elem)) =
+                (#CmdCreateElem #Reinit <CreateElemParam e.Elem>);
 
-              (#Reuse (e.Elem)) = (#CmdUpdateElem <CreateElemParam e.Elem>);
+              (#Reuse (e.Elem)) =
+                (#CmdCreateElem #Update <CreateElemParam e.Elem>);
 
               (#LEFT-EDGE) = /* пусто */;
               (#RIGHT-EDGE) = /* пусто */;

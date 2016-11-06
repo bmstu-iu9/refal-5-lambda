@@ -234,7 +234,7 @@
       | (#CmdSave s.OldOffset s.NewOffset)
       | (#CmdComment e.Text)
       | (#CmdEmptyResult)
-      | (s.CreateElemCommand s.Offset s.CreateType e.AllocInfo)
+      | (#CmdCreateElem s.CreateMode s.Offset s.CreateType e.AllocInfo)
       | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset
       | (#CmdInsertElem s.Offset)
       | (#CmdInsertRange s.Offset)
@@ -274,7 +274,7 @@
 
     s.Direction ::= #AlgLeft | #AlgRight | #AlgTerm
 
-    s.CreateElemCommand ::= #CmdAllocateElem | #CmdReinitElem | #CmdUpdateElem
+    s.CreateMode ::= #Allocate | #Reinit | #Update
     s.CreateType e.AllocInfo ::=
         #ElChar s.Char
       | #ElName e.Name
@@ -365,10 +365,10 @@
   * `(#CmdEmptyResult)` — подготавливает рантайм к формированию элементов
     результатного выражения в списке свободных узлов. Должно предшествовать
     любым командам распределения (включая копирование переменных).
-  * `(s.CmdCreateElem s.Offset s.AllocType e.AllocInfo)` — создание нового
-    объекта в списке свободных узлов (указатель на созданный объект помещается
-    в контекст по смещению `s.Offset`), либо повторное использование имеющегося
-    (переиспользуется элемент по указателю `s.Offset`).
+  * `(#CmdCreateElem s.CreateMode s.Offset s.AllocType e.AllocInfo)` — создание
+    нового объекта в списке свободных узлов (указатель на созданный объект
+    помещается в контекст по смещению `s.Offset`), либо повторное использование
+    имеющегося (переиспользуется элемент по указателю `s.Offset`).
     Поля `s.AllocType e.AllocInfo` определяют тип и аргументы команды
     распределения. Их смысл очевиден, за исключением `#ElString e.String` — она
     создаёт непрерывную последовательность литер.
@@ -539,8 +539,6 @@ e-переменные, распределяемые последователь�
       | #CmdiHugeNumSave s.SaveOffset s.NumberId
       | #CmdiBracketSave s.NewRangeOffset
 
-    s.CreateMode ::= #Allocate | #Reinit | #Update
-
     s.iCreateType e.iCreateInfo ::=
         #ElChar s.Char
       | #ElName s.NameId
@@ -624,9 +622,8 @@ e-переменные, распределяемые последователь�
     свой адрес.
   * `#CmdiEmpty` → `#CmdEmpty`. При неудаче сопоставлениея запускает _откат._
   * `(#CmdiCreateElem s.CreateMode s.Offset s.iAllocType e.iAllocInfo)`
-    → `#CmdAllocateElem`, `#CmdUpdateElem`, `#CmdReinitElem`.
-    Оговорка о `#ElNumber` и `#ElHugeNumber` та же, что и для `#CmdiNum`
-    и `#CmdHugeNum`.
+    → `#CmdCreateElem`. Оговорка о `#ElNumber` и `#ElHugeNumber` та же,
+    что и для `#CmdiNum` и `#CmdHugeNum`.
   * `#CmdiCopyVar` → `#CmdCopyVar`.
   * `#CmdiInsertElem` → `#CmdInsertElem`.
   * `#CmdiInsertRange` → `#CmdInsertRange`.
