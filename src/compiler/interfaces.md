@@ -233,7 +233,7 @@
       | (s.MatchCommand s.Direction s.Offset e.MatchInfo)
       | (#CmdSave s.OldOffset s.NewOffset)
       | (#CmdComment e.Text)
-      | (#CmdEmptyResult)
+      | (#CmdResetAllocator)
       | (#CmdCreateElem s.CreateMode s.Offset s.CreateType e.AllocInfo)
       | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset
       | (#CmdInsertElem s.Offset)
@@ -289,7 +289,7 @@
     s.OldOffset, s.NewOffset ::= s.Offset
     s.LeftOffset, s.RightOffset ::= s.Offset
     s.SaveOffset ::= s.Offset
-    s.R-Offset ::= s.Offset | #RIGHT-EDGE
+    s.R-Offset ::= #ARG-BEGIN | s.Offset | #RIGHT-EDGE
     s.L-Offset ::= s.Offset | #LEFT-EDGE
 
 * `e.AST` — см. предыдущий раздел.
@@ -362,7 +362,7 @@
   * `(#CmdComment e.Text)` — соответствует однострочному комментарию
     в сгенерированном коде. Содержимое `e.Text` предваряется `// `
     и выписывается в целевой файл без изменений.
-  * `(#CmdEmptyResult)` — подготавливает рантайм к формированию элементов
+  * `(#CmdResetAllocator)` — подготавливает рантайм к формированию элементов
     результатного выражения в списке свободных узлов. Должно предшествовать
     любым командам распределения (включая копирование переменных).
   * `(#CmdCreateElem s.CreateMode s.Offset s.AllocType e.AllocInfo)` — создание
@@ -403,7 +403,8 @@
   * `(#CmdInsertTile s.BeginOffset s.EndOffset)` — команда переноса диапазона 
     из списка свободных узлов в поле зрения.
   * `(#CmdSetRes s.R-Offset)` — устанавливает начальное значение переменной
-    `res` (по указателю, равному смещению в контексте, либо по правой кромке).
+    `res` (на arg_begin, по указателю, равному смещению в контексте,
+    либо по правой кромке).
   * `(#CmdTrash s.L-Offset)` — удаляет диапазон от `s.L-Offset` до текущего
     значения `res`. `s.L-Offset` равно либо смещению в контексте, либо левой
     кромке.
@@ -507,7 +508,7 @@ e-переменные, распределяемые последователь�
       | (#CmdEPrepare s.RangeOffset s.VarOffset)
       | (#CmdEStart s.RangeOffset s.VarOffset)
       | (#CmdEmpty s.Offset)
-      | (#CmdEmptyResult)
+      | (#CmdResetAllocator)
       | (#CmdCreateElem s.CreateMode s.Offset s.iCreateType e.iCreateInfo)
       | (#CmdCopyVar s.Mode s.VarOffset s.SampleOffset)
       | (#CmdInsertElem s.Offset)

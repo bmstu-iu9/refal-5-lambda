@@ -36,7 +36,8 @@ $ENTRY GenResult-Simple {
         s.ContextOffset^ (e.CommonVars) e.ResultCommands =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>
-          (#CmdEmptyResult)
+          (#CmdResetAllocator)
+          (#CmdSetRes #ARG-BEGIN)
           e.ResultCommands
           (#CmdUseRes)
           (#CmdSpliceToFreeList)

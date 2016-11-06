@@ -708,8 +708,6 @@ ConvertOneInterpretCommand {
       }
     >;
 
-  (#CmdResetAllocator) = (#CmdEmptyResult);
-
   (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {

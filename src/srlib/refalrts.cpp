@@ -1667,7 +1667,8 @@ const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
   { refalrts::icCallSaveLeft, 0, 2, 0 },
   { refalrts::icFetchSwapHead, 5, 0, 4 },
   { refalrts::icFetchSwapInfoBounds, 5, 6, 0 },
-  { refalrts::icEmptyResult, 0, 0, 0 },
+  { refalrts::icResetAllocator, 0, 0, 0 },
+  { refalrts::icSetResArgBegin, 0, 0, 0 },
   { refalrts::icSpliceEVar, 0, 0, 6 },
   { refalrts::icSwapSave, 5, 0, 2 },
   { refalrts::icSpliceToFreeList, 0, 0, 0 },
@@ -2853,7 +2854,8 @@ void refalrts::vm::free_view_field() {
 refalrts::FnResult refalrts::vm::main_loop() {
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
-    { icEmptyResult, 0, 0, 0 },
+    { refalrts::icResetAllocator, 0, 0, 0 },
+    { refalrts::icSetResArgBegin, 0, 0, 0 },
     { icAllocBracket, 0, ibOpenCall, 0 },
     { icAllocFunc, 0, 0, 1 },
     { icAllocBracket, 0, ibCloseCall, 2 },
@@ -2868,7 +2870,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
   };
 
   RefalFunction *callee = 0;
-  Iter begin = & g_last_marker; /* нужно для icEmptyResult в startup_rasl */
+  Iter begin = & g_last_marker; /* нужно для icSetResArgBegin в startup_rasl */
   Iter end = 0;
   const RASLCommand *rasl = startup_rasl;
   RefalFunction **functions = startup_func;
@@ -3388,8 +3390,11 @@ refalrts::FnResult refalrts::vm::main_loop() {
         res_e = be;
         break;
 
-      case icEmptyResult:
+      case icResetAllocator:
         reset_allocator();
+        break;
+
+      case icSetResArgBegin:
         res = begin;
         break;
 

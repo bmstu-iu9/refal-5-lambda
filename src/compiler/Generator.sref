@@ -391,16 +391,14 @@ GenCommand-Native {
   // ---------------------------------------------------------------------------
   // Команды построения результата (прямая кодогенерация)
 
-  (e.Indent) (#CmdEmptyResult) =
-    (e.Indent)
-    ()
-    (e.Indent 'refalrts::reset_allocator();')
-    (e.Indent 'refalrts::Iter res = arg_begin;');
-
   (e.Indent) (#CmdResetAllocator) =
     (e.Indent)
     ()
     (e.Indent 'refalrts::reset_allocator();');
+
+  (e.Indent) (#CmdSetRes #ARG-BEGIN) =
+    (e.Indent)
+    (e.Indent 'refalrts::Iter res = arg_begin;');
 
   (e.Indent) (#CmdSetRes s.Offset) =
     (e.Indent)
@@ -895,17 +893,17 @@ GenCommand-RASL {
   // ---------------------------------------------------------------------------
   // Команды построения результата (режим интерпретации)
 
-  (e.Indent) (#CmdEmptyResult) =
+  (e.Indent) (#CmdResetAllocator) =
     (e.Indent)
-    (e.Indent '{refalrts::icEmptyResult, 0, 0, 0},');
+    (e.Indent '{refalrts::icResetAllocator, 0, 0, 0},');
 
   (e.Indent) (#CmdSetRes s.Offset) =
     (e.Indent)
     <Fetch
       s.Offset
       {
-        #RIGHT-EDGE =
-          (e.Indent '{refalrts::icSetResRightEdge, 0, 0, 0},');
+        #ARG-BEGIN = (e.Indent '{refalrts::icSetResArgBegin, 0, 0, 0},');
+        #RIGHT-EDGE = (e.Indent '{refalrts::icSetResRightEdge, 0, 0, 0},');
 
         s.Offset^ =
           (e.Indent '{refalrts::icSetRes, 0, 0, ' <StrFromInt s.Offset> '},');
