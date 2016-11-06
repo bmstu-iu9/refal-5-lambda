@@ -1,6 +1,7 @@
 #include <exception>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include <assert.h>
@@ -2414,6 +2415,178 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
 }
 
 //==============================================================================
+// Динамические идентификаторы
+//==============================================================================
+
+namespace refalrts {
+
+namespace dynamic {
+
+typedef unsigned int UInt32;
+char unsigned_int_is_uint32[sizeof(UInt32) == 4 ? +1 : -1];
+
+struct IdentHashNode {
+  UInt32 hash;
+  RefalIdentDescr ident;
+  const char *nonstatic_origin;
+  IdentHashNode *next;
+
+  IdentHashNode(UInt32 hash, IdentHashNode *next)
+    : hash(hash)
+    , ident()
+    , nonstatic_origin(0)
+    , next(next)
+  {
+    /* пусто */
+  }
+};
+
+IdentHashNode **g_idents_table = 0;
+unsigned int g_idents_table_power = 5;
+size_t g_idents_count = 0;
+
+const size_t cResizeThreshold = 4;
+
+void free_idents_table();
+UInt32 one_at_a_time(const char *bytes, size_t length);
+void idents_table_rehash();
+IdentHashNode *alloc_ident_node(const char *name);
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
+  const char * name
+) {
+  dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
+
+  if (node->ident.m_name == 0) {
+    node->ident.m_name = name;
+  } else if (node->nonstatic_origin != 0) {
+    node->ident.m_name = name;
+    delete[] node->nonstatic_origin;
+    node->nonstatic_origin = 0;
+  }
+
+  return &node->ident;
+}
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
+  const char *name
+) {
+  dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
+
+  if (node->ident.m_name == 0) {
+    size_t length = name ? strlen(name) : 0;
+    char *new_name = new char[length + 1];
+    memcpy(new_name, name, length + 1);
+
+    node->ident.m_name = new_name;
+    node->nonstatic_origin = new_name;
+  }
+
+  return &node->ident;
+}
+
+void refalrts::dynamic::free_idents_table() {
+  size_t table_size = g_idents_table ? 1UL << g_idents_table_power : 0;
+  for (size_t i = 0; i < table_size; ++i) {
+    IdentHashNode *node = g_idents_table[i];
+    while (node != 0) {
+      if (node->nonstatic_origin != 0) {
+        delete[] node->nonstatic_origin;
+      }
+      IdentHashNode *next = node->next;
+      delete node;
+      node = next;
+    }
+  }
+}
+
+refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
+  const char *bytes, size_t length
+) {
+  // Хеш-функция Дженкинса one_at_a_time.
+  // Исходный код: http://www.burtleburtle.net/bob/hash/doobs.html
+  UInt32 hash = 0;
+  for (size_t i = 0; i < length; ++i)
+  {
+    unsigned char byte = static_cast<unsigned char>(bytes[i]);
+    hash += byte;
+    hash += (hash << 10);
+    hash ^= (hash >> 6);
+  }
+  hash += (hash << 3);
+  hash ^= (hash >> 11);
+  hash += (hash << 15);
+  return hash;
+}
+
+void refalrts::dynamic::idents_table_rehash() {
+  size_t table_size = 1UL << g_idents_table_power;
+
+  if (g_idents_table != 0 && g_idents_count / table_size < cResizeThreshold) {
+    return;
+  }
+
+  unsigned int new_table_power = g_idents_table_power + 1;
+  size_t new_table_size = 1UL << new_table_power;
+  UInt32 hash_mask = (1U << new_table_power) - 1;
+  typedef IdentHashNode *IdentHashNodePtr;
+  IdentHashNode **new_table = new IdentHashNodePtr[new_table_size];
+
+  for (size_t i = 0; i < new_table_size; ++i) {
+    new_table[i] = 0;
+  }
+
+  if (g_idents_table != 0) {
+    for (size_t i = 0; i < table_size; ++i) {
+      IdentHashNode *node = g_idents_table[i];
+      while (node != 0) {
+        IdentHashNode *next_in_old_table = node->next;
+        IdentHashNode **pnext_in_new_table = &new_table[node->hash & hash_mask];
+        node->next = *pnext_in_new_table;
+        *pnext_in_new_table = node;
+        node = next_in_old_table;
+      }
+    }
+  }
+
+  g_idents_table_power = new_table_power;
+  g_idents_table = new_table;
+}
+
+refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
+  const char *name
+) {
+  idents_table_rehash();
+
+  size_t length = name ? strlen(name) : 0;
+
+  UInt32 hash = one_at_a_time(name, length);
+  UInt32 hash_mask = (1U << g_idents_table_power) - 1;
+
+  IdentHashNode **pstart_node = &g_idents_table[hash & hash_mask];
+  IdentHashNode *return_node = *pstart_node;
+  while (
+    return_node != 0
+    && return_node->hash != hash
+    && strcmp(return_node->ident.name(), name) != 0
+  ) {
+    return_node = return_node->next;
+  }
+
+  if (return_node == 0) {
+    return_node = new IdentHashNode(hash, *pstart_node);
+    *pstart_node = return_node;
+    ++g_idents_count;
+  }
+
+  return return_node;
+}
+
+//==============================================================================
 // Виртуальная машина
 //==============================================================================
 
@@ -2635,7 +2808,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataIdentifier:
-            fprintf(output, "#%s ", (begin->ident_info)());
+            fprintf(output, "#%s ", begin->ident_info->name());
             refalrts::move_left(begin, end);
             continue;
 
@@ -3786,6 +3959,7 @@ int main(int argc, char **argv) {
   refalrts::profiler::end_profiler();
   refalrts::vm::free_view_field();
   refalrts::allocator::free_memory();
+  refalrts::dynamic::free_idents_table();
 
   fflush(stdout);
 

@@ -150,17 +150,6 @@ GenCommand-Common {
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
-  (e.Indent) (#CmdDefineIdent e.Name) =
-    (e.Indent)
-    ('// identifier #' <DisplayName e.Name>)
-    ('template <typename SREFAL_PARAM_INT>')
-    ('struct ident_' <CName e.Name> ' {')
-    ('  static const char *name() {')
-    ('    return "' <DisplayCName e.Name> '";')
-    ('  }')
-    ('};')
-    ();
-
   (e.Indent) (#CmdSeparator) =
     (e.Indent)
     ();
@@ -170,6 +159,13 @@ GenCommand-Native {
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
   // Создание глобальных объектов, общие команды
+
+  (e.Indent) (#CmdDefineIdent e.Name) =
+    (e.Indent)
+    (
+      'const refalrts::RefalIdentifier ident_' <CName e.Name> ' = '
+      'refalrts::ident_from_static("' <DisplayCName e.Name> '");'
+    );
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
@@ -599,11 +595,12 @@ GenCommand-RASL {
     (e.Indent 'static const refalrts::RefalIdentifier idents[] = {')
     <Map
       {
-        (e.Name) = (e.Indent '  & ident_' <CName e.Name> '<int>::name,');
+        (e.Name) =
+          (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.Name> '"),');
       }
       e.LabelNames
     >
-    (e.Indent '  & ident_' <CName e.LastName> '<int>::name')
+    (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.LastName> '"),')
     (e.Indent '};')
     ();
 
@@ -1058,7 +1055,7 @@ PrintMatchIdent {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('ident') ' & ident_' <CName e.Name> '<int>::name'
+      ('ident') ' ident_' <CName e.Name>
     >;
 }
 
@@ -1066,7 +1063,7 @@ PrintMatchIdentSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('ident') ' & ident_' <CName e.Name> '<int>::name'
+      ('ident') ' ident_' <CName e.Name>
     >;
 }
 
@@ -1274,7 +1271,7 @@ AllocatorFuncArgument {
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 
-  #ElIdent e.Name = ', & ident_' <CName e.Name> '<int>::name';
+  #ElIdent e.Name = ', ident_' <CName e.Name>;
 
   // Остальное -- скобки
   s.Other = ;

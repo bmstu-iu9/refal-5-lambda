@@ -17,8 +17,7 @@
 // Основные перечисления
 
 %%
-#define USE_IDENT(ident_name) \
-  (& ident_ ## ident_name<int>::name)
+#define USE_IDENT(ident_name) (ident_ ## ident_name)
 %%
 
 $LABEL Success;
@@ -140,7 +139,7 @@ refalrts::FnResult write_to_stream(
         break;
 
       case refalrts::cDataIdentifier:
-        printf_res = fprintf(out, "%s ", (p->ident_info)());
+        printf_res = fprintf(out, "%s ", p->ident_info->name());
         break;
 
       case refalrts::cDataOpenADT:
@@ -862,7 +861,7 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
         case refalrts::cDataIdentifier:
           {
             int cmpres =
-              strcmp((left->ident_info)(), (right->ident_info)());
+              strcmp(left->ident_info->name(), right->ident_info->name());
             if (cmpres < 0) {
               order = '<';
             } else if (cmpres > 0) {

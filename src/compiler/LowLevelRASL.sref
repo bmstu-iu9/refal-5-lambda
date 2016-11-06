@@ -144,7 +144,7 @@ $ENTRY LowLevelRASL {
             )
             (#CmdDefineIdent e.Name) =
               (
-                (e.RASL-Declarations (#CmdDefineIdent e.Name))
+                (e.RASL-Declarations)
                 (e.RASL-Definitions)
                 (e.Native-Declarations (#CmdDefineIdent e.Name))
                 (e.Native-Definitions)

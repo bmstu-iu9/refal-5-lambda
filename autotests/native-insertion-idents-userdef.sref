@@ -13,9 +13,9 @@ static refalrts::FnResult func_Native(refalrts::Iter left_bracket, refalrts::Ite
   Iter func_name = left_bracket;
   move_left(func_name, right_bracket);
 
-  reinit_ident(left_bracket, &ident_Hello<int>::name);
-  reinit_ident(func_name, &ident_Hello<int>::name);
-  reinit_ident(right_bracket, &ident_Hello<int>::name);
+  reinit_ident(left_bracket, ident_Hello);
+  reinit_ident(func_name, ident_Hello);
+  reinit_ident(right_bracket, ident_Hello);
 
   return cSuccess;
 }
