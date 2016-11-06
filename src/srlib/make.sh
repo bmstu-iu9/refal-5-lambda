@@ -14,3 +14,4 @@ cp LICENSE *.h *.cpp ../../srlib
 prepare_srclib Library
 prepare_srclib LibraryEx
 prepare_srclib GetOpt
+prepare_srclib Hash
