@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce, Reduce;
+$EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce, Reduce, DelAccumulator;
 
 //FROM Library
 $EXTERN Add, StrFromInt;
@@ -179,26 +179,57 @@ $ENTRY LowLevelRASL {
             (e.RASL-Declarations)
             (e.RASL-Definitions)
             (e.Native-Declarations)
-            (/* нет нативных определений */)
-          ) =
-            e.RASL-Declarations
-            (#CmdSeparator)
-            e.RASL-Definitions
-            (/* нет нативного RASL’а */);
-
-          (
-            (e.RASL-Declarations)
-            (e.RASL-Definitions)
-            (e.Native-Declarations)
             (e.Native-Definitions)
           ) =
-            e.RASL-Declarations
-            (#CmdSeparator)
-            e.RASL-Definitions
+            <Fetch
+              <OutlineConstants
+                (0 /* функции */)
+                (0 /* идентификаторы */)
+                (0 /* большие числа */)
+                (0 /* строки */)
+                e.RASL-Definitions
+              >
+              {
+                (#CmdFuncArray e.Functions) e.RASL-Commands =
+                  e.RASL-Declarations
+                  (#CmdSeparator)
+                  (#CmdFuncArray
+                    <DelAccumulator
+                      <MapReduce
+                        {
+                          (
+                            e.Decls-B
+                            (s.Type e.FuncName #Hash s.Hash1 s.Hash2)
+                            e.Decls-E
+                          )
+                          (e.FuncName) =
+                            (e.Decls-B e.Decls-E)
+                            (e.FuncName #Hash s.Hash1 s.Hash2);
+
+                          (e.Decls) (#CreateClosure) =
+                            (e.Decls) (#CreateClosure);
+                        }
+                        (e.RASL-Declarations)
+                        e.Functions
+                      >
+                    >
+                  )
+                  e.RASL-Commands;
+              }
+            >
             (
-              e.Native-Declarations
-              (#CmdSeparator)
-              e.Native-Definitions
+              <Fetch
+                e.Native-Definitions
+                {
+                  /* нет нативных определений */ =
+                    /* нет нативного RASL’а */;
+
+                  e.Native-Definitions^ =
+                    e.Native-Declarations
+                    (#CmdSeparator)
+                    e.Native-Definitions;
+                }
+              >
             );
         }
       >
@@ -645,25 +676,15 @@ Function-Interpret {
         PrepareOpenEStack
         {
           e.FunctionBody^ =
-            (#CmdInitRAA)
+            (#CmdInitRAA e.Name)
             (#CmdProfileFunction)
             (#CmdLoadConstants)
             e.FunctionBody
             (#CmdFinRAA);
         }
-        (OutlineConstants
-          (0 /* функции */)
-          (0 /* идентификаторы */)
-          (0 /* большие числа */)
-          (0 /* строки */)
-        )
         {
           e.FunctionBody^ =
-            (#CmdNamespaceStart)
-            (#CmdNamespaceStart e.Name)
             e.FunctionBody
-            (#CmdNamespaceEnd e.Name)
-            (#CmdNamespaceEnd)
             (#CmdInterpretFuncDescr e.Name);
         }
       >

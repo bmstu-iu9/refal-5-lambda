@@ -150,12 +150,6 @@ GenCommand-Common {
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
-  (e.Indent) (#CmdExtern e.Name) =
-    (e.Indent)
-    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
-    <FuncAlias e.Name>
-    ();
-
   (e.Indent) (#CmdDefineIdent e.Name) =
     (e.Indent)
     ('// identifier #' <DisplayName e.Name>)
@@ -174,7 +168,14 @@ GenCommand-Common {
 
 GenCommand-Native {
   // ---------------------------------------------------------------------------
-  // Создания глобальных объектов, общие команды
+  // Команды режима прямой кодогенерации
+  // Создание глобальных объектов, общие команды
+
+  (e.Indent) (#CmdExtern e.Name) =
+    (e.Indent)
+    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
+    <FuncAlias e.Name>
+    ();
 
   (e.Indent) (#CmdDeclaration e.Name) =
     (e.Indent)
@@ -206,9 +207,6 @@ GenCommand-Native {
     (#NativeInsertBegin s.LineNumber)
     e.Code
     (#NativeInsertEnd);
-
-  // ---------------------------------------------------------------------------
-  // Команды режима прямой кодогенерации
 
   (e.Indent) (#CmdProfileFunction) =
     (e.Indent)
@@ -535,7 +533,12 @@ GenCommand-Native {
 
 GenCommand-RASL {
   // ---------------------------------------------------------------------------
-  // Создания глобальных объектов, общие команды
+  // Команды режима интерпретации
+  // Создание глобальных объектов, общие команды
+
+  (e.Indent) (#CmdExtern e.Name) =
+    (e.Indent)
+    ('extern refalrts::RefalFunction& ' <CName e.Name> ';');
 
   (e.Indent) (#CmdEnumDescr e.Name) =
     (e.Indent)
@@ -544,19 +547,17 @@ GenCommand-RASL {
       '"' <DisplayCName e.Name> '"'
       ');'
     )
-    <FuncReference e.Name>
-    <FuncAlias e.Name>
-    ();
+    <FuncReference e.Name>;
 
   (e.Indent) (#CmdInterpretFuncDescr e.Name) =
     (e.Indent)
     ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
     ('  "' <DisplayCName e.Name> '",')
-    ('  scope_' <BaseCName e.Name> '::raa,')
-    ('  scope_' <BaseCName e.Name> '::functions,')
-    ('  scope_' <BaseCName e.Name> '::idents,')
-    ('  scope_' <BaseCName e.Name> '::numbers,')
-    ('  scope_' <BaseCName e.Name> '::strings')
+    ('  raa_' <BaseCName e.Name> ',')
+    ('  functions,')
+    ('  idents,')
+    ('  numbers,')
+    ('  strings')
     (');')
     <FuncReference e.Name>
     ();
@@ -568,50 +569,30 @@ GenCommand-RASL {
       '"' <DisplayCName e.Name> '"'
       ');'
     )
-    <FuncReference e.Name>
-    <FuncAlias e.Name>
-    ();
-
-  (e.Indent) (#CmdNamespaceStart /* пусто */) =
-    (e.Indent '  ')
-    (e.Indent 'namespace /* unnamed */ {');
-
-  (e.Indent) (#CmdNamespaceStart e.Name) =
-    (e.Indent '  ')
-    (e.Indent 'namespace scope_' <BaseCName e.Name> ' {');
-
-  (e.Indent '  ') (#CmdNamespaceEnd /* пусто */) =
-    (e.Indent)
-    (e.Indent '} // unnamed namespace')
-    ();
-
-  (e.Indent '  ') (#CmdNamespaceEnd e.Name) =
-    (e.Indent)
-    (e.Indent '} // namespace scope_' <BaseCName e.Name>)
-    ();
-
-  // ---------------------------------------------------------------------------
-  // Команды режима интерпретации
+    <FuncReference e.Name>;
 
   (e.Indent) (#CmdFuncArray) =
     (e.Indent)
-    (e.Indent 'using refalrts::functions;');
+    (e.Indent 'using refalrts::functions;')
+    ();
 
   (e.Indent) (#CmdFuncArray e.FuncNames (e.LastName)) =
     (e.Indent)
     (e.Indent 'static refalrts::RefalFunction *functions[] = {')
     <Map
       {
-        (e.Name) = (e.Indent '  & ' <CNameAlias e.Name> ',');
+        (e.Name) = (e.Indent '  & ' <CName e.Name> ',');
       }
       e.FuncNames
     >
-    (e.Indent '  & ' <CNameAlias e.LastName>)
-    (e.Indent '};');
+    (e.Indent '  & ' <CName e.LastName>)
+    (e.Indent '};')
+    ();
 
   (e.Indent) (#CmdLabelArray) =
     (e.Indent)
-    (e.Indent 'using refalrts::idents;');
+    (e.Indent 'using refalrts::idents;')
+    ();
 
   (e.Indent) (#CmdLabelArray e.LabelNames (e.LastName)) =
     (e.Indent)
@@ -623,11 +604,13 @@ GenCommand-RASL {
       e.LabelNames
     >
     (e.Indent '  & ident_' <CName e.LastName> '<int>::name')
-    (e.Indent '};');
+    (e.Indent '};')
+    ();
 
   (e.Indent) (#CmdNumberArray) =
     (e.Indent)
-    (e.Indent 'using refalrts::numbers;');
+    (e.Indent 'using refalrts::numbers;')
+    ();
 
   (e.Indent) (#CmdNumberArray e.Numbers s.LastNumber) =
     (e.Indent)
@@ -639,11 +622,13 @@ GenCommand-RASL {
       e.Numbers
     >
     (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
-    (e.Indent '};');
+    (e.Indent '};')
+    ();
 
   (e.Indent) (#CmdStringArray) =
     (e.Indent)
-    (e.Indent 'using refalrts::strings;');
+    (e.Indent 'using refalrts::strings;')
+    ();
 
   (e.Indent) (#CmdStringArray e.Strings (e.LastString)) =
     (e.Indent)
@@ -655,11 +640,14 @@ GenCommand-RASL {
       e.Strings
     >
     (e.Indent '  {' <PrintString e.LastString> '}')
-    (e.Indent '};');
+    (e.Indent '};')
+    ();
 
-  (e.Indent) (#CmdInitRAA) =
+  (e.Indent) (#CmdInitRAA e.Name) =
     (e.Indent '  ')
-    (e.Indent 'static const refalrts::RASLCommand raa[] = {');
+    (e.Indent
+      'static const refalrts::RASLCommand raa_' <BaseCName e.Name> '[] = {'
+    );
 
   (e.Indent '  ') (#CmdFinRAA) =
     (e.Indent)
