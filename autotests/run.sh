@@ -217,7 +217,7 @@ if [ -z "$1" ]; then
     run_test $s
   done
   run_all_dir_tests
-elif [ "$1"="--dir" ]; then
+elif [ "$1" = "--dir" ]; then
   run_all_dir_tests
 else
   for s in $*; do
