@@ -2329,6 +2329,12 @@ extern unsigned g_step_counter;
 
 } // namespace vm
 
+namespace dynamic {
+
+extern size_t g_idents_count;
+
+} // namespace dynamic
+
 } // namespace refalrts
 
 void refalrts::profiler::read_counters(unsigned long counters[]) {
@@ -2412,6 +2418,9 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_RuntimeTime] = basic_runtime_time;
   counters[cPerformanceCounter_NativeTime] = basic_native_time;
   counters[cPerformanceCounter_ContextCopyTime] = basic_context_copy_time;
+
+  counters[cPerformanceCounter_IdentsAllocated] =
+    static_cast<unsigned long>(::refalrts::dynamic::g_idents_count);
 }
 
 //==============================================================================
@@ -2460,6 +2469,17 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
   const char * name
 ) {
   dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
+#ifdef IDENTS_LIMIT
+  if (! node) {
+    fprintf(
+      stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+      static_cast<unsigned long>(IDENTS_LIMIT)
+    );
+    exit(154);
+  }
+#else
+  assert(node != 0);
+#endif // ifdef IDENTS_LIMIT
 
   if (node->ident.m_name == 0) {
     node->ident.m_name = name;
@@ -2477,6 +2497,14 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
 ) {
   dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
 
+#ifdef IDENTS_LIMIT
+  if (! node) {
+    return 0;
+  }
+#else
+  assert(node != 0);
+#endif // ifdef IDENTS_LIMIT
+
   if (node->ident.m_name == 0) {
     size_t length = name ? strlen(name) : 0;
     char *new_name = new char[length + 1];
@@ -2490,6 +2518,13 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
 }
 
 void refalrts::dynamic::free_idents_table() {
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(
+    stderr, "Identifiers allocated: %lu\n",
+    static_cast<unsigned long>(g_idents_count)
+  );
+#endif // ifndef DONT_PRINT_STATISTICS
+
   size_t table_size = g_idents_table ? 1UL << g_idents_table_power : 0;
   for (size_t i = 0; i < table_size; ++i) {
     IdentHashNode *node = g_idents_table[i];
@@ -2560,6 +2595,11 @@ void refalrts::dynamic::idents_table_rehash() {
 refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
   const char *name
 ) {
+#ifdef IDENTS_LIMIT
+  if (g_idents_count >= IDENTS_LIMIT) {
+    return 0;
+  }
+#endif // ifdef IDENTS_LIMIT
   idents_table_rehash();
 
   size_t length = name ? strlen(name) : 0;
@@ -2714,6 +2754,13 @@ refalrts::FnResult refalrts::vm::run() {
 
       case refalrts::cStepLimit:
         fprintf(stderr, "\nSTEP LIMIT REACHED (%u)\n\n", g_step_counter);
+        break;
+
+      case refalrts::cIdentTableLimit:
+        fprintf(
+          stderr, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
+          static_cast<unsigned long>(refalrts::dynamic::g_idents_count)
+        );
         break;
 
       default:
@@ -3979,8 +4026,11 @@ int main(int argc, char **argv) {
     case refalrts::cStepLimit:
       return 103;
 
+    case refalrts::cIdentTableLimit:
+      return 104;
+
     default:
       fprintf(stderr, "INTERNAL ERROR: check switch in main (res = %d)\n", res);
-      return 105;
+      return 155;
   }
 }

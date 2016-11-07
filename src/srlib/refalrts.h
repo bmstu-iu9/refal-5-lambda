@@ -8,7 +8,8 @@ enum FnResult {
   cNoMemory = 1,
   cSuccess = 2,
   cExit = 3,
-  cStepLimit = 4
+  cStepLimit = 4,
+  cIdentTableLimit = 5
 };
 
 struct Node;
@@ -478,6 +479,7 @@ enum PerformanceCounters {
   cPerformanceCounter_LinearRefalTime,
   cPerformanceCounter_LinearPatternTime,
   cPerformanceCounter_LinearResultTime,
+  cPerformanceCounter_IdentsAllocated,
   cPerformanceCounter_COUNTERS_NUMBER
 };
 

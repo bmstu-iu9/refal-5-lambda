@@ -48,6 +48,7 @@ setlocal
     -I../src/srlib ^
     -DSTEP_LIMIT=1000 ^
     -DMEMORY_LIMIT=1000 ^
+    -DIDENTS_LIMIT=25 ^
     -DDUMP_FILE=\"__dump.txt\" ^
     -DDONT_PRINT_STATISTICS
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1

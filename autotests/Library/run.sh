@@ -6,6 +6,7 @@ run_all_tests() {
     -I../../src/srlib \
     -DSTEP_LIMIT=1000 \
     -DMEMORY_LIMIT=1000 \
+    -DIDENTS_LIMIT=25 \
     -DDUMP_FILE=\"__dump.txt\"\
     -DDONT_PRINT_STATISTICS \
     -g"
@@ -30,7 +31,8 @@ run_all_tests() {
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
     Library-SymbCompare-Fail \
-    Library-SymbType-Fail
+    Library-SymbType-Fail \
+    Library-Implodes-Fail
 
   if [ -e Library-WriteLine ]; then
     echo Pass Library-WriteLine test...

@@ -1000,6 +1000,10 @@ $ENTRY Implode {
 
   refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
 
+  if (! ident) {
+    return refalrts::cIdentTableLimit;
+  }
+
   refalrts::reinit_ident(arg_begin, ident);
   refalrts::splice_to_freelist(pfunc_name, arg_end);
 
