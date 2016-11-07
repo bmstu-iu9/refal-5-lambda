@@ -32,6 +32,7 @@ setlocal
     Library-IntFromStr-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^
     Library-SymbType ^
+    Library-Implode-Explode ^
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^

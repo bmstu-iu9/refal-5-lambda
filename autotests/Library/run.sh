@@ -21,7 +21,8 @@ run_all_tests() {
     Library-ExistFile \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
-    Library-SymbType
+    Library-SymbType \
+    Library-Implode-Explode
 
   simple_tests fail \
     Library-Math-Fail \

@@ -983,3 +983,54 @@ $ENTRY SymbType {
   return refalrts::cSuccess;
 %%
 }
+
+$ENTRY Implode {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  std::vector<char> ident_str;
+  refalrts::FnResult res = string_from_seq(ident_str, content_b, content_e);
+
+  if (res != refalrts::cSuccess) {
+    return res;
+  }
+
+  refalrts::RefalIdentifier ident = refalrts::ident_implode(&ident_str[0]);
+
+  refalrts::reinit_ident(arg_begin, ident);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY Explode {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pident = 0;
+  if (
+    ! refalrts::svar_right(pident, content_b, content_e)
+    || refalrts::cDataIdentifier != pident->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+  if (
+    ! refalrts::alloc_string(content_b, content_e, pident->ident_info->name())
+  ) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
