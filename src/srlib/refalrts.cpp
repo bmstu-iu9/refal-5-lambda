@@ -2537,6 +2537,8 @@ void refalrts::dynamic::free_idents_table() {
       node = next;
     }
   }
+
+  delete[] g_idents_table;
 }
 
 refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
@@ -2611,8 +2613,10 @@ refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
   IdentHashNode *return_node = *pstart_node;
   while (
     return_node != 0
-    && return_node->hash != hash
-    && strcmp(return_node->ident.name(), name) != 0
+    && (
+      return_node->hash != hash
+      || strcmp(return_node->ident.name(), name) != 0
+    )
   ) {
     return_node = return_node->next;
   }
