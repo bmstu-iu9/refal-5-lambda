@@ -2331,7 +2331,7 @@ extern unsigned g_step_counter;
 
 namespace dynamic {
 
-extern size_t g_idents_count;
+size_t idents_count();
 
 } // namespace dynamic
 
@@ -2420,12 +2420,16 @@ void refalrts::profiler::read_counters(unsigned long counters[]) {
   counters[cPerformanceCounter_ContextCopyTime] = basic_context_copy_time;
 
   counters[cPerformanceCounter_IdentsAllocated] =
-    static_cast<unsigned long>(::refalrts::dynamic::g_idents_count);
+    static_cast<unsigned long>(::refalrts::dynamic::idents_count());
 }
 
 //==============================================================================
 // Динамические идентификаторы
 //==============================================================================
+
+//------------------------------------------------------------------------------
+
+// Хеш-таблица
 
 namespace refalrts {
 
@@ -2434,111 +2438,82 @@ namespace dynamic {
 typedef unsigned int UInt32;
 char unsigned_int_is_uint32[sizeof(UInt32) == 4 ? +1 : -1];
 
-struct IdentHashNode {
-  UInt32 hash;
-  RefalIdentDescr ident;
-  const char *nonstatic_origin;
-  IdentHashNode *next;
-
-  IdentHashNode(UInt32 hash, IdentHashNode *next)
-    : hash(hash)
-    , ident()
-    , nonstatic_origin(0)
-    , next(next)
-  {
-    /* пусто */
-  }
-};
-
-IdentHashNode **g_idents_table = 0;
-unsigned int g_idents_table_power = 5;
-size_t g_idents_count = 0;
-
-const size_t cResizeThreshold = 4;
-
-void free_idents_table();
 UInt32 one_at_a_time(const char *bytes, size_t length);
-void idents_table_rehash();
-IdentHashNode *alloc_ident_node(const char *name);
+
+template <typename Value>
+class DynamicHash {
+  // Копирование запрещено
+  DynamicHash(const DynamicHash&);
+  DynamicHash& operator=(const DynamicHash&);
+public:
+  DynamicHash();
+  ~DynamicHash();
+
+  size_t count() const {
+    return m_count;
+  }
+
+  Value *alloc(const char *name);
+
+private:
+  struct Node {
+    UInt32 hash;
+    Value value;
+    typename DynamicHash<Value>::Node *next;
+
+    Node(UInt32 hash, Node *next)
+      : hash(hash)
+      , value()
+      , next(next)
+    {
+      /* пусто */
+    }
+  };
+
+  typedef typename DynamicHash<Value>::Node *NodePtr;
+  enum { cResizeThreshold = 4 };
+
+  void rehash();
+
+  Node **m_table;
+  unsigned int m_table_power;
+  size_t m_count;
+};
 
 } // namespace dynamic
 
 } // namespace refalrts
 
-refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
-  const char * name
-) {
-  dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
-#ifdef IDENTS_LIMIT
-  if (! node) {
-    fprintf(
-      stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
-      static_cast<unsigned long>(IDENTS_LIMIT)
-    );
-    exit(154);
-  }
-#else
-  assert(node != 0);
-#endif // ifdef IDENTS_LIMIT
+template <typename Value>
+refalrts::dynamic::DynamicHash<Value>::DynamicHash()
+  : m_table()
+  , m_table_power(5)
+  , m_count(0)
+{
+  size_t table_size = size_t(1) << m_table_power;
+  m_table = new DynamicHash<Value>::NodePtr[table_size];
 
-  if (node->ident.m_name == 0) {
-    node->ident.m_name = name;
-  } else if (node->nonstatic_origin != 0) {
-    node->ident.m_name = name;
-    delete[] node->nonstatic_origin;
-    node->nonstatic_origin = 0;
-  }
-
-  return &node->ident;
-}
-
-refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
-  const char *name
-) {
-  dynamic::IdentHashNode *node = dynamic::alloc_ident_node(name);
-
-#ifdef IDENTS_LIMIT
-  if (! node) {
-    return 0;
-  }
-#else
-  assert(node != 0);
-#endif // ifdef IDENTS_LIMIT
-
-  if (node->ident.m_name == 0) {
-    size_t length = name ? strlen(name) : 0;
-    char *new_name = new char[length + 1];
-    memcpy(new_name, name, length + 1);
-
-    node->ident.m_name = new_name;
-    node->nonstatic_origin = new_name;
-  }
-
-  return &node->ident;
-}
-
-void refalrts::dynamic::free_idents_table() {
-#ifndef DONT_PRINT_STATISTICS
-  fprintf(
-    stderr, "Identifiers allocated: %lu\n",
-    static_cast<unsigned long>(g_idents_count)
-  );
-#endif // ifndef DONT_PRINT_STATISTICS
-
-  size_t table_size = g_idents_table ? 1UL << g_idents_table_power : 0;
   for (size_t i = 0; i < table_size; ++i) {
-    IdentHashNode *node = g_idents_table[i];
+    m_table[i] = 0;
+  }
+}
+
+template <typename Value>
+refalrts::dynamic::DynamicHash<Value>::~DynamicHash()
+{
+  size_t table_size = size_t(1) << m_table_power;
+  for (size_t i = 0; i < table_size; ++i) {
+    Node *node = m_table[i];
     while (node != 0) {
-      if (node->nonstatic_origin != 0) {
-        delete[] node->nonstatic_origin;
-      }
-      IdentHashNode *next = node->next;
+      node->value.cleanup();
+      Node *next = node->next;
       delete node;
       node = next;
     }
   }
 
-  delete[] g_idents_table;
+  delete[] m_table;
+  m_table = 0;
 }
 
 refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
@@ -2560,74 +2535,198 @@ refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
   return hash;
 }
 
-void refalrts::dynamic::idents_table_rehash() {
-  size_t table_size = 1UL << g_idents_table_power;
+template <typename Value>
+void refalrts::dynamic::DynamicHash<Value>::rehash() {
+  // Хаки для Watcom
+  using refalrts::dynamic::UInt32;
 
-  if (g_idents_table != 0 && g_idents_count / table_size < cResizeThreshold) {
+  size_t table_size = size_t(1) << m_table_power;
+
+  if (m_count / table_size < cResizeThreshold) {
     return;
   }
 
-  unsigned int new_table_power = g_idents_table_power + 1;
-  size_t new_table_size = 1UL << new_table_power;
-  UInt32 hash_mask = (1U << new_table_power) - 1;
-  typedef IdentHashNode *IdentHashNodePtr;
-  IdentHashNode **new_table = new IdentHashNodePtr[new_table_size];
+  unsigned int new_table_power = m_table_power + 1;
+  size_t new_table_size = size_t(1) << new_table_power;
+  UInt32 hash_mask = (UInt32(1) << new_table_power) - 1;
+  Node **new_table = new DynamicHash<Value>::NodePtr[new_table_size];
 
   for (size_t i = 0; i < new_table_size; ++i) {
     new_table[i] = 0;
   }
 
-  if (g_idents_table != 0) {
-    for (size_t i = 0; i < table_size; ++i) {
-      IdentHashNode *node = g_idents_table[i];
-      while (node != 0) {
-        IdentHashNode *next_in_old_table = node->next;
-        IdentHashNode **pnext_in_new_table = &new_table[node->hash & hash_mask];
-        node->next = *pnext_in_new_table;
-        *pnext_in_new_table = node;
-        node = next_in_old_table;
-      }
+  for (size_t i = 0; i < table_size; ++i) {
+    Node *node = m_table[i];
+    while (node != 0) {
+      Node *next_in_old_table = node->next;
+      Node **pnext_in_new_table = &new_table[node->hash & hash_mask];
+      node->next = *pnext_in_new_table;
+      *pnext_in_new_table = node;
+      node = next_in_old_table;
     }
   }
 
-  g_idents_table_power = new_table_power;
-  g_idents_table = new_table;
+  m_table_power = new_table_power;
+  m_table = new_table;
 }
 
-refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
-  const char *name
-) {
-#ifdef IDENTS_LIMIT
-  if (g_idents_count >= IDENTS_LIMIT) {
-    return 0;
-  }
-#endif // ifdef IDENTS_LIMIT
-  idents_table_rehash();
+template <typename Value>
+Value * refalrts::dynamic::DynamicHash<Value>::alloc(const char *name) {
+  // Хаки для Watcom
+  using refalrts::dynamic::UInt32;
+  using refalrts::dynamic::one_at_a_time;
+
+  rehash();
 
   size_t length = name ? strlen(name) : 0;
 
   UInt32 hash = one_at_a_time(name, length);
-  UInt32 hash_mask = (1U << g_idents_table_power) - 1;
+  UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
 
-  IdentHashNode **pstart_node = &g_idents_table[hash & hash_mask];
-  IdentHashNode *return_node = *pstart_node;
+  Node **pstart_node = &m_table[hash & hash_mask];
+  Node *return_node = *pstart_node;
   while (
     return_node != 0
     && (
       return_node->hash != hash
-      || strcmp(return_node->ident.name(), name) != 0
+      || strcmp(return_node->value.str(), name) != 0
     )
   ) {
     return_node = return_node->next;
   }
 
   if (return_node == 0) {
-    return_node = new IdentHashNode(hash, *pstart_node);
+    return_node = new Node(hash, *pstart_node);
     *pstart_node = return_node;
-    ++g_idents_count;
+    ++m_count;
   }
 
-  return return_node;
+  return &return_node->value;
+}
+
+//------------------------------------------------------------------------------
+
+// Идентификаторы
+
+namespace refalrts {
+
+namespace dynamic {
+
+struct IdentHashNode {
+  RefalIdentDescr ident;
+  const char *nonstatic_origin;
+
+  IdentHashNode()
+    : ident()
+    , nonstatic_origin(0)
+  {
+    /* пусто */
+  }
+
+  void cleanup() {
+    if (nonstatic_origin) {
+      delete [] nonstatic_origin;
+    }
+  };
+
+  const char *str() const {
+    return ident.name();
+  }
+};
+
+DynamicHash<IdentHashNode> *g_idents_table = 0;
+
+DynamicHash<IdentHashNode>& idents_table() {
+  if (g_idents_table == 0) {
+    g_idents_table = new DynamicHash<IdentHashNode>;
+  }
+
+  return *g_idents_table;
+}
+
+size_t idents_count() {
+  return idents_table().count();
+}
+
+void free_idents_table();
+IdentHashNode *alloc_ident_node(const char *name);
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
+  const char * name
+) {
+  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+#ifdef IDENTS_LIMIT
+  if (! value) {
+    fprintf(
+      stderr, "INTERNAL ERROR: Identifiers table overflows (max %ld)\n",
+      static_cast<unsigned long>(IDENTS_LIMIT)
+    );
+    exit(154);
+  }
+#else
+  assert(value != 0);
+#endif // ifdef IDENTS_LIMIT
+
+  if (value->ident.m_name == 0) {
+    value->ident.m_name = name;
+  } else if (value->nonstatic_origin != 0) {
+    value->ident.m_name = name;
+    delete[] value->nonstatic_origin;
+    value->nonstatic_origin = 0;
+  }
+
+  return &value->ident;
+}
+
+refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
+  const char *name
+) {
+  dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
+
+#ifdef IDENTS_LIMIT
+  if (! value) {
+    return 0;
+  }
+#else
+  assert(value != 0);
+#endif // ifdef IDENTS_LIMIT
+
+  if (value->ident.m_name == 0) {
+    size_t length = name ? strlen(name) : 0;
+    char *new_name = new char[length + 1];
+    memcpy(new_name, name, length + 1);
+
+    value->ident.m_name = new_name;
+    value->nonstatic_origin = new_name;
+  }
+
+  return &value->ident;
+}
+
+void refalrts::dynamic::free_idents_table() {
+#ifndef DONT_PRINT_STATISTICS
+  fprintf(
+    stderr, "Identifiers allocated: %lu\n",
+    static_cast<unsigned long>(idents_count())
+  );
+#endif // ifndef DONT_PRINT_STATISTICS
+
+  delete g_idents_table;
+}
+
+refalrts::dynamic::IdentHashNode *refalrts::dynamic::alloc_ident_node(
+  const char *name
+) {
+#ifdef IDENTS_LIMIT
+  if (idents_count() >= IDENTS_LIMIT) {
+    return 0;
+  }
+#endif // ifdef IDENTS_LIMIT
+  return idents_table().alloc(name);
 }
 
 //==============================================================================
@@ -2763,7 +2862,7 @@ refalrts::FnResult refalrts::vm::run() {
       case refalrts::cIdentTableLimit:
         fprintf(
           stderr, "\nIDENTS TABLE OVERFLOW (max %lu)\n\n",
-          static_cast<unsigned long>(refalrts::dynamic::g_idents_count)
+          static_cast<unsigned long>(refalrts::dynamic::idents_count())
         );
         break;
 
