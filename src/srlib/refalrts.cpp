@@ -2443,7 +2443,12 @@ namespace dynamic {
 
 UInt32 one_at_a_time(const char *bytes, size_t length);
 
-template <typename Value>
+template <typename Key>
+struct HashKeyTraits {
+  /* ничего */
+};
+
+template <typename Key, typename Value>
 class DynamicHash {
   // Копирование запрещено
   DynamicHash(const DynamicHash&);
@@ -2456,13 +2461,13 @@ public:
     return m_count;
   }
 
-  Value *alloc(const char *name);
+  Value *alloc(Key key);
 
 private:
   struct Node {
     UInt32 hash;
     Value value;
-    typename DynamicHash<Value>::Node *next;
+    typename DynamicHash<Key, Value>::Node *next;
 
     Node(UInt32 hash, Node *next)
       : hash(hash)
@@ -2473,7 +2478,7 @@ private:
     }
   };
 
-  typedef typename DynamicHash<Value>::Node *NodePtr;
+  typedef typename DynamicHash<Key, Value>::Node *NodePtr;
   enum { cResizeThreshold = 4 };
 
   void rehash();
@@ -2487,22 +2492,22 @@ private:
 
 } // namespace refalrts
 
-template <typename Value>
-refalrts::dynamic::DynamicHash<Value>::DynamicHash()
+template <typename Key, typename Value>
+refalrts::dynamic::DynamicHash<Key, Value>::DynamicHash()
   : m_table()
   , m_table_power(5)
   , m_count(0)
 {
   size_t table_size = size_t(1) << m_table_power;
-  m_table = new DynamicHash<Value>::NodePtr[table_size];
+  m_table = new DynamicHash<Key, Value>::NodePtr[table_size];
 
   for (size_t i = 0; i < table_size; ++i) {
     m_table[i] = 0;
   }
 }
 
-template <typename Value>
-refalrts::dynamic::DynamicHash<Value>::~DynamicHash()
+template <typename Key, typename Value>
+refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash()
 {
   size_t table_size = size_t(1) << m_table_power;
   for (size_t i = 0; i < table_size; ++i) {
@@ -2538,8 +2543,8 @@ refalrts::UInt32 refalrts::dynamic::one_at_a_time(
   return hash;
 }
 
-template <typename Value>
-void refalrts::dynamic::DynamicHash<Value>::rehash() {
+template <typename Key, typename Value>
+void refalrts::dynamic::DynamicHash<Key, Value>::rehash() {
   // Хаки для Watcom
   using refalrts::UInt32;
 
@@ -2552,7 +2557,7 @@ void refalrts::dynamic::DynamicHash<Value>::rehash() {
   unsigned int new_table_power = m_table_power + 1;
   size_t new_table_size = size_t(1) << new_table_power;
   UInt32 hash_mask = (UInt32(1) << new_table_power) - 1;
-  Node **new_table = new DynamicHash<Value>::NodePtr[new_table_size];
+  Node **new_table = new DynamicHash<Key, Value>::NodePtr[new_table_size];
 
   for (size_t i = 0; i < new_table_size; ++i) {
     new_table[i] = 0;
@@ -2573,17 +2578,15 @@ void refalrts::dynamic::DynamicHash<Value>::rehash() {
   m_table = new_table;
 }
 
-template <typename Value>
-Value * refalrts::dynamic::DynamicHash<Value>::alloc(const char *name) {
+template <typename Key, typename Value>
+Value * refalrts::dynamic::DynamicHash<Key, Value>::alloc(Key key) {
   // Хаки для Watcom
   using refalrts::UInt32;
-  using refalrts::dynamic::one_at_a_time;
+  using refalrts::dynamic::HashKeyTraits;
 
   rehash();
 
-  size_t length = name ? strlen(name) : 0;
-
-  UInt32 hash = one_at_a_time(name, length);
+  UInt32 hash = HashKeyTraits<Key>::hash(key);
   UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
 
   Node **pstart_node = &m_table[hash & hash_mask];
@@ -2592,7 +2595,7 @@ Value * refalrts::dynamic::DynamicHash<Value>::alloc(const char *name) {
     return_node != 0
     && (
       return_node->hash != hash
-      || strcmp(return_node->value.str(), name) != 0
+      || ! HashKeyTraits<Key>::equal(return_node->value.key(), key)
     )
   ) {
     return_node = return_node->next;
@@ -2632,16 +2635,28 @@ struct IdentHashNode {
     }
   };
 
-  const char *str() const {
+  const char *key() const {
     return ident.name();
   }
 };
 
-DynamicHash<IdentHashNode> *g_idents_table = 0;
+template <>
+struct HashKeyTraits<const char*> {
+  static UInt32 hash(const char *name) {
+    size_t length = name ? strlen(name) : 0;
+    return one_at_a_time(name, length);
+  }
 
-DynamicHash<IdentHashNode>& idents_table() {
+  static bool equal(const char *left, const char *right) {
+    return strcmp(left, right) == 0;
+  }
+};
+
+DynamicHash<const char *, IdentHashNode> *g_idents_table = 0;
+
+DynamicHash<const char *, IdentHashNode>& idents_table() {
   if (g_idents_table == 0) {
-    g_idents_table = new DynamicHash<IdentHashNode>;
+    g_idents_table = new DynamicHash<const char *, IdentHashNode>;
   }
 
   return *g_idents_table;
