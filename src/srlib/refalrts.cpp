@@ -33,11 +33,11 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
   }
 }
 
-namespace {
+namespace refalrts {
 
 char unsigned_int_is_uint32[sizeof(refalrts::UInt32) == 4 ? +1 : -1];
 
-} // безымянное namespace
+} // namespace refalrts
 
 //==============================================================================
 // Примитивные операции
