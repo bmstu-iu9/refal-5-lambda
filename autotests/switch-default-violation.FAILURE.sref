@@ -4,9 +4,12 @@ $ENTRY Go {
     {refalrts::icEnd + 5, 0, 0, 0}
   };
 
+  static refalrts::FunctionTableItem items[] = { 0 };
+  static refalrts::FunctionTable functions(0, 0, items);
+
   static refalrts::RASLFunction func(
     refalrts::RefalFuncName("Test", 0, 0), raa,
-    refalrts::functions,
+    functions,
     refalrts::idents,
     refalrts::numbers,
     refalrts::strings

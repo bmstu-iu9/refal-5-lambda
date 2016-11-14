@@ -20,6 +20,5 @@ static refalrts::FnResult func_Native(refalrts::Iter left_bracket, refalrts::Ite
   return cSuccess;
 }
 
-static refalrts::RefalNativeFunction descr_Native(func_Native, Native_str);
-refalrts::RefalFunction& Native_alias = descr_Native;
+static refalrts::RefalNativeFunction descr_Native(func_Native, str_Native);
 %%

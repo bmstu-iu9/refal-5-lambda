@@ -15,19 +15,6 @@ FuncArguments {
   = '(refalrts::Iter arg_begin, refalrts::Iter arg_end)';
 }
 
-FuncReference {
-  e.Name =
-    ('refalrts::RefalFunction& ' <CName e.Name> ' = descr_' <BaseCName e.Name> ';');
-}
-
-FuncAlias {
-  e.Name #Hash s.Cookie1 s.Cookie2 =
-    (
-      '#define ' <CName e.Name> '_alias '
-      <CName e.Name #Hash s.Cookie1 s.Cookie2>
-    );
-}
-
 GenCommonHeaders {
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"')
@@ -135,8 +122,8 @@ PrintDirection {
 }
 
 CNameAlias {
-  #CreateClosure = <CName #CreateClosure>;
-  e.RegularName = <CName e.RegularName> '_alias';
+  #CreateClosure = '& ' <CName #CreateClosure>;
+  e.RegularName = 'ref_' <CName e.RegularName> '.ref.function';
 }
 
 BaseCName {
@@ -155,12 +142,15 @@ GenCommand-Common {
     ();
 }
 
-MakeRefalName {
+NameAndCookies {
   e.Name #Hash s.Cookie1 s.Cookie2 =
-    'refalrts::RefalFuncName("'
-    <DisplayCName e.Name> '", '
-    <StrFromInt s.Cookie1> ', '
-    <StrFromInt s.Cookie2> ')';
+    '"' <DisplayCName e.Name> '", '
+    <StrFromInt s.Cookie1> 'U, '
+    <StrFromInt s.Cookie2> 'U';
+}
+
+MakeRefalName {
+  e.Name = 'refalrts::RefalFuncName(' <NameAndCookies e.Name> ')';
 }
 
 GenCommand-Native {
@@ -177,16 +167,20 @@ GenCommand-Native {
 
   (e.Indent) (#CmdExtern e.Name) =
     (e.Indent)
-    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
-    <FuncAlias e.Name>
-    ();
+    (
+      'static refalrts::ExternalReference ref_' <BaseCName e.Name> '('
+      <NameAndCookies e.Name>
+      ');'
+    );
 
   (e.Indent) (#CmdDeclaration e.Name) =
     (e.Indent)
-    ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
-    <FuncAlias e.Name>
-    ('#define ' <BaseCName e.Name> '_str ' <MakeRefalName e.Name>)
-    ();
+    (
+      'static refalrts::ExternalReference ref_' <BaseCName e.Name> '('
+      <NameAndCookies e.Name>
+      ');'
+    )
+    ('#define str_' <BaseCName e.Name> ' ' <MakeRefalName e.Name>);
 
   (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
@@ -195,7 +189,6 @@ GenCommand-Native {
       'func_' <BaseCName e.Name> ', ' <MakeRefalName e.Name>
       ');'
     )
-    <FuncReference e.Name>
     ();
 
   (e.Indent) (#CmdFnStart e.Name) =
@@ -540,9 +533,9 @@ GenCommand-RASL {
   // Команды режима интерпретации
   // Создание глобальных объектов, общие команды
 
+  // TODO: удалить!!!
   (e.Indent) (#CmdExtern e.Name) =
-    (e.Indent)
-    ('extern refalrts::RefalFunction& ' <CName e.Name> ';');
+    (e.Indent);
 
   (e.Indent) (#CmdEnumDescr e.Name) =
     (e.Indent)
@@ -550,8 +543,7 @@ GenCommand-RASL {
       'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
       <MakeRefalName e.Name>
       ');'
-    )
-    <FuncReference e.Name>;
+    );
 
   (e.Indent) (#CmdInterpretFuncDescr e.Name) =
     (e.Indent)
@@ -563,7 +555,6 @@ GenCommand-RASL {
     ('  numbers,')
     ('  strings')
     (');')
-    <FuncReference e.Name>
     ();
 
   (e.Indent) (#CmdSwapDescr e.Name) =
@@ -572,25 +563,26 @@ GenCommand-RASL {
       'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
       <MakeRefalName e.Name>
       ');'
-    )
-    <FuncReference e.Name>;
+    );
 
-  (e.Indent) (#CmdFuncArray) =
+  (e.Indent) (#CmdFuncArray s.Cookie1 s.Cookie2 e.FuncNames) =
     (e.Indent)
-    (e.Indent 'using refalrts::functions;')
-    ();
-
-  (e.Indent) (#CmdFuncArray e.FuncNames (e.LastName)) =
-    (e.Indent)
-    (e.Indent 'static refalrts::RefalFunction *functions[] = {')
+    (e.Indent 'static refalrts::FunctionTableItem func_table_items[] = {')
     <Map
       {
-        (e.Name) = (e.Indent '  & ' <CName e.Name> ',');
+        (#GN-Entry e.Name) = (e.Indent '  "*' <DisplayCName e.Name> '",');
+        (#GN-Local e.Name) = (e.Indent '  "#' <DisplayCName e.Name> '",');
       }
       e.FuncNames
     >
-    (e.Indent '  & ' <CName e.LastName>)
+    (e.Indent '  0')
     (e.Indent '};')
+    ()
+    (e.Indent
+      'static refalrts::FunctionTable functions('
+      <StrFromInt s.Cookie1> 'U, ' <StrFromInt s.Cookie2> 'U, func_table_items'
+      ');'
+    )
     ();
 
   (e.Indent) (#CmdLabelArray) =
@@ -1047,7 +1039,7 @@ PrintMatchName {
   (e.Indent) s.Direction s.BracketNumber e.Name =
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
-      ('function') '& ' <CNameAlias e.Name>
+      ('function') <CNameAlias e.Name>
     >;
 }
 
@@ -1055,7 +1047,7 @@ PrintMatchNameSave {
   (e.Indent) s.Offset s.Direction s.BracketNumber e.Name =
     <PrintMatchSave
       (e.Indent) s.Offset s.Direction s.BracketNumber
-      ('function') '& ' <CNameAlias e.Name>
+      ('function') <CNameAlias e.Name>
     >;
 }
 
@@ -1105,7 +1097,7 @@ PrintMatchADT {
     <PrintMatch
       (e.Indent) s.Direction s.BracketNumber
       ('adt')
-      <ContextRange s.InnerNum> ', & ' <CNameAlias e.Name>
+      <ContextRange s.InnerNum> ', ' <CNameAlias e.Name>
     >;
 }
 
@@ -1115,7 +1107,7 @@ PrintMatchADTSave {
       <ContextItem <Add s.InnerNum 2>> ' = '
       'refalrts::adt_term('
       <ContextRange s.InnerNum> ', '
-      '& ' <CNameAlias e.Name> ', '
+      <CNameAlias e.Name> ', '
       <ContextItem s.Offset> ');'
     )
     (e.Indent 'if( ! ' <ContextItem <Add s.InnerNum 2>> ' )')
@@ -1126,7 +1118,7 @@ PrintMatchADTSave {
       (e.Indent) <Add 2 s.InnerNum> s.Direction s.BracketNumber
       ('adt')
       <ContextRange s.InnerNum> ', '
-      '& ' <CNameAlias e.Name>
+      <CNameAlias e.Name>
     >
     (
       e.Indent
@@ -1275,7 +1267,7 @@ AllocatorFuncName {
 AllocatorFuncArgument {
   #ElChar s.Char = ', ' '' <EscapeChar s.Char> '';
 
-  #ElName e.Name = ', & ' <CNameAlias e.Name>;
+  #ElName e.Name = ', ' <CNameAlias e.Name>;
 
   #ElNumber s.Number = ', ' <StrFromInt s.Number> 'UL';
 

@@ -28,6 +28,7 @@ $ENTRY LowLevelRASL {
         )
         {
           (s.Hash1 s.Hash2) e.Items =
+            (#ModuleID s.Hash1 s.Hash2)
             <Map (SetCookies s.Hash1 s.Hash2) e.Items>;
         }
         (Map
@@ -517,6 +518,21 @@ Function-Interpret {
 }
 
 ClassifyItems {
+  s.GenMode
+  (
+    (e.RASL-Declarations)
+    (e.RASL-Definitions)
+    (e.Native-Declarations)
+    (e.Native-Definitions)
+  )
+  (#ModuleID s.Hash1 s.Hash2) =
+    (
+      (e.RASL-Declarations (#ModuleID s.Hash1 s.Hash2))
+      (e.RASL-Definitions)
+      (e.Native-Declarations)
+      (e.Native-Definitions)
+    );
+
   #OnlyInterpret
   (
     (e.RASL-Declarations)
@@ -721,7 +737,7 @@ ConvertOneInterpretCommand {
 }
 
 PrepareRASL {
-  (e.RASL-Declarations) e.RASL-Definitions =
+  ((#ModuleID s.Hash1 s.Hash2) e.RASL-Declarations) e.RASL-Definitions =
     <Fetch
       <OutlineConstants
         (0 /* функции */)
@@ -735,16 +751,22 @@ PrepareRASL {
           e.RASL-Declarations
           (#CmdSeparator)
           (#CmdFuncArray
+            s.Hash1 s.Hash2
             <DelAccumulator
               <MapReduce
                 {
+                  (e.Decls-B (s.Type e.FuncName #Hash 0 0) e.Decls-E)
+                  (e.FuncName) =
+                    (e.Decls-B e.Decls-E)
+                    (#GN-Entry e.FuncName);
+
                   (e.Decls-B (s.Type e.FuncName #Hash s.Hash1 s.Hash2) e.Decls-E)
                   (e.FuncName) =
                     (e.Decls-B e.Decls-E)
-                    (e.FuncName #Hash s.Hash1 s.Hash2);
+                    (#GN-Local e.FuncName);
 
                   (e.Decls) (#CreateClosure) =
-                    (e.Decls) (#CreateClosure);
+                    (e.Decls) (#GN-Entry #CreateClosure);
                 }
                 (e.RASL-Declarations)
                 e.Functions

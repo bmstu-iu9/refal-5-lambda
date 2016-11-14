@@ -59,8 +59,11 @@ struct RefalFunction {
   RefalFunction(const RASLCommand rasl[], RefalFuncName name)
     : rasl(rasl), name(name)
   {
-    /* пусто */
+    register_me();
   }
+
+private:
+  void register_me();
 };
 
 typedef unsigned long RefalNumber;
@@ -288,6 +291,35 @@ struct RASLCommand {
 struct StringItem {
   const char *string;
   unsigned string_len;
+};
+
+union FunctionTableItem {
+  const char *func_name;
+  RefalFunction *function;
+
+  FunctionTableItem(const char *func_name)
+    : func_name(func_name)
+  {
+    /* пусто */
+  }
+};
+
+struct FunctionTable {
+  UInt32 cookie1;
+  UInt32 cookie2;
+  FunctionTableItem *items;
+  FunctionTable *next;
+
+  FunctionTable(UInt32 cookie1, UInt32 cookie2, FunctionTableItem items[]);
+};
+
+struct ExternalReference {
+  FunctionTableItem ref;
+  UInt32 cookie1;
+  UInt32 cookie2;
+  ExternalReference *next;
+
+  ExternalReference(const char *name, UInt32 cookie1, UInt32 cookie2);
 };
 
 extern void use(Iter&);
@@ -523,7 +555,7 @@ void debug_print_expr(void *file, Iter first, Iter last);
 // Интерпретатор
 
 struct RASLFunction: public RefalFunction {
-  RefalFunction **functions;
+  const FunctionTable *functions;
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
@@ -531,13 +563,13 @@ struct RASLFunction: public RefalFunction {
   RASLFunction(
     RefalFuncName name,
     const RASLCommand rasl[],
-    RefalFunction *functions[],
+    const FunctionTable& functions,
     const RefalIdentifier idents[],
     const RefalNumber numbers[],
     const StringItem strings[]
   )
     : RefalFunction(rasl, name)
-    , functions(functions)
+    , functions(&functions)
     , idents(idents)
     , numbers(numbers)
     , strings(strings)
@@ -546,7 +578,6 @@ struct RASLFunction: public RefalFunction {
   }
 };
 
-extern RefalFunction *functions[];
 extern const RefalIdentifier idents[];
 extern const RefalNumber numbers[];
 extern const StringItem strings[];
