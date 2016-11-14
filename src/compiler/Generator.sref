@@ -136,10 +136,6 @@ GenCommand-Common {
   // Создания глобальных объектов, общие команды
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
-
-  (e.Indent) (#CmdSeparator) =
-    (e.Indent)
-    ();
 }
 
 NameAndCookies {
@@ -189,6 +185,10 @@ GenCommand-Native {
       'func_' <BaseCName e.Name> ', ' <MakeRefalName e.Name>
       ');'
     )
+    ();
+
+  (e.Indent) (#CmdSeparator) =
+    (e.Indent)
     ();
 
   (e.Indent) (#CmdFnStart e.Name) =
@@ -528,27 +528,37 @@ GenCommand-Native {
     <GenCommand-Common (e.Indent) (s.CommonCommand e.Args)>;
 }
 
+NameWithScope {
+  #GN-Entry e.Name =
+    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", 0, 0)';
+
+  #GN-Local e.Name =
+    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", COOKIE1, COOKIE2)';
+}
+
 GenCommand-RASL {
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
   // Создание глобальных объектов, общие команды
 
-  // TODO: удалить!!!
-  (e.Indent) (#CmdExtern e.Name) =
-    (e.Indent);
+  (e.Indent) (#CmdModuleID s.Cookie1 s.Cookie2) =
+    (e.Indent)
+    (e.Indent 'static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
+    (e.Indent 'static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    ();
 
-  (e.Indent) (#CmdEnumDescr e.Name) =
+  (e.Indent) (#CmdEnumDescr s.ScopeClass e.Name) =
     (e.Indent)
     (
       'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
-      <MakeRefalName e.Name>
+      <NameWithScope s.ScopeClass e.Name>
       ');'
     );
 
-  (e.Indent) (#CmdInterpretFuncDescr e.Name) =
+  (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name) =
     (e.Indent)
     ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
-    ('  ' <MakeRefalName e.Name> ',')
+    ('  ' <NameWithScope s.ScopeClass e.Name> ',')
     ('  raa_' <BaseCName e.Name> ',')
     ('  functions,')
     ('  idents,')
@@ -557,15 +567,15 @@ GenCommand-RASL {
     (');')
     ();
 
-  (e.Indent) (#CmdSwapDescr e.Name) =
+  (e.Indent) (#CmdSwapDescr s.ScopeClass e.Name) =
     (e.Indent)
     (
       'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
-      <MakeRefalName e.Name>
+      <NameWithScope s.ScopeClass e.Name>
       ');'
     );
 
-  (e.Indent) (#CmdFuncArray s.Cookie1 s.Cookie2 e.FuncNames) =
+  (e.Indent) (#CmdFuncArray e.FuncNames) =
     (e.Indent)
     (e.Indent 'static refalrts::FunctionTableItem func_table_items[] = {')
     <Map
@@ -580,7 +590,7 @@ GenCommand-RASL {
     ()
     (e.Indent
       'static refalrts::FunctionTable functions('
-      <StrFromInt s.Cookie1> 'U, ' <StrFromInt s.Cookie2> 'U, func_table_items'
+      'COOKIE1, COOKIE2, func_table_items'
       ');'
     )
     ();
