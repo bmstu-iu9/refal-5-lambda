@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = ;
+}
+
+/*GEN:FLEX
+  /abc/ -> A
+  /def/ -> BAB
+GEN:END*/

@@ -23,6 +23,9 @@ $EXTERN GenerateFromDFA;
 //FROM Error
 $EXTERN ErrorAt;
 
+//FROM Flex-Lexer
+$EXTERN Flex-Tokens;
+
 
 $ENTRY Go {
   =
@@ -107,12 +110,53 @@ Transform {
               >
             >;
 
+          (s.Length e.LinesBefore) ('FLEX') e.Description =
+            <Fetch
+              s.Length e.Description
+              <Seq
+                Flex-Tokens
+                (Map
+                  {
+                    (#TError s.LineNumber e.Text) =
+                      <ErrorAt (s.LineNumber e.Source) e.Text>;
+
+                    (s.TokType s.LineNumber e.Info) =
+                      (s.TokType (s.LineNumber e.Source) e.Info);
+
+                    t.Other = t.Other;
+                  }
+                )
+                Flex-Parse
+                Flex-Compile
+                /* GenerateFromDFA */
+                {
+                  e.Generated =
+                    e.LinesBefore
+                    e.Description
+                    ('GEN:END*/')
+                    e.Generated;
+                }
+              >
+            >;
+
           (s.Length e.LinesBefore) (e.OtherGenMode) e.Description =
             <ErrorAt
               (s.Length e.Source) 'Unknown generation mode ' e.OtherGenMode
             >;
         }
       >
+    >;
+}
+
+Flex-Parse { e.X = e.X; }
+Flex-Compile {
+  e.AnyInput =
+    <Map
+      {
+        (e.Any) = ('//e ' e.Any);
+        s.Any = ('//s ' s.Any);
+      }
+      e.AnyInput
     >;
 }
 

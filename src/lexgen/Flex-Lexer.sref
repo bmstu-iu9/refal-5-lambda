@@ -1,0 +1,111 @@
+//FROM LibraryEx
+$EXTERN Fetch, Seq, Map, MapReduce, Inc;
+
+$ENTRY Flex-Tokens {
+  s.FirstLineNumber e.DescriptionLines =
+    <Fetch
+      e.DescriptionLines
+      <Seq
+        (Map
+          {
+            (e.Line) = e.Line '\n';
+          }
+        )
+        LowLevelTokens
+        (MapReduce
+          {
+            s.LineNumber (#TNewLine '\n') =
+              <Inc s.LineNumber>
+              /* пропускаем */;
+              
+            s.LineNumber (s.Type e.Info) =
+              s.LineNumber (s.Type s.LineNumber e.Info);
+          }
+          <Inc s.FirstLineNumber>
+        )
+        {
+          s.LineNumber e.Tokens =
+            e.Tokens;
+        }
+      >
+    >;
+}
+
+LowLevelTokens {
+  e.Text = <FilterTokens <Root () e.Text>>;
+}
+
+FilterTokens {
+  e.Tokens = e.Tokens;
+}
+
+/*GEN:TOKENS
+  :UpLetters: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
+  :Spaces: = ' \t'.
+  
+  Root =
+    :Spaces:        !-                      Root        |
+    '\n'            !#TNewLine              Root        |
+    '/'             !#StartRegexp           ReadRegexp  |
+    '-'             !-                      ReadArrow   |
+    :UpLetters:     !#TName                 Root        |
+    :Any:           !#TUnexpecteChar        Root        |
+                    !#TEOF                              .
+                    
+  ReadArrow =
+    '>'             !#TArrow                Root        |
+                    !#TBadArrow             Root        .
+                    
+  ReadRegexp =
+    '/'             !#EndRegexp             Root        |
+    :Any:           !#CharInRegexp          ReadRegexp  |
+                    !#UnexpectedEOFInRegexp             .
+    
+GEN:END*/
+
+Root {
+  (e.Accum) ' ' e.Text = <Root () e.Text>;
+  (e.Accum) '\t' e.Text = <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (#TNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) '/' e.Text = (#StartRegexp e.Accum '/') <ReadRegexp () e.Text>;
+  (e.Accum) '-' e.Text = <ReadArrow () e.Text>;
+  (e.Accum) 'A' e.Text = (#TName e.Accum 'A') <Root () e.Text>;
+  (e.Accum) 'B' e.Text = (#TName e.Accum 'B') <Root () e.Text>;
+  (e.Accum) 'C' e.Text = (#TName e.Accum 'C') <Root () e.Text>;
+  (e.Accum) 'D' e.Text = (#TName e.Accum 'D') <Root () e.Text>;
+  (e.Accum) 'E' e.Text = (#TName e.Accum 'E') <Root () e.Text>;
+  (e.Accum) 'F' e.Text = (#TName e.Accum 'F') <Root () e.Text>;
+  (e.Accum) 'G' e.Text = (#TName e.Accum 'G') <Root () e.Text>;
+  (e.Accum) 'H' e.Text = (#TName e.Accum 'H') <Root () e.Text>;
+  (e.Accum) 'I' e.Text = (#TName e.Accum 'I') <Root () e.Text>;
+  (e.Accum) 'J' e.Text = (#TName e.Accum 'J') <Root () e.Text>;
+  (e.Accum) 'K' e.Text = (#TName e.Accum 'K') <Root () e.Text>;
+  (e.Accum) 'L' e.Text = (#TName e.Accum 'L') <Root () e.Text>;
+  (e.Accum) 'M' e.Text = (#TName e.Accum 'M') <Root () e.Text>;
+  (e.Accum) 'N' e.Text = (#TName e.Accum 'N') <Root () e.Text>;
+  (e.Accum) 'O' e.Text = (#TName e.Accum 'O') <Root () e.Text>;
+  (e.Accum) 'P' e.Text = (#TName e.Accum 'P') <Root () e.Text>;
+  (e.Accum) 'Q' e.Text = (#TName e.Accum 'Q') <Root () e.Text>;
+  (e.Accum) 'R' e.Text = (#TName e.Accum 'R') <Root () e.Text>;
+  (e.Accum) 'S' e.Text = (#TName e.Accum 'S') <Root () e.Text>;
+  (e.Accum) 'T' e.Text = (#TName e.Accum 'T') <Root () e.Text>;
+  (e.Accum) 'U' e.Text = (#TName e.Accum 'U') <Root () e.Text>;
+  (e.Accum) 'V' e.Text = (#TName e.Accum 'V') <Root () e.Text>;
+  (e.Accum) 'W' e.Text = (#TName e.Accum 'W') <Root () e.Text>;
+  (e.Accum) 'X' e.Text = (#TName e.Accum 'X') <Root () e.Text>;
+  (e.Accum) 'Y' e.Text = (#TName e.Accum 'Y') <Root () e.Text>;
+  (e.Accum) 'Z' e.Text = (#TName e.Accum 'Z') <Root () e.Text>;
+  (e.Accum) s.Any e.Text = (#TUnexpecteChar e.Accum s.Any) <Root () e.Text>;
+  (e.Accum) = (#TEOF e.Accum);
+}
+
+ReadRegexp {
+  (e.Accum) '/' e.Text = (#EndRegexp e.Accum '/') <Root () e.Text>;
+  (e.Accum) s.Any e.Text = (#CharInRegexp e.Accum s.Any) <ReadRegexp () e.Text>;
+  (e.Accum) = (#UnexpectedEOFInRegexp e.Accum);
+}
+
+ReadArrow {
+  (e.Accum) '>' e.Text = (#TArrow e.Accum '>') <Root () e.Text>;
+  (e.Accum) e.Text = (#TBadArrow e.Accum) <Root () e.Text>;
+}
