@@ -155,6 +155,14 @@ GenCommand-Common {
     ();
 }
 
+MakeRefalName {
+  e.Name #Hash s.Cookie1 s.Cookie2 =
+    'refalrts::RefalFuncName("'
+    <DisplayCName e.Name> '", '
+    <StrFromInt s.Cookie1> ', '
+    <StrFromInt s.Cookie2> ')';
+}
+
 GenCommand-Native {
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
@@ -177,14 +185,14 @@ GenCommand-Native {
     (e.Indent)
     ('extern refalrts::RefalFunction& ' <CName e.Name> ';')
     <FuncAlias e.Name>
-    ('#define ' <BaseCName e.Name> '_str "' <DisplayCName e.Name> '"')
+    ('#define ' <BaseCName e.Name> '_str ' <MakeRefalName e.Name>)
     ();
 
   (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
     (
       'static refalrts::RefalNativeFunction descr_' <BaseCName e.Name> '('
-      'func_' <BaseCName e.Name> ', "' <DisplayCName e.Name> '"'
+      'func_' <BaseCName e.Name> ', ' <MakeRefalName e.Name>
       ');'
     )
     <FuncReference e.Name>
@@ -540,7 +548,7 @@ GenCommand-RASL {
     (e.Indent)
     (
       'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
-      '"' <DisplayCName e.Name> '"'
+      <MakeRefalName e.Name>
       ');'
     )
     <FuncReference e.Name>;
@@ -548,7 +556,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdInterpretFuncDescr e.Name) =
     (e.Indent)
     ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
-    ('  "' <DisplayCName e.Name> '",')
+    ('  ' <MakeRefalName e.Name> ',')
     ('  raa_' <BaseCName e.Name> ',')
     ('  functions,')
     ('  idents,')
@@ -562,7 +570,7 @@ GenCommand-RASL {
     (e.Indent)
     (
       'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
-      '"' <DisplayCName e.Name> '"'
+      <MakeRefalName e.Name>
       ');'
     )
     <FuncReference e.Name>;

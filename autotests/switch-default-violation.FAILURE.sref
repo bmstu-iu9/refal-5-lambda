@@ -5,7 +5,7 @@ $ENTRY Go {
   };
 
   static refalrts::RASLFunction func(
-    "Test", raa,
+    refalrts::RefalFuncName("Test", 0, 0), raa,
     refalrts::functions,
     refalrts::idents,
     refalrts::numbers,

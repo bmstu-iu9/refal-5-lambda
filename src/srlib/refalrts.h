@@ -36,7 +36,19 @@ enum DataTag {
 
 typedef FnResult (*RefalFunctionPtr) (Iter begin, Iter end);
 
-typedef const char * RefalFuncName;
+typedef unsigned int UInt32;
+
+struct RefalFuncName {
+  const char *name;
+  UInt32 cookie1;
+  UInt32 cookie2;
+
+  RefalFuncName(const char *name, UInt32 cookie1, UInt32 cookie2)
+    : name(name), cookie1(cookie1), cookie2(cookie2)
+  {
+    /* пусто */
+  }
+};
 
 struct RASLCommand;
 

@@ -33,6 +33,12 @@ void valid_linked_aux(const char *text, refalrts::Iter i) {
   }
 }
 
+namespace {
+
+char unsigned_int_is_uint32[sizeof(refalrts::UInt32) == 4 ? +1 : -1];
+
+} // безымянное namespace
+
 //==============================================================================
 // Примитивные операции
 //==============================================================================
@@ -1572,7 +1578,7 @@ const refalrts::RASLCommand rasl_create_closure[] = {
 }
 
 refalrts::RefalFunction refalrts::create_closure(
-  rasl_create_closure, "@create_closure@"
+  rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
 );
 
 /*
@@ -2435,9 +2441,6 @@ namespace refalrts {
 
 namespace dynamic {
 
-typedef unsigned int UInt32;
-char unsigned_int_is_uint32[sizeof(UInt32) == 4 ? +1 : -1];
-
 UInt32 one_at_a_time(const char *bytes, size_t length);
 
 template <typename Value>
@@ -2516,7 +2519,7 @@ refalrts::dynamic::DynamicHash<Value>::~DynamicHash()
   m_table = 0;
 }
 
-refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
+refalrts::UInt32 refalrts::dynamic::one_at_a_time(
   const char *bytes, size_t length
 ) {
   // Хеш-функция Дженкинса one_at_a_time.
@@ -2538,7 +2541,7 @@ refalrts::dynamic::UInt32 refalrts::dynamic::one_at_a_time(
 template <typename Value>
 void refalrts::dynamic::DynamicHash<Value>::rehash() {
   // Хаки для Watcom
-  using refalrts::dynamic::UInt32;
+  using refalrts::UInt32;
 
   size_t table_size = size_t(1) << m_table_power;
 
@@ -2573,7 +2576,7 @@ void refalrts::dynamic::DynamicHash<Value>::rehash() {
 template <typename Value>
 Value * refalrts::dynamic::DynamicHash<Value>::alloc(const char *name) {
   // Хаки для Watcom
-  using refalrts::dynamic::UInt32;
+  using refalrts::UInt32;
   using refalrts::dynamic::one_at_a_time;
 
   rehash();
@@ -2938,8 +2941,14 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataSwapHead:
-            fprintf(output, "\n\n*Swap %s:\n", begin->function_info->name);
-            refalrts::move_left(begin, end);
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "\n\n*Swap %s#%u:%u:\n",
+                name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
             continue;
 
           case refalrts::cDataChar:
@@ -2953,8 +2962,13 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataFunction:
-            fprintf(output, "&%s ", begin->function_info->name);
-            refalrts::move_left(begin, end);
+            {
+              const RefalFuncName& name = begin->function_info->name;
+              fprintf(
+                output, "&%s#%u:%u ", name.name, name.cookie1, name.cookie2
+              );
+              refalrts::move_left(begin, end);
+            }
             continue;
 
           case refalrts::cDataIdentifier:
