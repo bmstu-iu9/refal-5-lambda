@@ -1,0 +1,33 @@
+//FROM LibraryEx
+$EXTERN Inc;
+
+//FROM DisplayName
+$EXTERN CName;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+$ENTRY GenCommonHeaders {
+  = ('// Automatically generated file. Don\'t edit!')
+  ('#include "refalrts.h"')
+  () ();
+}
+
+$ENTRY GenCommonTailer {
+  = () ('//End of file');
+}
+
+$ENTRY BaseCName {
+  e.Name #Hash s.Cookie1 s.Cookie2 = <CName e.Name>;
+  e.Name = <CName e.Name>;
+}
+
+$ENTRY PrintLength {
+  e.String = <DoPrintLength 0 e.String>;
+}
+
+DoPrintLength {
+  s.Length s.Char e.Tail = <DoPrintLength <Inc s.Length> e.Tail>;
+
+  s.Length = <StrFromInt s.Length>;
+}

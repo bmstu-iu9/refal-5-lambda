@@ -25,8 +25,11 @@ $EXTERN HighLevelRASL;
 //FROM LowLevelRASL
 $EXTERN LowLevelRASL;
 
-//FROM Generator
-$EXTERN GenProgram-RASL, GenProgram-Native;
+//FROM Generator-RASL
+$EXTERN GenProgram-RASL;
+
+//FROM Generator-Native
+$EXTERN GenProgram-Native;
 
 /**
   <CompileFile s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName>

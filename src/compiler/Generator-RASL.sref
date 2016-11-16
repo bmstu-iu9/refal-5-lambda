@@ -1,0 +1,575 @@
+//FROM LibraryEx
+$EXTERN Fetch, Seq, MapReduce, Map;
+
+//FROM Generator-Common
+$EXTERN GenCommonHeaders, GenCommonTailer, BaseCName, PrintLength;
+
+//FROM DisplayName
+$EXTERN
+//DisplayName,
+DisplayCName
+//, CName
+;
+
+//FROM Library
+$EXTERN StrFromInt;
+
+//FROM Escape
+$EXTERN EscapeChar, EscapeString;
+
+
+$ENTRY GenProgram-RASL {
+  e.RASL =
+    <Fetch
+      e.RASL
+      <Seq
+        (MapReduce GenCommand-RASL (/* отступ */))
+        {
+          () /* отступ должен остаться тем же */
+          e.Generated =
+            <GenCommonHeaders>
+            e.Generated
+            <GenCommonTailer>;
+        }
+      >
+    >;
+}
+
+PrintDirection {
+  #AlgLeft = 'Left';
+  #AlgRight = 'Right';
+  #AlgTerm = 'Term';
+}
+
+NameWithScope {
+  #GN-Entry e.Name =
+    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", 0, 0)';
+
+  #GN-Local e.Name =
+    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", COOKIE1, COOKIE2)';
+}
+
+GenCommand-RASL {
+  // ---------------------------------------------------------------------------
+  // Создания глобальных объектов, общие команды
+
+  (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
+
+  // ---------------------------------------------------------------------------
+  // Команды режима интерпретации
+  // Создание глобальных объектов, общие команды
+
+  (e.Indent) (#CmdModuleID s.Cookie1 s.Cookie2) =
+    (e.Indent)
+    (e.Indent 'static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
+    (e.Indent 'static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    ();
+
+  (e.Indent) (#CmdEnumDescr s.ScopeClass e.Name) =
+    (e.Indent)
+    (
+      'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
+      <NameWithScope s.ScopeClass e.Name>
+      ');'
+    );
+
+  (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name) =
+    (e.Indent)
+    ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
+    ('  ' <NameWithScope s.ScopeClass e.Name> ',')
+    ('  raa_' <BaseCName e.Name> ',')
+    ('  functions,')
+    ('  idents,')
+    ('  numbers,')
+    ('  strings')
+    (');')
+    ();
+
+  (e.Indent) (#CmdSwapDescr s.ScopeClass e.Name) =
+    (e.Indent)
+    (
+      'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
+      <NameWithScope s.ScopeClass e.Name>
+      ');'
+    );
+
+  (e.Indent) (#CmdFuncArray e.FuncNames) =
+    (e.Indent)
+    (e.Indent 'static refalrts::FunctionTableItem func_table_items[] = {')
+    <Map
+      {
+        (#GN-Entry e.Name) = (e.Indent '  "*' <DisplayCName e.Name> '",');
+        (#GN-Local e.Name) = (e.Indent '  "#' <DisplayCName e.Name> '",');
+      }
+      e.FuncNames
+    >
+    (e.Indent '  0')
+    (e.Indent '};')
+    ()
+    (e.Indent
+      'static refalrts::FunctionTable functions('
+      'COOKIE1, COOKIE2, func_table_items'
+      ');'
+    )
+    ();
+
+  (e.Indent) (#CmdLabelArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::idents;')
+    ();
+
+  (e.Indent) (#CmdLabelArray e.LabelNames (e.LastName)) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::RefalIdentifier idents[] = {')
+    <Map
+      {
+        (e.Name) =
+          (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.Name> '"),');
+      }
+      e.LabelNames
+    >
+    (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.LastName> '"),')
+    (e.Indent '};')
+    ();
+
+  (e.Indent) (#CmdNumberArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::numbers;')
+    ();
+
+  (e.Indent) (#CmdNumberArray e.Numbers s.LastNumber) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::RefalNumber numbers[] = {')
+    <Map
+      {
+        s.Number = (e.Indent '  ' <StrFromInt s.Number> 'UL,');
+      }
+      e.Numbers
+    >
+    (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
+    (e.Indent '};')
+    ();
+
+  (e.Indent) (#CmdStringArray) =
+    (e.Indent)
+    (e.Indent 'using refalrts::strings;')
+    ();
+
+  (e.Indent) (#CmdStringArray e.Strings (e.LastString)) =
+    (e.Indent)
+    (e.Indent 'static const refalrts::StringItem strings[] = {')
+    <Map
+      {
+        (e.String) = (e.Indent '  {' <PrintString e.String> '},');
+      }
+      e.Strings
+    >
+    (e.Indent '  {' <PrintString e.LastString> '}')
+    (e.Indent '};')
+    ();
+
+  (e.Indent) (#CmdInitRAA e.Name) =
+    (e.Indent '  ')
+    (e.Indent
+      'static const refalrts::RASLCommand raa_' <BaseCName e.Name> '[] = {'
+    );
+
+  (e.Indent '  ') (#CmdFinRAA) =
+    (e.Indent)
+    (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
+    (e.Indent '};');
+
+  (e.Indent) (#CmdProfileFunction) =
+    (e.Indent)
+    (e.Indent '{refalrts::icThisIsGeneratedFunction, 0, 0, 0},');
+
+  (e.Indent) (#CmdLoadConstants) =
+    (e.Indent)
+    (e.Indent '{refalrts::icLoadConstants, 0, 0, 0},');
+
+  (e.Indent) (#CmdIssueMem s.Memory) =
+    (e.Indent)
+    (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');
+
+  (e.Indent) (#CmdReserveStack 0) =
+    (e.Indent)
+    /* ничего не генерируем */;
+
+  (e.Indent) (#CmdReserveStack s.Depth) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icReserveBacktrackStack, '
+      <StrFromInt s.Depth> ', 0, 0},'
+    );
+
+  (e.Indent) (#CmdOnFailGoTo s.Offset) =
+    (e.Indent)
+    (e.Indent '{refalrts::icOnFailGoTo, +' <StrFromInt s.Offset> ', 0, 0},');
+
+  (e.Indent) (#CmdProfilerStopSentence) =
+    (e.Indent)
+    (e.Indent '{refalrts::icProfilerStopSentence, 0, 0, 0},');
+
+  (e.Indent) (#CmdInitB0) =
+    (e.Indent)
+    (e.Indent '{refalrts::icInitB0, 0, 0, 0},');
+
+  (e.Indent) (#CmdInitB0-Lite) =
+    (e.Indent)
+    (e.Indent '{refalrts::icInitB0_Lite, 0, 0, 0},');
+
+  // ---------------------------------------------------------------------------
+  // Команды сопоставления с образцом (режим интерпретации)
+
+  (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
+    (e.Indent)
+    (e.Indent '{refalrts::icChar' <PrintDirection s.Direction> ', '
+              '0, static_cast<unsigned char>(' '' <EscapeChar s.Char> '' '), '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icChar' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.SaveOffset> ', '
+      'static_cast<unsigned char>(' '' <EscapeChar s.Char> '' '), '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdNum s.Direction s.BracketNumber s.Number) =
+    (e.Indent)
+    (e.Indent '{refalrts::icNum' <PrintDirection s.Direction> ', '
+              '0, ' <StrFromInt s.Number> ', '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icNum' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.SaveOffset> ', '
+      <StrFromInt s.Number> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdHugeNum s.Direction s.BracketNumber s.Number) =
+    (e.Indent)
+    (e.Indent '{refalrts::icHugeNum' <PrintDirection s.Direction> ', '
+              '0, ' <StrFromInt s.Number> ', '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent)
+  (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icHugeNum' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.SaveOffset> ', '
+      <StrFromInt s.Number> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdName s.Direction s.BracketNumber s.NameId) =
+    (e.Indent)
+    (e.Indent '{refalrts::icFunc' <PrintDirection s.Direction> ', 0, '
+              <StrFromInt s.NameId> ', '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icFunc' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.SaveOffset> ', '
+      <StrFromInt s.NameId> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdIdent s.Direction s.BracketNumber s.NameId) =
+    (e.Indent)
+    (e.Indent '{refalrts::icIdent' <PrintDirection s.Direction> ', '
+              '0, '
+              <StrFromInt s.NameId> ', '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent)
+  (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icIdent' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.SaveOffset> ', '
+      <StrFromInt s.NameId> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdBrackets s.Direction s.Num s.NumRanges) =
+    (e.Indent)
+    (e.Indent '{refalrts::icBracket' <PrintDirection s.Direction> ', '
+              '0, ' <StrFromInt s.NumRanges> ', ' <StrFromInt s.Num> '},'
+    );
+
+  (e.Indent) (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icBracket' <PrintDirection s.Direction> 'Save, '
+      '0, ' <StrFromInt s.NumRanges> ', ' <StrFromInt s.Num> '},'
+    );
+
+  (e.Indent) (#CmdADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
+    (e.Indent)
+    (e.Indent '{refalrts::icADT' <PrintDirection s.Direction> ', '
+              <StrFromInt s.NameId> ', '
+              <StrFromInt s.InnerBrackets> ', '
+              <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent)
+  (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icADT' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.NameId> ', '
+      <StrFromInt s.InnerBrackets> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icCallSave' <PrintDirection s.Direction> ', '
+      '0, ' <StrFromInt s.InnerBrackets> ', ' <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdEmpty s.Direction s.Num) =
+    (e.Indent)
+    (e.Indent '{refalrts::icEmpty, 0, 0, ' <StrFromInt s.Num> '},');
+
+  (e.Indent) (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> ', '
+      '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> 'Save, '
+      '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent)
+  (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::ic' s.Mode 'Repeat' <PrintDirection s.Direction> ', '
+      <StrFromInt s.VarNumber> ', '
+      <StrFromInt s.SampleNumber> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent)
+  (#CmdRepeatedTVarSave
+    s.Direction s.BracketNumber s.VarNumber s.SampleNumber
+  ) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::ictRepeat' <PrintDirection s.Direction> 'Save, '
+      <StrFromInt s.VarNumber> ', '
+      <StrFromInt s.SampleNumber> ', '
+      <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdEPrepare s.BracketNumber s.VarNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icEPrepare, 0, '
+      <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdEStart s.BracketNumber s.VarNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icEStart, 0, '
+      <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
+    );
+
+  (e.Indent) (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSave, 0, '
+              <StrFromInt s.NewBracketNumber> ', '
+              <StrFromInt s.OldBracketNumber> '},'
+    );
+
+  // ---------------------------------------------------------------------------
+  // Команды построения результата (режим интерпретации)
+
+  (e.Indent) (#CmdResetAllocator) =
+    (e.Indent)
+    (e.Indent '{refalrts::icResetAllocator, 0, 0, 0},');
+
+  (e.Indent) (#CmdSetRes s.Offset) =
+    (e.Indent)
+    <Fetch
+      s.Offset
+      {
+        #ARG-BEGIN = (e.Indent '{refalrts::icSetResArgBegin, 0, 0, 0},');
+        #RIGHT-EDGE = (e.Indent '{refalrts::icSetResRightEdge, 0, 0, 0},');
+
+        s.Offset^ =
+          (e.Indent '{refalrts::icSetRes, 0, 0, ' <StrFromInt s.Offset> '},');
+      }
+    >;
+
+  (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icCopyEVar, '
+      <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
+    );
+
+  (e.Indent) (#CmdCopyVar s.Mode s.Target s.Sample) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icCopySTVar, '
+      <StrFromInt s.Target> ', ' <StrFromInt s.Sample> ', 0},'
+    );
+
+  (e.Indent) (#CmdReinitSVar s.Offset s.Sample) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icReinitSVar, 0, '
+      <StrFromInt s.Sample> ', ' <StrFromInt s.Offset> '},'
+    );
+
+  (e.Indent) (#CmdCreateElem s.CreateMode s.ElemNumber s.Type e.Info) =
+    (e.Indent)
+    <PrintInterpretCreateElem
+      (e.Indent) s.CreateMode s.ElemNumber s.Type e.Info
+    >;
+
+  (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icLinkBrackets, '
+      <StrFromInt s.Left> ', ' <StrFromInt s.Right> ', 0},'
+    );
+
+  (e.Indent) (#CmdPushStack s.ElemNumber) =
+    (e.Indent)
+    (e.Indent '{refalrts::icPushStack, 0, 0, ' <StrFromInt s.ElemNumber> '},');
+
+  (e.Indent) (#CmdInsertElem s.ElemNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icSpliceElem, 0, 0, ' <StrFromInt s.ElemNumber> '},'
+    );
+
+  (e.Indent) (#CmdInsertVar 'e' s.Offset) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceEVar, 0, 0, ' <StrFromInt s.Offset> '},');
+
+  (e.Indent) (#CmdInsertVar s.Mode s.Offset) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceSTVar, 0, 0, ' <StrFromInt s.Offset> '},');
+
+  (e.Indent) (#CmdInsertRange s.ElemNumber) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icSpliceRange, 0, 0, ' <StrFromInt s.ElemNumber> '},'
+    );
+
+  (e.Indent) (#CmdInsertTile s.BeginOffset s.EndOffset) =
+    (e.Indent)
+    (e.Indent
+      '{refalrts::icSpliceTile, '
+      <StrFromInt s.BeginOffset> ', ' <StrFromInt s.EndOffset> ', 0},'
+    );
+
+  (e.Indent) (#CmdSpliceToFreeList) =
+    (e.Indent)
+    (e.Indent '{refalrts::icSpliceToFreeList, 0, 0, 0},');
+
+  (e.Indent) (#CmdNextStep) =
+    (e.Indent)
+    (e.Indent '{refalrts::icNextStep, 0, 0, 0},');
+
+  (e.Indent) (#CmdTrash s.Offset) =
+    (e.Indent)
+    <Fetch
+      s.Offset
+      {
+        #LEFT-EDGE =
+          (e.Indent '{refalrts::icTrashLeftEdge, 0, 0, 0},');
+
+        s.Offset^ =
+          (e.Indent '{refalrts::icTrash, 0, 0, ' <StrFromInt s.Offset> '},');
+      }
+    >;
+
+  (e.Indent) (#CmdFail) =
+    (e.Indent)
+    (e.Indent '{refalrts::icFail, 0, 0, 0},');
+}
+
+PrintString {
+  e.String = '"' <EscapeString e.String> '", ' <PrintLength e.String>;
+}
+
+PrintInterpretCreateElem {
+  (e.Indent) s.Mode s.ElemNumber s.ElementType e.Info =
+    (e.Indent
+      '{refalrts::ic' <CreateMode s.Mode> <CreateCommandTag s.ElementType> ', '
+      '0, '
+      <CreateCommandInfo s.ElementType e.Info> ', '
+      <StrFromInt s.ElemNumber> '},'
+    );
+}
+
+CreateMode {
+  #Allocate = 'Alloc';
+  #Reinit = 'Reinit';
+  #Update = 'Update';
+}
+
+CreateCommandTag {
+  #ElChar = 'Char';
+
+  #ElName = 'Func';
+
+  #ElNumber = 'Int';
+  #ElHugeNumber = 'HugeInt';
+
+  #ElIdent = 'Ident';
+
+  #ElOpenBracket = 'Bracket';
+  #ElOpenADT = 'Bracket';
+  #ElOpenCall = 'Bracket';
+  #ElCloseBracket = 'Bracket';
+  #ElCloseADT = 'Bracket';
+  #ElCloseCall = 'Bracket';
+
+  #ElString = 'String';
+}
+
+CreateCommandInfo {
+  #ElChar s.Char = '' <EscapeChar s.Char> '';
+
+  #ElName s.NameId = <StrFromInt s.NameId>;
+
+  #ElNumber s.Number = <StrFromInt s.Number>;
+  #ElHugeNumber s.NumberId = <StrFromInt s.NumberId>;
+
+  #ElIdent s.NameId = <StrFromInt s.NameId>;
+
+  #ElOpenBracket = 'refalrts::ibOpenBracket';
+  #ElOpenADT = 'refalrts::ibOpenADT';
+  #ElOpenCall = 'refalrts::ibOpenCall';
+  #ElCloseBracket = 'refalrts::ibCloseBracket';
+  #ElCloseADT = 'refalrts::ibCloseADT';
+  #ElCloseCall = 'refalrts::ibCloseCall';
+
+  #ElString s.StringId = <StrFromInt s.StringId>;
+}
