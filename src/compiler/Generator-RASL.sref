@@ -22,6 +22,7 @@ $ENTRY GenProgram-RASL {
     <GenCommonHeaders>
     ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
     ('static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    ()
     <CheckEmptyIndent
       <MapReduce GenCommand-RASL (/* отступ */) e.RASL>
     >
