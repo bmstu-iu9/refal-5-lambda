@@ -22,6 +22,9 @@ $ENTRY GenProgram-RASL {
     <GenCommonHeaders>
     ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
     ('static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    ('#define rasl rasl_' <StrFromInt s.Cookie1> '_' <StrFromInt s.Cookie2>)
+    ()
+    ('extern const refalrts::RASLCommand rasl[];')
     ()
     <CheckEmptyIndent
       <MapReduce GenCommand-RASL (/* отступ */) e.RASL>
@@ -67,11 +70,11 @@ GenCommand-RASL {
       ');'
     );
 
-  (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name) =
+  (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
     (e.Indent)
     ('static refalrts::RASLFunction descr_' <CName e.Name> '(')
     ('  ' <NameWithScope s.ScopeClass e.Name> ',')
-    ('  raa_' <CName e.Name> ',')
+    ('  rasl + ' <StrFromInt s.Offset> ',')
     ('  functions,')
     ('  idents,')
     ('  numbers,')
@@ -162,11 +165,9 @@ GenCommand-RASL {
     (e.Indent '};')
     ();
 
-  (e.Indent) (#CmdInitRAA e.Name) =
+  (e.Indent) (#CmdInitRAA) =
     (e.Indent '  ')
-    (e.Indent
-      'static const refalrts::RASLCommand raa_' <CName e.Name> '[] = {'
-    );
+    (e.Indent 'const refalrts::RASLCommand rasl[] = {');
 
   (e.Indent '  ') (#CmdFinRAA) =
     (e.Indent)
@@ -184,10 +185,6 @@ GenCommand-RASL {
   (e.Indent) (#CmdIssueMem s.Memory) =
     (e.Indent)
     (e.Indent '{refalrts::icIssueMemory, ' <StrFromInt s.Memory> ', 0, 0},');
-
-  (e.Indent) (#CmdReserveStack 0) =
-    (e.Indent)
-    /* ничего не генерируем */;
 
   (e.Indent) (#CmdReserveStack s.Depth) =
     (e.Indent)

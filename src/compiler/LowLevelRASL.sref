@@ -130,12 +130,15 @@ ClassifyItems-RASL {
         PrepareOpenEStack
         {
           e.FunctionBody^ =
-            (#CmdInitRAA e.Name)
-            (#CmdProfileFunction)
-            (#CmdLoadConstants)
-            e.FunctionBody
-            (#CmdFinRAA)
-            (#CmdInterpretFuncDescr s.ScopeClass e.Name);
+            (#CmdInterpretFuncDescr
+              s.ScopeClass
+              (e.Name)
+              <Length-T
+                (#CmdProfileFunction)
+                (#CmdLoadConstants)
+                e.FunctionBody
+              >
+            );
         }
       >
     >;
@@ -701,34 +704,75 @@ ConvertOneInterpretCommand {
 PrepareRASL {
   (e.FuncScopeClass) e.Definitions =
     <Fetch
-      <OutlineConstants
-        (0 /* функции */)
-        (0 /* идентификаторы */)
-        (0 /* большие числа */)
-        (0 /* строки */)
-        e.Definitions
-      >
-      {
-        (#CmdFuncArray e.Functions) e.RASL-Commands =
-          (#CmdFuncArray
-            <DelAccumulator
-              <MapReduce
-                {
-                  (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
-                  (e.FuncName) =
-                    (e.Decls-B e.Decls-E)
-                    (s.ScopeClass e.FuncName);
+      e.Definitions
+      <Seq
+        (MapReduce
+          {
+            (s.CurrentOffset e.All-RASL-Commands)
+            (#CmdInterpretFuncDescr
+              s.ScopeClass (e.Name) s.RASL-Length e.RASL-Commands
+            ) =
+              (
+                <Add s.CurrentOffset s.RASL-Length>
+                e.All-RASL-Commands
+                (#CmdComment
+                  <DisplayName e.Name>
+                  ' (' <StrFromInt s.RASL-Length> '),'
+                  ' +' <StrFromInt s.CurrentOffset>
+                )
+                e.RASL-Commands
+              )
+              (#CmdInterpretFuncDescr s.ScopeClass e.Name s.CurrentOffset);
 
-                  (e.Decls) (#CreateClosure) =
-                    (e.Decls) (#GN-Entry #CreateClosure);
-                }
-                (e.FuncScopeClass)
-                e.Functions
+            (s.CurrentOffset e.All-RASL-Commands) t.OtherItem =
+              (s.CurrentOffset e.All-RASL-Commands) t.OtherItem;
+          }
+          (0 /* rasl */)
+        )
+        {
+          (s.RASL-Length e.RASL-Commands) e.Items =
+            <Fetch
+              <OutlineConstants
+                (0 /* функции */)
+                (0 /* идентификаторы */)
+                (0 /* большие числа */)
+                (0 /* строки */)
+                e.RASL-Commands
               >
-            >
-          )
-          e.RASL-Commands;
-      }
+              {
+                (#CmdFuncArray e.Functions)
+                (#CmdLabelArray e.Labels)
+                (#CmdNumberArray e.Numbers)
+                (#CmdStringArray e.Strings)
+                e.RASL-Commands^ =
+                  (#CmdFuncArray
+                    <DelAccumulator
+                      <MapReduce
+                        {
+                          (e.Decls-B (s.ScopeClass e.FuncName) e.Decls-E)
+                          (e.FuncName) =
+                            (e.Decls-B e.Decls-E)
+                            (s.ScopeClass e.FuncName);
+
+                          (e.Decls) (#CreateClosure) =
+                            (e.Decls) (#GN-Entry #CreateClosure);
+                        }
+                        (e.FuncScopeClass)
+                        e.Functions
+                      >
+                    >
+                  )
+                  (#CmdLabelArray e.Labels)
+                  (#CmdNumberArray e.Numbers)
+                  (#CmdStringArray e.Strings)
+                  e.Items
+                  (#CmdInitRAA)
+                  e.RASL-Commands
+                  (#CmdFinRAA);
+              }
+            >;
+        }
+      >
     >;
 }
 
@@ -1006,19 +1050,31 @@ OutlineConstants {
 
 PrepareOpenEStack {
   e.Commands =
-    <MapReduce
-      {
-        (#CmdReserveStack s.Depth) (#CmdEStart e.VarInfo) =
-          (#CmdReserveStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
-
-        (#CmdReserveStack s.Depth) (#CmdOnFailGoTo s.Offset) =
-          (#CmdReserveStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
-
-        (#CmdReserveStack s.Depth) t.OtherCommand =
-          (#CmdReserveStack s.Depth) t.OtherCommand;
-      }
-      (#CmdReserveStack 0)
+    <Fetch
       e.Commands
+      <Seq
+        (MapReduce
+          {
+            (#CmdReserveStack s.Depth) (#CmdEStart e.VarInfo) =
+              (#CmdReserveStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
+
+            (#CmdReserveStack s.Depth) (#CmdOnFailGoTo s.Offset) =
+              (#CmdReserveStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
+
+            (#CmdReserveStack s.Depth) t.OtherCommand =
+              (#CmdReserveStack s.Depth) t.OtherCommand;
+          }
+          (#CmdReserveStack 0)
+        )
+        {
+          (#CmdReserveStack 0) e.Commands^ =
+            /* отбрасываем ненужную команду */
+            e.Commands;
+
+          (#CmdReserveStack s.Depth) e.Commands^ =
+            (#CmdReserveStack s.Depth) e.Commands;
+        }
+      >
     >;
 }
 
