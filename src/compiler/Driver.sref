@@ -46,14 +46,7 @@ $ENTRY CompileFile {
     <Fetch
       e.SrcName
       <Seq
-        LoadSource
-        LexFolding
-        (ParseProgram <EL-Create e.SrcName>)
-        {
-          t.ErrorList e.AST =
-            <CheckProgram t.ErrorList e.AST>
-            e.AST;
-        }
+        <FrontEnd e.SrcName>
         {
           t.ErrorList e.AST =
             <Fetch
@@ -62,39 +55,8 @@ $ENTRY CompileFile {
                 #EL-NoErrors =
                   <Fetch
                     e.AST
-                    <Seq
-                      (Desugar s.MarkupContext)
-                      (HighLevelRASL <SelectOptFlags s.Opt>)
-                      (LowLevelRASL s.GenMode (e.SrcName))
-                      {
-                        e.RASL (e.NativeRASL) =
-                          <Fetch
-                            e.RASL
-                            <Seq
-                              GenProgram-RASL
-                              (SaveFile (e.OutputName '.cpp'))
-                            >
-                          >
-                          #Success e.OutputName '.cpp'
-                          <Fetch
-                            (e.NativeRASL)
-                            {
-                              () = #NoNative;
-
-                              (e.NativeRASL^) =
-                                <Fetch
-                                  e.NativeRASL
-                                  <Seq
-                                    (GenProgram-Native
-                                      (e.SrcName) (e.OutputName '.native.cpp')
-                                    )
-                                    (SaveFile (e.OutputName '.native.cpp'))
-                                  >
-                                >
-                                (e.OutputName '.native.cpp');
-                            }
-                          >;
-                      }
+                    <BackEnd
+                      s.MarkupContext s.Opt s.GenMode (e.SrcName) e.OutputName
                     >
                   >;
 
@@ -104,6 +66,58 @@ $ENTRY CompileFile {
             >;
         }
       >
+    >;
+}
+
+FrontEnd {
+  e.SrcName =
+    <Seq
+      LoadSource
+      LexFolding
+      (ParseProgram <EL-Create e.SrcName>)
+      {
+        t.ErrorList e.AST =
+          <CheckProgram t.ErrorList e.AST>
+          e.AST;
+      }
+    >;
+}
+
+BackEnd {
+  s.MarkupContext s.Opt s.GenMode (e.SrcName) e.OutputName =
+    <Seq
+      (Desugar s.MarkupContext)
+      (HighLevelRASL <SelectOptFlags s.Opt>)
+      (LowLevelRASL s.GenMode (e.SrcName))
+      {
+        e.RASL (e.NativeRASL) =
+          <Fetch
+            e.RASL
+            <Seq
+              GenProgram-RASL
+              (SaveFile (e.OutputName '.cpp'))
+            >
+          >
+          #Success e.OutputName '.cpp'
+          <Fetch
+            (e.NativeRASL)
+            {
+              () = #NoNative;
+
+              (e.NativeRASL^) =
+                <Fetch
+                  e.NativeRASL
+                  <Seq
+                    (GenProgram-Native
+                      (e.SrcName) (e.OutputName '.native.cpp')
+                    )
+                    (SaveFile (e.OutputName '.native.cpp'))
+                  >
+                >
+                (e.OutputName '.native.cpp');
+            }
+          >;
+      }
     >;
 }
 
