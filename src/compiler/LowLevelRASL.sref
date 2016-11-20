@@ -34,10 +34,11 @@ $ENTRY LowLevelRASL {
           // Числа выбраны случайно: hexdump /dev/urandom
           (<HashLittle2-Chars 4001567069 291363191 e.SrcName>)
         )
+        (Map (MarkFunctionGenMode s.GenMode))
         {
           (s.Hash1 s.Hash2) e.Items =
-            <LowLevelRASL-RASL s.GenMode s.Hash1 s.Hash2 e.Items>
-            (<LowLevelRASL-Native s.GenMode s.Hash1 s.Hash2 e.Items>);
+            <LowLevelRASL-RASL s.Hash1 s.Hash2 e.Items>
+            (<LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>);
         }
       >
     >;
@@ -72,6 +73,16 @@ CalcDigest {
     (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code);
 }
 
+MarkFunctionGenMode {
+  #OnlyInterpret (#Function s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToRASL s.ScopeClass (e.Name) e.Commands);
+
+  #OnlyDirect (#Function s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToNative s.ScopeClass (e.Name) e.Commands);
+
+  s.GenMode (s.Type e.Info) = (s.Type e.Info);
+}
+
 HashFuncName {
   s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
     <HashLittle2-Chars
@@ -86,18 +97,19 @@ CharFromScopeClass {
 }
 
 LowLevelRASL-RASL {
-  s.GenMode s.Hash1 s.Hash2 e.Items =
+  s.Hash1 s.Hash2 e.Items =
     <Fetch
       e.Items
       <Seq
         (MapReduce
-          (ClassifyItems-RASL s.GenMode)
+          ClassifyItems-RASL
           (/* Области видимости функций */)
         )
         {
           (e.FuncScopeClass) e.Definitions =
+            (#CmdModuleID s.Hash1 s.Hash2)
             <PrepareRASL
-              s.Hash1 s.Hash2 (e.FuncScopeClass) e.Definitions
+              (e.FuncScopeClass) e.Definitions
             >;
         }
       >
@@ -105,57 +117,64 @@ LowLevelRASL-RASL {
 }
 
 ClassifyItems-RASL {
-  #OnlyInterpret
   (e.FuncScopeClass)
-  (#Function s.ScopeClass (e.Name) e.Commands) =
+  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
-    <Function-Interpret s.ScopeClass (e.Name) e.Commands>;
+    <Fetch
+      e.FunctionBody
+      <Seq
+        ConvertInterpretCommands
+        PrepareOpenEStack
+        {
+          e.FunctionBody^ =
+            (#CmdInitRAA e.Name)
+            (#CmdProfileFunction)
+            (#CmdLoadConstants)
+            e.FunctionBody
+            (#CmdFinRAA)
+            (#CmdInterpretFuncDescr s.ScopeClass e.Name);
+        }
+      >
+    >;
 
-  #OnlyDirect
   (e.FuncScopeClass)
-  (#Function s.ScopeClass (e.Name) e.Commands) =
+  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
     (e.FuncScopeClass (s.ScopeClass e.Name));
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
     (e.FuncScopeClass (s.ScopeClass e.Name));
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdEnum s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdEnumDescr s.ScopeClass e.Name);
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdSwap s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdSwapDescr s.ScopeClass e.Name);
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name));
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdDefineIdent e.Name) =
     (e.FuncScopeClass);
 
-  s.GenMode
   (e.FuncScopeClass)
   (#CmdEmitNativeCode t.SrcPos e.Code) =
     (e.FuncScopeClass);
 }
 
 LowLevelRASL-Native {
-  s.GenMode s.Hash1 s.Hash2 e.Items =
+  s.Hash1 s.Hash2 e.Items =
     <Fetch
       <Map (SetCookies s.Hash1 s.Hash2) e.Items>
       <Seq
         (MapReduce
-          (ClassifyItems-Native s.GenMode)
+          ClassifyItems-Native
           (/* объявления для генерации RASL’а */)
         )
         {
@@ -173,8 +192,15 @@ LowLevelRASL-Native {
 
 SetCookies {
   s.Hash1 s.Hash2
-  (#Function s.ScopeClass (e.Name) e.Commands) =
-    (#Function
+  (#Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToRASL
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToNative
       (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
       e.Commands
     );
@@ -560,43 +586,20 @@ Freeze {
     <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
 }
 
-Function-Interpret {
-  s.ScopeClass (e.Name) e.FunctionBody =
-    <Fetch
-      e.FunctionBody
-      <Seq
-        ConvertInterpretCommands
-        PrepareOpenEStack
-        {
-          e.FunctionBody^ =
-            (#CmdInitRAA e.Name)
-            (#CmdProfileFunction)
-            (#CmdLoadConstants)
-            e.FunctionBody
-            (#CmdFinRAA);
-        }
-        {
-          e.FunctionBody^ =
-            e.FunctionBody
-            (#CmdInterpretFuncDescr s.ScopeClass e.Name);
-        }
-      >
-    >;
-}
-
 ClassifyItems-Native {
-  #OnlyInterpret
   (e.Declarations)
-  (#Function (e.Name) e.Commands) =
+  (#Function-ToRASL (e.Name) e.Commands) =
     (e.Declarations (#CmdExtern e.Name));
 
-  #OnlyDirect
   (e.Declarations)
-  (#Function (e.Name) e.Commands) =
+  (#Function-ToNative (e.Name) e.Body) =
     (e.Declarations (#CmdExtern e.Name))
-    <Function-Direct (e.Name) e.Commands>;
+    (#CmdFnStart e.Name)
+    (#CmdProfileFunction)
+    <ConvertDirectCommands e.Body>
+    (#CmdFnEnd)
+    (#CmdNativeFuncDescr e.Name);
 
-  s.GenMode
   (e.Declarations)
   (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
     (e.Declarations (#CmdExtern e.Name))
@@ -605,27 +608,22 @@ ClassifyItems-Native {
     (#CmdFnEnd)
     (#CmdNativeFuncDescr e.Name);
 
-  s.GenMode
   (e.Declarations)
   (#CmdEnum e.Name) =
     (e.Declarations (#CmdExtern e.Name));
 
-  s.GenMode
   (e.Declarations)
   (#CmdSwap e.Name) =
     (e.Declarations (#CmdExtern e.Name));
 
-  s.GenMode
   (e.Declarations)
   (#CmdDeclaration e.Name) =
     (e.Declarations (#CmdDeclaration e.Name));
 
-  s.GenMode
   (e.Declarations)
   (#CmdDefineIdent e.Name) =
     (e.Declarations (#CmdDefineIdent e.Name));
 
-  s.GenMode
   (e.Declarations)
   (#CmdEmitNativeCode t.SrcPos e.Code) =
     (e.Declarations)
@@ -700,7 +698,6 @@ ConvertOneInterpretCommand {
 }
 
 PrepareRASL {
-  s.Hash1 s.Hash2
   (e.FuncScopeClass) e.Definitions =
     <Fetch
       <OutlineConstants
@@ -712,7 +709,6 @@ PrepareRASL {
       >
       {
         (#CmdFuncArray e.Functions) e.RASL-Commands =
-          (#CmdModuleID s.Hash1 s.Hash2)
           (#CmdFuncArray
             <DelAccumulator
               <MapReduce
@@ -1025,29 +1021,20 @@ PrepareOpenEStack {
     >;
 }
 
-Function-Direct {
-  (e.Name) e.Body =
-    (#CmdFnStart e.Name)
-    (#CmdProfileFunction)
-    <Function-DirectRec e.Body>
-    (#CmdFnEnd)
-    (#CmdNativeFuncDescr e.Name);
-}
-
-Function-DirectRec {
+ConvertDirectCommands {
   (#CmdSentence e.SubCommands) e.Tail =
     (#CmdStartSentence)
-    <Function-DirectRec e.SubCommands>
+    <ConvertDirectCommands e.SubCommands>
     (#CmdEndSentence)
-    <Function-DirectRec e.Tail>;
+    <ConvertDirectCommands e.Tail>;
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
-    <Function-DirectRec e.SubCommands>
+    <ConvertDirectCommands e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
-    <Function-DirectRec e.Tail>;
+    <ConvertDirectCommands e.Tail>;
 
-  t.Command e.Tail = t.Command <Function-DirectRec e.Tail>;
+  t.Command e.Tail = t.Command <ConvertDirectCommands e.Tail>;
 
   /* пусто */ = /* пусто */;
 }
