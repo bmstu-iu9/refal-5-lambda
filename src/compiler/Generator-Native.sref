@@ -2,13 +2,10 @@
 $EXTERN Fetch, Seq, MapReduce, Inc;
 
 //FROM Generator-Common
-$EXTERN GenCommonHeaders, GenCommonTailer, BaseCName, PrintLength;
+$EXTERN GenCommonHeaders, GenCommonTailer, PrintLength;
 
 //FROM DisplayName
-$EXTERN
-//DisplayName,
-DisplayCName,
-CName;
+$EXTERN DisplayCName, CName;
 
 //FROM Library
 $EXTERN StrFromInt, Add;
@@ -97,6 +94,11 @@ PrintBracketsVarInit {
 CNameAlias {
   #CreateClosure = '& ' <CName #CreateClosure>;
   e.RegularName = 'ref_' <CName e.RegularName> '.ref.function';
+}
+
+BaseCName {
+  e.Name #Hash s.Cookie1 s.Cookie2 = <CName e.Name>;
+  e.Name = <CName e.Name>;
 }
 
 NameAndCookies {

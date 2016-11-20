@@ -2,14 +2,10 @@
 $EXTERN Fetch, Seq, MapReduce, Map;
 
 //FROM Generator-Common
-$EXTERN GenCommonHeaders, GenCommonTailer, BaseCName, PrintLength;
+$EXTERN GenCommonHeaders, GenCommonTailer, PrintLength;
 
 //FROM DisplayName
-$EXTERN
-//DisplayName,
-DisplayCName
-//, CName
-;
+$EXTERN DisplayCName, CName;
 
 //FROM Library
 $EXTERN StrFromInt;
@@ -68,16 +64,16 @@ GenCommand-RASL {
   (e.Indent) (#CmdEnumDescr s.ScopeClass e.Name) =
     (e.Indent)
     (
-      'static refalrts::RefalEmptyFunction descr_' <BaseCName e.Name> '('
+      'static refalrts::RefalEmptyFunction descr_' <CName e.Name> '('
       <NameWithScope s.ScopeClass e.Name>
       ');'
     );
 
   (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name) =
     (e.Indent)
-    ('static refalrts::RASLFunction descr_' <BaseCName e.Name> '(')
+    ('static refalrts::RASLFunction descr_' <CName e.Name> '(')
     ('  ' <NameWithScope s.ScopeClass e.Name> ',')
-    ('  raa_' <BaseCName e.Name> ',')
+    ('  raa_' <CName e.Name> ',')
     ('  functions,')
     ('  idents,')
     ('  numbers,')
@@ -88,7 +84,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdSwapDescr s.ScopeClass e.Name) =
     (e.Indent)
     (
-      'static refalrts::RefalSwap descr_' <BaseCName e.Name> '('
+      'static refalrts::RefalSwap descr_' <CName e.Name> '('
       <NameWithScope s.ScopeClass e.Name>
       ');'
     );
@@ -171,7 +167,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdInitRAA e.Name) =
     (e.Indent '  ')
     (e.Indent
-      'static const refalrts::RASLCommand raa_' <BaseCName e.Name> '[] = {'
+      'static const refalrts::RASLCommand raa_' <CName e.Name> '[] = {'
     );
 
   (e.Indent '  ') (#CmdFinRAA) =
