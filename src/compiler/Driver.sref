@@ -90,35 +90,32 @@ BackEnd {
       (HighLevelRASL <SelectOptFlags s.Opt>)
       (LowLevelRASL s.GenMode (e.SrcName))
       {
-        e.RASL (e.NativeRASL) =
-          <Fetch
-            e.RASL
-            <Seq
-              GenProgram-RASL
-              (SaveFile (e.OutputName '.cpp'))
-            >
-          >
-          #Success e.OutputName '.cpp'
-          <Fetch
-            (e.NativeRASL)
-            {
-              () = #NoNative;
+        t.RASLModule =
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.cpp'>
+          #NoNative;
 
-              (e.NativeRASL^) =
-                <Fetch
-                  e.NativeRASL
-                  <Seq
-                    (GenProgram-Native
-                      (e.SrcName) (e.OutputName '.native.cpp')
-                    )
-                    (SaveFile (e.OutputName '.native.cpp'))
-                  >
-                >
-                (e.OutputName '.native.cpp');
-            }
+        t.RASLModule t.NativeModule =
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.cpp'>
+          <BackEnd-NativeModule
+            t.NativeModule (e.SrcName) e.OutputName '.native.cpp'
           >;
       }
     >;
+}
+
+BackEnd-RASLModule {
+  t.RASLModule e.OutputName =
+    <SaveFile (e.OutputName) <GenProgram-RASL t.RASLModule>>
+    #Success e.OutputName;
+}
+
+BackEnd-NativeModule {
+  t.NativeModule (e.SrcName) e.OutputName =
+    <SaveFile
+      (e.OutputName)
+      <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
+    >
+    (e.OutputName);
 }
 
 SelectOptFlags {

@@ -19,9 +19,15 @@ FuncArguments {
 }
 
 $ENTRY GenProgram-Native {
-  (e.SourceFileName) (e.TargetFileName) e.RASL =
+  (e.SourceFileName) (e.TargetFileName)
+  (
+    (e.Declarations)
+    (e.Definitions)
+  ) =
     <Fetch
-      e.RASL
+      e.Declarations
+      (#CmdSeparator)
+      e.Definitions
       <Seq
         (MapReduce GenCommand-Native (/* отступ */))
         {

@@ -15,20 +15,23 @@ $EXTERN EscapeChar, EscapeString;
 
 
 $ENTRY GenProgram-RASL {
-  e.RASL =
-    <Fetch
-      e.RASL
-      <Seq
-        (MapReduce GenCommand-RASL (/* отступ */))
-        {
-          () /* отступ должен остаться тем же */
-          e.Generated =
-            <GenCommonHeaders>
-            e.Generated
-            <GenCommonTailer>;
-        }
-      >
-    >;
+  (
+    (#ModuleID s.Cookie1 s.Cookie2)
+    e.RASL
+  ) =
+    <GenCommonHeaders>
+    ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
+    ('static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    <CheckEmptyIndent
+      <MapReduce GenCommand-RASL (/* отступ */) e.RASL>
+    >
+    <GenCommonTailer>;
+}
+
+CheckEmptyIndent {
+  () /* отступ должен остаться тем же */
+  e.Generated =
+    e.Generated;
 }
 
 PrintDirection {
@@ -54,12 +57,6 @@ GenCommand-RASL {
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
   // Создание глобальных объектов, общие команды
-
-  (e.Indent) (#CmdModuleID s.Cookie1 s.Cookie2) =
-    (e.Indent)
-    (e.Indent 'static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
-    (e.Indent 'static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
-    ();
 
   (e.Indent) (#CmdEnumDescr s.ScopeClass e.Name) =
     (e.Indent)

@@ -12,7 +12,8 @@ $EXTERN DisplayName;
 
 /**
   <LowLevelRASL s.GenMode e.RASLAST>
-    == e.RASL (e.NativeRASL)
+    == t.RASLModule
+    == t.RASLModule t.NativeModule
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret
 */
@@ -38,7 +39,7 @@ $ENTRY LowLevelRASL {
         {
           (s.Hash1 s.Hash2) e.Items =
             <LowLevelRASL-RASL s.Hash1 s.Hash2 e.Items>
-            (<LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>);
+            <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>;
         }
       >
     >;
@@ -107,10 +108,12 @@ LowLevelRASL-RASL {
         )
         {
           (e.FuncScopeClass) e.Definitions =
-            (#CmdModuleID s.Hash1 s.Hash2)
-            <PrepareRASL
-              (e.FuncScopeClass) e.Definitions
-            >;
+            (
+              (#ModuleID s.Hash1 s.Hash2)
+              <PrepareRASL
+                (e.FuncScopeClass) e.Definitions
+              >
+            );
         }
       >
     >;
@@ -182,9 +185,7 @@ LowLevelRASL-Native {
             /* нет нативного RASL’а */;
 
           (e.Declarations) e.Definitions =
-            e.Declarations
-            (#CmdSeparator)
-            e.Definitions;
+            ((e.Declarations) (e.Definitions));
         }
       >
     >;
