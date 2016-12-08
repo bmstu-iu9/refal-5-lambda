@@ -1,6 +1,9 @@
 //FROM LibraryEx
 $EXTERN Fetch, Seq, Map, MapReduce, Inc;
 
+//FROM Escape
+$EXTERN EscapeString;
+
 $ENTRY Flex-Tokens {
   s.FirstLineNumber e.DescriptionLines =
     <Fetch
@@ -12,12 +15,17 @@ $ENTRY Flex-Tokens {
           }
         )
         LowLevelTokens
+        (Map SecondPass)
+        {
+          e.Tokens (#TEOF) = e.Tokens (#TEOF);
+          e.Tokens = e.Tokens (#TEOF);
+        }
         (MapReduce
           {
             s.LineNumber (#TNewLine '\n') =
               <Inc s.LineNumber>
               /* пропускаем */;
-              
+
             s.LineNumber (s.Type e.Info) =
               s.LineNumber (s.Type s.LineNumber e.Info);
           }
@@ -32,80 +40,392 @@ $ENTRY Flex-Tokens {
 }
 
 LowLevelTokens {
-  e.Text = <FilterTokens <Root () e.Text>>;
+  e.Text = <Root () e.Text>;
 }
 
-FilterTokens {
-  e.Tokens = e.Tokens;
+SecondPass {
+  (#TNewLine '\n') = (#TNewLine '\n');
+  (#TName e.Name) = (#TName e.Name);
+  (#TEquals '=') = (#TEquals);
+  (#TArrow '>') = (#TArrow);
+  (#TGenericEscChar 'n') = (#TChar '\n');
+  (#TGenericEscChar 't') = (#TChar '\t');
+  (#TGenericEscChar 'r') = (#TChar '\r');
+  (#TGenericEscChar '\\') = (#TChar '\\');
+  (#TChar s.Char) = (#TChar s.Char);
+  (#TStartRegexp '/') = (#TStartRegexp);
+  (#TEndRegexp '/') = (#TEndRegexp);
+  (#TStartGroup '[') = (#TStartGroup);
+  (#TEndGroup ']') = (#TEndGroup);
+  (#TInclude e.Name '}') = (#TInclude e.Name);
+  (#TSpecChar '.') = (#TAny);
+  (#TSpecChar '(') = (#TOpenBracket);
+  (#TSpecChar ')') = (#TCloseBracket);
+  (#TSpecChar '|') = (#TAlt);
+  (#TSpecChar '^') = (#TBegin);
+  (#TSpecChar '$') = (#TEnd);
+  (#TQuantifier '?') = (#TOptional);
+  (#TQuantifier '*') = (#TZeroMany);
+  (#TQuantifier '+') = (#TOneMany);
+  (#TInvertGroup '^') = (#TInvertGroup);
+  (#TGroupRange '-') = (#TGroupRange);
+  (#TUnexpecteChar s.Char) = (#TError 'Unexpected char ''' <EscapeString s.Char> '');
+  (#TokenError e.Message) = (#TError e.Message);
+  (#TStateStart '<') = (#TStateStart);
+  (#TComma ',') = (#TComma);
+  (#TStateEnd '>') = (#TStateEnd);
+  (#TEOF) = (#TEOF);
 }
+
+/*
+ *
+ */
 
 /*GEN:TOKENS
   :UpLetters: = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.
-  :Spaces: = ' \t'.
-  
+  :DownLetters: = 'abcdefghijklmnopqrstuvwxyz'.
+  :Digit: = '0123456789'.
+  :ODigit: = '01234567' .
+  :XDigit: = '0123456789ABCDEFabcdef' .
+  :NameChars: = :UpLetters: :DownLetters: :Digit:.
+  :Spaces: = ' \t\r'.
+  :GenericEsc: = '\\ntr'.
+  :Quantifier: = '?*+'.
+  :SpecChar: = '.()|^$'.
+
   Root =
     :Spaces:        !-                      Root        |
     '\n'            !#TNewLine              Root        |
-    '/'             !#StartRegexp           ReadRegexp  |
+    '/'             !#TStartRegexp          ReadRegexp  |
     '-'             !-                      ReadArrow   |
-    :UpLetters:     !#TName                 Root        |
+    '='             !#TEquals               Root        |
+    :UpLetters:                             Name        |
+    '<'             !#TStateStart           Root        |
+    ','             !#TComma                Root        |
+    '>'             !#TStateEnd             Root        |
     :Any:           !#TUnexpecteChar        Root        |
                     !#TEOF                              .
-                    
   ReadArrow =
     '>'             !#TArrow                Root        |
-                    !#TBadArrow             Root        .
-                    
+                    !#TSkip                 Root        .
+
   ReadRegexp =
-    '/'             !#EndRegexp             Root        |
-    :Any:           !#CharInRegexp          ReadRegexp  |
-                    !#UnexpectedEOFInRegexp             .
-    
+    '/'             !#TEndRegexp            Root        |
+    '\n'            !#TNewLine              Root        |
+    '\\'            !-                      EscRegexp   |
+    '['             !#TStartGroup           StartGroup  |
+    :Quantifier:    !#TQuantifier           ReadRegexp  |
+    :SpecChar:      !#TSpecChar             ReadRegexp  |
+    '{'             !-                      ReadInclude |
+    :Any:           !#TChar                 ReadRegexp  |
+                    !"Unexpected EOF in Regexp"         .
+
+  EscRegexp =
+    :GenericEsc:    !#TGenericEscChar       ReadRegexp  |
+    '/'             !#TChar                 ReadRegexp  |
+    :SpecChar:      !#TChar                 ReadRegexp  |
+    :Any:           !"Bad escaped symbol"   ReadRegexp  |
+                    !"Unexpected EOF in Regexp"         .
+
+  StartGroup =
+    '^'             !#TInvertGroup          ReadGroup   |
+                                            ReadGroup   .
+
+  ReadGroup =
+    ']'             !#TEndGroup             ReadRegexp  |
+    '-'             !#TGroupRange           ReadGroup   |
+    '\\'            !-                      EscGroup    |
+    :Any:           !#TChar                 ReadGroup   |
+                    !"Unexpected EOF in Regexp"         .
+
+  EscGroup =
+    :GenericEsc:    !#TGenericEscChar       ReadGroup   |
+    ']'             !#TChar                 ReadGroup   |
+    '-'             !#TChar                 ReadGroup   |
+    :Any:           !"Bad escaped symbol"   ReadGroup   |
+                    !"Unexpected EOF in Regexp"         .
+
+  ReadInclude =
+    :UpLetters:                             ReadBody    |
+    :Any:           !"Expected Name in Include"
+                                            ReadRegexp  |
+                    !"Unexpected EOF in Include"        .
+
+  ReadBody =
+    :NameChars:                             ReadBody    |
+    '}'             !#TInclude              ReadRegexp  |
+                    !"Unclused include"     ReadRegexp  .
+
+  Name =
+    :NameChars:                             Name        |
+                    !#TName                 Root        .
 GEN:END*/
 
 Root {
   (e.Accum) ' ' e.Text = <Root () e.Text>;
   (e.Accum) '\t' e.Text = <Root () e.Text>;
+  (e.Accum) '\r' e.Text = <Root () e.Text>;
   (e.Accum) '\n' e.Text = (#TNewLine e.Accum '\n') <Root () e.Text>;
-  (e.Accum) '/' e.Text = (#StartRegexp e.Accum '/') <ReadRegexp () e.Text>;
+  (e.Accum) '/' e.Text = (#TStartRegexp e.Accum '/') <ReadRegexp () e.Text>;
   (e.Accum) '-' e.Text = <ReadArrow () e.Text>;
-  (e.Accum) 'A' e.Text = (#TName e.Accum 'A') <Root () e.Text>;
-  (e.Accum) 'B' e.Text = (#TName e.Accum 'B') <Root () e.Text>;
-  (e.Accum) 'C' e.Text = (#TName e.Accum 'C') <Root () e.Text>;
-  (e.Accum) 'D' e.Text = (#TName e.Accum 'D') <Root () e.Text>;
-  (e.Accum) 'E' e.Text = (#TName e.Accum 'E') <Root () e.Text>;
-  (e.Accum) 'F' e.Text = (#TName e.Accum 'F') <Root () e.Text>;
-  (e.Accum) 'G' e.Text = (#TName e.Accum 'G') <Root () e.Text>;
-  (e.Accum) 'H' e.Text = (#TName e.Accum 'H') <Root () e.Text>;
-  (e.Accum) 'I' e.Text = (#TName e.Accum 'I') <Root () e.Text>;
-  (e.Accum) 'J' e.Text = (#TName e.Accum 'J') <Root () e.Text>;
-  (e.Accum) 'K' e.Text = (#TName e.Accum 'K') <Root () e.Text>;
-  (e.Accum) 'L' e.Text = (#TName e.Accum 'L') <Root () e.Text>;
-  (e.Accum) 'M' e.Text = (#TName e.Accum 'M') <Root () e.Text>;
-  (e.Accum) 'N' e.Text = (#TName e.Accum 'N') <Root () e.Text>;
-  (e.Accum) 'O' e.Text = (#TName e.Accum 'O') <Root () e.Text>;
-  (e.Accum) 'P' e.Text = (#TName e.Accum 'P') <Root () e.Text>;
-  (e.Accum) 'Q' e.Text = (#TName e.Accum 'Q') <Root () e.Text>;
-  (e.Accum) 'R' e.Text = (#TName e.Accum 'R') <Root () e.Text>;
-  (e.Accum) 'S' e.Text = (#TName e.Accum 'S') <Root () e.Text>;
-  (e.Accum) 'T' e.Text = (#TName e.Accum 'T') <Root () e.Text>;
-  (e.Accum) 'U' e.Text = (#TName e.Accum 'U') <Root () e.Text>;
-  (e.Accum) 'V' e.Text = (#TName e.Accum 'V') <Root () e.Text>;
-  (e.Accum) 'W' e.Text = (#TName e.Accum 'W') <Root () e.Text>;
-  (e.Accum) 'X' e.Text = (#TName e.Accum 'X') <Root () e.Text>;
-  (e.Accum) 'Y' e.Text = (#TName e.Accum 'Y') <Root () e.Text>;
-  (e.Accum) 'Z' e.Text = (#TName e.Accum 'Z') <Root () e.Text>;
+  (e.Accum) '=' e.Text = (#TEquals e.Accum '=') <Root () e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) '<' e.Text = (#TStateStart e.Accum '<') <Root () e.Text>;
+  (e.Accum) ',' e.Text = (#TComma e.Accum ',') <Root () e.Text>;
+  (e.Accum) '>' e.Text = (#TStateEnd e.Accum '>') <Root () e.Text>;
   (e.Accum) s.Any e.Text = (#TUnexpecteChar e.Accum s.Any) <Root () e.Text>;
   (e.Accum) = (#TEOF e.Accum);
 }
 
 ReadRegexp {
-  (e.Accum) '/' e.Text = (#EndRegexp e.Accum '/') <Root () e.Text>;
-  (e.Accum) s.Any e.Text = (#CharInRegexp e.Accum s.Any) <ReadRegexp () e.Text>;
-  (e.Accum) = (#UnexpectedEOFInRegexp e.Accum);
+  (e.Accum) '/' e.Text = (#TEndRegexp e.Accum '/') <Root () e.Text>;
+  (e.Accum) '\n' e.Text = (#TNewLine e.Accum '\n') <Root () e.Text>;
+  (e.Accum) '\\' e.Text = <EscRegexp () e.Text>;
+  (e.Accum) '[' e.Text = (#TStartGroup e.Accum '[') <StartGroup () e.Text>;
+  (e.Accum) '?' e.Text = (#TQuantifier e.Accum '?') <ReadRegexp () e.Text>;
+  (e.Accum) '*' e.Text = (#TQuantifier e.Accum '*') <ReadRegexp () e.Text>;
+  (e.Accum) '+' e.Text = (#TQuantifier e.Accum '+') <ReadRegexp () e.Text>;
+  (e.Accum) '.' e.Text = (#TSpecChar e.Accum '.') <ReadRegexp () e.Text>;
+  (e.Accum) '(' e.Text = (#TSpecChar e.Accum '(') <ReadRegexp () e.Text>;
+  (e.Accum) ')' e.Text = (#TSpecChar e.Accum ')') <ReadRegexp () e.Text>;
+  (e.Accum) '|' e.Text = (#TSpecChar e.Accum '|') <ReadRegexp () e.Text>;
+  (e.Accum) '^' e.Text = (#TSpecChar e.Accum '^') <ReadRegexp () e.Text>;
+  (e.Accum) '$' e.Text = (#TSpecChar e.Accum '$') <ReadRegexp () e.Text>;
+  (e.Accum) '{' e.Text = <ReadInclude () e.Text>;
+  (e.Accum) s.Any e.Text = (#TChar e.Accum s.Any) <ReadRegexp () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
 }
 
 ReadArrow {
   (e.Accum) '>' e.Text = (#TArrow e.Accum '>') <Root () e.Text>;
   (e.Accum) e.Text = (#TBadArrow e.Accum) <Root () e.Text>;
+}
+
+Name {
+  (e.Accum) '0' e.Text = <Name (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Name (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Name (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Name (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Name (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Name (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Name (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Name (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Name (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Name (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <Name (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <Name (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <Name (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <Name (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <Name (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <Name (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <Name (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <Name (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <Name (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <Name (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <Name (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <Name (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <Name (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <Name (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <Name (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <Name (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <Name (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <Name (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <Name (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <Name (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <Name (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <Name (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <Name (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
+  (e.Accum) e.Text = (#TName e.Accum) <Root () e.Text>;
+}
+
+EscRegexp {
+  (e.Accum) '\\' e.Text = (#TGenericEscChar e.Accum '\\') <ReadRegexp () e.Text>;
+  (e.Accum) 'n' e.Text = (#TGenericEscChar e.Accum 'n') <ReadRegexp () e.Text>;
+  (e.Accum) 't' e.Text = (#TGenericEscChar e.Accum 't') <ReadRegexp () e.Text>;
+  (e.Accum) 'r' e.Text = (#TGenericEscChar e.Accum 'r') <ReadRegexp () e.Text>;
+  (e.Accum) '/' e.Text = (#TChar e.Accum '/') <ReadRegexp () e.Text>;
+  (e.Accum) '.' e.Text = (#TChar e.Accum '.') <ReadRegexp () e.Text>;
+  (e.Accum) '(' e.Text = (#TChar e.Accum '(') <ReadRegexp () e.Text>;
+  (e.Accum) ')' e.Text = (#TChar e.Accum ')') <ReadRegexp () e.Text>;
+  (e.Accum) '|' e.Text = (#TChar e.Accum '|') <ReadRegexp () e.Text>;
+  (e.Accum) '^' e.Text = (#TChar e.Accum '^') <ReadRegexp () e.Text>;
+  (e.Accum) '$' e.Text = (#TChar e.Accum '$') <ReadRegexp () e.Text>;
+  (e.Accum) s.Any e.Text = (#TokenError 'Bad escaped symbol') <ReadRegexp () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+}
+
+StartGroup {
+  (e.Accum) '^' e.Text = (#TInvertGroup e.Accum '^') <ReadGroup () e.Text>;
+  (e.Accum) e.Text = <ReadGroup (e.Accum) e.Text>;
+}
+
+ReadInclude {
+  (e.Accum) 'A' e.Text = <ReadBody (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <ReadBody (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <ReadBody (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <ReadBody (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <ReadBody (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <ReadBody (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <ReadBody (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <ReadBody (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <ReadBody (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <ReadBody (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <ReadBody (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <ReadBody (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <ReadBody (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <ReadBody (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <ReadBody (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <ReadBody (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <ReadBody (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <ReadBody (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <ReadBody (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <ReadBody (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <ReadBody (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <ReadBody (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <ReadBody (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <ReadBody (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <ReadBody (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <ReadBody (e.Accum 'Z') e.Text>;
+  (e.Accum) s.Any e.Text = (#TokenError 'Expected Name in Include') <ReadRegexp () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in Include');
+}
+
+ReadGroup {
+  (e.Accum) ']' e.Text = (#TEndGroup e.Accum ']') <ReadRegexp () e.Text>;
+  (e.Accum) '-' e.Text = (#TGroupRange e.Accum '-') <ReadGroup () e.Text>;
+  (e.Accum) '\\' e.Text = <EscGroup () e.Text>;
+  (e.Accum) s.Any e.Text = (#TChar e.Accum s.Any) <ReadGroup () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+}
+
+ReadBody {
+  (e.Accum) '0' e.Text = <ReadBody (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <ReadBody (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <ReadBody (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <ReadBody (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <ReadBody (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <ReadBody (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <ReadBody (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <ReadBody (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <ReadBody (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <ReadBody (e.Accum '9') e.Text>;
+  (e.Accum) 'a' e.Text = <ReadBody (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <ReadBody (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <ReadBody (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <ReadBody (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <ReadBody (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <ReadBody (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <ReadBody (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <ReadBody (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <ReadBody (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <ReadBody (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <ReadBody (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <ReadBody (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <ReadBody (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <ReadBody (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <ReadBody (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <ReadBody (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <ReadBody (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <ReadBody (e.Accum 'r') e.Text>;
+  (e.Accum) 's' e.Text = <ReadBody (e.Accum 's') e.Text>;
+  (e.Accum) 't' e.Text = <ReadBody (e.Accum 't') e.Text>;
+  (e.Accum) 'u' e.Text = <ReadBody (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <ReadBody (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <ReadBody (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <ReadBody (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <ReadBody (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <ReadBody (e.Accum 'z') e.Text>;
+  (e.Accum) 'A' e.Text = <ReadBody (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <ReadBody (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <ReadBody (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <ReadBody (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <ReadBody (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <ReadBody (e.Accum 'F') e.Text>;
+  (e.Accum) 'G' e.Text = <ReadBody (e.Accum 'G') e.Text>;
+  (e.Accum) 'H' e.Text = <ReadBody (e.Accum 'H') e.Text>;
+  (e.Accum) 'I' e.Text = <ReadBody (e.Accum 'I') e.Text>;
+  (e.Accum) 'J' e.Text = <ReadBody (e.Accum 'J') e.Text>;
+  (e.Accum) 'K' e.Text = <ReadBody (e.Accum 'K') e.Text>;
+  (e.Accum) 'L' e.Text = <ReadBody (e.Accum 'L') e.Text>;
+  (e.Accum) 'M' e.Text = <ReadBody (e.Accum 'M') e.Text>;
+  (e.Accum) 'N' e.Text = <ReadBody (e.Accum 'N') e.Text>;
+  (e.Accum) 'O' e.Text = <ReadBody (e.Accum 'O') e.Text>;
+  (e.Accum) 'P' e.Text = <ReadBody (e.Accum 'P') e.Text>;
+  (e.Accum) 'Q' e.Text = <ReadBody (e.Accum 'Q') e.Text>;
+  (e.Accum) 'R' e.Text = <ReadBody (e.Accum 'R') e.Text>;
+  (e.Accum) 'S' e.Text = <ReadBody (e.Accum 'S') e.Text>;
+  (e.Accum) 'T' e.Text = <ReadBody (e.Accum 'T') e.Text>;
+  (e.Accum) 'U' e.Text = <ReadBody (e.Accum 'U') e.Text>;
+  (e.Accum) 'V' e.Text = <ReadBody (e.Accum 'V') e.Text>;
+  (e.Accum) 'W' e.Text = <ReadBody (e.Accum 'W') e.Text>;
+  (e.Accum) 'X' e.Text = <ReadBody (e.Accum 'X') e.Text>;
+  (e.Accum) 'Y' e.Text = <ReadBody (e.Accum 'Y') e.Text>;
+  (e.Accum) 'Z' e.Text = <ReadBody (e.Accum 'Z') e.Text>;
+  (e.Accum) '}' e.Text = (#TInclude e.Accum '}') <ReadRegexp () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unclused include') <ReadRegexp () e.Text>;
+}
+
+EscGroup {
+  (e.Accum) '\\' e.Text = (#TGenericEscChar e.Accum '\\') <ReadGroup () e.Text>;
+  (e.Accum) 'n' e.Text = (#TGenericEscChar e.Accum 'n') <ReadGroup () e.Text>;
+  (e.Accum) 't' e.Text = (#TGenericEscChar e.Accum 't') <ReadGroup () e.Text>;
+  (e.Accum) 'r' e.Text = (#TGenericEscChar e.Accum 'r') <ReadGroup () e.Text>;
+  (e.Accum) ']' e.Text = (#TChar e.Accum ']') <ReadGroup () e.Text>;
+  (e.Accum) '-' e.Text = (#TChar e.Accum '-') <ReadGroup () e.Text>;
+  (e.Accum) s.Any e.Text = (#TokenError 'Bad escaped symbol') <ReadGroup () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
 }
