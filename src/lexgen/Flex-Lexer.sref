@@ -1,8 +1,11 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, Map, MapReduce, Inc;
+$EXTERN Fetch, Seq, Reduce, Map, MapReduce, Inc;
 
 //FROM Escape
 $EXTERN EscapeString;
+
+//FROM Library
+$EXTERN Chr, StrFromInt, Mul, Add;
 
 $ENTRY Flex-Tokens {
   s.FirstLineNumber e.DescriptionLines =
@@ -74,7 +77,35 @@ SecondPass {
   (#TStateStart '<') = (#TStateStart);
   (#TComma ',') = (#TComma);
   (#TStateEnd '>') = (#TStateEnd);
+  (#TkHexNumber e.HexCode) = (#TChar <CharFromNum 16 e.HexCode>);
+  (#TkOctNumber e.OctCode) = (#TChar <CharFromNum 8 e.OctCode>);
   (#TEOF) = (#TEOF);
+}
+
+CharFromNum {
+  s.Base e.Chars =
+    <Chr
+      <Reduce
+        {
+          s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
+        }
+        0 <Map DigitFromChar e.Chars>
+      >
+    >;
+}
+
+DigitFromChar {
+  s.Char =
+    <Fetch
+      (0 '0') (1 '1') (2 '2') (3 '3')
+      (4 '4') (5 '5') (6 '6') (7 '7')
+      (8 '8') (9 '9') (10 'Aa') (11 'Bb')
+      (12 'Cc') (13 'Dd') (14 'Ee') (15 'Ff')
+      {
+        e.Assoc-B (s.Digit e.Vars-B s.Char e.Vars-E) e.Assoc-E =
+          s.Digit;
+      }
+    >;
 }
 
 /*
@@ -94,71 +125,107 @@ SecondPass {
   :SpecChar: = '.()|^$'.
 
   Root =
-    :Spaces:        !-                      Root        |
-    '\n'            !#TNewLine              Root        |
-    '/'             !#TStartRegexp          ReadRegexp  |
-    '-'             !-                      ReadArrow   |
-    '='             !#TEquals               Root        |
-    :UpLetters:                             Name        |
-    '<'             !#TStateStart           Root        |
-    ','             !#TComma                Root        |
-    '>'             !#TStateEnd             Root        |
-    :Any:           !#TUnexpecteChar        Root        |
-                    !#TEOF                              .
+    :Spaces:        !-                      Root                |
+    '\n'            !#TNewLine              Root                |
+    '/'             !#TStartRegexp          ReadRegexp          |
+    '-'             !-                      ReadArrow           |
+    '='             !#TEquals               Root                |
+    :Digit:                                 Number              |
+    :UpLetters:                             Name                |
+    '<'             !#TStateStart           Root                |
+    ','             !#TComma                Root                |
+    '>'             !#TStateEnd             Root                |
+    :Any:           !#TUnexpecteChar        Root                |
+                    !#TEOF                                      .
   ReadArrow =
-    '>'             !#TArrow                Root        |
-                    !#TSkip                 Root        .
+    '>'             !#TArrow                Root                |
+                    !#TSkip                 Root                .
 
   ReadRegexp =
-    '/'             !#TEndRegexp            Root        |
-    '\n'            !#TNewLine              Root        |
-    '\\'            !-                      EscRegexp   |
-    '['             !#TStartGroup           StartGroup  |
-    :Quantifier:    !#TQuantifier           ReadRegexp  |
-    :SpecChar:      !#TSpecChar             ReadRegexp  |
-    '{'             !-                      ReadInclude |
-    :Any:           !#TChar                 ReadRegexp  |
-                    !"Unexpected EOF in Regexp"         .
+    '/'             !#TEndRegexp            Root                |
+    '\n'            !#TNewLine              Root                |
+    '\\'            !-                      EscRegexp           |
+    '['             !#TStartGroup           StartGroup          |
+    :Quantifier:    !#TQuantifier           ReadRegexp          |
+    :SpecChar:      !#TSpecChar             ReadRegexp          |
+    '{'             !-                      ReadInclude         |
+    :Any:           !#TChar                 ReadRegexp          |
+                    !"Unexpected EOF in Regexp"                 .
 
   EscRegexp =
-    :GenericEsc:    !#TGenericEscChar       ReadRegexp  |
-    '/'             !#TChar                 ReadRegexp  |
-    :SpecChar:      !#TChar                 ReadRegexp  |
-    :Any:           !"Bad escaped symbol"   ReadRegexp  |
-                    !"Unexpected EOF in Regexp"         .
+    :GenericEsc:    !#TGenericEscChar       ReadRegexp          |
+    '/'             !#TChar                 ReadRegexp          |
+    'x'             !-                      EscRegexp-XCode     |
+    'X'             !-                      EscRegexp-XCode     |
+    :ODigit:                                EscRegexp-OCode     |
+    :SpecChar:      !#TChar                 ReadRegexp          |
+    :Any:           !"Bad escaped symbol"   ReadRegexp          |
+                    !"Unexpected EOF in Regexp"                 .
 
   StartGroup =
-    '^'             !#TInvertGroup          ReadGroup   |
-                                            ReadGroup   .
+    '^'             !#TInvertGroup          ReadGroup           |
+                                            ReadGroup           .
 
   ReadGroup =
-    ']'             !#TEndGroup             ReadRegexp  |
-    '-'             !#TGroupRange           ReadGroup   |
-    '\\'            !-                      EscGroup    |
-    :Any:           !#TChar                 ReadGroup   |
-                    !"Unexpected EOF in Regexp"         .
+    ']'             !#TEndGroup             ReadRegexp          |
+    '-'             !#TGroupRange           ReadGroup           |
+    '\\'            !-                      EscGroup            |
+    :Any:           !#TChar                 ReadGroup           |
+                    !"Unexpected EOF in Regexp"                 .
 
   EscGroup =
-    :GenericEsc:    !#TGenericEscChar       ReadGroup   |
-    ']'             !#TChar                 ReadGroup   |
-    '-'             !#TChar                 ReadGroup   |
-    :Any:           !"Bad escaped symbol"   ReadGroup   |
-                    !"Unexpected EOF in Regexp"         .
+    :GenericEsc:    !#TGenericEscChar       ReadGroup           |
+    ']'             !#TChar                 ReadGroup           |
+    '-'             !#TChar                 ReadGroup           |
+    'x'             !-                      EscGroup-XCode      |
+    'X'             !-                      EscGroup-XCode      |
+    :ODigit:                                EscGroup-OCode      |
+    :Any:           !"Bad escaped symbol"   ReadGroup           |
+                    !"Unexpected EOF in Regexp"                 .
 
   ReadInclude =
-    :UpLetters:                             ReadBody    |
+    :UpLetters:                             ReadBody            |
     :Any:           !"Expected Name in Include"
-                                            ReadRegexp  |
-                    !"Unexpected EOF in Include"        .
+                                            ReadRegexp          |
+                    !"Unexpected EOF in Include"                .
 
   ReadBody =
-    :NameChars:                             ReadBody    |
-    '}'             !#TInclude              ReadRegexp  |
-                    !"Unclused include"     ReadRegexp  .
+    :NameChars:                             ReadBody            |
+    '}'             !#TInclude              ReadRegexp          |
+                    !"Unclused include"     ReadRegexp          .
 
   Name =
-    :NameChars:                             Name        |
-                    !#TName                 Root        .
+    :NameChars:                             Name                |
+                    !#TName                 Root                .
+
+  Number =
+    :Digit:                                 Number              |
+                    !#TkNumber              Root                .
+
+  EscRegexp-XCode =
+    :XDigit:                                EscRegexp-XCode     |
+                    !#TkHexNumber           ReadRegexp          .
+
+  EscRegexp-OCode =
+    :ODigit:                                EscRegexp-OCode-C1  |
+                    !#TkOctNumber           ReadRegexp          .
+
+  EscRegexp-OCode-C1 =
+    :ODigit:        !#TkOctNumber           ReadRegexp          |
+                    !#TkOctNumber           ReadRegexp          .
+
+  EscGroup-XCode =
+    :XDigit:                                EscGroup-XCode      |
+                    !#TkHexNumber           ReadGroup           .
+
+  EscGroup-OCode =
+    :ODigit:                                EscGroup-OCode-C1   |
+                    !#TkOctNumber           ReadGroup           .
+
+  EscGroup-OCode-C1 =
+    :ODigit:        !#TkOctNumber           ReadGroup           |
+                    !#TkOctNumber           ReadGroup           .
+
 GEN:END*/
 
 Root {
@@ -169,6 +236,16 @@ Root {
   (e.Accum) '/' e.Text = (#TStartRegexp e.Accum '/') <ReadRegexp () e.Text>;
   (e.Accum) '-' e.Text = <ReadArrow () e.Text>;
   (e.Accum) '=' e.Text = (#TEquals e.Accum '=') <Root () e.Text>;
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
   (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
   (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
   (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
@@ -223,7 +300,21 @@ ReadRegexp {
 
 ReadArrow {
   (e.Accum) '>' e.Text = (#TArrow e.Accum '>') <Root () e.Text>;
-  (e.Accum) e.Text = (#TBadArrow e.Accum) <Root () e.Text>;
+  (e.Accum) e.Text = (#TSkip e.Accum) <Root () e.Text>;
+}
+
+Number {
+  (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <Number (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <Number (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <Number (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <Number (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <Number (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <Number (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TkNumber e.Accum) <Root () e.Text>;
 }
 
 Name {
@@ -298,6 +389,16 @@ EscRegexp {
   (e.Accum) 't' e.Text = (#TGenericEscChar e.Accum 't') <ReadRegexp () e.Text>;
   (e.Accum) 'r' e.Text = (#TGenericEscChar e.Accum 'r') <ReadRegexp () e.Text>;
   (e.Accum) '/' e.Text = (#TChar e.Accum '/') <ReadRegexp () e.Text>;
+  (e.Accum) 'x' e.Text = <EscRegexp-XCode () e.Text>;
+  (e.Accum) 'X' e.Text = <EscRegexp-XCode () e.Text>;
+  (e.Accum) '0' e.Text = <EscRegexp-OCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscRegexp-OCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscRegexp-OCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscRegexp-OCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscRegexp-OCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscRegexp-OCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscRegexp-OCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscRegexp-OCode (e.Accum '7') e.Text>;
   (e.Accum) '.' e.Text = (#TChar e.Accum '.') <ReadRegexp () e.Text>;
   (e.Accum) '(' e.Text = (#TChar e.Accum '(') <ReadRegexp () e.Text>;
   (e.Accum) ')' e.Text = (#TChar e.Accum ')') <ReadRegexp () e.Text>;
@@ -342,6 +443,44 @@ ReadInclude {
   (e.Accum) 'Z' e.Text = <ReadBody (e.Accum 'Z') e.Text>;
   (e.Accum) s.Any e.Text = (#TokenError 'Expected Name in Include') <ReadRegexp () e.Text>;
   (e.Accum) = (#TokenError 'Unexpected EOF in Include');
+}
+
+EscRegexp-XCode {
+  (e.Accum) '0' e.Text = <EscRegexp-XCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscRegexp-XCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscRegexp-XCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscRegexp-XCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscRegexp-XCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscRegexp-XCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscRegexp-XCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscRegexp-XCode (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <EscRegexp-XCode (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <EscRegexp-XCode (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <EscRegexp-XCode (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <EscRegexp-XCode (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <EscRegexp-XCode (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <EscRegexp-XCode (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <EscRegexp-XCode (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <EscRegexp-XCode (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <EscRegexp-XCode (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <EscRegexp-XCode (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <EscRegexp-XCode (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <EscRegexp-XCode (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <EscRegexp-XCode (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <EscRegexp-XCode (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TkHexNumber e.Accum) <ReadRegexp () e.Text>;
+}
+
+EscRegexp-OCode {
+  (e.Accum) '0' e.Text = <EscRegexp-OCode-C1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscRegexp-OCode-C1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscRegexp-OCode-C1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscRegexp-OCode-C1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscRegexp-OCode-C1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscRegexp-OCode-C1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscRegexp-OCode-C1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscRegexp-OCode-C1 (e.Accum '7') e.Text>;
+  (e.Accum) e.Text = (#TkOctNumber e.Accum) <ReadRegexp () e.Text>;
 }
 
 ReadGroup {
@@ -419,6 +558,18 @@ ReadBody {
   (e.Accum) e.Text = (#TokenError 'Unclused include') <ReadRegexp () e.Text>;
 }
 
+EscRegexp-OCode-C1 {
+  (e.Accum) '0' e.Text = (#TkOctNumber e.Accum '0') <ReadRegexp () e.Text>;
+  (e.Accum) '1' e.Text = (#TkOctNumber e.Accum '1') <ReadRegexp () e.Text>;
+  (e.Accum) '2' e.Text = (#TkOctNumber e.Accum '2') <ReadRegexp () e.Text>;
+  (e.Accum) '3' e.Text = (#TkOctNumber e.Accum '3') <ReadRegexp () e.Text>;
+  (e.Accum) '4' e.Text = (#TkOctNumber e.Accum '4') <ReadRegexp () e.Text>;
+  (e.Accum) '5' e.Text = (#TkOctNumber e.Accum '5') <ReadRegexp () e.Text>;
+  (e.Accum) '6' e.Text = (#TkOctNumber e.Accum '6') <ReadRegexp () e.Text>;
+  (e.Accum) '7' e.Text = (#TkOctNumber e.Accum '7') <ReadRegexp () e.Text>;
+  (e.Accum) e.Text = (#TkOctNumber e.Accum) <ReadRegexp () e.Text>;
+}
+
 EscGroup {
   (e.Accum) '\\' e.Text = (#TGenericEscChar e.Accum '\\') <ReadGroup () e.Text>;
   (e.Accum) 'n' e.Text = (#TGenericEscChar e.Accum 'n') <ReadGroup () e.Text>;
@@ -426,6 +577,66 @@ EscGroup {
   (e.Accum) 'r' e.Text = (#TGenericEscChar e.Accum 'r') <ReadGroup () e.Text>;
   (e.Accum) ']' e.Text = (#TChar e.Accum ']') <ReadGroup () e.Text>;
   (e.Accum) '-' e.Text = (#TChar e.Accum '-') <ReadGroup () e.Text>;
+  (e.Accum) 'x' e.Text = <EscGroup-XCode () e.Text>;
+  (e.Accum) 'X' e.Text = <EscGroup-XCode () e.Text>;
+  (e.Accum) '0' e.Text = <EscGroup-OCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscGroup-OCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscGroup-OCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscGroup-OCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscGroup-OCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscGroup-OCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscGroup-OCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscGroup-OCode (e.Accum '7') e.Text>;
   (e.Accum) s.Any e.Text = (#TokenError 'Bad escaped symbol') <ReadGroup () e.Text>;
   (e.Accum) = (#TokenError 'Unexpected EOF in Regexp');
+}
+
+EscGroup-XCode {
+  (e.Accum) '0' e.Text = <EscGroup-XCode (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscGroup-XCode (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscGroup-XCode (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscGroup-XCode (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscGroup-XCode (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscGroup-XCode (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscGroup-XCode (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscGroup-XCode (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <EscGroup-XCode (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <EscGroup-XCode (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <EscGroup-XCode (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <EscGroup-XCode (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <EscGroup-XCode (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <EscGroup-XCode (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <EscGroup-XCode (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <EscGroup-XCode (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <EscGroup-XCode (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <EscGroup-XCode (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <EscGroup-XCode (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <EscGroup-XCode (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <EscGroup-XCode (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <EscGroup-XCode (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TkHexNumber e.Accum) <ReadGroup () e.Text>;
+}
+
+EscGroup-OCode {
+  (e.Accum) '0' e.Text = <EscGroup-OCode-C1 (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <EscGroup-OCode-C1 (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <EscGroup-OCode-C1 (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <EscGroup-OCode-C1 (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <EscGroup-OCode-C1 (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <EscGroup-OCode-C1 (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <EscGroup-OCode-C1 (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <EscGroup-OCode-C1 (e.Accum '7') e.Text>;
+  (e.Accum) e.Text = (#TkOctNumber e.Accum) <ReadGroup () e.Text>;
+}
+
+EscGroup-OCode-C1 {
+  (e.Accum) '0' e.Text = (#TkOctNumber e.Accum '0') <ReadGroup () e.Text>;
+  (e.Accum) '1' e.Text = (#TkOctNumber e.Accum '1') <ReadGroup () e.Text>;
+  (e.Accum) '2' e.Text = (#TkOctNumber e.Accum '2') <ReadGroup () e.Text>;
+  (e.Accum) '3' e.Text = (#TkOctNumber e.Accum '3') <ReadGroup () e.Text>;
+  (e.Accum) '4' e.Text = (#TkOctNumber e.Accum '4') <ReadGroup () e.Text>;
+  (e.Accum) '5' e.Text = (#TkOctNumber e.Accum '5') <ReadGroup () e.Text>;
+  (e.Accum) '6' e.Text = (#TkOctNumber e.Accum '6') <ReadGroup () e.Text>;
+  (e.Accum) '7' e.Text = (#TkOctNumber e.Accum '7') <ReadGroup () e.Text>;
+  (e.Accum) e.Text = (#TkOctNumber e.Accum) <ReadGroup () e.Text>;
 }
