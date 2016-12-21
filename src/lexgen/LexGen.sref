@@ -26,6 +26,9 @@ $EXTERN ErrorAt;
 //FROM Flex-Lexer
 $EXTERN Flex-Tokens;
 
+//FROM Flex-Parse
+$EXTERN Flex-Parse;
+
 
 $ENTRY Go {
   =
@@ -148,7 +151,6 @@ Transform {
     >;
 }
 
-Flex-Parse { e.X = e.X; }
 Flex-Compile {
   e.AnyInput =
     <Map
