@@ -1050,3 +1050,48 @@ $ENTRY Explode {
   return refalrts::cSuccess;
 %%
 }
+
+$ENTRY FWriteBytes {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+
+  if (
+    ! refalrts::svar_left(pfile_handle, content_b, content_e)
+    || refalrts::cDataFile != pfile_handle->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+
+  int fputc_return = 0;
+
+  while (fputc_return != EOF && ! refalrts::empty_seq(content_b, content_e)) {
+    switch (content_b->tag) {
+      case refalrts::cDataChar:
+        fputc_return = fputc(content_b->char_info, handle);
+        break;
+
+      case refalrts::cDataNumber:
+        fputc_return = fputc(content_b->number_info & 0xFF, handle);
+        break;
+
+      default:
+        return refalrts::cRecognitionImpossible;
+    }
+
+    refalrts::move_left(content_b, content_e);
+  }
+
+  if (fputc_return == EOF) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}

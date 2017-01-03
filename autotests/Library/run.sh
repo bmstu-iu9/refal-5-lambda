@@ -128,6 +128,13 @@ run_all_tests() {
     cleanup Library-FOpen-extended-mode
   fi
 
+  if [ -e Library-FWriteBytes ]; then
+    echo Pass Library-FWriteBytes test...
+    run_exe Library-FWriteBytes
+    compare __written_file.txt 2lines-no-eol.txt
+    cleanup Library-FWriteBytes
+  fi
+
   rm Library.cpp Library.native.cpp Library.sref
 }
 

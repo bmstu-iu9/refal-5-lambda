@@ -140,6 +140,13 @@ setlocal
     call :CLEANUP Library-FOpen-extended-mode
   )
 
+  if exist Library-FWriteBytes.exe (
+    echo Pass Library-FWriteBytes test...
+    call :RUN_EXE Library-FWriteBytes || exit /b 1
+    call :COMPARE __written_file.txt 2lines-no-eol.txt || exit /b 1
+    call :CLEANUP Library-FWriteBytes
+  )
+
   erase Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF
