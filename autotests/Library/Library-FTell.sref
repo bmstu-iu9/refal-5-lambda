@@ -1,0 +1,21 @@
+//FROM Library
+$EXTERN FOpen, FTell, FReadBytes, FClose;
+
+$ENTRY Go {
+  = <Test-FTell <FOpen ('rb') 'nonprint.bin'>>;
+}
+
+Test-FTell {
+  s.FileHandle =
+    <Eq 0 <FTell s.FileHandle>>
+    <NIL <FReadBytes s.FileHandle 15>>
+    <Eq 15 <FTell s.FileHandle>>
+    <NIL <FReadBytes s.FileHandle 15>>
+    <Eq 30 <FTell s.FileHandle>>
+    <NIL <FReadBytes s.FileHandle 10>>
+    <Eq 32 <FTell s.FileHandle>>
+    <FClose s.FileHandle>;
+}
+
+Eq { s.X s.X = ; }
+NIL { e.Any = /* пусто */; }

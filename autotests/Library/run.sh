@@ -24,7 +24,8 @@ run_all_tests() {
     Library-SymbCompare \
     Library-SymbType \
     Library-Implode-Explode \
-    Library-FReadBytes
+    Library-FReadBytes \
+    Library-FTell
 
   simple_tests fail \
     Library-Math-Fail \
