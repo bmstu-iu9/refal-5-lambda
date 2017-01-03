@@ -88,10 +88,20 @@ DoLoadFile {
 
 $ENTRY SaveFile {
   (e.FileName) e.Lines =
+    <SaveFile-Handle <FOpen 'w' e.FileName> e.Lines>;
+}
+
+$ENTRY AppendFile {
+  (e.FileName) e.Lines =
+    <SaveFile-Handle <FOpen 'a' e.FileName> e.Lines>;
+}
+
+$ENTRY SaveFile-Handle {
+  s.FileHandle e.Lines =
     <FClose
       <Reduce
         WriteBracketLine
-        <FOpen 'w' e.FileName>
+        s.FileHandle
         e.Lines
       >
     >;

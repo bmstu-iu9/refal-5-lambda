@@ -115,6 +115,12 @@ run_all_tests() {
     cleanup Library-System
   fi
 
+  if [ -e Library-FOpen-Append ]; then
+    echo Pass Library-FOpen-Append test...
+    run_exe Library-FOpen-Append
+    cleanup Library-FOpen-Append
+  fi
+
   rm Library.cpp Library.native.cpp Library.sref
 }
 

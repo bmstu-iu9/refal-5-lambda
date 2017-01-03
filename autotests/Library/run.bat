@@ -127,6 +127,12 @@ setlocal
     call :CLEANUP Library-System
   )
 
+  if exist Library-FOpen-Append.exe (
+    echo Pass Library-FOpen-Append test...
+    call :RUN_EXE Library-FOpen-Append || exit /b 1
+    call :CLEANUP Library-FOpen-Append
+  )
+
   erase Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF

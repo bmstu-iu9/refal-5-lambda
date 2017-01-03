@@ -379,6 +379,8 @@ $ENTRY FOpen {
     mode = "r";
   } else if (refalrts::char_left('w', content_b, content_e)) {
     mode = "w";
+  } else if (refalrts::char_left('a', content_b, content_e)) {
+    mode = "a";
   } else {
     return refalrts::cRecognitionImpossible;
   }
