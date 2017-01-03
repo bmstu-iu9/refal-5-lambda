@@ -5,30 +5,8 @@
 */
 #include <stddef.h>
 
-template <bool b, typename T, typename U>
-struct If;
+using refalrts::UInt32;
 
-template <typename T, typename U>
-struct If<true, T, U> {
-  typedef T Result;
-};
-
-template <typename T, typename U>
-struct If<false, T, U> {
-  typedef U Result;
-};
-
-struct NotAInteger;
-
-typedef If<
-  sizeof(unsigned int) == 4,
-  unsigned int,
-  If<
-    sizeof(unsigned long) == 4,
-    unsigned long,
-    NotAInteger
-  >::Result
->::Result UInt32;
 %%
 
 $ENTRY HashLittle2-Chars {

@@ -66,7 +66,7 @@ private:
   void register_me();
 };
 
-typedef unsigned long RefalNumber;
+typedef UInt32 RefalNumber;
 
 
 struct RefalNativeFunction: public RefalFunction {

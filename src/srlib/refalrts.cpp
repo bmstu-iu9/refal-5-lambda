@@ -3129,7 +3129,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataNumber:
-            fprintf(output, "%lu ", begin->number_info);
+            fprintf(output, "%u ", begin->number_info);
             refalrts::move_left(begin, end);
             continue;
 
@@ -3217,7 +3217,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosureHead:
-            fprintf(output, "[%ld] ", begin->number_info);
+            fprintf(output, "[%d] ", begin->number_info);
             refalrts::move_left(begin, end);
             continue;
 
