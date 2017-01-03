@@ -34,6 +34,7 @@ setlocal
     Library-SymbCompare ^
     Library-SymbType ^
     Library-Implode-Explode ^
+    Library-FReadBytes ^
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^

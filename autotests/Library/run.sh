@@ -23,7 +23,8 @@ run_all_tests() {
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
     Library-SymbType \
-    Library-Implode-Explode
+    Library-Implode-Explode \
+    Library-FReadBytes
 
   simple_tests fail \
     Library-Math-Fail \
