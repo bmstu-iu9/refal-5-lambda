@@ -133,6 +133,13 @@ setlocal
     call :CLEANUP Library-FOpen-Append
   )
 
+  if exist Library-FOpen-extended-mode.exe (
+    echo Pass Library-FOpen-extended-mode test...
+    call :RUN_EXE Library-FOpen-extended-mode || exit /b 1
+    call :COMPARE __written_file.txt 2lines.txt || exit /b 1
+    call :CLEANUP Library-FOpen-extended-mode
+  )
+
   erase Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF

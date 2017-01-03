@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <string>
 
 //FROM refalrts
 
@@ -373,7 +374,10 @@ $ENTRY FOpen {
   refalrts::Iter pfunc_name =
     refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  const char *mode;
+  std::string mode;
+
+  refalrts::Iter mode_b = 0;
+  refalrts::Iter mode_e = 0;
 
   if (refalrts::char_left('r', content_b, content_e)) {
     mode = "r";
@@ -381,6 +385,16 @@ $ENTRY FOpen {
     mode = "w";
   } else if (refalrts::char_left('a', content_b, content_e)) {
     mode = "a";
+  } else if (refalrts::brackets_left(mode_b, mode_e, content_b, content_e)) {
+    char mode_str[100] = { '\0' };  // должно хватить
+    unsigned len =
+      refalrts::read_chars(mode_str, sizeof(mode_str) - 1, mode_b, mode_e);
+
+    if (! refalrts::empty_seq(mode_b, mode_e) || len == 0) {
+      return refalrts::cRecognitionImpossible;
+    }
+
+    mode = mode_str;
   } else {
     return refalrts::cRecognitionImpossible;
   }
@@ -395,7 +409,7 @@ $ENTRY FOpen {
 
   refalrts::Iter file_ptr = arg_begin;
   file_ptr->tag = refalrts::cDataFile;
-  if (FILE *f = fopen(filename, mode)) {
+  if (FILE *f = fopen(filename, mode.c_str())) {
     file_ptr->file_info = f;
   } else {
     return refalrts::cRecognitionImpossible;

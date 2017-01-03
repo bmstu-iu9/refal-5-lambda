@@ -121,6 +121,13 @@ run_all_tests() {
     cleanup Library-FOpen-Append
   fi
 
+  if [ -e Library-FOpen-extended-mode ]; then
+    echo Pass Library-FOpen-extended-mode test...
+    run_exe Library-FOpen-extended-mode
+    compare __written_file.txt 2lines.txt
+    cleanup Library-FOpen-extended-mode
+  fi
+
   rm Library.cpp Library.native.cpp Library.sref
 }
 
