@@ -45,200 +45,6 @@ $ENTRY LowLevelRASL {
     >;
 }
 
-CalcDigest {
-  (s.Hash1 s.Hash2) (#Function s.ScopeClass (e.Name) e.Commands) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'R'>)
-    (#Function s.ScopeClass (e.Name) e.Commands);
-
-  (s.Hash1 s.Hash2)
-  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'N'>)
-    (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
-
-  (s.Hash1 s.Hash2) (#CmdEnum s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
-    (#CmdEnum s.ScopeClass e.Name);
-
-  (s.Hash1 s.Hash2) (#CmdSwap s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
-    (#CmdSwap s.ScopeClass e.Name);
-
-  (s.Hash1 s.Hash2) (#CmdDeclaration s.ScopeClass e.Name) =
-    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
-    (#CmdDeclaration s.ScopeClass e.Name);
-
-  (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name) =
-    (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name);
-
-  (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code) =
-    (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code);
-}
-
-MarkFunctionGenMode {
-  #OnlyInterpret (#Function s.ScopeClass (e.Name) e.Commands) =
-    (#Function-ToRASL s.ScopeClass (e.Name) e.Commands);
-
-  #OnlyDirect (#Function s.ScopeClass (e.Name) e.Commands) =
-    (#Function-ToNative s.ScopeClass (e.Name) e.Commands);
-
-  s.GenMode (s.Type e.Info) = (s.Type e.Info);
-}
-
-HashFuncName {
-  s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
-    <HashLittle2-Chars
-      s.Hash1 s.Hash2
-      <CharFromScopeClass s.ScopeClass> <DisplayName e.Name> s.Sign
-    >;
-}
-
-CharFromScopeClass {
-  #GN-Entry = 'E';
-  #GN-Local = 'L';
-}
-
-LowLevelRASL-RASL {
-  s.Hash1 s.Hash2 e.Items =
-    <Fetch
-      e.Items
-      <Seq
-        (MapReduce
-          ClassifyItems-RASL
-          (/* Области видимости функций */)
-        )
-        {
-          (e.FuncScopeClass) e.Definitions =
-            (
-              (#ModuleID s.Hash1 s.Hash2)
-              <PrepareRASL
-                (e.FuncScopeClass) e.Definitions
-              >
-            );
-        }
-      >
-    >;
-}
-
-ClassifyItems-RASL {
-  (e.FuncScopeClass)
-  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    <Fetch
-      e.FunctionBody
-      <Seq
-        ConvertInterpretCommands
-        PrepareOpenEStack
-        {
-          e.FunctionBody^ =
-            (#CmdInterpretFuncDescr
-              s.ScopeClass
-              (e.Name)
-              <Length-T
-                (#CmdProfileFunction)
-                (#CmdLoadConstants)
-                e.FunctionBody
-              >
-            );
-        }
-      >
-    >;
-
-  (e.FuncScopeClass)
-  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
-
-  (e.FuncScopeClass)
-  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
-
-  (e.FuncScopeClass)
-  (#CmdEnum s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdEnumDescr s.ScopeClass e.Name);
-
-  (e.FuncScopeClass)
-  (#CmdSwap s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name))
-    (#CmdSwapDescr s.ScopeClass e.Name);
-
-  (e.FuncScopeClass)
-  (#CmdDeclaration s.ScopeClass e.Name) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
-
-  (e.FuncScopeClass)
-  (#CmdDefineIdent e.Name) =
-    (e.FuncScopeClass);
-
-  (e.FuncScopeClass)
-  (#CmdEmitNativeCode t.SrcPos e.Code) =
-    (e.FuncScopeClass);
-}
-
-LowLevelRASL-Native {
-  s.Hash1 s.Hash2 e.Items =
-    <Fetch
-      <Map (SetCookies s.Hash1 s.Hash2) e.Items>
-      <Seq
-        (MapReduce
-          ClassifyItems-Native
-          (/* объявления для генерации RASL’а */)
-        )
-        {
-          (e.Declarations) /* нет нативных определений */ =
-            /* нет нативного RASL’а */;
-
-          (e.Declarations) e.Definitions =
-            ((e.Declarations) (e.Definitions));
-        }
-      >
-    >;
-}
-
-SetCookies {
-  s.Hash1 s.Hash2
-  (#Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
-    (#Function-ToRASL
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
-      e.Commands
-    );
-
-  s.Hash1 s.Hash2
-  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
-    (#Function-ToNative
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
-      e.Commands
-    );
-
-  s.Hash1 s.Hash2
-  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (#CmdNativeFunction
-      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
-      t.SrcPos e.Code
-    );
-
-  s.Hash1 s.Hash2 (#CmdEnum s.ScopeClass e.Name) =
-    (#CmdEnum <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
-
-  s.Hash1 s.Hash2 (#CmdSwap s.ScopeClass e.Name) =
-    (#CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
-
-  s.Hash1 s.Hash2 (#CmdDeclaration s.ScopeClass e.Name) =
-    (#CmdDeclaration
-      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
-    );
-
-  s.Hash1 s.Hash2 (#CmdDefineIdent e.Name) =
-    (#CmdDefineIdent e.Name);
-
-  s.Hash1 s.Hash2 (#CmdEmitNativeCode t.SrcPos e.Code) =
-    (#CmdEmitNativeCode t.SrcPos e.Code);
-}
-
-MingleName {
-  #GN-Entry e.Name s.Hash1 s.Hash2 = e.Name #Hash 0 0;
-  #GN-Local e.Name s.Hash1 s.Hash2 = e.Name #Hash s.Hash1 s.Hash2;
-}
-
 AddSavers {
   (#CmdIssueMem s.Memory) e.Commands =
     <DoAddSavers
@@ -535,12 +341,12 @@ CheckSaved {
     (e.Alive-B s.BracketNumber e.Alive-E) (e.Frozen) s.BracketNumber;
 
   s.ContextTop (e.Alive) (e.Frozen) s.BracketNumber =
-    <CheckSaved-Fronen
+    <CheckSaved-Frozen
       s.ContextTop (e.Alive) () (e.Frozen) s.BracketNumber
     >;
 }
 
-CheckSaved-Fronen {
+CheckSaved-Frozen {
   s.ContextTop (e.Alive) (e.ScannedFrozen)
   (e.Frozen-B (s.BracketNumber #Frozen) e.Frozen-E) s.BracketNumber =
     <Add s.ContextTop 2>
@@ -550,7 +356,7 @@ CheckSaved-Fronen {
 
   s.ContextTop (e.Alive) (e.ScannedFrozen)
   (e.Frozen-B (s.BracketNumber s.NewNumber) e.Frozen-E) s.BracketNumber =
-    <CheckSaved-Fronen
+    <CheckSaved-Frozen
       s.ContextTop (e.Alive)
       (e.ScannedFrozen e.Frozen-B (s.BracketNumber s.NewNumber))
       (e.Frozen-E) s.NewNumber
@@ -590,48 +396,133 @@ Freeze {
     <Map { s.Number = (s.Number #Frozen); } e.BracketNumbers>;
 }
 
-ClassifyItems-Native {
-  (e.Declarations)
-  (#Function-ToRASL (e.Name) e.Commands) =
-    (e.Declarations (#CmdExtern e.Name));
+CalcDigest {
+  (s.Hash1 s.Hash2) (#Function s.ScopeClass (e.Name) e.Commands) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'R'>)
+    (#Function s.ScopeClass (e.Name) e.Commands);
 
-  (e.Declarations)
-  (#Function-ToNative (e.Name) e.Body) =
-    (e.Declarations (#CmdExtern e.Name))
-    (#CmdFnStart e.Name)
-    (#CmdProfileFunction)
-    <ConvertDirectCommands e.Body>
-    (#CmdFnEnd)
-    (#CmdNativeFuncDescr e.Name);
+  (s.Hash1 s.Hash2)
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'N'>)
+    (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code);
 
-  (e.Declarations)
-  (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
-    (e.Declarations (#CmdExtern e.Name))
-    (#CmdFnStart e.Name)
-    (#CmdEmitNativeCode t.SrcPos e.Code)
-    (#CmdFnEnd)
-    (#CmdNativeFuncDescr e.Name);
+  (s.Hash1 s.Hash2) (#CmdEnum s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'E'>)
+    (#CmdEnum s.ScopeClass e.Name);
 
-  (e.Declarations)
-  (#CmdEnum e.Name) =
-    (e.Declarations (#CmdExtern e.Name));
+  (s.Hash1 s.Hash2) (#CmdSwap s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'S'>)
+    (#CmdSwap s.ScopeClass e.Name);
 
-  (e.Declarations)
-  (#CmdSwap e.Name) =
-    (e.Declarations (#CmdExtern e.Name));
+  (s.Hash1 s.Hash2) (#CmdDeclaration s.ScopeClass e.Name) =
+    (<HashFuncName s.Hash1 s.Hash2 s.ScopeClass e.Name 'D'>)
+    (#CmdDeclaration s.ScopeClass e.Name);
 
-  (e.Declarations)
-  (#CmdDeclaration e.Name) =
-    (e.Declarations (#CmdDeclaration e.Name));
+  (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name) =
+    (s.Hash1 s.Hash2) (#CmdDefineIdent e.Name);
 
-  (e.Declarations)
+  (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (s.Hash1 s.Hash2) (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+HashFuncName {
+  s.Hash1 s.Hash2 s.ScopeClass e.Name s.Sign =
+    <HashLittle2-Chars
+      s.Hash1 s.Hash2
+      <CharFromScopeClass s.ScopeClass> <DisplayName e.Name> s.Sign
+    >;
+}
+
+CharFromScopeClass {
+  #GN-Entry = 'E';
+  #GN-Local = 'L';
+}
+
+MarkFunctionGenMode {
+  #OnlyInterpret (#Function s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToRASL s.ScopeClass (e.Name) e.Commands);
+
+  #OnlyDirect (#Function s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToNative s.ScopeClass (e.Name) e.Commands);
+
+  s.GenMode (s.Type e.Info) = (s.Type e.Info);
+}
+
+LowLevelRASL-RASL {
+  s.Hash1 s.Hash2 e.Items =
+    <Fetch
+      e.Items
+      <Seq
+        (MapReduce
+          ClassifyItems-RASL
+          (/* Области видимости функций */)
+        )
+        {
+          (e.FuncScopeClass) e.Definitions =
+            (
+              (#ModuleID s.Hash1 s.Hash2)
+              <PrepareRASL
+                (e.FuncScopeClass) e.Definitions
+              >
+            );
+        }
+      >
+    >;
+}
+
+ClassifyItems-RASL {
+  (e.FuncScopeClass)
+  (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    <Fetch
+      e.FunctionBody
+      <Seq
+        ConvertInterpretCommands
+        PrepareOpenEStack
+        {
+          e.FunctionBody^ =
+            (#CmdInterpretFuncDescr
+              s.ScopeClass
+              (e.Name)
+              <Length-T
+                (#CmdProfileFunction)
+                (#CmdLoadConstants)
+                e.FunctionBody
+              >
+            );
+        }
+      >
+    >;
+
+  (e.FuncScopeClass)
+  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+    (e.FuncScopeClass (s.ScopeClass e.Name));
+
+  (e.FuncScopeClass)
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (e.FuncScopeClass (s.ScopeClass e.Name));
+
+  (e.FuncScopeClass)
+  (#CmdEnum s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdEnumDescr s.ScopeClass e.Name);
+
+  (e.FuncScopeClass)
+  (#CmdSwap s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdSwapDescr s.ScopeClass e.Name);
+
+  (e.FuncScopeClass)
+  (#CmdDeclaration s.ScopeClass e.Name) =
+    (e.FuncScopeClass (s.ScopeClass e.Name));
+
+  (e.FuncScopeClass)
   (#CmdDefineIdent e.Name) =
-    (e.Declarations (#CmdDefineIdent e.Name));
+    (e.FuncScopeClass);
 
-  (e.Declarations)
+  (e.FuncScopeClass)
   (#CmdEmitNativeCode t.SrcPos e.Code) =
-    (e.Declarations)
-    (#CmdEmitNativeCode t.SrcPos e.Code);
+    (e.FuncScopeClass);
 }
 
 ConvertInterpretCommands {
@@ -1076,6 +967,115 @@ PrepareOpenEStack {
         }
       >
     >;
+}
+
+LowLevelRASL-Native {
+  s.Hash1 s.Hash2 e.Items =
+    <Fetch
+      <Map (SetCookies s.Hash1 s.Hash2) e.Items>
+      <Seq
+        (MapReduce
+          ClassifyItems-Native
+          (/* объявления для генерации RASL’а */)
+        )
+        {
+          (e.Declarations) /* нет нативных определений */ =
+            /* нет нативного RASL’а */;
+
+          (e.Declarations) e.Definitions =
+            ((e.Declarations) (e.Definitions));
+        }
+      >
+    >;
+}
+
+SetCookies {
+  s.Hash1 s.Hash2
+  (#Function-ToRASL s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToRASL
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
+    (#Function-ToNative
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      e.Commands
+    );
+
+  s.Hash1 s.Hash2
+  (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
+    (#CmdNativeFunction
+      (<MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>)
+      t.SrcPos e.Code
+    );
+
+  s.Hash1 s.Hash2 (#CmdEnum s.ScopeClass e.Name) =
+    (#CmdEnum <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdSwap s.ScopeClass e.Name) =
+    (#CmdSwap <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>);
+
+  s.Hash1 s.Hash2 (#CmdDeclaration s.ScopeClass e.Name) =
+    (#CmdDeclaration
+      <MingleName s.ScopeClass e.Name s.Hash1 s.Hash2>
+    );
+
+  s.Hash1 s.Hash2 (#CmdDefineIdent e.Name) =
+    (#CmdDefineIdent e.Name);
+
+  s.Hash1 s.Hash2 (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (#CmdEmitNativeCode t.SrcPos e.Code);
+}
+
+MingleName {
+  #GN-Entry e.Name s.Hash1 s.Hash2 = e.Name #Hash 0 0;
+  #GN-Local e.Name s.Hash1 s.Hash2 = e.Name #Hash s.Hash1 s.Hash2;
+}
+
+ClassifyItems-Native {
+  (e.Declarations)
+  (#Function-ToRASL (e.Name) e.Commands) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#Function-ToNative (e.Name) e.Body) =
+    (e.Declarations (#CmdExtern e.Name))
+    (#CmdFnStart e.Name)
+    (#CmdProfileFunction)
+    <ConvertDirectCommands e.Body>
+    (#CmdFnEnd)
+    (#CmdNativeFuncDescr e.Name);
+
+  (e.Declarations)
+  (#CmdNativeFunction (e.Name) t.SrcPos e.Code) =
+    (e.Declarations (#CmdExtern e.Name))
+    (#CmdFnStart e.Name)
+    (#CmdEmitNativeCode t.SrcPos e.Code)
+    (#CmdFnEnd)
+    (#CmdNativeFuncDescr e.Name);
+
+  (e.Declarations)
+  (#CmdEnum e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdSwap e.Name) =
+    (e.Declarations (#CmdExtern e.Name));
+
+  (e.Declarations)
+  (#CmdDeclaration e.Name) =
+    (e.Declarations (#CmdDeclaration e.Name));
+
+  (e.Declarations)
+  (#CmdDefineIdent e.Name) =
+    (e.Declarations (#CmdDefineIdent e.Name));
+
+  (e.Declarations)
+  (#CmdEmitNativeCode t.SrcPos e.Code) =
+    (e.Declarations)
+    (#CmdEmitNativeCode t.SrcPos e.Code);
 }
 
 ConvertDirectCommands {
