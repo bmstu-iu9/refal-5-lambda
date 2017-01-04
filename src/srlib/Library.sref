@@ -30,6 +30,9 @@ $LABEL TypeCharacter;
 $LABEL TypeFunction;
 $LABEL TypeFile;
 $LABEL TypeIdentifier;
+$LABEL CURRENT;
+$LABEL BEGIN;
+$LABEL END;
 
 // Математические операции
 
@@ -1180,6 +1183,64 @@ $ENTRY FTell {
 
   refalrts::reinit_number(arg_begin, static_cast<refalrts::RefalNumber>(pos));
   refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY FSeek {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pfile_handle = 0;
+  refalrts::Iter porigin = 0;
+  refalrts::Iter psign = 0;
+  refalrts::Iter poffset = 0;
+
+  if (
+    ! refalrts::svar_left(pfile_handle, content_b, content_e)
+    || refalrts::cDataFile != pfile_handle->tag
+    || ! refalrts::svar_left(porigin, content_b, content_e)
+    || refalrts::cDataIdentifier != porigin->tag
+    || ! refalrts::svar_left(psign, content_b, content_e)
+    || refalrts::cDataChar != psign->tag
+    || ! refalrts::svar_left(poffset, content_b, content_e)
+    || refalrts::cDataNumber != poffset->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+
+  int origin;
+  if (USE_IDENT(BEGIN) == porigin->ident_info) {
+    origin = SEEK_SET;
+  } else if (USE_IDENT(CURRENT) == porigin->ident_info) {
+    origin = SEEK_CUR;
+  } else if (USE_IDENT(END) == porigin->ident_info) {
+    origin = SEEK_END;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  signed sign;
+  if ('+' == psign->char_info) {
+    sign = +1;
+  } else if ('-' == psign->char_info) {
+    sign = -1;
+  } else {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  long int offset = sign * static_cast<long int>(poffset->number_info);
+
+  if (fseek(handle, offset, origin) != 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

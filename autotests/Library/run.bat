@@ -36,6 +36,7 @@ setlocal
     Library-Implode-Explode ^
     Library-FReadBytes ^
     Library-FTell ^
+    Library-FSeek ^
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^

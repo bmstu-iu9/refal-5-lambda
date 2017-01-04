@@ -25,7 +25,8 @@ run_all_tests() {
     Library-SymbType \
     Library-Implode-Explode \
     Library-FReadBytes \
-    Library-FTell
+    Library-FTell \
+    Library-FSeek
 
   simple_tests fail \
     Library-Math-Fail \
