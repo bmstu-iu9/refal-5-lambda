@@ -656,10 +656,8 @@ PrepareRASL {
                   (#CmdLabelArray e.Labels)
                   (#CmdNumberArray e.Numbers)
                   (#CmdStringArray e.Strings)
-                  e.Items
-                  (#CmdInitRAA)
-                  e.RASL-Commands
-                  (#CmdFinRAA);
+                  (#RASL e.RASL-Commands)
+                  (#Items e.Items);
               }
             >;
         }

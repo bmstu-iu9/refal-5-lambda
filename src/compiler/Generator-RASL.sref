@@ -20,7 +20,12 @@ $EXTERN NumberFromOpcode, NumberFromBracket;
 $ENTRY GenProgram-RASL {
   (
     (#ModuleID s.Cookie1 s.Cookie2)
-    e.RASL
+    (#CmdFuncArray e.FuncNames)
+    (#CmdLabelArray e.Labels)
+    (#CmdNumberArray e.Numbers)
+    (#CmdStringArray e.Strings)
+    (#RASL e.RASL)
+    (#Items e.Items)
   ) =
     <GenCommonHeaders>
     ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
@@ -29,16 +34,83 @@ $ENTRY GenProgram-RASL {
     ()
     ('extern const refalrts::RASLCommand rasl[];')
     ()
-    <CheckEmptyIndent
-      <MapReduce GenCommand-RASL (/* отступ */) e.RASL>
+    ('static refalrts::FunctionTableItem func_table_items[] = {')
+    <Map
+      {
+        (#GN-Entry e.Name) = ('  "*' <DisplayCName e.Name> '",');
+        (#GN-Local e.Name) = ('  "#' <DisplayCName e.Name> '",');
+      }
+      e.FuncNames
     >
-    <GenCommonTailer>;
-}
+    ('  0')
+    ('};')
+    ()
+    ('static refalrts::FunctionTable functions(COOKIE1, COOKIE2, func_table_items);')
+    ()
+    <Fetch
+      e.Labels
+      {
+        /* пусто */ =
+          ('using refalrts::idents;');
 
-CheckEmptyIndent {
-  () /* отступ должен остаться тем же */
-  e.Generated =
-    e.Generated;
+          e.LabelNames (e.LastName) =
+            ('static const refalrts::RefalIdentifier idents[] = {')
+            <Map
+              {
+                (e.Name) =
+                  ('  refalrts::ident_from_static("' <DisplayCName e.Name> '"),');
+              }
+              e.LabelNames
+            >
+            ('  refalrts::ident_from_static("' <DisplayCName e.LastName> '"),')
+            ('};');
+      }
+    >
+    ()
+    <Fetch
+      e.Numbers
+      {
+        /* пусто */ =
+          ('using refalrts::numbers;');
+
+      e.Numbers^ s.LastNumber =
+        ('static const refalrts::RefalNumber numbers[] = {')
+        <Map
+          {
+            s.Number = ('  ' <StrFromInt s.Number> 'UL,');
+          }
+          e.Numbers
+        >
+        ('  ' <StrFromInt s.LastNumber> 'UL')
+        ('};');
+      }
+    >
+    ()
+    <Fetch
+      e.Strings
+      {
+        /* пусто */ =
+          ('using refalrts::strings;');
+
+        e.Strings^ (e.LastString) =
+          ('static const refalrts::StringItem strings[] = {')
+          <Map
+            {
+              (e.String) = ('  {' <PrintString e.String> '},');
+            }
+            e.Strings
+          >
+          ('  {' <PrintString e.LastString> '}')
+          ('};');
+      }
+    >
+    ()
+    <Map GenCommand-Globals e.Items>
+    ('const refalrts::RASLCommand rasl[] = {')
+    <Map GenCommand-RASL e.RASL>
+    ('  {refalrts::icEnd, 0, 0, 0}')
+    ('};')
+    <GenCommonTailer>;
 }
 
 NameWithScope {
@@ -49,26 +121,24 @@ NameWithScope {
     'refalrts::RefalFuncName("' <DisplayCName e.Name> '", COOKIE1, COOKIE2)';
 }
 
-GenCommand-RASL {
+GenCommand-Globals {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
-  (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
+  (#CmdComment e.Text) = ('//' e.Text);
 
   // ---------------------------------------------------------------------------
   // Команды режима интерпретации
   // Создание глобальных объектов, общие команды
 
-  (e.Indent) (#CmdEnumDescr s.ScopeClass e.Name) =
-    (e.Indent)
+  (#CmdEnumDescr s.ScopeClass e.Name) =
     (
       'static refalrts::RefalEmptyFunction descr_' <CName e.Name> '('
       <NameWithScope s.ScopeClass e.Name>
       ');'
     );
 
-  (e.Indent) (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
-    (e.Indent)
+  (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
     ('static refalrts::RASLFunction descr_' <CName e.Name> '(')
     ('  ' <NameWithScope s.ScopeClass e.Name> ',')
     ('  rasl + ' <StrFromInt s.Offset> ',')
@@ -79,255 +149,139 @@ GenCommand-RASL {
     (');')
     ();
 
-  (e.Indent) (#CmdSwapDescr s.ScopeClass e.Name) =
-    (e.Indent)
+  (#CmdSwapDescr s.ScopeClass e.Name) =
     (
       'static refalrts::RefalSwap descr_' <CName e.Name> '('
       <NameWithScope s.ScopeClass e.Name>
       ');'
     );
+}
 
-  (e.Indent) (#CmdFuncArray e.FuncNames) =
-    (e.Indent)
-    (e.Indent 'static refalrts::FunctionTableItem func_table_items[] = {')
-    <Map
-      {
-        (#GN-Entry e.Name) = (e.Indent '  "*' <DisplayCName e.Name> '",');
-        (#GN-Local e.Name) = (e.Indent '  "#' <DisplayCName e.Name> '",');
-      }
-      e.FuncNames
-    >
-    (e.Indent '  0')
-    (e.Indent '};')
-    ()
-    (e.Indent
-      'static refalrts::FunctionTable functions('
-      'COOKIE1, COOKIE2, func_table_items'
-      ');'
-    )
-    ();
+GenCommand-RASL {
+  // ---------------------------------------------------------------------------
+  // Создания глобальных объектов, общие команды
 
-  (e.Indent) (#CmdLabelArray) =
-    (e.Indent)
-    (e.Indent 'using refalrts::idents;')
-    ();
+  (#CmdComment e.Text) = ('  //' e.Text);
 
-  (e.Indent) (#CmdLabelArray e.LabelNames (e.LastName)) =
-    (e.Indent)
-    (e.Indent 'static const refalrts::RefalIdentifier idents[] = {')
-    <Map
-      {
-        (e.Name) =
-          (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.Name> '"),');
-      }
-      e.LabelNames
-    >
-    (e.Indent '  refalrts::ident_from_static("' <DisplayCName e.LastName> '"),')
-    (e.Indent '};')
-    ();
-
-  (e.Indent) (#CmdNumberArray) =
-    (e.Indent)
-    (e.Indent 'using refalrts::numbers;')
-    ();
-
-  (e.Indent) (#CmdNumberArray e.Numbers s.LastNumber) =
-    (e.Indent)
-    (e.Indent 'static const refalrts::RefalNumber numbers[] = {')
-    <Map
-      {
-        s.Number = (e.Indent '  ' <StrFromInt s.Number> 'UL,');
-      }
-      e.Numbers
-    >
-    (e.Indent '  ' <StrFromInt s.LastNumber> 'UL')
-    (e.Indent '};')
-    ();
-
-  (e.Indent) (#CmdStringArray) =
-    (e.Indent)
-    (e.Indent 'using refalrts::strings;')
-    ();
-
-  (e.Indent) (#CmdStringArray e.Strings (e.LastString)) =
-    (e.Indent)
-    (e.Indent 'static const refalrts::StringItem strings[] = {')
-    <Map
-      {
-        (e.String) = (e.Indent '  {' <PrintString e.String> '},');
-      }
-      e.Strings
-    >
-    (e.Indent '  {' <PrintString e.LastString> '}')
-    (e.Indent '};')
-    ();
-
-  (e.Indent) (#CmdInitRAA) =
-    (e.Indent '  ')
-    (e.Indent 'const refalrts::RASLCommand rasl[] = {');
-
-  (e.Indent '  ') (#CmdFinRAA) =
-    (e.Indent)
-    (e.Indent '  {refalrts::icEnd, 0, 0, 0}')
-    (e.Indent '};');
-
-  (e.Indent) (#CmdProfileFunction) =
-    (e.Indent)
+  (#CmdProfileFunction) =
     <PutCommand #CmdProfileFunction>;
 
-  (e.Indent) (#CmdLoadConstants) =
-    (e.Indent)
+  (#CmdLoadConstants) =
     <PutCommand #CmdLoadConstants>;
 
-  (e.Indent) (#CmdIssueMemory s.Memory) =
-    (e.Indent)
+  (#CmdIssueMemory s.Memory) =
     <PutCommand #CmdIssueMemory s.Memory 0 0>;
 
-  (e.Indent) (#CmdReserveBacktrackStack s.Depth) =
-    (e.Indent)
+  (#CmdReserveBacktrackStack s.Depth) =
     <PutCommand #CmdReserveBacktrackStack s.Depth 0 0>;
 
-  (e.Indent) (#CmdOnFailGoTo s.Offset) =
-    (e.Indent)
+  (#CmdOnFailGoTo s.Offset) =
     <PutCommand #CmdOnFailGoTo s.Offset 0 0>;
 
-  (e.Indent) (#CmdProfilerStopSentence) =
-    (e.Indent)
+  (#CmdProfilerStopSentence) =
     <PutCommand #CmdProfilerStopSentence>;
 
-  (e.Indent) (#CmdInitB0) =
-    (e.Indent)
+  (#CmdInitB0) =
     <PutCommand #CmdInitB0>;
 
-  (e.Indent) (#CmdInitB0-Lite) =
-    (e.Indent)
+  (#CmdInitB0-Lite) =
     <PutCommand #CmdInitB0-Lite>;
 
   // ---------------------------------------------------------------------------
   // Команды сопоставления с образцом (режим интерпретации)
 
-  (e.Indent) (#CmdChar s.Direction s.BracketNumber s.Char) =
-    (e.Indent)
+  (#CmdChar s.Direction s.BracketNumber s.Char) =
     <PutCommand (#CmdChar s.Direction) 0 (#C s.Char) s.BracketNumber>;
 
-  (e.Indent) (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
-    (e.Indent)
+  (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
     <PutCommand
       (#CmdCharSave s.Direction) s.SaveOffset (#C s.Char) s.BracketNumber
     >;
 
-  (e.Indent) (#CmdNum s.Direction s.BracketNumber s.Number) =
-    (e.Indent)
+  (#CmdNum s.Direction s.BracketNumber s.Number) =
     <PutCommand (#CmdNum s.Direction) 0 s.Number s.BracketNumber>;
 
-  (e.Indent) (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
-    (e.Indent)
+  (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     <PutCommand (#CmdNumSave s.Direction) s.SaveOffset s.Number s.BracketNumber>;
 
-  (e.Indent) (#CmdHugeNum s.Direction s.BracketNumber s.Number) =
-    (e.Indent)
+  (#CmdHugeNum s.Direction s.BracketNumber s.Number) =
     <PutCommand (#CmdHugeNum s.Direction) 0 s.Number s.BracketNumber>;
 
-  (e.Indent)
   (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
-    (e.Indent)
     <PutCommand
       (#CmdHugeNumSave s.Direction) s.SaveOffset s.Number s.BracketNumber
     >;
 
-  (e.Indent) (#CmdName s.Direction s.BracketNumber s.NameId) =
-    (e.Indent)
+  (#CmdName s.Direction s.BracketNumber s.NameId) =
     <PutCommand (#CmdName s.Direction) 0 s.NameId s.BracketNumber>;
 
-  (e.Indent) (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
-    (e.Indent)
+  (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
     <PutCommand (#CmdNameSave s.Direction) s.SaveOffset s.NameId s.BracketNumber>;
 
-  (e.Indent) (#CmdIdent s.Direction s.BracketNumber s.NameId) =
-    (e.Indent)
+  (#CmdIdent s.Direction s.BracketNumber s.NameId) =
     <PutCommand (#CmdIdent s.Direction) 0 s.NameId s.BracketNumber>;
 
-  (e.Indent)
   (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
-    (e.Indent)
     <PutCommand
       (#CmdIdentSave s.Direction) s.SaveOffset s.NameId s.BracketNumber
     >;
 
-  (e.Indent) (#CmdBrackets s.Direction s.Num s.NumRanges) =
-    (e.Indent)
+  (#CmdBrackets s.Direction s.Num s.NumRanges) =
     <PutCommand (#CmdBrackets s.Direction) 0 s.NumRanges s.Num>;
 
-  (e.Indent) (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
-    (e.Indent)
+  (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
     <PutCommand (#CmdBracketsSave s.Direction) 0 s.NumRanges s.Num>;
 
-  (e.Indent) (#CmdADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
-    (e.Indent)
+  (#CmdADT s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
     <PutCommand (#CmdADT s.Direction) s.NameId s.InnerBrackets s.BracketNumber>;
 
-  (e.Indent)
   (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
-    (e.Indent)
     <PutCommand
       (#CmdADTSave s.Direction) s.NameId s.InnerBrackets s.BracketNumber
     >;
 
-  (e.Indent) (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets) =
-    (e.Indent)
+  (#CmdCallSave s.Direction s.BracketNumber s.InnerBrackets) =
     <PutCommand (#CmdCallSave s.Direction) 0 s.InnerBrackets s.BracketNumber>;
 
-  (e.Indent) (#CmdEmpty s.Direction s.Num) =
-    (e.Indent)
+  (#CmdEmpty s.Direction s.Num) =
     <PutCommand #CmdEmpty 0 0 s.Num>;
 
-  (e.Indent) (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (e.Indent)
+  (#CmdVar s.Direction s.BracketNumber s.Mode s.VarNumber) =
     <PutCommand (s.Mode #CmdVar s.Direction) 0 s.VarNumber s.BracketNumber>;
 
-  (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
-    (e.Indent)
+  (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
     <PutCommand (s.Mode #CmdVarSave s.Direction) 0 s.VarNumber s.BracketNumber>;
 
-  (e.Indent)
   (#CmdRepeated s.Direction s.BracketNumber s.Mode s.VarNumber s.SampleNumber) =
-    (e.Indent)
     <PutCommand
       (s.Mode #CmdRepeated s.Direction)
       s.VarNumber s.SampleNumber s.BracketNumber
     >;
 
-  (e.Indent)
   (#CmdRepeatedTVarSave
     s.Direction s.BracketNumber s.VarNumber s.SampleNumber
   ) =
-    (e.Indent)
     <PutCommand
       ('t' #CmdRepeatedSave s.Direction)
       s.VarNumber s.SampleNumber s.BracketNumber
     >;
 
-  (e.Indent) (#CmdEPrepare s.BracketNumber s.VarNumber) =
-    (e.Indent)
+  (#CmdEPrepare s.BracketNumber s.VarNumber) =
     <PutCommand #CmdEPrepare 0 s.VarNumber s.BracketNumber>;
 
-  (e.Indent) (#CmdEStart s.BracketNumber s.VarNumber) =
-    (e.Indent)
+  (#CmdEStart s.BracketNumber s.VarNumber) =
     <PutCommand #CmdEStart 0 s.VarNumber s.BracketNumber>;
 
-  (e.Indent) (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
-    (e.Indent)
+  (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     <PutCommand #CmdSave 0 s.NewBracketNumber s.OldBracketNumber>;
 
   // ---------------------------------------------------------------------------
   // Команды построения результата (режим интерпретации)
 
-  (e.Indent) (#CmdResetAllocator) =
-    (e.Indent)
+  (#CmdResetAllocator) =
     <PutCommand #CmdResetAllocator 0 0 0>;
 
-  (e.Indent) (#CmdSetRes s.Offset) =
-    (e.Indent)
+  (#CmdSetRes s.Offset) =
     <Fetch
       s.Offset
       {
@@ -338,63 +292,49 @@ GenCommand-RASL {
       }
     >;
 
-  (e.Indent) (#CmdCopyVar 'e' s.Target s.Sample) =
-    (e.Indent)
+  (#CmdCopyVar 'e' s.Target s.Sample) =
     <PutCommand #CmdCopyEVar s.Target s.Sample 0>;
 
-  (e.Indent) (#CmdCopyVar s.Mode s.Target s.Sample) =
-    (e.Indent)
+  (#CmdCopyVar s.Mode s.Target s.Sample) =
     <PutCommand #CmdCopySTVar s.Target s.Sample 0>;
 
-  (e.Indent) (#CmdReinitSVar s.Offset s.Sample) =
-    (e.Indent)
+  (#CmdReinitSVar s.Offset s.Sample) =
     <PutCommand #CmdReinitSVar 0 s.Sample s.Offset>;
 
-  (e.Indent) (#CmdCreateElem s.CreateMode s.ElemNumber s.ElementType e.Info) =
-    (e.Indent)
+  (#CmdCreateElem s.CreateMode s.ElemNumber s.ElementType e.Info) =
     <PutCommand
       (s.CreateMode <CreateCommandTag s.ElementType>)
       0 <CreateCommandInfo s.ElementType e.Info> s.ElemNumber
     >;
 
-  (e.Indent) (#CmdLinkBrackets s.Left s.Right) =
-    (e.Indent)
+  (#CmdLinkBrackets s.Left s.Right) =
     <PutCommand #CmdLinkBrackets s.Left s.Right 0>;
 
-  (e.Indent) (#CmdPushStack s.ElemNumber) =
-    (e.Indent)
+  (#CmdPushStack s.ElemNumber) =
     <PutCommand #CmdPushStack 0 0 s.ElemNumber>;
 
-  (e.Indent) (#CmdInsertElem s.ElemNumber) =
-    (e.Indent)
+  (#CmdInsertElem s.ElemNumber) =
     <PutCommand #CmdSpliceElem 0 0 s.ElemNumber>;
 
-  (e.Indent) (#CmdInsertVar 'e' s.Offset) =
-    (e.Indent)
+  (#CmdInsertVar 'e' s.Offset) =
     <PutCommand #CmdSpliceEVar 0 0 s.Offset>;
 
-  (e.Indent) (#CmdInsertVar s.Mode s.Offset) =
-    (e.Indent)
+  (#CmdInsertVar s.Mode s.Offset) =
     <PutCommand #CmdSpliceSTVar 0 0 s.Offset>;
 
-  (e.Indent) (#CmdInsertRange s.ElemNumber) =
-    (e.Indent)
+  (#CmdInsertRange s.ElemNumber) =
     <PutCommand #CmdSpliceRange 0 0 s.ElemNumber>;
 
-  (e.Indent) (#CmdInsertTile s.BeginOffset s.EndOffset) =
-    (e.Indent)
+  (#CmdInsertTile s.BeginOffset s.EndOffset) =
     <PutCommand #CmdSpliceTile s.BeginOffset s.EndOffset 0>;
 
-  (e.Indent) (#CmdSpliceToFreeList) =
-    (e.Indent)
+  (#CmdSpliceToFreeList) =
     <PutCommand #CmdSpliceToFreeList 0 0 0>;
 
-  (e.Indent) (#CmdNextStep) =
-    (e.Indent)
+  (#CmdNextStep) =
     <PutCommand #CmdNextStep>;
 
-  (e.Indent) (#CmdTrash s.Offset) =
-    (e.Indent)
+  (#CmdTrash s.Offset) =
     <Fetch
       s.Offset
       {
@@ -404,8 +344,7 @@ GenCommand-RASL {
       }
     >;
 
-  (e.Indent) (#CmdFail) =
-    (e.Indent)
+  (#CmdFail) =
     <PutCommand #CmdFail>;
 }
 
