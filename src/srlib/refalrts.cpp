@@ -3365,9 +3365,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
     { icIssueMemory, 3, 0, 0 },
     { refalrts::icResetAllocator, 0, 0, 0 },
     { refalrts::icSetResArgBegin, 0, 0, 0 },
-    { icAllocBracket, 0, ibOpenCall, 0 },
-    { icAllocFunc, 0, 0, 1 },
-    { icAllocBracket, 0, ibCloseCall, 2 },
+    { icAllocateBracket, 0, ibOpenCall, 0 },
+    { icAllocateFunc, 0, 0, 1 },
+    { icAllocateBracket, 0, ibCloseCall, 2 },
     { icSpliceTile, 0, 2, 0 },
     { icPushStack, 0, 0, 2 },
     { icPushStack, 0, 0, 0 },
@@ -3941,37 +3941,37 @@ refalrts::FnResult refalrts::vm::main_loop() {
         reinit_svar(elem, context[rasl->val2]);
         break;
 
-      case icAllocChar:
+      case icAllocateChar:
         if (! alloc_char(elem, static_cast<char>(rasl->val2))) {
           return cNoMemory;
         }
         break;
 
-      case icAllocFunc:
+      case icAllocateFunc:
         if (! alloc_name(elem, functions[rasl->val2].function)) {
           return cNoMemory;
         }
         break;
 
-      case icAllocInt:
+      case icAllocateInt:
         if (! alloc_number(elem, static_cast<RefalNumber>(rasl->val2))) {
           return cNoMemory;
         }
         break;
 
-      case icAllocHugeInt:
+      case icAllocateHugeInt:
         if (! alloc_number(elem, numbers[rasl->val2])) {
           return cNoMemory;
         }
         break;
 
-      case icAllocIdent:
+      case icAllocateIdent:
         if (! alloc_ident(elem, idents[rasl->val2])) {
           return cNoMemory;
         }
         break;
 
-      case icAllocBracket:
+      case icAllocateBracket:
         {
           static bool (*const allocator[])(Iter& res) = {
             alloc_open_adt,
@@ -3989,7 +3989,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icAllocString:
+      case icAllocateString:
         {
           if (
             ! alloc_chars(

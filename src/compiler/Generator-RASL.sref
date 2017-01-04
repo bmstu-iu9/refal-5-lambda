@@ -520,7 +520,7 @@ PrintInterpretCreateElem {
 }
 
 CreateMode {
-  #Allocate = 'Alloc';
+  #Allocate = 'Allocate';
   #Reinit = 'Reinit';
   #Update = 'Update';
 }

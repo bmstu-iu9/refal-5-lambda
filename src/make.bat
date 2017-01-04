@@ -22,6 +22,7 @@ setlocal
   if not exist ..\bin\nul mkdir ..\bin
   call :MAKE_SUBDIR scripts install-scripts.bat
   call :MAKE_SUBDIR compiler makeself-s.bat
+  call :MAKE_SUBDIR rasl-constants make.bat
   call :MAKE_SUBDIR lexgen makeself-s.bat
   copy ..\distrib\bin\srmake-core.exe ..\bin
   call :MAKE_SUBDIR srlib make.bat

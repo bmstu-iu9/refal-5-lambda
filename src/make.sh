@@ -26,6 +26,7 @@ make_subdir() {
     mkdir -p ../bin
     make_subdir scripts install-scripts.sh
     make_subdir compiler makeself-s.sh
+    make_subdir rasl-constants make.sh
     make_subdir lexgen makeself-s.sh
     cp ../distrib/bin/srmake-core ../bin
     (
