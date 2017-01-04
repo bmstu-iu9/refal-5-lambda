@@ -3475,14 +3475,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icCharLeftSave:
+      case icCharSaveLeft:
         save_pos = char_left(static_cast<char>(rasl->val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icCharRightSave:
+      case icCharSaveRight:
         save_pos = char_right(static_cast<char>(rasl->val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
@@ -3507,14 +3507,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icNumLeftSave:
+      case icNumSaveLeft:
         save_pos = number_left(static_cast<RefalNumber>(rasl->val2), bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icNumRightSave:
+      case icNumSaveRight:
         save_pos =
           number_right(static_cast<RefalNumber>(rasl->val2), bb, be);
         if (! save_pos) {
@@ -3540,14 +3540,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icHugeNumLeftSave:
+      case icHugeNumSaveLeft:
         save_pos = number_left(numbers[rasl->val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icHugeNumRightSave:
+      case icHugeNumSaveRight:
         save_pos = number_right(numbers[rasl->val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
@@ -3572,14 +3572,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icFuncLeftSave:
+      case icFuncSaveLeft:
         save_pos = function_left(functions[rasl->val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncRightSave:
+      case icFuncSaveRight:
         save_pos = function_right(functions[rasl->val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
@@ -3604,14 +3604,14 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icIdentLeftSave:
+      case icIdentSaveLeft:
         save_pos = ident_left(idents[rasl->val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icIdentRightSave:
+      case icIdentSaveRight:
         save_pos = ident_right(idents[rasl->val2], bb, be);
         if (! save_pos) {
           MATCH_FAIL;
@@ -3636,7 +3636,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icBracketLeftSave:
+      case icBracketSaveLeft:
         {
           int inner = rasl->val2;
           context[inner + 2] =
@@ -3648,7 +3648,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icBracketRightSave:
+      case icBracketSaveRight:
         {
           int inner = rasl->val2;
           context[inner + 2] =
@@ -3678,7 +3678,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icADTLeftSave:
+      case icADTSaveLeft:
         {
           int inner = rasl->val2;
           const RefalFunction *tag = functions[rasl->val1].function;
@@ -3693,7 +3693,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icADTRightSave:
+      case icADTSaveRight:
         {
           int inner = rasl->val2;
           const RefalFunction *tag = functions[rasl->val1].function;
@@ -3708,7 +3708,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icADTTermSave:
+      case icADTSaveTerm:
         {
           int inner = rasl->val2;
           const RefalFunction *tag = functions[rasl->val1].function;
@@ -3770,7 +3770,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
        break;
 
-      case ictVarLeftSave:
+      case ictVarSaveLeft:
         index = rasl->val2;
         context[index + 1] = tvar_left(context[index], bb, be);
         if (! context[index + 1]) {
@@ -3778,7 +3778,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case ictVarRightSave:
+      case ictVarSaveRight:
         index = rasl->val2;
         context[index + 1] = tvar_right(context[index], bb, be);
         if (! context[index + 1]) {
@@ -3848,7 +3848,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case ictRepeatLeftSave:
+      case ictRepeatSaveLeft:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3861,7 +3861,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case ictRepeatRightSave:
+      case ictRepeatSaveRight:
         {
           int index = rasl->val1;
           int sample = rasl->val2;

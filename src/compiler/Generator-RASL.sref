@@ -222,7 +222,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icChar' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icCharSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.SaveOffset> ', '
       'static_cast<unsigned char>(' '' <EscapeChar s.Char> '' '), '
       <StrFromInt s.BracketNumber> '},'
@@ -238,7 +238,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icNum' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icNumSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.SaveOffset> ', '
       <StrFromInt s.Number> ', '
       <StrFromInt s.BracketNumber> '},'
@@ -255,7 +255,7 @@ GenCommand-RASL {
   (#CmdHugeNumSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icHugeNum' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icHugeNumSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.SaveOffset> ', '
       <StrFromInt s.Number> ', '
       <StrFromInt s.BracketNumber> '},'
@@ -271,7 +271,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdNameSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icFunc' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icFuncSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.SaveOffset> ', '
       <StrFromInt s.NameId> ', '
       <StrFromInt s.BracketNumber> '},'
@@ -289,7 +289,7 @@ GenCommand-RASL {
   (#CmdIdentSave s.Direction s.BracketNumber s.SaveOffset s.NameId) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icIdent' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icIdentSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.SaveOffset> ', '
       <StrFromInt s.NameId> ', '
       <StrFromInt s.BracketNumber> '},'
@@ -304,7 +304,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdBracketsSave s.Direction s.Num s.NumRanges) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icBracket' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icBracketSave' <PrintDirection s.Direction> ', '
       '0, ' <StrFromInt s.NumRanges> ', ' <StrFromInt s.Num> '},'
     );
 
@@ -320,7 +320,7 @@ GenCommand-RASL {
   (#CmdADTSave s.Direction s.BracketNumber s.InnerBrackets s.NameId) =
     (e.Indent)
     (e.Indent
-      '{refalrts::icADT' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::icADTSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.NameId> ', '
       <StrFromInt s.InnerBrackets> ', '
       <StrFromInt s.BracketNumber> '},'
@@ -347,7 +347,7 @@ GenCommand-RASL {
   (e.Indent) (#CmdVarSave s.Direction s.BracketNumber s.Mode s.VarNumber) =
     (e.Indent)
     (e.Indent
-      '{refalrts::ic' s.Mode 'Var' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::ic' s.Mode 'VarSave' <PrintDirection s.Direction> ', '
       '0, ' <StrFromInt s.VarNumber> ', ' <StrFromInt s.BracketNumber> '},'
     );
 
@@ -367,7 +367,7 @@ GenCommand-RASL {
   ) =
     (e.Indent)
     (e.Indent
-      '{refalrts::ictRepeat' <PrintDirection s.Direction> 'Save, '
+      '{refalrts::ictRepeatSave' <PrintDirection s.Direction> ', '
       <StrFromInt s.VarNumber> ', '
       <StrFromInt s.SampleNumber> ', '
       <StrFromInt s.BracketNumber> '},'
