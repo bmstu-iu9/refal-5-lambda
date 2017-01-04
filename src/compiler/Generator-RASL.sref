@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, MapReduce, Map;
+$EXTERN Fetch, MapReduce, Map;
 
 //FROM Generator-Common
 $EXTERN GenCommonHeaders, GenCommonTailer, PrintLength;
