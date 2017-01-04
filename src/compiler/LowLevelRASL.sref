@@ -46,7 +46,7 @@ $ENTRY LowLevelRASL {
 }
 
 AddSavers {
-  (#CmdIssueMem s.Memory) e.Commands =
+  (#CmdIssueMemory s.Memory) e.Commands =
     <DoAddSavers
       s.Memory
       (/* alive vars */) (/* frozen vars */)
@@ -224,8 +224,8 @@ DoAddSavers {
               () e.SubCommands
             >
             {
-              (#CmdIssueMem s.ContextTop^) e.SubCommands^ =
-                (#CmdIssueMem s.ContextTop)
+              (#CmdIssueMemory s.ContextTop^) e.SubCommands^ =
+                (#CmdIssueMemory s.ContextTop)
                 e.Scanned
                 e.Saver
                 (#CmdOpenELoop
@@ -308,7 +308,7 @@ DoAddSavers {
         () e.SubCommands
       >
       {
-        (#CmdIssueMem s.InnerContextTop) e.SubCommands^ =
+        (#CmdIssueMemory s.InnerContextTop) e.SubCommands^ =
           <Fetch
             <DoAddSavers
               s.ContextTop (e.Alive) (e.Frozen)
@@ -316,8 +316,8 @@ DoAddSavers {
               e.Commands
             >
             {
-              (#CmdIssueMem s.OuterContextTop) e.Scanned^ =
-                (#CmdIssueMem <Max s.InnerContextTop s.OuterContextTop>)
+              (#CmdIssueMemory s.OuterContextTop) e.Scanned^ =
+                (#CmdIssueMemory <Max s.InnerContextTop s.OuterContextTop>)
                 e.Scanned;
             }
           >;
@@ -331,7 +331,7 @@ DoAddSavers {
     >;
 
   s.ContextTop (e.Alive) (e.Frozen) (e.Scanned) /* всё */ =
-    (#CmdIssueMem s.ContextTop) e.Scanned;
+    (#CmdIssueMemory s.ContextTop) e.Scanned;
 }
 
 CheckSaved {
@@ -946,24 +946,24 @@ PrepareOpenEStack {
       <Seq
         (MapReduce
           {
-            (#CmdReserveStack s.Depth) (#CmdEStart e.VarInfo) =
-              (#CmdReserveStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
+            (#CmdReserveBacktrackStack s.Depth) (#CmdEStart e.VarInfo) =
+              (#CmdReserveBacktrackStack <Inc s.Depth>) (#CmdEStart e.VarInfo);
 
-            (#CmdReserveStack s.Depth) (#CmdOnFailGoTo s.Offset) =
-              (#CmdReserveStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
+            (#CmdReserveBacktrackStack s.Depth) (#CmdOnFailGoTo s.Offset) =
+              (#CmdReserveBacktrackStack <Inc s.Depth>) (#CmdOnFailGoTo s.Offset);
 
-            (#CmdReserveStack s.Depth) t.OtherCommand =
-              (#CmdReserveStack s.Depth) t.OtherCommand;
+            (#CmdReserveBacktrackStack s.Depth) t.OtherCommand =
+              (#CmdReserveBacktrackStack s.Depth) t.OtherCommand;
           }
-          (#CmdReserveStack 0)
+          (#CmdReserveBacktrackStack 0)
         )
         {
-          (#CmdReserveStack 0) e.Commands^ =
+          (#CmdReserveBacktrackStack 0) e.Commands^ =
             /* отбрасываем ненужную команду */
             e.Commands;
 
-          (#CmdReserveStack s.Depth) e.Commands^ =
-            (#CmdReserveStack s.Depth) e.Commands;
+          (#CmdReserveBacktrackStack s.Depth) e.Commands^ =
+            (#CmdReserveBacktrackStack s.Depth) e.Commands;
         }
       >
     >;

@@ -183,7 +183,7 @@ GenCommand-Native {
     (e.Indent)
     (e.Indent 'refalrts::this_is_generated_function();');
 
-  (e.Indent) (#CmdIssueMem s.Number) =
+  (e.Indent) (#CmdIssueMemory s.Number) =
     (e.Indent)
     (e.Indent
       '// issue here memory for vars with ' <StrFromInt s.Number> ' elems'

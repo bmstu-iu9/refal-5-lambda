@@ -53,7 +53,7 @@ Parse {
           (#ParseEnum ((e.OutPrefix) e.Prefix) e.Words)
           (
             '  '
-            <ParseWords (e.OutPrefix) e.Words (e.Constant)>
+            <MakeDashes <ParseWords (e.OutPrefix) e.Words (e.Constant)>>
             ' = ' e.Number ';'
           );
 
@@ -111,6 +111,11 @@ CheckVarIndex {
   (e.OutPrefix) 't' = '\'t\' #' e.OutPrefix;
   (e.OutPrefix) 'e' = '\'e\' #' e.OutPrefix;
   (e.OutPrefix) s.Other = '#' e.OutPrefix s.Other;
+}
+
+MakeDashes {
+  e.Text-B '_' e.Text-E = e.Text-B '-' <MakeDashes e.Text-E>;
+  e.Text = e.Text;
 }
 
 Generate {

@@ -153,7 +153,7 @@ $ENTRY GenPattern {
     s.FnGenResult (e.Result)
     s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.PatternCommands
   >
-    == (#CmdIssueMem s.ContextSize) e.SentenceCommands
+    == (#CmdIssueMemory s.ContextSize) e.SentenceCommands
 */
 $ENTRY GenResult {
   s.FnGenResult (e.Result)
@@ -165,7 +165,7 @@ $ENTRY GenResult {
       {
         s.ContextCount e.ResultCommands =
           <FoldOpenELoops
-            (#CmdIssueMem s.ContextCount)
+            (#CmdIssueMemory s.ContextCount)
             e.PatternCommands
             e.ResultCommands
           >;

@@ -1668,7 +1668,7 @@ refalrts::Iter refalrts::vm::initialize_swap_head(refalrts::Iter head) {
 }
 
 const refalrts::RASLCommand refalrts::RefalSwap::run[] = {
-  { refalrts::icThisIsGeneratedFunction, 0, 0, 0 },
+  { refalrts::icProfileFunction, 0, 0, 0 },
   { refalrts::icIssueMemory, 8, 0, 0 },
   { refalrts::icInitB0_Lite, 0, 0, 0 },
   { refalrts::icCallSaveLeft, 0, 2, 0 },
@@ -3366,7 +3366,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
     { refalrts::icResetAllocator, 0, 0, 0 },
     { refalrts::icSetResArgBegin, 0, 0, 0 },
     { icAllocateBracket, 0, ibOpenCall, 0 },
-    { icAllocateFunc, 0, 0, 1 },
+    { icAllocateName, 0, 0, 1 },
     { icAllocateBracket, 0, ibCloseCall, 2 },
     { icSpliceTile, 0, 2, 0 },
     { icPushStack, 0, 0, 2 },
@@ -3414,7 +3414,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
     switch(rasl->cmd)
     {
-      case icThisIsGeneratedFunction:
+      case icProfileFunction:
         this_is_generated_function();
         break;
 
@@ -3554,32 +3554,32 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icFuncLeft:
+      case icNameLeft:
         if (! function_left(functions[rasl->val2].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncRight:
+      case icNameRight:
         if (! function_right(functions[rasl->val2].function, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncTerm:
+      case icNameTerm:
         if (! function_term(functions[rasl->val2].function, bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncSaveLeft:
+      case icNameSaveLeft:
         save_pos = function_left(functions[rasl->val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
         }
         break;
 
-      case icFuncSaveRight:
+      case icNameSaveRight:
         save_pos = function_right(functions[rasl->val2].function, bb, be);
         if (! save_pos) {
           MATCH_FAIL;
@@ -3618,25 +3618,25 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icBracketLeft:
+      case icBracketsLeft:
         if (! brackets_left(res_b, res_e, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketRight:
+      case icBracketsRight:
         if (! brackets_right(res_b, res_e, bb, be)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketTerm:
+      case icBracketsTerm:
         if (! brackets_term(res_b, res_e, bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case icBracketSaveLeft:
+      case icBracketsSaveLeft:
         {
           int inner = rasl->val2;
           context[inner + 2] =
@@ -3648,7 +3648,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icBracketSaveRight:
+      case icBracketsSaveRight:
         {
           int inner = rasl->val2;
           context[inner + 2] =
@@ -3786,7 +3786,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case iceRepeatLeft:
+      case iceRepeatedLeft:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3802,7 +3802,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case iceRepeatRight:
+      case iceRepeatedRight:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3818,8 +3818,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icsRepeatLeft:
-      case ictRepeatLeft:
+      case icsRepeatedLeft:
+      case ictRepeatedLeft:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3829,8 +3829,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icsRepeatRight:
-      case ictRepeatRight:
+      case icsRepeatedRight:
+      case ictRepeatedRight:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3840,15 +3840,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icsRepeatTerm:
-      case ictRepeatTerm:
+      case icsRepeatedTerm:
+      case ictRepeatedTerm:
         assert(rasl->bracket == rasl->val1);
         if (! repeated_stvar_term(context[rasl->val2], bb)) {
           MATCH_FAIL;
         }
         break;
 
-      case ictRepeatSaveLeft:
+      case ictRepeatedSaveLeft:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3861,7 +3861,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case ictRepeatSaveRight:
+      case ictRepeatedSaveRight:
         {
           int index = rasl->val1;
           int sample = rasl->val2;
@@ -3947,19 +3947,19 @@ refalrts::FnResult refalrts::vm::main_loop() {
         }
         break;
 
-      case icAllocateFunc:
+      case icAllocateName:
         if (! alloc_name(elem, functions[rasl->val2].function)) {
           return cNoMemory;
         }
         break;
 
-      case icAllocateInt:
+      case icAllocateNumber:
         if (! alloc_number(elem, static_cast<RefalNumber>(rasl->val2))) {
           return cNoMemory;
         }
         break;
 
-      case icAllocateHugeInt:
+      case icAllocateHugeNumber:
         if (! alloc_number(elem, numbers[rasl->val2])) {
           return cNoMemory;
         }
@@ -4005,15 +4005,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
         reinit_char(elem, static_cast<char>(rasl->val2));
         break;
 
-      case icReinitFunc:
+      case icReinitName:
         reinit_name(elem, functions[rasl->val2].function);
         break;
 
-      case icReinitInt:
+      case icReinitNumber:
         reinit_number(elem, static_cast<RefalNumber>(rasl->val2));
         break;
 
-      case icReinitHugeInt:
+      case icReinitHugeNumber:
         reinit_number(elem, numbers[rasl->val2]);
         break;
 
@@ -4050,15 +4050,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
         update_char(elem, static_cast<char>(rasl->val2));
         break;
 
-      case icUpdateFunc:
+      case icUpdateName:
         update_name(elem, functions[rasl->val2].function);
         break;
 
-      case icUpdateInt:
+      case icUpdateNumber:
         update_number(elem, static_cast<RefalNumber>(rasl->val2));
         break;
 
-      case icUpdateHugeInt:
+      case icUpdateHugeNumber:
         update_number(elem, numbers[rasl->val2]);
         break;
 

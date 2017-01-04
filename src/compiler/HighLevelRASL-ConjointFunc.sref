@@ -81,7 +81,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
                       >
                     >
                     {
-                      (#CmdIssueMem s.Memory) e.Commands =
+                      (#CmdIssueMemory s.Memory) e.Commands =
                         <Max s.MaxMemory s.Memory>
                         (#CmdSentence
                           (#CmdComment e.HardGenComment)
@@ -97,7 +97,7 @@ $ENTRY HighLevelRASL-Function-Conjoint {
           (e.Prefix) s.MaxMemory e.Sentences^ (#CmdSentence e.LastSentence) =
             (#Function
               s.ScopeClass (e.Name)
-              (#CmdIssueMem s.MaxMemory)
+              (#CmdIssueMemory s.MaxMemory)
               e.Prefix
               e.Sentences
               <Fetch

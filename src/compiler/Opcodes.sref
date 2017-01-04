@@ -1,16 +1,16 @@
 // File generated automatically from ..\srlib\refalrts.h
-// edit ..\srlib\refalrts.h and then run:
-// rasl-constants ..\srlib\refalrts.h Opcodes.sref
+// Edit ..\srlib\refalrts.hfirst and then run:
+// $ rasl-constants ..\srlib\refalrts.h Opcodes.sref
 
 $ENTRY NumberFromOpcode{
-  #CmdThisIsGeneratedFunction = 0;
+  #CmdProfileFunction = 0;
   #CmdLoadConstants = 1;
   #CmdIssueMemory = 2;
   #CmdReserveBacktrackStack = 3;
   #CmdOnFailGoTo = 4;
   #CmdProfilerStopSentence = 5;
   #CmdInitB0 = 6;
-  #CmdInitB0_Lite = 7;
+  #CmdInitB0-Lite = 7;
   #CmdChar #AlgLeft = 8;
   #CmdChar #AlgRight = 9;
   #CmdChar #AlgTerm = 10;
@@ -26,21 +26,21 @@ $ENTRY NumberFromOpcode{
   #CmdHugeNum #AlgTerm = 20;
   #CmdHugeNumSave #AlgLeft = 21;
   #CmdHugeNumSave #AlgRight = 22;
-  #CmdFunc #AlgLeft = 23;
-  #CmdFunc #AlgRight = 24;
-  #CmdFunc #AlgTerm = 25;
-  #CmdFuncSave #AlgLeft = 26;
-  #CmdFuncSave #AlgRight = 27;
+  #CmdName #AlgLeft = 23;
+  #CmdName #AlgRight = 24;
+  #CmdName #AlgTerm = 25;
+  #CmdNameSave #AlgLeft = 26;
+  #CmdNameSave #AlgRight = 27;
   #CmdIdent #AlgLeft = 28;
   #CmdIdent #AlgRight = 29;
   #CmdIdent #AlgTerm = 30;
   #CmdIdentSave #AlgLeft = 31;
   #CmdIdentSave #AlgRight = 32;
-  #CmdBracket #AlgLeft = 33;
-  #CmdBracket #AlgRight = 34;
-  #CmdBracket #AlgTerm = 35;
-  #CmdBracketSave #AlgLeft = 36;
-  #CmdBracketSave #AlgRight = 37;
+  #CmdBrackets #AlgLeft = 33;
+  #CmdBrackets #AlgRight = 34;
+  #CmdBrackets #AlgTerm = 35;
+  #CmdBracketsSave #AlgLeft = 36;
+  #CmdBracketsSave #AlgRight = 37;
   #CmdADT #AlgLeft = 38;
   #CmdADT #AlgRight = 39;
   #CmdADT #AlgTerm = 40;
@@ -57,16 +57,16 @@ $ENTRY NumberFromOpcode{
   't' #CmdVar #AlgRight = 51;
   't' #CmdVarSave #AlgLeft = 52;
   't' #CmdVarSave #AlgRight = 53;
-  'e' #CmdRepeat #AlgLeft = 54;
-  'e' #CmdRepeat #AlgRight = 55;
-  's' #CmdRepeat #AlgLeft = 56;
-  's' #CmdRepeat #AlgRight = 57;
-  's' #CmdRepeat #AlgTerm = 58;
-  't' #CmdRepeat #AlgLeft = 59;
-  't' #CmdRepeat #AlgRight = 60;
-  't' #CmdRepeat #AlgTerm = 61;
-  't' #CmdRepeatSave #AlgLeft = 62;
-  't' #CmdRepeatSave #AlgRight = 63;
+  'e' #CmdRepeated #AlgLeft = 54;
+  'e' #CmdRepeated #AlgRight = 55;
+  's' #CmdRepeated #AlgLeft = 56;
+  's' #CmdRepeated #AlgRight = 57;
+  's' #CmdRepeated #AlgTerm = 58;
+  't' #CmdRepeated #AlgLeft = 59;
+  't' #CmdRepeated #AlgRight = 60;
+  't' #CmdRepeated #AlgTerm = 61;
+  't' #CmdRepeatedSave #AlgLeft = 62;
+  't' #CmdRepeatedSave #AlgRight = 63;
   #CmdEPrepare = 64;
   #CmdEStart = 65;
   #CmdSave = 66;
@@ -76,26 +76,26 @@ $ENTRY NumberFromOpcode{
   #CmdSetRes = 70;
   #CmdCopyEVar = 71;
   #CmdCopySTVar = 72;
-  #Reinit #CmdSVar = 73;
+  #CmdReinitSVar = 73;
   #Allocate #ElChar = 74;
-  #Allocate #ElFunc = 75;
-  #Allocate #ElInt = 76;
-  #Allocate #ElHugeInt = 77;
+  #Allocate #ElName = 75;
+  #Allocate #ElNumber = 76;
+  #Allocate #ElHugeNumber = 77;
   #Allocate #ElIdent = 78;
   #Allocate #ElBracket = 79;
   #Allocate #ElString = 80;
   #Reinit #ElChar = 81;
-  #Reinit #ElFunc = 82;
-  #Reinit #ElInt = 83;
-  #Reinit #ElHugeInt = 84;
+  #Reinit #ElName = 82;
+  #Reinit #ElNumber = 83;
+  #Reinit #ElHugeNumber = 84;
   #Reinit #ElIdent = 85;
   #Reinit #ElBracket = 86;
   #Reinit #CmdClosureHead = 87;
   #Reinit #CmdUnwrappedClosure = 88;
   #Update #ElChar = 89;
-  #Update #ElFunc = 90;
-  #Update #ElInt = 91;
-  #Update #ElHugeInt = 92;
+  #Update #ElName = 90;
+  #Update #ElNumber = 91;
+  #Update #ElHugeNumber = 92;
   #Update #ElIdent = 93;
   #CmdLinkBrackets = 94;
   #CmdPushStack = 95;
