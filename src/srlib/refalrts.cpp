@@ -2462,6 +2462,7 @@ public:
   }
 
   Value *alloc(Key key);
+  Value *lookup(Key key);
 
 private:
   struct Node {
@@ -2608,6 +2609,33 @@ Value * refalrts::dynamic::DynamicHash<Key, Value>::alloc(Key key) {
   }
 
   return &return_node->value;
+}
+
+template <typename Key, typename Value>
+Value *refalrts::dynamic::DynamicHash<Key, Value>::lookup(Key key) {
+  // Хаки для Watcom
+  using refalrts::UInt32;
+  using refalrts::dynamic::HashKeyTraits;
+
+  UInt32 hash = HashKeyTraits<Key>::hash(key);
+  UInt32 hash_mask = (UInt32(1) << m_table_power) - 1;
+
+  Node *return_node = m_table[hash & hash_mask];
+  while (
+    return_node != 0
+    && (
+      return_node->hash != hash
+      || ! HashKeyTraits<Key>::equal(return_node->value.key(), key)
+    )
+  ) {
+    return_node = return_node->next;
+  }
+
+  if (return_node != 0) {
+    return &return_node->value;
+  } else {
+    return 0;
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -2869,8 +2897,8 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
       }
 
       RefalFuncName name(str_name + 1, cookie1, cookie2);
-      FuncHashNode *node = funcs_table().alloc(name);
-      if (node->function != 0) {
+      FuncHashNode *node = funcs_table().lookup(name);
+      if (node != 0) {
         items[i].function = node->function;
       } else {
         fprintf(
@@ -2887,8 +2915,8 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
   while (g_unresolved_external_references != 0) {
     ExternalReference *er = g_unresolved_external_references;
     RefalFuncName name(er->ref.func_name, er->cookie1, er->cookie2);
-    FuncHashNode *node = funcs_table().alloc(name);
-    if (node->function != 0) {
+    FuncHashNode *node = funcs_table().lookup(name);
+    if (node != 0) {
       er->ref.function = node->function;
     } else {
       fprintf(
