@@ -108,7 +108,7 @@ $ENTRY GenProgram-RASL {
     <Map GenCommand-Globals e.Items>
     ('const refalrts::RASLCommand rasl[] = {')
     <Map GenCommand-RASL e.RASL>
-    ('  {refalrts::icEnd, 0, 0, 0}')
+    ('  {' <StrFromInt <NumberFromOpcode #CmdEnd>> ', 0, 0, 0}')
     ('};')
     <GenCommonTailer>;
 }

@@ -2703,6 +2703,9 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::from_static(
 refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
   const char *name
 ) {
+  if (! name) {
+    name = "";
+  }
   dynamic::IdentHashNode *value = dynamic::alloc_ident_node(name);
 
 #ifdef IDENTS_LIMIT
@@ -2714,7 +2717,11 @@ refalrts::RefalIdentifier refalrts::RefalIdentDescr::implode(
 #endif // ifdef IDENTS_LIMIT
 
   if (value->ident.m_name == 0) {
-    size_t length = name ? strlen(name) : 0;
+    if (! name) {
+      name = "";
+    }
+
+    size_t length = strlen(name);
     char *new_name = new char[length + 1];
     memcpy(new_name, name, length + 1);
 
@@ -2812,7 +2819,8 @@ void refalrts::RefalFunction::register_me() {
   if (node->function != 0) {
     fprintf(
       stderr, "INTERNAL ERROR: function redeclared: %s#%u:%u\n",
-      name.name, name.cookie1, name.cookie2);
+      name.name, name.cookie1, name.cookie2
+    );
     exit(156);
   }
 
@@ -3412,8 +3420,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
     Iter &res_b = context[rasl->val2];
     Iter &res_e = context[rasl->val2 + 1];
 
-    switch(rasl->cmd)
-    {
+    switch(rasl->cmd) {
       case icProfileFunction:
         this_is_generated_function();
         break;
@@ -3922,8 +3929,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
               context[target], context[target + 1],
               context[sample], context[sample + 1]
             )
-          )
+          ) {
             return cNoMemory;
+          }
         }
         break;
 
@@ -3996,8 +4004,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
               bb, be,
               strings[rasl->val2].string, strings[rasl->val2].string_len
             )
-          )
+          ) {
             return cNoMemory;
+          }
         }
         break;
 
