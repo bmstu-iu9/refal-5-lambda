@@ -143,15 +143,6 @@ GenCommand-Native {
       ');'
     );
 
-  (e.Indent) (#CmdDeclaration e.Name) =
-    (e.Indent)
-    (
-      'static refalrts::ExternalReference ref_' <BaseCName e.Name> '('
-      <NameAndCookies e.Name>
-      ');'
-    )
-    ('#define str_' <BaseCName e.Name> ' ' <MakeRefalName e.Name>);
-
   (e.Indent) (#CmdNativeFuncDescr e.Name) =
     (e.Indent)
     (

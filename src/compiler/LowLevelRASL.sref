@@ -1064,7 +1064,7 @@ ClassifyItems-Native {
 
   (e.Declarations)
   (#CmdDeclaration e.Name) =
-    (e.Declarations (#CmdDeclaration e.Name));
+    (e.Declarations (#CmdExtern e.Name));
 
   (e.Declarations)
   (#CmdDefineIdent e.Name) =

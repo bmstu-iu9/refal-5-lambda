@@ -80,7 +80,7 @@ FindErrors {
               (e.Declarations);
 
             (e.Declarations) (#NativeBlock e.Block) =
-              (e.Declarations #NativeBlockSign);
+              (e.Declarations);
           }
           (/* объявления */)
         )
@@ -103,12 +103,6 @@ CheckDeclarations {
         CleanupValidForwards
         FindInvalidForwards
         CheckRedefinitions
-        (Map
-          {
-            #NativeBlockSign = /* пусто */;
-            t.Other = t.Other;
-          }
-        )
       >
     >;
 }
@@ -154,10 +148,6 @@ FindInvalidForwards {
       (#Define t.SrcPosDefine #GN-Entry e.Name) e.Declarations-M
       (#Error t.SrcPosForward #ForwardForEntry e.Name) e.Declarations-E
     >;
-
-  // Эта проверка не выполняется для файлов с нативными блоками
-  e.Declarations-B #NativeBlockSign e.Declarations-E =
-    e.Declarations-B e.Declarations-E;
 
   e.Declarations-B
   (#Declare t.SrcPosForward #GN-Local e.Name) e.Declarations-E =

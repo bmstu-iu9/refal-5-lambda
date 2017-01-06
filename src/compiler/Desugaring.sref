@@ -665,9 +665,7 @@ RemoveRedudandElements {
             (e.Functions) t.OtherItem =
               (e.Functions)
               /*
-                t.OtherItem может быть и объявлением без определения,
-                например $EXTERN или $FORWARD в файле с нативными вставками.
-                Во всех случаях оставляем
+                t.OtherItem может быть и объявлением без определения ($EXTERN)
               */
               t.OtherItem;
           }
