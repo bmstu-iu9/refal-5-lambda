@@ -4,7 +4,7 @@ $ENTRY Go {
 
 CreateClosure {
 %%
-  arg_begin->next->function_info = & refalrts::create_closure;
+  arg_begin->next->function_info = refalrts::create_closure;
   refalrts::push_stack(arg_end);
   refalrts::push_stack(arg_begin);
   return refalrts::cSuccess;

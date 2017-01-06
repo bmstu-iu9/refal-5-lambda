@@ -1,26 +1,8 @@
 $ENTRY Go {
 %%
-  static const refalrts::RASLCommand raa[] = {
-    {refalrts::icEnd + 5, 0, 0, 0}
-  };
-
-  static refalrts::FunctionTableItem items[] = { 0 };
-  static refalrts::FunctionTable functions(0, 0, items);
-
-  static refalrts::RASLFunction func(
-    refalrts::RefalFuncName("Test", 0, 0), raa,
-    functions,
-    refalrts::idents,
-    refalrts::numbers,
-    refalrts::strings
-  );
-
-  refalrts::Iter inner_begin, inner_end;
-  refalrts::Iter func_name =
-    refalrts::call_left(inner_begin, inner_end, arg_begin, arg_end);
-  func_name->function_info = &func;
-  refalrts::push_stack(arg_end);
-  refalrts::push_stack(arg_begin);
+  refalrts::this_is_generated_function();
+  refalrts::this_is_generated_function();
+  refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 %%
 }

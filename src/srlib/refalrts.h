@@ -494,7 +494,7 @@ extern void splice_to_freelist(Iter first, Iter last);
 extern void splice_to_freelist_open(Iter before_first, Iter after_last);
 extern void splice_from_freelist(Iter pos);
 
-extern RefalFunction create_closure;
+extern RefalFunction *create_closure;
 Iter unwrap_closure(Iter closure); // Развернуть замыкание
 Iter wrap_closure(Iter closure); // Свернуть замыкание
 
@@ -564,14 +564,14 @@ struct RASLFunction: public RefalFunction {
 
   RASLFunction(
     RefalFuncName name,
-    const RASLCommand rasl[],
-    const FunctionTable& functions,
-    const RefalIdentifier idents[],
-    const RefalNumber numbers[],
-    const StringItem strings[]
+    const RASLCommand *rasl,
+    const FunctionTable *functions,
+    const RefalIdentifier *idents,
+    const RefalNumber *numbers,
+    const StringItem *strings
   )
     : RefalFunction(rasl, name)
-    , functions(&functions)
+    , functions(functions)
     , idents(idents)
     , numbers(numbers)
     , strings(strings)
@@ -614,6 +614,143 @@ public:
       __FILE__, __LINE__, (bad_switch_value), #bad_switch_value \
     ) \
   )
+
+struct RASLBlock {
+  static RASLBlock *s_first;
+  static RASLBlock *s_last;
+
+  RASLBlock *next;
+
+  RASLBlock()
+    : next(0)
+  {
+    if (s_first != 0) {
+      s_last->next = this;
+    } else {
+      s_first = this;
+    }
+    s_last = this;
+  }
+
+  virtual ~RASLBlock() {}
+};
+
+struct ConstTableBlock: public RASLBlock {
+  UInt32 cookie1;
+  UInt32 cookie2;
+
+  const FunctionTable *functions;
+  const RefalIdentifier *idents;
+  const RefalNumber *numbers;
+  const StringItem *strings;
+  const RASLCommand *rasl;
+
+  ConstTableBlock(
+    UInt32 cookie1, UInt32 cookie2,
+    const FunctionTable& functions,
+    const RefalIdentifier idents[],
+    const RefalNumber numbers[],
+    const StringItem strings[],
+    const RASLCommand rasl[]
+  )
+    : RASLBlock()
+    , cookie1(cookie1)
+    , cookie2(cookie2)
+    , functions(&functions)
+    , idents(idents)
+    , numbers(numbers)
+    , strings(strings)
+    , rasl(rasl)
+  {
+    /* пусто */
+  }
+};
+
+struct FunctionBlock: public RASLBlock {
+  const char *name;
+
+  FunctionBlock(const char *name)
+    : RASLBlock()
+    , name(name)
+  {
+    /* пусто */
+  }
+
+  virtual RefalFunction *create(ConstTableBlock *table) const = 0;
+
+  RefalFuncName make_name(ConstTableBlock *table) const;
+};
+
+struct RefalFunctionBlock: public FunctionBlock {
+  UInt32 offset;
+
+  RefalFunctionBlock(
+    const char *name,
+    UInt32 offset
+  )
+    : FunctionBlock(name)
+    , offset(offset)
+  {
+    /* пусто */
+  }
+
+  virtual RASLFunction *create(ConstTableBlock *table) const;
+};
+
+struct NativeFunctionBlock: public FunctionBlock {
+  NativeFunctionBlock(const char *name)
+    : FunctionBlock(name)
+  {
+    /* пусто */
+  }
+
+  virtual RefalNativeFunction *create(ConstTableBlock *table) const;
+};
+
+struct EmptyFunctionBlock: public FunctionBlock {
+  EmptyFunctionBlock(const char *name)
+    : FunctionBlock(name)
+  {
+    /* пусто */
+  }
+
+  virtual RefalEmptyFunction *create(ConstTableBlock *table) const;
+};
+
+struct SwapBlock: public FunctionBlock {
+  SwapBlock(const char *name)
+    : FunctionBlock(name)
+  {
+    /* пусто */
+  }
+
+  virtual RefalSwap *create(ConstTableBlock *table) const;
+};
+
+struct NativeReference {
+  const char *name;
+  UInt32 cookie1;
+  UInt32 cookie2;
+  RefalFunctionPtr code;
+  NativeReference *next;
+
+  static NativeReference *s_references;
+
+  NativeReference(
+    const char *name,
+    UInt32 cookie1,
+    UInt32 cookie2,
+    RefalFunctionPtr code
+  )
+    : name(name)
+    , cookie1(cookie1)
+    , cookie2(cookie2)
+    , code(code)
+    , next(s_references)
+  {
+    s_references = this;
+  }
+};
 
 } //namespace refalrts
 

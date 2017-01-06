@@ -496,11 +496,13 @@ ClassifyItems-RASL {
 
   (e.FuncScopeClass)
   (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
   (e.FuncScopeClass)
   (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
-    (e.FuncScopeClass (s.ScopeClass e.Name));
+    (e.FuncScopeClass (s.ScopeClass e.Name))
+    (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
   (e.FuncScopeClass)
   (#CmdEnum s.ScopeClass e.Name) =

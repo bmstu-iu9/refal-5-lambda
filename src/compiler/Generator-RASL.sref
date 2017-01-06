@@ -30,15 +30,11 @@ $ENTRY GenProgram-RASL {
     <GenCommonHeaders>
     ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
     ('static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
-    ('#define rasl rasl_' <StrFromInt s.Cookie1> '_' <StrFromInt s.Cookie2>)
-    ()
-    ('extern const refalrts::RASLCommand rasl[];')
     ()
     ('static refalrts::FunctionTableItem func_table_items[] = {')
     <Map
       {
-        (#GN-Entry e.Name) = ('  "*' <DisplayCName e.Name> '",');
-        (#GN-Local e.Name) = ('  "#' <DisplayCName e.Name> '",');
+        (s.ScopeClass e.Name) = ('  ' <NameWithSign s.ScopeClass e.Name> ',');
       }
       e.FuncNames
     >
@@ -105,20 +101,26 @@ $ENTRY GenProgram-RASL {
       }
     >
     ()
-    <Map GenCommand-Globals e.Items>
-    ('const refalrts::RASLCommand rasl[] = {')
+    ('static const refalrts::RASLCommand rasl[] = {')
     <Map GenCommand-RASL e.RASL>
     ('  {' <StrFromInt <NumberFromOpcode #CmdEnd>> ', 0, 0, 0}')
     ('};')
+    ()
+    (
+      'static refalrts::ConstTableBlock const_table('
+      <StrFromInt s.Cookie1> 'U, ' <StrFromInt s.Cookie2> 'U, '
+      'functions, idents, numbers, strings, rasl'
+      ');'
+    )
+    ()
+    <Map GenCommand-Globals e.Items>
+    ()
     <GenCommonTailer>;
 }
 
-NameWithScope {
-  #GN-Entry e.Name =
-    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", 0, 0)';
-
-  #GN-Local e.Name =
-    'refalrts::RefalFuncName("' <DisplayCName e.Name> '", COOKIE1, COOKIE2)';
+NameWithSign {
+  #GN-Entry e.Name = '"*' <DisplayCName e.Name> '"';
+  #GN-Local e.Name = '"#' <DisplayCName e.Name> '"';
 }
 
 GenCommand-Globals {
@@ -133,26 +135,30 @@ GenCommand-Globals {
 
   (#CmdEnumDescr s.ScopeClass e.Name) =
     (
-      'static refalrts::RefalEmptyFunction descr_' <CName e.Name> '('
-      <NameWithScope s.ScopeClass e.Name>
+      'static refalrts::EmptyFunctionBlock block_' <CName e.Name> '('
+      <NameWithSign s.ScopeClass e.Name>
       ');'
     );
 
   (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
-    ('static refalrts::RASLFunction descr_' <CName e.Name> '(')
-    ('  ' <NameWithScope s.ScopeClass e.Name> ',')
-    ('  rasl + ' <StrFromInt s.Offset> ',')
-    ('  functions,')
-    ('  idents,')
-    ('  numbers,')
-    ('  strings')
-    (');')
+    (
+      'static refalrts::RefalFunctionBlock block_'<CName e.Name> '('
+      <NameWithSign s.ScopeClass e.Name> ', ' <StrFromInt s.Offset>
+      ');'
+    )
     ();
 
   (#CmdSwapDescr s.ScopeClass e.Name) =
     (
-      'static refalrts::RefalSwap descr_' <CName e.Name> '('
-      <NameWithScope s.ScopeClass e.Name>
+      'static refalrts::SwapBlock block_' <CName e.Name> '('
+      <NameWithSign s.ScopeClass e.Name>
+      ');'
+    );
+
+  (#CmdNativeFuncDescr s.ScopeClass e.Name) =
+    (
+      'static refalrts::NativeFunctionBlock block_' <CName e.Name> '('
+      <NameWithSign s.ScopeClass e.Name>
       ');'
     );
 }

@@ -1,4 +1,5 @@
 #include <exception>
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1577,9 +1578,7 @@ const refalrts::RASLCommand rasl_create_closure[] = {
 
 }
 
-refalrts::RefalFunction refalrts::create_closure(
-  rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
-);
+refalrts::RefalFunction *refalrts::create_closure = 0;
 
 /*
   Собственно замыкание (функция + контекст) определяется как
@@ -2800,7 +2799,9 @@ struct FuncHashNode {
   }
 
   void cleanup() {
-    /* пусто */
+    // Деструкторов (в т.ч. неявных в функциях нет),
+    // память выделялась только malloc’ом, поэтому освобождаем free()
+    free(function);
   }
 
   RefalFuncName key() const {
@@ -2935,6 +2936,132 @@ unsigned refalrts::dynamic::find_unresolved_externals() {
 void refalrts::dynamic::free_funcs_table() {
   delete g_funcs_table;
 }
+
+//------------------------------------------------------------------------------
+
+// Загружаемый модуль
+
+namespace refalrts {
+
+namespace dynamic {
+
+template <typename T>
+inline T *malloc() {
+  return static_cast<T*>(::malloc(sizeof(T)));
+}
+
+void enumerate_blocks();
+
+} // namespace dynamic
+
+} // namespace refalrts
+
+refalrts::RASLBlock *refalrts::RASLBlock::s_first = 0;
+refalrts::RASLBlock *refalrts::RASLBlock::s_last = 0;
+
+refalrts::RefalFuncName
+refalrts::FunctionBlock::make_name(ConstTableBlock *table) const {
+  char type = this->name[0];
+  const char *proper_name = this->name + 1;
+
+  assert(type == '*' || type == '#');
+  if (type == '#') {
+    return RefalFuncName(proper_name, table->cookie1, table->cookie2);
+  } else {
+    return RefalFuncName(proper_name, 0, 0);
+  }
+}
+
+refalrts::RASLFunction *
+refalrts::RefalFunctionBlock::create(ConstTableBlock *table) const {
+  RASLFunction *result = dynamic::malloc<RASLFunction>();
+  // TODO: выдача сообщения об ошибке
+  assert(result != 0);
+  return new (result) RASLFunction(
+    make_name(table),
+    table->rasl + offset,
+    table->functions,
+    table->idents,
+    table->numbers,
+    table->strings
+  );
+}
+
+refalrts::RefalNativeFunction *
+refalrts::NativeFunctionBlock::create(ConstTableBlock *table) const {
+  char type = this->name[0];
+  assert(type == '*' || type == '#');
+
+  const char *proper_name = this->name + 1;
+
+  NativeReference *ref = NativeReference::s_references;
+  while (
+    ref != 0
+    && ! (
+      type == '*'
+      ? (
+        ref->cookie1 == 0
+        && ref->cookie2 == 0
+        && strcmp(ref->name, proper_name) == 0
+      )
+      : (
+        ref->cookie1 == table->cookie1
+        && ref->cookie2 == table->cookie2
+        && strcmp(ref->name, proper_name) == 0
+      )
+    )
+  ) {
+    ref = ref->next;
+  }
+
+  // TODO: Сообщение об ошибке
+  assert(ref != 0);
+
+  RefalNativeFunction *result = dynamic::malloc<RefalNativeFunction>();
+  // TODO: выдача сообщения об ошибке
+  assert(result != 0);
+  return new (result) RefalNativeFunction(ref->code, make_name(table));
+}
+
+refalrts::RefalEmptyFunction *
+refalrts::EmptyFunctionBlock::create(ConstTableBlock *table) const {
+  RefalEmptyFunction *result = dynamic::malloc<RefalEmptyFunction>();
+  // TODO: выдача сообщения об ошибке
+  assert(result != 0);
+  return new (result) RefalEmptyFunction(make_name(table));
+}
+
+refalrts::RefalSwap *
+refalrts::SwapBlock::create(ConstTableBlock *table) const {
+  RefalSwap *result = dynamic::malloc<RefalSwap>();
+  // TODO: выдача сообщения об ошибке
+  assert(result != 0);
+  return new (result) RefalSwap(make_name(table));
+}
+
+void refalrts::dynamic::enumerate_blocks() {
+  RASLBlock *first = RASLBlock::s_first;
+
+  ConstTableBlock *prev_table = 0;
+
+  while (first != 0) {
+    if (ConstTableBlock *table = dynamic_cast<ConstTableBlock*>(first)) {
+      prev_table = table;
+    } else if (FunctionBlock *func = dynamic_cast<FunctionBlock*>(first)) {
+      // TODO: Сообщение об ошибке
+      assert(prev_table != 0);
+      func->create(prev_table);
+    } else {
+      printf("-- UNKNOWN BLOCK!!!\n");
+      enum { UNKNOWN_BLOCK = 0 };
+      assert(UNKNOWN_BLOCK);
+    }
+
+    first = first->next;
+  }
+}
+
+refalrts::NativeReference *refalrts::NativeReference::s_references = 0;
 
 //==============================================================================
 // Виртуальная машина
@@ -4306,6 +4433,16 @@ void refalrts::SwitchDefaultViolation::print() {
 int main(int argc, char **argv) {
   refalrts::vm::g_argc = argc;
   refalrts::vm::g_argv = argv;
+
+  refalrts::create_closure =
+    refalrts::dynamic::malloc<refalrts::RefalFunction>();
+  // TODO: выдача сообщения об ошибке
+  assert(refalrts::create_closure != 0);
+  new (refalrts::create_closure) refalrts::RefalFunction(
+    rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
+  );
+
+  refalrts::dynamic::enumerate_blocks();
 
   unsigned unresolved = refalrts::dynamic::find_unresolved_externals();
   if (unresolved > 0) {
