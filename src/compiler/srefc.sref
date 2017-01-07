@@ -1,18 +1,18 @@
-//FROM Driver
-$EXTERN CompileFile;
-
 //FROM LibraryEx
-$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Seq, Inc, DelAccumulator,
-  MapReduce;
-
-//FROM Library
-$EXTERN WriteLine, System, Exit, StrFromInt;
+$EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
+  Inc;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
+//FROM Library
+$EXTERN WriteLine, StrFromInt, Exit, System;
+
 //FROM FindFile
 $EXTERN FindFiles;
+
+//FROM Driver
+$EXTERN CompileFile;
 
 //------------------------------------------------------------------------------
 
