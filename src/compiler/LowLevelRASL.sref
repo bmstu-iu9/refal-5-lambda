@@ -633,12 +633,13 @@ PrepareRASL {
                 e.RASL-Commands
               >
               {
-                (#CmdFuncArray e.Functions)
-                (#CmdLabelArray e.Labels)
-                (#CmdNumberArray e.Numbers)
-                (#CmdStringArray e.Strings)
+                (#CmdFuncArray s.FunctionCount e.Functions)
+                (#CmdLabelArray s.LabelCount e.Labels)
+                (#CmdNumberArray s.NumberCount e.Numbers)
+                (#CmdStringArray s.StringCount e.Strings)
                 e.RASL-Commands^ =
                   (#CmdFuncArray
+                    s.FunctionCount
                     <DelAccumulator
                       <MapReduce
                         {
@@ -655,9 +656,9 @@ PrepareRASL {
                       >
                     >
                   )
-                  (#CmdLabelArray e.Labels)
-                  (#CmdNumberArray e.Numbers)
-                  (#CmdStringArray e.Strings)
+                  (#CmdLabelArray s.LabelCount e.Labels)
+                  (#CmdNumberArray s.NumberCount e.Numbers)
+                  (#CmdStringArray s.StringCount e.Strings)
                   (#RASL e.RASL-Commands)
                   (#Items e.Items);
               }
@@ -675,10 +676,10 @@ OutlineConstants {
   (s.NextNumber e.Numbers)
   (s.NextString e.Strings)
   /* пусто */ =
-    (#CmdFuncArray <Map RemoveNumber e.Funcs>)
-    (#CmdLabelArray <Map RemoveNumber e.Labels>)
-    (#CmdNumberArray <Map { (s.Id s.Value) = s.Value; } e.Numbers>)
-    (#CmdStringArray <Map RemoveNumber e.Strings>);
+    (#CmdFuncArray s.NextFunc <Map RemoveNumber e.Funcs>)
+    (#CmdLabelArray s.NextLabel <Map RemoveNumber e.Labels>)
+    (#CmdNumberArray s.NextNumber <Map { (s.Id s.Value) = s.Value; } e.Numbers>)
+    (#CmdStringArray s.NextString <Map RemoveNumber e.Strings>);
 
   (s.NextFunc e.Funcs-B (s.Num e.Func) e.Funcs-E) (e.Labels) (e.Numbers)
   (e.Strings)

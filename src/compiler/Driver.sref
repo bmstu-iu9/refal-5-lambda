@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, SaveFile;
+$EXTERN Fetch, Seq, SaveFile, Map;
 
 //FROM LoadSource
 $EXTERN LoadSource;
@@ -27,6 +27,9 @@ $EXTERN LowLevelRASL;
 
 //FROM Generator-RASL
 $EXTERN GenProgram-RASL;
+
+//FROM Library
+$EXTERN StrFromInt;
 
 //FROM Generator-Native
 $EXTERN GenProgram-Native;
@@ -105,8 +108,39 @@ BackEnd {
 
 BackEnd-RASLModule {
   t.RASLModule e.OutputName =
-    <SaveFile (e.OutputName) <GenProgram-RASL t.RASLModule>>
+    <Fetch
+      <GenProgram-RASL t.RASLModule>
+      {
+        e.ByteStream =
+        <SaveFile
+          (e.OutputName)
+          <EnvelopeCLines e.ByteStream>
+        >;
+      }
+    >
     #Success e.OutputName;
+}
+
+// Грязный хак, но так надо
+EnvelopeCLines {
+  e.Bytes =
+    ('// Automatically generated file. Don\'t edit!')
+    ('#include "refalrts.h"')
+    ()
+    ('static unsigned char bytes[] = {')
+    <Map
+      {
+        s.Number =
+          ('  ' <StrFromInt s.Number> ',');
+      }
+      e.Bytes
+    >
+    ('  0')
+    ('};')
+    ()
+    ('static refalrts::RawBytesBlock block(bytes, sizeof(bytes) - 1);')
+    ()
+    ('//End of file');
 }
 
 BackEnd-NativeModule {

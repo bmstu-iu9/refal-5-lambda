@@ -1,14 +1,11 @@
 //FROM LibraryEx
-$EXTERN Fetch, Map, Inc;
+$EXTERN Map, Fetch, UnBracket, Inc;
+
+//FROM Library
+$EXTERN Mul, Sub, Ord, Div, Mod;
 
 //FROM DisplayName
 $EXTERN DisplayName;
-
-//FROM Library
-$EXTERN StrFromInt, Div, Mod, UnBracket, Sub, Mul;
-
-//FROM Escape
-$EXTERN EscapeChar;
 
 //FROM Opcodes
 $EXTERN NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
@@ -17,141 +14,87 @@ $EXTERN NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
 $ENTRY GenProgram-RASL {
   (
     (#ModuleID s.Cookie1 s.Cookie2)
-    (#CmdFuncArray e.FuncNames)
-    (#CmdLabelArray e.Labels)
-    (#CmdNumberArray e.Numbers)
-    (#CmdStringArray e.Strings)
+    (#CmdFuncArray s.FunctionCount e.FuncNames)
+    (#CmdLabelArray s.LabelCount e.Labels)
+    (#CmdNumberArray s.NumberCount e.Numbers)
+    (#CmdStringArray s.StringCount e.Strings)
     (#RASL e.RASL)
     (#Items e.Items)
   ) =
-    <EnvelopeCLines
-      <CreateBinaryStream
-        (#ModuleID s.Cookie1 s.Cookie2)
-        (#CmdFuncArray e.FuncNames)
-        (#CmdLabelArray e.Labels)
-        (#CmdNumberArray e.Numbers)
-        (#CmdStringArray e.Strings)
-        (#RASL e.RASL)
-        (#Items e.Items)
-      >
-    >;
-}
-
-EnvelopeCLines {
-  e.Bytes =
-    ('// Automatically generated file. Don\'t edit!')
-    ('#include "refalrts.h"')
-    ()
-    ('static unsigned char bytes[] = {')
-    <Map
-      {
-        s.Number =
-          ('  ' <StrFromInt s.Number> ',');
-
-        (#C s.Char) =
-          ('  static_cast<unsigned char>(''' <EscapeChar s.Char> '''),');
-      }
-      e.Bytes
-    >
-    ('  0')
-    ('};')
-    ()
-    ('static refalrts::RawBytesBlock block(bytes, sizeof(bytes) - 1);')
-    ()
-    ('//End of file');
-}
-
-CreateBinaryStream {
-  (#ModuleID s.Cookie1 s.Cookie2)
-  (#CmdFuncArray e.FuncNames)
-  (#CmdLabelArray e.Labels)
-  (#CmdNumberArray e.Numbers)
-  (#CmdStringArray e.Strings)
-  (#RASL e.RASL)
-  (#Items e.Items) =
     <PutBlock #Start <BytesFromString 'RASLCODE'>>
     <Fetch
-      (
-        <Length-T
-          <Map
-            {
-              (s.ScopeClass e.FuncName) =
-                (<NameWithSign-Bytes s.ScopeClass e.FuncName>);
-            }
-            e.FuncNames
-          >
-        >
-      )
-      (
-        <Length-T
-          <Map
-            {
-              (e.Ident) = (<Asciiz <DisplayName e.Ident>>);
-            }
-            e.Labels
-          >
-        >
-      )
-      (<Length-T <Map { s.Number = <PutWordLE s.Number>; } e.Numbers>>)
-      (
-        <Length-T
-          <Map
-            {
-              (e.String) =
-                <Fetch
-                  <Length-T e.String>
-                  {
-                    s.Length e.String^ =
-                      (<PutWordLE s.Length> <BytesFromString e.String>);
-                  }
-                >;
-            }
-            e.Strings
-          >
-        >
-      )
+      (<Length-T <BytesFromFunctionList e.FuncNames>>)
+      (<Length-T <BytesFromLabelList e.Labels>>)
+      (<Length-T <BytesFromStringList e.Strings>>)
       (<Length-T <Map GenCommand-RASL e.RASL>>)
       {
-        (s.ExternalCount e.Externals)
-        (s.IdentCount e.Idents)
-        (s.NumberCount e.Numbers^)
-        (s.StringCount e.Strings^)
-        (s.RaslLength e.RASL^) =
-          <Fetch
-            (<Length-T <Map UnBracket e.Externals>>)
-            (<Length-T <Map UnBracket e.Idents>>)
-            (<Length-T <Map UnBracket e.Strings>>)
-            {
-              (s.ExternalSize e.Externals^)
-              (s.IdentSize e.Idents^)
-              (s.StringSize e.Strings^) =
-                <PutBlock
-                  #ConstTable
-                  <PutWordLE s.Cookie1>
-                  <PutWordLE s.Cookie2>
-                  <PutWordLE s.ExternalCount>
-                  <PutWordLE s.IdentCount>
-                  <PutWordLE s.NumberCount>
-                  <PutWordLE s.StringCount>
-                  <PutWordLE s.RaslLength>
-                  <PutWordLE s.ExternalSize>
-                  <PutWordLE s.IdentSize>
-                  <PutWordLE <Sub s.StringSize <Mul 4 s.StringCount>>>
-                  e.Externals
-                  e.Idents
-                  e.Numbers
-                  e.Strings
-                  <Map UnBracket e.RASL>
-                >;
-            }
-          >;
+        (s.ExternalSize e.FuncNamesAsBytes)
+        (s.IdentSize e.IdentsAsBytes)
+        (s.StringSize e.StringsAsBytes)
+        (s.RaslLength e.RASLAsBytes) =
+            <PutBlock
+              #ConstTable
+              <PutWordLE s.Cookie1>
+              <PutWordLE s.Cookie2>
+              <PutWordLE s.FunctionCount>
+              <PutWordLE s.LabelCount>
+              <PutWordLE s.NumberCount>
+              <PutWordLE s.StringCount>
+              <PutWordLE s.RaslLength>
+              <PutWordLE s.ExternalSize>
+              <PutWordLE s.IdentSize>
+              <PutWordLE <Sub s.StringSize <Mul 4 s.StringCount>>>
+              e.FuncNamesAsBytes
+              e.IdentsAsBytes
+              <Map PutWordLE e.Numbers>
+              e.StringsAsBytes
+              <Map UnBracket e.RASLAsBytes>
+            >;
       }
     >
     <Map GenCommand-Globals e.Items>;
 }
 
+BytesFromFunctionList {
+  e.FuncNames =
+    <Map
+      {
+        (s.ScopeClass e.FuncName) =
+          <NameWithSign-Bytes s.ScopeClass e.FuncName>;
+      }
+      e.FuncNames
+    >;
+}
+
+BytesFromLabelList {
+  e.Labels =
+    <Map
+      {
+        (e.Ident) = <Asciiz <DisplayName e.Ident>>;
+      }
+      e.Labels
+    >;
+}
+
+BytesFromStringList {
+  e.Strings =
+    <Map
+      {
+        (e.String) =
+          <Fetch
+            <Length-T e.String>
+            {
+              s.Length e.String^ =
+                <PutWordLE s.Length> <BytesFromString e.String>;
+            }
+          >;
+      }
+      e.Strings
+    >;
+}
+
 BytesFromString {
-  e.String = <Map { s.Char = (#C s.Char); } e.String>;
+  e.String = <Map Ord e.String>;
 }
 
 Asciiz {
@@ -246,11 +189,11 @@ GenCommand-RASL {
   // Команды сопоставления с образцом (режим интерпретации)
 
   (#CmdChar s.Direction s.BracketNumber s.Char) =
-    <PutCommand (#CmdChar s.Direction) 0 (#C s.Char) s.BracketNumber>;
+    <PutCommand (#CmdChar s.Direction) 0 <Ord s.Char> s.BracketNumber>;
 
   (#CmdCharSave s.Direction s.BracketNumber s.SaveOffset s.Char) =
     <PutCommand
-      (#CmdCharSave s.Direction) s.SaveOffset (#C s.Char) s.BracketNumber
+      (#CmdCharSave s.Direction) s.SaveOffset <Ord s.Char> s.BracketNumber
     >;
 
   (#CmdNum s.Direction s.BracketNumber s.Number) =
@@ -426,7 +369,7 @@ CreateCommandTag {
 }
 
 CreateCommandInfo {
-  #ElChar s.Char = (#C s.Char);
+  #ElChar s.Char = <Ord s.Char>;
 
   #ElName s.NameId = s.NameId;
 

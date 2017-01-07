@@ -3170,7 +3170,10 @@ void refalrts::dynamic::enumerate_blocks() {
             }
 
             new_table->numbers = malloc<RefalNumber>(fixed_part.number_count);
-            read = fread(new_table->numbers, 1, fixed_part.number_count, stream);
+            read = fread(
+              new_table->numbers, sizeof(RefalNumber), fixed_part.number_count,
+              stream
+            );
             assert(read == fixed_part.number_count);
 
             new_table->strings = malloc<StringItem>(fixed_part.string_count);
