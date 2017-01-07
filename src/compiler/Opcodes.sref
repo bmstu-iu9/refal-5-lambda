@@ -125,3 +125,13 @@ $ENTRY NumberFromBracket{
   #ElCloseBracket = 4;
   #ElCloseCall = 5;
 }
+
+$ENTRY BlockTypeNumber{
+  #Start = 1;
+  #ConstTable = 2;
+  #RefalFunction = 3;
+  #NativeFunction = 4;
+  #EmptyFunction = 5;
+  #Swap = 6;
+  #Reference = 7;
+}

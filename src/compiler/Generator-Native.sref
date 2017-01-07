@@ -1,9 +1,6 @@
 //FROM LibraryEx
 $EXTERN Fetch, Seq, MapReduce, Inc;
 
-//FROM Generator-Common
-$EXTERN GenCommonHeaders, GenCommonTailer, PrintLength;
-
 //FROM DisplayName
 $EXTERN DisplayCName, CName;
 
@@ -33,9 +30,13 @@ $ENTRY GenProgram-Native {
         {
           () /* отступ должен остаться тем же */
           e.Generated =
-            <GenCommonHeaders>
+            ('// Automatically generated file. Don\'t edit!')
+            ('#include "refalrts.h"')
+            ()
+            ()
             e.Generated
-            <GenCommonTailer>;
+            ()
+            ('//End of file');
         }
         {
           e.Lines-B (#NativeInsertBegin s.SrcLineNum) e.Lines-E =
@@ -492,6 +493,16 @@ GenCommand-Native {
 
 PrintString {
   e.String = '"' <EscapeString e.String> '", ' <PrintLength e.String>;
+}
+
+PrintLength {
+  e.String = <DoPrintLength 0 e.String>;
+}
+
+DoPrintLength {
+  s.Length s.Char e.Tail = <DoPrintLength <Inc s.Length> e.Tail>;
+
+  s.Length = <StrFromInt s.Length>;
 }
 
 PrintMatchChar {

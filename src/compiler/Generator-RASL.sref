@@ -1,20 +1,17 @@
 //FROM LibraryEx
-$EXTERN Fetch, MapReduce, Map;
-
-//FROM Generator-Common
-$EXTERN GenCommonHeaders, GenCommonTailer, PrintLength;
+$EXTERN Fetch, Map, Inc;
 
 //FROM DisplayName
-$EXTERN DisplayCName, CName;
+$EXTERN DisplayName;
 
 //FROM Library
-$EXTERN StrFromInt;
+$EXTERN StrFromInt, Div, Mod, UnBracket, Sub, Mul;
 
 //FROM Escape
-$EXTERN EscapeChar, EscapeString;
+$EXTERN EscapeChar;
 
 //FROM Opcodes
-$EXTERN NumberFromOpcode, NumberFromBracket;
+$EXTERN NumberFromOpcode, NumberFromBracket, BlockTypeNumber;
 
 
 $ENTRY GenProgram-RASL {
@@ -27,147 +24,199 @@ $ENTRY GenProgram-RASL {
     (#RASL e.RASL)
     (#Items e.Items)
   ) =
-    <GenCommonHeaders>
-    ('static refalrts::UInt32 COOKIE1 = ' <StrFromInt s.Cookie1> 'U;')
-    ('static refalrts::UInt32 COOKIE2 = ' <StrFromInt s.Cookie2> 'U;')
+    <EnvelopeCLines
+      <CreateBinaryStream
+        (#ModuleID s.Cookie1 s.Cookie2)
+        (#CmdFuncArray e.FuncNames)
+        (#CmdLabelArray e.Labels)
+        (#CmdNumberArray e.Numbers)
+        (#CmdStringArray e.Strings)
+        (#RASL e.RASL)
+        (#Items e.Items)
+      >
+    >;
+}
+
+EnvelopeCLines {
+  e.Bytes =
+    ('// Automatically generated file. Don\'t edit!')
+    ('#include "refalrts.h"')
     ()
-    ('static refalrts::FunctionTableItem func_table_items[] = {')
+    ('static unsigned char bytes[] = {')
     <Map
       {
-        (s.ScopeClass e.Name) = ('  ' <NameWithSign s.ScopeClass e.Name> ',');
+        s.Number =
+          ('  ' <StrFromInt s.Number> ',');
+
+        (#C s.Char) =
+          ('  static_cast<unsigned char>(''' <EscapeChar s.Char> '''),');
       }
-      e.FuncNames
+      e.Bytes
     >
     ('  0')
     ('};')
     ()
-    ('static refalrts::FunctionTable functions(COOKIE1, COOKIE2, func_table_items);')
+    ('static refalrts::RawBytesBlock block(bytes, sizeof(bytes) - 1);')
     ()
-    <Fetch
-      e.Labels
-      {
-        /* пусто */ =
-          ('using refalrts::idents;');
+    ('//End of file');
+}
 
-          e.LabelNames (e.LastName) =
-            ('static const refalrts::RefalIdentifier idents[] = {')
-            <Map
-              {
-                (e.Name) =
-                  ('  refalrts::ident_from_static("' <DisplayCName e.Name> '"),');
-              }
-              e.LabelNames
-            >
-            ('  refalrts::ident_from_static("' <DisplayCName e.LastName> '"),')
-            ('};');
-      }
-    >
-    ()
+CreateBinaryStream {
+  (#ModuleID s.Cookie1 s.Cookie2)
+  (#CmdFuncArray e.FuncNames)
+  (#CmdLabelArray e.Labels)
+  (#CmdNumberArray e.Numbers)
+  (#CmdStringArray e.Strings)
+  (#RASL e.RASL)
+  (#Items e.Items) =
+    <PutBlock #Start <BytesFromString 'RASLCODE'>>
     <Fetch
-      e.Numbers
-      {
-        /* пусто */ =
-          ('using refalrts::numbers;');
-
-      e.Numbers^ s.LastNumber =
-        ('static const refalrts::RefalNumber numbers[] = {')
-        <Map
-          {
-            s.Number = ('  ' <StrFromInt s.Number> 'UL,');
-          }
-          e.Numbers
-        >
-        ('  ' <StrFromInt s.LastNumber> 'UL')
-        ('};');
-      }
-    >
-    ()
-    <Fetch
-      e.Strings
-      {
-        /* пусто */ =
-          ('using refalrts::strings;');
-
-        e.Strings^ (e.LastString) =
-          ('static const refalrts::StringItem strings[] = {')
+      (
+        <Length-T
           <Map
             {
-              (e.String) = ('  {' <PrintString e.String> '},');
+              (s.ScopeClass e.FuncName) =
+                (<NameWithSign-Bytes s.ScopeClass e.FuncName>);
+            }
+            e.FuncNames
+          >
+        >
+      )
+      (
+        <Length-T
+          <Map
+            {
+              (e.Ident) = (<Asciiz <DisplayName e.Ident>>);
+            }
+            e.Labels
+          >
+        >
+      )
+      (<Length-T <Map { s.Number = <PutWordLE s.Number>; } e.Numbers>>)
+      (
+        <Length-T
+          <Map
+            {
+              (e.String) =
+                <Fetch
+                  <Length-T e.String>
+                  {
+                    s.Length e.String^ =
+                      (<PutWordLE s.Length> <BytesFromString e.String>);
+                  }
+                >;
             }
             e.Strings
           >
-          ('  {' <PrintString e.LastString> '}')
-          ('};');
+        >
+      )
+      (<Length-T <Map GenCommand-RASL e.RASL>>)
+      {
+        (s.ExternalCount e.Externals)
+        (s.IdentCount e.Idents)
+        (s.NumberCount e.Numbers^)
+        (s.StringCount e.Strings^)
+        (s.RaslLength e.RASL^) =
+          <Fetch
+            (<Length-T <Map UnBracket e.Externals>>)
+            (<Length-T <Map UnBracket e.Idents>>)
+            (<Length-T <Map UnBracket e.Strings>>)
+            {
+              (s.ExternalSize e.Externals^)
+              (s.IdentSize e.Idents^)
+              (s.StringSize e.Strings^) =
+                <PutBlock
+                  #ConstTable
+                  <PutWordLE s.Cookie1>
+                  <PutWordLE s.Cookie2>
+                  <PutWordLE s.ExternalCount>
+                  <PutWordLE s.IdentCount>
+                  <PutWordLE s.NumberCount>
+                  <PutWordLE s.StringCount>
+                  <PutWordLE s.RaslLength>
+                  <PutWordLE s.ExternalSize>
+                  <PutWordLE s.IdentSize>
+                  <PutWordLE <Sub s.StringSize <Mul 4 s.StringCount>>>
+                  e.Externals
+                  e.Idents
+                  e.Numbers
+                  e.Strings
+                  <Map UnBracket e.RASL>
+                >;
+            }
+          >;
       }
     >
-    ()
-    ('static const refalrts::RASLCommand rasl[] = {')
-    <Map GenCommand-RASL e.RASL>
-    ('  {' <StrFromInt <NumberFromOpcode #CmdEnd>> ', 0, 0, 0}')
-    ('};')
-    ()
-    (
-      'static refalrts::ConstTableBlock const_table('
-      <StrFromInt s.Cookie1> 'U, ' <StrFromInt s.Cookie2> 'U, '
-      'functions, idents, numbers, strings, rasl'
-      ');'
-    )
-    ()
-    <Map GenCommand-Globals e.Items>
-    ()
-    <GenCommonTailer>;
+    <Map GenCommand-Globals e.Items>;
 }
 
-NameWithSign {
-  #GN-Entry e.Name = '"*' <DisplayCName e.Name> '"';
-  #GN-Local e.Name = '"#' <DisplayCName e.Name> '"';
+BytesFromString {
+  e.String = <Map { s.Char = (#C s.Char); } e.String>;
+}
+
+Asciiz {
+  e.String = <BytesFromString e.String> 0;
+}
+
+PutBlock {
+  s.Type e.Bytes =
+    <BlockTypeNumber s.Type>
+    <Fetch
+      <Length-T e.Bytes>
+      {
+        s.Length e.Bytes^ = <PutWordLE s.Length> e.Bytes;
+      }
+    >;
+}
+
+Length-T {
+  e.Items = <DoLength-T 0 e.Items>;
+}
+
+DoLength-T {
+  s.Count e.Items t.Last = <DoLength-T <Inc s.Count> e.Items> t.Last;
+  s.Count /* пусто */ = s.Count;
+}
+
+PutWordLE {
+  s.1 s.2 s.3 s.4 = s.1 s.2 s.3 s.4;
+
+  e.Bytes s.Value = <PutWordLE e.Bytes <Mod s.Value 256> <Div s.Value 256>>;
+}
+
+NameWithSign-Bytes {
+  #GN-Entry e.Name = <Asciiz '*' <DisplayName e.Name>>;
+  #GN-Local e.Name = <Asciiz '#' <DisplayName e.Name>>;
 }
 
 GenCommand-Globals {
-  // ---------------------------------------------------------------------------
-  // Создания глобальных объектов, общие команды
-
-  (#CmdComment e.Text) = ('//' e.Text);
-
-  // ---------------------------------------------------------------------------
-  // Команды режима интерпретации
-  // Создание глобальных объектов, общие команды
-
   (#CmdEnumDescr s.ScopeClass e.Name) =
-    (
-      'static refalrts::EmptyFunctionBlock block_' <CName e.Name> '('
-      <NameWithSign s.ScopeClass e.Name>
-      ');'
-    );
+    <PutBlock #EmptyFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
   (#CmdInterpretFuncDescr s.ScopeClass e.Name s.Offset) =
-    (
-      'static refalrts::RefalFunctionBlock block_'<CName e.Name> '('
-      <NameWithSign s.ScopeClass e.Name> ', ' <StrFromInt s.Offset>
-      ');'
-    )
-    ();
+    <PutBlock
+      #RefalFunction
+      <NameWithSign-Bytes s.ScopeClass e.Name>
+      <PutWordLE s.Offset>
+    >;
 
   (#CmdSwapDescr s.ScopeClass e.Name) =
-    (
-      'static refalrts::SwapBlock block_' <CName e.Name> '('
-      <NameWithSign s.ScopeClass e.Name>
-      ');'
-    );
+    <PutBlock #Swap <NameWithSign-Bytes s.ScopeClass e.Name>>;
 
   (#CmdNativeFuncDescr s.ScopeClass e.Name) =
-    (
-      'static refalrts::NativeFunctionBlock block_' <CName e.Name> '('
-      <NameWithSign s.ScopeClass e.Name>
-      ');'
-    );
+    <PutBlock #NativeFunction <NameWithSign-Bytes s.ScopeClass e.Name>>;
 }
 
 GenCommand-RASL {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
-  (#CmdComment e.Text) = ('  //' e.Text);
+  (#CmdComment e.Text) =
+    /*
+      Пропускаем.
+      По-хорошему тут надо формировать символьную информацию для отладки.
+    */
+    ;
 
   (#CmdProfileFunction) =
     <PutCommand #CmdProfileFunction>;
@@ -356,27 +405,13 @@ GenCommand-RASL {
 
 PutCommand {
   s.Symbolic =
-    ('  {' <StrFromInt <NumberFromOpcode s.Symbolic>> ', 0, 0, 0},');
+    (<NumberFromOpcode s.Symbolic> 0 0 0);
 
   s.Symbolic t.Arg1 t.Arg2 t.Arg3 =
     <PutCommand (s.Symbolic) t.Arg1 t.Arg2 t.Arg3>;
 
   (e.Symbolic) t.Arg1 t.Arg2 t.Arg3 =
-    (
-      '  {' <StrFromInt <NumberFromOpcode e.Symbolic>>
-      ', ' <PutCommand-Arg t.Arg1>
-      ', ' <PutCommand-Arg t.Arg2>
-      ', ' <PutCommand-Arg t.Arg3> '},'
-    );
-}
-
-PutCommand-Arg {
-  s.Number = <StrFromInt s.Number>;
-  (#C s.Char) = 'static_cast<unsigned char>(''' <EscapeChar s.Char> ''')';
-}
-
-PrintString {
-  e.String = '"' <EscapeString e.String> '", ' <PrintLength e.String>;
+    (<NumberFromOpcode e.Symbolic> t.Arg1 t.Arg2 t.Arg3);
 }
 
 CreateCommandTag {

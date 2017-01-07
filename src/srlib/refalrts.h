@@ -292,7 +292,7 @@ struct RASLCommand {
 
 struct StringItem {
   const char *string;
-  unsigned string_len;
+  UInt32 string_len;
 };
 
 union FunctionTableItem {
@@ -312,7 +312,7 @@ struct FunctionTable {
   FunctionTableItem *items;
   FunctionTable *next;
 
-  FunctionTable(UInt32 cookie1, UInt32 cookie2, FunctionTableItem items[]);
+  FunctionTable(UInt32 cookie1, UInt32 cookie2, FunctionTableItem *items);
 };
 
 struct ExternalReference {
@@ -615,118 +615,6 @@ public:
     ) \
   )
 
-struct RASLBlock {
-  static RASLBlock *s_first;
-  static RASLBlock *s_last;
-
-  RASLBlock *next;
-
-  RASLBlock()
-    : next(0)
-  {
-    if (s_first != 0) {
-      s_last->next = this;
-    } else {
-      s_first = this;
-    }
-    s_last = this;
-  }
-
-  virtual ~RASLBlock() {}
-};
-
-struct ConstTableBlock: public RASLBlock {
-  UInt32 cookie1;
-  UInt32 cookie2;
-
-  const FunctionTable *functions;
-  const RefalIdentifier *idents;
-  const RefalNumber *numbers;
-  const StringItem *strings;
-  const RASLCommand *rasl;
-
-  ConstTableBlock(
-    UInt32 cookie1, UInt32 cookie2,
-    const FunctionTable& functions,
-    const RefalIdentifier idents[],
-    const RefalNumber numbers[],
-    const StringItem strings[],
-    const RASLCommand rasl[]
-  )
-    : RASLBlock()
-    , cookie1(cookie1)
-    , cookie2(cookie2)
-    , functions(&functions)
-    , idents(idents)
-    , numbers(numbers)
-    , strings(strings)
-    , rasl(rasl)
-  {
-    /* пусто */
-  }
-};
-
-struct FunctionBlock: public RASLBlock {
-  const char *name;
-
-  FunctionBlock(const char *name)
-    : RASLBlock()
-    , name(name)
-  {
-    /* пусто */
-  }
-
-  virtual RefalFunction *create(ConstTableBlock *table) const = 0;
-
-  RefalFuncName make_name(ConstTableBlock *table) const;
-};
-
-struct RefalFunctionBlock: public FunctionBlock {
-  UInt32 offset;
-
-  RefalFunctionBlock(
-    const char *name,
-    UInt32 offset
-  )
-    : FunctionBlock(name)
-    , offset(offset)
-  {
-    /* пусто */
-  }
-
-  virtual RASLFunction *create(ConstTableBlock *table) const;
-};
-
-struct NativeFunctionBlock: public FunctionBlock {
-  NativeFunctionBlock(const char *name)
-    : FunctionBlock(name)
-  {
-    /* пусто */
-  }
-
-  virtual RefalNativeFunction *create(ConstTableBlock *table) const;
-};
-
-struct EmptyFunctionBlock: public FunctionBlock {
-  EmptyFunctionBlock(const char *name)
-    : FunctionBlock(name)
-  {
-    /* пусто */
-  }
-
-  virtual RefalEmptyFunction *create(ConstTableBlock *table) const;
-};
-
-struct SwapBlock: public FunctionBlock {
-  SwapBlock(const char *name)
-    : FunctionBlock(name)
-  {
-    /* пусто */
-  }
-
-  virtual RefalSwap *create(ConstTableBlock *table) const;
-};
-
 struct NativeReference {
   const char *name;
   UInt32 cookie1;
@@ -750,6 +638,38 @@ struct NativeReference {
   {
     s_references = this;
   }
+};
+
+struct RawBytesBlock {
+  static RawBytesBlock *s_first;
+  static RawBytesBlock *s_last;
+
+  RawBytesBlock *next;
+  unsigned char *bytes;
+  UInt32 length;
+
+  RawBytesBlock(unsigned char *bytes, UInt32 length)
+    : next(0)
+    , bytes(bytes)
+    , length(length)
+  {
+    if (s_first != 0) {
+      s_last->next = this;
+    } else {
+      s_first = this;
+    }
+    s_last = this;
+  }
+};
+
+enum BlockType { /*BlockTypeNumber:cBlockType;*/
+  cBlockTypeStart = 1,
+  cBlockTypeConstTable = 2,
+  cBlockTypeRefalFunction = 3,
+  cBlockTypeNativeFunction = 4,
+  cBlockTypeEmptyFunction = 5,
+  cBlockTypeSwap = 6,
+  cBlockTypeReference = 7,
 };
 
 } //namespace refalrts
