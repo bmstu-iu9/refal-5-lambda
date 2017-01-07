@@ -9,7 +9,9 @@ popd
 
 pushd distrib
 rd /q /s bin compiler doc lexgen srlib srmake
-xcopy /e /y ..\build\*
+xcopy /e /y /i ..\build\compiler compiler
+xcopy /e /y /i ..\build\lexgen lexgen
+xcopy /e /y /i ..\build\srmake srmake
 md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin

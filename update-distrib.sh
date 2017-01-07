@@ -4,7 +4,7 @@
 
 pushd distrib
 rm -rf bin compiler doc lexgen srlib srmake
-cp -R ../build/* .
+cp -R ../build/{compiler,lexgen,srmake} .
 mkdir bin
 cp ../src/scripts/srefc.bat bin
 cp ../src/scripts/srefc.sh bin/srefc
