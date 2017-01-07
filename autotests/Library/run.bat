@@ -150,6 +150,25 @@ setlocal
     call :CLEANUP Library-FWriteBytes
   )
 
+  if exist Library-RenameFile.exe (
+    echo Pass Library-RenameFile test...
+    copy 2lines.txt source.txt
+    call :RUN_EXE Library-RenameFile || exit /b 1
+    call :COMPARE __written_file.txt 2lines.txt || exit /b 1
+    call :CLEANUP Library-RenameFile
+  )
+
+  if exist Library-RemoveFile.exe (
+    echo Pass Library-RemoveFile test...
+    copy 2lines.txt for_remove.txt
+    call :RUN_EXE Library-RemoveFile || exit /b 1
+    if exist for_remove.txt (
+      echo FILE for_remove.txt MUST BE REMOVED
+      exit /b 1
+    )
+    call :CLEANUP Library-RemoveFile
+  )
+
   erase Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF

@@ -1244,3 +1244,74 @@ $ENTRY FSeek {
   return refalrts::cSuccess;
 %%
 }
+
+$ENTRY RenameFile {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter source_b = 0;
+  refalrts::Iter source_e = 0;
+  refalrts::Iter target_b = 0;
+  refalrts::Iter target_e = 0;
+
+  if (
+    ! refalrts::brackets_left(source_b, source_e, content_b, content_e)
+    || ! refalrts::brackets_left(target_b, target_e, content_b, content_e)
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char source[FILENAME_MAX + 1] = { '\0' };
+  unsigned source_len = read_chars(source, FILENAME_MAX, source_b, source_e);
+
+  if (! refalrts::empty_seq(source_b, source_e) || source_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  char target[FILENAME_MAX + 1] = { '\0' };
+  unsigned target_len = read_chars(target, FILENAME_MAX, target_b, target_e);
+
+  if (! refalrts::empty_seq(target_b, target_e) || target_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int result = rename(source, target);
+
+  refalrts::RefalIdentifier i_result =
+    result == 0 ? USE_IDENT(True) : USE_IDENT(False);
+
+  refalrts::reinit_ident(arg_begin, i_result);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY RemoveFile {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char filename[FILENAME_MAX + 1] = { '\0' };
+  unsigned filename_len =
+    read_chars(filename, FILENAME_MAX, content_b, content_e);
+
+  if (! refalrts::empty_seq(content_b, content_e) || filename_len == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int result = remove(filename);
+
+  refalrts::RefalIdentifier i_result =
+    result == 0 ? USE_IDENT(True) : USE_IDENT(False);
+
+  refalrts::reinit_ident(arg_begin, i_result);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}

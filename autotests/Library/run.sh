@@ -138,6 +138,25 @@ run_all_tests() {
     cleanup Library-FWriteBytes
   fi
 
+  if [ -e Library-RenameFile ]; then
+    echo Pass Library-RenameFile test...
+    cp 2lines.txt source.txt
+    run_exe Library-RenameFile
+    compare __written_file.txt 2lines.txt
+    cleanup Library-RenameFile
+  fi
+
+  if [ -e Library-RemoveFile ]; then
+    echo Pass Library-RemoveFile test...
+    cp 2lines.txt for_remove.txt
+    run_exe Library-RemoveFile
+    if [ -e for_remove.txt ]; then
+      echo FILE for_remove.txt must be removed
+      exit 1
+    fi
+    cleanup Library-RemoveFile
+  fi
+
   rm Library.cpp Library.native.cpp Library.sref
 }
 
