@@ -1,6 +1,6 @@
 //FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
-  SymbCompare, SymbType;
+  SymbCompare, SymbType, FReadBytes, FWriteBytes;
 
 // Расширения библиотеки и функции, реализуемые
 // средствами самого Простого Рефала
@@ -96,7 +96,7 @@ $ENTRY AppendFile {
     <SaveFile-Handle <FOpen 'a' e.FileName> e.Lines>;
 }
 
-$ENTRY SaveFile-Handle {
+SaveFile-Handle {
   s.FileHandle e.Lines =
     <FClose
       <Reduce
@@ -105,6 +105,40 @@ $ENTRY SaveFile-Handle {
         e.Lines
       >
     >;
+}
+
+$ENTRY LoadBytes {
+  e.FileName =
+    <DoLoadBytes
+      <FOpen ('rb') e.FileName>
+    >;
+}
+
+DoLoadBytes {
+  s.FileHandle =
+    <Fetch
+      <FReadBytes s.FileHandle 4096>
+      {
+        /* пусто */ = <FClose s.FileHandle>;
+        e.Bytes = e.Bytes <DoLoadBytes s.FileHandle>;
+      }
+    >;
+}
+
+$ENTRY SaveBytes {
+  (e.FileName) e.Bytes =
+    <SaveBytes-Handle <FOpen ('wb') e.FileName> e.Bytes>;
+}
+
+$ENTRY AppendBytes {
+  (e.FileName) e.Bytes =
+    <SaveBytes-Handle <FOpen ('ab') e.FileName> e.Bytes>;
+}
+
+SaveBytes-Handle {
+  s.FileHandle e.Bytes =
+    <FWriteBytes s.FileHandle e.Bytes>
+    <FClose s.FileHandle>;
 }
 
 WriteBracketLine {
