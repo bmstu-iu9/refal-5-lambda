@@ -2,7 +2,7 @@
 $EXTERN WriteLine, System, StrFromInt, Exit;
 
 //FROM LibraryEx
-$EXTERN ArgList, Map;
+$EXTERN ArgList, Map, Fetch;
 
 //FROM FileScanner
 $EXTERN CreateFileList;
@@ -15,9 +15,14 @@ $ENTRY Go { = <Main <ArgList>>; }
 Main {
   (e.Program) =
     <WriteLine 'Usage:'>
-    <WriteLine
-      '  srmake [-s path\\to\\srefc.exe] -c c++compiler {-d search-dir} MainFileName[.sref]'
-    >;
+    <WriteLine '  srmake flags... MainFileName[.sref]'>
+    <WriteLine>
+    <WriteLine 'flags:'>
+    <WriteLine '   [-s path\\to\\srefc.exe]'>
+    <WriteLine '   -c c++compiler'>
+    <WriteLine '   {-d search-dir}'>
+    <WriteLine '   [-o target]'>
+    <WriteLine '   -X flags-for-srefc'>;
 
   (e.Program) e.Arguments =
     <MakeProject
@@ -26,9 +31,9 @@ Main {
 }
 
 MakeProject {
-  #Success (e.CppCompiler) (e.SrefCompiler) (e.SourceFile) e.Folders =
+  #Success (e.CppCompiler) (e.SrefCompiler) t.Target (e.SourceFile) e.Folders =
     <Make
-      (e.SrefCompiler) (e.CppCompiler) (e.Folders)
+      (e.SrefCompiler) (e.CppCompiler) t.Target (e.Folders)
       <CreateFileList
         (
           <Map
@@ -56,7 +61,7 @@ MakeProject {
 }
 
 Make {
-  (e.SrefC) (e.CompilerCommand) (e.Directories)
+  (e.SrefC) (e.CompilerCommand) t.Target (e.Directories)
   e.Units-B (#NotFound e.UnitName) e.Units-E =
     <Map
       {
@@ -73,9 +78,16 @@ Make {
     >
     <Exit 1>;
 
-  (e.SrefC) (e.CompilerCommand) (e.Directories) e.Units =
+  (e.SrefC) (e.CompilerCommand) t.Target (e.Directories) e.Units =
     <System
       e.SrefC ' -c "' e.CompilerCommand '"'
+      <Fetch
+        t.Target
+        {
+          #DefaultTarget = /* пусто */;
+          (e.TargetFile) = ' -o "' e.TargetFile '"';
+        }
+      >
       <Map
         {
           (#Search e.Folder) = ' -d "' e.Folder '"';

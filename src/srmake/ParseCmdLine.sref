@@ -10,11 +10,13 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 /**
   <ParseCommandLine e.Arguments>
     == #Success
-       (e.CppCompiler) (e.SrefCompiler) (e.FileName) (e.Flags) e.Folders
+       (e.CppCompiler) (e.SrefCompiler) t.Target (e.FileName) (e.Flags)
+       e.Folders
     == #Fails (s.ArgNum e.Message)*
 
   e.Folders ::= (s.FolderType e.Path)*
   s.FolderType ::= #Search | #Runtime
+  t.Target ::= (e.TargetFile) | #DefaultTarget
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
@@ -26,6 +28,7 @@ $ENTRY ParseCommandLine {
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
           (#CompilerOption #Required 'X' ('thru') ('through'))
+          (#TargetFileName #Required 'o' ('target-file'))
         )
         e.Arguments
       >
@@ -50,6 +53,14 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag ('srefc-core')) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#TargetFileName s.Num e.TargetFile) e.Options-E =
+            (e.Errors) (e.Bag (e.TargetFile)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #DefaultTarget) e.Options;
         }
         {
           (e.Errors) (e.Bag)
@@ -85,8 +96,10 @@ $ENTRY ParseCommandLine {
             >;
         }
         {
-          () ((e.CppCompiler) (e.SrefCompiler) (e.MainSource)) e.Folders =
-            #Success (e.CppCompiler) (e.SrefCompiler) (e.MainSource) e.Folders;
+          () ((e.CppCompiler) (e.SrefCompiler) t.Target (e.MainSource))
+          e.Folders =
+            #Success (e.CppCompiler) (e.SrefCompiler) t.Target (e.MainSource)
+            e.Folders;
 
           (e.Errors) (e.Bag) e.Folders =
             #Fails

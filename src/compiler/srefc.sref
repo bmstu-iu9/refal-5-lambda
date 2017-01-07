@@ -2,7 +2,8 @@
 $EXTERN CompileFile;
 
 //FROM LibraryEx
-$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Inc, DelAccumulator, MapReduce;
+$EXTERN Map, ArgList, LoadFile, SaveFile, Fetch, Seq, Inc, DelAccumulator,
+  MapReduce;
 
 //FROM Library
 $EXTERN WriteLine, System, Exit, StrFromInt;
@@ -34,10 +35,18 @@ Main {
 Main-SwValidCommandLine {
   t.CommandLineSource
   #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
-  (e.Folders) e.Files =
+  t.TargetFileName (e.TargetSuffix) (e.Folders) /* файлов нет */ =
+    <ReportErrors
+      t.CommandLineSource #NoErrorFile (1 'no source files in command line')
+    >;
+
+  t.CommandLineSource
+  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  t.TargetFileName (e.TargetSuffix) (e.Folders) e.Files =
     <Main-SwFoundFiles
       t.CommandLineSource
       t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+      <CalcTargetFileName t.TargetFileName (e.TargetSuffix) e.Files>
       <LookupSourceFiles (e.Folders) e.Files>
     >;
 
@@ -80,7 +89,7 @@ CreateErrorFileMark {
 
 Main-SwFoundFiles {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
   e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
@@ -100,17 +109,19 @@ Main-SwFoundFiles {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext e.Files =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
+  e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource
       t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+      (e.TargetFileName)
       <RenameTargets t.CppCompiler e.Files>
     >;
 }
 
 Main-SwRenamedTargets {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
   e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
@@ -133,24 +144,59 @@ Main-SwRenamedTargets {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext e.Files =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
+  e.Files =
     <Main-SwCompiledFiles
-      t.CppCompiler t.ErrorFile
+      t.CppCompiler t.ErrorFile (e.TargetFileName)
       <CompileFiles s.GenMode s.Opt s.MarkupContext e.Files>
     >;
 }
 
 Main-SwCompiledFiles {
-  t.CppCompiler t.ErrorFile e.Outputs-B #Fails e.OutputsErrors-E =
+  t.CppCompiler t.ErrorFile (e.TargetFileName)
+  e.Outputs-B #Fails e.OutputsErrors-E =
     <CreateErrorFileMark t.ErrorFile>
     <Exit 1>;
 
-  t.CppCompiler t.ErrorFile e.Targets =
-    <Link t.CppCompiler e.Targets>
+  t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs =
+    <Link t.CppCompiler (e.TargetFileName) e.Outputs>
     <WriteLine '** Compilation successed **'>;
 }
 
 //------------------------------------------------------------------------------
+
+CalcTargetFileName {
+  (e.TargetFileName) (e.TargetSuffix) e.InputFiles =
+    (e.TargetFileName);
+
+  #DefaultTargetFileName (e.TargetSuffix) (s.Pos e.FirstFile) e.OtherFiles =
+    <Fetch
+      e.FirstFile
+      <Seq
+        GetLastPartName
+        {
+          e.LastPartName = (<Lower e.LastPartName>) e.LastPartName;
+        }
+        {
+          (e.LowerBaseName '.sref') e.BaseName '.' s.S s.R s.E s.F =
+            e.BaseName;
+
+          (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P s.P =
+            e.BaseName;
+
+          (e.LowerBaseName '.native.cpp')
+          e.BaseName '.' s.N s.A s.T s.I s.V s.E '.' s.C s.P s.P =
+            e.BaseName;
+
+          (e.LowerBaseName) e.BaseName =
+            e.BaseName;
+        }
+        {
+          e.BaseName = (e.BaseName e.TargetSuffix);
+        }
+      >
+    >;
+}
 
 LookupSourceFiles {
   (e.Folders) e.Files =
@@ -271,10 +317,11 @@ CompileFiles {
 }
 
 Link {
-  #NoCppCompiler e.Files =
+  #NoCppCompiler (e.TargetFileName) e.Files =
     /* ничего не делаем */;
 
-  (e.CommandLine) e.Files =
+  (e.CommandLine) (e.TargetFileName) e.Files =
+    <WriteLine '--- create ' e.TargetFileName>
     <System
       e.CommandLine
       <Map
@@ -283,23 +330,30 @@ Link {
         }
         e.Files
       >
-    >;
+    >
+    <WriteLine '+++ created ' e.TargetFileName>;
 }
 
 GetBaseNameLowerCase {
-  e.FileName '.cpp' = <DoGetFileName e.FileName>;
+  e.FileName '.cpp' = <Lower <GetLastPartName e.FileName>>;
+}
+
+GetLastPartName {
+  e.FileName = <DoGetFileName e.FileName>;
 }
 
 DoGetFileName {
   e.FileName '/' = ;
   e.FileName '\\' = ;
-  e.FileName s.Last =
-    <DoGetFileName e.FileName>
-    <Lower s.Last>;
+  e.FileName s.Last = <DoGetFileName e.FileName> s.Last;
   = ;
 }
 
 Lower {
+  e.String = <Map LowerChar e.String>;
+}
+
+LowerChar {
   s.Char =
     // Сначала мы проверяем, что символ является большой буквой
     <Fetch

@@ -10,7 +10,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 /**
   <ParseCommandLine e.Arguments>
     == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
-       ((e.Folder)*) (s.ArgNum e.File)*
+       t.TargetFileName (e.TargetSuffix) ((e.Folder)*) (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
 
   t.CppCompiler ::= #NoCppCompiler | (e.CppCompiler)
@@ -18,6 +18,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  t.TargetFileName ::= (e.TargetFileName) | #DefaultTargetFileName
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
@@ -32,6 +33,8 @@ $ENTRY ParseCommandLine {
           (#CppFlags #Required 'CF' ('cppflags'))
           (#CppFlag #Required 'f' ('cppflag'))
           (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#TargetFileName #Required 'o' ('target-file'))
+          (#TargetSuffix #Required ('targsuffix') ('targetsuffix') ('targsuf'))
         )
         e.Arguments
       >
@@ -39,7 +42,10 @@ $ENTRY ParseCommandLine {
         {
           (e.Errors) e.Options =
             <GetOpt-CheckRepeated
-              (#CppCompiler #Opt #ErrorFile #MarkupContext)
+              (
+                #CppCompiler #Opt #ErrorFile #MarkupContext #TargetFileName
+                #TargetSuffix
+              )
               (e.Errors) e.Options
             >;
         }
@@ -83,6 +89,22 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #NoMarkupContext) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#TargetFileName s.Num e.FileName) e.Options-E =
+            (e.Errors) (e.Bag (e.FileName)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #DefaultTargetFileName) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#TargetSuffix s.Num e.Suffix) e.Options-E =
+            (e.Errors) (e.Bag (e.Suffix)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag ('.EXE')) e.Options;
         }
         {
           (e.Errors) (e.Bag) e.Options =
