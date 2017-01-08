@@ -48,7 +48,7 @@ setlocal
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   move *.cpp ..\..\build\%DIR% >NUL
-  move ..\common\*.cpp ..\..\build\%DIR% >NUL
+  if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
   copy %PATH_TO_SREFC%\srlib\*.cpp ..\..\build\%DIR% >NUL
 
 :END

@@ -1,6 +1,6 @@
-// File generated automatically from ..\srlib\refalrts.h
-// Edit ..\srlib\refalrts.hfirst and then run:
-// $ rasl-constants ..\srlib\refalrts.h Opcodes.sref
+// File generated automatically from ../srlib/refalrts.h
+// Edit ../srlib/refalrts.h first and then run:
+// $ rasl-constants ../srlib/refalrts.h Opcodes.sref
 
 $ENTRY NumberFromOpcode{
   #CmdProfileFunction = 0;
