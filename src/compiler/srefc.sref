@@ -343,9 +343,6 @@ Link {
           >;
       }
     >
-    <WriteLine 'e.CommandLine=[' e.CommandLine ']'>
-    <WriteLine 'e.TargetFileName=[' e.TargetFileName ']'>
-    <WriteLine 'e.Flags=[' e.Flags ']'>
     <System
       e.CommandLine
       e.TargetFileName '.partial'
