@@ -45,7 +45,7 @@ $EXTERN GenProgram-Native;
   t.Native ::= #NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName '.cpp' =
+  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName '.rasl' =
     <Fetch
       e.SrcName
       <Seq
@@ -94,26 +94,26 @@ BackEnd {
       (LowLevelRASL s.GenMode (e.SrcName))
       {
         t.RASLModule =
-          <BackEnd-RASLModule t.RASLModule e.OutputName '.cpp'>
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
           #NoNative;
 
         t.RASLModule t.NativeModule =
-          <BackEnd-RASLModule t.RASLModule e.OutputName '.cpp'>
+          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
           <BackEnd-NativeModule
-            t.NativeModule (e.SrcName) e.OutputName '.native.cpp'
+            t.NativeModule (e.SrcName) e.OutputName '.cpp'
           >;
       }
     >;
 }
 
 BackEnd-RASLModule {
-  t.RASLModule e.OutputName '.cpp' =
+  t.RASLModule e.OutputName =
     <Fetch
       <GenProgram-RASL t.RASLModule>
       {
         e.ByteStream =
         <SaveFile (e.OutputName '.cpp') <EnvelopeCLines e.ByteStream>>
-        <SaveBytes (e.OutputName '.rasl') e.ByteStream>;
+        <SaveBytes (e.OutputName) e.ByteStream>;
       }
     >
     #Success e.OutputName;

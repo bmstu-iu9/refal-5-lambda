@@ -89,8 +89,8 @@ setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.cpp
-  set NATCPP=%~n1.native.cpp
+  set CPP=%~n1.rasl.cpp
+  set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
@@ -137,8 +137,8 @@ setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.cpp
-  set NATCPP=%~n1.native.cpp
+  set CPP=%~n1.rasl.cpp
+  set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
@@ -180,7 +180,7 @@ setlocal
   echo Passing %1 (syntax error recovering)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.cpp
+  set CPP=%~n1.rasl.cpp
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
@@ -225,7 +225,8 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
+  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% ^
+    _lexgen-out.rasl.cpp ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1

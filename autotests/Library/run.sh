@@ -157,14 +157,14 @@ run_all_tests() {
     cleanup Library-RemoveFile
   fi
 
-  rm Library.rasl Library.cpp Library.native.cpp Library.sref
+  rm Library.rasl Library.rasl.cpp Library.cpp Library.sref
 }
 
 compile() {
   echo Compiling $1
   SRC=$1
   RASL=${SRC%%.sref}.rasl
-  CPP=${SRC%%.sref}.cpp
+  CPP=${SRC%%.sref}.rasl.cpp
   TARGET=${SRC%%.sref}
 
   ../../bin/srefc-core $SRC 2>__error.txt
@@ -179,7 +179,8 @@ compile() {
   fi
 
   if [ "$SRC" != "Library.sref" ]; then
-    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP Library.cpp Library.native.cpp ../../src/srlib/refalrts.cpp
+    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP \
+      Library.rasl.cpp Library.cpp ../../src/srlib/refalrts.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1
@@ -226,7 +227,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.rasl $1.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1 $1.rasl $1.rasl.cpp __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

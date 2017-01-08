@@ -21,8 +21,8 @@ run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.cpp
-  NATCPP=${SREF%%.sref}.native.cpp
+  CPP=${SREF%%.sref}.rasl.cpp
+  NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
@@ -63,7 +63,7 @@ run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.cpp
+  CPP=${SREF%%.sref}.rasl.cpp
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
@@ -90,8 +90,8 @@ run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.cpp
-  NATCPP=${SREF%%.sref}.native.cpp
+  CPP=${SREF%%.sref}.rasl.cpp
+  NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
@@ -155,7 +155,8 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  ${CPPLINE}_lexgen-out $TEST_CPP_FLAGS _lexgen-out.cpp ../src/srlib/refalrts.cpp
+  ${CPPLINE}_lexgen-out $TEST_CPP_FLAGS \
+    _lexgen-out.rasl.cpp ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED

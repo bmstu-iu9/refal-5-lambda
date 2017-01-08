@@ -57,6 +57,7 @@ make_subdir() {
     mv $TARGET ../../bin
 
     mkdir -p ../../build/$DIR
+    rm -f ../../build/$DIR/*
     mv *.rasl *.cpp ../../build/$DIR
     [ -e  ../common/*.rasl ] && mv ../common/*.rasl ../../build/$DIR
     [ -e  ../common/*.cpp ] && mv ../common/*.cpp ../../build/$DIR

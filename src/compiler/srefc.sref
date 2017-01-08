@@ -180,11 +180,10 @@ CalcTargetFileName {
           (e.LowerBaseName '.sref') e.BaseName '.' s.S s.R s.E s.F =
             e.BaseName;
 
-          (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P s.P =
+          (e.LowerBaseName '.rasl') e.BaseName '.' s.R s.A s.S s.L =
             e.BaseName;
 
-          (e.LowerBaseName '.native.cpp')
-          e.BaseName '.' s.N s.A s.T s.I s.V s.E '.' s.C s.P s.P =
+          (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P s.P =
             e.BaseName;
 
           (e.LowerBaseName) e.BaseName =
@@ -269,9 +268,9 @@ RenameLocations-Aux {
           0 (s.Pos #Source (e.Source) e.Output) =
             1 (s.Pos #Source (e.Source) e.Output);
 
-          s.Num (s.Pos #Source (e.Source) e.Output '.cpp') =
+          s.Num (s.Pos #Source (e.Source) e.Output '.rasl') =
             <Inc s.Num>
-            (s.Pos #Source (e.Source) e.Output '@' <StrFromInt s.Num> '.cpp');
+            (s.Pos #Source (e.Source) e.Output '@' <StrFromInt s.Num> '.rasl');
 
           s.Num (s.Pos #Output e.Output t.Native) =
             s.Num (s.Pos #Output e.Output t.Native);
@@ -287,11 +286,11 @@ CompileFiles {
       {
         (s.Pos #Output e.OutputName #NoNative) =
           <WriteLine '+Linking ' e.OutputName>
-          (e.OutputName);
+          (#RASL e.OutputName);
 
         (s.Pos #Output e.OutputName (e.NativeName)) =
           <WriteLine '+Linking (+ natives) ' e.OutputName>
-          (e.OutputName) (e.NativeName);
+          (#RASL e.OutputName) (#Native e.NativeName);
 
         (s.Pos #Source (e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
@@ -301,11 +300,11 @@ CompileFiles {
             >
             {
               #Success e.OutputName^ #NoNative =
-                (e.OutputName);
+                (#RASL e.OutputName);
 
               #Success e.OutputName^ (e.NativeOutputName) =
                 <WriteLine '   ... natives generated'>
-                (e.OutputName) (e.NativeOutputName);
+                (#RASL e.OutputName) (#Native e.NativeOutputName);
 
               #Fails = #Fails;
             }
@@ -327,11 +326,13 @@ Link {
       e.Flags
       <Map
         {
-          (e.FileName) = ' "' e.FileName '"';
+          (#RASL e.FileName) = ' "' e.FileName '.cpp"';
+          (#Native e.FileName) = ' "' e.FileName '"';
         }
         e.Files
       >
     >
+    <CheckCppCompilationSuccessed t.ErrorFile e.TargetFileName '.partial'>
     <PostLinkRename
       t.ErrorFile (e.TargetFileName '.partial') (e.TargetFileName)
     >;
@@ -360,8 +361,8 @@ PreLinkCleanupTemporary {
     >;
 }
 
-PostLinkRename {
-  t.ErrorFile (e.TemporaryName) (e.TargetFileName) =
+CheckCppCompilationSuccessed {
+  t.ErrorFile e.TemporaryName =
     <Fetch
       <ExistFile e.TemporaryName>
       {
@@ -369,41 +370,46 @@ PostLinkRename {
           <LinkError t.ErrorFile 'C++ compilation is failed'>;
 
         #True =
+          /* ничего не делаем */;
+      }
+    >;
+}
+
+PostLinkRename {
+  t.ErrorFile (e.TemporaryName) (e.TargetFileName) =
+    <Fetch
+      <ExistFile e.TargetFileName>
+      {
+        #True =
           <Fetch
-            <ExistFile e.TargetFileName>
+            <RemoveFile e.TargetFileName>
             {
               #True =
-                <Fetch
-                  <RemoveFile e.TargetFileName>
-                  {
-                    #True =
-                      <LinkError
-                        t.ErrorFile 'Can''t remove file ' e.TargetFileName
-                      >;
-
-                    #False =
-                      /* ничего не делаем */;
-                   }
-                 >;
+                <LinkError
+                  t.ErrorFile 'Can''t remove file ' e.TargetFileName
+                >;
 
               #False =
                 /* ничего не делаем */;
-            }
-          >;
-       }
-     >
-     <Fetch
-       <RenameFile (e.TemporaryName) (e.TargetFileName)>
-       {
-         #True =
-           <WriteLine '** Compilation successed **'>;
-
-         #False =
-           <LinkError
-             t.ErrorFile
-             'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
+             }
            >;
-       }
+
+        #False =
+          /* ничего не делаем */;
+      }
+    >
+    <Fetch
+      <RenameFile (e.TemporaryName) (e.TargetFileName)>
+      {
+        #True =
+          <WriteLine '** Compilation successed **'>;
+
+        #False =
+          <LinkError
+            t.ErrorFile
+            'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
+          >;
+      }
     >;
 }
 
@@ -415,7 +421,7 @@ LinkError {
 }
 
 GetBaseNameLowerCase {
-  e.FileName '.cpp' = <Lower <GetLastPartName e.FileName>>;
+  e.FileName '.rasl' = <Lower <GetLastPartName e.FileName>>;
 }
 
 GetLastPartName {
