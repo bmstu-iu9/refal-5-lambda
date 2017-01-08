@@ -320,29 +320,7 @@ Link {
     /* ничего не делаем */;
 
   ((e.CommandLine) (e.Flags)) t.ErrorFile (e.TargetFileName) e.Files =
-    <Fetch
-      <ExistFile e.TargetFileName '.partial'>
-      {
-        #False =
-          /* ничего не делаем */;
-
-        #True =
-          <Fetch
-            <RemoveFile e.TargetFileName '.partial'>
-            {
-              #True =
-                <WriteLine
-                  'Lost temporary file ' e.TargetFileName '.partial is removed'
-                >;
-
-              #False =
-                <LinkError
-                  t.ErrorFile 'Can''t remove file ' e.TargetFileName '.partial'
-                >;
-            }
-          >;
-      }
-    >
+    <PreLinkCleanupTemporary t.ErrorFile e.TargetFileName '.partial'>
     <System
       e.CommandLine
       e.TargetFileName '.partial'
@@ -354,8 +332,38 @@ Link {
         e.Files
       >
     >
+    <PostLinkRename
+      t.ErrorFile (e.TargetFileName '.partial') (e.TargetFileName)
+    >;
+}
+
+PreLinkCleanupTemporary {
+  t.ErrorFile e.Temporary =
     <Fetch
-      <ExistFile e.TargetFileName '.partial'>
+      <ExistFile e.Temporary>
+      {
+        #False =
+          /* ничего не делаем */;
+
+        #True =
+          <Fetch
+            <RemoveFile e.Temporary>
+            {
+              #True =
+                <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
+
+              #False =
+                <LinkError t.ErrorFile 'Can''t remove file ' e.Temporary>;
+            }
+          >;
+      }
+    >;
+}
+
+PostLinkRename {
+  t.ErrorFile (e.TemporaryName) (e.TargetFileName) =
+    <Fetch
+      <ExistFile e.TemporaryName>
       {
         #False =
           <LinkError t.ErrorFile 'C++ compilation is failed'>;
@@ -385,7 +393,7 @@ Link {
        }
      >
      <Fetch
-       <RenameFile (e.TargetFileName '.partial') (e.TargetFileName)>
+       <RenameFile (e.TemporaryName) (e.TargetFileName)>
        {
          #True =
            <WriteLine '** Compilation successed **'>;
@@ -393,8 +401,7 @@ Link {
          #False =
            <LinkError
              t.ErrorFile
-             'Can''t rename from ' e.TargetFileName '.partial to '
-             e.TargetFileName
+             'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
            >;
        }
     >;
