@@ -16,7 +16,9 @@ goto :EOF
 :PREPARE_SRCLIB
   ..\..\bin\srefc-core %SREFC_FLAGS% %1
   find "//FROM" < %1.sref >> %1.cpp
+  find "//FROM" < %1.sref >> %1.cpp.froms
   if exist %1.native.cpp move %1.native.cpp ..\..\srlib
   move %1.cpp ..\..\srlib
+  move %1.cpp.froms ..\..\srlib
   copy %1.sref ..\..\srlib\src
 goto :EOF

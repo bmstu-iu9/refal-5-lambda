@@ -1,8 +1,11 @@
 //FROM LibraryEx
-$EXTERN LoadFile, Map, Trim;
+$EXTERN LoadFile, Map, Trim, Fetch;
 
 //FROM FindFile
 $EXTERN FindFiles;
+
+//FROM Library
+$EXTERN ExistFile;
 
 $ENTRY CreateFileList {
   (e.Folders) e.Unit =
@@ -43,13 +46,29 @@ LoadList {
 
   (e.Folders) #Output e.Output =
     <Map
-      (FindImports e.Folders) <LoadFile e.Output>
+      (FindImports e.Folders)
+      <LoadFile e.Output>
+      <LoadIfExist e.Output '.froms'>
     >;
 
   (e.Folders) #OutputWithNative (e.Output) e.Native =
     <Map
-      (FindImports e.Folders) <LoadFile e.Output> <LoadFile e.Native>
+      (FindImports e.Folders)
+      <LoadFile e.Output>
+      <LoadIfExist e.Output '.froms'>
+      <LoadFile e.Native>
     >;
 
   (e.Folders) #NotFound e.Unit = ;
+}
+
+LoadIfExist {
+  e.FileName =
+    <Fetch
+      <ExistFile e.FileName>
+      {
+        #True = <LoadFile e.FileName>;
+        #False = /* пусто */;
+      }
+    >;
 }
