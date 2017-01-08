@@ -6,7 +6,8 @@ $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
 $EXTERN ParseCommandLine;
 
 //FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, RemoveFile, RenameFile;
+$EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
+  LoadBytes, FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
 
 //FROM FindFile
 $EXTERN FindFiles;
@@ -333,6 +334,7 @@ Link {
       >
     >
     <CheckCppCompilationSuccessed t.ErrorFile e.TargetFileName '.partial'>
+    <AppendRASLToBinary (e.TargetFileName '.partial') e.Files>
     <PostLinkRename
       t.ErrorFile (e.TargetFileName '.partial') (e.TargetFileName)
     >;
@@ -371,6 +373,43 @@ CheckCppCompilationSuccessed {
 
         #True =
           /* ничего не делаем */;
+      }
+    >;
+}
+
+AppendRASLToBinary {
+  (e.BinaryName) e.Files =
+    <Fetch
+      <FOpen ('ab') e.BinaryName>
+      {
+        s.FileHandle =
+          <AlignToPage s.FileHandle>
+          <Map
+            {
+              (#RASL e.OutputName) =
+                <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
+
+              (#Native e.NativeName) =
+                /* ничего не делаем */;
+            }
+            e.Files
+          >
+          <FClose s.FileHandle>;
+      }
+    >;
+}
+
+AlignToPage {
+  s.FileHandle =
+    <FSeek s.FileHandle #END '-' 0>
+    <Fetch
+      <Mod <FTell s.FileHandle> 4096>
+      {
+        0 = /* ничего не делаем */;
+
+        s.Other =
+          <FWriteBytes s.FileHandle '@'>
+          <AlignToPage s.FileHandle>;
       }
     >;
 }
