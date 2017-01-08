@@ -50,6 +50,7 @@ setlocal
   move *.cpp ..\..\build\%DIR% >NUL
   if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
+  copy %PATH_TO_SREFC%\srlib\*.rasl ..\..\build\%DIR% >NUL
   copy %PATH_TO_SREFC%\srlib\*.cpp ..\..\build\%DIR% >NUL
 
 :END
