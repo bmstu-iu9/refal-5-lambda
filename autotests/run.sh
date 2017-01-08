@@ -39,7 +39,7 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../src/srlib/refalrts.cpp
+  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -106,7 +106,7 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o$EXE $CPP $NATCPP ../src/srlib/refalrts.cpp
+  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -152,7 +152,7 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  $CPPLINE $TEST_CPP_FLAGS -o_lexgen-out _lexgen-out.cpp ../src/srlib/refalrts.cpp
+  ${CPPLINE}_lexgen-out $TEST_CPP_FLAGS _lexgen-out.cpp ../src/srlib/refalrts.cpp
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED

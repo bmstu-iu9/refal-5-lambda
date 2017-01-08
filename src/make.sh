@@ -49,11 +49,12 @@ make_subdir() {
 
     mkdir -p $PATH_TO_SREFC/bin
     (
-      export CPPLINE_FLAGS="$CPPLINE_FLAGS -o../../bin/$TARGET"
+      export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
-      $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC
+      $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC -o$TARGET
     )
+    mv $TARGET ../../bin
 
     mkdir -p ../../build/$DIR
     mv *.cpp ../../build/$DIR

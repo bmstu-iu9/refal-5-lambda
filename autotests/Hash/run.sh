@@ -40,7 +40,7 @@ compile() {
   fi
 
   if [ "$SRC" != "Hash.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP $NATCPP Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
+    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP $NATCPP Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1

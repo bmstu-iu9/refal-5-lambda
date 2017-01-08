@@ -178,7 +178,7 @@ compile() {
   fi
 
   if [ "$SRC" != "Library.sref" ]; then
-    $CPPLINE $TEST_CPP_FLAGS -o$TARGET $CPP Library.cpp Library.native.cpp ../../src/srlib/refalrts.cpp
+    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP Library.cpp Library.native.cpp ../../src/srlib/refalrts.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1

@@ -60,12 +60,11 @@ setlocal
     goto :EOF
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
+  %CPPLINE%%TARGET% %TEST_CPP_FLAGS% %CPP% %NATCPP% Hash.cpp Hash.native.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
   )
-  if exist a.exe move a.exe %TARGET%
   if not exist %TARGET% (
     echo COMPILATION FAILED
     exit /b 1

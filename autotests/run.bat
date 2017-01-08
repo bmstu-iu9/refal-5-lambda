@@ -105,12 +105,11 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
+  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
   )
-  if exist a.exe move a.exe %EXE%
 
   %EXE%
   if errorlevel 1 (
@@ -153,12 +152,11 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %CPPLINE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
+  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
   )
-  if exist a.exe move a.exe %EXE%
 
   %EXE%
   if not errorlevel 100 (
@@ -224,12 +222,11 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE% %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
+  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% _lexgen-out.cpp ../src/srlib/refalrts.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
   )
-  if exist a.exe move a.exe _lexgen-out.exe
 
   _lexgen-out.exe
   if errorlevel 1 (

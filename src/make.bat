@@ -42,9 +42,8 @@ setlocal
     set PATH_TO_SREFC=..\..
   )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
-  call %PATH_TO_SREFC%\bin\srmake -d ..\common %MAINSRC%
-  if exist a.exe move a.exe ..\..\bin\%TARGET%.exe
-  if exist %MAINSRC%.exe move %MAINSRC%.exe ..\..\bin\%TARGET%.exe
+  call %PATH_TO_SREFC%\bin\srmake -d ..\common %MAINSRC% -o %TARGET%.exe
+  move %TARGET%.exe ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   move *.cpp ..\..\build\%DIR% >NUL
