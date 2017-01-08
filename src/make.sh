@@ -57,7 +57,8 @@ make_subdir() {
     mv $TARGET ../../bin
 
     mkdir -p ../../build/$DIR
-    mv *.cpp ../../build/$DIR
+    mv *.rasl *.cpp ../../build/$DIR
+    [ -e  ../common/*.rasl ] && mv ../common/*.rasl ../../build/$DIR
     [ -e  ../common/*.cpp ] && mv ../common/*.cpp ../../build/$DIR
     cp $PATH_TO_SREFC/srlib/*.cpp ../../build/$DIR
   fi

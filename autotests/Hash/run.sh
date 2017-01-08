@@ -18,12 +18,13 @@ run_all_tests() {
   simple_tests ok \
     Hash-HashLittle2-Chars
 
-  rm Hash.cpp Hash.native.cpp Hash.sref
+  rm Hash.rasl Hash.cpp Hash.native.cpp Hash.sref
 }
 
 compile() {
   echo Compiling $1
   SRC=$1
+  RASL=${SRC%%.sref}.rasl
   CPP=${SRC%%.sref}.cpp
   NATCPP=${SRC%%.sref}.native.cpp
   TARGET=${SRC%%.sref}
@@ -34,7 +35,7 @@ compile() {
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
+  if [ ! -e $RASL ]; then
     echo COMPILATION FAILED
     exit 1
   fi
@@ -75,7 +76,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.cpp $1.native.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1 $1.rasl $1.cpp $1.native.cpp __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

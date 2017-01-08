@@ -169,7 +169,7 @@ setlocal
     call :CLEANUP Library-RemoveFile
   )
 
-  erase Library.cpp Library.native.cpp Library.sref
+  erase Library.rasl Library.cpp Library.native.cpp Library.sref
 endlocal
 goto :EOF
 
@@ -177,6 +177,7 @@ goto :EOF
 setlocal
   echo Compiling %1
   set SRC=%1
+  set RASL=%~n1.rasl
   set CPP=%~n1.cpp
   set TARGET=%~n1.exe
 
@@ -186,7 +187,7 @@ setlocal
     exit /b 1
   )
   erase __error.txt
-  if not exist %CPP% (
+  if not exist %RASL% (
     echo COMPILATION FAILED
     exit /b 1
   )
@@ -255,6 +256,7 @@ goto :EOF
 goto :EOF
 
 :CLEANUP
+  if exist %1.rasl erase %1.rasl
   if exist %1.cpp erase %1.cpp
   if exist %1.exe erase %1.exe
   if exist __dump.txt erase __dump.txt

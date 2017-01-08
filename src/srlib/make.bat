@@ -18,6 +18,7 @@ goto :EOF
   find "//FROM" < %1.sref >> %1.cpp
   find "//FROM" < %1.sref >> %1.cpp.froms
   if exist %1.native.cpp move %1.native.cpp ..\..\srlib
+  move %1.rasl ..\..\srlib
   move %1.cpp ..\..\srlib
   move %1.cpp.froms ..\..\srlib
   copy %1.sref ..\..\srlib\src

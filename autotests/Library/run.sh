@@ -157,12 +157,13 @@ run_all_tests() {
     cleanup Library-RemoveFile
   fi
 
-  rm Library.cpp Library.native.cpp Library.sref
+  rm Library.rasl Library.cpp Library.native.cpp Library.sref
 }
 
 compile() {
   echo Compiling $1
   SRC=$1
+  RASL=${SRC%%.sref}.rasl
   CPP=${SRC%%.sref}.cpp
   TARGET=${SRC%%.sref}
 
@@ -172,7 +173,7 @@ compile() {
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
+  if [ ! -e $RASL ]; then
     echo COMPILATION FAILED
     exit 1
   fi
@@ -225,7 +226,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1 $1.rasl $1.cpp __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

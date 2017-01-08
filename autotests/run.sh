@@ -20,6 +20,7 @@ run_test_aux() {
 run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
+  RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.cpp
   NATCPP=${SREF%%.sref}.native.cpp
   EXE=${SREF%%.sref}
@@ -30,7 +31,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
+  if [ ! -e $RASL ]; then
     echo COMPILATION FAILED
     exit 1
   fi
@@ -52,7 +53,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  rm $CPP $NATCPP $EXE
+  rm $RASL $CPP $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo
@@ -61,6 +62,7 @@ run_test_aux_with_flags() {
 run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
+  RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}
 
@@ -70,9 +72,9 @@ run_test_aux.BAD-SYNTAX() {
     exit 1
   fi
   rm __error.txt
-  if [ -e $CPP ]; then
+  if [ -e $RASL ]; then
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    rm $CPP
+    rm $RASL $CPP
     exit 1
   fi
 
@@ -87,6 +89,7 @@ run_test_aux.FAILURE() {
 run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
+  RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.cpp
   NATCPP=${SREF%%.sref}.native.cpp
   EXE=${SREF%%.sref}
@@ -97,7 +100,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $CPP ]; then
+  if [ ! -e $RASL ]; then
     echo COMPILATION FAILED
     exit 1
   fi
@@ -119,7 +122,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  rm $CPP $NATCPP $EXE
+  rm $RASL $CPP $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo "Ok! This failure was normal and expected"
@@ -147,7 +150,7 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
   rm __error.txt
-  if [ ! -e _lexgen-out.cpp ]; then
+  if [ ! -e _lexgen-out.rasl ]; then
     echo COMPILATION FAILED
     exit 1
   fi

@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, SaveFile, Map;
+$EXTERN Fetch, Seq, SaveFile, Map, SaveBytes;
 
 //FROM LoadSource
 $EXTERN LoadSource;
@@ -107,15 +107,13 @@ BackEnd {
 }
 
 BackEnd-RASLModule {
-  t.RASLModule e.OutputName =
+  t.RASLModule e.OutputName '.cpp' =
     <Fetch
       <GenProgram-RASL t.RASLModule>
       {
         e.ByteStream =
-        <SaveFile
-          (e.OutputName)
-          <EnvelopeCLines e.ByteStream>
-        >;
+        <SaveFile (e.OutputName '.cpp') <EnvelopeCLines e.ByteStream>>
+        <SaveBytes (e.OutputName '.rasl') e.ByteStream>;
       }
     >
     #Success e.OutputName;

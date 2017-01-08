@@ -88,6 +88,7 @@ goto :EOF
 setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
+  set RASL=%~n1.rasl
   set CPP=%~n1.cpp
   set NATCPP=%~n1.native.cpp
   set EXE=%~n1.exe
@@ -98,7 +99,7 @@ setlocal
     exit /b 1
   )
   erase __error.txt
-  if not exist %CPP% (
+  if not exist %RASL% (
     echo COMPILATION FAILED
     exit /b 1
   )
@@ -117,7 +118,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %NATCPP% %EXE%
+  erase %RASL% %CPP% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -135,6 +136,7 @@ goto :EOF
 setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
+  set RASL=%~n1.rasl
   set CPP=%~n1.cpp
   set NATCPP=%~n1.native.cpp
   set EXE=%~n1.exe
@@ -145,7 +147,7 @@ setlocal
     exit /b 1
   )
   erase __error.txt
-  if not exist %CPP% (
+  if not exist %RASL% (
     echo COMPILATION FAILED
     exit /b 1
   )
@@ -164,7 +166,7 @@ setlocal
     exit /b 1
   )
 
-  erase %CPP% %NATCPP% %EXE%
+  erase %RASL% %CPP% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -177,6 +179,7 @@ goto :EOF
 setlocal
   echo Passing %1 (syntax error recovering)...
   set SREF=%1
+  set RASL=%~n1.rasl
   set CPP=%~n1.cpp
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
@@ -185,9 +188,9 @@ setlocal
     exit /b 1
   )
   erase __error.txt
-  if exist %CPP% (
+  if exist %RASL% (
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    erase %CPP%
+    erase %RASL% %CPP%
     exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax
@@ -217,7 +220,7 @@ setlocal
     exit /b 1
   )
   erase __error.txt
-  if not exist _lexgen-out.cpp (
+  if not exist _lexgen-out.rasl (
     echo COMPILATION FAILED
     exit /b 1
   )

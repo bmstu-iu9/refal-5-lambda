@@ -46,7 +46,9 @@ setlocal
   move %TARGET%.exe ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
+  move *.rasl ..\..\build\%DIR% >NUL
   move *.cpp ..\..\build\%DIR% >NUL
+  if exist ..\common\*.rasl move ..\common\*.rasl ..\..\build\%DIR% >NUL
   if exist ..\common\*.cpp move ..\common\*.cpp ..\..\build\%DIR% >NUL
   copy %PATH_TO_SREFC%\srlib\*.cpp ..\..\build\%DIR% >NUL
 
