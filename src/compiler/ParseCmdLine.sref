@@ -13,7 +13,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
        t.TargetFileName (e.TargetSuffix) ((e.Folder)*) (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
 
-  t.CppCompiler ::= #NoCppCompiler | (e.CppCompiler)
+  t.CppCompiler ::= #NoCppCompiler | ((e.CppCompiler) (e.Flags))
   s.GenMode ::= #OnlyDirect | #OnlyInterpret
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
@@ -52,7 +52,8 @@ $ENTRY ParseCommandLine {
         {
           (e.Errors)
           e.Options-B (#CppCompiler s.Num e.CppCompiler) e.Options-E =
-            (e.Errors) ((e.CppCompiler)) e.Options-B e.Options-E;
+            (e.Errors) (((e.CppCompiler) (/* flags */)))
+            e.Options-B e.Options-E;
 
           (e.Errors) e.Options =
             (e.Errors) (#NoCppCompiler) e.Options;
@@ -123,16 +124,18 @@ $ENTRY ParseCommandLine {
               (#NoCppCompiler e.Bag)
             );
 
-          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlags s.Num e.Flags) =
+          ((e.Errors) (((e.CppCompiler) (e.Flags)) e.Bag))
+          (#CppFlags s.Num e.NewFlags) =
             (
               (e.Errors)
-              ((e.CppCompiler ' ' e.Flags) e.Bag)
+              (((e.CppCompiler) (e.Flags ' ' e.NewFlags)) e.Bag)
             );
 
-          ((e.Errors) ((e.CppCompiler) e.Bag)) (#CppFlag s.Num e.Flag) =
+          ((e.Errors) (((e.CppCompiler) (e.Flags)) e.Bag))
+          (#CppFlag s.Num e.Flag) =
             (
               (e.Errors)
-              ((e.CppCompiler ' "' e.Flag '"') e.Bag)
+              (((e.CppCompiler) (e.Flags ' "' e.Flag '"')) e.Bag)
             );
 
           ((e.Errors) (t.CppCompiler e.Bag)) (#RuntimeFolder s.Num e.Folder) =
@@ -142,7 +145,8 @@ $ENTRY ParseCommandLine {
                 <Fetch
                   t.CppCompiler {
                     #NoCppCompiler = #NoCppCompiler;
-                    (e.CppCompiler^) = (e.CppCompiler ' -I"' e.Folder '"');
+                    ((e.CppCompiler^) (e.Flags)) =
+                      ((e.CppCompiler) (e.Flags ' -I"' e.Folder '"'));
                   }
                 >
                 e.Bag

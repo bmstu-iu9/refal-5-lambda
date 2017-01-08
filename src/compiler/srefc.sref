@@ -6,7 +6,7 @@ $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
 $EXTERN ParseCommandLine;
 
 //FROM Library
-$EXTERN WriteLine, StrFromInt, Exit, System;
+$EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, RemoveFile, RenameFile;
 
 //FROM FindFile
 $EXTERN FindFiles;
@@ -159,8 +159,7 @@ Main-SwCompiledFiles {
     <Exit 1>;
 
   t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs =
-    <Link t.CppCompiler (e.TargetFileName) e.Outputs>
-    <WriteLine '** Compilation successed **'>;
+    <Link t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs>;
 }
 
 //------------------------------------------------------------------------------
@@ -317,13 +316,40 @@ CompileFiles {
 }
 
 Link {
-  #NoCppCompiler (e.TargetFileName) e.Files =
+  #NoCppCompiler t.ErrorFile (e.TargetFileName) e.Files =
     /* ничего не делаем */;
 
-  (e.CommandLine) (e.TargetFileName) e.Files =
-    <WriteLine '--- create ' e.TargetFileName>
+  ((e.CommandLine) (e.Flags)) t.ErrorFile (e.TargetFileName) e.Files =
+    <Fetch
+      <ExistFile e.TargetFileName '.partial'>
+      {
+        #False =
+          /* ничего не делаем */;
+
+        #True =
+          <Fetch
+            <RemoveFile e.TargetFileName '.partial'>
+            {
+              #True =
+                <WriteLine
+                  'Lost temporary file ' e.TargetFileName '.partial is removed'
+                >;
+
+              #False =
+                <LinkError
+                  t.ErrorFile 'Can''t remove file ' e.TargetFileName '.partial'
+                >;
+            }
+          >;
+      }
+    >
+    <WriteLine 'e.CommandLine=[' e.CommandLine ']'>
+    <WriteLine 'e.TargetFileName=[' e.TargetFileName ']'>
+    <WriteLine 'e.Flags=[' e.Flags ']'>
     <System
       e.CommandLine
+      e.TargetFileName '.partial'
+      e.Flags
       <Map
         {
           (e.FileName) = ' "' e.FileName '"';
@@ -331,7 +357,57 @@ Link {
         e.Files
       >
     >
-    <WriteLine '+++ created ' e.TargetFileName>;
+    <Fetch
+      <ExistFile e.TargetFileName '.partial'>
+      {
+        #False =
+          <LinkError t.ErrorFile 'C++ compilation is failed'>;
+
+        #True =
+          <Fetch
+            <ExistFile e.TargetFileName>
+            {
+              #True =
+                <Fetch
+                  <RemoveFile e.TargetFileName>
+                  {
+                    #True =
+                      <LinkError
+                        t.ErrorFile 'Can''t remove file ' e.TargetFileName
+                      >;
+
+                    #False =
+                      /* ничего не делаем */;
+                   }
+                 >;
+
+              #False =
+                /* ничего не делаем */;
+            }
+          >;
+       }
+     >
+     <Fetch
+       <RenameFile (e.TargetFileName '.partial') (e.TargetFileName)>
+       {
+         #True =
+           <WriteLine '** Compilation successed **'>;
+
+         #False =
+           <LinkError
+             t.ErrorFile
+             'Can''t rename from ' e.TargetFileName '.partial to '
+             e.TargetFileName
+           >;
+       }
+    >;
+}
+
+LinkError {
+  t.ErrorFile e.Message =
+    <WriteLine 'LINK ERROR: ' e.Message>
+    <CreateErrorFileMark t.ErrorFile>
+    <Exit 1>;
 }
 
 GetBaseNameLowerCase {

@@ -16,6 +16,6 @@ LIBDIR=$DISTRDIR/srlib
   srmake-core \
     -s "srefc-core" \
     $SRMAKE_FLAGS \
-    -c "$CPPLINE $CPPLINE_FLAGS -I\"$LIBDIR\"" \
-    $* -d "$LIBDIR"
+    -c "$CPPLINE" --thru=--cppflags="$CPPLINE_FLAGS" \
+    $* -D "$LIBDIR"
 )

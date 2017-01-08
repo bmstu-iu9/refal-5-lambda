@@ -18,6 +18,6 @@ setlocal
   srmake-core ^
     -s srefc-core.exe ^
     %SRMAKE_FLAGS% ^
-    -c "%CPPLINE% %CPPLINE_FLAGS%" ^
+    -c "%CPPLINE%" --thru=--cppflags="\"%CPPLINE_FLAGS%\"" ^
     %* -D "%LIBDIR%"
 endlocal
