@@ -863,6 +863,15 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Команды построения результата (режим интерпретации)
 
+  (e.Indent) (#CmdiVariableDebugTable s.VarStrId s.Offset) =
+    (e.Indent)
+    (e.Indent
+      '// {refalrts::icVariableDebugOffset, '
+      <StrFromInt s.VarStrId> ', '
+      '0, ' <StrFromInt s.Offset> '},'
+    )
+    (e.Indent '{refalrts::icSave, 0, 0, 0},');
+
   (e.Indent) (#CmdiEmptyResult) =
     (e.Indent)
     (e.Indent '{refalrts::icEmptyResult, 0, 0, 0},');
