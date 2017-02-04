@@ -83,3 +83,30 @@ SelectOptFlags {
   #OptResult  = #Disjoint #OptResult;
   #OptBoth    = #Conjoint #OptResult;
 }
+
+/**
+  <GrammarCheck e.SrcName>
+    == #Success
+    == #Fails
+*/
+$ENTRY GrammarCheck {
+  e.SrcName =
+    <Fetch
+      e.SrcName
+      <Seq
+        LoadSource
+        LexFolding
+        (ParseProgram <EL-Create e.SrcName>)
+        {
+          t.ErrorList e.AST =
+            <Fetch
+              <EL-Destroy t.ErrorList>
+              {
+                #EL-NoErrors = #Success;
+                #EL-HasErrors = #Fails;
+              }
+            >;
+        }
+      >
+    >;
+}

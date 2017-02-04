@@ -1,0 +1,21 @@
+non-terminal Program, Global, ItemList, Function, Body, Sentence, Pattern,
+  Result, PatternTerm, Atom, ResultTerm, Keyword;
+terminal 'Name', ',', ';',
+  '$EXTERN', '$ENUM', '$EENUM', '$SWAP', '$ESWAP', '$FORWARD', '$LABEL',
+  '$ENTRY', '{', '}', '(', ')', '[', ']', 'e.Var', '^', '#',
+  ''chars'', '123', '<', '>', '=';
+
+Program ::= Global*;
+Global ::= ItemList | Function | ';';
+ItemList ::= Keyword 'Name' (',' 'Name')* ';';
+Keyword ::= '$EXTERN' | '$ENUM' | '$EENUM' | '$SWAP' | '$ESWAP' | '$FORWARD'
+  | '$LABEL';
+Function ::= ('$ENTRY')? 'Name' Body;
+Body ::= '{' Sentence* '}';
+Sentence ::= Pattern '=' Result ';';
+Pattern ::= PatternTerm*;
+PatternTerm ::= Atom | '(' Pattern ')' | '[' 'Name' Pattern ']' | 'e.Var' ('^')?;
+Atom ::= ('#')? 'Name' | ''chars'' | '123';
+Result ::= ResultTerm*;
+ResultTerm ::= Atom | '(' Result ')' | '[' 'Name' Result ']' | 'e.Var' | Body
+  | '<' Result '>';
