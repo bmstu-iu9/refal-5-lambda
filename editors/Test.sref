@@ -1,0 +1,69 @@
+/*
+  Раскраска синтаксиса Простого Рефала
+  Можно писать многострочные комментарии.
+*/
+
+// И однострочные тоже.
+
+//FROM Library
+$EXTERN WriteLine;
+
+//FROM LibraryEx
+$EXTERN SaveFile, LoadFile, ArgList;
+
+$ENUM Encapsulated;
+
+$EENUM ExportedEnum;
+$SWAP LocalVariable;
+$ESWAP GlobalVariable;
+$LABEL Success, Fails;  // Устаревшее ключевое слово, но надо поддерживать
+
+$XETERN Broken; // А вот подсветка ошибки
+
+$ENTRY CreateEncapsulated {
+  /* пусто */ = #Fails;
+
+  e.X = [Encapsulated e.X] #Success;
+}
+
+$FORWARD Main;  // Раньше было обязательным, сейчас игнорируется
+
+$ENTRY Go {
+  = <Main <ArgList>>;
+}
+
+%%
+void f() {
+  // Вставка кода на C++
+  for (int i = 0; i < 100; ++i)
+    printf("%i = 0x%x\n", i);
+
+  bool x = 1 < 2 && 3 > 1;
+}
+%%
+
+Main {
+  (e.ProgName) =
+    <WriteLine 'Arguments not found' 10 12>
+    // А вот незакрытая кавычка:
+    <WriteLine 'Ooops>;
+
+  (e.ProgName) e.Files =
+    <Map
+      {
+        (e.NextFile) =
+          <MFileIO::Save
+            (e.NextFile '.out')
+            <MFileIO::Load e.NextFile>
+          >;
+      }
+      e.Files
+    >;
+}
+
+$ENTRY NativeFunction {
+%%
+  // Нативные вставки могут быть внутри функций
+  return refalrts::cRecognitionImpossible;
+%%
+}
