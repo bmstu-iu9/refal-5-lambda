@@ -9,12 +9,14 @@ DISTRDIR=$(dirname $BINDIR)
 # Путь к папке srlib
 LIBDIR=$DISTRDIR/srlib
 
+source "$BINDIR/platform-specific.sh"
+
 # Запуск
 (
   source $DISTRDIR/c-plus-plus.conf.sh
   PATH=$BINDIR:$PATH
   srefc-core \
     $SREFC_FLAGS \
-    -c "$CPPLINE" --cppflags="$CPPLINE_FLAGS" --targsuffix= \
-    $* -D "$LIBDIR"
+    -c "$CPPLINE" --cppflags="$CPPLINE_FLAGS" --targsuffix=$(platform_suffix) \
+    $* -D "$LIBDIR" -D "$(platform_subdir_lookup "$LIBDIR")"
 )

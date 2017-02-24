@@ -1,4 +1,5 @@
 #!/bin/bash
+source ../scripts/platform-specific.sh
 
 make_subdir() {
   DIR=$1
@@ -54,7 +55,7 @@ make_subdir() {
 
       $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC -o$TARGET
     )
-    mv $TARGET ../../bin
+    mv $TARGET ../../bin/$TARGET$(platform_suffix)
 
     mkdir -p ../../build/$DIR
     rm -f ../../build/$DIR/*

@@ -18,5 +18,5 @@ setlocal
   srefc-core ^
     %SREFC_FLAGS% ^
     -c "%CPPLINE%" --cppflags="%CPPLINE_FLAGS%" --targsuffix=.exe ^
-    %* -D "%LIBDIR%"
+    %* -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
 endlocal

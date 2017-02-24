@@ -1,5 +1,12 @@
 #!/bin/bash
 source ../c-plus-plus.conf.sh
+source ../src/scripts/platform-specific.sh
+
+LIBDIR=../src/srlib
+RUNTIME_FILES="
+  $LIBDIR/refalrts.cpp
+  $(platform_subdir_lookup $LIBDIR)/refalrts-platform-specific.cpp
+"
 
 run_test_all_modes() {
   SRFLAGS= $2 $1
@@ -23,7 +30,7 @@ run_test_aux_with_flags() {
   RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.rasl.cpp
   NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}
+  EXE=${SREF%%.sref}$(platform_suffix)
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -40,7 +47,7 @@ run_test_aux_with_flags() {
     NATCPP=
   fi
 
-  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP ../src/srlib/refalrts.cpp
+  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP $RUNTIME_FILES
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -64,7 +71,7 @@ run_test_aux.BAD-SYNTAX() {
   SREF=$1
   RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.rasl.cpp
-  EXE=${SREF%%.sref}
+  EXE=${SREF%%.sref}$(platform_suffix)
 
   ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -92,7 +99,7 @@ run_test_aux_with_flags.FAILURE() {
   RASL=${SREF%%.sref}.rasl
   CPP=${SREF%%.sref}.rasl.cpp
   NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}
+  EXE=${SREF%%.sref}$(platform_suffix)
 
   ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -109,7 +116,7 @@ run_test_aux_with_flags.FAILURE() {
     NATCPP=
   fi
 
-  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP ../src/srlib/refalrts.cpp
+  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP $RUNTIME_FILES
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -156,7 +163,7 @@ run_test_aux.LEXGEN() {
   fi
 
   ${CPPLINE}_lexgen-out $TEST_CPP_FLAGS \
-    _lexgen-out.rasl.cpp ../src/srlib/refalrts.cpp
+    _lexgen-out.rasl.cpp $RUNTIME_FILES
 
   if [ $? -gt 0 ]; then
     echo COMPILATION FAILED
@@ -196,7 +203,7 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 
 run_test() {
   TEST_CPP_FLAGS="
-    -I../src/srlib \
+    -I$LIBDIR \
     -DSTEP_LIMIT=1000 \
     -DMEMORY_LIMIT=1000 \
     -DIDENTS_LIMIT=25 \

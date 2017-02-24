@@ -9,6 +9,8 @@ DISTRDIR=$(dirname $BINDIR)
 # Путь к папке srlib
 LIBDIR=$DISTRDIR/srlib
 
+source "$BINDIR/platform-specific.sh"
+
 # Запуск
 (
   source $DISTRDIR/c-plus-plus.conf.sh
@@ -16,6 +18,7 @@ LIBDIR=$DISTRDIR/srlib
   srmake-core \
     -s "srefc-core" \
     $SRMAKE_FLAGS \
-    -c "$CPPLINE" --thru=--cppflags="$CPPLINE_FLAGS" -X--targsuffix= \
-    $* -D "$LIBDIR"
+    -c "$CPPLINE" --thru=--cppflags="$CPPLINE_FLAGS" \
+    -X--targsuffix=$(platform_suffix) \
+    $* -D "$LIBDIR" -D "$(platform_subdir_lookup "$LIBDIR")"
 )

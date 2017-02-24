@@ -9,6 +9,9 @@
 
 #include "refalrts.h"
 
+//FROM refalrts-platform-specific
+#include "refalrts-platform-specific.h"
+
 #if 1
 #  define VALID_LINKED(iter)
 #else
@@ -3072,6 +3075,15 @@ refalrts::dynamic::ConstTable::make_name(const char *name) const {
 }
 
 void refalrts::dynamic::enumerate_blocks() {
+#ifndef DONT_PRINT_STATISTICS
+  char module_name[platform_specific::cModuleNameBufferLen];
+  if (platform_specific::get_main_module_name(module_name)) {
+    fprintf(stderr, "**DEBUG: my name is %s**\n", module_name);
+  } else {
+    fprintf(stderr, "**DEBUG: can't obtain module name\n");
+  }
+#endif // ifndef DONT_PRINT_STATISTICS
+
   RawBytesBlock *first = RawBytesBlock::s_first;
 
   ConstTable *table = 0;

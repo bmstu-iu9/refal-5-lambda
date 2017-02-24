@@ -5,6 +5,8 @@ goto :EOF
 :MAIN
 setlocal
   call ..\c-plus-plus.conf.bat
+  set RUNTIME=../src/srlib/refalrts.cpp ^
+    ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (
     for %%s in (*.sref) do call :RUN_TEST %%s || exit /b 1
     call :RUN_ALL_TESTS_DIR || exit /b 1
@@ -106,7 +108,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
+  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% %RUNTIME%
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -154,7 +156,7 @@ setlocal
 
   if not exist %NATCPP% set NATCPP=
 
-  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% ../src/srlib/refalrts.cpp
+  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% %RUNTIME%
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
@@ -225,8 +227,7 @@ setlocal
     exit /b 1
   )
 
-  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% ^
-    _lexgen-out.rasl.cpp ../src/srlib/refalrts.cpp
+  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% _lexgen-out.rasl.cpp %RUNTIME%
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1

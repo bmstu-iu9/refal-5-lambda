@@ -1,0 +1,25 @@
+#!/bin/bash
+
+platform_uname() {
+  uname | sed 's/_.*$//'
+}
+
+platform_subdir_lookup() {
+  LIBDIR=$1
+
+  # uname для Cygwin и MinGW выдаёт имя в виде CYGWIN_osver или MINGW32_osver,
+  # номер версии обрезаем
+  PLATFORMDIR="$LIBDIR/platform-$(platform_uname)"
+
+  if [ ! -d $PLATFORMDIR ]; then
+    PLATFORMDIR="$LIBDIR/platform-unknown"
+  fi
+
+  echo $PLATFORMDIR
+}
+
+platform_suffix() {
+  if [ "$(platform_uname)" == "MINGW32" ]; then
+    echo ".exe"
+  fi  # else nothing to print
+}

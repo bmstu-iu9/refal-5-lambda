@@ -17,3 +17,11 @@ prepare_srclib Library
 prepare_srclib LibraryEx
 prepare_srclib GetOpt
 prepare_srclib Hash
+
+for d in platform-*; do
+  if [ -d $d ]; then
+    mkdir -p ../../srlib/$d
+    cp $d/*.cpp ../../srlib/$d
+    cp $d/*.rasl ../../srlib/$d
+  fi
+done

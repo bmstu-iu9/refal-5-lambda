@@ -1,16 +1,22 @@
 #!/bin/bash
 source ../../c-plus-plus.conf.sh
+source ../../src/scripts/platform-specific.sh
 
+LIBDIR=../../src/srlib
+RUNTIME_FILES="
+  $LIBDIR/refalrts.cpp
+  $(platform_subdir_lookup $LIBDIR)/refalrts-platform-specific.cpp
+"
 run_all_tests() {
   TEST_CPP_FLAGS="
-    -I../../src/srlib \
+    -I$LIBDIR \
     -DSTEP_LIMIT=1000 \
     -DMEMORY_LIMIT=1000 \
     -DDUMP_FILE=\"__dump.txt\"\
     -DDONT_PRINT_STATISTICS \
     -g"
 
-  cp ../../src/srlib/Hash.sref .
+  cp $LIBDIR/Hash.sref .
   for s in Hash.sref $*; do
     compile $s
   done
@@ -27,7 +33,7 @@ compile() {
   RASL=${SRC%%.sref}.rasl
   CPP=${SRC%%.sref}.rasl.cpp
   NATCPP=${SRC%%.sref}.cpp
-  TARGET=${SRC%%.sref}
+  TARGET=${SRC%%.sref}$(platform_suffix)
 
   ../../bin/srefc-core $SRC 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -42,7 +48,7 @@ compile() {
 
   if [ "$SRC" != "Hash.sref" ]; then
     $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP $NATCPP \
-      Hash.rasl.cpp Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
+      Hash.rasl.cpp Hash.cpp $RUNTIME_FILES lookup3.cpp
     if [ $? -gt 0 ]; then
       echo COMPILATION FAILED
       exit 1
@@ -77,7 +83,8 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1 $1.rasl $1.rasl.cpp $1.cpp __dump.txt __out.txt __written_file.txt
+  rm -f $1$(platform_suffix) $1.rasl $1.rasl.cpp $1.cpp \
+    __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

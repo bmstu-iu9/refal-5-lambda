@@ -13,6 +13,14 @@ call :PREPARE_SRCLIB LibraryEx
 call :PREPARE_SRCLIB GetOpt
 call :PREPARE_SRCLIB Hash
 
+for /d %%d in (platform-*) do (
+  if not exist ..\..\srlib\%%d\NUL (
+    mkdir ..\..\srlib\%%d
+  )
+  copy %%d\*.cpp ..\..\srlib\%%d
+  copy %%d\*.rasl ..\..\srlib\%%d
+)
+
 goto :EOF
 
 :PREPARE_SRCLIB

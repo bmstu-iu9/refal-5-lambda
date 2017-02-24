@@ -62,7 +62,8 @@ setlocal
   )
 
   %CPPLINE%%TARGET% %TEST_CPP_FLAGS% %CPP% %NATCPP% ^
-    Hash.rasl.cpp Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp
+    Hash.rasl.cpp Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp ^
+    ../../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1

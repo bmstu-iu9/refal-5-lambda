@@ -198,7 +198,8 @@ setlocal
   )
 
   %CPPLINE%%TARGET% %TEST_CPP_FLAGS% %CPP% ^
-    Library.rasl.cpp Library.cpp ../../src/srlib/refalrts.cpp
+    Library.rasl.cpp Library.cpp ../../src/srlib/refalrts.cpp ^
+    ../../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
