@@ -16,6 +16,7 @@ md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
 ren bin\*.sh *.
+copy ..\src\scripts\platform-specific.sh bin
 xcopy /e /i /y ..\srlib srlib
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples

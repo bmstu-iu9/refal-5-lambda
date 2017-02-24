@@ -1,5 +1,4 @@
 #!/bin/bash
-source ../scripts/platform-specific.sh
 
 make_subdir() {
   DIR=$1
@@ -47,6 +46,8 @@ make_subdir() {
     if [ -z "$PATH_TO_SREFC" ]; then
       PATH_TO_SREFC=../..
     fi
+
+    source $PATH_TO_SREFC/bin/platform-specific.sh
 
     mkdir -p $PATH_TO_SREFC/bin
     (

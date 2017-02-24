@@ -10,6 +10,7 @@ cp ../src/scripts/srefc.bat bin
 cp ../src/scripts/srefc.sh bin/srefc
 cp ../src/scripts/srmake.bat bin
 cp ../src/scripts/srmake.sh bin/srmake
+cp ../src/scripts/update-distrib.sh bin
 cp -R ../srlib srlib
 mkdir doc
 cp -R ../doc/examples doc/examples
