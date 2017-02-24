@@ -87,15 +87,22 @@ AnalyzeFile {
 
   e.FileName =
     <Fetch
-      (<ExistFile-T e.FileName '.sref'>) <ExistFile-T e.FileName '.rasl'>
+      (<ExistFile-T e.FileName '.sref'>)
+      (<ExistFile-T e.FileName '.rasl'>)
+      (<ExistFile-T e.FileName '.cpp'>)
       {
-        (#True e.SourceName) s.Res e.OutName =
+        (#True e.SourceName) (s.ResOut e.OutName) (s.ResNat e.Native) =
           (#Source (e.SourceName) e.OutName);
 
-        (#False e.SourceName) #True e.OutName =
+        (#False e.SourceName) (#True e.OutName) (#True e.Native) =
+          (#OutputWithNative (e.OutName) e.Native);
+
+        (#False e.SourceName) (#True e.OutName) (#False e.Native) =
           (#Output e.OutName);
 
-        (#False e.UnitName '.sref') #False e.UnitName '.rasl' =
+        (#False e.UnitName '.sref')
+        (#False e.UnitName '.rasl')
+        (#False e.UnitName '.cpp') =
           (#NotFound e.UnitName);
       }
     >;

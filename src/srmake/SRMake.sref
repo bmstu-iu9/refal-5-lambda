@@ -98,6 +98,7 @@ Make {
       <Map
         {
           (#Output e.Output) = ' "' e.Output '"';
+          (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
           (#Source (e.Source) e.Output) = ' "' e.Source '"';
         }
         e.Units
