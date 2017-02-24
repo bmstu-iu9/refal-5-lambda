@@ -29,6 +29,12 @@ GenReturn {
 }
 
 GenCommonHeaders {
+  e.TargetFileName = 
+    ('// Automatically generated file. Don\'t edit!')
+    ('#include "refalrts.h"')
+    () 
+    ('static const char *filename = "'e.TargetFileName'";')
+    ();
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"')
   () ();
@@ -47,7 +53,7 @@ $ENTRY GenProgram {
         {
           () /* отступ должен остаться тем же */
           e.Generated =
-            <GenCommonHeaders>
+            <GenCommonHeaders e.TargetFileName>
             e.Generated
             <GenCommonTailer>;
         }
@@ -154,7 +160,8 @@ GenCommand {
     ('  scope_' <CName e.Name> '::functions,')
     ('  scope_' <CName e.Name> '::idents,')
     ('  scope_' <CName e.Name> '::numbers,')
-    ('  scope_' <CName e.Name> '::strings')
+    ('  scope_' <CName e.Name> '::strings,')
+    ('  filename')
     (');')
     <FuncReference e.Name>
     ();
@@ -866,11 +873,11 @@ GenCommand {
   (e.Indent) (#CmdiVariableDebugTable s.VarStrId s.Offset) =
     (e.Indent)
     (e.Indent
-      '// {refalrts::icVariableDebugOffset, '
+      '  {refalrts::icVariableDebugOffset, '
       <StrFromInt s.VarStrId> ', '
-      '0, ' <StrFromInt s.Offset> '},'
+      '0, ' <StrFromInt s.Offset> '},    // !!!attention!!!'
     )
-    (e.Indent '{refalrts::icSave, 0, 0, 0},');
+    (e.Indent '//  {refalrts::icSave, 0, 0, 0},');
 
   (e.Indent) (#CmdiEmptyResult) =
     (e.Indent)

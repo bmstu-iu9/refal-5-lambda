@@ -1,7 +1,15 @@
+
+#include <cstdlib>
+#include <ctype.h>
 #include <exception>
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
+#include <string.h>
 #include <time.h>
+#include <tuple>
+#include <utility>
 
 #include <assert.h>
 
@@ -2850,6 +2858,232 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
+//==============================================================================
+// Пошаговый отладчик
+//==============================================================================
+
+namespace refalrts
+{
+    namespace debugger
+    {
+        static const char *const H = "h";
+        static const char *const HELP = "help";
+        static const char *const B = "b";
+        static const char *const BREAK = "break";
+        static const char *const BREAKPOINT = "breakpoint";
+        static const char *const CL = "cl";
+        static const char *const CLEAR = "clear";
+        static const char *const RM = "rm";
+        static const char *const STEPLIMIT = "steplimit";
+        static const char *const MEMORYLIMIT = "memorylimit";
+        static const char *const RUN = "run";
+        static const char *const R = "r";
+        static const char *const STEP = "step";
+        static const char *const S = "s";
+        static const char *const NEXT = "next";
+        static const char *const N = "n";
+        static const char *const VARS = "vars";
+        static const char *const P = "p";
+        static const char *const PRINT = "print";
+        static const char *const CALL = "call";
+        static const char *const RES = "res";
+        static const char *const DOT = ".";
+
+        // typedef std::tuple<char, std::string, int> variableDescriptor;
+        typedef std::map<int, int> variableDepthOffsetTable;
+        typedef std::map<std::string, variableDepthOffsetTable *> variableNameTable;
+        typedef std::map<char, variableNameTable *> variableDebugTable;
+
+        variableDebugTable varDT = {
+          {'e', new variableNameTable()},
+          {'s', new variableNameTable()},
+          {'t', new variableNameTable()}
+        };
+#define MAXLEN 1024
+        char debcmd[16] = {0};
+        char strparam[MAXLEN] = {0};
+        char varType;
+        std::string varName;
+        int varDepth;
+#undef MAXLEN
+
+        std::tuple<char, std::string, int> parseVariableStringName(const char *);
+        void printContextData(Iter, Iter);
+        void helpOption();
+        // void helpOption(char *optName);
+        void varsOption();
+    }
+}
+
+std::tuple<char, std::string, int> refalrts::debugger::parseVariableStringName(const char *varFullName)
+{
+//    0    1  2    n+2 n+3
+//  'est' '.' nnn '#'  ddd     
+  char varType = varFullName[0];
+  varFullName += 2;   // type-char & '.' are skiped
+  char *dashPtr = strchr(varFullName, '#');
+  int varDepth = -1;
+  int n = strlen(varFullName);
+  char varName[n+1];
+  if (dashPtr != NULL)
+  {
+    n = (int)(dashPtr-varFullName);
+    strncpy(varName, varFullName, n);
+    varName[n] = 0; // небольшой костыль, почему-то при n=4 копируются 5 символов
+    varDepth = std::atoi(dashPtr+1);
+  } else {
+    strcpy(varName, varFullName);
+  }
+  return std::make_tuple(varType, std::string(varName), varDepth);
+}
+void refalrts::debugger::helpOption() {
+  printf("======================Common help for all allowed options=====================\n");
+  printf("%s,%s\t\t\t%s\n", H, HELP, "print help for debugger options");
+  printf("%s,%s,%s\t%s\n", B, BREAK, BREAKPOINT, "set breakpoint by function name");
+  printf("%s,%s,%s\t\t%s\n", CL, CLEAR, RM, "remove breakpoint from function by its name");
+  printf("%s\t\t%s\n", STEPLIMIT, "set limit for step number; there will be breakpoint");
+  printf("%s\t\t%s\n", MEMORYLIMIT, "set limit for memory knot number; there will be breakpoint");
+  printf("%s,%s\t\t\t%s\n", R, RUN, "continue program execution");
+  printf("%s,%s\t\t\t%s\n", S, STEP, "make the only one step in program execution");
+  printf("%s,%s\t\t\t%s\n", N, NEXT, "execute next active function until passive result");
+  printf("%s\t\t\t%s\n", VARS, "print the variable debug table");
+  printf("%s,%s\t\t\t%s\n", P, PRINT, "print variable value by its name (\'e.\'|\'t.\'|\'s.\'nnn),\n"
+                      "\t\t\tcurrent active expression (\'call\')\n"
+                      "\t\t\tprint result of previous step");
+  printf("%s\t\t\t%s\n", DOT, "repeat previous debugger command");
+  printf("\n");  
+  printf("==============================================================================\n");
+}
+/*
+enum DataTag {
+  cDataIllegal = 0,
+  cDataSwapHead,
+  cDataChar,
+  cDataNumber,
+  cDataFunction,
+  cDataIdentifier,
+  cDataOpenADT, cDataCloseADT,
+  cDataOpenBracket, cDataCloseBracket,
+  cDataOpenCall, cDataCloseCall,
+  cDataFile,
+  cDataClosure,
+  cDataUnwrappedClosure,
+  cDataClosureHead
+};
+struct Node {
+  NodePtr prev;
+  NodePtr next;
+  DataTag tag;
+  union {
+    char char_info;
+    lu number_info;
+    RefalFunction *function_info;
+    RefalIdentifier ident_info;
+    NodePtr link_info;
+    void *file_info;
+  };
+};
+*/
+void refalrts::debugger::printContextData(Iter elem_b, Iter elem_e) {
+  // printf("\n[%p - %p]\n", elem_b, elem_e);
+  switch(elem_b->tag) {
+    case cDataChar:
+      printf("cDataChar\t\'%c\'", elem_b->char_info);
+      break;
+    case cDataNumber:
+      printf("cDataNumber\t%lu", elem_b->number_info);
+      break;
+    case cDataFunction:
+      printf("cDataFunction\t[%p]", elem_b->function_info);
+      break;
+    case cDataIdentifier:
+      printf("cDataIdentifier\t???");
+      break;
+    case cDataFile:
+      printf("cDataFile\t???");
+      break;
+    default:
+      printf("Some other type\n");
+      break;
+  }
+  bool fin = (elem_b == elem_e);
+  for (int i = 0; i<8 && !fin; i++) {
+    elem_b = elem_b->next;
+    switch(elem_b->tag) {
+      case cDataChar:
+        printf("\'%c\'", elem_b->char_info);
+        break;
+      case cDataNumber:
+        printf(" %lu", elem_b->number_info);
+        break;
+      case cDataFunction:
+        printf(" [%p]", elem_b->function_info);
+        break;
+      case cDataIdentifier:
+        printf("cDataIdentifier\t???");
+        break;
+      case cDataFile:
+        printf("cDataFile\t???");
+        break;
+      default:
+        printf("Some other type\n");
+        break;
+    }
+    fin = (elem_b == elem_e);
+  }
+  if (!fin) 
+  {
+    printf("...");
+    switch(elem_e->tag) {
+      case cDataChar:
+        printf("\'%c\'", elem_e->char_info);
+        break;
+      case cDataNumber:
+        printf(" %lu", elem_e->number_info);
+        break;
+      case cDataFunction:
+        printf(" [%p]", elem_e->function_info);
+        break;
+      case cDataIdentifier:
+        printf("cDataIdentifier\t???");
+        break;
+      case cDataFile:
+        printf("cDataFile\t???");
+        break;
+      default:
+        printf("Some other type\n");
+        break;
+    }
+  }
+  printf("\n");
+}
+void refalrts::debugger::varsOption() {
+  printf("=============================Variable debug table=============================\n");
+  for (auto itType = refalrts::debugger::varDT.begin(); itType != refalrts::debugger::varDT.end(); ++itType)
+  {
+    printf("\'%c\'-vars:\n", itType->first);
+    auto typeName = itType->second;
+    for (auto itName = typeName->begin(); itName != typeName->end(); ++itName)
+    {
+      auto nameDepth = itName->second;
+      for (auto itDepth = nameDepth->begin(); itDepth != nameDepth->end(); ++itDepth)
+      {
+        int conti = itDepth->second;
+        int contin = (conti+((itType->first=='e')?1:0));
+        printf("\t\"%s\"\t%d\t- ", itName->first.c_str(), itDepth->first);
+        refalrts::debugger::printContextData(
+            refalrts::vm::g_context[conti], vm::g_context[contin]
+        );
+      }
+      printf("----------------------------------------------------------------\n");
+    }
+    printf("\n");
+  }
+  printf("==============================================================================\n");
+}
+
+//==============================================================================
+
 refalrts::FnResult refalrts::vm::main_loop() {
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
@@ -3388,7 +3622,161 @@ refalrts::FnResult refalrts::vm::main_loop() {
         res_e = be;
         break;
 
+      case icVariableDebugOffset:
+#ifdef ENABLE_DEBUGGER
+        std::tie(refalrts::debugger::varType, refalrts::debugger::varName, refalrts::debugger::varDepth) = 
+          refalrts::debugger::parseVariableStringName(strings[rasl->val1].string);  
+        // printf(
+        //   "\"%s\"\t->\'%c\' : \"%s\"\t: %d :: %d\n", 
+        //   strings[rasl->val1].string, refalrts::debugger::varType, refalrts::debugger::varName.c_str(), refalrts::debugger::varDepth, rasl->bracket
+        // );
+        if (refalrts::debugger::varDepth > 0)
+        {
+          auto typeNames = refalrts::debugger::varDT.find(refalrts::debugger::varType);
+          if (typeNames != refalrts::debugger::varDT.end())   // if type-char is valid
+          {
+            auto varNameDT = typeNames->second;
+            auto nameDepths = varNameDT->find(std::string(refalrts::debugger::varName));
+            if (nameDepths != varNameDT->end())  // if this name was met
+            {
+              nameDepths->second->insert(std::pair<int,int>(refalrts::debugger::varDepth,rasl->bracket));
+              // printf("[Depth]:\t %d)\n", varDepth);
+            } else {
+              refalrts::debugger::variableDepthOffsetTable *tmp = new refalrts::debugger::variableDepthOffsetTable();
+              tmp->insert(std::pair<int,int>(refalrts::debugger::varDepth,rasl->bracket));
+              varNameDT->insert(std::pair<std::string,refalrts::debugger::variableDepthOffsetTable*>(refalrts::debugger::varName,tmp));
+              // printf("[Name]:\t \"%s\"\n", varName.c_str());
+            }
+          } else {
+            printf("[ERROR}:\t Wrong type-char (\'%c\')\n", refalrts::debugger::varType);
+          }
+        }
+#endif  // ifdef ENABLE_DEBUGGER
+        break;
+
       case icEmptyResult:
+#ifdef ENABLE_DEBUGGER
+#define MAXLEN 1024
+        printf("Step #%d\n", g_step_counter);
+        for (;;)
+        {
+          scanf("%s", refalrts::debugger::debcmd);
+          if (!(strcmp(refalrts::debugger::debcmd, refalrts::debugger::H)&&strcmp(refalrts::debugger::debcmd, refalrts::debugger::HELP)))
+          {
+            refalrts::debugger::helpOption();
+          }
+          else if (
+            !(
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::B)&& 
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::BREAK)&& 
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::BREAKPOINT)
+              )
+            )
+          {
+            scanf("%s", refalrts::debugger::strparam);
+            printf("refalrts::debugger::Break option on \"%s\"-func", refalrts::debugger::strparam);
+          }
+          else if (
+            !(
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::CL)&& 
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::CLEAR)&& 
+              strcmp(refalrts::debugger::debcmd,refalrts::debugger::RM)
+              )
+            )
+          {
+            scanf("%s", refalrts::debugger::strparam);
+            printf("refalrts::debugger::Clear option on \"%s\"-func", refalrts::debugger::strparam);
+          }
+          else if (!strcmp(refalrts::debugger::debcmd,refalrts::debugger::STEPLIMIT))
+          {
+            printf("refalrts::debugger::Steplimit option is on\n");
+          }
+          else if (!strcmp(refalrts::debugger::debcmd,refalrts::debugger::MEMORYLIMIT))
+          {
+            printf("Memorylimit option is on\n");
+          }
+          else if (!(strcmp(refalrts::debugger::debcmd,refalrts::debugger::R)&& strcmp(refalrts::debugger::debcmd,refalrts::debugger::RUN)))
+          {
+            printf("refalrts::debugger::Run option is on\n");
+            break;
+          }
+          else if (!(strcmp(refalrts::debugger::debcmd,refalrts::debugger::S)&& strcmp(refalrts::debugger::debcmd,refalrts::debugger::STEP)))
+          {
+            break;
+          }
+          else if (!(strcmp(refalrts::debugger::debcmd,refalrts::debugger::N)&& strcmp(refalrts::debugger::debcmd,refalrts::debugger::NEXT)))
+          {
+            printf("refalrts::debugger::Next option is on\n");
+            break;
+          }
+          else if (!strcmp(refalrts::debugger::debcmd,refalrts::debugger::VARS))
+          {
+            refalrts::debugger::varsOption();
+          }
+          else if (!(strcmp(refalrts::debugger::debcmd,refalrts::debugger::P)&& strcmp(refalrts::debugger::debcmd,refalrts::debugger::PRINT)))
+          {
+            scanf("%s", refalrts::debugger::strparam);
+            if (!strcmp(refalrts::debugger::strparam,refalrts::debugger::CALL))
+            {
+              printf("refalrts::debugger::Print call option is on\n");
+            }
+            else if (!strcmp(refalrts::debugger::strparam,refalrts::debugger::RES))
+            {
+              printf("refalrts::debugger::Print res option is on\n");
+            }
+            else if (refalrts::debugger::strparam[1]=='.')
+            {
+              switch(refalrts::debugger::strparam[0])
+              {
+                case 'e':
+                  printf("refalrts::debugger::Print e-var \"%s\" value option is on\n", &refalrts::debugger::strparam[2]);
+                  continue;
+                case 's':
+                  printf("refalrts::debugger::Print s-var \"%s\" value option is on\n", &refalrts::debugger::strparam[2]);
+                  continue;
+                case 't':
+                  printf("refalrts::debugger::Print t-var \"%s\" value option is on\n", &refalrts::debugger::strparam[2]);
+                  continue;
+              }
+            }
+            printf("Unrecognised print option is found\n");
+          }
+          else if (refalrts::debugger::debcmd[1]=='.')
+          {
+            switch(refalrts::debugger::debcmd[0])
+            {
+              case 'e':
+                printf("refalrts::debugger::Print e-var \"%s\" value option is on\n", &refalrts::debugger::debcmd[2]);
+                continue;
+              case 's':
+                printf("refalrts::debugger::Print s-var \"%s\" value option is on\n", &refalrts::debugger::debcmd[2]);
+                continue;
+              case 't':
+                printf("refalrts::debugger::Print t-var \"%s\" value option is on\n", &refalrts::debugger::debcmd[2]);
+                continue;
+            }
+          }
+          else if (!strcmp(refalrts::debugger::debcmd,refalrts::debugger::DOT))
+          {
+              printf("Dot res option is on\n");
+          }
+          else 
+            printf("Unrecognised option is found: \"%s\"\n", refalrts::debugger::debcmd);
+        }
+        for (auto itType = refalrts::debugger::varDT.begin(); itType != refalrts::debugger::varDT.end(); ++itType)
+        {
+          auto typeName = itType->second;
+          for (auto itName = typeName->begin(); itName != typeName->end(); ++itName)
+          {
+            free(itName->second);
+            // printf("\"%s\" is cleaned\n", itName->first.c_str());
+          }
+          itType->second->clear();
+          // printf("\'%c\' is cleaned\n", itType->first);
+        }
+
+#undef MAXLEN
+#endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
         res = begin;
         break;
