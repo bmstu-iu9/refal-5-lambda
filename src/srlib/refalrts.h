@@ -328,7 +328,7 @@ extern void use(Iter&);
 
 void zeros(Iter context[], int size);
 
-//операции реинициализации
+// Операции реинициализации
 
 extern void reinit_svar(Iter res, Iter sample);
 extern void reinit_char(Iter res, char ch);
@@ -348,9 +348,6 @@ extern void reinit_close_adt(Iter res);
 
 extern void reinit_open_call(Iter res);
 extern void reinit_close_call(Iter res);
-
-
-//операции
 
 
 // Операции распознавания образца
@@ -672,6 +669,6 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeReference = 7,
 };
 
-} //namespace refalrts
+} // namespace refalrts
 
-#endif //RefalRTS_H_
+#endif // RefalRTS_H_
