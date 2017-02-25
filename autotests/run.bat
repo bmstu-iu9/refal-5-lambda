@@ -96,7 +96,6 @@ setlocal
   echo Passing %1 (flags %SRFLAGS%)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.rasl.cpp
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
@@ -119,7 +118,7 @@ setlocal
     exit /b 1
   )
 
-  erase %RASL% %CPP% %NATCPP% %EXE%
+  erase %RASL% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -138,7 +137,6 @@ setlocal
   echo Passing %1 (expecting failure, flags %SRFLAGS%)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.rasl.cpp
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
@@ -161,7 +159,7 @@ setlocal
     exit /b 1
   )
 
-  erase %RASL% %CPP% %NATCPP% %EXE%
+  erase %RASL% %NATCPP% %EXE%
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
   if exist __dump.txt erase __dump.txt
@@ -175,7 +173,6 @@ setlocal
   echo Passing %1 (syntax error recovering)...
   set SREF=%1
   set RASL=%~n1.rasl
-  set CPP=%~n1.rasl.cpp
 
   ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
@@ -185,7 +182,7 @@ setlocal
   erase __error.txt
   if exist %RASL% (
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    erase %RASL% %CPP%
+    erase %RASL%
     exit /b 1
   )
   echo Ok! Compiler didn't crash on invalid syntax

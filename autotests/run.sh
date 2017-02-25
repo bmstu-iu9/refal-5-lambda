@@ -24,7 +24,6 @@ run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.rasl.cpp
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
@@ -46,7 +45,7 @@ run_test_aux_with_flags() {
     exit 1
   fi
 
-  rm $RASL $CPP $NATCPP $EXE
+  rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo
@@ -56,7 +55,6 @@ run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.rasl.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
   ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
@@ -67,7 +65,7 @@ run_test_aux.BAD-SYNTAX() {
   rm __error.txt
   if [ -e $RASL ]; then
     echo COMPILATION SUCCESSED, BUT EXPECTED SYNTAX ERROR
-    rm $RASL $CPP
+    rm $RASL
     exit 1
   fi
 
@@ -83,7 +81,6 @@ run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  CPP=${SREF%%.sref}.rasl.cpp
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
@@ -105,7 +102,7 @@ run_test_aux_with_flags.FAILURE() {
     exit 1
   fi
 
-  rm $RASL $CPP $NATCPP $EXE
+  rm $RASL $NATCPP $EXE
   [ -e __dump.txt ] && rm __dump.txt
 
   echo "Ok! This failure was normal and expected"

@@ -5,7 +5,6 @@ prepare_srclib() {
   grep '//FROM' < $1.sref >> $1.rasl.froms
   [ -e $1.cpp ] && mv $1.cpp ../../srlib
   mv $1.rasl ../../srlib
-  mv $1.rasl.cpp ../../srlib
   mv $1.rasl.froms ../../srlib
   cp $1.sref ../../srlib/src
 }

@@ -2979,93 +2979,12 @@ struct ConstTable *g_tables = 0;
 void enumerate_blocks();
 void cleanup_module();
 
-struct FILE {
-  char *bytes;
-  size_t size;
-  size_t offset;
-
-  FILE(char *bytes, size_t size)
-    : bytes(bytes), size(size), offset(0)
-  {
-    /* пусто */
-  }
-
-  ~FILE() {
-    free(bytes);
-  }
-};
-
-FILE *fopen(const char * filename, const char *mode);
-size_t fread(void *ptr, size_t size, size_t count, FILE *stream);
-void fclose(FILE *stream);
-long int ftell(FILE *stream);
-int fseek(FILE *stream, long int offset, int origin);
-
 bool seek_rasl_signature(FILE *stream);
 const char *read_asciiz(FILE *stream);
 
 } // namespace dynamic
 
 } // namespace refalrts
-
-refalrts::dynamic::FILE *
-refalrts::dynamic::fopen(const char * filename, const char * /*mode*/) {
-  fprintf(stderr, "**DEBUG: my name is %s**\n", filename);
-
-  char *bytes = (char *) calloc(3, 4096);
-  assert(bytes);
-  size_t size = 3 * 4096;
-
-  for (
-    RawBytesBlock *block = RawBytesBlock::s_first;
-    block != 0;
-    block = block->next
-  ) {
-    bytes = (char *) realloc(bytes, block->length + size);
-    assert(bytes != 0);
-    memcpy(bytes + size, block->bytes, block->length);
-    size += block->length;
-  }
-
-  return new FILE(bytes, size);
-}
-
-size_t refalrts::dynamic::fread(
-  void *ptr, size_t size, size_t count, refalrts::dynamic::FILE *stream
-) {
-  size_t avail_count = (stream->size - stream->offset) / size;
-
-  if (count > avail_count) {
-    count = avail_count;
-  }
-
-  size_t bytes_count = size * count;
-  memcpy(ptr, &stream->bytes[stream->offset], bytes_count);
-  stream->offset += bytes_count;
-
-  return count;
-}
-
-void refalrts::dynamic::fclose(refalrts::dynamic::FILE *stream) {
-  delete stream;
-}
-
-long int refalrts::dynamic::ftell(refalrts::dynamic::FILE *stream) {
-  return (long int) stream->offset;
-}
-
-int refalrts::dynamic::fseek(
-  refalrts::dynamic::FILE *stream, long int offset, int origin
-) {
-  long int base_offset =
-    origin == SEEK_SET ? 0L :
-    origin == SEEK_CUR ? (long int) stream->offset :
-    (long int) stream->size;
-
-  stream->offset = (size_t) (base_offset + offset);
-
-  return 0;
-}
 
 bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
   int seek_res = fseek(stream, 0L, SEEK_END);
@@ -3145,9 +3064,6 @@ const char *refalrts::dynamic::read_asciiz(FILE *stream) {
     return 0;
   }
 }
-
-refalrts::RawBytesBlock *refalrts::RawBytesBlock::s_first = 0;
-refalrts::RawBytesBlock *refalrts::RawBytesBlock::s_last = 0;
 
 refalrts::RefalFuncName
 refalrts::dynamic::ConstTable::make_name(const char *name) const {

@@ -165,7 +165,7 @@ run_all_tests() {
     cleanup Library-RemoveFile
   fi
 
-  rm Library.rasl Library.rasl.cpp Library.cpp Library.sref
+  rm Library.rasl Library.cpp Library.sref
 }
 
 compile() {
@@ -225,8 +225,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1$(platform_suffix) $1.rasl $1.rasl.cpp \
-    __dump.txt __out.txt __written_file.txt
+  rm -f $1$(platform_suffix) $1.rasl __dump.txt __out.txt __written_file.txt
 }
 
 compare() {

@@ -173,7 +173,7 @@ setlocal
     call :CLEANUP Library-RemoveFile
   )
 
-  erase Library.rasl Library.rasl.cpp Library.cpp Library.sref
+  erase Library.rasl Library.cpp Library.sref
 endlocal
 goto :EOF
 
@@ -250,7 +250,6 @@ goto :EOF
 
 :CLEANUP
   if exist %1.rasl erase %1.rasl
-  if exist %1.rasl.cpp erase %1.rasl.cpp
   if exist %1.exe erase %1.exe
   if exist __dump.txt erase __dump.txt
   if exist __out.txt erase __out.txt

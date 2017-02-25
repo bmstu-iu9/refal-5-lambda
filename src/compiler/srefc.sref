@@ -333,7 +333,7 @@ Link {
       e.Flags
       <Map
         {
-          (#RASL e.FileName) = ' "' e.FileName '.cpp"';
+          (#RASL e.FileName) = /* пусто */;
           (#Native e.FileName) = ' "' e.FileName '"';
         }
         e.Files

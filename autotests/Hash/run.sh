@@ -27,7 +27,7 @@ run_all_tests() {
   simple_tests ok \
     Hash-HashLittle2-Chars
 
-  rm Hash.rasl Hash.rasl.cpp Hash.cpp Hash.sref
+  rm Hash.rasl Hash.cpp Hash.sref
 }
 
 compile() {
@@ -75,7 +75,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1$(platform_suffix) $1.rasl $1.rasl.cpp $1.cpp \
+  rm -f $1$(platform_suffix) $1.rasl $1.cpp \
     __dump.txt __out.txt __written_file.txt
 }
 

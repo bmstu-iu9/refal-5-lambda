@@ -37,7 +37,7 @@ setlocal
   call :SIMPLE_TESTS FAIL ^
     || exit /b 1
 
-  erase Hash.rasl Hash.rasl.cpp Hash.cpp Hash.sref
+  erase Hash.rasl Hash.cpp Hash.sref
 endlocal
 goto :EOF
 
@@ -115,7 +115,6 @@ goto :EOF
 
 :CLEANUP
   if exist %1.rasl erase %1.rasl
-  if exist %1.rasl.cpp erase %1.rasl.cpp
   if exist %1.cpp erase %1.cpp
   if exist %1.exe erase %1.exe
   if exist __dump.txt erase __dump.txt

@@ -637,28 +637,6 @@ struct NativeReference {
   }
 };
 
-struct RawBytesBlock {
-  static RawBytesBlock *s_first;
-  static RawBytesBlock *s_last;
-
-  RawBytesBlock *next;
-  unsigned char *bytes;
-  UInt32 length;
-
-  RawBytesBlock(unsigned char *bytes, UInt32 length)
-    : next(0)
-    , bytes(bytes)
-    , length(length)
-  {
-    if (s_first != 0) {
-      s_last->next = this;
-    } else {
-      s_first = this;
-    }
-    s_last = this;
-  }
-};
-
 enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeStart = 1,
   cBlockTypeConstTable = 2,

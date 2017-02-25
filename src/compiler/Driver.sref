@@ -112,33 +112,10 @@ BackEnd-RASLModule {
       <GenProgram-RASL t.RASLModule>
       {
         e.ByteStream =
-        <SaveFile (e.OutputName '.cpp') <EnvelopeCLines e.ByteStream>>
-        <SaveBytes (e.OutputName) e.ByteStream>;
+          <SaveBytes (e.OutputName) e.ByteStream>;
       }
     >
     #Success e.OutputName;
-}
-
-// Грязный хак, но так надо
-EnvelopeCLines {
-  e.Bytes =
-    ('// Automatically generated file. Don\'t edit!')
-    ('#include "refalrts.h"')
-    ()
-    ('static unsigned char bytes[] = {')
-    <Map
-      {
-        s.Number =
-          ('  ' <StrFromInt s.Number> ',');
-      }
-      e.Bytes
-    >
-    ('  0')
-    ('};')
-    ()
-    ('static refalrts::RawBytesBlock block(bytes, sizeof(bytes) - 1);')
-    ()
-    ('//End of file');
 }
 
 BackEnd-NativeModule {

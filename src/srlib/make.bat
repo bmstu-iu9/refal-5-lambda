@@ -7,7 +7,6 @@ copy LICENSE ..\..\srlib
 copy *.h ..\..\srlib
 copy *.cpp ..\..\srlib
 copy *.rasl ..\..\srlib
-copy *.rasl.cpp ..\..\srlib
 call :PREPARE_SRCLIB Library
 call :PREPARE_SRCLIB LibraryEx
 call :PREPARE_SRCLIB GetOpt
@@ -28,7 +27,6 @@ goto :EOF
   find "//FROM" < %1.sref >> %1.rasl.froms
   if exist %1.cpp move %1.cpp ..\..\srlib
   move %1.rasl ..\..\srlib
-  move %1.rasl.cpp ..\..\srlib
   move %1.rasl.froms ..\..\srlib
   copy %1.sref ..\..\srlib\src
 goto :EOF
