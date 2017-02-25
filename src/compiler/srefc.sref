@@ -104,6 +104,9 @@ Main-SwFoundFiles {
 
           (s.Pos^ #Output e.Output) =
             /* пусто */;
+
+          (s.Pos^ #OutputWithNative (e.Output) e.NativeOutput) =
+            /* пусто */;
         }
         (s.Pos #NotFound e.FileName) e.Files-E
       >
@@ -138,6 +141,9 @@ Main-SwRenamedTargets {
             /* пусто */;
 
           (s.Pos^ #Output e.Output) =
+            /* пусто */;
+
+          (s.Pos^ #OutputWithNative (e.Output) e.NativeOutput) =
             /* пусто */;
         }
         (s.Pos #Collision e.Collision) e.Files-E
