@@ -46,13 +46,18 @@ goto :EOF
 
 :RUN_TEST
 setlocal
-  set TEST_CPP_FLAGS= ^
-    -I../src/srlib ^
-    -DSTEP_LIMIT=1000 ^
-    -DMEMORY_LIMIT=1000 ^
-    -DIDENTS_LIMIT=25 ^
-    -DDUMP_FILE=\"__dump.txt\" ^
-    -DDONT_PRINT_STATISTICS
+  set COMMON_SRFLAGS= ^
+    -c "%CPPLINE%" ^
+    --targsuffix=.exe ^
+    -D../src/srlib ^
+    -D../src/srlib/platform-Windows ^
+    -f-DSTEP_LIMIT=1000 ^
+    -f-DMEMORY_LIMIT=1000 ^
+    -f-DIDENTS_LIMIT=25 ^
+    -f-DDUMP_FILE="\\"__dump.txt\\"" ^
+    -f-DDONT_PRINT_STATISTICS ^
+    refalrts ^
+    refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
@@ -95,24 +100,18 @@ setlocal
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist %RASL% (
+  if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
 
   if not exist %NATCPP% set NATCPP=
-
-  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% %RUNTIME%
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
 
   %EXE%
   if errorlevel 1 (
@@ -143,24 +142,18 @@ setlocal
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist %RASL% (
+  if not exist %EXE% (
     echo COMPILATION FAILED
     exit /b 1
   )
 
   if not exist %NATCPP% set NATCPP=
-
-  %CPPLINE%%EXE% %TEST_CPP_FLAGS% %CPP% %NATCPP% %RUNTIME%
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
 
   %EXE%
   if not errorlevel 100 (
@@ -216,19 +209,14 @@ setlocal
     exit /b 1
   )
 
-  ..\bin\srefc-core %SRFLAGS% _lexgen-out.sref 2> __error.txt
+  ..\bin\srefc-core _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
+    2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
   if not exist _lexgen-out.rasl (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-
-  %CPPLINE%_lexgen-out.exe %TEST_CPP_FLAGS% _lexgen-out.rasl.cpp %RUNTIME%
-  if errorlevel 1 (
     echo COMPILATION FAILED
     exit /b 1
   )

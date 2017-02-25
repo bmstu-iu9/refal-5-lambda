@@ -15,15 +15,20 @@ goto :EOF
 
 :RUN_ALL_TESTS
 setlocal
-  set TEST_CPP_FLAGS= ^
-    -I../../src/srlib ^
-    -DSTEP_LIMIT=1000 ^
-    -DMEMORY_LIMIT=1000 ^
-    -DDUMP_FILE=\"__dump.txt\" ^
-    -DDONT_PRINT_STATISTICS
+  set COMMON_SRFLAGS= ^
+    -c "%CPPLINE%" ^
+    --targsuffix=.exe ^
+    -D../../src/srlib ^
+    -D../../src/srlib/platform-Windows ^
+    -f-DSTEP_LIMIT=1000 ^
+    -f-DMEMORY_LIMIT=1000 ^
+    -f-DDUMP_FILE="\\"__dump.txt\\"" ^
+    -f-DDONT_PRINT_STATISTICS ^
+    refalrts ^
+    refalrts-platform-specific
 
   copy ..\..\src\srlib\Hash.sref .
-  for %%s in (Hash.sref %*) do call :COMPILE %%s || exit /b 1
+  for %%s in (%*) do call :COMPILE %%s || exit /b 1
 
   call :SIMPLE_TESTS OK ^
     Hash-HashLittle2-Chars ^
@@ -40,34 +45,21 @@ goto :EOF
 setlocal
   echo Compiling %1
   set SRC=%1
-  set RASL=%~n1.rasl
-  set CPP=%~n1.rasl.cpp
-  set NATCPP=%~n1.cpp
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core %SRC% 2>__error.txt
+  if %SRC%==Hash.sref (
+    echo ...skips
+    endlocal
+    goto :EOF
+  )
+
+  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Hash lookup3 ^
+    2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1
   )
   erase __error.txt
-  if not exist %RASL% (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
-
-  if %SRC%==Hash.sref (
-    endlocal
-    goto :EOF
-  )
-
-  %CPPLINE%%TARGET% %TEST_CPP_FLAGS% %CPP% %NATCPP% ^
-    Hash.rasl.cpp Hash.cpp ../../src/srlib/refalrts.cpp lookup3.cpp ^
-    ../../src/srlib/platform-Windows/refalrts-platform-specific.cpp
-  if errorlevel 1 (
-    echo COMPILATION FAILED
-    exit /b 1
-  )
   if not exist %TARGET% (
     echo COMPILATION FAILED
     exit /b 1

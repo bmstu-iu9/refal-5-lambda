@@ -3,10 +3,6 @@ source ../c-plus-plus.conf.sh
 source ../src/scripts/platform-specific.sh
 
 LIBDIR=../src/srlib
-RUNTIME_FILES="
-  $LIBDIR/refalrts.cpp
-  $(platform_subdir_lookup $LIBDIR)/refalrts-platform-specific.cpp
-"
 
 run_test_all_modes() {
   SRFLAGS= $2 $1
@@ -32,26 +28,16 @@ run_test_aux_with_flags() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
-  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINE" $COMMON_SRFLAGS $SRFLAGS \
+     2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $RASL ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
   if [ ! -e $NATCPP ]; then
     NATCPP=
-  fi
-
-  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP $RUNTIME_FILES
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
   fi
 
   ./$EXE
@@ -101,26 +87,16 @@ run_test_aux_with_flags.FAILURE() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
-  ../bin/srefc-core $SREF $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINE" $COMMON_SRFLAGS $SRFLAGS \
+    2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e $RASL ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
   if [ ! -e $NATCPP ]; then
     NATCPP=
-  fi
-
-  $CPPLINE$EXE $TEST_CPP_FLAGS $CPP $NATCPP $RUNTIME_FILES
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
   fi
 
   ./$EXE
@@ -151,24 +127,13 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  ../bin/srefc-core _lexgen-out.sref $SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ]; then
+  ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_suffix) \
+    -c "$CPPLINE" $COMMON_SRFLAGS 2>__error.txt
+  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
   rm __error.txt
-  if [ ! -e _lexgen-out.rasl ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
-
-  ${CPPLINE}_lexgen-out $TEST_CPP_FLAGS \
-    _lexgen-out.rasl.cpp $RUNTIME_FILES
-
-  if [ $? -gt 0 ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
 
   ./_lexgen-out
   if [ $? -gt 0 ]; then
@@ -202,14 +167,19 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 }
 
 run_test() {
-  TEST_CPP_FLAGS="
-    -I$LIBDIR \
-    -DSTEP_LIMIT=1000 \
-    -DMEMORY_LIMIT=1000 \
-    -DIDENTS_LIMIT=25 \
-    -DDUMP_FILE=\"__dump.txt\"\
-    -DDONT_PRINT_STATISTICS \
-    -g"
+  COMMON_SRFLAGS="
+    --targsuffix=$(platform_suffix)
+    -D$LIBDIR
+    -D$(platform_subdir_lookup $LIBDIR)
+    -f-DSTEP_LIMIT=1000
+    -f-DMEMORY_LIMIT=1000
+    -f-DIDENTS_LIMIT=25
+    -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    -f-DDONT_PRINT_STATISTICS
+    -f-g
+    refalrts
+    refalrts-platform-specific
+  "
   SREF=$1
   SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   run_test_aux$SUFFIX $1

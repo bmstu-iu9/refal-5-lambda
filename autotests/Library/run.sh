@@ -3,22 +3,24 @@ source ../../c-plus-plus.conf.sh
 source ../../src/scripts/platform-specific.sh
 
 LIBDIR=../../src/srlib
-RUNTIME_FILES="
-  $LIBDIR/refalrts.cpp
-  $(platform_subdir_lookup $LIBDIR)/refalrts-platform-specific.cpp
-"
+
 run_all_tests() {
-  TEST_CPP_FLAGS="
-    -I$LIBDIR \
-    -DSTEP_LIMIT=1000 \
-    -DMEMORY_LIMIT=1000 \
-    -DIDENTS_LIMIT=25 \
-    -DDUMP_FILE=\"__dump.txt\"\
-    -DDONT_PRINT_STATISTICS \
-    -g"
+  COMMON_SRFLAGS="
+    --targsuffix=$(platform_suffix)
+    -D$LIBDIR
+    -D$(platform_subdir_lookup $LIBDIR)
+    -f-DSTEP_LIMIT=1000
+    -f-DMEMORY_LIMIT=1000
+    -f-DIDENTS_LIMIT=25
+    -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    -f-DDONT_PRINT_STATISTICS
+    -f-g
+    refalrts
+    refalrts-platform-specific
+  "
 
   cp $LIBDIR/Library.sref .
-  for s in Library.sref $*; do
+  for s in $*; do
     compile $s
   done
 
@@ -169,28 +171,18 @@ run_all_tests() {
 compile() {
   echo Compiling $1
   SRC=$1
-  RASL=${SRC%%.sref}.rasl
-  CPP=${SRC%%.sref}.rasl.cpp
   TARGET=${SRC%%.sref}$(platform_suffix)
 
-  ../../bin/srefc-core $SRC 2>__error.txt
-  if [ $? -ge 100 ]; then
-    echo COMPILER FAILS ON $SRC, SEE __error.txt
-    exit 1
-  fi
-  rm __error.txt
-  if [ ! -e $RASL ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
-
   if [ "$SRC" != "Library.sref" ]; then
-    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP \
-      Library.rasl.cpp Library.cpp $RUNTIME_FILES
-    if [ $? -gt 0 ]; then
-      echo COMPILATION FAILED
+    ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINE" $COMMON_SRFLAGS \
+      Library 2>__error.txt
+    if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
+      echo COMPILER FAILS ON $SRC, SEE __error.txt
       exit 1
     fi
+    rm __error.txt
+  else
+    echo ...skips
   fi
 }
 

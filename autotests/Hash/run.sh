@@ -3,21 +3,24 @@ source ../../c-plus-plus.conf.sh
 source ../../src/scripts/platform-specific.sh
 
 LIBDIR=../../src/srlib
-RUNTIME_FILES="
-  $LIBDIR/refalrts.cpp
-  $(platform_subdir_lookup $LIBDIR)/refalrts-platform-specific.cpp
-"
+
 run_all_tests() {
-  TEST_CPP_FLAGS="
-    -I$LIBDIR \
-    -DSTEP_LIMIT=1000 \
-    -DMEMORY_LIMIT=1000 \
-    -DDUMP_FILE=\"__dump.txt\"\
-    -DDONT_PRINT_STATISTICS \
-    -g"
+  COMMON_SRFLAGS="
+    --targsuffix=$(platform_suffix)
+    -D$LIBDIR
+    -D$(platform_subdir_lookup $LIBDIR)
+    -f-DSTEP_LIMIT=1000
+    -f-DMEMORY_LIMIT=1000
+    -f-DIDENTS_LIMIT=25
+    -f-DDUMP_FILE=\\\"__dump.txt\\\"
+    -f-DDONT_PRINT_STATISTICS
+    -f-g
+    refalrts
+    refalrts-platform-specific
+  "
 
   cp $LIBDIR/Hash.sref .
-  for s in Hash.sref $*; do
+  for s in $*; do
     compile $s
   done
 
@@ -30,29 +33,18 @@ run_all_tests() {
 compile() {
   echo Compiling $1
   SRC=$1
-  RASL=${SRC%%.sref}.rasl
-  CPP=${SRC%%.sref}.rasl.cpp
-  NATCPP=${SRC%%.sref}.cpp
   TARGET=${SRC%%.sref}$(platform_suffix)
 
-  ../../bin/srefc-core $SRC 2>__error.txt
-  if [ $? -ge 100 ]; then
-    echo COMPILER FAILS ON $SRC, SEE __error.txt
-    exit 1
-  fi
-  rm __error.txt
-  if [ ! -e $RASL ]; then
-    echo COMPILATION FAILED
-    exit 1
-  fi
-
   if [ "$SRC" != "Hash.sref" ]; then
-    $CPPLINE$TARGET $TEST_CPP_FLAGS $CPP $NATCPP \
-      Hash.rasl.cpp Hash.cpp $RUNTIME_FILES lookup3.cpp
-    if [ $? -gt 0 ]; then
-      echo COMPILATION FAILED
+    ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINE" $COMMON_SRFLAGS \
+      Hash lookup3 2>__error.txt
+    if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
+      echo COMPILER FAILS ON $SRC, SEE __error.txt
       exit 1
     fi
+    rm __error.txt
+  else
+    echo ...skips
   fi
 }
 
