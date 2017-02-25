@@ -2998,6 +2998,8 @@ struct FILE {
 FILE *fopen(const char * filename, const char *mode);
 size_t fread(void *ptr, size_t size, size_t count, FILE *stream);
 void fclose(FILE *stream);
+long int ftell(FILE *stream);
+int fseek(FILE *stream, long int offset, int origin);
 
 bool seek_rasl_signature(FILE *stream);
 const char *read_asciiz(FILE *stream);
@@ -3010,8 +3012,9 @@ refalrts::dynamic::FILE *
 refalrts::dynamic::fopen(const char * filename, const char * /*mode*/) {
   fprintf(stderr, "**DEBUG: my name is %s**\n", filename);
 
-  char *bytes = NULL;
-  size_t size = 0;
+  char *bytes = (char *) calloc(3, 4096);
+  assert(bytes);
+  size_t size = 3 * 4096;
 
   for (
     RawBytesBlock *block = RawBytesBlock::s_first;
@@ -3047,9 +3050,67 @@ void refalrts::dynamic::fclose(refalrts::dynamic::FILE *stream) {
   delete stream;
 }
 
+long int refalrts::dynamic::ftell(refalrts::dynamic::FILE *stream) {
+  return (long int) stream->offset;
+}
+
+int refalrts::dynamic::fseek(
+  refalrts::dynamic::FILE *stream, long int offset, int origin
+) {
+  long int base_offset =
+    origin == SEEK_SET ? 0L :
+    origin == SEEK_CUR ? (long int) stream->offset :
+    (long int) stream->size;
+
+  stream->offset = (size_t) (base_offset + offset);
+
+  return 0;
+}
+
 bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
-  // TODO: заглушка
-  return stream != 0;
+  int seek_res = fseek(stream, 0L, SEEK_END);
+  if (seek_res != 0) {
+    fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
+    exit(155);
+  }
+
+  long int file_size = ftell(stream);
+  if (file_size == -1L) {
+    fprintf(
+      stderr, "INTERNAL ERROR: filesize obtaining error %s\n",
+      strerror(errno)
+    );
+    exit(155);
+  }
+
+  long int next_offset = 0L;
+  bool found = false;
+  while (next_offset < file_size && ! found) {
+    seek_res = fseek(stream, next_offset, SEEK_SET);
+    if (seek_res != 0) {
+      fprintf(stderr, "INTERNAL ERROR: can't seek in module\n");
+      exit(155);
+    }
+
+    static const char sample_sig[] = {
+      '\x01', '\x08', '\0', '\0', '\0', 'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
+    };
+    char actual_sig[sizeof(sample_sig)];
+    size_t read = fread(actual_sig, sizeof(actual_sig), 1, stream);
+    if (read != 1) {
+      fprintf(stderr, "INTERNAL ERROR: can't read bytes from module\n");
+      exit(155);
+    }
+
+    found = memcmp(sample_sig, actual_sig, sizeof(sample_sig)) == 0;
+    next_offset += 4096;
+  }
+
+  /*
+    Позиция в файле после чтения сигнатуры будет в начале следующего блока,
+    что вполне нормально для функции enumerate_blocks().
+  */
+  return found;
 }
 
 const char *refalrts::dynamic::read_asciiz(FILE *stream) {
