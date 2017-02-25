@@ -246,3 +246,5 @@ else
     run_test $s
   done
 fi
+
+echo '**** ALL TESTS PASSED ****'

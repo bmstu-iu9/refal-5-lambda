@@ -1,0 +1,17 @@
+//FROM refalrts
+//FROM refalrts-platform-specific
+
+%%
+void try_NSGetExecutablePath();
+void try_proc_pidpath();
+%%
+
+$ENTRY Go {
+%%
+  try_NSGetExecutablePath();
+  try_proc_pidpath();
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
