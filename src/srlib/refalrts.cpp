@@ -2897,6 +2897,8 @@ namespace refalrts
     variableDebugTable varDT;
     StepBreakpointSet step_breaks;
     FunctionBreakpointSet func_breaks;
+    const char *dot = STEP;
+    unsigned step_numb = 0;
 #define MAXLEN 1024
     char debcmd[16] = {0};
     char strparam[MAXLEN] = {0};
@@ -2906,14 +2908,17 @@ namespace refalrts
 #undef MAXLEN
     void parseVariableStringName(const char *);
     void printContextData(Iter, Iter);
+    bool next_cond();
+    bool run_cond(RefalFunction *);
+    bool step_cond();
 
     void insertVar(const char *, int);
     void cleanVarDebugTable();
-    void setBreak(char *);
-    void removeBreak(char *);
 
     void helpOption();
     // void helpOption(char *optName);
+    void breakOption(char *);
+    void clearOption(char *);
     void printBreakOption();
     bool printVarOption(char *);
     void varsOption();
@@ -3056,25 +3061,23 @@ void refalrts::debugger::cleanVarDebugTable() {
     // printf("\'%c\' is cleaned\n", itType->first);
   }
 }
-void refalrts::debugger::setBreak(char *arg) {
-  if (arg[0] == '#') {
-    int step_break = std::atoi(arg+1);
-    step_breaks.insert(step_break);
-    printf("Break option on %d-step\n",step_break);
-  } else {
-    func_breaks.insert(arg);
-    printf("Break option on \"%s\"-func\n", arg);
-  }
+bool refalrts::debugger::next_cond() {
+  dot = NEXT;
+  return false;
 }
-void refalrts::debugger::removeBreak(char *arg) {
-  if (strparam[0]=='#') {
-    int step_break = std::atoi(strparam+1);
-    step_breaks.erase(step_break);
-    printf("Clear option on %d-step\n",step_break);
-  } else {
-    func_breaks.erase(strparam);
-    printf("Clear option on \"%s\"-func\n", strparam);
-  }
+bool refalrts::debugger::run_cond(RefalFunction *callee) {
+  using namespace refalrts::vm;
+  bool scond = step_breaks.find(g_step_counter)!=step_breaks.end();
+  bool fcond = (callee!=0 && func_breaks.find(std::string(callee->name))!=func_breaks.end());
+  dot = RUN;
+  return (scond || fcond);
+}
+bool refalrts::debugger::step_cond() {
+  using namespace refalrts::vm;
+  bool scond = (g_step_counter == step_numb);
+  step_numb = g_step_counter;
+  dot = STEP;
+  return scond;
 }
 
 void refalrts::debugger::helpOption() {
@@ -3095,6 +3098,26 @@ void refalrts::debugger::helpOption() {
   printf("%s\t\t\t%s\n", DOT, "repeat previous debugger command");
   printf("\n");  
   printf("==============================================================================\n");
+}
+void refalrts::debugger::breakOption(char *arg) {
+  if (arg[0] == '#') {
+    int step_break = std::atoi(arg+1);
+    step_breaks.insert(step_break);
+    printf("Break option on %d-step\n",step_break);
+  } else {
+    func_breaks.insert(arg);
+    printf("Break option on \"%s\"-func\n", arg);
+  }
+}
+void refalrts::debugger::clearOption(char *arg) {
+  if (strparam[0]=='#') {
+    int step_break = std::atoi(strparam+1);
+    step_breaks.erase(step_break);
+    printf("Clear option on %d-step\n",step_break);
+  } else {
+    func_breaks.erase(strparam);
+    printf("Clear option on \"%s\"-func\n", strparam);
+  }
 }
 void refalrts::debugger::printBreakOption() {
   printf("Step breakpoint set:\n");
@@ -3155,10 +3178,10 @@ void refalrts::debugger::debuggerLoop() {
       helpOption();
     } else if (!(strcmp(debcmd,B) && strcmp(debcmd,BREAK) && strcmp(debcmd,BREAKPOINT))) {
       scanf("%s", strparam);
-      setBreak(strparam);
+      breakOption(strparam);
     } else if (!(strcmp(debcmd,CL) && strcmp(debcmd,CLEAR) && strcmp(debcmd,RM))) {
       scanf("%s", strparam);
-      removeBreak(strparam);
+      clearOption(strparam);
     } else if (!strcmp(debcmd,STEPLIMIT)) {
       int step_lim = 0;
       scanf("%d", &step_lim);
@@ -3166,12 +3189,15 @@ void refalrts::debugger::debuggerLoop() {
       printf("Steplimit %d is the break on %d-step\n",step_lim, g_step_counter+step_lim);
     } else if (!strcmp(debcmd,MEMORYLIMIT)) {
       printf("Memorylimit option is on\n");
-    } else if (!(strcmp(debcmd,R)&& strcmp(debcmd,RUN))) {
+    } else if (!(strcmp(debcmd,R)&&strcmp(debcmd,RUN)) || (!strcmp(debcmd,DOT) && !strcmp(dot,RUN))) {
+      dot = RUN;
       break;
-    } else if (!(strcmp(debcmd,S)&& strcmp(debcmd,STEP))) {
-      step_breaks.insert(g_step_counter+1);
+    } else if (!(strcmp(debcmd,S)&&strcmp(debcmd,STEP)) || (!strcmp(debcmd,DOT) && !strcmp(dot,STEP))) {
+      step_numb = g_step_counter+1;
+      dot = STEP;
       break;
-    } else if (!(strcmp(debcmd,N)&& strcmp(debcmd,NEXT))) {
+    } else if (!(strcmp(debcmd,N)&&strcmp(debcmd,NEXT)) || (!strcmp(debcmd,DOT) && !strcmp(dot,NEXT))) {
+      dot = NEXT;
       printf("Next option is on\n");
       break;
     } else if (!strcmp(debcmd,VARS)) {
@@ -3180,8 +3206,7 @@ void refalrts::debugger::debuggerLoop() {
       scanf("%s", strparam);
       if (!strcmp(strparam,CALL)) {
         print_seq(dump_stream(), & g_first_marker, & g_last_marker);
-        printf("\n");
-        printf("Print call option is on\n");
+        printf("\n"); // костыль к выводу по print_seq(...);
       } else if (!strcmp(strparam,RES)) {
         printf("Print res option is on\n");
       } else if (!(strcmp(strparam,B) && strcmp(strparam,BREAK) && strcmp(strparam,BREAKPOINT))) {
@@ -3189,8 +3214,6 @@ void refalrts::debugger::debuggerLoop() {
       } else if (!printVarOption(strparam)) {
         printf("Unrecognised print option is found\n");
       }
-    } else if (!strcmp(debcmd,DOT)) {
-        printf("Dot option is on\n");
     } else if (!printVarOption(debcmd)) {
       printf("Unrecognised option is found: \"%s\"\n", debcmd);
     }
@@ -3745,17 +3768,15 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icEmptyResult:
 #ifdef ENABLE_DEBUGGER
-      {
-        bool scond = refalrts::debugger::step_breaks.find(g_step_counter)!=refalrts::debugger::step_breaks.end();
-        bool fcond = (callee!=0 && refalrts::debugger::func_breaks.find(std::string(callee->name))!=refalrts::debugger::func_breaks.end());
-        // StepBreakpointSet::iterator stepit = step_breaks.find(g_step_counter);
-        // FunctionBreakpointSet::iterator funcit = callee==0 ? func_breaks.end() : func_breaks.find(std::string(callee->name));
-        if (scond || fcond) {
-          printf("%cStep #%d; Function <%s ...>%c\n", (scond?'*':' '), g_step_counter, callee==0?"":callee->name, (fcond?'*':' '));
-          refalrts::debugger::debuggerLoop();
+        {
+          using namespace refalrts::debugger;
+          if (step_cond() || next_cond() || run_cond(callee)) {
+            // printf("%cStep #%d; Function <%s ...>%c\n", (scond?'*':' '), g_step_counter, callee==0?"":callee->name, (fcond?'*':' '));
+            printf("Step #%d; Function <%s ...>\n", g_step_counter, callee==0?"":callee->name);
+            debuggerLoop();
+          }
+          cleanVarDebugTable();
         }
-      }
-        refalrts::debugger::cleanVarDebugTable();
 #endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
         res = begin;
@@ -4135,7 +4156,6 @@ int main(int argc, char **argv) {
     varDT.insert(std::pair<char, variableNameTable *> ('e', new variableNameTable()));
     varDT.insert(std::pair<char, variableNameTable *> ('s', new variableNameTable()));
     varDT.insert(std::pair<char, variableNameTable *> ('t', new variableNameTable()));
-    step_breaks.insert(0);
   }
 #endif // ifdef ENABLE_DEBUGGER
 
