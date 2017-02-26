@@ -1,4 +1,3 @@
-
 #include <cstdlib>
 #include <ctype.h>
 #include <exception>
@@ -2929,7 +2928,7 @@ namespace refalrts
 void refalrts::debugger::parseVariableStringName(const char *varFullName)
 {
 //    0    1  2    n+2 n+3
-//  'est' '.' ccc '#'  ddd     
+//  'est' '.' ccc '#'  ddd
   varType = varFullName[0];
   varFullName += 2;   // type-char & '.' are skiped
   char *dashPtr = strchr(varFullName, '#');
@@ -2947,6 +2946,7 @@ void refalrts::debugger::parseVariableStringName(const char *varFullName)
   }
   refalrts::debugger::varName = std::string(varNameC);
 }
+
 void refalrts::debugger::printContextData(Iter elem_b, Iter elem_e) {
   // printf("\n[%p - %p]\n", elem_b, elem_e);
   switch(elem_b->tag) {
@@ -2994,7 +2994,7 @@ void refalrts::debugger::printContextData(Iter elem_b, Iter elem_e) {
     }
     fin = (elem_b == elem_e);
   }
-  if (!fin) 
+  if (!fin)
   {
     printf("...");
     switch(elem_e->tag) {
@@ -3022,7 +3022,7 @@ void refalrts::debugger::printContextData(Iter elem_b, Iter elem_e) {
 }
 
 void refalrts::debugger::insertVar(const char *varFullName, int offset) {
-  parseVariableStringName(varFullName);  
+  parseVariableStringName(varFullName);
   // printf("\"%s\"\t->", varFullName);
   // printf("\'%c\' : ", varType);
   // printf("\"%s\"\t: ", varName.c_str());
@@ -3050,6 +3050,7 @@ void refalrts::debugger::insertVar(const char *varFullName, int offset) {
     }
   }
 }
+
 void refalrts::debugger::cleanVarDebugTable() {
   for (variableDebugTable::iterator itType = varDT.begin(); itType != varDT.end(); ++itType) {
     variableNameTable* typeName = itType->second;
@@ -3061,10 +3062,12 @@ void refalrts::debugger::cleanVarDebugTable() {
     // printf("\'%c\' is cleaned\n", itType->first);
   }
 }
+
 bool refalrts::debugger::next_cond() {
   dot = NEXT;
   return false;
 }
+
 bool refalrts::debugger::run_cond(RefalFunction *callee) {
   using namespace refalrts::vm;
   bool scond = step_breaks.find(g_step_counter)!=step_breaks.end();
@@ -3072,6 +3075,7 @@ bool refalrts::debugger::run_cond(RefalFunction *callee) {
   dot = RUN;
   return (scond || fcond);
 }
+
 bool refalrts::debugger::step_cond() {
   using namespace refalrts::vm;
   bool scond = (g_step_counter == step_numb);
@@ -3096,9 +3100,10 @@ void refalrts::debugger::helpOption() {
                       "\t\t\tcurrent active expression (\'call\')\n"
                       "\t\t\tprint result of previous step");
   printf("%s\t\t\t%s\n", DOT, "repeat previous debugger command");
-  printf("\n");  
+  printf("\n");
   printf("==============================================================================\n");
 }
+
 void refalrts::debugger::breakOption(char *arg) {
   if (arg[0] == '#') {
     int step_break = std::atoi(arg+1);
@@ -3109,6 +3114,7 @@ void refalrts::debugger::breakOption(char *arg) {
     printf("Break option on \"%s\"-func\n", arg);
   }
 }
+
 void refalrts::debugger::clearOption(char *arg) {
   if (strparam[0]=='#') {
     int step_break = std::atoi(strparam+1);
@@ -3119,6 +3125,7 @@ void refalrts::debugger::clearOption(char *arg) {
     printf("Clear option on \"%s\"-func\n", strparam);
   }
 }
+
 void refalrts::debugger::printBreakOption() {
   printf("Step breakpoint set:\n");
   for (StepBreakpointSet::iterator stepit = step_breaks.begin(); stepit != step_breaks.end(); ++stepit) {
@@ -3129,6 +3136,7 @@ void refalrts::debugger::printBreakOption() {
     printf("\t<%s ...>\n", funcit->c_str());
   }
 }
+
 bool refalrts::debugger::printVarOption(char *varName) {
   if (debcmd[1]=='.') {
     switch(debcmd[0]) {
@@ -3148,6 +3156,7 @@ bool refalrts::debugger::printVarOption(char *varName) {
   }
   return false;
 }
+
 void refalrts::debugger::varsOption() {
   printf("=============================Variable debug table=============================\n");
   for (variableDebugTable::iterator itType = varDT.begin(); itType != varDT.end(); ++itType)
@@ -3170,6 +3179,7 @@ void refalrts::debugger::varsOption() {
   }
   printf("==============================================================================\n");
 }
+
 void refalrts::debugger::debuggerLoop() {
   using namespace refalrts::vm;
   for (;;) {

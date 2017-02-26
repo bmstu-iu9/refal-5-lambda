@@ -29,12 +29,13 @@ GenReturn {
 }
 
 GenCommonHeaders {
-  e.TargetFileName = 
+  e.TargetFileName =
     ('// Automatically generated file. Don\'t edit!')
     ('#include "refalrts.h"')
-    () 
+    ()
     ('static const char *filename = "'<EscapeString e.TargetFileName>'";')
     ();
+
   = ('// Automatically generated file. Don\'t edit!')
   ('#include "refalrts.h"')
   () ();
