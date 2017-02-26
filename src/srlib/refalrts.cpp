@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <exception>
 #include <new>
 #include <stdio.h>
