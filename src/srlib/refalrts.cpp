@@ -1566,6 +1566,9 @@ const refalrts::RASLCommand rasl_create_closure[] = {
   { refalrts::icInitB0_Lite, 0, 0, 0 },
   { refalrts::icCallSaveLeft, 0, 2, 0 },
   { refalrts::icNotEmpty, 0, 0, 2 },
+#ifdef ENABLE_DEBUGGER
+  { refalrts::icEmptyResult, 0, 0, 0 },
+#endif // ifdef ENABLE_DEBUGGER
   { refalrts::icReinitClosureHead, 0, 0, 4 },
   { refalrts::icReinitUnwrappedClosure, 4, 0, 1 },
   { refalrts::icWrapClosure, 0, 0, 1 },
