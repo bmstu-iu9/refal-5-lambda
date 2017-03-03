@@ -522,6 +522,7 @@ Function-Interpret {
           e.FunctionBody^ =
             (#CmdNamespaceStart)
             (#CmdNamespaceStart e.Name)
+            (#CmdFileNameFB)
             e.FunctionBody
             (#CmdNamespaceEnd e.Name)
             (#CmdNamespaceEnd)
