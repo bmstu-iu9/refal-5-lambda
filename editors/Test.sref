@@ -52,9 +52,9 @@ Main {
     <Map
       {
         (e.NextFile) =
-          <MFileIO::Save
+          <SaveFile
             (e.NextFile '.out')
-            <MFileIO::Load e.NextFile>
+            <LoadFile e.NextFile>
           >;
       }
       e.Files
