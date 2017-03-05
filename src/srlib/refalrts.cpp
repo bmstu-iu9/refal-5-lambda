@@ -1848,13 +1848,13 @@ void refalrts::allocator::splice_from_freelist(refalrts::Iter pos) {
 bool refalrts::allocator::create_nodes() {
   refalrts::NodePtr new_node = refalrts::allocator::pool::alloc_node();
 
-#ifdef m_memory_limit
+#ifdef MEMORY_LIMIT
 
-  if (g_memory_use >= m_memory_limit) {
+  if (g_memory_use >= MEMORY_LIMIT) {
     return false;
   }
 
-#endif // ifdef m_memory_limit
+#endif // ifdef MEMORY_LIMIT
 
   if (new_node == 0) {
     return false;
@@ -2597,7 +2597,6 @@ void refalrts::vm::print_seq(
 
 
   char space = (multiline) ? '\n' : ' ';
-//  printf("[%p] - [%p]\n", begin, end);
 
   for (unsigned curr_knot = 0; (state != cStateFinish) && ! refalrts::empty_seq(begin, end) && curr_knot <= max_knot; curr_knot++) {
 
@@ -2609,8 +2608,6 @@ void refalrts::vm::print_seq(
     if (after_bracket) {
       reset_after_bracket = true;
     }
-
-//    printf("\"\n*\n*\t##%d:\t %d [%p] %d\n*\n*\t\"", curr_knot, state, begin, begin->tag);
 
     switch(state) {
       case cStateView:
@@ -2905,6 +2902,8 @@ namespace refalrts {
     static const char *const s_Q = "q";
     static const char *const s_QUIT = "quit";
 
+    enum { cMaxLen = 1024 };
+
     class VariableDebugTable {
       vm::Stack<Iter>& m_context;
       const StringItem *m_strings;
@@ -2934,6 +2933,7 @@ namespace refalrts {
     public:
       void trace_func(const char *func_name, FILE *trace_out);
       void notrace_func(const char *func_name);
+      void clear();
       bool is_traced_func(const char *func_name);
       FILE *get_trace_outstream(const char *func_name);
       void print(FILE *);
@@ -2975,6 +2975,9 @@ namespace refalrts {
       {
         /* пусто */
       } 
+      ~RefalDebugger() {
+        func_trace_table.clear();
+      }
 
       FILE *get_out();
       bool next_cond(Iter);
@@ -3011,9 +3014,7 @@ std::pair<std::string, int>
   ) {
   char *dash_ptr = strchr((char*)full_name, '#');
   int depth = -1;
-#define MAXLEN 1024
-  char var_name[MAXLEN] = {0};
-#undef MAXLEN
+  char var_name[cMaxLen] = {0};
   if (dash_ptr != NULL)
   {
     size_t n = (dash_ptr-full_name);
@@ -3123,7 +3124,28 @@ void refalrts::debugger::TracedFunctionTable::trace_func(
 void refalrts::debugger::TracedFunctionTable::notrace_func(
   const char *func_name
 ) {
-  m_traced_func_table.erase(std::string(func_name));
+  std::map<std::string,FILE*>::iterator found = 
+    m_traced_func_table.find(std::string(func_name));
+  if (found != m_traced_func_table.end()) {
+    if (found->second != stdout) {
+      // printf("%p closed\n", found->second);
+      fclose(found->second);
+    }
+    m_traced_func_table.erase(std::string(func_name));
+  }
+}
+void refalrts::debugger::TracedFunctionTable::clear() {
+  for (
+    std::map<std::string,FILE*>::iterator it = m_traced_func_table.begin();
+    it != m_traced_func_table.end();
+    ++it
+  ) {
+    if (it->second != stdout) {
+      // printf("%p closed\n", it->second);
+      fclose(it->second);
+    }
+  }
+  m_traced_func_table.clear();
 }
 bool refalrts::debugger::TracedFunctionTable::is_traced_func(
   const char *func_name
@@ -3137,8 +3159,9 @@ FILE *refalrts::debugger::TracedFunctionTable::get_trace_outstream (
 ) {
   std::map<std::string, FILE*>::iterator found = 
     m_traced_func_table.find(std::string(func_name));
-  if (found == m_traced_func_table.end())
+  if (found == m_traced_func_table.end()) {
     return 0;
+  }
   return found->second;
 }
 void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
@@ -3210,11 +3233,9 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 //  Класс отладчика
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
-#define MAXLEN 1024
-  char line[MAXLEN+MAXLEN] = {0};
-  char  filename[MAXLEN] = {0};
-  fgets(line, MAXLEN+MAXLEN, m_in);
-#undef MAXLEN
+  char line[cMaxLen+cMaxLen] = {0};
+  char  filename[cMaxLen] = {0};
+  fgets(line, cMaxLen+cMaxLen, m_in);
   if (sscanf(line," >> %s", filename) == 1) {
     return fopen(filename, "a");
   }
@@ -3417,10 +3438,8 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
 
 refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   using namespace refalrts::vm;
-#define MAXLEN 1024
   char debcmd[16] = {0};
-  char strparam[MAXLEN] = {0};
-#undef MAXLEN
+  char strparam[cMaxLen] = {0};
   for (;;) {
     printf("debug>");
     FILE *out = stdout;
@@ -4323,6 +4342,22 @@ refalrts::FnResult refalrts::vm::main_loop() {
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
+#ifdef ENABLE_DEBUGGER
+            {
+              using namespace refalrts::debugger;
+              debugger.debug_trace(begin, end, callee);
+              if (debugger.is_debug_stop(begin, callee)) {
+                printf(
+                  "Step #%d; Function <%s ...>\n",
+                  g_step_counter, callee==0?"":callee->name
+                );
+                if (debugger.debugger_loop()==refalrts::cExit)
+                  return cExit;
+              }
+              debugger.set_step_res(begin, end);
+            }
+#endif  // ifdef ENABLE_DEBUGGER
+
             if (1 == head->number_info) {
               /*
                 Пользуемся тем, что при развёртке содержимое замыкания
@@ -4417,6 +4452,21 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icPerformNative:
         {
+#ifdef ENABLE_DEBUGGER
+          {
+            using namespace refalrts::debugger;
+            debugger.debug_trace(begin, end, callee);
+            if (debugger.is_debug_stop(begin, callee)) {
+              printf(
+                "Step #%d; Function <%s ...>\n",
+                g_step_counter, callee==0?"":callee->name
+              );
+              if (debugger.debugger_loop()==refalrts::cExit)
+                return cExit;
+            }
+            debugger.set_step_res(begin, end);
+          }
+#endif  // ifdef ENABLE_DEBUGGER
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
           FnResult res = (native_callee->ptr)(begin, end);
