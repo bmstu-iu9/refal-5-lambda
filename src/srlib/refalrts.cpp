@@ -2903,6 +2903,7 @@ namespace refalrts {
     static const char *const s_QUIT = "quit";
 
     enum { cMaxLen = 1024 };
+    void close_out(FILE*);
 
     class VariableDebugTable {
       vm::Stack<Iter>& m_context;
@@ -3044,7 +3045,7 @@ std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
   std::pair<std::string, int> input_pair = parse_var_name(var_name);
   bool has_depth = input_pair.second >= 0;
   std::map<int, int> var_depth_offset_map;
-  for (const RASLCommand *it = m_first; it <= m_last; ++it) {
+  for (const RASLCommand *it = m_first; it!=0 && it<=m_last; ++it) {
     std::pair<std::string, int> table_pair = 
       parse_var_name(m_strings[it->val1].string);
     if (input_pair.first.compare(table_pair.first) == 0) {
@@ -3068,7 +3069,7 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     out,
     "==========================Variable debug table=========================\n"
   );
-  for (const RASLCommand *it = m_first; it <= m_last; ++it) {
+  for (const RASLCommand *it = m_first; it!=0 && it<=m_last; ++it) {
     // strings[rasl->val1].string
     // printf("[%p] - [%p] - [%p]\n", m_first, it, m_last);
     const char *var_name = m_strings[it->val1].string;
@@ -3091,7 +3092,7 @@ void refalrts::debugger::VariableDebugTable::print_var(
   int var_end_offset = var_name[0]=='e' ? 1 : 0;
   for (
     std::map<int, int>::iterator it = var_depth_offset_map.begin();
-    it != var_depth_offset_map.end();
+    it!=var_depth_offset_map.end();
     ++it
   ) {
     fprintf(out, "  %s#%d\t== ", var_parse_name.first.c_str(), it->first);
@@ -3127,10 +3128,7 @@ void refalrts::debugger::TracedFunctionTable::notrace_func(
   std::map<std::string,FILE*>::iterator found = 
     m_traced_func_table.find(std::string(func_name));
   if (found != m_traced_func_table.end()) {
-    if (found->second != stdout) {
-      // printf("%p closed\n", found->second);
-      fclose(found->second);
-    }
+    close_out(found->second);
     m_traced_func_table.erase(std::string(func_name));
   }
 }
@@ -3140,10 +3138,7 @@ void refalrts::debugger::TracedFunctionTable::clear() {
     it != m_traced_func_table.end();
     ++it
   ) {
-    if (it->second != stdout) {
-      // printf("%p closed\n", it->second);
-      fclose(it->second);
-    }
+    close_out(it->second);
   }
   m_traced_func_table.clear();
 }
@@ -3230,7 +3225,7 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 }
 
 //=============================================================================
-//  Класс отладчика
+//  Работа с потоками вывода
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen+cMaxLen] = {0};
@@ -3246,6 +3241,17 @@ FILE *refalrts::debugger::RefalDebugger::get_out() {
     return stdout;
   }
 }
+void refalrts::debugger::close_out(FILE *out) {
+  if (out != stdout) {
+    // printf("%p closed\n", out);
+    fclose(out);
+    out = stdout;
+  }
+}
+
+//=============================================================================
+//  Класс отладчика
+
 bool refalrts::debugger::RefalDebugger::mem_cond() {
   bool res = allocator::g_memory_use > m_memory_limit;
   if (res)
@@ -3430,9 +3436,11 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
     }
     // распозналось, как имя переменной
     // пусть и с неправильным типом в одной из веток
+    close_out(out);
     return true;  
   }
   // не может быть именем переменной
+  close_out(out);
   return false;
 }
 
@@ -3442,7 +3450,6 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   char strparam[cMaxLen] = {0};
   for (;;) {
     printf("debug>");
-    FILE *out = stdout;
     fscanf(m_in, "%s", debcmd);
     if (!strcmp(debcmd,s_H) || !strcmp(debcmd,s_HELP)) {
       help_option();
@@ -3497,11 +3504,12 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
       m_dot = s_NEXT;
       break;
     } else if (!strcmp(debcmd,s_VARS)) {
-      out = get_out();
+      FILE *out = get_out();
       var_debug_table.print(out);
+      close_out(out);
     } else if (!strcmp(debcmd,s_P) || !strcmp(debcmd,s_PRINT)) {
       fscanf(m_in, "%s", strparam);
-      out = get_out();
+      FILE *out = get_out();
       if (!strcmp(strparam,s_ARG)) {
         print_arg_option(out);
       } else if (!strcmp(strparam,s_CALL)) {
@@ -3525,12 +3533,9 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
           debcmd, strparam
         );
       }
+      close_out(out);
     } else if (!print_var_option(debcmd, get_out())) {
       fprintf(stderr, "Unrecognised option is found: \"%s\"\n", debcmd);
-    }
-    if (out != stdout) {
-      fclose(out);
-      out = stdout;
     }
   }
   return refalrts::cSuccess;
