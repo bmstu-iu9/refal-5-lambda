@@ -3061,12 +3061,12 @@ std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
   std::pair<std::string, int> input_pair = parse_var_name(var_name);
   bool has_depth = input_pair.second >= 0;
   std::map<int, int> var_depth_offset_map;
-  for (const RASLCommand *it = m_first; it!=0 && it<=m_last; ++it) {
+  for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
     std::pair<std::string, int> table_pair =
       parse_var_name(m_strings[it->val1].string);
     if (input_pair.first.compare(table_pair.first) == 0) {
       if (has_depth) {
-        if (table_pair.second==input_pair.second) {
+        if (table_pair.second == input_pair.second) {
           var_depth_offset_map.insert(
             std::pair<int, int>(input_pair.second, it->bracket)
           );
@@ -3086,12 +3086,12 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     out,
     "==========================Variable debug table=========================\n"
   );
-  for (const RASLCommand *it = m_first; it!=0 && it<=m_last; ++it) {
+  for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
     // strings[rasl->val1].string
     // printf("[%p] - [%p] - [%p]\n", m_first, it, m_last);
     const char *var_name = m_strings[it->val1].string;
     fprintf(out, "  \"%.20s\"\t-  ", var_name);
-    int var_end_offset = var_name[0]=='e' ? 1 : 0;
+    int var_end_offset = var_name[0] == 'e' ? 1 : 0;
     vm::print_seq(
       out, m_context[it->bracket], m_context[it->bracket+var_end_offset], false
     );
@@ -3107,10 +3107,10 @@ void refalrts::debugger::VariableDebugTable::print_var(
 ) {
   std::map<int, int> var_depth_offset_map = find_var(var_name);
   std::pair<std::string, int> var_parse_name = parse_var_name(var_name);
-  int var_end_offset = var_name[0]=='e' ? 1 : 0;
+  int var_end_offset = var_name[0] == 'e' ? 1 : 0;
   for (
     std::map<int, int>::iterator it = var_depth_offset_map.begin();
-    it!=var_depth_offset_map.end();
+    it != var_depth_offset_map.end();
     ++it
   ) {
     fprintf(out, "  %s#%d\t== ", var_parse_name.first.c_str(), it->first);
@@ -3232,7 +3232,7 @@ bool refalrts::debugger::BreakpointSet::is_breakpoint(
   std::set<int>::iterator step_found = m_step_breaks.find(curr_step_numb);
   std::set<std::string>::iterator func_found =
     m_func_breaks.find(std::string(curr_func_name));
-  return step_found!=m_step_breaks.end() || func_found!=m_func_breaks.end();
+  return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
 }
 
 void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
@@ -3291,13 +3291,13 @@ bool refalrts::debugger::RefalDebugger::mem_cond() {
 
 bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
   m_dot = s_NEXT;
-  return begin==m_next_expr;
+  return begin == m_next_expr;
 }
 
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   using namespace refalrts::vm;
   m_dot = s_RUN;
-  return break_set.is_breakpoint(g_step_counter, callee==0 ? "" : callee->name);
+  return break_set.is_breakpoint(g_step_counter, callee == 0 ? "" : callee->name);
 }
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
@@ -3317,7 +3317,7 @@ bool refalrts::debugger::RefalDebugger::is_debug_stop(
 void refalrts::debugger::RefalDebugger::debug_trace(
   Iter begin, Iter end, RefalFunction *callee
 ) {
-  if (callee!=0 && func_trace_table.is_traced_func(callee->name)) {
+  if (callee != 0 && func_trace_table.is_traced_func(callee->name)) {
   FILE *trace_out = func_trace_table.get_trace_outstream(callee->name);
     fprintf(
       trace_out, "//==================================================\n"
@@ -3334,7 +3334,7 @@ void refalrts::debugger::RefalDebugger::debug_trace(
 }
 
 void refalrts::debugger::RefalDebugger::set_step_res(Iter begin, Iter end) {
-  if (begin!=0 && end!=0) {
+  if (begin != 0 && end != 0) {
     m_res_begin = begin->prev;
     m_res_end = end->next;
   }
@@ -3415,7 +3415,7 @@ void refalrts::debugger::RefalDebugger::break_option(const char *arg) {
 }
 
 void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
-  if (arg[0]=='#') {
+  if (arg[0] == '#') {
     int step_break = atoi(arg+1);
     break_set.rm_breakpoint(step_break);
   } else {
@@ -3426,10 +3426,10 @@ void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
 void refalrts::debugger::RefalDebugger::print_callee_option(FILE *out = stdout){
   Iter it = &vm::g_first_marker;
   for (
-    bool wasOpenCall = it->tag==cDataOpenCall; it->next!=0 && !wasOpenCall;
+    bool wasOpenCall = it->tag == cDataOpenCall; it->next != 0 && ! wasOpenCall;
   ) {
     it = it->next;
-    wasOpenCall = it->tag==cDataOpenCall;
+    wasOpenCall = it->tag == cDataOpenCall;
   }
   if (it != 0) {
     vm::print_seq(out, it->next, it->next, false);
@@ -3439,23 +3439,23 @@ void refalrts::debugger::RefalDebugger::print_callee_option(FILE *out = stdout){
 void refalrts::debugger::RefalDebugger::print_arg_option(FILE *out = stdout) {
   Iter it = &vm::g_first_marker;
   for (
-    bool wasOpenCall = it->tag==cDataFunction; it->next!=0 && !wasOpenCall;
+    bool wasOpenCall = it->tag == cDataFunction; it->next != 0 && ! wasOpenCall;
   ) {
     it = it->next;
-    wasOpenCall = it->tag==cDataFunction;
+    wasOpenCall = it->tag == cDataFunction;
   }
-  Iter begin = it!=0 ? it->next : 0;
+  Iter begin = it != 0 ? it->next : 0;
   for (
-    bool wasCloseCall = it==vm::g_last_marker.prev; it->next!=0 &&!wasCloseCall;
+    bool wasCloseCall = it == vm::g_last_marker.prev; it->next != 0 &&! wasCloseCall;
   ) {
     it = it->next;
-    wasCloseCall = it==vm::g_last_marker.prev;
+    wasCloseCall = it == vm::g_last_marker.prev;
   }
-  vm::print_seq(out, begin, it!=0 ? it->prev : 0, false);
+  vm::print_seq(out, begin, it != 0 ? it->prev : 0, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
-  if (m_res_begin!=0 && m_res_end!=0) {
+  if (m_res_begin != 0 && m_res_end != 0) {
     vm::print_seq(out, m_res_begin->next, m_res_end->prev, false);
   } else {
     fprintf(out, "[NONE]\n");
@@ -3465,7 +3465,7 @@ void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
 bool refalrts::debugger::RefalDebugger::print_var_option(
   const char *var_name, FILE *out = stdout
 ) {
-  if (var_name[1]=='.') {
+  if (var_name[1] == '.') {
     switch(var_name[0]) {
       case 'e':
       case 's':
@@ -3492,82 +3492,82 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   for (;;) {
     printf("debug>");
     fscanf(m_in, "%s", debcmd);
-    if (!strcmp(debcmd, s_H) || !strcmp(debcmd, s_HELP)) {
+    if (! strcmp(debcmd, s_H) || ! strcmp(debcmd, s_HELP)) {
       help_option();
     } else if (
-      !strcmp(debcmd, s_B) ||
-      !strcmp(debcmd, s_BREAK) ||
-      !strcmp(debcmd, s_BREAKPOINT)
+      ! strcmp(debcmd, s_B) ||
+      ! strcmp(debcmd, s_BREAK) ||
+      ! strcmp(debcmd, s_BREAKPOINT)
     ) {
       fscanf(m_in, "%s", strparam);
       break_option(strparam);
     } else if (
-      !strcmp(debcmd, s_CL) || !strcmp(debcmd, s_CLEAR) || !strcmp(debcmd, s_RM)
+      ! strcmp(debcmd, s_CL) || ! strcmp(debcmd, s_CLEAR) || ! strcmp(debcmd, s_RM)
     ) {
       fscanf(m_in, "%s", strparam);
       clear_option(strparam);
-    } else if (!strcmp(debcmd, s_STEPLIMIT)) {
+    } else if (! strcmp(debcmd, s_STEPLIMIT)) {
       int step_lim = 0;
       fscanf(m_in, "%d", &step_lim);
       break_set.add_breakpoint(g_step_counter+step_lim);
-    } else if (!strcmp(debcmd, s_MEMORYLIMIT)) {
+    } else if (! strcmp(debcmd, s_MEMORYLIMIT)) {
       fscanf(m_in, "%u", &m_memory_limit);
-    } else if (!strcmp(debcmd, s_TR) || !strcmp(debcmd, s_TRACE)) {
+    } else if (! strcmp(debcmd, s_TR) || ! strcmp(debcmd, s_TRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.trace_func(strparam, get_out());
-    } else if (!strcmp(debcmd, s_NOTR) || !strcmp(debcmd, s_NOTRACE)) {
+    } else if (! strcmp(debcmd, s_NOTR) || ! strcmp(debcmd, s_NOTRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.notrace_func(strparam);
     } else if (
-      !strcmp(debcmd, s_R) ||
-      !strcmp(debcmd, s_RUN) ||
-      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_RUN))
+      ! strcmp(debcmd, s_R) ||
+      ! strcmp(debcmd, s_RUN) ||
+      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_RUN))
     ) {
       m_dot = s_RUN;
       break;
     } else if (
-      !strcmp(debcmd, s_S) ||
-      !strcmp(debcmd, s_STEP) ||
-      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_STEP))
+      ! strcmp(debcmd, s_S) ||
+      ! strcmp(debcmd, s_STEP) ||
+      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_STEP))
     ) {
       m_step_numb = g_step_counter+1;
       m_dot = s_STEP;
       break;
-    } else if (!strcmp(debcmd, s_Q) || !strcmp(debcmd, s_QUIT)) {
+    } else if (! strcmp(debcmd, s_Q) || ! strcmp(debcmd, s_QUIT)) {
       g_ret_code = 0;
       return cExit;
     } else if (
-      !strcmp(debcmd, s_N) ||
-      !strcmp(debcmd, s_NEXT) ||
-      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_NEXT))
+      ! strcmp(debcmd, s_N) ||
+      ! strcmp(debcmd, s_NEXT) ||
+      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_NEXT))
     ) {
       m_next_expr = g_stack_ptr;
       m_dot = s_NEXT;
       break;
-    } else if (!strcmp(debcmd, s_VARS)) {
+    } else if (! strcmp(debcmd, s_VARS)) {
       FILE *out = get_out();
       var_debug_table.print(out);
       close_out(out);
-    } else if (!strcmp(debcmd, s_P) || !strcmp(debcmd, s_PRINT)) {
+    } else if (! strcmp(debcmd, s_P) || ! strcmp(debcmd, s_PRINT)) {
       fscanf(m_in, "%s", strparam);
       FILE *out = get_out();
-      if (!strcmp(strparam, s_ARG)) {
+      if (! strcmp(strparam, s_ARG)) {
         print_arg_option(out);
-      } else if (!strcmp(strparam, s_CALL)) {
+      } else if (! strcmp(strparam, s_CALL)) {
         print_seq(out, g_first_marker.next, g_last_marker.prev, false);
-      } else if (!strcmp(strparam, s_CALLEE)) {
+      } else if (! strcmp(strparam, s_CALLEE)) {
         print_callee_option(out);
-      } else if (!strcmp(strparam, s_RES)) {
+      } else if (! strcmp(strparam, s_RES)) {
         print_res_option(out);
       } else if (
-        !strcmp(strparam, s_B) ||
-        !strcmp(strparam, s_BREAK) ||
-        !strcmp(strparam, s_BREAKPOINT)
+        ! strcmp(strparam, s_B) ||
+        ! strcmp(strparam, s_BREAK) ||
+        ! strcmp(strparam, s_BREAKPOINT)
       ) {
         break_set.print(out);
-      } else if (!strcmp(strparam, s_TR) || !strcmp(strparam, s_TRACE)) {
+      } else if (! strcmp(strparam, s_TR) || ! strcmp(strparam, s_TRACE)) {
         func_trace_table.print(out);
-      } else if (!print_var_option(strparam, out)) {
+      } else if (! print_var_option(strparam, out)) {
         fprintf(
           stderr,
           "Unrecognised print option is found: %s \"%s\"\n",
@@ -3575,7 +3575,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
         );
       }
       close_out(out);
-    } else if (!print_var_option(debcmd, get_out())) {
+    } else if (! print_var_option(debcmd, get_out())) {
       fprintf(stderr, "Unrecognised option is found: \"%s\"\n", debcmd);
     }
   }
@@ -4145,9 +4145,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
           if (debugger.is_debug_stop(begin, callee)) {
             printf(
               "Step #%d; Function <%s ...>\n",
-              g_step_counter, callee==0?"":callee->name
+              g_step_counter, callee == 0 ? "" : callee->name
             );
-            if (debugger.debugger_loop()==refalrts::cExit) {
+            if (debugger.debugger_loop() == refalrts::cExit) {
               return cExit;
             }
           }
@@ -4397,9 +4397,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
               if (debugger.is_debug_stop(begin, callee)) {
                 printf(
                   "Step #%d; Function <%s ...>\n",
-                  g_step_counter, callee==0?"":callee->name
+                  g_step_counter, callee == 0 ? "" : callee->name
                 );
-                if (debugger.debugger_loop()==refalrts::cExit) {
+                if (debugger.debugger_loop() == refalrts::cExit) {
                   return cExit;
                 }
               }
@@ -4509,9 +4509,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
             if (debugger.is_debug_stop(begin, callee)) {
               printf(
                 "Step #%d; Function <%s ...>\n",
-                g_step_counter, callee==0?"":callee->name
+                g_step_counter, callee == 0 ? "": callee->name
               );
-              if (debugger.debugger_loop()==refalrts::cExit) {
+              if (debugger.debugger_loop() == refalrts::cExit) {
                 return cExit;
               }
             }
