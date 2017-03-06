@@ -39,10 +39,13 @@ GenCommonTailer {
 }
 
 FileNameAd {
-  (#TargetFileName e.TargetFileName) e.Commands-B (#CmdFileNameFB) e.Commands-E =
-    e.Commands-B (#CmdFileNameGP (e.TargetFileName)) <FileNameAd (#TargetFileName e.TargetFileName) e.Commands-E>;
-  (#TargetFileName e.TargetFileName) e.Commands = e.Commands;
-  e.Commands = e.Commands;
+  (#TargetFileName e.TargetFileName)
+  e.Commands-B (#CmdFileNameFB) e.Commands-E =
+    e.Commands-B (#CmdFileNameGP (e.TargetFileName))
+    <FileNameAd (#TargetFileName e.TargetFileName) e.Commands-E>;
+
+  (#TargetFileName e.TargetFileName) e.Commands =
+    e.Commands;
 }
 
 $ENTRY GenProgram {
@@ -129,7 +132,11 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
-  (e.Indent) (#CmdFileNameGP (e.TargetFileName)) = (e.Indent) (e.Indent 'static const char *filename = "'<EscapeString e.TargetFileName>'";');
+  (e.Indent) (#CmdFileNameGP (e.TargetFileName)) =
+    (e.Indent)
+    (e.Indent
+      'static const char *filename = "' <EscapeString e.TargetFileName> '";'
+    );
 
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
@@ -877,11 +884,9 @@ GenCommand {
   (e.Indent) (#CmdiVariableDebugTable s.VarStrId s.Offset) =
     (e.Indent)
     (e.Indent
-      '  {refalrts::icVariableDebugOffset, '
-      <StrFromInt s.VarStrId> ', '
-      '0, ' <StrFromInt s.Offset> '},    // !!!attention!!!'
-    )
-    (e.Indent '//  {refalrts::icSave, 0, 0, 0},');
+      '{refalrts::icVariableDebugOffset, '
+      <StrFromInt s.VarStrId> ', 0, ' <StrFromInt s.Offset> '},'
+    );
 
   (e.Indent) (#CmdiEmptyResult) =
     (e.Indent)

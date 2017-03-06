@@ -74,6 +74,9 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR --gen=interp
   call :%2 %1 || exit /b 1
+  set SRFLAGS=
+  set CPPLINE=%CPPLINE% -DENABLE_DEBUGGER
+  call :%2 %1 || exit /b 1
 endlocal
 goto :EOF
 
