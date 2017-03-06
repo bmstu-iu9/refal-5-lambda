@@ -3015,6 +3015,18 @@ namespace refalrts {
       refalrts::FnResult debugger_loop();
     };
 
+    int find_debugger_flag(int argc, char **argv);
+
+    extern bool g_enable_debug;
+
+    bool enable_debug() {
+      return g_enable_debug;
+    }
+
+    void set_enable_debug() {
+      g_enable_debug = true;
+    }
+
   } // namespace debugger
 } // namespace refalrts
 
@@ -3582,6 +3594,21 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   return refalrts::cSuccess;
 }
 
+bool refalrts::debugger::g_enable_debug = false;
+
+int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
+  int i = 1;
+  while (i < argc && strcmp(argv[i], "++enable+debugger++") != 0) {
+    ++i;
+  }
+
+  if (i < argc) {
+    return i;
+  } else {
+    return -1;
+  }
+}
+
 //=============================================================================
 
 refalrts::FnResult refalrts::vm::main_loop() {
@@ -4139,7 +4166,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icEmptyResult:
 #ifdef ENABLE_DEBUGGER
-        {
+        if (refalrts::debugger::enable_debug()) {
           using namespace refalrts::debugger;
           debugger.debug_trace(begin, end, callee);
           if (debugger.is_debug_stop(begin, callee)) {
@@ -4391,7 +4418,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
             refalrts::Iter head = function->link_info;
 
 #ifdef ENABLE_DEBUGGER
-            {
+            if (refalrts::debugger::enable_debug()) {
               using namespace refalrts::debugger;
               debugger.debug_trace(begin, end, callee);
               if (debugger.is_debug_stop(begin, callee)) {
@@ -4503,7 +4530,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
       case icPerformNative:
         {
 #ifdef ENABLE_DEBUGGER
-          {
+          if (refalrts::debugger::enable_debug()) {
             using namespace refalrts::debugger;
             debugger.debug_trace(begin, end, callee);
             if (debugger.is_debug_stop(begin, callee)) {
@@ -4559,6 +4586,15 @@ void refalrts::SwitchDefaultViolation::print() {
 //==============================================================================
 
 int main(int argc, char **argv) {
+  int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
+  if (debug_arg != -1) {
+    for (int i = debug_arg; i < argc; ++i) {
+      argv[i] = argv[i + 1];
+    }
+    --argc;
+    refalrts::debugger::set_enable_debug();
+  }
+
   refalrts::vm::g_argc = argc;
   refalrts::vm::g_argv = argv;
 
