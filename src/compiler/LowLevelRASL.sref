@@ -522,6 +522,7 @@ Function-Interpret {
           e.FunctionBody^ =
             (#CmdNamespaceStart)
             (#CmdNamespaceStart e.Name)
+            (#CmdFileNameFB)
             e.FunctionBody
             (#CmdNamespaceEnd e.Name)
             (#CmdNamespaceEnd)
@@ -708,6 +709,11 @@ ConvertOneInterpretCommand {
   (#CmdTrash s.Offset) = (#CmdiTrash s.Offset);
 
   (#CmdFail) = (#CmdiFail);
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) =
+    (#CmdiVariableDebugTable
+      s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
+    );
 
   (#CmdSentence e.SubCommands) =
     <Fetch
@@ -993,6 +999,28 @@ OutlineConstants {
     >
     (#CmdiCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
 
+  (e.Funcs) (e.Labels) (e.Numbers)
+  (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
+  e.Commands
+  (#CmdiVariableDebugTable e.VarName s.Offset) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (e.Numbers)
+      (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
+      e.Commands
+    >
+    (#CmdiVariableDebugTable s.Id s.Offset);
+
+  (e.Funcs) (e.Labels) (e.Numbers)
+  (s.NextStringId e.Strings)
+  e.Commands
+  (#CmdiVariableDebugTable e.VarName s.Offset) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (e.Numbers)
+      (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
+      e.Commands
+    >
+    (#CmdiVariableDebugTable s.NextStringId s.Offset);
+
   (e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
   t.OtherCommand =
@@ -1038,6 +1066,13 @@ Function-DirectRec {
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
     <Function-DirectRec e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
+    <Function-DirectRec e.Tail>;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+    (#CmdComment
+      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      ': ' <StrFromInt s.Offset>
+    )
     <Function-DirectRec e.Tail>;
 
   t.Command e.Tail = t.Command <Function-DirectRec e.Tail>;

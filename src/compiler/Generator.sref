@@ -38,11 +38,19 @@ GenCommonTailer {
   = () ('//End of file');
 }
 
+FileNameAd {
+  (#TargetFileName e.TargetFileName) e.Commands-B (#CmdFileNameFB) e.Commands-E =
+    e.Commands-B (#CmdFileNameGP (e.TargetFileName)) <FileNameAd (#TargetFileName e.TargetFileName) e.Commands-E>;
+  (#TargetFileName e.TargetFileName) e.Commands = e.Commands;
+  e.Commands = e.Commands;
+}
+
 $ENTRY GenProgram {
   (e.SourceFileName) (e.TargetFileName) e.RASL =
     <Fetch
       e.RASL
       <Seq
+        (FileNameAd (#TargetFileName e.TargetFileName))
         (MapReduce GenCommand (/* отступ */))
         {
           () /* отступ должен остаться тем же */
@@ -121,6 +129,8 @@ GenCommand {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
+  (e.Indent) (#CmdFileNameGP (e.TargetFileName)) = (e.Indent) (e.Indent 'static const char *filename = "'<EscapeString e.TargetFileName>'";');
+
   (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
 
   (e.Indent) (#CmdEnumDescr e.Name) =
@@ -154,7 +164,8 @@ GenCommand {
     ('  scope_' <CName e.Name> '::functions,')
     ('  scope_' <CName e.Name> '::idents,')
     ('  scope_' <CName e.Name> '::numbers,')
-    ('  scope_' <CName e.Name> '::strings')
+    ('  scope_' <CName e.Name> '::strings,')
+    ('  scope_' <CName e.Name> '::filename')
     (');')
     <FuncReference e.Name>
     ();
@@ -862,6 +873,15 @@ GenCommand {
 
   // ---------------------------------------------------------------------------
   // Команды построения результата (режим интерпретации)
+
+  (e.Indent) (#CmdiVariableDebugTable s.VarStrId s.Offset) =
+    (e.Indent)
+    (e.Indent
+      '  {refalrts::icVariableDebugOffset, '
+      <StrFromInt s.VarStrId> ', '
+      '0, ' <StrFromInt s.Offset> '},    // !!!attention!!!'
+    )
+    (e.Indent '//  {refalrts::icSave, 0, 0, 0},');
 
   (e.Indent) (#CmdiEmptyResult) =
     (e.Indent)

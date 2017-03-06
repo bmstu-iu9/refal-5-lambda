@@ -174,6 +174,7 @@ enum iCmd {
   icEStart,
   icSave,
   icEmptyResult,
+  icVariableDebugOffset,
   icSetResRightEdge,
   icSetRes,
   icCopyEVar,
@@ -482,6 +483,7 @@ struct RASLFunction: public RefalFunction {
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
+  const char *filename;
 
   RASLFunction(
     RefalFuncName name,
@@ -489,13 +491,15 @@ struct RASLFunction: public RefalFunction {
     RefalFunction *functions[],
     const RefalIdentifier idents[],
     const RefalNumber numbers[],
-    const StringItem strings[]
+    const StringItem strings[],
+    const char *filename
   )
     : RefalFunction(rasl, name)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)
     , strings(strings)
+    , filename(filename)
   {
     /* пусто */
   }

@@ -9,7 +9,8 @@ $ENTRY Go {
     refalrts::functions,
     refalrts::idents,
     refalrts::numbers,
-    refalrts::strings
+    refalrts::strings,
+    "switch-default-violation.FAILURE.cpp"
   );
 
   refalrts::Iter inner_begin, inner_end;
