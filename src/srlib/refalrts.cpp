@@ -2924,6 +2924,7 @@ namespace refalrts {
       const StringItem *m_strings;
       const RASLCommand *m_first;
       const RASLCommand *m_last;
+
       std::pair<std::string, int> parse_var_name(const char *);
     public:
       VariableDebugTable()
@@ -3036,8 +3037,8 @@ namespace refalrts {
 //  Отладочная таблица переменных
 
 std::pair<std::string, int>
-  refalrts::debugger::VariableDebugTable::parse_var_name(
-    const char *full_name
+refalrts::debugger::VariableDebugTable::parse_var_name(
+  const char *full_name
 ) {
   char *dash_ptr = strchr((char*)full_name, '#');
   int depth = -1;
@@ -3485,7 +3486,7 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
         var_debug_table.print_var(var_name, out);
         break;
       default:
-        fprintf(out, "Unrecognised variable name for printing\n");
+        refalrts_switch_default_violation(var_name[0]);
     }
     // распозналось, как имя переменной
     // пусть и с неправильным типом в одной из веток
@@ -3685,9 +3686,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
-          #ifdef ENABLE_DEBUGGER
-            debugger.var_debug_table.set_string_items(strings);
-          #endif // ifdef ENABLE_DEBUGGER
+#ifdef ENABLE_DEBUGGER
+          debugger.var_debug_table.set_string_items(strings);
+#endif // ifdef ENABLE_DEBUGGER
         }
         break;
 
