@@ -2827,7 +2827,7 @@ void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 
 #endif // ifdef DUMP_FREE_LIST
 
-  fprintf(dump_stream(),"\nEnd dump\n");
+  fprintf(dump_stream(), "\nEnd dump\n");
   fflush(dump_stream());
 }
 
@@ -3068,12 +3068,12 @@ std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
       if (has_depth) {
         if (table_pair.second==input_pair.second) {
           var_depth_offset_map.insert(
-            std::pair<int,int>(input_pair.second, it->bracket)
+            std::pair<int, int>(input_pair.second, it->bracket)
           );
         }
       } else {
         var_depth_offset_map.insert(
-          std::pair<int,int>(table_pair.second, it->bracket)
+          std::pair<int, int>(table_pair.second, it->bracket)
         );
       }
     }
@@ -3139,14 +3139,14 @@ void refalrts::debugger::TracedFunctionTable::trace_func(
   const char *func_name, FILE *trace_out
 ) {
   m_traced_func_table.insert(
-    std::pair<std::string,FILE*>(std::string(func_name), trace_out)
+    std::pair<std::string, FILE*>(std::string(func_name), trace_out)
   );
 }
 
 void refalrts::debugger::TracedFunctionTable::notrace_func(
   const char *func_name
 ) {
-  std::map<std::string,FILE*>::iterator found =
+  std::map<std::string, FILE*>::iterator found =
     m_traced_func_table.find(std::string(func_name));
   if (found != m_traced_func_table.end()) {
     close_out(found->second);
@@ -3156,7 +3156,7 @@ void refalrts::debugger::TracedFunctionTable::notrace_func(
 
 void refalrts::debugger::TracedFunctionTable::clear() {
   for (
-    std::map<std::string,FILE*>::iterator it = m_traced_func_table.begin();
+    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
     it != m_traced_func_table.end();
     ++it
   ) {
@@ -3261,10 +3261,10 @@ FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen+cMaxLen] = {0};
   char  filename[cMaxLen] = {0};
   fgets(line, cMaxLen+cMaxLen, m_in);
-  if (sscanf(line," >> %s", filename) == 1) {
+  if (sscanf(line, " >> %s", filename) == 1) {
     return fopen(filename, "a");
   }
-  else if (sscanf(line," > %s", filename) == 1) {
+  else if (sscanf(line, " > %s", filename) == 1) {
     return fopen(filename, "w");
   }
   else {
@@ -3342,15 +3342,15 @@ void refalrts::debugger::RefalDebugger::set_step_res(Iter begin, Iter end) {
 
 void refalrts::debugger::RefalDebugger::help_option() {
   printf("===============Common help for all allowed options==============\n");
-  printf("%s,%s\t\t\t%s\n", s_H, s_HELP, "print help for debugger options");
+  printf("%s, %s\t\t\t%s\n", s_H, s_HELP, "print help for debugger options");
   printf(
-    "%s,%s,%s\t%s\n",
+    "%s, %s, %s\t%s\n",
     s_B, s_BREAK, s_BREAKPOINT,
     "set breakpoint by function name\n"
     "\t\t\t  or step number (\'#\'ddd)"
   );
   printf(
-    "%s,%s,%s\t\t%s\n",
+    "%s, %s, %s\t\t%s\n",
     s_CL, s_CLEAR, s_RM,
     "remove breakpoint from function by its name\n"
     "\t\t\t  or from step by its number (\'#\'ddd)"
@@ -3365,23 +3365,23 @@ void refalrts::debugger::RefalDebugger::help_option() {
     "set limit for memory knot number; there will be\n"
       "\t\t\t  breakpoint"
   );
-  printf("%s,%s\t\t%s\n",s_TR,s_TRACE,"set up tracing for function");
+  printf("%s, %s\t\t%s\n", s_TR, s_TRACE, "set up tracing for function");
   printf(
-    "%s,%s\t\t%s\n",s_NOTR,s_NOTRACE,"romave tracing settings for function"
+    "%s, %s\t\t%s\n", s_NOTR, s_NOTRACE, "romave tracing settings for function"
   );
   printf(
-    "%s,%s\t\t\t%s\n", s_R, s_RUN, "continue program execution"
+    "%s, %s\t\t\t%s\n", s_R, s_RUN, "continue program execution"
   );
   printf(
-    "%s,%s\t\t\t%s\n",
+    "%s, %s\t\t\t%s\n",
     s_S, s_STEP, "make the only one step in program execution"
   );
   printf(
-    "%s,%s\t\t\t%s\n",
+    "%s, %s\t\t\t%s\n",
     s_N, s_NEXT, "execute next active function until passive result"
   );
   printf("%s\t\t\t%s\n", s_VARS, "print the variable debug table");
-  printf("%s,%s\t\t\t%s\n", s_P, s_PRINT, "print by parametr comands");
+  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parametr comands");
   printf(
     "  %s\t%s\n",
     "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
@@ -3396,10 +3396,10 @@ void refalrts::debugger::RefalDebugger::help_option() {
   );
   printf("  %s\t\t\t%s\n", s_RES, "print the result of previous step");
   printf(
-    "  %s,%s,%s\t%s\n",
+    "  %s, %s, %s\t%s\n",
     s_B, s_BREAK, s_BREAKPOINT, "print set of all placed breakpoints"
   );
-  printf("  %s,%s\t\t%s\n",s_TR,s_TRACE,"print table of all traced functions");
+  printf("  %s, %s\t\t%s\n", s_TR, s_TRACE, "print table of all traced functions");
   printf("%s\t\t\t%s\n", s_DOT, "repeat previous debugger command");
   printf("\n");
   printf("================================================================\n");
@@ -3492,80 +3492,80 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   for (;;) {
     printf("debug>");
     fscanf(m_in, "%s", debcmd);
-    if (!strcmp(debcmd,s_H) || !strcmp(debcmd,s_HELP)) {
+    if (!strcmp(debcmd, s_H) || !strcmp(debcmd, s_HELP)) {
       help_option();
     } else if (
-      !strcmp(debcmd,s_B) ||
-      !strcmp(debcmd,s_BREAK) ||
-      !strcmp(debcmd,s_BREAKPOINT)
+      !strcmp(debcmd, s_B) ||
+      !strcmp(debcmd, s_BREAK) ||
+      !strcmp(debcmd, s_BREAKPOINT)
     ) {
       fscanf(m_in, "%s", strparam);
       break_option(strparam);
     } else if (
-      !strcmp(debcmd,s_CL) || !strcmp(debcmd,s_CLEAR) || !strcmp(debcmd,s_RM)
+      !strcmp(debcmd, s_CL) || !strcmp(debcmd, s_CLEAR) || !strcmp(debcmd, s_RM)
     ) {
       fscanf(m_in, "%s", strparam);
       clear_option(strparam);
-    } else if (!strcmp(debcmd,s_STEPLIMIT)) {
+    } else if (!strcmp(debcmd, s_STEPLIMIT)) {
       int step_lim = 0;
       fscanf(m_in, "%d", &step_lim);
       break_set.add_breakpoint(g_step_counter+step_lim);
-    } else if (!strcmp(debcmd,s_MEMORYLIMIT)) {
+    } else if (!strcmp(debcmd, s_MEMORYLIMIT)) {
       fscanf(m_in, "%u", &m_memory_limit);
-    } else if (!strcmp(debcmd,s_TR) || !strcmp(debcmd,s_TRACE)) {
+    } else if (!strcmp(debcmd, s_TR) || !strcmp(debcmd, s_TRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.trace_func(strparam, get_out());
-    } else if (!strcmp(debcmd,s_NOTR) || !strcmp(debcmd,s_NOTRACE)) {
+    } else if (!strcmp(debcmd, s_NOTR) || !strcmp(debcmd, s_NOTRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.notrace_func(strparam);
     } else if (
-      !strcmp(debcmd,s_R) ||
-      !strcmp(debcmd,s_RUN) ||
-      (!strcmp(debcmd,s_DOT) && !strcmp(m_dot,s_RUN))
+      !strcmp(debcmd, s_R) ||
+      !strcmp(debcmd, s_RUN) ||
+      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_RUN))
     ) {
       m_dot = s_RUN;
       break;
     } else if (
-      !strcmp(debcmd,s_S) ||
-      !strcmp(debcmd,s_STEP) ||
-      (!strcmp(debcmd,s_DOT) && !strcmp(m_dot,s_STEP))
+      !strcmp(debcmd, s_S) ||
+      !strcmp(debcmd, s_STEP) ||
+      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_STEP))
     ) {
       m_step_numb = g_step_counter+1;
       m_dot = s_STEP;
       break;
-    } else if (!strcmp(debcmd,s_Q) || !strcmp(debcmd,s_QUIT)) {
+    } else if (!strcmp(debcmd, s_Q) || !strcmp(debcmd, s_QUIT)) {
       g_ret_code = 0;
       return cExit;
     } else if (
-      !strcmp(debcmd,s_N) ||
-      !strcmp(debcmd,s_NEXT) ||
-      (!strcmp(debcmd,s_DOT) && !strcmp(m_dot,s_NEXT))
+      !strcmp(debcmd, s_N) ||
+      !strcmp(debcmd, s_NEXT) ||
+      (!strcmp(debcmd, s_DOT) && !strcmp(m_dot, s_NEXT))
     ) {
       m_next_expr = g_stack_ptr;
       m_dot = s_NEXT;
       break;
-    } else if (!strcmp(debcmd,s_VARS)) {
+    } else if (!strcmp(debcmd, s_VARS)) {
       FILE *out = get_out();
       var_debug_table.print(out);
       close_out(out);
-    } else if (!strcmp(debcmd,s_P) || !strcmp(debcmd,s_PRINT)) {
+    } else if (!strcmp(debcmd, s_P) || !strcmp(debcmd, s_PRINT)) {
       fscanf(m_in, "%s", strparam);
       FILE *out = get_out();
-      if (!strcmp(strparam,s_ARG)) {
+      if (!strcmp(strparam, s_ARG)) {
         print_arg_option(out);
-      } else if (!strcmp(strparam,s_CALL)) {
+      } else if (!strcmp(strparam, s_CALL)) {
         print_seq(out, g_first_marker.next, g_last_marker.prev, false);
-      } else if (!strcmp(strparam,s_CALLEE)) {
+      } else if (!strcmp(strparam, s_CALLEE)) {
         print_callee_option(out);
-      } else if (!strcmp(strparam,s_RES)) {
+      } else if (!strcmp(strparam, s_RES)) {
         print_res_option(out);
       } else if (
-        !strcmp(strparam,s_B) ||
-        !strcmp(strparam,s_BREAK) ||
-        !strcmp(strparam,s_BREAKPOINT)
+        !strcmp(strparam, s_B) ||
+        !strcmp(strparam, s_BREAK) ||
+        !strcmp(strparam, s_BREAKPOINT)
       ) {
         break_set.print(out);
-      } else if (!strcmp(strparam,s_TR) || !strcmp(strparam,s_TRACE)) {
+      } else if (!strcmp(strparam, s_TR) || !strcmp(strparam, s_TRACE)) {
         func_trace_table.print(out);
       } else if (!print_var_option(strparam, out)) {
         fprintf(
