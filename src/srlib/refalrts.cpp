@@ -3243,9 +3243,7 @@ FILE *refalrts::debugger::RefalDebugger::get_out() {
 }
 void refalrts::debugger::close_out(FILE *out) {
   if (out != stdout) {
-    // printf("%p closed\n", out);
     fclose(out);
-    out = stdout;
   }
 }
 
@@ -4109,6 +4107,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
             if (debugger.debugger_loop()==refalrts::cExit)
               return cExit;
           }
+          debugger.var_debug_table.clear();
           debugger.set_step_res(begin, end);
         }
 #endif  // ifdef ENABLE_DEBUGGER
@@ -4359,6 +4358,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
                 if (debugger.debugger_loop()==refalrts::cExit)
                   return cExit;
               }
+              var_debug_table.clear();
               debugger.set_step_res(begin, end);
             }
 #endif  // ifdef ENABLE_DEBUGGER
@@ -4469,6 +4469,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
               if (debugger.debugger_loop()==refalrts::cExit)
                 return cExit;
             }
+            var_debug_table.clear();
             debugger.set_step_res(begin, end);
           }
 #endif  // ifdef ENABLE_DEBUGGER
