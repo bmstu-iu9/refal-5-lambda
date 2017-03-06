@@ -1727,7 +1727,7 @@ namespace vm {
 extern int g_ret_code;
 extern void print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
-  bool multiline = true, unsigned max_knot = -1
+  bool multiline = true, unsigned max_node = -1
 );
 
 char **g_argv = 0;
@@ -2587,7 +2587,7 @@ void print_indent(FILE *output, int level)
 
 void refalrts::vm::print_seq(
   FILE *output, refalrts::Iter begin, refalrts::Iter end,
-  bool multiline, unsigned max_knot
+  bool multiline, unsigned max_node
 ) {
   enum {
     cStateView = 100,
@@ -2604,11 +2604,11 @@ void refalrts::vm::print_seq(
 
   // TODO: while
   for (
-    unsigned curr_knot = 0;
+    unsigned cur_node = 0;
     (state != cStateFinish)
     && ! refalrts::empty_seq(begin, end)
-    && curr_knot <= max_knot;
-    curr_knot++
+    && cur_node <= max_node;
+    cur_node++
   ) {
 
     if (reset_after_bracket) {
@@ -2967,7 +2967,7 @@ namespace refalrts {
       void add_breakpoint(const char *func_name);
       void rm_breakpoint(int step_numb);
       void rm_breakpoint(const char *func_name);
-      bool is_breakpoint(int curr_step_numb, const char *curr_func_name);
+      bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
       void print(FILE *);
     };
 
@@ -3269,11 +3269,11 @@ void refalrts::debugger::BreakpointSet::rm_breakpoint(const char *func_name) {
 }
 
 bool refalrts::debugger::BreakpointSet::is_breakpoint(
-  int curr_step_numb, const char *curr_func_name
+  int cur_step_numb, const char *cur_func_name
 ) {
-  std::set<int>::iterator step_found = m_step_breaks.find(curr_step_numb);
+  std::set<int>::iterator step_found = m_step_breaks.find(cur_step_numb);
   std::set<std::string>::iterator func_found =
-    m_func_breaks.find(std::string(curr_func_name));
+    m_func_breaks.find(std::string(cur_func_name));
   return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
 }
 
@@ -3404,7 +3404,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
   printf(
     "%s\t\t%s\n",
     s_MEMORYLIMIT,
-    "set limit for memory knot number; there will be\n"
+    "set limit for memory node number; there will be\n"
       "\t\t\t  breakpoint"
   );
   printf("%s, %s\t\t%s\n", s_TR, s_TRACE, "set up tracing for function");
