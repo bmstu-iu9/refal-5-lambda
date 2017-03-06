@@ -11,6 +11,7 @@ run_test_all_modes() {
   SRFLAGS='-OP --gen=interp' $2 $1
   SRFLAGS='-OR --gen=interp' $2 $1
   SRFLAGS='-OPR --gen=interp' $2 $1
+  SRFLAGS= CPPLINE="$CPPLINE -DENABLE_DEBUGGER" $2 $1
 }
 
 run_test_aux() {

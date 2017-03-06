@@ -4430,7 +4430,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
                   return cExit;
                 }
               }
-              var_debug_table.clear();
+              debugger.var_debug_table.clear();
               debugger.set_step_res(begin, end);
             }
 #endif  // ifdef ENABLE_DEBUGGER
@@ -4542,7 +4542,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
                 return cExit;
               }
             }
-            var_debug_table.clear();
+            debugger.var_debug_table.clear();
             debugger.set_step_res(begin, end);
           }
 #endif  // ifdef ENABLE_DEBUGGER
