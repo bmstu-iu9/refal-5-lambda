@@ -2926,6 +2926,10 @@ namespace refalrts {
       const RASLCommand *m_last;
 
       std::pair<std::string, int> parse_var_name(const char *);
+      void variable_bounds(
+        refalrts::Iter& var_begin, refalrts::Iter& var_end,
+        char type, int offset
+      );
     public:
       VariableDebugTable()
         : m_context(vm::g_context)
@@ -3055,6 +3059,33 @@ refalrts::debugger::VariableDebugTable::parse_var_name(
   return std::pair<std::string, int>(std::string(var_name), depth);
 }
 
+void refalrts::debugger::VariableDebugTable::variable_bounds(
+  refalrts::Iter& var_begin, refalrts::Iter& var_end, char type, int offset
+) {
+  var_begin = m_context[offset];
+  switch (type) {
+    case 's':
+      var_end = var_begin;
+      break;
+
+    case 't':
+      if (is_open_bracket(var_begin)) {
+        var_end = var_begin->link_info;
+      } else {
+        var_end = var_begin;
+      }
+      break;
+
+    case 'e':
+      var_end = m_context[offset + 1];
+      break;
+
+    default:
+      refalrts_switch_default_violation(type);
+  }
+}
+
+
 void refalrts::debugger::VariableDebugTable::insert_var(
   const RASLCommand *next
 ) {
@@ -3100,14 +3131,12 @@ void refalrts::debugger::VariableDebugTable::print(FILE *out) {
     "==========================Variable debug table=========================\n"
   );
   for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
-    // strings[rasl->val1].string
-    // printf("[%p] - [%p] - [%p]\n", m_first, it, m_last);
     const char *var_name = m_strings[it->val1].string;
     fprintf(out, "  \"%.20s\"\t-  ", var_name);
-    int var_end_offset = var_name[0] == 'e' ? 1 : 0;
-    vm::print_seq(
-      out, m_context[it->bracket], m_context[it->bracket+var_end_offset], false
-    );
+    refalrts::Iter var_begin = 0;
+    refalrts::Iter var_end = 0;
+    variable_bounds(var_begin, var_end, var_name[0], it->bracket);
+    vm::print_seq(out, var_begin, var_end, false);
   }
   fprintf(
     out,
@@ -3120,16 +3149,16 @@ void refalrts::debugger::VariableDebugTable::print_var(
 ) {
   std::map<int, int> var_depth_offset_map = find_var(var_name);
   std::pair<std::string, int> var_parse_name = parse_var_name(var_name);
-  int var_end_offset = var_name[0] == 'e' ? 1 : 0;
   for (
     std::map<int, int>::iterator it = var_depth_offset_map.begin();
     it != var_depth_offset_map.end();
     ++it
   ) {
     fprintf(out, "  %s#%d\t== ", var_parse_name.first.c_str(), it->first);
-    vm::print_seq(
-      out, m_context[it->second], m_context[it->second+var_end_offset], false
-    );
+    refalrts::Iter var_begin = 0;
+    refalrts::Iter var_end = 0;
+    variable_bounds(var_begin, var_end, var_name[0], it->second);
+    vm::print_seq(out, var_begin, var_end, false);
   }
 }
 
