@@ -2884,158 +2884,161 @@ void refalrts::vm::free_view_field() {
 //  Классы отладчика и вспомогательных структур
 //=============================================================================
 namespace refalrts {
-  namespace debugger {
-    static const char *const s_H = "h";
-    static const char *const s_HELP = "help";
-    static const char *const s_B = "b";
-    static const char *const s_BREAK = "break";
-    static const char *const s_BREAKPOINT = "breakpoint";
-    static const char *const s_CL = "cl";
-    static const char *const s_CLEAR = "clear";
-    static const char *const s_RM = "rm";
-    static const char *const s_STEPLIMIT = "steplimit";
-    static const char *const s_MEMORYLIMIT = "memorylimit";
-    static const char *const s_RUN = "run";
-    static const char *const s_R = "r";
-    static const char *const s_STEP = "step";
-    static const char *const s_S = "s";
-    static const char *const s_NEXT = "next";
-    static const char *const s_N = "n";
-    static const char *const s_VARS = "vars";
-    static const char *const s_P = "p";
-    static const char *const s_PRINT = "print";
-    static const char *const s_ARG = "arg";
-    static const char *const s_CALL = "call";
-    static const char *const s_CALLEE = "callee";
-    static const char *const s_RES = "res";
-    static const char *const s_DOT = ".";
-    static const char *const s_TR = "tr";
-    static const char *const s_TRACE = "trace";
-    static const char *const s_NOTR = "notr";
-    static const char *const s_NOTRACE = "notrace";
-    static const char *const s_Q = "q";
-    static const char *const s_QUIT = "quit";
 
-    enum { cMaxLen = 1024 };
-    void close_out(FILE*);
+namespace debugger {
 
-    class VariableDebugTable {
-      vm::Stack<Iter>& m_context;
-      const StringItem *m_strings;
-      const RASLCommand *m_first;
-      const RASLCommand *m_last;
+static const char *const s_H = "h";
+static const char *const s_HELP = "help";
+static const char *const s_B = "b";
+static const char *const s_BREAK = "break";
+static const char *const s_BREAKPOINT = "breakpoint";
+static const char *const s_CL = "cl";
+static const char *const s_CLEAR = "clear";
+static const char *const s_RM = "rm";
+static const char *const s_STEPLIMIT = "steplimit";
+static const char *const s_MEMORYLIMIT = "memorylimit";
+static const char *const s_RUN = "run";
+static const char *const s_R = "r";
+static const char *const s_STEP = "step";
+static const char *const s_S = "s";
+static const char *const s_NEXT = "next";
+static const char *const s_N = "n";
+static const char *const s_VARS = "vars";
+static const char *const s_P = "p";
+static const char *const s_PRINT = "print";
+static const char *const s_ARG = "arg";
+static const char *const s_CALL = "call";
+static const char *const s_CALLEE = "callee";
+static const char *const s_RES = "res";
+static const char *const s_DOT = ".";
+static const char *const s_TR = "tr";
+static const char *const s_TRACE = "trace";
+static const char *const s_NOTR = "notr";
+static const char *const s_NOTRACE = "notrace";
+static const char *const s_Q = "q";
+static const char *const s_QUIT = "quit";
 
-      std::pair<std::string, int> parse_var_name(const char *full_name);
-      void variable_bounds(
-        refalrts::Iter& var_begin, refalrts::Iter& var_end,
-        char type, int offset
-      );
-    public:
-      VariableDebugTable()
-        : m_context(vm::g_context)
-        , m_strings(0)
-        , m_first(0)
-        , m_last(0)
-      {
-        /* пусто */
-      }
-      void insert_var(const RASLCommand *next);
-      void clear();
-      std::map<int, int> find_var(const char *var_name);
-      void print(FILE *out);
-      void print_var(const char *var_name, FILE *out);
-      void set_string_items(const StringItem *items);
-      void set_context(vm::Stack<Iter>& cont);
-    };
+enum { cMaxLen = 1024 };
+void close_out(FILE*);
 
-    class TracedFunctionTable {
-      std::map<std::string, FILE*> m_traced_func_table;
-    public:
-      void trace_func(const char *func_name, FILE *trace_out);
-      void notrace_func(const char *func_name);
-      void clear();
-      bool is_traced_func(const char *func_name);
-      FILE *get_trace_outstream(const char *func_name);
-      void print(FILE *out);
-    };
+class VariableDebugTable {
+  vm::Stack<Iter>& m_context;
+  const StringItem *m_strings;
+  const RASLCommand *m_first;
+  const RASLCommand *m_last;
 
-    class BreakpointSet {
-      std::set<int> m_step_breaks;
-      std::set<std::string> m_func_breaks;
-    public:
-      void add_breakpoint(int step_numb);
-      void add_breakpoint(const char *func_name);
-      void rm_breakpoint(int step_numb);
-      void rm_breakpoint(const char *func_name);
-      bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
-      void print(FILE *out);
-    };
+  std::pair<std::string, int> parse_var_name(const char *full_name);
+  void variable_bounds(
+    refalrts::Iter& var_begin, refalrts::Iter& var_end,
+    char type, int offset
+  );
+public:
+  VariableDebugTable()
+    : m_context(vm::g_context)
+    , m_strings(0)
+    , m_first(0)
+    , m_last(0)
+  {
+    /* пусто */
+  }
+  void insert_var(const RASLCommand *next);
+  void clear();
+  std::map<int, int> find_var(const char *var_name);
+  void print(FILE *out);
+  void print_var(const char *var_name, FILE *out);
+  void set_string_items(const StringItem *items);
+  void set_context(vm::Stack<Iter>& cont);
+};
 
-    class RefalDebugger {
-      const char *m_dot;
-      unsigned m_step_numb;
-      unsigned m_memory_limit;
-      FILE *m_in;
-      Iter m_next_expr;
-      Iter m_res_begin;
-      Iter m_res_end;
-    public:
-      VariableDebugTable var_debug_table;
-      TracedFunctionTable func_trace_table;
-      BreakpointSet break_set;
+class TracedFunctionTable {
+  std::map<std::string, FILE*> m_traced_func_table;
+public:
+  void trace_func(const char *func_name, FILE *trace_out);
+  void notrace_func(const char *func_name);
+  void clear();
+  bool is_traced_func(const char *func_name);
+  FILE *get_trace_outstream(const char *func_name);
+  void print(FILE *out);
+};
 
-      RefalDebugger()
-        : m_dot(s_STEP)
-        , m_step_numb(0)
-        , m_memory_limit(-1)
-        , m_in(stdin)
-        , m_next_expr(0)
-        , m_res_begin(0)
-        , m_res_end(0)
-      {
-        /* пусто */
-      }
-      ~RefalDebugger() {
-        func_trace_table.clear();
-      }
+class BreakpointSet {
+  std::set<int> m_step_breaks;
+  std::set<std::string> m_func_breaks;
+public:
+  void add_breakpoint(int step_numb);
+  void add_breakpoint(const char *func_name);
+  void rm_breakpoint(int step_numb);
+  void rm_breakpoint(const char *func_name);
+  bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
+  void print(FILE *out);
+};
 
-      FILE *get_out();
-      bool next_cond(Iter begin);
-      bool run_cond(RefalFunction *callee);
-      bool step_cond();
-      bool mem_cond();
+class RefalDebugger {
+  const char *m_dot;
+  unsigned m_step_numb;
+  unsigned m_memory_limit;
+  FILE *m_in;
+  Iter m_next_expr;
+  Iter m_res_begin;
+  Iter m_res_end;
+public:
+  VariableDebugTable var_debug_table;
+  TracedFunctionTable func_trace_table;
+  BreakpointSet break_set;
 
-      bool is_debug_stop(Iter begin, RefalFunction *callee);
-      void debug_trace(Iter begin, Iter end, RefalFunction *callee);
-      void set_step_res(Iter begin, Iter end);
+  RefalDebugger()
+    : m_dot(s_STEP)
+    , m_step_numb(0)
+    , m_memory_limit(-1)
+    , m_in(stdin)
+    , m_next_expr(0)
+    , m_res_begin(0)
+    , m_res_end(0)
+  {
+    /* пусто */
+  }
+  ~RefalDebugger() {
+    func_trace_table.clear();
+  }
 
-      void help_option();
-      void break_option(const char *arg);
-      void clear_option(const char *arg);
-      void print_callee_option(Iter begin, Iter end, FILE *out);
-      void print_arg_option(Iter begin, Iter end, FILE *out);
-      void print_res_option(FILE *out);
-      bool print_var_option(const char *var_name, FILE *out);
-      refalrts::FnResult debugger_loop(Iter begin, Iter end);
+  FILE *get_out();
+  bool next_cond(Iter begin);
+  bool run_cond(RefalFunction *callee);
+  bool step_cond();
+  bool mem_cond();
 
-      refalrts::FnResult handle_function_call(
-        Iter begin, Iter end, RefalFunction *callee
-      );
-    };
+  bool is_debug_stop(Iter begin, RefalFunction *callee);
+  void debug_trace(Iter begin, Iter end, RefalFunction *callee);
+  void set_step_res(Iter begin, Iter end);
 
-    int find_debugger_flag(int argc, char **argv);
+  void help_option();
+  void break_option(const char *arg);
+  void clear_option(const char *arg);
+  void print_callee_option(Iter begin, Iter end, FILE *out);
+  void print_arg_option(Iter begin, Iter end, FILE *out);
+  void print_res_option(FILE *out);
+  bool print_var_option(const char *var_name, FILE *out);
+  refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
-    extern bool g_enable_debug;
+  refalrts::FnResult handle_function_call(
+    Iter begin, Iter end, RefalFunction *callee
+  );
+};
 
-    bool enable_debug() {
-      return g_enable_debug;
-    }
+int find_debugger_flag(int argc, char **argv);
 
-    void set_enable_debug() {
-      g_enable_debug = true;
-    }
+extern bool g_enable_debug;
 
-  } // namespace debugger
+bool enable_debug() {
+  return g_enable_debug;
+}
+
+void set_enable_debug() {
+  g_enable_debug = true;
+}
+
+} // namespace debugger
+
 } // namespace refalrts
 
 //=============================================================================
