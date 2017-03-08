@@ -3017,6 +3017,10 @@ namespace refalrts {
       void print_res_option(FILE *out);
       bool print_var_option(const char *var_name, FILE *out);
       refalrts::FnResult debugger_loop();
+
+      refalrts::FnResult handle_function_call(
+        Iter begin, Iter end, RefalFunction *callee
+      );
     };
 
     int find_debugger_flag(int argc, char **argv);
@@ -3633,6 +3637,28 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   return refalrts::cSuccess;
 }
 
+refalrts::FnResult
+refalrts::debugger::RefalDebugger::handle_function_call(
+  refalrts::Iter begin, refalrts::Iter end, refalrts::RefalFunction *callee
+) {
+  if (enable_debug()) {
+    debug_trace(begin, end, callee);
+    if (is_debug_stop(begin, callee)) {
+      printf(
+        "Step #%d; Function <%s ...>\n",
+        refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
+      );
+      if (debugger_loop() == refalrts::cExit) {
+        return cExit;
+      }
+    }
+    var_debug_table.clear();
+    set_step_res(begin, end);
+  }
+
+  return refalrts::cSuccess;
+}
+
 bool refalrts::debugger::g_enable_debug = false;
 
 int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
@@ -4205,20 +4231,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icEmptyResult:
 #ifdef ENABLE_DEBUGGER
-        if (refalrts::debugger::enable_debug()) {
-          using namespace refalrts::debugger;
-          debugger.debug_trace(begin, end, callee);
-          if (debugger.is_debug_stop(begin, callee)) {
-            printf(
-              "Step #%d; Function <%s ...>\n",
-              g_step_counter, callee == 0 ? "" : callee->name
-            );
-            if (debugger.debugger_loop() == refalrts::cExit) {
-              return cExit;
-            }
-          }
-          debugger.var_debug_table.clear();
-          debugger.set_step_res(begin, end);
+        if (debugger.handle_function_call(begin, end, callee) == cExit) {
+          return cExit;
         }
 #endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
@@ -4457,20 +4471,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
             refalrts::Iter head = function->link_info;
 
 #ifdef ENABLE_DEBUGGER
-            if (refalrts::debugger::enable_debug()) {
-              using namespace refalrts::debugger;
-              debugger.debug_trace(begin, end, callee);
-              if (debugger.is_debug_stop(begin, callee)) {
-                printf(
-                  "Step #%d; Function <%s ...>\n",
-                  g_step_counter, callee == 0 ? "" : callee->name
-                );
-                if (debugger.debugger_loop() == refalrts::cExit) {
-                  return cExit;
-                }
-              }
-              debugger.var_debug_table.clear();
-              debugger.set_step_res(begin, end);
+            if (debugger.handle_function_call(begin, end, 0) == cExit) {
+              return cExit;
             }
 #endif  // ifdef ENABLE_DEBUGGER
 
@@ -4569,20 +4571,8 @@ refalrts::FnResult refalrts::vm::main_loop() {
       case icPerformNative:
         {
 #ifdef ENABLE_DEBUGGER
-          if (refalrts::debugger::enable_debug()) {
-            using namespace refalrts::debugger;
-            debugger.debug_trace(begin, end, callee);
-            if (debugger.is_debug_stop(begin, callee)) {
-              printf(
-                "Step #%d; Function <%s ...>\n",
-                g_step_counter, callee == 0 ? "": callee->name
-              );
-              if (debugger.debugger_loop() == refalrts::cExit) {
-                return cExit;
-              }
-            }
-            debugger.var_debug_table.clear();
-            debugger.set_step_res(begin, end);
+          if (debugger.handle_function_call(begin, end, callee) == cExit) {
+            return cExit;
           }
 #endif  // ifdef ENABLE_DEBUGGER
           RefalNativeFunction *native_callee =
