@@ -4636,6 +4636,7 @@ void refalrts::SwitchDefaultViolation::print() {
 //==============================================================================
 
 int main(int argc, char **argv) {
+#ifdef ENABLE_DEBUGGER
   int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
   if (debug_arg != -1) {
     for (int i = debug_arg; i < argc; ++i) {
@@ -4644,6 +4645,7 @@ int main(int argc, char **argv) {
     --argc;
     refalrts::debugger::set_enable_debug();
   }
+#endif // ifdef ENABLE_DEBUGGER
 
   refalrts::vm::g_argc = argc;
   refalrts::vm::g_argv = argv;
