@@ -3306,9 +3306,9 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 //  Работа с потоками вывода
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
-  char line[cMaxLen+cMaxLen] = {0};
+  char line[cMaxLen] = {0};
   char  filename[cMaxLen] = {0};
-  fgets(line, cMaxLen+cMaxLen, m_in);
+  fgets(line, cMaxLen, m_in);
   if (sscanf(line, " >> %s", filename) == 1) {
     return fopen(filename, "a");
   }
@@ -3565,7 +3565,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   char strparam[cMaxLen] = {0};
   for ( ; ; ) {
     printf("debug>");
-    fscanf(m_in, "%s", debcmd);
+    fscanf(m_in, "%15s", debcmd);
     if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
       help_option();
     } else if (
@@ -3573,14 +3573,14 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       || str_equal(debcmd, s_BREAK)
       || str_equal(debcmd, s_BREAKPOINT)
     ) {
-      fscanf(m_in, "%s", strparam);
+      fscanf(m_in, "%1023s", strparam);
       break_option(strparam);
     } else if (
       str_equal(debcmd, s_CL)
       || str_equal(debcmd, s_CLEAR)
       || str_equal(debcmd, s_RM)
     ) {
-      fscanf(m_in, "%s", strparam);
+      fscanf(m_in, "%1023s", strparam);
       clear_option(strparam);
     } else if (str_equal(debcmd, s_STEPLIMIT)) {
       int step_lim = 0;
@@ -3589,10 +3589,10 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
     } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
       fscanf(m_in, "%u", &m_memory_limit);
     } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
-      fscanf(m_in, "%s", strparam);
+      fscanf(m_in, "%1023s", strparam);
       func_trace_table.trace_func(strparam, get_out());
     } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
-      fscanf(m_in, "%s", strparam);
+      fscanf(m_in, "%1023s", strparam);
       func_trace_table.notrace_func(strparam);
     } else if (
       str_equal(debcmd, s_R)
@@ -3625,7 +3625,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
       var_debug_table.print(out);
       close_out(out);
     } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
-      fscanf(m_in, "%s", strparam);
+      fscanf(m_in, "%1023s", strparam);
       FILE *out = get_out();
       if (str_equal(strparam, s_ARG)) {
         print_arg_option(begin, end, out);
