@@ -2925,7 +2925,7 @@ namespace refalrts {
       const RASLCommand *m_first;
       const RASLCommand *m_last;
 
-      std::pair<std::string, int> parse_var_name(const char *);
+      std::pair<std::string, int> parse_var_name(const char *full_name);
       void variable_bounds(
         refalrts::Iter& var_begin, refalrts::Iter& var_end,
         char type, int offset
@@ -2945,7 +2945,7 @@ namespace refalrts {
       void print(FILE *out);
       void print_var(const char *var_name, FILE *out);
       void set_string_items(const StringItem *items);
-      void set_context(vm::Stack<Iter>&cont);
+      void set_context(vm::Stack<Iter>& cont);
     };
 
     class TracedFunctionTable {
@@ -2956,7 +2956,7 @@ namespace refalrts {
       void clear();
       bool is_traced_func(const char *func_name);
       FILE *get_trace_outstream(const char *func_name);
-      void print(FILE *);
+      void print(FILE *out);
     };
 
     class BreakpointSet {
@@ -2968,7 +2968,7 @@ namespace refalrts {
       void rm_breakpoint(int step_numb);
       void rm_breakpoint(const char *func_name);
       bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
-      void print(FILE *);
+      void print(FILE *out);
     };
 
     class RefalDebugger {
@@ -3000,23 +3000,22 @@ namespace refalrts {
       }
 
       FILE *get_out();
-      bool next_cond(Iter);
-      bool run_cond(RefalFunction *);
+      bool next_cond(Iter begin);
+      bool run_cond(RefalFunction *callee);
       bool step_cond();
       bool mem_cond();
 
-      bool is_debug_stop(Iter, RefalFunction *);
-      void debug_trace(Iter, Iter, RefalFunction *);
-      void set_step_res(Iter, Iter);
+      bool is_debug_stop(Iter begin, RefalFunction *callee);
+      void debug_trace(Iter begin, Iter end, RefalFunction *callee);
+      void set_step_res(Iter begin, Iter end);
 
       void help_option();
-      void break_option(const char *);
-      void clear_option(const char *);
-      void print_callee_option(FILE *);
-      void print_arg_option(FILE *);
-      void print_res_option(FILE *);
-      bool print_var_option(const char *, FILE *);
-      void varsOption(FILE *);
+      void break_option(const char *arg);
+      void clear_option(const char *arg);
+      void print_callee_option(FILE *out);
+      void print_arg_option(FILE *out);
+      void print_res_option(FILE *out);
+      bool print_var_option(const char *var_name, FILE *out);
       refalrts::FnResult debugger_loop();
     };
 
@@ -3337,9 +3336,10 @@ bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
 }
 
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
-  using namespace refalrts::vm;
   m_dot = s_RUN;
-  return break_set.is_breakpoint(g_step_counter, callee == 0 ? "" : callee->name);
+  return break_set.is_breakpoint(
+    refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
+  );
 }
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
@@ -3360,7 +3360,7 @@ void refalrts::debugger::RefalDebugger::debug_trace(
   Iter begin, Iter end, RefalFunction *callee
 ) {
   if (callee != 0 && func_trace_table.is_traced_func(callee->name)) {
-  FILE *trace_out = func_trace_table.get_trace_outstream(callee->name);
+    FILE *trace_out = func_trace_table.get_trace_outstream(callee->name);
     fprintf(
       trace_out, "//==================================================\n"
     );
@@ -3468,11 +3468,14 @@ void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
 void refalrts::debugger::RefalDebugger::print_callee_option(FILE *out = stdout){
   Iter it = &vm::g_first_marker;
   for (
-    bool wasOpenCall = it->tag == cDataOpenCall; it->next != 0 && ! wasOpenCall;
+    bool wasOpenCall = it->tag == cDataOpenCall;
+    it->next != 0 && ! wasOpenCall;
+    /* пусто */
   ) {
     it = it->next;
     wasOpenCall = it->tag == cDataOpenCall;
   }
+
   if (it != 0) {
     vm::print_seq(out, it->next, it->next, false);
   }
@@ -3481,18 +3484,24 @@ void refalrts::debugger::RefalDebugger::print_callee_option(FILE *out = stdout){
 void refalrts::debugger::RefalDebugger::print_arg_option(FILE *out = stdout) {
   Iter it = &vm::g_first_marker;
   for (
-    bool wasOpenCall = it->tag == cDataFunction; it->next != 0 && ! wasOpenCall;
+    bool wasOpenCall = it->tag == cDataFunction;
+    it->next != 0 && ! wasOpenCall;
+    /* пусто */
   ) {
     it = it->next;
     wasOpenCall = it->tag == cDataFunction;
   }
+
   Iter begin = it != 0 ? it->next : 0;
   for (
-    bool wasCloseCall = it == vm::g_last_marker.prev; it->next != 0 &&! wasCloseCall;
+    bool wasCloseCall = it == vm::g_last_marker.prev;
+    it->next != 0 && ! wasCloseCall;
+    /* пусто */
   ) {
     it = it->next;
     wasCloseCall = it == vm::g_last_marker.prev;
   }
+
   vm::print_seq(out, begin, it != 0 ? it->prev : 0, false);
 }
 
@@ -3531,7 +3540,7 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
   using namespace refalrts::vm;
   char debcmd[16] = {0};
   char strparam[cMaxLen] = {0};
-  for (;;) {
+  for ( ; ; ) {
     printf("debug>");
     fscanf(m_in, "%s", debcmd);
     if (! strcmp(debcmd, s_H) || ! strcmp(debcmd, s_HELP)) {
