@@ -9,7 +9,7 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 
 /**
   <ParseCommandLine e.Arguments>
-    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
        s.GrammarCheck ((e.Folder)*) (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
 
@@ -17,7 +17,9 @@ $EXTERN Fetch, Seq, MapReduce, Map;
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
+  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
   s.GrammarCheck ::= #NormalRun | #GrammarCheck
 */
 $ENTRY ParseCommandLine {
@@ -30,6 +32,7 @@ $ENTRY ParseCommandLine {
           (#Opt #Required 'O')
           (#ErrorFile #Required 'e' ('error-file'))
           (#MarkupContext #None ('markup-context'))
+          (#DebugInfo #None 'g' ('debug-info'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#CppFlags #Required 'CF' ('cppflags'))
           (#CppFlag #Required 'f' ('cppflag'))
@@ -42,7 +45,7 @@ $ENTRY ParseCommandLine {
         {
           (e.Errors) e.Options =
             <GetOpt-CheckRepeated
-              (#CppCompiler #GenMode #Opt #ErrorFile #MarkupContext)
+              (#CppCompiler #GenMode #Opt #ErrorFile #MarkupContext #DebugInfo)
               (e.Errors) e.Options
             >;
         }
@@ -106,6 +109,14 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #NoMarkupContext) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag s.MarkupContext)
+          e.Options-B (#DebugInfo s.Num) e.Options-E =
+            (e.Errors) (e.Bag (s.MarkupContext #DebugInfo)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag s.MarkupContext) e.Options =
+            (e.Errors) (e.Bag (s.MarkupContext #NoDebugInfo)) e.Options;
         }
         {
           (e.Errors) (e.Bag)

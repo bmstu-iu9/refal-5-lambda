@@ -5,13 +5,14 @@ $EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce;
 $EXTERN Add, StrFromInt;
 
 /**
-  <LowLevelRASL s.GenMode e.RASLAST>
+  <LowLevelRASL s.GenMode s.DebugInfo e.RASLAST>
     == e.RASL
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
+  s.DebugInfo ::= #DebugInfo | #NoDebugInfo
 */
 $ENTRY LowLevelRASL {
-  s.GenMode e.ProgramElements =
+  s.GenMode s.DebugInfo e.ProgramElements =
     <Fetch
       e.ProgramElements
       <Seq
@@ -24,7 +25,7 @@ $ENTRY LowLevelRASL {
                 <InUnnamedNamespace s.ScopeClass (#CmdExtern e.Name)>
               )
               <Function
-                s.GenMode s.ScopeClass (e.Name)
+                s.GenMode s.DebugInfo s.ScopeClass (e.Name)
                 <AddSavers e.Commands>
               >;
 
@@ -479,29 +480,30 @@ Freeze {
 }
 
 Function {
-  #Both s.ScopeClass (e.Name) e.Commands =
+  #Both s.DebugInfo s.ScopeClass (e.Name) e.Commands =
     // Интерпретируемый код
     (#CmdIfDef 'INTERPRET')
-    <Function #OnlyInterpret s.ScopeClass (e.Name) e.Commands>
+    <Function #OnlyInterpret s.DebugInfo s.ScopeClass (e.Name) e.Commands>
     (#CmdElse)
     // Компилируемый код
-    <Function #OnlyDirect s.ScopeClass (e.Name) e.Commands>
+    <Function #OnlyDirect s.DebugInfo s.ScopeClass (e.Name) e.Commands>
     (#CmdEndIf);
 
-  #OnlyDirect s.ScopeClass (e.Name) e.Commands =
+  #OnlyDirect s.DebugInfo s.ScopeClass (e.Name) e.Commands =
     // Компилируемый код
     <Function-Direct s.ScopeClass (e.Name) e.Commands>;
 
-  #OnlyInterpret s.ScopeClass (e.Name) e.Commands =
+  #OnlyInterpret s.DebugInfo s.ScopeClass (e.Name) e.Commands =
     // Интерпретируемый код
-    <Function-Interpret s.ScopeClass (e.Name) e.Commands>;
+    <Function-Interpret s.DebugInfo s.ScopeClass (e.Name) e.Commands>;
 }
 
 Function-Interpret {
-  s.ScopeClass (e.Name) e.FunctionBody =
+  s.DebugInfo s.ScopeClass (e.Name) e.FunctionBody =
     <Fetch
       e.FunctionBody
       <Seq
+        (RemoveDebugInfo s.DebugInfo)
         ConvertInterpretCommands
         PrepareOpenEStack
         {
@@ -533,6 +535,38 @@ Function-Interpret {
         }
       >
     >;
+}
+
+RemoveDebugInfo {
+  #DebugInfo e.FunctionBody =
+    // ничего не меняем, сохраняем отладочную информацию как есть
+    e.FunctionBody;
+
+  #NoDebugInfo e.FunctionBody =
+    <RemoveDebugInfoRec e.FunctionBody>;
+}
+
+RemoveDebugInfoRec {
+  (#CmdSentence e.SubCommands) e.Tail =
+    (#CmdSentence <RemoveDebugInfoRec e.SubCommands>) <RemoveDebugInfoRec e.Tail>;
+
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
+    (#CmdOpenELoop
+      #AlgLeft s.BracketNum s.VarNumber
+      <RemoveDebugInfoRec e.SubCommands>
+    )
+    <RemoveDebugInfoRec e.Tail>;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+    (#CmdComment
+      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      ': ' <StrFromInt s.Offset>
+    )
+    <RemoveDebugInfoRec e.Tail>;
+
+  t.Command e.Tail = t.Command <RemoveDebugInfoRec e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
 
 ConvertInterpretCommands {
