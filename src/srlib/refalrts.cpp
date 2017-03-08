@@ -3012,11 +3012,11 @@ namespace refalrts {
       void help_option();
       void break_option(const char *arg);
       void clear_option(const char *arg);
-      void print_callee_option(FILE *out);
-      void print_arg_option(FILE *out);
+      void print_callee_option(Iter begin, Iter end, FILE *out);
+      void print_arg_option(Iter begin, Iter end, FILE *out);
       void print_res_option(FILE *out);
       bool print_var_option(const char *var_name, FILE *out);
-      refalrts::FnResult debugger_loop();
+      refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
       refalrts::FnResult handle_function_call(
         Iter begin, Iter end, RefalFunction *callee
@@ -3369,7 +3369,7 @@ void refalrts::debugger::RefalDebugger::debug_trace(
       trace_out, "//==================================================\n"
     );
     fprintf(trace_out, "Scope function: ");
-    print_callee_option(trace_out);
+    print_callee_option(begin, end, trace_out);
     fprintf(trace_out, "\n");
     fprintf(trace_out, "Traced call:   ");
     vm::print_seq(trace_out, begin, end, false);
@@ -3469,44 +3469,33 @@ void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
   }
 }
 
-void refalrts::debugger::RefalDebugger::print_callee_option(FILE *out = stdout){
-  Iter it = &vm::g_first_marker;
-  for (
-    bool wasOpenCall = it->tag == cDataOpenCall;
-    it->next != 0 && ! wasOpenCall;
-    /* пусто */
-  ) {
-    it = it->next;
-    wasOpenCall = it->tag == cDataOpenCall;
+void refalrts::debugger::RefalDebugger::print_callee_option(
+  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
+){
+  move_left(begin, end);
+  move_right(begin, end);
+
+  Iter callee = 0;
+  tvar_left(callee, begin, end);
+
+  Iter callee_end = callee;
+  if (is_open_bracket(callee)) {
+    callee_end = callee->link_info;
   }
 
-  if (it != 0) {
-    vm::print_seq(out, it->next, it->next, false);
-  }
+  vm::print_seq(out, callee, callee_end, false);
 }
 
-void refalrts::debugger::RefalDebugger::print_arg_option(FILE *out = stdout) {
-  Iter it = &vm::g_first_marker;
-  for (
-    bool wasOpenCall = it->tag == cDataFunction;
-    it->next != 0 && ! wasOpenCall;
-    /* пусто */
-  ) {
-    it = it->next;
-    wasOpenCall = it->tag == cDataFunction;
-  }
+void refalrts::debugger::RefalDebugger::print_arg_option(
+  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
+) {
+  move_left(begin, end);
+  move_right(begin, end);
 
-  Iter begin = it != 0 ? it->next : 0;
-  for (
-    bool wasCloseCall = it == vm::g_last_marker.prev;
-    it->next != 0 && ! wasCloseCall;
-    /* пусто */
-  ) {
-    it = it->next;
-    wasCloseCall = it == vm::g_last_marker.prev;
-  }
+  Iter callee = 0;
+  tvar_left(callee, begin, end);
 
-  vm::print_seq(out, begin, it != 0 ? it->prev : 0, false);
+  vm::print_seq(out, begin, end, false);
 }
 
 void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
@@ -3540,7 +3529,9 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
   return false;
 }
 
-refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
+refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
+  refalrts::Iter begin, refalrts::Iter end
+) {
   using namespace refalrts::vm;
   char debcmd[16] = {0};
   char strparam[cMaxLen] = {0};
@@ -3607,11 +3598,11 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop() {
       fscanf(m_in, "%s", strparam);
       FILE *out = get_out();
       if (! strcmp(strparam, s_ARG)) {
-        print_arg_option(out);
+        print_arg_option(begin, end, out);
       } else if (! strcmp(strparam, s_CALL)) {
-        print_seq(out, g_first_marker.next, g_last_marker.prev, false);
+        print_seq(out, begin, end, true);
       } else if (! strcmp(strparam, s_CALLEE)) {
-        print_callee_option(out);
+        print_callee_option(begin, end, out);
       } else if (! strcmp(strparam, s_RES)) {
         print_res_option(out);
       } else if (
@@ -3648,7 +3639,7 @@ refalrts::debugger::RefalDebugger::handle_function_call(
         "Step #%d; Function <%s ...>\n",
         refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
       );
-      if (debugger_loop() == refalrts::cExit) {
+      if (debugger_loop(begin, end) == refalrts::cExit) {
         return cExit;
       }
     }
