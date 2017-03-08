@@ -13,7 +13,7 @@ $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
 $EXTERN FindFiles;
 
 //FROM Driver
-$EXTERN CompileFile;
+$EXTERN CompileFile, GrammarCheck;
 
 //------------------------------------------------------------------------------
 
@@ -35,18 +35,18 @@ Main {
 
 Main-SwValidCommandLine {
   t.CommandLineSource
-  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
   t.TargetFileName (e.TargetSuffix) (e.Folders) /* файлов нет */ =
     <ReportErrors
       t.CommandLineSource #NoErrorFile (1 'no source files in command line')
     >;
 
   t.CommandLineSource
-  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
   t.TargetFileName (e.TargetSuffix) (e.Folders) e.Files =
     <Main-SwFoundFiles
       t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
       <CalcTargetFileName t.TargetFileName (e.TargetSuffix) e.Files>
       <LookupSourceFiles (e.Folders) e.Files>
     >;
@@ -90,8 +90,8 @@ CreateErrorFileMark {
 
 Main-SwFoundFiles {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
-  e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
+  (e.TargetFileName) e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
       <Map
@@ -113,11 +113,11 @@ Main-SwFoundFiles {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
-  e.Files =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
+  (e.TargetFileName) e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
+      t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
       (e.TargetFileName)
       <RenameTargets t.CppCompiler e.Files>
     >;
@@ -125,8 +125,8 @@ Main-SwFoundFiles {
 
 Main-SwRenamedTargets {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
-  e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
+  (e.TargetFileName) e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
     <ReportErrors
       t.CommandLineSource t.ErrorFile
       <Map
@@ -151,22 +151,25 @@ Main-SwRenamedTargets {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext (e.TargetFileName)
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck (e.TargetFileName)
   e.Files =
     <Main-SwCompiledFiles
-      t.CppCompiler t.ErrorFile (e.TargetFileName)
-      <CompileFiles s.GenMode s.Opt s.MarkupContext e.Files>
+      t.CppCompiler t.ErrorFile s.GrammarCheck (e.TargetFileName)
+      <CompileFiles s.GenMode s.Opt t.DebugMode s.GrammarCheck e.Files>
     >;
 }
 
 Main-SwCompiledFiles {
-  t.CppCompiler t.ErrorFile (e.TargetFileName)
+  t.CppCompiler t.ErrorFile s.GrammarCheck (e.TargetFileName)
   e.Outputs-B #Fails e.OutputsErrors-E =
     <CreateErrorFileMark t.ErrorFile>
     <Exit 1>;
 
-  t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs =
+  t.CppCompiler t.ErrorFile #NormalRun (e.TargetFileName) e.Outputs =
     <Link t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs>;
+
+  t.CppCompiler t.ErrorFile #GrammarCheck (e.TargetFileName) e.Outputs =
+    <WriteLine '** No syntax errors found **'>;
 }
 
 //------------------------------------------------------------------------------
@@ -288,7 +291,7 @@ RenameLocations-Aux {
 }
 
 CompileFiles {
-  s.GenMode s.Opt s.MarkupContext e.Files =
+  s.GenMode s.Opt t.DebugMode #NormalRun e.Files =
     <Map
       {
         (s.Pos #Output e.OutputName #NoNative) =
@@ -303,7 +306,7 @@ CompileFiles {
           <WriteLine '*Compiling ' e.Source ':'>
           <Fetch
             <CompileFile
-              s.GenMode s.Opt s.MarkupContext (e.Source) e.OutputName
+              s.GenMode s.Opt t.DebugMode (e.Source) e.OutputName
             >
             {
               #Success e.OutputName^ #NoNative =
@@ -316,6 +319,19 @@ CompileFiles {
               #Fails = #Fails;
             }
           >;
+      }
+      e.Files
+    >;
+
+  s.GenMode s.Opt t.DebugMode #GrammarCheck e.Files =
+    <Map
+      {
+        (s.Pos #Output e.OutputName) =
+          <WriteLine '+Skipping native file ' e.OutputName> (e.OutputName);
+
+        (s.Pos #Source (e.Source) e.OutputName) =
+          <WriteLine '*Grammar checking ' e.Source ':'>
+          <GrammarCheck e.Source>;
       }
       e.Files
     >;

@@ -115,6 +115,7 @@ $ENTRY NumberFromOpcode{
   #CmdPerformNative = 109;
   #CmdWrapClosure = 110;
   #CmdEnd = 111;
+  #CmdVariableDebugOffset = 112;
 }
 
 $ENTRY NumberFromBracket{

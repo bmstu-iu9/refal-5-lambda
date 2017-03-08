@@ -11,14 +11,15 @@ $EXTERN HashLittle2-Chars;
 $EXTERN DisplayName;
 
 /**
-  <LowLevelRASL s.GenMode e.RASLAST>
+  <LowLevelRASL s.GenMode s.DebugInfo (e.SrcName) e.RASLAST>
     == t.RASLModule
     == t.RASLModule t.NativeModule
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret
+  s.DebugInfo ::= #DebugInfo | #NoDebugInfo
 */
 $ENTRY LowLevelRASL {
-  s.GenMode (e.SrcName) e.ProgramElements =
+  s.GenMode s.DebugInfo (e.SrcName) e.ProgramElements =
     <Fetch
       e.ProgramElements
       <Seq
@@ -38,7 +39,7 @@ $ENTRY LowLevelRASL {
         (Map (MarkFunctionGenMode s.GenMode))
         {
           (s.Hash1 s.Hash2) e.Items =
-            <LowLevelRASL-RASL s.Hash1 s.Hash2 e.Items>
+            <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
             <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>;
         }
       >
@@ -449,12 +450,12 @@ MarkFunctionGenMode {
 }
 
 LowLevelRASL-RASL {
-  s.Hash1 s.Hash2 e.Items =
+  s.DebugInfo s.Hash1 s.Hash2 e.Items =
     <Fetch
       e.Items
       <Seq
         (MapReduce
-          ClassifyItems-RASL
+          (ClassifyItems-RASL s.DebugInfo)
           (/* Области видимости функций */)
         )
         {
@@ -471,12 +472,13 @@ LowLevelRASL-RASL {
 }
 
 ClassifyItems-RASL {
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     <Fetch
       e.FunctionBody
       <Seq
+        (RemoveDebugInfo s.DebugInfo)
         ConvertInterpretCommands
         PrepareOpenEStack
         {
@@ -494,37 +496,69 @@ ClassifyItems-RASL {
       >
     >;
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#Function-ToNative s.ScopeClass (e.Name) e.Commands) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdNativeFunction s.ScopeClass (e.Name) t.SrcPos e.Code) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdNativeFuncDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdEnum s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdEnumDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdSwap s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name))
     (#CmdSwapDescr s.ScopeClass e.Name);
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdDeclaration s.ScopeClass e.Name) =
     (e.FuncScopeClass (s.ScopeClass e.Name));
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdDefineIdent e.Name) =
     (e.FuncScopeClass);
 
-  (e.FuncScopeClass)
+  s.DebugInfo (e.FuncScopeClass)
   (#CmdEmitNativeCode t.SrcPos e.Code) =
     (e.FuncScopeClass);
+}
+
+RemoveDebugInfo {
+  #DebugInfo e.FunctionBody =
+    // ничего не меняем, сохраняем отладочную информацию как есть
+    e.FunctionBody;
+
+  #NoDebugInfo e.FunctionBody =
+    <RemoveDebugInfoRec e.FunctionBody>;
+}
+
+RemoveDebugInfoRec {
+  (#CmdSentence e.SubCommands) e.Tail =
+    (#CmdSentence <RemoveDebugInfoRec e.SubCommands>) <RemoveDebugInfoRec e.Tail>;
+
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) e.Tail =
+    (#CmdOpenELoop
+      #AlgLeft s.BracketNum s.VarNumber
+      <RemoveDebugInfoRec e.SubCommands>
+    )
+    <RemoveDebugInfoRec e.Tail>;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+    (#CmdComment
+      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      ': ' <StrFromInt s.Offset>
+    )
+    <RemoveDebugInfoRec e.Tail>;
+
+  t.Command e.Tail = t.Command <RemoveDebugInfoRec e.Tail>;
+
+  /* пусто */ = /* пусто */;
 }
 
 ConvertInterpretCommands {
@@ -574,6 +608,11 @@ ConvertOneInterpretCommand {
     >;
 
   (#CmdUseRes) = /* пусто */;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) =
+    (#CmdVariableDebugTable
+      s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
+    );
 
   (#CmdSentence e.SubCommands) =
     <Fetch
@@ -933,6 +972,28 @@ OutlineConstants {
     >
     (#CmdCreateElem s.CreateMode s.ElemNo #ElString s.NextStringId);
 
+  (e.Funcs) (e.Labels) (e.Numbers)
+  (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
+  e.Commands
+  (#CmdVariableDebugTable e.VarName s.Offset) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (e.Numbers)
+      (s.NextStringId e.Strings-B (s.Id e.VarName) e.Strings-E)
+      e.Commands
+    >
+    (#CmdVariableDebugTable s.Id s.Offset);
+
+  (e.Funcs) (e.Labels) (e.Numbers)
+  (s.NextStringId e.Strings)
+  e.Commands
+  (#CmdVariableDebugTable e.VarName s.Offset) =
+    <OutlineConstants
+      (e.Funcs) (e.Labels) (e.Numbers)
+      (<Inc s.NextStringId> e.Strings (s.NextStringId e.VarName))
+      e.Commands
+    >
+    (#CmdVariableDebugTable s.NextStringId s.Offset);
+
   (e.Funcs) (e.Labels) (e.Numbers) (e.Strings)
   e.Commands
   t.OtherCommand =
@@ -1090,6 +1151,13 @@ ConvertDirectCommands {
     (#CmdOpenedE-Start #AlgLeft s.BracketNum s.VarNumber)
     <ConvertDirectCommands e.SubCommands>
     (#CmdOpenedE-End #AlgLeft s.BracketNum s.VarNumber)
+    <ConvertDirectCommands e.Tail>;
+
+  (#CmdVariableDebugTable s.Mode e.Index s.Depth s.Offset) e.Tail =
+    (#CmdComment
+      'DEBUG: ' s.Mode '.' e.Index '#' <StrFromInt s.Depth>
+      ': ' <StrFromInt s.Offset>
+    )
     <ConvertDirectCommands e.Tail>;
 
   t.Command e.Tail = t.Command <ConvertDirectCommands e.Tail>;

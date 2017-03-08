@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>D:\Mazdaywik\Documents\Преподавание\Simple Refal (distr)\editors\Test.sref.html</title>
+<meta name="Generator" content="Vim/7.4">
+<meta name="plugin-version" content="vim7.4_v1">
+<meta name="syntax" content="cpp">
+<meta name="settings" content="number_lines,use_css,pre_wrap,no_foldcolumn,expand_tabs,line_ids,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+.Constant { color: #ff00ff; }
+.Statement { color: #804040; font-weight: bold; }
+.LineNr { color: #804040; }
+.Comment { color: #0000ff; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Special { color: #6a5acd; }
+.PreProc { color: #a020f0; }
+.Error { color: #ffffff; background-color: #ff0000; padding-bottom: 1px; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+/* function to open any folds containing a jumped-to line before jumping to it */
+function JumpToLine()
+{
+  var lineNum;
+  lineNum = window.location.hash;
+  lineNum = lineNum.substr(1); /* strip off '#' */
+
+  if (lineNum.indexOf('L') == -1) {
+    lineNum = 'L'+lineNum;
+  }
+  lineElem = document.getElementById(lineNum);
+  /* Always jump to new location even if the line was hidden inside a fold, or
+   * we corrected the raw number to a line ID.
+   */
+  if (lineElem) {
+    lineElem.scrollIntoView(true);
+  }
+  return true;
+}
+if ('onhashchange' in window) {
+  window.onhashchange = JumpToLine;
+}
+
+-->
+</script>
+</head>
+<body onload='JumpToLine();'>
+<pre id='vimCodeElement'>
+<span id="L1" class="LineNr"> 1 </span><span class="Comment">/*</span>
+<span id="L2" class="LineNr"> 2 </span><span class="Comment">  Раскраска синтаксиса Простого Рефала</span>
+<span id="L3" class="LineNr"> 3 </span><span class="Comment">  Можно писать многострочные комментарии.</span>
+<span id="L4" class="LineNr"> 4 </span><span class="Comment">*/</span>
+<span id="L5" class="LineNr"> 5 </span>
+<span id="L6" class="LineNr"> 6 </span><span class="Comment">// И однострочные тоже.</span>
+<span id="L7" class="LineNr"> 7 </span>
+<span id="L8" class="LineNr"> 8 </span><span class="Comment">//FROM Library</span>
+<span id="L9" class="LineNr"> 9 </span><span class="Statement">$EXTERN</span> WriteLine;
+<span id="L10" class="LineNr">10 </span>
+<span id="L11" class="LineNr">11 </span><span class="Comment">//FROM LibraryEx</span>
+<span id="L12" class="LineNr">12 </span><span class="Statement">$EXTERN</span> SaveFile, LoadFile, ArgList;
+<span id="L13" class="LineNr">13 </span>
+<span id="L14" class="LineNr">14 </span><span class="Statement">$ENUM</span> Encapsulated;
+<span id="L15" class="LineNr">15 </span>
+<span id="L16" class="LineNr">16 </span><span class="Statement">$EENUM</span> ExportedEnum;
+<span id="L17" class="LineNr">17 </span><span class="Statement">$SWAP</span> LocalVariable;
+<span id="L18" class="LineNr">18 </span><span class="Statement">$ESWAP</span> GlobalVariable;
+<span id="L19" class="LineNr">19 </span><span class="Statement">$LABEL</span> Success, Fails;  <span class="Comment">// Устаревшее ключевое слово, но надо поддерживать</span>
+<span id="L20" class="LineNr">20 </span>
+<span id="L21" class="LineNr">21 </span><span class="Error">$XETERN</span> Broken; <span class="Comment">// А вот подсветка ошибки</span>
+<span id="L22" class="LineNr">22 </span>
+<span id="L23" class="LineNr">23 </span><span class="Statement">$ENTRY</span> CreateEncapsulated {
+<span id="L24" class="LineNr">24 </span>  <span class="Comment">/* пусто */</span> = #Fails;
+<span id="L25" class="LineNr">25 </span>
+<span id="L26" class="LineNr">26 </span>  <span class="Special">e.X</span> = [Encapsulated <span class="Special">e.X</span>] #Success;
+<span id="L27" class="LineNr">27 </span>}
+<span id="L28" class="LineNr">28 </span>
+<span id="L29" class="LineNr">29 </span><span class="Statement">$FORWARD</span> Main;  <span class="Comment">// Раньше было обязательным, сейчас игнорируется</span>
+<span id="L30" class="LineNr">30 </span>
+<span id="L31" class="LineNr">31 </span><span class="Statement">$ENTRY</span> Go {
+<span id="L32" class="LineNr">32 </span>  = &lt;Main &lt;ArgList&gt;&gt;;
+<span id="L33" class="LineNr">33 </span>}
+<span id="L34" class="LineNr">34 </span>
+<span id="L35" class="LineNr">35 </span><span class="PreProc">%%</span>
+<span id="L36" class="LineNr">36 </span><span class="Type">void</span> f() {
+<span id="L37" class="LineNr">37 </span>  <span class="Comment">// Вставка кода на C++</span>
+<span id="L38" class="LineNr">38 </span>  <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Constant">0</span>; i &lt; <span class="Constant">100</span>; ++i)
+<span id="L39" class="LineNr">39 </span>    printf(<span class="Constant">&quot;</span><span class="Special">%i</span><span class="Constant"> = 0x</span><span class="Special">%x</span><span class="Special">\n</span><span class="Constant">&quot;</span>, i);
+<span id="L40" class="LineNr">40 </span>
+<span id="L41" class="LineNr">41 </span>  <span class="Type">bool</span> x = <span class="Constant">1</span> &lt; <span class="Constant">2</span> &amp;&amp; <span class="Constant">3</span> &gt; <span class="Constant">1</span>;
+<span id="L42" class="LineNr">42 </span>}
+<span id="L43" class="LineNr">43 </span><span class="PreProc">%%</span>
+<span id="L44" class="LineNr">44 </span>
+<span id="L45" class="LineNr">45 </span>Main {
+<span id="L46" class="LineNr">46 </span>  (<span class="Special">e.ProgName</span>) =
+<span id="L47" class="LineNr">47 </span>    &lt;WriteLine <span class="Constant">'Arguments not found'</span> <span class="Constant">10</span> <span class="Constant">12</span>&gt;
+<span id="L48" class="LineNr">48 </span>    <span class="Comment">// А вот незакрытая кавычка:</span>
+<span id="L49" class="LineNr">49 </span>    &lt;WriteLine <span class="Error">'Ooops&gt;;</span>
+<span id="L50" class="LineNr">50 </span>
+<span id="L51" class="LineNr">51 </span>  (<span class="Special">e.ProgName</span>) <span class="Special">e.Files</span> =
+<span id="L52" class="LineNr">52 </span>    &lt;Map
+<span id="L53" class="LineNr">53 </span>      {
+<span id="L54" class="LineNr">54 </span>        (<span class="Special">e.NextFile</span>) =
+<span id="L55" class="LineNr">55 </span>          &lt;SaveFile
+<span id="L56" class="LineNr">56 </span>            (<span class="Special">e.NextFile</span> <span class="Constant">'.out'</span>)
+<span id="L57" class="LineNr">57 </span>            &lt;LoadFile <span class="Special">e.NextFile</span>&gt;
+<span id="L58" class="LineNr">58 </span>          &gt;;
+<span id="L59" class="LineNr">59 </span>      }
+<span id="L60" class="LineNr">60 </span>      <span class="Special">e.Files</span>
+<span id="L61" class="LineNr">61 </span>    &gt;;
+<span id="L62" class="LineNr">62 </span>}
+<span id="L63" class="LineNr">63 </span>
+<span id="L64" class="LineNr">64 </span><span class="Statement">$ENTRY</span> NativeFunction {
+<span id="L65" class="LineNr">65 </span><span class="PreProc">%%</span>
+<span id="L66" class="LineNr">66 </span>  <span class="Comment">// Нативные вставки могут быть внутри функций</span>
+<span id="L67" class="LineNr">67 </span>  <span class="Statement">return</span> refalrts::cRecognitionImpossible;
+<span id="L68" class="LineNr">68 </span><span class="PreProc">%%</span>
+<span id="L69" class="LineNr">69 </span>}
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

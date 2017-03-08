@@ -35,17 +35,19 @@ $EXTERN StrFromInt;
 $EXTERN GenProgram-Native;
 
 /**
-  <CompileFile s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName>
+  <CompileFile s.GenMode s.Opt t.DebugMode (e.SrcName) e.OutputName>
     == #Success e.OutputName t.Native
     == #Fails
 
   s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
   s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
+  t.DebugMode ::= (s.MarkupContext s.DebugInfo)
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebugInfo ::= #DebugInfo | #NoDebugInfo
   t.Native ::= #NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  s.GenMode s.Opt s.MarkupContext (e.SrcName) e.OutputName '.rasl' =
+  s.GenMode s.Opt (s.MarkupContext s.DebugInfo) (e.SrcName) e.OutputName '.rasl'=
     <Fetch
       e.SrcName
       <Seq
@@ -59,7 +61,7 @@ $ENTRY CompileFile {
                   <Fetch
                     e.AST
                     <BackEnd
-                      s.MarkupContext s.Opt s.GenMode (e.SrcName) e.OutputName
+                      s.MarkupContext s.DebugInfo s.Opt s.GenMode (e.SrcName) e.OutputName
                     >
                   >;
 
@@ -87,11 +89,11 @@ FrontEnd {
 }
 
 BackEnd {
-  s.MarkupContext s.Opt s.GenMode (e.SrcName) e.OutputName =
+  s.MarkupContext s.DebugInfo s.Opt s.GenMode (e.SrcName) e.OutputName =
     <Seq
       (Desugar s.MarkupContext)
       (HighLevelRASL <SelectOptFlags s.Opt>)
-      (LowLevelRASL s.GenMode (e.SrcName))
+      (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
       {
         t.RASLModule =
           <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
@@ -132,4 +134,31 @@ SelectOptFlags {
   #OptPattern = #Conjoint #NoOpt;
   #OptResult  = #Disjoint #OptResult;
   #OptBoth    = #Conjoint #OptResult;
+}
+
+/**
+  <GrammarCheck e.SrcName>
+    == #Success
+    == #Fails
+*/
+$ENTRY GrammarCheck {
+  e.SrcName =
+    <Fetch
+      e.SrcName
+      <Seq
+        LoadSource
+        LexFolding
+        (ParseProgram <EL-Create e.SrcName>)
+        {
+          t.ErrorList e.AST =
+            <Fetch
+              <EL-Destroy t.ErrorList>
+              {
+                #EL-NoErrors = #Success;
+                #EL-HasErrors = #Fails;
+              }
+            >;
+        }
+      >
+    >;
 }

@@ -9,15 +9,19 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 
 /**
   <ParseCommandLine e.Arguments>
-    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile s.MarkupContext
-       t.TargetFileName (e.TargetSuffix) ((e.Folder)*) (s.ArgNum e.File)*
+    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
+       s.GrammarCheck t.TargetFileName
+       (e.TargetSuffix) ((e.Folder)*) (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
 
   t.CppCompiler ::= #NoCppCompiler | ((e.CppCompiler) (e.Flags))
   s.GenMode ::= #OnlyDirect | #OnlyInterpret
   s.Opt ::= #OptNone | #OptPattern | #OptResult
   t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
+  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
   s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
+  s.GrammarCheck ::= #NormalRun | #GrammarCheck
   t.TargetFileName ::= (e.TargetFileName) | #DefaultTargetFileName
 */
 $ENTRY ParseCommandLine {
@@ -29,10 +33,12 @@ $ENTRY ParseCommandLine {
           (#Opt #Required 'O')
           (#ErrorFile #Required 'e' ('error-file'))
           (#MarkupContext #None ('markup-context'))
+          (#DebugInfo #None 'g' ('debug-info'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#CppFlags #Required 'CF' ('cppflags'))
           (#CppFlag #Required 'f' ('cppflag'))
           (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#GrammarCheck #None ('grammar-check'))
           (#TargetFileName #Required 'o' ('target-file'))
           (#TargetSuffix #Required ('targsuffix') ('targetsuffix') ('targsuf'))
         )
@@ -43,8 +49,8 @@ $ENTRY ParseCommandLine {
           (e.Errors) e.Options =
             <GetOpt-CheckRepeated
               (
-                #CppCompiler #Opt #ErrorFile #MarkupContext #TargetFileName
-                #TargetSuffix
+                #CppCompiler #Opt #ErrorFile #MarkupContext #DebugInfo
+                #GrammarCheck #TargetFileName #TargetSuffix
               )
               (e.Errors) e.Options
             >;
@@ -90,6 +96,22 @@ $ENTRY ParseCommandLine {
 
           (e.Errors) (e.Bag) e.Options =
             (e.Errors) (e.Bag #NoMarkupContext) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag s.MarkupContext)
+          e.Options-B (#DebugInfo s.Num) e.Options-E =
+            (e.Errors) (e.Bag (s.MarkupContext #DebugInfo)) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag s.MarkupContext) e.Options =
+            (e.Errors) (e.Bag (s.MarkupContext #NoDebugInfo)) e.Options;
+        }
+        {
+          (e.Errors) (e.Bag)
+          e.Options-B (#GrammarCheck s.Num) e.Options-E =
+            (e.Errors) (e.Bag #GrammarCheck) e.Options-B e.Options-E;
+
+          (e.Errors) (e.Bag) e.Options =
+            (e.Errors) (e.Bag #NormalRun) e.Options;
         }
         {
           (e.Errors) (e.Bag)

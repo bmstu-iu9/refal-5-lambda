@@ -304,10 +304,6 @@ CollectNativeLines-Aux {
             !#TkLiteral-OCode                   StringLiteral             .
 
   SL-E-OC1 =
-    :ODigit:                                    SL-E-OC2                  |
-            !#TkLiteral-OCode                   StringLiteral             .
-
-  SL-E-OC2 =
     :ODigit:!#TkLiteral-OCode                   StringLiteral             |
             !#TkLiteral-OCode                   StringLiteral             .
 
@@ -902,14 +898,14 @@ SL-E-C1 {
 }
 
 SL-E-OC1 {
-  (e.Accum) '0' e.Text = <SL-E-OC2 (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text = <SL-E-OC2 (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text = <SL-E-OC2 (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text = <SL-E-OC2 (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text = <SL-E-OC2 (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text = <SL-E-OC2 (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text = <SL-E-OC2 (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text = <SL-E-OC2 (e.Accum '7') e.Text>;
+  (e.Accum) '0' e.Text = (#TkLiteral-OCode e.Accum '0') <StringLiteral () e.Text>;
+  (e.Accum) '1' e.Text = (#TkLiteral-OCode e.Accum '1') <StringLiteral () e.Text>;
+  (e.Accum) '2' e.Text = (#TkLiteral-OCode e.Accum '2') <StringLiteral () e.Text>;
+  (e.Accum) '3' e.Text = (#TkLiteral-OCode e.Accum '3') <StringLiteral () e.Text>;
+  (e.Accum) '4' e.Text = (#TkLiteral-OCode e.Accum '4') <StringLiteral () e.Text>;
+  (e.Accum) '5' e.Text = (#TkLiteral-OCode e.Accum '5') <StringLiteral () e.Text>;
+  (e.Accum) '6' e.Text = (#TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
+  (e.Accum) '7' e.Text = (#TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
   (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
 }
 
@@ -925,16 +921,4 @@ SL-E-C2 {
   (e.Accum) '8' e.Text = (#TkLiteral-Code e.Accum '8') <StringLiteral () e.Text>;
   (e.Accum) '9' e.Text = (#TkLiteral-Code e.Accum '9') <StringLiteral () e.Text>;
   (e.Accum) e.Text = (#TkLiteral-Code e.Accum) <StringLiteral () e.Text>;
-}
-
-SL-E-OC2 {
-  (e.Accum) '0' e.Text = (#TkLiteral-OCode e.Accum '0') <StringLiteral () e.Text>;
-  (e.Accum) '1' e.Text = (#TkLiteral-OCode e.Accum '1') <StringLiteral () e.Text>;
-  (e.Accum) '2' e.Text = (#TkLiteral-OCode e.Accum '2') <StringLiteral () e.Text>;
-  (e.Accum) '3' e.Text = (#TkLiteral-OCode e.Accum '3') <StringLiteral () e.Text>;
-  (e.Accum) '4' e.Text = (#TkLiteral-OCode e.Accum '4') <StringLiteral () e.Text>;
-  (e.Accum) '5' e.Text = (#TkLiteral-OCode e.Accum '5') <StringLiteral () e.Text>;
-  (e.Accum) '6' e.Text = (#TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
-  (e.Accum) '7' e.Text = (#TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
-  (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
 }

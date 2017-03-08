@@ -266,6 +266,7 @@ enum iCmd { /*NumberFromOpcode:Cmd+ic;Alg+Left,Alg+Right,Alg+Term*/
   icPerformNative = 109,
   icWrapClosure = 110,
   icEnd = 111,
+  icVariableDebugOffset = 112,
 };
 
 enum BracketType { /*NumberFromBracket:El+ib;*/
@@ -558,6 +559,7 @@ struct RASLFunction: public RefalFunction {
   const RefalIdentifier *idents;
   const RefalNumber *numbers;
   const StringItem *strings;
+  const char *filename;
 
   RASLFunction(
     RefalFuncName name,
@@ -565,13 +567,15 @@ struct RASLFunction: public RefalFunction {
     const FunctionTable *functions,
     const RefalIdentifier *idents,
     const RefalNumber *numbers,
-    const StringItem *strings
+    const StringItem *strings,
+    const char *filename
   )
     : RefalFunction(rasl, name)
     , functions(functions)
     , idents(idents)
     , numbers(numbers)
     , strings(strings)
+    , filename(filename)
   {
     /* пусто */
   }

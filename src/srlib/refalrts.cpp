@@ -1,8 +1,11 @@
 #include <errno.h>
 #include <exception>
+#include <map>
 #include <new>
+#include <set>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <string.h>
 #include <time.h>
 
@@ -1572,6 +1575,9 @@ const refalrts::RASLCommand rasl_create_closure[] = {
   { refalrts::icInitB0_Lite, 0, 0, 0 },
   { refalrts::icCallSaveLeft, 0, 2, 0 },
   { refalrts::icNotEmpty, 0, 0, 2 },
+#ifdef ENABLE_DEBUGGER
+  { refalrts::icResetAllocator, 0, 0, 0 },
+#endif // ifdef ENABLE_DEBUGGER
   { refalrts::icReinitClosureHead, 0, 0, 4 },
   { refalrts::icReinitUnwrappedClosure, 4, 0, 1 },
   { refalrts::icWrapClosure, 0, 0, 1 },
@@ -1729,7 +1735,10 @@ namespace refalrts {
 namespace vm {
 
 extern int g_ret_code;
-extern void print_seq(FILE *output, refalrts::Iter begin, refalrts::Iter end);
+extern void print_seq(
+  FILE *output, refalrts::Iter begin, refalrts::Iter end,
+  bool multiline = true, unsigned max_node = -1
+);
 
 char **g_argv = 0;
 unsigned int g_argc = 0;
@@ -3245,7 +3254,8 @@ void refalrts::dynamic::enumerate_blocks() {
             table->function_table,
             table->idents,
             table->numbers,
-            table->strings
+            table->strings,
+            "filename.sref"
           );
         }
         break;
@@ -3524,7 +3534,8 @@ void print_indent(FILE *output, int level)
 } // unnamed namespace
 
 void refalrts::vm::print_seq(
-  FILE *output, refalrts::Iter begin, refalrts::Iter end
+  FILE *output, refalrts::Iter begin, refalrts::Iter end,
+  bool multiline, unsigned max_node
 ) {
   enum {
     cStateView = 100,
@@ -3536,7 +3547,18 @@ void refalrts::vm::print_seq(
   bool after_bracket = false;
   bool reset_after_bracket = true;
 
-  while ((state != cStateFinish) && ! refalrts::empty_seq(begin, end)) {
+
+  char space = (multiline) ? '\n' : ' ';
+
+  // TODO: while
+  for (
+    unsigned cur_node = 0;
+    (state != cStateFinish)
+    && ! refalrts::empty_seq(begin, end)
+    && cur_node <= max_node;
+    cur_node++
+  ) {
+
     if (reset_after_bracket) {
       after_bracket = false;
       reset_after_bracket = false;
@@ -3553,10 +3575,10 @@ void refalrts::vm::print_seq(
             if (0 == begin->prev) {
               fprintf(output, "[FIRST] ");
             } else if (0 == begin->next) {
-              fprintf(output, "\n[LAST]");
+              fprintf(output, "%c[LAST]", space);
               state = cStateFinish;
             } else {
-              fprintf(output, "\n[NONE]");
+              fprintf(output, "%c[NONE]", space);
             }
             refalrts::move_left(begin, end);
             continue;
@@ -3598,7 +3620,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenADT:
-            if (! after_bracket) {
+            if (! after_bracket && multiline) {
               print_indent(output, indent);
             }
             ++indent;
@@ -3615,7 +3637,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenBracket:
-            if (! after_bracket) {
+            if (! after_bracket && multiline) {
               print_indent(output, indent);
             }
             ++indent;
@@ -3632,7 +3654,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataOpenCall:
-            if (! after_bracket) {
+            if (! after_bracket && multiline) {
               print_indent(output, indent);
             }
             ++indent;
@@ -3654,7 +3676,7 @@ void refalrts::vm::print_seq(
             continue;
 
           case refalrts::cDataClosure:
-            if (! after_bracket) {
+            if (! after_bracket && multiline) {
               print_indent(output, indent);
             }
             ++indent;
@@ -3737,6 +3759,8 @@ void refalrts::vm::print_seq(
   if (cStateString == state) {
     fprintf(output, "\'");
   }
+
+  fprintf(output, "\n");
 }
 
 void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
@@ -3745,7 +3769,7 @@ void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
   fprintf(dump_stream(), "\nSTEP NUMBER %u\n", g_step_counter);
   fprintf(dump_stream(), "\nERROR EXPRESSION:\n");
   print_seq(dump_stream(), begin, end);
-  fprintf(dump_stream(), "\nVIEW FIELD:\n");
+  fprintf(dump_stream(), "VIEW FIELD:\n");
   print_seq(dump_stream(), & g_first_marker, & g_last_marker);
 
 #ifdef DUMP_FREE_LIST
@@ -3759,7 +3783,7 @@ void refalrts::vm::make_dump(refalrts::Iter begin, refalrts::Iter end) {
 
 #endif // ifdef DUMP_FREE_LIST
 
-  fprintf(dump_stream(),"\nEnd dump\n");
+  fprintf(dump_stream(), "\nEnd dump\n");
   fflush(dump_stream());
 }
 
@@ -3809,6 +3833,826 @@ void refalrts::vm::free_view_field() {
 // Интерпретатор
 //==============================================================================
 
+//=============================================================================
+// Пошаговый отладчик
+//=============================================================================
+//=============================================================================
+//  Классы отладчика и вспомогательных структур
+//=============================================================================
+namespace refalrts {
+
+namespace debugger {
+
+static const char *const s_H = "h";
+static const char *const s_HELP = "help";
+static const char *const s_B = "b";
+static const char *const s_BREAK = "break";
+static const char *const s_BREAKPOINT = "breakpoint";
+static const char *const s_CL = "cl";
+static const char *const s_CLEAR = "clear";
+static const char *const s_RM = "rm";
+static const char *const s_STEPLIMIT = "steplimit";
+static const char *const s_MEMORYLIMIT = "memorylimit";
+static const char *const s_RUN = "run";
+static const char *const s_R = "r";
+static const char *const s_STEP = "step";
+static const char *const s_S = "s";
+static const char *const s_NEXT = "next";
+static const char *const s_N = "n";
+static const char *const s_VARS = "vars";
+static const char *const s_P = "p";
+static const char *const s_PRINT = "print";
+static const char *const s_ARG = "arg";
+static const char *const s_CALL = "call";
+static const char *const s_CALLEE = "callee";
+static const char *const s_RES = "res";
+static const char *const s_DOT = ".";
+static const char *const s_TR = "tr";
+static const char *const s_TRACE = "trace";
+static const char *const s_NOTR = "notr";
+static const char *const s_NOTRACE = "notrace";
+static const char *const s_Q = "q";
+static const char *const s_QUIT = "quit";
+
+enum { cMaxLen = 1024 };
+void close_out(FILE*);
+
+class VariableDebugTable {
+  vm::Stack<Iter>& m_context;
+  const StringItem *m_strings;
+  const RASLCommand *m_first;
+  const RASLCommand *m_last;
+
+  std::pair<std::string, int> parse_var_name(const char *full_name);
+  void variable_bounds(
+    refalrts::Iter& var_begin, refalrts::Iter& var_end,
+    char type, int offset
+  );
+public:
+  VariableDebugTable()
+    : m_context(vm::g_context)
+    , m_strings(0)
+    , m_first(0)
+    , m_last(0)
+  {
+    /* пусто */
+  }
+  void insert_var(const RASLCommand *next);
+  void clear();
+  std::map<int, int> find_var(const char *var_name);
+  void print(FILE *out);
+  void print_var(const char *var_name, FILE *out);
+  void set_string_items(const StringItem *items);
+  void set_context(vm::Stack<Iter>& cont);
+};
+
+class TracedFunctionTable {
+  std::map<std::string, FILE*> m_traced_func_table;
+public:
+  void trace_func(const char *func_name, FILE *trace_out);
+  void notrace_func(const char *func_name);
+  void clear();
+  bool is_traced_func(const char *func_name);
+  FILE *get_trace_outstream(const char *func_name);
+  void print(FILE *out);
+};
+
+class BreakpointSet {
+  std::set<int> m_step_breaks;
+  std::set<std::string> m_func_breaks;
+public:
+  void add_breakpoint(int step_numb);
+  void add_breakpoint(const char *func_name);
+  void rm_breakpoint(int step_numb);
+  void rm_breakpoint(const char *func_name);
+  bool is_breakpoint(int cur_step_numb, const char *cur_func_name);
+  void print(FILE *out);
+};
+
+class RefalDebugger {
+  const char *m_dot;
+  unsigned m_step_numb;
+  unsigned m_memory_limit;
+  FILE *m_in;
+  Iter m_next_expr;
+  Iter m_res_begin;
+  Iter m_res_end;
+public:
+  VariableDebugTable var_debug_table;
+  TracedFunctionTable func_trace_table;
+  BreakpointSet break_set;
+
+  RefalDebugger()
+    : m_dot(s_STEP)
+    , m_step_numb(0)
+    , m_memory_limit(-1)
+    , m_in(stdin)
+    , m_next_expr(0)
+    , m_res_begin(0)
+    , m_res_end(0)
+  {
+    /* пусто */
+  }
+  ~RefalDebugger() {
+    func_trace_table.clear();
+  }
+
+  FILE *get_out();
+  bool next_cond(Iter begin);
+  bool run_cond(RefalFunction *callee);
+  bool step_cond();
+  bool mem_cond();
+
+  bool is_debug_stop(Iter begin, RefalFunction *callee);
+  void debug_trace(Iter begin, Iter end, RefalFunction *callee);
+  void set_step_res(Iter begin, Iter end);
+
+  void help_option();
+  void break_option(const char *arg);
+  void clear_option(const char *arg);
+  void print_callee_option(Iter begin, Iter end, FILE *out);
+  void print_arg_option(Iter begin, Iter end, FILE *out);
+  void print_res_option(FILE *out);
+  bool print_var_option(const char *var_name, FILE *out);
+  refalrts::FnResult debugger_loop(Iter begin, Iter end);
+
+  refalrts::FnResult handle_function_call(
+    Iter begin, Iter end, RefalFunction *callee
+  );
+};
+
+int find_debugger_flag(int argc, char **argv);
+
+extern bool g_enable_debug;
+
+bool enable_debug() {
+  return g_enable_debug;
+}
+
+void set_enable_debug() {
+  g_enable_debug = true;
+}
+
+} // namespace debugger
+
+} // namespace refalrts
+
+//=============================================================================
+//  Определения методов отладчика и вспомогательных структур
+//=============================================================================
+//  Отладочная таблица переменных
+
+std::pair<std::string, int>
+refalrts::debugger::VariableDebugTable::parse_var_name(
+  const char *full_name
+) {
+  char *dash_ptr = strchr((char*)full_name, '#');
+  int depth = -1;
+  char var_name[cMaxLen] = {0};
+  if (dash_ptr != NULL) {
+    size_t n = (dash_ptr-full_name);
+    strncpy(var_name, full_name, n);
+      // небольшой костыль, почему-то при n=4 копируются 5 символов
+    var_name[n] = 0;
+    depth = atoi(dash_ptr+1);
+  } else {
+    strcpy(var_name, full_name);
+  }
+  return std::pair<std::string, int>(std::string(var_name), depth);
+}
+
+void refalrts::debugger::VariableDebugTable::variable_bounds(
+  refalrts::Iter& var_begin, refalrts::Iter& var_end, char type, int offset
+) {
+  var_begin = m_context[offset];
+  switch (type) {
+    case 's':
+      var_end = var_begin;
+      break;
+
+    case 't':
+      if (is_open_bracket(var_begin)) {
+        var_end = var_begin->link_info;
+      } else {
+        var_end = var_begin;
+      }
+      break;
+
+    case 'e':
+      var_end = m_context[offset + 1];
+      break;
+
+    default:
+      refalrts_switch_default_violation(type);
+  }
+}
+
+
+void refalrts::debugger::VariableDebugTable::insert_var(
+  const RASLCommand *next
+) {
+  if (m_first == 0) {
+    m_first = next;
+  }
+  m_last = next;
+}
+
+void refalrts::debugger::VariableDebugTable::clear() {
+  m_first = m_last = 0;
+}
+
+std::map<int, int> refalrts::debugger::VariableDebugTable::find_var(
+  const char *var_name
+) {
+  std::pair<std::string, int> input_pair = parse_var_name(var_name);
+  bool has_depth = input_pair.second >= 0;
+  std::map<int, int> var_depth_offset_map;
+  for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
+    std::pair<std::string, int> table_pair =
+      parse_var_name(m_strings[it->val1].string);
+    if (input_pair.first.compare(table_pair.first) == 0) {
+      if (has_depth) {
+        if (table_pair.second == input_pair.second) {
+          var_depth_offset_map.insert(
+            std::pair<int, int>(input_pair.second, it->bracket)
+          );
+        }
+      } else {
+        var_depth_offset_map.insert(
+          std::pair<int, int>(table_pair.second, it->bracket)
+        );
+      }
+    }
+  }
+  return var_depth_offset_map;
+}
+
+void refalrts::debugger::VariableDebugTable::print(FILE *out) {
+  fprintf(
+    out,
+    "==========================Variable debug table=========================\n"
+  );
+  for (const RASLCommand *it = m_first; it != 0 && it<=m_last; ++it) {
+    const char *var_name = m_strings[it->val1].string;
+    fprintf(out, "  \"%.20s\"\t-  ", var_name);
+    refalrts::Iter var_begin = 0;
+    refalrts::Iter var_end = 0;
+    variable_bounds(var_begin, var_end, var_name[0], it->bracket);
+    vm::print_seq(out, var_begin, var_end, false);
+  }
+  fprintf(
+    out,
+    "=======================================================================\n"
+  );
+}
+
+void refalrts::debugger::VariableDebugTable::print_var(
+  const char *var_name, FILE *out
+) {
+  std::map<int, int> var_depth_offset_map = find_var(var_name);
+  std::pair<std::string, int> var_parse_name = parse_var_name(var_name);
+  for (
+    std::map<int, int>::iterator it = var_depth_offset_map.begin();
+    it != var_depth_offset_map.end();
+    ++it
+  ) {
+    fprintf(out, "  %s#%d\t== ", var_parse_name.first.c_str(), it->first);
+    refalrts::Iter var_begin = 0;
+    refalrts::Iter var_end = 0;
+    variable_bounds(var_begin, var_end, var_name[0], it->second);
+    vm::print_seq(out, var_begin, var_end, false);
+  }
+}
+
+void refalrts::debugger::VariableDebugTable::set_string_items(
+  const StringItem *items
+) {
+  m_strings = items;
+}
+
+void refalrts::debugger::VariableDebugTable::set_context(
+  vm::Stack<Iter>&cont
+) {
+  m_context = cont;
+}
+
+//=============================================================================
+//  Таблица трассируемых функций
+
+void refalrts::debugger::TracedFunctionTable::trace_func(
+  const char *func_name, FILE *trace_out
+) {
+  m_traced_func_table.insert(
+    std::pair<std::string, FILE*>(std::string(func_name), trace_out)
+  );
+}
+
+void refalrts::debugger::TracedFunctionTable::notrace_func(
+  const char *func_name
+) {
+  std::map<std::string, FILE*>::iterator found =
+    m_traced_func_table.find(std::string(func_name));
+  if (found != m_traced_func_table.end()) {
+    close_out(found->second);
+    m_traced_func_table.erase(std::string(func_name));
+  }
+}
+
+void refalrts::debugger::TracedFunctionTable::clear() {
+  for (
+    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    it != m_traced_func_table.end();
+    ++it
+  ) {
+    close_out(it->second);
+  }
+  m_traced_func_table.clear();
+}
+
+bool refalrts::debugger::TracedFunctionTable::is_traced_func(
+  const char *func_name
+) {
+  return
+    m_traced_func_table.find(std::string(func_name)) !=
+      m_traced_func_table.end();
+}
+
+FILE *refalrts::debugger::TracedFunctionTable::get_trace_outstream (
+  const char * func_name
+) {
+  std::map<std::string, FILE*>::iterator found =
+    m_traced_func_table.find(std::string(func_name));
+  if (found == m_traced_func_table.end()) {
+    return 0;
+  }
+  return found->second;
+}
+
+void refalrts::debugger::TracedFunctionTable::print(FILE *out) {
+  fprintf(
+    out,
+    "=========================Traced function table=========================\n"
+  );
+  for (
+    std::map<std::string, FILE*>::iterator it = m_traced_func_table.begin();
+    it != m_traced_func_table.end();
+    ++it
+  ) {
+    fprintf(out, "  \"%.20s\"", it->first.c_str());
+    if (it->second == stdout) {
+      fprintf(out, "\tin stdout\n");
+    } else {
+      fprintf(out, "\tin file\n");
+    }
+  }
+  fprintf(
+    out,
+    "=======================================================================\n"
+  );
+}
+
+//=============================================================================
+//  Множество точек прерывания
+
+void refalrts::debugger::BreakpointSet::add_breakpoint(int step_numb) {
+  m_step_breaks.insert(step_numb);
+}
+
+void refalrts::debugger::BreakpointSet::add_breakpoint(const char *func_name) {
+  m_func_breaks.insert(std::string(func_name));
+}
+
+void refalrts::debugger::BreakpointSet::rm_breakpoint(int step_numb) {
+  m_step_breaks.erase(step_numb);
+}
+
+void refalrts::debugger::BreakpointSet::rm_breakpoint(const char *func_name) {
+  m_func_breaks.erase(std::string(func_name));
+}
+
+bool refalrts::debugger::BreakpointSet::is_breakpoint(
+  int cur_step_numb, const char *cur_func_name
+) {
+  std::set<int>::iterator step_found = m_step_breaks.find(cur_step_numb);
+  std::set<std::string>::iterator func_found =
+    m_func_breaks.find(std::string(cur_func_name));
+  return step_found != m_step_breaks.end() || func_found != m_func_breaks.end();
+}
+
+void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
+  fprintf(out, "Step breakpoint set:\n");
+  for (
+    std::set<int>::iterator step_it = m_step_breaks.begin();
+    step_it != m_step_breaks.end();
+    ++step_it
+  ) {
+    fprintf(out, "\t%d\n", *step_it);
+  }
+  fprintf(out, "Function breakpoint set:\n");
+  for (
+    std::set<std::string>::iterator func_it = m_func_breaks.begin();
+    func_it != m_func_breaks.end();
+    ++func_it
+  ) {
+    fprintf(out, "\t<%s ...>\n", func_it->c_str());
+  }
+}
+
+//=============================================================================
+//  Работа с потоками вывода
+
+FILE *refalrts::debugger::RefalDebugger::get_out() {
+  char line[cMaxLen] = {0};
+  char  filename[cMaxLen] = {0};
+  fgets(line, cMaxLen, m_in);
+  if (sscanf(line, " >> %s", filename) == 1) {
+    return fopen(filename, "a");
+  }
+  else if (sscanf(line, " > %s", filename) == 1) {
+    return fopen(filename, "w");
+  }
+  else {
+    return stdout;
+  }
+}
+
+void refalrts::debugger::close_out(FILE *out) {
+  if (out != stdout) {
+    fclose(out);
+  }
+}
+
+//=============================================================================
+//  Класс отладчика
+
+bool refalrts::debugger::RefalDebugger::mem_cond() {
+  bool res = allocator::g_memory_use > m_memory_limit;
+  if (res) {
+    m_memory_limit = -1;
+    printf("stopped on memory overflow\n");
+  }
+  return res;
+}
+
+bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
+  m_dot = s_NEXT;
+  bool stop = begin == m_next_expr;
+  if (stop) {
+    printf("stopped on next\n");
+    m_next_expr = 0;
+  }
+  return stop;
+}
+
+bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
+  m_dot = s_RUN;
+  bool stop = break_set.is_breakpoint(
+    refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
+  );
+  if (stop) {
+    printf("stopped on function breakpoint\n");
+  }
+  return stop;
+}
+
+bool refalrts::debugger::RefalDebugger::step_cond() {
+  using namespace refalrts::vm;
+  bool scond = (g_step_counter == m_step_numb);
+  m_step_numb = g_step_counter;
+  m_dot = s_STEP;
+  if (scond) {
+    printf("stopped on step\n");
+  }
+  return scond;
+}
+
+bool refalrts::debugger::RefalDebugger::is_debug_stop(
+  Iter begin, RefalFunction *callee
+) {
+  bool stop = step_cond();
+  stop = next_cond(begin) || stop;
+  stop = run_cond(callee) || stop;
+  stop = mem_cond() || stop;
+  return stop;
+}
+
+void refalrts::debugger::RefalDebugger::debug_trace(
+  Iter begin, Iter end, RefalFunction *callee
+) {
+  if (callee != 0 && func_trace_table.is_traced_func(callee->name.name)) {
+    FILE *trace_out = func_trace_table.get_trace_outstream(callee->name.name);
+    fprintf(
+      trace_out, "//==================================================\n"
+    );
+    fprintf(trace_out, "Scope function: ");
+    print_callee_option(begin, end, trace_out);
+    fprintf(trace_out, "\n");
+    fprintf(trace_out, "Traced call:   ");
+    vm::print_seq(trace_out, begin, end, false);
+    fprintf(
+      trace_out, "//==================================================\n"
+    );
+  }
+}
+
+void refalrts::debugger::RefalDebugger::set_step_res(Iter begin, Iter end) {
+  if (begin != 0 && end != 0) {
+    m_res_begin = begin->prev;
+    m_res_end = end->next;
+  }
+}
+
+void refalrts::debugger::RefalDebugger::help_option() {
+  printf("===============Common help for all allowed options==============\n");
+  printf("%s, %s\t\t\t%s\n", s_H, s_HELP, "print help for debugger options");
+  printf(
+    "%s, %s, %s\t%s\n",
+    s_B, s_BREAK, s_BREAKPOINT,
+    "set breakpoint by function name\n"
+    "\t\t\t  or step number (\'#\'ddd)"
+  );
+  printf(
+    "%s, %s, %s\t\t%s\n",
+    s_CL, s_CLEAR, s_RM,
+    "remove breakpoint from function by its name\n"
+    "\t\t\t  or from step by its number (\'#\'ddd)"
+  );
+  printf(
+    "%s\t\t%s\n",
+    s_STEPLIMIT, "set limit for step number; there will be breakpoint"
+  );
+  printf(
+    "%s\t\t%s\n",
+    s_MEMORYLIMIT,
+    "set limit for memory node number; there will be\n"
+      "\t\t\t  breakpoint"
+  );
+  printf("%s, %s\t\t%s\n", s_TR, s_TRACE, "set up tracing for function");
+  printf(
+    "%s, %s\t\t%s\n", s_NOTR, s_NOTRACE, "romave tracing settings for function"
+  );
+  printf(
+    "%s, %s\t\t\t%s\n", s_R, s_RUN, "continue program execution"
+  );
+  printf(
+    "%s, %s\t\t\t%s\n",
+    s_S, s_STEP, "make the only one step in program execution"
+  );
+  printf(
+    "%s, %s\t\t\t%s\n",
+    s_N, s_NEXT, "execute next active function until passive result"
+  );
+  printf("%s\t\t\t%s\n", s_VARS, "print the variable debug table");
+  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parametr comands");
+  printf(
+    "  %s\t%s\n",
+    "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
+  );
+  printf("  %s\t\t\t%s\n", s_CALL, "print current active expression");
+  printf("  %s\t\t%s\n", s_CALLEE, "print the therm after \'<\'");
+  printf(
+    "  %s\t\t\t%s\n",
+    s_ARG,
+    "print the argument - the expression after\n"
+    "\t\t\t  the callee-therm and befor \'>\'"
+  );
+  printf("  %s\t\t\t%s\n", s_RES, "print the result of previous step");
+  printf(
+    "  %s, %s, %s\t%s\n",
+    s_B, s_BREAK, s_BREAKPOINT, "print set of all placed breakpoints"
+  );
+  printf("  %s, %s\t\t%s\n", s_TR, s_TRACE, "print table of all traced functions");
+  printf("%s\t\t\t%s\n", s_DOT, "repeat previous debugger command");
+  printf("\n");
+  printf("================================================================\n");
+}
+
+void refalrts::debugger::RefalDebugger::break_option(const char *arg) {
+  if (arg[0] == '#') {
+    int step_break = atoi(arg+1);
+    break_set.add_breakpoint(step_break);
+  } else {
+    break_set.add_breakpoint(arg);
+  }
+}
+
+void refalrts::debugger::RefalDebugger::clear_option(const char *arg) {
+  if (arg[0] == '#') {
+    int step_break = atoi(arg+1);
+    break_set.rm_breakpoint(step_break);
+  } else {
+    break_set.rm_breakpoint(arg);
+  }
+}
+
+void refalrts::debugger::RefalDebugger::print_callee_option(
+  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
+){
+  move_left(begin, end);
+  move_right(begin, end);
+
+  Iter callee = 0;
+  tvar_left(callee, begin, end);
+
+  Iter callee_end = callee;
+  if (is_open_bracket(callee)) {
+    callee_end = callee->link_info;
+  }
+
+  vm::print_seq(out, callee, callee_end, false);
+}
+
+void refalrts::debugger::RefalDebugger::print_arg_option(
+  refalrts::Iter begin, refalrts::Iter end, FILE *out = stdout
+) {
+  move_left(begin, end);
+  move_right(begin, end);
+
+  Iter callee = 0;
+  tvar_left(callee, begin, end);
+
+  vm::print_seq(out, begin, end, false);
+}
+
+void refalrts::debugger::RefalDebugger::print_res_option(FILE *out) {
+  if (m_res_begin != 0 && m_res_end != 0) {
+    vm::print_seq(out, m_res_begin->next, m_res_end->prev, false);
+  } else {
+    fprintf(out, "[NONE]\n");
+  }
+}
+
+bool refalrts::debugger::RefalDebugger::print_var_option(
+  const char *var_name, FILE *out = stdout
+) {
+  if (var_name[1] == '.') {
+    switch(var_name[0]) {
+      case 'e':
+      case 's':
+      case 't':
+        var_debug_table.print_var(var_name, out);
+        break;
+      default:
+        refalrts_switch_default_violation(var_name[0]);
+    }
+    // распозналось, как имя переменной
+    // пусть и с неправильным типом в одной из веток
+    close_out(out);
+    return true;
+  }
+  // не может быть именем переменной
+  close_out(out);
+  return false;
+}
+
+namespace {
+
+bool str_equal(const char *lhs, const char *rhs) {
+  return strcmp(lhs, rhs) == 0;
+}
+
+} // безымянное namespace
+
+refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
+  refalrts::Iter begin, refalrts::Iter end
+) {
+  using namespace refalrts::vm;
+  char debcmd[16] = {0};
+  char strparam[cMaxLen] = {0};
+  for ( ; ; ) {
+    printf("debug>");
+    fscanf(m_in, "%15s", debcmd);
+    if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
+      help_option();
+    } else if (
+      str_equal(debcmd, s_B)
+      || str_equal(debcmd, s_BREAK)
+      || str_equal(debcmd, s_BREAKPOINT)
+    ) {
+      fscanf(m_in, "%1023s", strparam);
+      break_option(strparam);
+    } else if (
+      str_equal(debcmd, s_CL)
+      || str_equal(debcmd, s_CLEAR)
+      || str_equal(debcmd, s_RM)
+    ) {
+      fscanf(m_in, "%1023s", strparam);
+      clear_option(strparam);
+    } else if (str_equal(debcmd, s_STEPLIMIT)) {
+      int step_lim = 0;
+      fscanf(m_in, "%d", &step_lim);
+      break_set.add_breakpoint(g_step_counter+step_lim);
+    } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
+      fscanf(m_in, "%u", &m_memory_limit);
+    } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
+      fscanf(m_in, "%1023s", strparam);
+      func_trace_table.trace_func(strparam, get_out());
+    } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
+      fscanf(m_in, "%1023s", strparam);
+      func_trace_table.notrace_func(strparam);
+    } else if (
+      str_equal(debcmd, s_R)
+      || str_equal(debcmd, s_RUN)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_RUN))
+    ) {
+      m_dot = s_RUN;
+      break;
+    } else if (
+      str_equal(debcmd, s_S)
+      || str_equal(debcmd, s_STEP)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
+    ) {
+      m_step_numb = g_step_counter+1;
+      m_dot = s_STEP;
+      break;
+    } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
+      g_ret_code = 0;
+      return cExit;
+    } else if (
+      str_equal(debcmd, s_N)
+      || str_equal(debcmd, s_NEXT)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
+    ) {
+      m_next_expr = g_stack_ptr;
+      m_dot = s_NEXT;
+      break;
+    } else if (str_equal(debcmd, s_VARS)) {
+      FILE *out = get_out();
+      var_debug_table.print(out);
+      close_out(out);
+    } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
+      fscanf(m_in, "%1023s", strparam);
+      FILE *out = get_out();
+      if (str_equal(strparam, s_ARG)) {
+        print_arg_option(begin, end, out);
+      } else if (str_equal(strparam, s_CALL)) {
+        print_seq(out, begin, end, true);
+      } else if (str_equal(strparam, s_CALLEE)) {
+        print_callee_option(begin, end, out);
+      } else if (str_equal(strparam, s_RES)) {
+        print_res_option(out);
+      } else if (
+        str_equal(strparam, s_B)
+        || str_equal(strparam, s_BREAK)
+        || str_equal(strparam, s_BREAKPOINT)
+      ) {
+        break_set.print(out);
+      } else if (str_equal(strparam, s_TR) || str_equal(strparam, s_TRACE)) {
+        func_trace_table.print(out);
+      } else if (! print_var_option(strparam, out)) {
+        fprintf(
+          stderr,
+          "Unrecognised print option is found: %s \"%s\"\n",
+          debcmd, strparam
+        );
+      }
+      close_out(out);
+    } else if (! print_var_option(debcmd, get_out())) {
+      fprintf(stderr, "Unrecognised option is found: \"%s\"\n", debcmd);
+    }
+  }
+  return refalrts::cSuccess;
+}
+
+refalrts::FnResult
+refalrts::debugger::RefalDebugger::handle_function_call(
+  refalrts::Iter begin, refalrts::Iter end, refalrts::RefalFunction *callee
+) {
+  if (enable_debug()) {
+    debug_trace(begin, end, callee);
+    if (is_debug_stop(begin, callee)) {
+      printf(
+        "Step #%d; Function <%s ...>\n",
+        refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name.name
+      );
+      if (debugger_loop(begin, end) == refalrts::cExit) {
+        return cExit;
+      }
+    }
+    var_debug_table.clear();
+    set_step_res(begin, end);
+  }
+
+  return refalrts::cSuccess;
+}
+
+bool refalrts::debugger::g_enable_debug = false;
+
+int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
+  int i = 1;
+  while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
+    ++i;
+  }
+
+  if (i < argc) {
+    return i;
+  } else {
+    return -1;
+  }
+}
+
+//=============================================================================
+
 refalrts::FnResult refalrts::vm::main_loop() {
   static const RASLCommand startup_rasl[] = {
     { icIssueMemory, 3, 0, 0 },
@@ -3834,6 +4678,12 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
   vm::Stack<const RASLCommand*>& open_e_stack = vm::g_open_e_stack;
   vm::Stack<Iter>& context = vm::g_context;
+
+#ifdef ENABLE_DEBUGGER
+  refalrts::debugger::RefalDebugger debugger;
+  debugger.var_debug_table.set_context(context);
+  debugger.var_debug_table.set_string_items(strings);
+#endif // ifdef ENABLE_DEBUGGER
 
   Iter res = 0;
   Iter trash_prev = 0;
@@ -3873,6 +4723,9 @@ refalrts::FnResult refalrts::vm::main_loop() {
           idents = descr->idents;
           numbers = descr->numbers;
           strings = descr->strings;
+#ifdef ENABLE_DEBUGGER
+          debugger.var_debug_table.set_string_items(strings);
+#endif // ifdef ENABLE_DEBUGGER
         }
         break;
 
@@ -3941,13 +4794,13 @@ refalrts::FnResult refalrts::vm::main_loop() {
         if (! number_left(static_cast<RefalNumber>(rasl->val2), bb, be)) {
           MATCH_FAIL;
         }
-       break;
+        break;
 
       case icNumRight:
         if (! number_right(static_cast<RefalNumber>(rasl->val2), bb, be)) {
           MATCH_FAIL;
         }
-       break;
+        break;
 
       case icNumTerm:
         if (! number_term(static_cast<RefalNumber>(rasl->val2), bb)) {
@@ -3980,7 +4833,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         if (! number_right(numbers[rasl->val2], bb, be)) {
           MATCH_FAIL;
         }
-       break;
+        break;
 
       case icHugeNumTerm:
         if (! number_term(numbers[rasl->val2], bb)) {
@@ -4216,7 +5069,7 @@ refalrts::FnResult refalrts::vm::main_loop() {
         if (! tvar_right(context[index], bb, be)) {
           MATCH_FAIL;
         }
-       break;
+        break;
 
       case ictVarSaveLeft:
         index = rasl->val2;
@@ -4343,7 +5196,18 @@ refalrts::FnResult refalrts::vm::main_loop() {
         res_e = be;
         break;
 
+      case icVariableDebugOffset:
+#ifdef ENABLE_DEBUGGER
+        debugger.var_debug_table.insert_var(rasl);
+#endif  // ifdef ENABLE_DEBUGGER
+        break;
+
       case icResetAllocator:
+#ifdef ENABLE_DEBUGGER
+        if (debugger.handle_function_call(begin, end, callee) == cExit) {
+          return cExit;
+        }
+#endif  // ifdef ENABLE_DEBUGGER
         reset_allocator();
         break;
 
@@ -4584,6 +5448,12 @@ refalrts::FnResult refalrts::vm::main_loop() {
           } else if (cDataClosure == function->tag) {
             refalrts::Iter head = function->link_info;
 
+#ifdef ENABLE_DEBUGGER
+            if (debugger.handle_function_call(begin, end, 0) == cExit) {
+              return cExit;
+            }
+#endif  // ifdef ENABLE_DEBUGGER
+
             if (1 == head->number_info) {
               /*
                 Пользуемся тем, что при развёртке содержимое замыкания
@@ -4678,6 +5548,11 @@ refalrts::FnResult refalrts::vm::main_loop() {
 
       case icPerformNative:
         {
+#ifdef ENABLE_DEBUGGER
+          if (debugger.handle_function_call(begin, end, callee) == cExit) {
+            return cExit;
+          }
+#endif  // ifdef ENABLE_DEBUGGER
           RefalNativeFunction *native_callee =
             static_cast<RefalNativeFunction*>(callee);
           FnResult res = (native_callee->ptr)(begin, end);
@@ -4717,6 +5592,17 @@ void refalrts::SwitchDefaultViolation::print() {
 //==============================================================================
 
 int main(int argc, char **argv) {
+#ifdef ENABLE_DEBUGGER
+  int debug_arg = refalrts::debugger::find_debugger_flag(argc, argv);
+  if (debug_arg != -1) {
+    for (int i = debug_arg; i < argc; ++i) {
+      argv[i] = argv[i + 1];
+    }
+    --argc;
+    refalrts::debugger::set_enable_debug();
+  }
+#endif // ifdef ENABLE_DEBUGGER
+
   refalrts::vm::g_argc = argc;
   refalrts::vm::g_argv = argv;
 

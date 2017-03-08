@@ -273,6 +273,9 @@ GenCommand-RASL {
   (#CmdSave s.OldBracketNumber s.NewBracketNumber) =
     <PutCommand #CmdSave 0 s.NewBracketNumber s.OldBracketNumber>;
 
+  (#CmdVariableDebugTable s.StringId s.Offset) =
+    <PutCommand #CmdVariableDebugOffset s.StringId 0 s.Offset>;
+
   // ---------------------------------------------------------------------------
   // Команды построения результата (режим интерпретации)
 

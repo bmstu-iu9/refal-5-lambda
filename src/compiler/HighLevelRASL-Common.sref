@@ -167,6 +167,7 @@ $ENTRY GenResult {
           <FoldOpenELoops
             (#CmdIssueMemory s.ContextCount)
             e.PatternCommands
+            <PutVariableDebugTable e.PatternVars>
             e.ResultCommands
           >;
       }
@@ -182,6 +183,17 @@ FoldOpenELoops {
     );
 
   e.Commands = e.Commands;
+}
+
+PutVariableDebugTable {
+  e.PatternVars =
+    <Map
+      {
+        (s.Mode (e.Index) s.FirstOffset e.Offsets) =
+          (#CmdVariableDebugTable s.Mode e.Index s.FirstOffset);
+      }
+      e.PatternVars
+    >;
 }
 
 /**
