@@ -10,9 +10,9 @@ make_subdir() {
   if [ -z "$RELEASE" ]; then
     # Максимум 40 000 000 байт (x32), 80 000 000 байт (x64)
     # SREFC_FLAGS используются только для сборки библиотек
-    SREFC_FLAGS_PLUS=--markup-context
+    SREFC_FLAGS_PLUS="--markup-context --debug-info"
     SRMAKE_FLAGS_PLUS="
-      -X--markup-context \
+      -X--markup-context -X--debug-info \
       -X-C-DMEMORY_LIMIT=2500000 \
       -X-C-DSTEP_LIMIT=30000000"
   else
