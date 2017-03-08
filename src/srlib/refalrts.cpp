@@ -3546,6 +3546,14 @@ bool refalrts::debugger::RefalDebugger::print_var_option(
   return false;
 }
 
+namespace {
+
+bool str_equal(const char *lhs, const char *rhs) {
+  return strcmp(lhs, rhs) == 0;
+}
+
+} // безымянное namespace
+
 refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   refalrts::Iter begin, refalrts::Iter end
 ) {
@@ -3555,80 +3563,82 @@ refalrts::FnResult refalrts::debugger::RefalDebugger::debugger_loop(
   for ( ; ; ) {
     printf("debug>");
     fscanf(m_in, "%s", debcmd);
-    if (! strcmp(debcmd, s_H) || ! strcmp(debcmd, s_HELP)) {
+    if (str_equal(debcmd, s_H) || str_equal(debcmd, s_HELP)) {
       help_option();
     } else if (
-      ! strcmp(debcmd, s_B) ||
-      ! strcmp(debcmd, s_BREAK) ||
-      ! strcmp(debcmd, s_BREAKPOINT)
+      str_equal(debcmd, s_B)
+      || str_equal(debcmd, s_BREAK)
+      || str_equal(debcmd, s_BREAKPOINT)
     ) {
       fscanf(m_in, "%s", strparam);
       break_option(strparam);
     } else if (
-      ! strcmp(debcmd, s_CL) || ! strcmp(debcmd, s_CLEAR) || ! strcmp(debcmd, s_RM)
+      str_equal(debcmd, s_CL)
+      || str_equal(debcmd, s_CLEAR)
+      || str_equal(debcmd, s_RM)
     ) {
       fscanf(m_in, "%s", strparam);
       clear_option(strparam);
-    } else if (! strcmp(debcmd, s_STEPLIMIT)) {
+    } else if (str_equal(debcmd, s_STEPLIMIT)) {
       int step_lim = 0;
       fscanf(m_in, "%d", &step_lim);
       break_set.add_breakpoint(g_step_counter+step_lim);
-    } else if (! strcmp(debcmd, s_MEMORYLIMIT)) {
+    } else if (str_equal(debcmd, s_MEMORYLIMIT)) {
       fscanf(m_in, "%u", &m_memory_limit);
-    } else if (! strcmp(debcmd, s_TR) || ! strcmp(debcmd, s_TRACE)) {
+    } else if (str_equal(debcmd, s_TR) || str_equal(debcmd, s_TRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.trace_func(strparam, get_out());
-    } else if (! strcmp(debcmd, s_NOTR) || ! strcmp(debcmd, s_NOTRACE)) {
+    } else if (str_equal(debcmd, s_NOTR) || str_equal(debcmd, s_NOTRACE)) {
       fscanf(m_in, "%s", strparam);
       func_trace_table.notrace_func(strparam);
     } else if (
-      ! strcmp(debcmd, s_R) ||
-      ! strcmp(debcmd, s_RUN) ||
-      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_RUN))
+      str_equal(debcmd, s_R)
+      || str_equal(debcmd, s_RUN)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_RUN))
     ) {
       m_dot = s_RUN;
       break;
     } else if (
-      ! strcmp(debcmd, s_S) ||
-      ! strcmp(debcmd, s_STEP) ||
-      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_STEP))
+      str_equal(debcmd, s_S)
+      || str_equal(debcmd, s_STEP)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_STEP))
     ) {
       m_step_numb = g_step_counter+1;
       m_dot = s_STEP;
       break;
-    } else if (! strcmp(debcmd, s_Q) || ! strcmp(debcmd, s_QUIT)) {
+    } else if (str_equal(debcmd, s_Q) || str_equal(debcmd, s_QUIT)) {
       g_ret_code = 0;
       return cExit;
     } else if (
-      ! strcmp(debcmd, s_N) ||
-      ! strcmp(debcmd, s_NEXT) ||
-      (! strcmp(debcmd, s_DOT) && ! strcmp(m_dot, s_NEXT))
+      str_equal(debcmd, s_N)
+      || str_equal(debcmd, s_NEXT)
+      || (str_equal(debcmd, s_DOT) && str_equal(m_dot, s_NEXT))
     ) {
       m_next_expr = g_stack_ptr;
       m_dot = s_NEXT;
       break;
-    } else if (! strcmp(debcmd, s_VARS)) {
+    } else if (str_equal(debcmd, s_VARS)) {
       FILE *out = get_out();
       var_debug_table.print(out);
       close_out(out);
-    } else if (! strcmp(debcmd, s_P) || ! strcmp(debcmd, s_PRINT)) {
+    } else if (str_equal(debcmd, s_P) || str_equal(debcmd, s_PRINT)) {
       fscanf(m_in, "%s", strparam);
       FILE *out = get_out();
-      if (! strcmp(strparam, s_ARG)) {
+      if (str_equal(strparam, s_ARG)) {
         print_arg_option(begin, end, out);
-      } else if (! strcmp(strparam, s_CALL)) {
+      } else if (str_equal(strparam, s_CALL)) {
         print_seq(out, begin, end, true);
-      } else if (! strcmp(strparam, s_CALLEE)) {
+      } else if (str_equal(strparam, s_CALLEE)) {
         print_callee_option(begin, end, out);
-      } else if (! strcmp(strparam, s_RES)) {
+      } else if (str_equal(strparam, s_RES)) {
         print_res_option(out);
       } else if (
-        ! strcmp(strparam, s_B) ||
-        ! strcmp(strparam, s_BREAK) ||
-        ! strcmp(strparam, s_BREAKPOINT)
+        str_equal(strparam, s_B)
+        || str_equal(strparam, s_BREAK)
+        || str_equal(strparam, s_BREAKPOINT)
       ) {
         break_set.print(out);
-      } else if (! strcmp(strparam, s_TR) || ! strcmp(strparam, s_TRACE)) {
+      } else if (str_equal(strparam, s_TR) || str_equal(strparam, s_TRACE)) {
         func_trace_table.print(out);
       } else if (! print_var_option(strparam, out)) {
         fprintf(
@@ -3671,7 +3681,7 @@ bool refalrts::debugger::g_enable_debug = false;
 
 int refalrts::debugger::find_debugger_flag(int argc, char **argv) {
   int i = 1;
-  while (i < argc && strcmp(argv[i], "++enable+debugger++") != 0) {
+  while (i < argc && ! str_equal(argv[i], "++enable+debugger++")) {
     ++i;
   }
 
