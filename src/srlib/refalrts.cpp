@@ -3330,20 +3330,30 @@ bool refalrts::debugger::RefalDebugger::mem_cond() {
   bool res = allocator::g_memory_use > m_memory_limit;
   if (res) {
     m_memory_limit = -1;
+    printf("stopped on memory overflow\n");
   }
   return res;
 }
 
 bool refalrts::debugger::RefalDebugger::next_cond(Iter begin) {
   m_dot = s_NEXT;
-  return begin == m_next_expr;
+  bool stop = begin == m_next_expr;
+  if (stop) {
+    printf("stopped on next\n");
+    m_next_expr = 0;
+  }
+  return stop;
 }
 
 bool refalrts::debugger::RefalDebugger::run_cond(RefalFunction *callee) {
   m_dot = s_RUN;
-  return break_set.is_breakpoint(
+  bool stop = break_set.is_breakpoint(
     refalrts::vm::g_step_counter, callee == 0 ? "" : callee->name
   );
+  if (stop) {
+    printf("stopped on function breakpoint\n");
+  }
+  return stop;
 }
 
 bool refalrts::debugger::RefalDebugger::step_cond() {
@@ -3351,13 +3361,20 @@ bool refalrts::debugger::RefalDebugger::step_cond() {
   bool scond = (g_step_counter == m_step_numb);
   m_step_numb = g_step_counter;
   m_dot = s_STEP;
+  if (scond) {
+    printf("stopped on step\n");
+  }
   return scond;
 }
 
 bool refalrts::debugger::RefalDebugger::is_debug_stop(
   Iter begin, RefalFunction *callee
 ) {
-  return step_cond() || next_cond(begin) || run_cond(callee) || mem_cond();
+  bool stop = step_cond();
+  stop = next_cond(begin) || stop;
+  stop = run_cond(callee) || stop;
+  stop = mem_cond() || stop;
+  return stop;
 }
 
 void refalrts::debugger::RefalDebugger::debug_trace(
