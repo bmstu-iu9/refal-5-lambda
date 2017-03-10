@@ -26,9 +26,14 @@ $EXTERN ErrorAt;
 //FROM Flex-Lexer
 $EXTERN Flex-Tokens;
 
-//FROM Flex-Parse
+//FROM Flex-Parser
 $EXTERN Flex-Parse;
 
+//FROM Flex-Checker
+$EXTERN Flex-Check;
+
+////FROM Flex-Desugar
+//$EXTERN Flex-Desugar;
 
 $ENTRY Go {
   =
@@ -130,6 +135,11 @@ Transform {
                   }
                 )
                 Flex-Parse
+                {
+                  e.AST =
+                    <Flex-Check e.AST>
+                    e.AST;
+                }
                 Flex-Compile
                 /* GenerateFromDFA */
                 {

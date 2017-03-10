@@ -7,6 +7,38 @@ $EXTERN EscapeString;
 //FROM Library
 $EXTERN Chr, StrFromInt, Mul, Add;
 
+$ENTRY Flex-TextFromToken {
+  (#TName t.Pos e.Name) = 'name ' e.Name;
+  (#TEquals t.Pos) = '"="';
+  (#TArrow t.Pos) = '"->"';
+  (#TSkip t.Pos) = '-';
+  (#TErrorMessage e.Message) = 'User error message "' e.Message '"';
+  (#TChar t.Pos s.Char) = '' <EscapeString s.Char> '';
+  (#TStartRegexp t.Pos) = '"/" (start)';
+  (#TEndRegexp t.Pos) = '"/" (end)';
+  (#TStartGroup t.Pos) = '"["';
+  (#TEndGroup t.Pos) = '"]"';
+
+  (#TInclude t.Pos e.Name) = '{' e.Name '}';
+  (#TAny t.Pos) = '"."';
+  (#TOpenBracket t.Pos) = '"("';
+  (#TCloseBracket t.Pos) = '")"';
+  (#TAlt t.Pos) = '"|"';
+  (#TBegin t.Pos) = '"^"';
+  (#TEnd t.Pos) = '"$"';
+  (#TOptional t.Pos) = '"?"';
+  (#TZeroMany t.Pos) = '"*"';
+  (#TOneMany t.Pos) = '"+"';
+
+  (#TInvertGroup t.Pos) = '"^"';
+  (#TGroupRange t.Pos) = '"-"';
+  (#TError t.Pos e.Message) = 'token error ' e.Message;
+  (#TStateStart t.Pos) = '"<"';
+  (#TComma t.Pos) = '","';
+  (#TStateEnd t.Pos) = '">"';
+  (#TEOF t.Pos) = 'EOF';
+}
+
 $ENTRY Flex-Tokens {
   s.FirstLineNumber e.DescriptionLines =
     <Fetch
@@ -79,6 +111,8 @@ SecondPass {
   (#TStateEnd '>') = (#TStateEnd);
   (#TkHexNumber e.HexCode) = (#TChar <CharFromNum 16 e.HexCode>);
   (#TkOctNumber e.OctCode) = (#TChar <CharFromNum 8 e.OctCode>);
+  (#TSkip) = (#TSkip);
+  (#TErrorMessage e.Message '"') = (#TErrorMessage e.Message);
   (#TEOF) = (#TEOF);
 }
 
@@ -135,11 +169,17 @@ DigitFromChar {
     '<'             !#TStateStart           Root                |
     ','             !#TComma                Root                |
     '>'             !#TStateEnd             Root                |
+    '"'             !-                      ErrorMessage        |
     :Any:           !#TUnexpecteChar        Root                |
                     !#TEOF                                      .
   ReadArrow =
     '>'             !#TArrow                Root                |
                     !#TSkip                 Root                .
+
+  ErrorMessage =
+    '"'             !#TErrorMessage         Root                |
+    :Any:                                   ErrorMessage        |
+                    !"Unclosed error message"                   .
 
   ReadRegexp =
     '/'             !#TEndRegexp            Root                |
@@ -275,6 +315,7 @@ Root {
   (e.Accum) '<' e.Text = (#TStateStart e.Accum '<') <Root () e.Text>;
   (e.Accum) ',' e.Text = (#TComma e.Accum ',') <Root () e.Text>;
   (e.Accum) '>' e.Text = (#TStateEnd e.Accum '>') <Root () e.Text>;
+  (e.Accum) '\"' e.Text = <ErrorMessage () e.Text>;
   (e.Accum) s.Any e.Text = (#TUnexpecteChar e.Accum s.Any) <Root () e.Text>;
   (e.Accum) = (#TEOF e.Accum);
 }
@@ -381,6 +422,12 @@ Name {
   (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
   (e.Accum) e.Text = (#TName e.Accum) <Root () e.Text>;
+}
+
+ErrorMessage {
+  (e.Accum) '\"' e.Text = (#TErrorMessage e.Accum '\"') <Root () e.Text>;
+  (e.Accum) s.Any e.Text = <ErrorMessage (e.Accum s.Any) e.Text>;
+  (e.Accum) = (#TokenError 'Unclosed error message');
 }
 
 EscRegexp {

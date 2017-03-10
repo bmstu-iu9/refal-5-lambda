@@ -1,0 +1,694 @@
+//FROM LibraryEx
+$EXTERN Fetch;
+
+//FROM Flex-Lexer
+$EXTERN Flex-TextFromToken;
+
+//FROM Error
+$EXTERN ErrorAt;
+
+$SWAP G_Tokens;
+
+Current {
+  =
+    <Fetch
+      <G_Tokens>
+      {
+        (s.Type t.Position e.Info) e.OtherTokens =
+          (s.Type t.Position e.Info)
+          <G_Tokens (s.Type t.Position e.Info) e.OtherTokens>;
+      }
+    >;
+}
+
+MoveNext {
+  =
+    <Fetch
+      <G_Tokens>
+      {
+        t.First e.OtherTokens = <G_Tokens e.OtherTokens>;
+      }
+    >;
+}
+
+CurrentTag {
+  =
+    <Fetch
+      <Current>
+      {
+        (s.Type t.Position e.Info) = s.Type;
+      }
+    >;
+}
+
+CurrentAttr {
+  =
+    <Fetch
+      <Current>
+      {
+        (s.Type t.Position e.Info) = e.Info;
+      }
+    >;
+}
+
+CurrentPos {
+  =
+    <Fetch
+      <Current>
+      {
+        (s.Type t.Position e.Info) = t.Position;
+      }
+    >;
+}
+
+Expect {
+  s.Expected e.ExpectedDescription =
+    <Fetch
+      <CurrentTag>
+      {
+        s.Expected = <MoveNext>;
+
+        s.Unexpected =
+          <Error 'Unexpected ' <Flex-TextFromToken <Current>> ', but expected ' e.ExpectedDescription>;
+      }
+    >;
+}
+
+Generalize {
+  s.Tag e.Generics-B (s.GenericTag e.Tags-B s.Tag e.Tags-E) e.Generics-E
+    = s.GenericTag;
+  s.Tag e.Generics = s.Tag;
+}
+
+Error {
+  e.Message =
+    <Fetch
+      <Current>
+      {
+        (s.Type t.Pos e.Info) = <ErrorAt t.Pos e.Message>;
+      }
+    >;
+}
+
+//<Program> = <Description><Descriptions>
+/*
+  e.Program ::= t.Description+
+*/
+$ENTRY Flex-Parse {
+  e.Tokens =
+    <G_Tokens e.Tokens>
+    <ParseDescription><ParseDescriptions>;
+}
+
+//<Description> = <Subexpr>|<Domain>
+/*
+  t.Description ::=
+      t.Subexpr
+    | t.Domain
+*/
+ParseDescription {
+  =
+       <Fetch
+         <CurrentTag> {
+                #TName =
+                  <ParseSubexpr>;
+                #TStateStart =
+                  <ParseDomain>;
+                #TStartRegexp =
+                  <ParseDomain>;
+                #TEOF =
+                        /* разбор закончен */;
+                s.Other =
+                  <Error
+                    'Expected domain or subexpr definition, but got '
+                    <Flex-TextFromToken <Current>>
+                  >;
+         }
+       >;
+}
+
+//<Descriptions> = <Description> <Descriptions> | e
+/*
+  e.Descriptions ::= t.Description*
+*/
+ParseDescriptions {
+   =
+       <Fetch
+         <CurrentTag> {
+              #TName =
+                <ParseDescription> <ParseDescriptions>;
+              #TStateStart =
+                <ParseDescription> <ParseDescriptions>;
+              #TStartRegexp =
+                <ParseDescription> <ParseDescriptions>;
+              #TEOF =
+                /* разбор закончен */;
+              s.Other =
+                <Error
+                  'Expected domain or subexpr definition, but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+         }
+       >;
+}
+
+//<Subexpr> = <NAME>"="<Regexp>
+/*
+  t.Subexpr ::= (#Subexpr t.Pos e.Name t.Regexp)
+*/
+ParseSubexpr {
+  =
+        <Fetch
+          <CurrentTag> {
+               #TName =
+                 (#Subexpr
+                   <CurrentPos>
+                   <CurrentAttr> // e.Name
+                   <MoveNext>
+                   <Expect #TEquals '='>
+                   <ParseRegexp>  // t.Regexp
+                 );
+
+               s.Other =
+                 <Error
+                  'Expected number, but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+          }
+        >;
+}
+
+//<Domain> = <DomainFrom>"->"<DomainTo>
+/*
+  t.Domain ::= (#Domain t.Pos e.LeftPart e.RightPart)
+*/
+ParseDomain {
+  =
+       <Fetch
+         <CurrentTag> {
+              #TStateStart =
+                (#Domain
+                   <CurrentPos>
+                   <ParseDomainFrom>  // e.LeftPart
+                   <Expect #TArrow '->'>
+                   <ParseDomainTo>    // e.RightPart
+                 );
+
+              #TStartRegexp =
+                (#Domain
+                   <CurrentPos>
+                   <ParseDomainFrom>
+                   <Expect #TArrow '->'>
+                   <ParseDomainTo>
+                 );
+
+              s.Other =
+                <Error
+                  'Expected start of a state or of a regular expression, but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+         }
+       >;
+}
+
+//<DomainFrom> = <StatesOpt><Regexp>
+/*
+  e.LeftPart ::= (e.States) t.Regexp
+*/
+ParseDomainFrom {
+  =
+       <Fetch
+         <CurrentTag> {
+              #TStateStart =
+                (<ParseStatesOpt>) <ParseRegexp>;
+
+              #TStartRegexp =
+                (<ParseStatesOpt>) <ParseRegexp>;
+
+              s.Other =
+                <Error
+                  'Expected start of a state, but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+         }
+       >;
+}
+
+//<StatesOpt> = <States> | e
+/*
+  e.States ::= (e.StateName)*
+*/
+ParseStatesOpt {
+  =
+       <Fetch
+        <CurrentTag> {
+             #TStateStart =
+                <ParseStates>;
+
+             s.Other = /* пропускаем */;
+        }
+       >;
+}
+
+//<DomainTo> = <Flush> <NextStateOpt>
+/*
+  e.RightPart = t.Flush e.NextState
+*/
+ParseDomainTo {
+  =
+       <Fetch
+        <Generalize <CurrentTag> (#TFlush #TName #TSkip #TErrorMessage)> {
+             #TFlush =
+                <ParseFlush><ParseNextStateOpt>;
+
+             s.Other =
+                <Error
+                 'Expected named, skipped or error domain possibly followed by next state, but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+        }
+       >;
+}
+
+//<Flush> = <NAME> | "-" | <ERROR>
+/*
+  t.Flush ::=
+      (#NamedDomain e.Name)
+    | #SkippedDomain
+    | (#ErrorDomain)
+*/
+ParseFlush {
+  =
+       <Fetch
+        <CurrentTag> {
+                #TName =
+                   (#NamedDomain <CurrentAttr>)
+                   <MoveNext>;
+                #TSkip =
+                   #SkippedDomain
+                   <MoveNext>;
+                #TErrorMessage =
+                   (#ErrorDomain <CurrentAttr>)
+                   <MoveNext>;
+
+                s.Other =
+                   <Error
+                    'Expected named, skipped or error domain, but got '
+                     <Flex-TextFromToken <Current>>
+                   >;
+        }
+       >;
+}
+
+//<NextStateOpt> = "," <State> | e
+/*
+  t.NextState ::=
+      (#NoNextState)
+    | (#NextState t.Pos e.Name)
+*/
+ParseNextStateOpt {
+  =
+       <Fetch
+        <CurrentTag>
+        {
+                #TComma =
+                   <MoveNext>
+                   (#NextState <ParseState>);
+
+                s.Other =
+                   #NoNextState
+                   /* пропускаем */;
+        }
+       >;
+}
+
+//<State> = "<"<NameOpt>">"
+ParseState {
+  =
+        <Fetch
+         <CurrentTag>
+         {
+              #TStateStart =
+                <MoveNext>
+                (<ParseNameOpt>)
+                <Expect #TStateEnd '>'>;
+
+              s.Other =
+                <Error
+                  'Expected bracketed state expression, but got '
+                   <Flex-TextFromToken <Current>>
+                >;
+         }
+        >;
+}
+
+//<NameOpt> = <NAME> | e
+ParseNameOpt {
+  =
+       <Fetch
+        <CurrentTag>
+        {
+                #TName =
+                   <MoveNext>
+                   <CurrentAttr>;
+
+                s.Other = /* пропускаем */;
+        }
+       >;
+}
+
+//<Regexp> = "/" <Alt> "/"
+/*
+  t.Regexp ::= (#Regexp e.Alt)
+*/
+ParseRegexp {
+  =
+       <Fetch
+         <CurrentTag>
+         {
+                #TStartRegexp =
+                  <MoveNext>
+                  (#Regexp <ParseAlt>)
+                  <Expect #TEndRegexp '/'>;
+
+                s.Other =
+                  <Error
+                   'Expected bracketed regular expression or <<EOF>>, but got '
+                    <Flex-TextFromToken <Current>>
+                  >;
+         }
+       >;
+}
+
+//<ComplexTerm> = <Term> <ComplexTerm> | e
+/*
+  t.ComplexTerm ::= (t.Term*)
+*/
+
+ParseComplexTerm {
+  =
+      <Fetch
+        <Generalize <CurrentTag> (#ComplexTermSYMBOL #TAny #TStartGroup #TInclude #TChar #TOpenBracket )>
+        {
+            #ComplexTermSYMBOL =
+              <ParseTerm>
+              <ParseComplexTerm>;
+
+            s.Other = /* пропускаем */;
+        }
+      >;
+}
+
+//<Term> = <SimpleTerm><Repeater>
+/*
+  t.Term ::= (#Term t.SimpleTerm s.Rep)
+*/
+ParseTerm {
+  =
+      <Fetch
+        <Generalize <CurrentTag> (#TermSYMBOL #TAny #TStartGroup #TInclude #TChar #TOpenBracket )>
+        {
+            #TermSYMBOL =
+              (#Term
+              <ParseSimpleTerm>
+              <ParseRepeater>);
+
+            s.Other =
+              <Error
+              'Expected a symbol, starting group, include, open bracket expression but got '
+               <Flex-TextFromToken <Current>>
+              >;
+        }
+      >;
+}
+
+//<Repeater> = "*"|"+"|"?"|e
+/*
+  s.Rep ::= #ManyZero | #ManyOne | #Optional
+*/
+ParseRepeater {
+  =
+       <Fetch
+         <CurrentTag>
+         {
+               #TZeroMany =
+                  #ManyZero
+                  <MoveNext>;
+               #TOneMany =
+                  #ManyOne
+                  <MoveNext>;
+               #TOptional =
+                  #Optional
+                  <MoveNext>;
+
+               s.Other =
+                  /* пропускаем */;
+         }
+       >;
+}
+
+//<SimpleTerm> = "."|<Set>|"{"<NAME>"}"|<SYMBOL>|"("<Alt>")"
+/*
+  t.SimpleTerm ::=
+      #AnyChar
+    | t.Group
+    | (#NamedRegexp e.Name)
+    | (#Char s.Char)
+    | (#Alt e.Alt)
+*/
+ParseSimpleTerm {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+                #TAny =
+                  #AnyChar
+                  <MoveNext>;
+                #TStartGroup =
+                  <ParseSet>;
+                #TInclude =
+                  <MoveNext>
+                  (#NamedRegexp <Expect #TName>);
+                #TChar =
+                  (#Char <CurrentAttr>)
+                  <MoveNext>;
+                #TOpenBracket =
+                  <MoveNext>
+                  (#Alt <ParseAlt>)
+                  <Expect #TCloseBracket ')'>;
+
+                s.Other =
+                  <Error
+                  'Expected any symbol, set of symbols, expression in brackets but got '
+                    <Flex-TextFromToken <Current>>
+                  >;
+          }
+        >;
+}
+
+//<Set> = "["<InvertOpt><ComplexSYMBOLSET><ComplexSYMBOLSETS>"]"
+/*
+  t.Group ::= (#NamedGroup s.GroupMode e.Set)
+  e.Set :: = (t.ComplexSYMBOLSET)+
+*/
+ParseSet {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+                #TStartGroup =
+                  <MoveNext>
+                  (#NamedGroup
+                      <ParseInvertOpt>
+                      <ParseComplexSYMBOLSET>
+                      <ParseComplexSYMBOLSETS>
+                      <Expect #TEndGroup ']'>
+                  );
+
+                s.Other =
+                  <Error
+                  'Expected expression in square brackets but got '
+                    <Flex-TextFromToken <Current>>
+                  >;
+          }
+        >;
+}
+
+//<InvertOpt> = "^"|e
+/*
+  s.GroupMode ::= #Inverted | #Direct
+*/
+ParseInvertOpt {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TBegin =
+                  #Inverted
+                  <MoveNext>;
+
+              s.Other =
+                  #Direct
+                  /* пропускаем */ ;
+          }
+        >;
+}
+
+//<ComplexSYMBOLSETS> = <ComplexSYMBOLSET><ComplexSYMBOLSETS> | e
+ParseComplexSYMBOLSETS {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TChar =
+                  <ParseComplexSYMBOLSET>
+                  <ParseComplexSYMBOLSETS>;
+
+              s.Other = /* пропускаем */ ;
+          }
+        >;
+}
+
+//<ComplexSYMBOLSET> = <SYMBOL><optSYMBOL>
+/*
+  t.ComplexSYMBOLSET ::= s.SYMBOLSET+
+  s.SYMBOLSET ::= (s.Char) | (s.CharStart s.CharEnd)
+  // equivalent: (s.Char e.OptSymbol)
+*/
+ParseComplexSYMBOLSET {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TChar =
+                (
+                  <CurrentAttr>
+                  <MoveNext>
+                  <ParseOptSYMBOL>
+                );
+
+              s.Other =
+                <Error
+                 'Expected symbol or pair of symbols but got '
+                  <Flex-TextFromToken <Current>>
+                >;
+          }
+        >;
+}
+
+//<optSYMBOL> = "-"<SYMBOL> | e
+/*
+  e.OptSymbol ::= s.Char | empty
+*/
+ParseOptSYMBOL {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TGroupRange =
+                <MoveNext>
+                <CurrentAttr>
+                <Expect #TChar>;
+
+              s.Other = /* пропускаем */;
+          }
+        >;
+}
+
+//<States> = "<"<StateNames>">"
+ParseStates {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TStateStart =
+                <MoveNext>
+                (<ParseStateNames>)
+                <Expect #TStateEnd '>'>;
+
+              s.Other =
+                <Error
+                  'Expected state names surrounded by brackets but got '
+                    <Flex-TextFromToken <Current>>
+                >;
+          }
+        >;
+}
+
+//<StateNames> = <NAME><NextName> | e
+/*
+  e.StateNames ::= (t.StateName)*
+  t.StateName ::= (#Name t.Pos e.Name)
+*/
+ParseStateNames {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+                #TName =
+                   (#Name <CurrentAttr>)    // e.Name
+                   <MoveNext>
+                   (<ParseNextName>);
+
+                s.Other = /*пропускаем*/;
+          }
+        >;
+}
+
+//<NextName> = "," <NAME> <NextNAME> | e
+ParseNextName {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+              #TComma =
+                <MoveNext>
+                <Expect #TName>
+                (<ParseNextName>);
+
+              s.Other = /* пропускаем */;
+          }
+        >;
+}
+
+//<Alt> = <ComplexTerm> <AltTail>
+/*
+  e.Alt ::= t.AltGroup*
+*/
+ParseAlt {
+  =
+       <Fetch
+        <Generalize <CurrentTag> (#ComplexTermSYMBOL #TAny #TStartGroup #TInclude #TChar #TOpenBracket )>
+        {
+            #ComplexTermSYMBOL =
+              (<ParseComplexTerm>)
+              <ParseAltTail>;
+
+            s.Other =
+              <Error
+                  'Expected state names surrounded by brackets but got '
+                    <Flex-TextFromToken <Current>>
+              >;
+        }
+       >;
+}
+
+//<AltTail> = "|" <ComplexTerm> <AltTail> | e
+/*
+  t.AltGroup ::= (t.ComplexTerm*)
+*/
+ParseAltTail {
+  =
+        <Fetch
+          <CurrentTag>
+          {
+            #TAlt =
+              <MoveNext>
+              (<ParseComplexTerm>)
+              <ParseAltTail>;
+
+            s.Other =
+              /*пропускаем*/;
+          }
+        >;
+}

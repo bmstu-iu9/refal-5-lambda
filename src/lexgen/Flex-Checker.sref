@@ -1,0 +1,30 @@
+//FROM LibraryEx
+$EXTERN Map;
+
+//FROM Error
+$EXTERN ErrorAt;
+
+
+$ENTRY Flex-Check {
+   e.AST =
+     <CheckUniqueNames
+       <Map
+         {
+           (#Subexpr t.Pos e.Name t.Regexp) =
+             (t.Pos e.Name);
+
+           t.OtherItem =
+             /* пусто */;
+         }
+         e.AST
+       >
+     >;
+}
+
+CheckUniqueNames {
+  e.Names-B (t.Pos1 e.Name) e.Names-M (t.Pos2 e.Name) e.Names-E =
+    <ErrorAt t.Pos2 'Redefined subexpr name ' e.Name>;
+
+  e.Names =
+    /* пусто */;
+}
