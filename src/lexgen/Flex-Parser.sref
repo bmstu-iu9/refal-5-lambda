@@ -658,7 +658,7 @@ ParseNextName {
 ParseAlt {
   =
        <Fetch
-        <Generalize <CurrentTag> (#ComplexTermSYMBOL #TAny #TStartGroup #TInclude #TChar #TOpenBracket )>
+        <Generalize <CurrentTag> (#ComplexTermSYMBOL #TAny #TStartGroup #TInclude #TChar #TOpenBracket #TAlt)>
         {
             #ComplexTermSYMBOL =
               (<ParseComplexTerm>)
@@ -666,7 +666,7 @@ ParseAlt {
 
             s.Other =
               <Error
-                  'Expected state names surrounded by brackets but got '
+                  'Expected regular expression but got '
                     <Flex-TextFromToken <Current>>
               >;
         }
