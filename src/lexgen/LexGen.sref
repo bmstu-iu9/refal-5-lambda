@@ -32,8 +32,8 @@ $EXTERN Flex-Parse;
 //FROM Flex-Checker
 $EXTERN Flex-Check;
 
-////FROM Flex-Desugar
-//$EXTERN Flex-Desugar;
+//FROM Flex-Desugar
+$EXTERN Flex-Desugar;
 
 $ENTRY Go {
   =
@@ -140,6 +140,7 @@ Transform {
                     <Flex-Check e.AST>
                     e.AST;
                 }
+                Flex-Desugar
                 Flex-Compile
                 /* GenerateFromDFA */
                 {
