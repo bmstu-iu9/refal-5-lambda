@@ -42,6 +42,7 @@ $ENTRY StrFromToken {
   #TkOpenBracket = '"("';
   #TkReplace = '"="';
   #TkSemicolon = '";"';
+  #TkColon = '":"';
   #TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
   #TkVariable s.Mode e.Index = s.Mode '.' e.Index;
   #TkRedefinition = '"^"';
@@ -144,7 +145,7 @@ SwPunctuation {
   '<' = #TkOpenCall; '>' = #TkCloseCall;
   '{' = #TkOpenBlock; '}' = #TkCloseBlock;
   '(' = #TkOpenBracket; ')' = #TkCloseBracket;
-  '=' = #TkReplace; ',' = #TkComma; ';' = #TkSemicolon;
+  '=' = #TkReplace; ',' = #TkComma; ';' = #TkSemicolon; ':' = #TkColon;
   '[' = #TkOpenADT; ']' = #TkCloseADT;
   '#' = #TkIdentMarker; '^' = #TkRedefinition;
 }
@@ -200,7 +201,7 @@ CollectNativeLines-Aux {
   :Digit: = '0123456789'.
   :ODigit: = '01234567' .
   :XDigit: = '0123456789ABCDEFabcdef' .
-  :Punctuation: = '<>(){}[]=;,#^'.
+  :Punctuation: = '<>(){}[]=;:,#^'.
 
   :StartIdentifier: = :UpLetter:.
   :TailIdentifier: = :UpLetter: :LoLetter: :Digit: '_-'.
@@ -395,6 +396,7 @@ Main {
   (e.Accum) ']' e.Text = (#TkPunctuation e.Accum ']') <Main () e.Text>;
   (e.Accum) '=' e.Text = (#TkPunctuation e.Accum '=') <Main () e.Text>;
   (e.Accum) ';' e.Text = (#TkPunctuation e.Accum ';') <Main () e.Text>;
+  (e.Accum) ':' e.Text = (#TkPunctuation e.Accum ':') <Main () e.Text>;
   (e.Accum) ',' e.Text = (#TkPunctuation e.Accum ',') <Main () e.Text>;
   (e.Accum) '#' e.Text = (#TkPunctuation e.Accum '#') <Main () e.Text>;
   (e.Accum) '^' e.Text = (#TkPunctuation e.Accum '^') <Main () e.Text>;

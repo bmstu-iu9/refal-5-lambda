@@ -1,0 +1,1 @@
+$ENTRY Go { e.X e.Z = e.X : e.X^ = e.Z ; }

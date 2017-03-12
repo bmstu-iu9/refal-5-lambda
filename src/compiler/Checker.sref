@@ -196,14 +196,45 @@ CheckFunctionBodyRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) (e.Result)) =
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result)) =
     <Fetch
       <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
-      {
-        (e.ScopeVars^) e.PatternFunctionsAndErrors =
-          e.PatternFunctionsAndErrors
-          <CheckResult (e.ScopeVars) <FlatExpr e.Result>>;
-      }
+      <Seq
+        {
+          (e.ScopeVars^) e.PatternFunctionsAndErrors =
+          (e.PatternFunctionsAndErrors)
+          <CheckAssignments (e.Assignments) (e.ScopeVars)>;
+        }
+        {
+          (e.PatternFunctionsAndErrors^) (e.ScopeVars^) e.AssignmentsFunctionsAndErrors =
+            (e.ScopeVars) e.PatternFunctionsAndErrors e.AssignmentsFunctionsAndErrors;
+        }
+        {
+          (e.ScopeVars^) e.PatternFunctionsAndErrors^ =
+            e.PatternFunctionsAndErrors
+            <CheckResult (e.ScopeVars) <FlatExpr e.Result>>;
+        }
+      >
+    >;
+}
+
+CheckAssignments {
+  () (e.ScopeVars) e.Errors = (e.ScopeVars) e.Errors;
+
+  ((#Assign (e.Result) (e.Pattern)) e.Assignments) (e.ScopeVars) e.Errors =
+    <Fetch
+      <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
+      <Seq
+        {
+          e.Errors^ =
+            (e.Errors)
+            <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>;
+        }
+        {
+          (e.Errors^) (e.ScopeVars^) e.PatternFunctionsAndErrors =
+            <CheckAssignments (e.Assignments) (e.ScopeVars) e.Errors e.PatternFunctionsAndErrors>;
+        }
+      >
     >;
 }
 

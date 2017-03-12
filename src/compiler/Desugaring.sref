@@ -11,6 +11,7 @@ $ENTRY Desugar {
       <Seq
         Pass-RemovePos
         Pass-EnumerateVariables
+        Pass-RemoveAssigns
         Pass-NameNestedFuncs
         (Pass-FlatNestedFuncs s.MarkupContext)
         Pass-CreatePredeclarations
@@ -43,13 +44,20 @@ RemovePos-Body {
     #Sentences
     <Map
       {
-        ((e.Pattern) (e.Result)) =
-          ((<RemovePos-Expr e.Pattern>) (<RemovePos-Expr e.Result>));
+        ((e.Pattern) e.Assigns (e.Result)) =
+          ((<RemovePos-Expr e.Pattern>) <Remove-Pos-Assings e.Assigns> (<RemovePos-Expr e.Result>));
       }
       e.Sentences
     >;
 
   #NativeBody t.SrcPos e.Code = #NativeBody t.SrcPos e.Code;
+}
+
+Remove-Pos-Assings {
+  (#Assign (e.Result) (e.Pattern)) e.Assigns =
+    (#Assign (<RemovePos-Expr e.Result>) (<RemovePos-Expr e.Pattern>)) <Remove-Pos-Assings e.Assigns>;
+
+    = ;
 }
 
 RemovePos-Expr {
@@ -82,6 +90,51 @@ RemovePos-Expr {
     >;
 }
 
+Pass-RemoveAssigns {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          (#Function
+            s.ScopeClass (e.Name)
+            <RemoveAssigns-Sentences e.Body>
+          );
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+RemoveAssigns-Sentences {
+  #Sentences e.Sentences =
+    #Sentences
+    <Map
+      Remove-Assignments-Sentence
+      e.Sentences
+    >;
+
+  #NativeBody t.SrcPos e.Code =
+    #NativeBody t.SrcPos e.Code;
+}
+
+Remove-Assignments-Sentence {
+  ((e.Pattern)(e.Result)) = ((e.Pattern)(e.Result));
+
+  ((e.Pattern) (#Assign (e.AssignResult)(e.AssignPattern)) e.Assignments (e.Result)) =
+    (
+      (e.Pattern)
+      (
+        (#CallBrackets
+          (#Closure #Sentences
+            <Remove-Assignments-Sentence ((e.AssignPattern)e.Assignments(e.Result)) >
+          )
+          e.AssignResult
+        )
+      )
+    );
+}
+
 Pass-EnumerateVariables {
   e.AST =
     <Map
@@ -103,19 +156,25 @@ EnumerateVars-Sentences {
     #Sentences
     <Map
       {
-        ((e.Pattern) (e.Result)) =
+        ((e.Pattern) e.Assigns (e.Result)) =
           <Fetch
             <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
-            {
-              (e.ScopeVars^) e.Pattern^ =
-                <Fetch
-                  <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
-                  {
-                    (e.ScopeVars^) e.Result^ =
-                      ((e.Pattern) (e.Result));
-                  }
-                >;
-            }
+            <Seq
+              {
+                (e.ScopeVars^) e.Pattern^ =
+                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns> (e.Pattern);
+              }
+              {
+                (e.ScopeVars^) s.Depth^ e.Assigns^ (e.Pattern^) =
+                  <Fetch
+                    <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+                    {
+                      (e.ScopeVars^) e.Result^ =
+                        ((e.Pattern) e.Assigns (e.Result));
+                    }
+                  >;
+              }
+            >
           >;
       }
       e.Sentences
@@ -123,6 +182,27 @@ EnumerateVars-Sentences {
 
   s.Depth (e.ScopeVars) #NativeBody t.SrcPos e.Code =
     #NativeBody t.SrcPos e.Code;
+}
+
+EnumerateVars-Assignments {
+  (e.RAssignments) s.Depth (e.ScopeVars) = (e.ScopeVars) s.Depth e.RAssignments ;
+
+  (e.RAssignments) s.Depth (e.ScopeVars) (#Assign (e.Result) (e.Pattern)) e.Assignments =
+    <Fetch
+      <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
+      <Seq
+        {
+          (e.ScopeVars^) e.Result^ s.Depth^  =
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern> (e.Result);
+        }
+        {
+          (e.ScopeVars^) e.Pattern^ (e.Result^) =
+            <EnumerateVars-Assignments
+              (e.RAssignments (#Assign (e.Result) (e.Pattern))) s.Depth (e.ScopeVars) e.Assignments
+            >;
+        }
+      >
+    >;
 }
 
 EnumerateVars-Expr {

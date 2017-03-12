@@ -223,7 +223,9 @@ ParseFunction {
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
-  t.FunctionBody ::= (#Sentences ((e.Pattern) (e.Result))*)
+  t.FunctionBody ::= (#Sentences ((e.Pattern) e.Assignment* (e.Result))*)
+  
+  e.Assignment = (#Assign (e.Result) (e.Pattern))
 
   Открывающая скобка должна отсутствовать во входном потоке.
 */
@@ -287,36 +289,69 @@ ParseSentence {
         {
           t.ErrorList^ (e.Pattern) e.Tokens^ =
             (e.Pattern)
-            <ParseResult
-              t.ErrorList
-              ( /* мультискобки */ ) ( /* просканировано */ ) e.Tokens
+            <ParseAssignmentPart
+              t.ErrorList () e.Tokens
             >;
         }
         {
-          (e.Pattern) t.ErrorList^
-          (e.Result) (#TkSemicolon s.LnNum) e.Tokens^ =
+          (e.Pattern) (e.Result) (e.Assignments) t.ErrorList^ e.Tokens^ =
             t.ErrorList
-            (e.Sentences ((e.Pattern) (e.Result))) e.Tokens;
-
-          (e.Pattern) t.ErrorList^
-          (e.Result) (#TkCloseBlock s.LnNum) e.Tokens^ =
-            <EL-AddErrorAt t.ErrorList s.LnNum 'Missed semicolon'>
-            (e.Sentences ((e.Pattern) (e.Result)))
-            (#TkCloseBlock s.LnNum) e.Tokens;
-
-          (e.Pattern) t.ErrorList^
-          (e.Result) (#TkEOF s.LnNum) =
-            <EL-AddErrorAt t.ErrorList s.LnNum 'Unexpected EOF in function'>
-            (e.Sentences ((e.Pattern) (e.Result)))
-            (#TkEOF s.LnNum);
-
-          (e.Pattern) t.ErrorList^
-          (e.Result) t.Unexpected e.Tokens^ =
-            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
-            (e.Sentences ((e.Pattern) (e.Result)))
-            e.Tokens;
+            (e.Sentences ((e.Pattern) e.Assignments (e.Result))) e.Tokens;
         }
       >
+    >;
+}
+
+ParseAssignmentPart {
+  t.ErrorList (e.Assignments) e.Tokens =
+    <Fetch
+      <ParseResult
+        t.ErrorList ( /* мультискобки */ )
+        ( /* просканировано */ ) e.Tokens
+      >
+      {
+        t.ErrorList^ (e.Result) (#TkSemicolon s.LnNum) e.Tokens^ =
+          (e.Result) (e.Assignments) t.ErrorList e.Tokens;
+        t.ErrorList^(e.Result) (#TkColon s.LnNum) e.Tokens^ =
+          <Fetch
+            <ParsePattern
+              t.ErrorList ( /* мультискобки */ )
+              ( /* просканировано */ ) e.Tokens
+            >
+            <Seq
+              {
+                t.ErrorList^ (e.Pattern) e.Tokens^ =
+                  (e.Assignments (#Assign (e.Result) (e.Pattern)))
+                  t.ErrorList e.Tokens;
+              }
+              {
+                (e.Assignments^)
+                t.ErrorList^ (#TkReplace s.LnNum^) e.Tokens^ =
+                  <ParseAssignmentPart
+                    t.ErrorList (e.Assignments) e.Tokens
+                  >;
+              }
+            >
+          >;
+
+        t.ErrorList^
+        (e.Result) (#TkCloseBlock s.LnNum) e.Tokens^ =
+          (e.Result) (e.Assignments)
+          <EL-AddErrorAt t.ErrorList s.LnNum 'Missed semicolon'>
+          (#TkCloseBlock s.LnNum) e.Tokens;
+
+        t.ErrorList^
+        (e.Result) (#TkEOF s.LnNum) =
+          (e.Result) (e.Assignments)
+          <EL-AddErrorAt t.ErrorList s.LnNum 'Unexpected EOF in function'>
+          (#TkEOF s.LnNum);
+
+        t.ErrorList^
+        (e.Result) t.Unexpected e.Tokens^ =
+          (e.Result) (e.Assignments)
+          <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+          e.Tokens;
+      }
     >;
 }
 
