@@ -1,13 +1,26 @@
-$ENTRY Go { =
-  <Num
-    (#Binary
-      (#Value 's')
-      (#Unary
-        (#Value 't')
+$ENTRY Go {
+  =
+    <Eq
+      <Num
+        (#Binary
+          (#Value 's')
+          (#Unary
+            (#Value 't')
+          )
+        )
+      >
+      (
+        (#Binary
+          (#Value 1 's')
+          (#Unary
+            (#Value 2 't')
+          )
+        )
       )
-    )
-  >;
+    >;
 }
+
+Eq { e.X (e.X) = ; }
 
 Num {
   t.Tree
@@ -30,5 +43,6 @@ NumRec {
 }
 
 I {
-  e.X = e.X;
+  1 = 2;
+  2 = 3;
 }

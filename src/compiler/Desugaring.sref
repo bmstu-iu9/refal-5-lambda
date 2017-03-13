@@ -193,10 +193,11 @@ EnumerateVars-Assignments {
       <Seq
         {
           (e.ScopeVars^) e.Result^ s.Depth^  =
+            s.Depth
             <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern> (e.Result);
         }
         {
-          (e.ScopeVars^) e.Pattern^ (e.Result^) =
+          s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
             <EnumerateVars-Assignments
               (e.RAssignments (#Assign (e.Result) (e.Pattern))) s.Depth (e.ScopeVars) e.Assignments
             >;
