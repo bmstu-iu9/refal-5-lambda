@@ -1,1 +1,1 @@
-Name $ENUM { = ; } ; 
+Name $EXTERN { = ; } ; 

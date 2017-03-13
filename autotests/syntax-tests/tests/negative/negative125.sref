@@ -1,1 +1,1 @@
-Name { Name Name ( Name ) [ Name ( ) ] e.Var Name # Name 'chars' 123 = Name $ENTRY Name Name ; = ; } ; 
+Name { Name Name ( Name ) [ Name ( ) ] e.Var Name # Name 'chars' 123 = Name $ENUM Name Name : = ; = ; } ; 
