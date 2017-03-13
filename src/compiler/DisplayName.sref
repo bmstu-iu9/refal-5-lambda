@@ -37,5 +37,6 @@ $ENTRY CName {
 CNameSuf {
   '$' s.Num e.Suffix = 'S' <StrFromInt s.Num> <CNameSuf e.Suffix>;
   '\\' s.Num e.Suffix = 'L' <StrFromInt s.Num> <CNameSuf e.Suffix>;
+  '=' s.Num e.Suffix = 'A' <StrFromInt s.Num> <CNameSuf e.Suffix>;
   /* пусто */ = /* пусто */;
 }

@@ -4,102 +4,98 @@ $EXTERN LoadIniFile;
 //FROM LibraryEx
 $EXTERN ArgList, WriteLine, Map, Fetch;
 
-$FORWARD Main;
+//FROM Library
+$EXTERN StrFromInt;
 
 $ENTRY Go {
   = <Main <ArgList>>;
 }
 
-$FORWARD PrintIni;
-
-//FROM Library
-$EXTERN StrFromInt;
-
 Main {
-  (e.ProgName) =
-    <WriteLine 'Usage: ' e.ProgName ' file1.ini file2.ini ...'>;
+  (e.ProgName)
+    = <WriteLine 'Usage: ' e.ProgName ' file1.ini file2.ini ...'>;
 
-  (e.ProgName) e.IniFiles =
-    <Map
-      {
-        (e.IniFile) =
-          <WriteLine 'Parse ' e.IniFile>
-          <Fetch
-            <LoadIniFile e.IniFile> {
-              (e.IniContent) =
-                <WriteLine 'In ' e.IniFile ' no parse errors'>
-                <PrintIni (e.IniFile) e.IniContent>;
+  (e.ProgName) e.IniFiles
+    = <Map
+        {
+          (e.IniFile)
+            = <WriteLine 'Parse ' e.IniFile>
+              <Fetch
+                <LoadIniFile e.IniFile> {
+                  (e.IniContent)
+                    = <WriteLine 'In ' e.IniFile ' no parse errors'>
+                      <PrintIni (e.IniFile) e.IniContent>;
 
-              (e.IniContent) e.Errors =
-                <WriteLine 'Errors:'>
-                <Map
-                  {
-                    (s.LineNumber #BadLine) =
-                      <WriteLine '* Bad line at ' <StrFromInt s.LineNumber>>;
+                  (e.IniContent) e.Errors
+                    = <WriteLine 'Errors:'>
+                      <Map
+                        {
+                          (s.LineNumber #BadLine)
+                            = <WriteLine
+                                '* Bad line at ' <StrFromInt s.LineNumber>
+                              >;
 
-                    (s.LineNumber #EmptyParameterName) =
-                      <WriteLine
-                        '* Expected parameter name before ''='' at '
-                        <StrFromInt s.LineNumber>
-                      >;
+                          (s.LineNumber #EmptyParameterName)
+                            = <WriteLine
+                                '* Expected parameter name before ''='' at '
+                                <StrFromInt s.LineNumber>
+                              >;
 
-                    (s.LineNumber #ReassignParameter e.Name) =
-                      <WriteLine
-                        '* Reassign parameter ' e.Name ' at '
-                        <StrFromInt s.LineNumber>
-                        ', use last assigned value'
-                      >;
-                  }
-                  e.Errors
-                >
-                <PrintIni (e.IniFile) e.IniContent>;
-            }
-          >;
-      }
-      e.IniFiles
-    >;
+                          (s.LineNumber #ReassignParameter e.Name)
+                            = <WriteLine
+                                '* Reassign parameter ' e.Name ' at '
+                                <StrFromInt s.LineNumber>
+                                ', use last assigned value'
+                              >;
+                        }
+                        e.Errors
+                      >
+                      <PrintIni (e.IniFile) e.IniContent>;
+                }
+              >;
+        }
+        e.IniFiles
+      >;
 }
 
 WriteLineAt {
-  s.LineNumber e.Text =
-    <WriteLine <StrFromInt s.LineNumber> ': ' e.Text>;
+  s.LineNumber e.Text
+    = <WriteLine <StrFromInt s.LineNumber> ': ' e.Text>;
 }
 
-$FORWARD PrintParameters;
-
 PrintIni {
-  (e.FileName) e.FileContent =
-    <WriteLine>
-    <WriteLine 'Content of ' e.FileName>
-    <Map
-      {
-        (s.SectionPos #General) =
-          <WriteLine '(Default section) - empty'>;
+  (e.FileName) e.FileContent
+    = <WriteLine>
+      <WriteLine 'Content of ' e.FileName>
+      <Map
+        {
+          (s.SectionPos #General)
+            = <WriteLine '(Default section) - empty'>;
 
-        (s.SectionPos #General e.Parameters) =
-          <WriteLine '(Default section)'>
-          <PrintParameters e.Parameters>;
+          (s.SectionPos #General e.Parameters)
+            = <WriteLine '(Default section)'>
+              <PrintParameters e.Parameters>;
 
-        (s.SectionPos (e.Section)) =
-          <WriteLine>
-          <WriteLineAt s.SectionPos '[' e.Section '] - empty'>;
+          (s.SectionPos (e.Section))
+            = <WriteLine>
+              <WriteLineAt s.SectionPos '[' e.Section '] - empty'>;
 
-        (s.SectionPos (e.Section) e.Parameters) =
-          <WriteLine>
-          <WriteLineAt s.SectionPos '[' e.Section ']'>
-          <PrintParameters e.Parameters>;
-      }
-      e.FileContent
-    >;
+          (s.SectionPos (e.Section) e.Parameters)
+            = <WriteLine>
+              <WriteLineAt s.SectionPos '[' e.Section ']'>
+              <PrintParameters e.Parameters>;
+        }
+        e.FileContent
+      >;
 }
 
 PrintParameters {
-  e.Parameters =
-    <Map
-      {
-        (s.LineNumber (e.Name) e.Value) =
-          <WriteLineAt s.LineNumber e.Name ' = ' e.Value>;
-      }
-      e.Parameters
-    >;
+  e.Parameters
+    = <Map
+        {
+          (s.LineNumber (e.Name) e.Value)
+            = <WriteLineAt s.LineNumber e.Name ' = ' e.Value>;
+        }
+        e.Parameters
+      >;
 }

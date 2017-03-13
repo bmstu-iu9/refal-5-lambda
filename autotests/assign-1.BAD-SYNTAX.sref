@@ -1,0 +1,3 @@
+$ENTRY F {
+  'abc' = 'def' : e.X;
+}

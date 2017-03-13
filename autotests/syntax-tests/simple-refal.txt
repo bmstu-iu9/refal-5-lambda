@@ -3,7 +3,7 @@ non-terminal Program, Global, ItemList, Function, Body, Sentence, Pattern,
 terminal 'Name', ',', ';',
   '$EXTERN', '$ENUM', '$EENUM', '$SWAP', '$ESWAP', '$FORWARD', '$LABEL',
   '$ENTRY', '{', '}', '(', ')', '[', ']', 'e.Var', '^', '#',
-  ''chars'', '123', '<', '>', '=';
+  ''chars'', '123', '<', '>', '=', ':';
 
 Program ::= Global*;
 Global ::= ItemList | Function | ';';
@@ -12,7 +12,7 @@ Keyword ::= '$EXTERN' | '$ENUM' | '$EENUM' | '$SWAP' | '$ESWAP' | '$FORWARD'
   | '$LABEL';
 Function ::= ('$ENTRY')? 'Name' Body;
 Body ::= '{' Sentence* '}';
-Sentence ::= Pattern '=' Result ';';
+Sentence ::= Pattern '=' Result (':' Pattern '=' Result)* ';' ;
 Pattern ::= PatternTerm*;
 PatternTerm ::= Atom | '(' Pattern ')' | '[' 'Name' Pattern ']' | 'e.Var' ('^')?;
 Atom ::= ('#')? 'Name' | ''chars'' | '123';

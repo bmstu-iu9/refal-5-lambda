@@ -1,0 +1,6 @@
+F { e.X e.Z = e.X : e.X^ = e.Z ; }
+Eq { e.X (e.X) = ; }
+
+$ENTRY Go {
+  = <Eq <F 'aaa'> ('aaa')>;
+}

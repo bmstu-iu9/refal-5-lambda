@@ -12,6 +12,7 @@ $ENTRY Desugar {
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
+        Pass-RemoveAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
         Pass-CreatePredeclarations
       >
@@ -43,8 +44,21 @@ RemovePos-Body {
     #Sentences
     <Map
       {
-        ((e.Pattern) (e.Result)) =
-          ((<RemovePos-Expr e.Pattern>) (<RemovePos-Expr e.Result>));
+        ((e.Pattern) e.Assigns (e.Result)) =
+          (
+            (<RemovePos-Expr e.Pattern>)
+            <Map
+              {
+                (#Assign (e.Result^) (e.Pattern^)) =
+                  (#Assign
+                    (<RemovePos-Expr e.Result>)
+                    (<RemovePos-Expr e.Pattern>)
+                  );
+              }
+              e.Assigns
+            >
+            (<RemovePos-Expr e.Result>)
+          );
       }
       e.Sentences
     >;
@@ -103,19 +117,26 @@ EnumerateVars-Sentences {
     #Sentences
     <Map
       {
-        ((e.Pattern) (e.Result)) =
+        ((e.Pattern) e.Assigns (e.Result)) =
           <Fetch
             <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
-            {
-              (e.ScopeVars^) e.Pattern^ =
-                <Fetch
-                  <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
-                  {
-                    (e.ScopeVars^) e.Result^ =
-                      ((e.Pattern) (e.Result));
-                  }
-                >;
-            }
+            <Seq
+              {
+                (e.ScopeVars^) e.Pattern^ =
+                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
+                  (e.Pattern);
+              }
+              {
+                (e.ScopeVars^) s.Depth^ e.Assigns^ (e.Pattern^) =
+                  <Fetch
+                    <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+                    {
+                      (e.ScopeVars^) e.Result^ =
+                        ((e.Pattern) e.Assigns (e.Result));
+                    }
+                  >;
+              }
+            >
           >;
       }
       e.Sentences
@@ -123,6 +144,31 @@ EnumerateVars-Sentences {
 
   s.Depth (e.ScopeVars) #NativeBody t.SrcPos e.Code =
     #NativeBody t.SrcPos e.Code;
+}
+
+EnumerateVars-Assignments {
+  (e.RAssignments) s.Depth (e.ScopeVars) /* пусто */ =
+     (e.ScopeVars) s.Depth e.RAssignments;
+
+  (e.RAssignments) s.Depth (e.ScopeVars)
+  (#Assign (e.Result) (e.Pattern)) e.Assignments =
+    <Fetch
+      <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
+      <Seq
+        {
+          (e.ScopeVars^) e.Result^ s.Depth^  =
+            s.Depth
+            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern> (e.Result);
+        }
+        {
+          s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
+            <EnumerateVars-Assignments
+              (e.RAssignments (#Assign (e.Result) (e.Pattern)))
+               s.Depth (e.ScopeVars) e.Assignments
+            >;
+        }
+      >
+    >;
 }
 
 EnumerateVars-Expr {
@@ -201,10 +247,11 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) (e.Result)) =
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result)) =
     #Sentences
     (
       (e.Pattern)
+      <NameNestedAssigns (e.MainName) e.Assigns>
       (<NameNestedResult (e.MainName) e.Result>)
     );
 
@@ -213,10 +260,12 @@ NameNestedBody {
     <DelAccumulator
       <MapReduce
         {
-          s.SentenceNumber ((e.Pattern) (e.Result)) =
+          s.SentenceNumber ((e.Pattern) e.Assigns (e.Result)) =
             <Inc s.SentenceNumber>
             (
               (e.Pattern)
+              // TODO: удалить дублирование
+              <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
               (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
             );
         }
@@ -226,6 +275,26 @@ NameNestedBody {
 
   (e.MainName) #NativeBody t.SrcPos e.Code =
     #NativeBody t.SrcPos e.Code;
+}
+
+NameNestedAssigns {
+  (e.MainName) e.Assigns =
+    <DelAccumulator
+      <MapReduce
+        {
+          s.AssignId (#Assign (e.Result) (e.Pattern)) =
+            <Inc s.AssignId>
+            (#Assign
+              // TODO: удалить дублирование
+              (e.MainName '=' s.AssignId)
+              (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
+              (e.Pattern)
+            );
+        }
+        1
+        e.Assigns
+      >
+    >;
 }
 
 NameNestedResult {
@@ -275,6 +344,59 @@ NameNestedResultRec {
       }
       s.StartNumber e.Result
     >;
+}
+
+Pass-RemoveAssigns {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          (#Function
+            s.ScopeClass (e.Name)
+            <RemoveAssigns-Sentences e.Body>
+          );
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+RemoveAssigns-Sentences {
+  #Sentences e.Sentences =
+    #Sentences
+    <Map
+      Remove-Assignments-Sentence
+      e.Sentences
+    >;
+
+  #NativeBody t.SrcPos e.Code =
+    #NativeBody t.SrcPos e.Code;
+}
+
+Remove-Assignments-Sentence {
+  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
+
+  (
+    (e.Pattern)
+    (#Assign (e.AssignName) (e.AssignResult) (e.AssignPattern)) e.Assignments
+    (e.Result)
+  ) =
+    (
+      (e.Pattern)
+      (
+        (#CallBrackets
+          (#Closure
+            (e.AssignName)
+            #Sentences
+            <Remove-Assignments-Sentence
+              ((e.AssignPattern) e.Assignments (e.Result))
+            >
+          )
+          e.AssignResult
+        )
+      )
+    );
 }
 
 Pass-FlatNestedFuncs {

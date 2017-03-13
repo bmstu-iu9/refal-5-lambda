@@ -1,0 +1,48 @@
+$ENTRY Go {
+  =
+    <Eq
+      <Num
+        (#Binary
+          (#Value 's')
+          (#Unary
+            (#Value 't')
+          )
+        )
+      >
+      (
+        (#Binary
+          (#Value 1 's')
+          (#Unary
+            (#Value 2 't')
+          )
+        )
+      )
+    >;
+}
+
+Eq { e.X (e.X) = ; }
+
+Num {
+  t.Tree
+    = <NumRec 1 t.Tree> : s.Num t.Tree^
+    = t.Tree;
+}
+
+NumRec {
+  s.Num (#Value s.Value)
+    = <I s.Num> (#Value s.Num s.Value);
+
+  s.Num (#Unary t.Tree)
+    = <NumRec s.Num t.Tree> : s.Num^ t.Tree^
+    = s.Num (#Unary t.Tree);
+
+  s.Num (#Binary t.Left t.Right)
+    = <NumRec s.Num t.Left> : s.Num^ t.Left^
+    = <NumRec s.Num t.Right> : s.Num^ t.Right^
+    = s.Num (#Binary t.Left t.Right);
+}
+
+I {
+  1 = 2;
+  2 = 3;
+}
