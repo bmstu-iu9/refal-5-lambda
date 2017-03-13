@@ -45,19 +45,25 @@ RemovePos-Body {
     <Map
       {
         ((e.Pattern) e.Assigns (e.Result)) =
-          ((<RemovePos-Expr e.Pattern>) <Remove-Pos-Assings e.Assigns> (<RemovePos-Expr e.Result>));
+          (
+            (<RemovePos-Expr e.Pattern>)
+            <Map
+              {
+                (#Assign (e.Result^) (e.Pattern^)) =
+                  (#Assign
+                    (<RemovePos-Expr e.Result>)
+                    (<RemovePos-Expr e.Pattern>)
+                  );
+              }
+              e.Assigns
+            >
+            (<RemovePos-Expr e.Result>)
+          );
       }
       e.Sentences
     >;
 
   #NativeBody t.SrcPos e.Code = #NativeBody t.SrcPos e.Code;
-}
-
-Remove-Pos-Assings {
-  (#Assign (e.Result) (e.Pattern)) e.Assigns =
-    (#Assign (<RemovePos-Expr e.Result>) (<RemovePos-Expr e.Pattern>)) <Remove-Pos-Assings e.Assigns>;
-
-    = ;
 }
 
 RemovePos-Expr {
@@ -119,15 +125,22 @@ RemoveAssigns-Sentences {
 }
 
 Remove-Assignments-Sentence {
-  ((e.Pattern)(e.Result)) = ((e.Pattern)(e.Result));
+  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
 
-  ((e.Pattern) (#Assign (e.AssignResult)(e.AssignPattern)) e.Assignments (e.Result)) =
+  (
+    (e.Pattern)
+    (#Assign (e.AssignResult) (e.AssignPattern)) e.Assignments
+    (e.Result)
+  ) =
     (
       (e.Pattern)
       (
         (#CallBrackets
-          (#Closure #Sentences
-            <Remove-Assignments-Sentence ((e.AssignPattern)e.Assignments(e.Result)) >
+          (#Closure
+            #Sentences
+            <Remove-Assignments-Sentence
+              ((e.AssignPattern) e.Assignments (e.Result))
+            >
           )
           e.AssignResult
         )
@@ -162,7 +175,8 @@ EnumerateVars-Sentences {
             <Seq
               {
                 (e.ScopeVars^) e.Pattern^ =
-                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns> (e.Pattern);
+                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
+                  (e.Pattern);
               }
               {
                 (e.ScopeVars^) s.Depth^ e.Assigns^ (e.Pattern^) =
@@ -185,9 +199,11 @@ EnumerateVars-Sentences {
 }
 
 EnumerateVars-Assignments {
-  (e.RAssignments) s.Depth (e.ScopeVars) = (e.ScopeVars) s.Depth e.RAssignments ;
+  (e.RAssignments) s.Depth (e.ScopeVars) /* пусто */ =
+     (e.ScopeVars) s.Depth e.RAssignments;
 
-  (e.RAssignments) s.Depth (e.ScopeVars) (#Assign (e.Result) (e.Pattern)) e.Assignments =
+  (e.RAssignments) s.Depth (e.ScopeVars)
+  (#Assign (e.Result) (e.Pattern)) e.Assignments =
     <Fetch
       <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
       <Seq
@@ -199,7 +215,8 @@ EnumerateVars-Assignments {
         {
           s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
             <EnumerateVars-Assignments
-              (e.RAssignments (#Assign (e.Result) (e.Pattern))) s.Depth (e.ScopeVars) e.Assignments
+              (e.RAssignments (#Assign (e.Result) (e.Pattern)))
+               s.Depth (e.ScopeVars) e.Assignments
             >;
         }
       >
