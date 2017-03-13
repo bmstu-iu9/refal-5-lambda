@@ -312,6 +312,7 @@ ParseAssignmentPart {
       {
         t.ErrorList^ (e.Result) (#TkSemicolon s.LnNum) e.Tokens^ =
           (e.Result) (e.Assignments) t.ErrorList e.Tokens;
+
         t.ErrorList^(e.Result) (#TkColon s.LnNum) e.Tokens^ =
           <Fetch
             <ParsePattern
@@ -329,6 +330,13 @@ ParseAssignmentPart {
                 t.ErrorList^ (#TkReplace s.LnNum^) e.Tokens^ =
                   <ParseAssignmentPart
                     t.ErrorList (e.Assignments) e.Tokens
+                  >;
+
+                (e.Assignments^)
+                t.ErrorList^ t.Unexpected e.Tokens^ =
+                  <ParseAssignmentPart
+                    <EL-AddUnexpected t.ErrorList t.Unexpected '"="'>
+                    (e.Assignments) t.Unexpected e.Tokens
                   >;
               }
             >
