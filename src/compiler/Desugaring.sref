@@ -96,58 +96,6 @@ RemovePos-Expr {
     >;
 }
 
-Pass-RemoveAssigns {
-  e.AST =
-    <Map
-      {
-        (#Function s.ScopeClass (e.Name) e.Body) =
-          (#Function
-            s.ScopeClass (e.Name)
-            <RemoveAssigns-Sentences e.Body>
-          );
-
-        t.OtherProgramElement = t.OtherProgramElement;
-      }
-      e.AST
-    >;
-}
-
-RemoveAssigns-Sentences {
-  #Sentences e.Sentences =
-    #Sentences
-    <Map
-      Remove-Assignments-Sentence
-      e.Sentences
-    >;
-
-  #NativeBody t.SrcPos e.Code =
-    #NativeBody t.SrcPos e.Code;
-}
-
-Remove-Assignments-Sentence {
-  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
-
-  (
-    (e.Pattern)
-    (#Assign (e.AssignResult) (e.AssignPattern)) e.Assignments
-    (e.Result)
-  ) =
-    (
-      (e.Pattern)
-      (
-        (#CallBrackets
-          (#Closure
-            #Sentences
-            <Remove-Assignments-Sentence
-              ((e.AssignPattern) e.Assignments (e.Result))
-            >
-          )
-          e.AssignResult
-        )
-      )
-    );
-}
-
 Pass-EnumerateVariables {
   e.AST =
     <Map
@@ -280,6 +228,58 @@ EnumerateVars-Expr {
       }
       (e.OriginScopeVars) e.Expr
     >;
+}
+
+Pass-RemoveAssigns {
+  e.AST =
+    <Map
+      {
+        (#Function s.ScopeClass (e.Name) e.Body) =
+          (#Function
+            s.ScopeClass (e.Name)
+            <RemoveAssigns-Sentences e.Body>
+          );
+
+        t.OtherProgramElement = t.OtherProgramElement;
+      }
+      e.AST
+    >;
+}
+
+RemoveAssigns-Sentences {
+  #Sentences e.Sentences =
+    #Sentences
+    <Map
+      Remove-Assignments-Sentence
+      e.Sentences
+    >;
+
+  #NativeBody t.SrcPos e.Code =
+    #NativeBody t.SrcPos e.Code;
+}
+
+Remove-Assignments-Sentence {
+  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
+
+  (
+    (e.Pattern)
+    (#Assign (e.AssignResult) (e.AssignPattern)) e.Assignments
+    (e.Result)
+  ) =
+    (
+      (e.Pattern)
+      (
+        (#CallBrackets
+          (#Closure
+            #Sentences
+            <Remove-Assignments-Sentence
+              ((e.AssignPattern) e.Assignments (e.Result))
+            >
+          )
+          e.AssignResult
+        )
+      )
+    );
 }
 
 Pass-NameNestedFuncs {
