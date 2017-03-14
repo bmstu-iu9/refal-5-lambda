@@ -7,7 +7,8 @@ setlocal
     set SRMAKE_FLAGS_PLUS= ^
       -X--markup-context -X--debug-info ^
       -X-C-DMEMORY_LIMIT=2500000 ^
-      -X-C-DSTEP_LIMIT=30000000
+      -X-C-DSTEP_LIMIT=30000000 ^
+      -X-C-DENABLE_DEBUGGER
   ) else (
     set SREFC_FLAGS_PLUS=-OPR
     set SRMAKE_FLAGS_PLUS=-X-OPR
