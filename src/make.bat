@@ -8,7 +8,7 @@ setlocal
       -X--markup-context -X--debug-info ^
       -X-C-DMEMORY_LIMIT=2500000 ^
       -X-C-DSTEP_LIMIT=30000000 ^
-      -X-C-DIDENTS_LIMIT=1000 ^
+      -X-C-DIDENTS_LIMIT=1000
   ) else (
     set SREFC_FLAGS_PLUS=-OdPR
     set SRMAKE_FLAGS_PLUS=-X-OdPR

@@ -12,7 +12,7 @@ make_subdir() {
     # SREFC_FLAGS используются только для сборки библиотек
     SREFC_FLAGS_PLUS="--markup-context --debug-info"
     SRMAKE_FLAGS_PLUS="
-      -X--markup-context -X--debug-info \
+      -X--markup-context -X--debug-info
       -X-C-DMEMORY_LIMIT=2500000
       -X-C-DSTEP_LIMIT=30000000
       -X-C-DIDENTS_LIMIT=1000
