@@ -247,54 +247,54 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result)) =
-    #Sentences
-    (
-      (e.Pattern)
-      <NameNestedAssigns (e.MainName) e.Assigns>
-      (<NameNestedResult (e.MainName) e.Result>)
-    );
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result))
+     = #Sentences
+        (
+          (e.Pattern)
+          <NameNestedAssigns (e.MainName) e.Assigns>
+          (<NameNestedResult (e.MainName) e.Result>)
+        );
 
-  (e.MainName) #Sentences e.Sentences =
-    #Sentences
-    <DelAccumulator
-      <MapReduce
-        {
-          s.SentenceNumber ((e.Pattern) e.Assigns (e.Result)) =
-            <Inc s.SentenceNumber>
-            (
-              (e.Pattern)
-              // TODO: удалить дублирование
-              <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
-              (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
-            );
-        }
-        1 e.Sentences
-      >
-    >;
+  (e.MainName) #Sentences e.Sentences
+    = #Sentences
+      <DelAccumulator
+        <MapReduce
+          {
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result))
+              = <Inc s.SentenceNumber>
+                (
+                  (e.Pattern)
+                  // TODO: удалить дублирование
+                  <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
+                  (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
+                );
+          }
+          1 e.Sentences
+        >
+      >;
 
-  (e.MainName) #NativeBody t.SrcPos e.Code =
-    #NativeBody t.SrcPos e.Code;
+  (e.MainName) #NativeBody t.SrcPos e.Code
+    = #NativeBody t.SrcPos e.Code;
 }
 
 NameNestedAssigns {
-  (e.MainName) e.Assigns =
-    <DelAccumulator
-      <MapReduce
-        {
-          s.AssignId (#Assign (e.Result) (e.Pattern)) =
-            <Inc s.AssignId>
-            (#Assign
-              // TODO: удалить дублирование
-              (e.MainName '=' s.AssignId)
-              (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
-              (e.Pattern)
-            );
-        }
-        1
-        e.Assigns
-      >
-    >;
+  (e.MainName) e.Assigns
+    = <DelAccumulator
+        <MapReduce
+          {
+            s.AssignId (#Assign (e.Result) (e.Pattern))
+              = <Inc s.AssignId>
+                (#Assign
+                  // TODO: удалить дублирование
+                  (e.MainName '=' s.AssignId)
+                  (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
+                  (e.Pattern)
+                );
+          }
+          1
+          e.Assigns
+        >
+      >;
 }
 
 NameNestedResult {
@@ -366,7 +366,7 @@ RemoveAssigns-Sentences {
   #Sentences e.Sentences =
     #Sentences
     <Map
-      Remove-Assignments-Sentence
+      RemoveAssigns-Sentence
       e.Sentences
     >;
 
@@ -374,29 +374,52 @@ RemoveAssigns-Sentences {
     #NativeBody t.SrcPos e.Code;
 }
 
-Remove-Assignments-Sentence {
-  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
+RemoveAssigns-Sentence {
+  ((e.Pattern) (e.Result))
+    = ((e.Pattern) (<RemoveAssigns-Result e.Result>));
 
   (
     (e.Pattern)
     (#Assign (e.AssignName) (e.AssignResult) (e.AssignPattern)) e.Assignments
     (e.Result)
-  ) =
-    (
-      (e.Pattern)
-      (
-        (#CallBrackets
-          (#Closure
-            (e.AssignName)
-            #Sentences
-            <Remove-Assignments-Sentence
-              ((e.AssignPattern) e.Assignments (e.Result))
-            >
+  )
+    = (
+        (e.Pattern)
+        (
+          (#CallBrackets
+            (#Closure
+              (e.AssignName)
+              #Sentences
+              <RemoveAssigns-Sentence
+                ((e.AssignPattern) e.Assignments (e.Result))
+              >
+            )
+            <RemoveAssigns-Result e.AssignResult>
           )
-          e.AssignResult
         )
-      )
-    );
+      );
+}
+
+RemoveAssigns-Result {
+  e.Expr
+    = <Map
+        {
+          (#Brackets e.InBrackets)
+            = (#Brackets <RemoveAssigns-Result e.InBrackets>);
+
+          (#ADT-Brackets (e.Name) e.InBrackets)
+            = (#ADT-Brackets (e.Name) <RemoveAssigns-Result e.InBrackets>);
+
+          (#CallBrackets e.InBrackets)
+            = (#CallBrackets <RemoveAssigns-Result e.InBrackets>);
+
+          (#Closure (e.ClosureName) e.Sentences)
+            = (#Closure (e.ClosureName) <RemoveAssigns-Sentences e.Sentences>);
+
+          t.OtherTerm = t.OtherTerm;
+        }
+        e.Expr
+    >;
 }
 
 Pass-FlatNestedFuncs {

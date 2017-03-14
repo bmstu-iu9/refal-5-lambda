@@ -16,6 +16,7 @@ make_subdir() {
       -X-C-DMEMORY_LIMIT=2500000
       -X-C-DSTEP_LIMIT=30000000
       -X-C-DIDENTS_LIMIT=1000
+      -X-C-DENABLE_DEBUGGER
     "
   else
     SREFC_FLAGS_PLUS=-OPR

@@ -1,4 +1,4 @@
 #!/bin/bash
-../../distrib/bin/lexgen Lexer.sref
+../../distrib/bin/lexgen $LEXGEN_FLAGS Lexer.sref
 ../../bin/rasl-constants ../srlib/refalrts.h Opcodes.sref
 source ../make.sh compiler srefc-core srefc "" ../../distrib
