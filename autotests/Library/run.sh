@@ -174,7 +174,7 @@ compile() {
   TARGET=${SRC%%.sref}$(platform_suffix)
 
   if [ "$SRC" != "Library.sref" ]; then
-    ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINE" $COMMON_SRFLAGS \
+    ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINEE" $COMMON_SRFLAGS \
       Library 2>__error.txt
     if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
       echo COMPILER FAILS ON $SRC, SEE __error.txt

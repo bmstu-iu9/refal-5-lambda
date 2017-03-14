@@ -18,7 +18,7 @@ source "$BINDIR/platform-specific.sh"
   srmake-core \
     -s "srefc-core" \
     $SRMAKE_FLAGS \
-    -c "$CPPLINE" --thru=--cppflags="$CPPLINE_FLAGS" \
+    -c "$CPPLINEE" --thru=--cppflags="$CPPLINE_FLAGS" \
     -X--targsuffix=$(platform_suffix) \
     $* -D "$LIBDIR" -D "$(platform_subdir_lookup "$LIBDIR")"
 )

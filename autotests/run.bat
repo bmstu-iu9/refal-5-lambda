@@ -47,7 +47,7 @@ goto :EOF
 :RUN_TEST
 setlocal
   set COMMON_SRFLAGS= ^
-    -c "%CPPLINE%" ^
+    -c "%CPPLINEE%" ^
     --targsuffix=.exe ^
     -D../src/srlib ^
     -D../src/srlib/platform-Windows ^
@@ -82,8 +82,7 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdPR
   call :%2 %1 || exit /b 1
-  set SRFLAGS=
-  set CPPLINE=%CPPLINE% -DENABLE_DEBUGGER
+  set SRFLAGS=-F-DENABLE_DEBUGGER
   call :%2 %1 || exit /b 1
 endlocal
 goto :EOF

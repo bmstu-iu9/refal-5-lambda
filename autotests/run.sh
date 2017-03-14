@@ -14,7 +14,7 @@ run_test_all_modes() {
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
   SRFLAGS=-OdPR $2 $1
-  SRFLAGS= CPPLINE="$CPPLINE -DENABLE_DEBUGGER" $2 $1
+  SRFLAGS=-F-DENABLE_DEBUGGER $2 $1
 }
 
 run_test_aux() {
@@ -28,7 +28,7 @@ run_test_aux_with_flags() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINE" $COMMON_SRFLAGS $SRFLAGS \
+  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
      2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
@@ -85,7 +85,7 @@ run_test_aux_with_flags.FAILURE() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINE" $COMMON_SRFLAGS $SRFLAGS \
+  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
     2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
@@ -126,7 +126,7 @@ run_test_aux.LEXGEN() {
   fi
 
   ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_suffix) \
-    -c "$CPPLINE" $COMMON_SRFLAGS 2>__error.txt
+    -c "$CPPLINEE" $COMMON_SRFLAGS 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1

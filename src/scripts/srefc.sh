@@ -17,6 +17,6 @@ source "$BINDIR/platform-specific.sh"
   PATH=$BINDIR:$PATH
   srefc-core \
     $SREFC_FLAGS \
-    -c "$CPPLINE" --cppflags="$CPPLINE_FLAGS" --targsuffix=$(platform_suffix) \
+    -c "$CPPLINEE" --cppflags="$CPPLINE_FLAGS" --targsuffix=$(platform_suffix) \
     $* -D "$LIBDIR" -D "$(platform_subdir_lookup "$LIBDIR")"
 )

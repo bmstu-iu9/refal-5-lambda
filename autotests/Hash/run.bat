@@ -16,7 +16,7 @@ goto :EOF
 :RUN_ALL_TESTS
 setlocal
   set COMMON_SRFLAGS= ^
-    -c "%CPPLINE%" ^
+    -c "%CPPLINEE%" ^
     --targsuffix=.exe ^
     -D../../src/srlib ^
     -D../../src/srlib/platform-Windows ^
