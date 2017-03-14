@@ -376,7 +376,7 @@ RemoveAssigns-Sentences {
 
 RemoveAssigns-Sentence {
   ((e.Pattern) (e.Result))
-    = ((e.Pattern) (e.Result));
+    = ((e.Pattern) (<RemoveAssigns-Result e.Result>));
 
   (
     (e.Pattern)
@@ -394,10 +394,32 @@ RemoveAssigns-Sentence {
                 ((e.AssignPattern) e.Assignments (e.Result))
               >
             )
-            e.AssignResult
+            <RemoveAssigns-Result e.AssignResult>
           )
         )
       );
+}
+
+RemoveAssigns-Result {
+  e.Expr
+    = <Map
+        {
+          (#Brackets e.InBrackets)
+            = (#Brackets <RemoveAssigns-Result e.InBrackets>);
+
+          (#ADT-Brackets (e.Name) e.InBrackets)
+            = (#ADT-Brackets (e.Name) <RemoveAssigns-Result e.InBrackets>);
+
+          (#CallBrackets e.InBrackets)
+            = (#CallBrackets <RemoveAssigns-Result e.InBrackets>);
+
+          (#Closure (e.ClosureName) e.Sentences)
+            = (#Closure (e.ClosureName) <RemoveAssigns-Sentences e.Sentences>);
+
+          t.OtherTerm = t.OtherTerm;
+        }
+        e.Expr
+    >;
 }
 
 Pass-FlatNestedFuncs {
