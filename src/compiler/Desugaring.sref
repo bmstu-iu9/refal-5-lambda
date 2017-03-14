@@ -261,12 +261,12 @@ NameNestedBody {
         <MapReduce
           {
             s.SentenceNumber ((e.Pattern) e.Assigns (e.Result))
+              = e.MainName '$' s.SentenceNumber: e.MainName^
               = <Inc s.SentenceNumber>
                 (
                   (e.Pattern)
-                  // TODO: удалить дублирование
-                  <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
-                  (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
+                  <NameNestedAssigns (e.MainName) e.Assigns>
+                  (<NameNestedResult (e.MainName) e.Result>)
                 );
           }
           1 e.Sentences
@@ -283,11 +283,11 @@ NameNestedAssigns {
         <MapReduce
           {
             s.AssignId (#Assign (e.Result) (e.Pattern))
+              = e.MainName '=' s.AssignId: e.MainName^
               = <Inc s.AssignId>
                 (#Assign
-                  // TODO: удалить дублирование
-                  (e.MainName '=' s.AssignId)
-                  (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
+                  (e.MainName)
+                  (<NameNestedResult (e.MainName) e.Result>)
                   (e.Pattern)
                 );
           }
