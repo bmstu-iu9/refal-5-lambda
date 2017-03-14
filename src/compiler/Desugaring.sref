@@ -247,54 +247,54 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result)) =
-    #Sentences
-    (
-      (e.Pattern)
-      <NameNestedAssigns (e.MainName) e.Assigns>
-      (<NameNestedResult (e.MainName) e.Result>)
-    );
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result))
+     = #Sentences
+        (
+          (e.Pattern)
+          <NameNestedAssigns (e.MainName) e.Assigns>
+          (<NameNestedResult (e.MainName) e.Result>)
+        );
 
-  (e.MainName) #Sentences e.Sentences =
-    #Sentences
-    <DelAccumulator
-      <MapReduce
-        {
-          s.SentenceNumber ((e.Pattern) e.Assigns (e.Result)) =
-            <Inc s.SentenceNumber>
-            (
-              (e.Pattern)
-              // TODO: удалить дублирование
-              <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
-              (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
-            );
-        }
-        1 e.Sentences
-      >
-    >;
+  (e.MainName) #Sentences e.Sentences
+    = #Sentences
+      <DelAccumulator
+        <MapReduce
+          {
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result))
+              = <Inc s.SentenceNumber>
+                (
+                  (e.Pattern)
+                  // TODO: удалить дублирование
+                  <NameNestedAssigns (e.MainName '$' s.SentenceNumber) e.Assigns>
+                  (<NameNestedResult (e.MainName '$' s.SentenceNumber) e.Result>)
+                );
+          }
+          1 e.Sentences
+        >
+      >;
 
-  (e.MainName) #NativeBody t.SrcPos e.Code =
-    #NativeBody t.SrcPos e.Code;
+  (e.MainName) #NativeBody t.SrcPos e.Code
+    = #NativeBody t.SrcPos e.Code;
 }
 
 NameNestedAssigns {
-  (e.MainName) e.Assigns =
-    <DelAccumulator
-      <MapReduce
-        {
-          s.AssignId (#Assign (e.Result) (e.Pattern)) =
-            <Inc s.AssignId>
-            (#Assign
-              // TODO: удалить дублирование
-              (e.MainName '=' s.AssignId)
-              (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
-              (e.Pattern)
-            );
-        }
-        1
-        e.Assigns
-      >
-    >;
+  (e.MainName) e.Assigns
+    = <DelAccumulator
+        <MapReduce
+          {
+            s.AssignId (#Assign (e.Result) (e.Pattern))
+              = <Inc s.AssignId>
+                (#Assign
+                  // TODO: удалить дублирование
+                  (e.MainName '=' s.AssignId)
+                  (<NameNestedResult (e.MainName '=' s.AssignId) e.Result>)
+                  (e.Pattern)
+                );
+          }
+          1
+          e.Assigns
+        >
+      >;
 }
 
 NameNestedResult {
