@@ -1,3 +1,3 @@
 @echo off
-..\..\bin\lexgen Lexer.sref
+..\..\bin\lexgen %LEXGEN_FLAGS% Lexer.sref
 call ..\make compiler srefc-core srefc

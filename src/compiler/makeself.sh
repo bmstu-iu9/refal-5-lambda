@@ -1,3 +1,3 @@
 #!/bin/bash
-../../bin/lexgen Lexer.sref
+../../bin/lexgen $LEXGEN_FLAGS Lexer.sref
 source ../make.sh compiler srefc-core srefc
