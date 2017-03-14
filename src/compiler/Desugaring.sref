@@ -366,7 +366,7 @@ RemoveAssigns-Sentences {
   #Sentences e.Sentences =
     #Sentences
     <Map
-      Remove-Assignments-Sentence
+      RemoveAssigns-Sentence
       e.Sentences
     >;
 
@@ -374,29 +374,30 @@ RemoveAssigns-Sentences {
     #NativeBody t.SrcPos e.Code;
 }
 
-Remove-Assignments-Sentence {
-  ((e.Pattern) (e.Result)) = ((e.Pattern) (e.Result));
+RemoveAssigns-Sentence {
+  ((e.Pattern) (e.Result))
+    = ((e.Pattern) (e.Result));
 
   (
     (e.Pattern)
     (#Assign (e.AssignName) (e.AssignResult) (e.AssignPattern)) e.Assignments
     (e.Result)
-  ) =
-    (
-      (e.Pattern)
-      (
-        (#CallBrackets
-          (#Closure
-            (e.AssignName)
-            #Sentences
-            <Remove-Assignments-Sentence
-              ((e.AssignPattern) e.Assignments (e.Result))
-            >
+  )
+    = (
+        (e.Pattern)
+        (
+          (#CallBrackets
+            (#Closure
+              (e.AssignName)
+              #Sentences
+              <RemoveAssigns-Sentence
+                ((e.AssignPattern) e.Assignments (e.Result))
+              >
+            )
+            e.AssignResult
           )
-          e.AssignResult
         )
-      )
-    );
+      );
 }
 
 Pass-FlatNestedFuncs {
