@@ -140,13 +140,13 @@ $ENTRY FastGen-Terms {
     );
 
   s.Num ((#Atom e.val)) ((#ADT-Brackets (e.Name) s.NumB e.1)) =
-    (#T '$' (((#Atom e.val))) (((#ADT-Brackets (e.Name) s.NumB e.1 ))) );
+    (#T '$' <SplitReps s.Num (#Atom e.val)> (((#ADT-Brackets (e.Name) s.NumB e.1 ))) );
 
   s.Num ((#Brackets s.NumB e.1)) ((#Atom e.val)) =
     (#T '$' <SplitReps s.Num (#Brackets s.NumB e.1)> ((( #Atom e.val ))) );
 
   s.Num ((#Atom e.val)) ((#Brackets s.NumB e.1)) =
-    (#T '$' (((#Atom e.val))) (((#Brackets s.NumB e.1 ))) );
+    (#T '$' <SplitReps s.Num (#Atom e.val)> (((#Brackets s.NumB e.1 ))) );
 
   /* скобки с #S переменной */
   s.Num ((#S '$' e.Pattern)) ((#ADT-Brackets (e.Name) s.NumB e.inBr)) =
@@ -195,19 +195,20 @@ $ENTRY FastGen-Terms {
     (#T '$' <SplitReps s.Num (#ADT-Brackets (e.Name) s.NumB e.inBr)> e.Pattern );
 
   /* Атом */
-  // ((#Atom e.val)) ((#Atom e.val)) = (#Atom e.val);
+  s.Num ((#Atom e.val)) ((#Atom e.val)) =
+    (#Atom e.val);
 
   s.Num ((#Atom e.val1)) ((#Atom e.val2)) =
-    (#S '$' (( (#Atom e.val1) )) (( (#Atom e.val2) )) );
+    (#S '$' <SplitReps s.Num (#Atom e.val1)> (( (#Atom e.val2) )) );
 
   s.Num ((#Atom e.val)) ((#S '$' e.Pattern)) =
-    (#S '$' (( (#Atom e.val) )) e.Pattern );
+    (#S '$' <SplitReps s.Num (#Atom e.val)> e.Pattern );
 
   s.Num ((#S '$' e.Pattern)) ((#Atom e.val)) =
     (#S '$' e.Pattern (( (#Atom e.val) )) );
 
   s.Num ((#Atom e.val)) ((#T '$' e.Pattern)) =
-    (#T '$' (( (#Atom e.val) )) e.Pattern );
+    (#T '$' <SplitReps s.Num (#Atom e.val)> e.Pattern );
 
   s.Num ((#T '$' e.Pattern)) ((#Atom e.val)) =
     (#T '$' e.Pattern (( (#Atom e.val) )) );
