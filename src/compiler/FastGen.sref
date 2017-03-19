@@ -232,14 +232,10 @@ $ENTRY FastGen-Terms {
 FastGen-MeN {
   s.Num (t.left1 e.1 (#E e.inE1) e.2 )(t.left2 e.3 (#E e.inE2) e.4 ) =
     <FastGen-Terms s.Num (t.left1) (t.left2) >
-    <FastGen-MeN
-        s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )
-    >;
+    <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>;
 
   s.Num (e.1 (#E e.inE1) e.2 t.right1)(e.3 (#E e.inE2) e.4 t.right2) =
-    <FastGen-MeN
-        s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )
-    >
+    <FastGen-MeN s.Num (e.1 (#E e.inE1) e.2 )(e.3 (#E e.inE2) e.4 )>
     <FastGen-Terms s.Num (t.right1) (t.right2)>;
 
   s.Num ((#E '$' e.inE1)) ((#E '$' ((e.inE2)) )) =
