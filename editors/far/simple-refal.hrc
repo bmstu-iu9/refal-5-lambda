@@ -7,25 +7,25 @@
   <type name="SimpleRefal">
     <import type="def"/>
 
-    <region name="refalComment" parent="def:CommentContent"/>
-    <region name="refalOpenStruct" parent="PairStart"/>
-    <region name="refalCloseStruct" parent="PairEnd"/>
+    <region name="simpleRefalComment" parent="def:CommentContent"/>
+    <region name="simpleRefalOpenStruct" parent="PairStart"/>
+    <region name="simpleRefalCloseStruct" parent="PairEnd"/>
 
-    <region name="refalCharacter" parent="def:Character"/>
-    <region name="refalString" parent="def:String"/>
+    <region name="simpleRefalCharacter" parent="def:Character"/>
+    <region name="simpleRefalString" parent="def:String"/>
 
-    <region name="refalLineComment" parent="def:LineComment"/>
+    <region name="simpleRefalLineComment" parent="def:LineComment"/>
 
-    <region name="refalSymbol" parent="def:SymbolStrong"/>
+    <region name="simpleRefalSymbol" parent="def:SymbolStrong"/>
 
-    <region name="refalDirective" parent="def:Directive"/>
+    <region name="simpleRefalDirective" parent="def:Directive"/>
 
-    <region name="refalVariable" parent="def:Function"/>
-    <region name="refalFunction" parent="def:Keyword"/>
+    <region name="simpleRefalVariable" parent="def:Function"/>
+    <region name="simpleRefalFunction" parent="def:Keyword"/>
 
-    <region name="refalInlineNative" parent="def:StringEdge"/>
+    <region name="simpleRefalInlineNative" parent="def:StringEdge"/>
 
-    <scheme name="refalSymbolsCore">
+    <scheme name="simpleRefalSymbolsCore">
       <regexp match='/\\\\$/' region0="def:Error"/>
       <regexp match='/\\[^xX0-7]/' region0="cString2"/>
       <regexp match='/\\$/' region0="cString2"/>
@@ -34,7 +34,7 @@
       <regexp match="/[^\\\']$/" region0="def:Error"/>
     </scheme>
 
-    <scheme name="refalStringCore">
+    <scheme name="simpleRefalStringCore">
       <regexp match='/\\\\$/' region0="def:Error"/>
       <regexp match='/\\[^xX0-7]/' region0="cString2"/>
       <regexp match='/\\$/' region0="cString2"/>
@@ -43,27 +43,48 @@
       <regexp match='/[^\\\"]$/' region0="def:Error"/>
     </scheme>
 
-    <scheme name="Refal">
+    <scheme name="SimpleRefal">
       <inherit scheme="CString"/>
       <inherit scheme="DecNumber"/>
-      <inherit scheme="HexNumb"/>
-      <inherit scheme="FloatNumb"/>
+      <!-- Шестнадцатиричные константы и вещественные числа не поддерживаются -->
+      <!--
+        <inherit scheme="HexNumb"/>
+        <inherit scheme="FloatNumb"/>
+      -->
       <inherit scheme="PairedBrackets">
         <virtual scheme="PairedBrackets" subst-scheme="Refal"/>
       </inherit>
 
-      <!-- ������� ������ -->
+      <!-- угловые скобки -->
       <block start="/(&lt;)/" end="/(&gt;)/" scheme="Refal"
-             region00="refalSymbol" region01="refalOpenStruct"
-             region10="refalSymbol" region11="refalCloseStruct"/>
+             region00="simpleRefalSymbol" region01="simpleRefalOpenStruct"
+             region10="simpleRefalSymbol" region11="simpleRefalCloseStruct"/>
 
-      <block start="/\/\*/" end="/\*\//" scheme="Comment" region="refalComment"
-             region00="refalOpenStruct" region10="refalCloseStruct"/>
-      <block start="/\/\//" end="/$/" scheme="Comment" region="refalComment"
-             region00="refalOpenStruct" region10="refalCloseStruct"/>
-      <regexp match='/\$\w*/' region0="refalDirective"/>
-      <regexp match="/\c(0x[\da-fA-F]*?([^\s\W\da-fA-F]).*?)\B/i" region0="dError"/>
-      <keywords region="refalSymbol">
+      <block start="/\/\*/" end="/\*\//" scheme="Comment"
+             region="simpleRefalComment"
+             region00="simpleRefalOpenStruct"
+             region10="simpleRefalCloseStruct"/>
+      <block start="/\/\//" end="/$/" scheme="Comment"
+             region="simpleRefalComment"
+             region00="simpleRefalOpenStruct"
+             region10="simpleRefalCloseStruct"/>
+      <!-- Шестнадцатиричные константы и вещественные числа не поддерживаются -->
+      <!--
+      <regexp match="/\c(0x[\da-fA-F]*?([^\s\W\da-fA-F]).*?)\B/i"
+              region0="def:Error"/>
+      -->
+      <keywords region="simpleRefalDirective">
+        <word name="$ENTRY"/>
+        <word name="$SWAP"/>
+        <word name="$ESWAP"/>
+        <word name="$EXTERN"/>
+        <word name="$FORWARD"/>
+        <word name="$LABEL"/>
+        <word name="$ENUM"/>
+        <word name="$EENUM"/>
+        <word name="$EASTEREGG"/>
+      </keywords>
+      <keywords region="simpleRefalSymbol">
         <symb name="="/>
         <symb name=","/>
         <symb name=":"/>
@@ -75,6 +96,7 @@
         <symb name="#"/>
         <symb name="&amp;"/>
       </keywords>
+      <regexp match='/\$\w*/' region0="def:Error"/>
       <keywords region="def:Error">
         <symb name="["/><symb name="]"/>
         <symb name="{"/><symb name="}"/>
@@ -83,14 +105,19 @@
         <symb name="*/"/>
       </keywords>
 
-      <regexp match='/\b[stev]\.[\w_\-\d]+\M(\W|$)/' region0="refalVariable"/>
-      <regexp match='/\b*[\w_\-\d]*\M(\W|$)/' region0="refalFunction"/>
+      <regexp match='/\b[stev]\.[\w_\-\d]+\M(\W|$)/'
+              region0="simpleRefalVariable"/>
+      <regexp match='/\b*[A-Z][\w_\-\d]*\M(\W|$)/'
+              region0="simpleRefalFunction"/>
 
-      <block start="/'/" end="/'/" scheme="refalSymbolsCore" region="refalString"/>
-      <block start='/"/' end='/"/' scheme="refalStringCore" region="refalString"/>
+      <block start="/'/" end="/'/"
+             scheme="simpleRefalSymbolsCore" region="simpleRefalString"/>
+      <block start='/"/' end='/"/'
+             scheme="simpleRefalStringCore" region="simpleRefalString"/>
 
       <block start="/^%%$/" end="/^%%$/" scheme="cpp:cpp"
-             region00="refalInlineNative" region10="refalInlineNative"/>
+             region00="simpleRefalInlineNative"
+             region10="simpleRefalInlineNative"/>
     </scheme>
   </type>
 </hrc>
