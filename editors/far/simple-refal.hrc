@@ -52,11 +52,11 @@
         <inherit scheme="FloatNumb"/>
       -->
       <inherit scheme="PairedBrackets">
-        <virtual scheme="PairedBrackets" subst-scheme="Refal"/>
+        <virtual scheme="PairedBrackets" subst-scheme="SimpleRefal"/>
       </inherit>
 
       <!-- угловые скобки -->
-      <block start="/(&lt;)/" end="/(&gt;)/" scheme="Refal"
+      <block start="/(&lt;)/" end="/(&gt;)/" scheme="SimpleRefal"
              region00="simpleRefalSymbol" region01="simpleRefalOpenStruct"
              region10="simpleRefalSymbol" region11="simpleRefalCloseStruct"/>
 
