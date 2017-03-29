@@ -4,7 +4,7 @@
 <hrc version="take5" xmlns="http://colorer.sf.net/2003/hrc"
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://colorer.sf.net/2003/hrc http://colorer.sf.net/2003/hrc.xsd">
-  <type name="Refal">
+  <type name="SimpleRefal">
     <import type="def"/>
 
     <region name="refalComment" parent="def:CommentContent"/>

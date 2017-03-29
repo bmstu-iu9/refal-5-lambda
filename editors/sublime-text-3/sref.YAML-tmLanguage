@@ -9,7 +9,7 @@ patterns:
 - {include: '#comments'}
 - comment: keywords
   name: keyword.other.sref
-  match: '\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG'
+  match: '\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG'
 
 - comment: broken keyword
   name: invalid.illegal.sref
@@ -17,11 +17,11 @@ patterns:
 
 - comment: value
   name: variable.parameter.sref
-  match: '\b[ste]\.[A-Za-z0-9!?_-]+\b'
+  match: '\b[ste]\.[A-Za-z0-9_-]+\b'
 
 - comment: identifier
   name: variable.language.sref
-  match: '\b[A-Z!?][A-Za-z0-9!?_-]*\b'
+  match: '\b[A-Z!?][A-Za-z0-9_-]*\b'
 
 - comment: single quoted strings 
   name: string.quoted.single.sref
@@ -41,7 +41,7 @@ patterns:
 
 - comment: idents
   name: storage.type.sref
-  match: '\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b'
+  match: '\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9_-]+\b'
 
 - comment: block comment
   name: comment.block.documentation.sref
