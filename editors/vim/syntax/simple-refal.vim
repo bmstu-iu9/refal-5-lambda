@@ -5,7 +5,7 @@ syntax keyword simpleRefalKeyword $EXTERN $FORWARD $LABEL $ENUM $EENUM
 syntax keyword simpleRefalKeyword $EASTEREGG
 syntax match simpleRefalBrokenKeyword /\$\a*\>/
 syntax match simpleRefalVariable /\<[ste]\.[A-Za-z0-9_-]\+\>/
-syntax match simpleRefalIdentifier /\<[A-Z!?][A-Za-z0-9_-]*\>/
+syntax match simpleRefalIdentifier /\<[A-Z][A-Za-z0-9_-]*\>/
 syntax match simpleRefalNumber /\<\d*\>/
 syntax match simpleRefalBrokenString /'[^']*$/
 syntax match simpleRefalString /'\(\(\\.\)\|[^']\)*'/
