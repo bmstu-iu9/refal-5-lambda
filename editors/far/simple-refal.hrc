@@ -110,9 +110,9 @@
       <regexp match='/\b*[A-Z][\w_\-\d]*\M(\W|$)/'
               region0="simpleRefalFunction"/>
 
-      <block start="/'/" end="/'/"
+      <block start="/'/" end="/'|$/"
              scheme="simpleRefalSymbolsCore" region="simpleRefalString"/>
-      <block start='/"/' end='/"/'
+      <block start='/"/' end='/"|$/'
              scheme="simpleRefalStringCore" region="simpleRefalString"/>
 
       <block start="/^%%$/" end="/^%%$/" scheme="cpp:cpp"
