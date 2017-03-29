@@ -18,7 +18,7 @@
 			<key>comment</key>
 			<string>keywords</string>
 			<key>match</key>
-			<string>\$MODULE|\$ENTRY|\$END|\$IMPORT|\$SWAP|\$PROGRAM|\$ESWAP|\$DATA|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG</string>
+			<string>\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG</string>
 			<key>name</key>
 			<string>keyword.other.sref</string>
 		</dict>
@@ -34,7 +34,7 @@
 			<key>comment</key>
 			<string>value</string>
 			<key>match</key>
-			<string>\b[ste]\.[A-Za-z0-9!?_-]+\b</string>
+			<string>\b[ste]\.[A-Za-z0-9_-]+\b</string>
 			<key>name</key>
 			<string>variable.parameter.sref</string>
 		</dict>
@@ -42,7 +42,7 @@
 			<key>comment</key>
 			<string>identifier</string>
 			<key>match</key>
-			<string>\b[A-Z!?][A-Za-z0-9!?_-]*\b</string>
+			<string>\b[A-Z][A-Za-z0-9_-]*\b</string>
 			<key>name</key>
 			<string>variable.language.sref</string>
 		</dict>
@@ -82,7 +82,7 @@
 			<key>comment</key>
 			<string>idents</string>
 			<key>match</key>
-			<string>\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9!?_-]+\b</string>
+			<string>\#[ ]*(/\*.*\*/[ ]*)?[A-Za-z0-9_-]+\b</string>
 			<key>name</key>
 			<string>storage.type.sref</string>
 		</dict>

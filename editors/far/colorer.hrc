@@ -14,8 +14,8 @@
    </documentation>
   </annotation>
 
-  <prototype name="Refal" description="Refal">
-    <location link="refal.hrc"/>
-    <filename>/\.[sm]?ref$/i</filename>
+  <prototype name="SimpleRefal" description="Simple Refal">
+    <location link="simple-refal.hrc"/>
+    <filename>/\.sref$/i</filename>
   </prototype>
 </hrc>

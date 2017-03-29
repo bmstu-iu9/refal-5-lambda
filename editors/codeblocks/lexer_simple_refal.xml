@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
-        <Lexer name="Refal"
+        <Lexer name="SimpleRefal"
                 index="3"
-                filemasks="*.ref">
+                filemasks="*.sref">
                 <Style name="Default"
                         index="0,11"
                         fg="0,0,0"
@@ -56,7 +56,7 @@
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
-                            value="$EXTERN $ENTRY $MODULE $END $IMPORT $SWAP $PROGRAM $ESWAP $DATA $LABEL $FORWARD $ENUM $EENUM $EASTEREGG"/>
+                            value="$EXTERN $ENTRY $SWAP $ESWAP $LABEL $FORWARD $ENUM $EENUM $EASTEREGG"/>
                         <!-- Secondary keywords and identifiers -->
                         <Set index="1"
                             value=" "/>
@@ -65,7 +65,7 @@
                             value="< > # { } ( ) [ ]"/>
                         <!-- wxSmith block identifiers -->
                 </Keywords>
-                <SampleCode value="lexer_refal.sample"
+                <SampleCode value="lexer_simple_refal.sample"
 						breakpoint_line="3"
 						debug_line="6"
 						error_line="7"/>

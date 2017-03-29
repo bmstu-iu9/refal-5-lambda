@@ -4389,7 +4389,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
   );
   printf("%s, %s\t\t%s\n", s_TR, s_TRACE, "set up tracing for function");
   printf(
-    "%s, %s\t\t%s\n", s_NOTR, s_NOTRACE, "romave tracing settings for function"
+    "%s, %s\t\t%s\n", s_NOTR, s_NOTRACE, "remove tracing settings for function"
   );
   printf(
     "%s, %s\t\t\t%s\n", s_R, s_RUN, "continue program execution"
@@ -4403,7 +4403,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
     s_N, s_NEXT, "execute next active function until passive result"
   );
   printf("%s\t\t\t%s\n", s_VARS, "print the variable debug table");
-  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parametr comands");
+  printf("%s, %s\t\t\t%s\n", s_P, s_PRINT, "print by parameter commands");
   printf(
     "  %s\t%s\n",
     "\'e.\'|\'t.\'|\'s.\'nnn", "print variable value by its name"
@@ -4414,7 +4414,7 @@ void refalrts::debugger::RefalDebugger::help_option() {
     "  %s\t\t\t%s\n",
     s_ARG,
     "print the argument - the expression after\n"
-    "\t\t\t  the callee-therm and befor \'>\'"
+    "\t\t\t  the callee-therm and before \'>\'"
   );
   printf("  %s\t\t\t%s\n", s_RES, "print the result of previous step");
   printf(

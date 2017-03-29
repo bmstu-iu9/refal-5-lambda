@@ -3,7 +3,7 @@
 <language name="Refal" section="Sources"
           version="0.01" kateversion="3.4"
           indenter="cstyle"
-          extensions="*.sref;*.mref"
+          extensions="*.sref"
           mimetype="text/x-srefsrc;text/x-chdr"
           priority="5">
 <!--
@@ -15,14 +15,9 @@
 -->
   <highlighting>
     <list name="keywords">
-      <item> $MODULE </item>
       <item> $ENTRY </item>
-      <item> $END </item>
-      <item> $IMPORT </item>
       <item> $SWAP </item>
-      <item> $PROGRAM </item>
       <item> $ESWAP </item>
-      <item> $DATA </item>
       <item> $EXTERN </item>
       <item> $LABEL </item>
       <item> $FORWARD </item>
@@ -35,8 +30,8 @@
         <DetectSpaces />
         <keyword attribute="Keyword" context="#stay" String="keywords"/>
 	<RegExpr attribute="BrokenKeyword" context="#stay" String="\$[\w]*\b"/>
-        <RegExpr attribute="Value" context="#stay" String="\b[ste]\.[A-Za-z0-9!?_-]+\b"/>
-        <RegExpr attribute="Identifier" context="#stay" String="\b[A-Z!?][A-Za-z0-9!?_-]*\b"/> 
+        <RegExpr attribute="Value" context="#stay" String="\b[ste]\.[A-Za-z0-9_-]+\b"/>
+        <RegExpr attribute="Identifier" context="#stay" String="\b[A-Z][A-Za-z0-9_-]*\b"/>
         <RegExpr attribute="String" context="#stay" String="'((\\.)|[^'])*'"/>
         <RegExpr attribute="BrokenString" context="#stay" String="\'[^']*$"/> 
         <RegExpr attribute="Decimal" context="#stay" String="\b[\d]*\b"/>
