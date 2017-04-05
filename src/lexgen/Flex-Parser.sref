@@ -467,8 +467,8 @@ ParseSimpleTerm {
                 #TStartGroup =
                   <ParseSet>;
                 #TInclude =
-                  <MoveNext>
-                  (#NamedRegexp <Expect #TName>);
+                  (#NamedRegexp <CurrentAttr>)
+                  <MoveNext>;
                 #TChar =
                   (#Char <CurrentAttr>)
                   <MoveNext>;
@@ -523,7 +523,7 @@ ParseInvertOpt {
         <Fetch
           <CurrentTag>
           {
-              #TBegin =
+              #TInvertGroup =
                   #Inverted
                   <MoveNext>;
 
@@ -551,8 +551,8 @@ ParseComplexSYMBOLSETS {
 
 //<ComplexSYMBOLSET> = <SYMBOL><optSYMBOL>
 /*
-  t.ComplexSYMBOLSET ::= s.SYMBOLSET+
-  s.SYMBOLSET ::= (s.Char) | (s.CharStart s.CharEnd)
+  t.ComplexSYMBOLSET ::= t.SYMBOLSET+
+  t.SYMBOLSET ::= (s.Char) | (s.CharStart s.CharEnd)
   // equivalent: (s.Char e.OptSymbol)
 */
 ParseComplexSYMBOLSET {

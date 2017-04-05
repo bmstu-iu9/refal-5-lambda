@@ -164,13 +164,7 @@ Transform {
 
 Flex-Compile {
   e.AnyInput =
-    <Map
-      {
-        (e.Any) = ('//e ' e.Any);
-        s.Any = ('//s ' s.Any);
-      }
-      e.AnyInput
-    >;
+    /* пусто */;
 }
 
 Length-T {
