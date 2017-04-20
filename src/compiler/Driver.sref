@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, SaveFile, Map, SaveBytes;
+$EXTERN Fetch, Seq, SaveFile, SaveBytes;
 
 //FROM LoadSource
 $EXTERN LoadSource;
@@ -27,9 +27,6 @@ $EXTERN LowLevelRASL;
 
 //FROM Generator-RASL
 $EXTERN GenProgram-RASL;
-
-//FROM Library
-$EXTERN StrFromInt;
 
 //FROM Generator-Native
 $EXTERN GenProgram-Native;
