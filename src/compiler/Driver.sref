@@ -16,6 +16,9 @@ $EXTERN EL-Create, EL-Destroy;
 //FROM Checker
 $EXTERN CheckProgram;
 
+//FROM Config
+$EXTERN Config-GetDebugMode, Config-GetOpt, Config-GetGenMode;
+
 //FROM Desugaring
 $EXTERN Desugar;
 
@@ -32,19 +35,13 @@ $EXTERN GenProgram-RASL;
 $EXTERN GenProgram-Native;
 
 /**
-  <CompileFile s.GenMode s.Opt t.DebugMode (e.SrcName) e.OutputName>
+  <CompileFile t.Config (e.SrcName) e.OutputName>
     == #Success e.OutputName t.Native
     == #Fails
-
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret | #Both
-  s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
-  t.DebugMode ::= (s.MarkupContext s.DebugInfo)
-  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
-  s.DebugInfo ::= #DebugInfo | #NoDebugInfo
   t.Native ::= #NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  s.GenMode s.Opt (s.MarkupContext s.DebugInfo) (e.SrcName) e.OutputName '.rasl'=
+  t.Config (e.SrcName) e.OutputName '.rasl'=
     <Fetch
       e.SrcName
       <Seq
@@ -57,9 +54,7 @@ $ENTRY CompileFile {
                 #EL-NoErrors =
                   <Fetch
                     e.AST
-                    <BackEnd
-                      s.MarkupContext s.DebugInfo s.Opt s.GenMode (e.SrcName) e.OutputName
-                    >
+                    <BackEnd t.Config (e.SrcName) e.OutputName>
                   >;
 
                 #EL-HasErrors =
@@ -86,23 +81,26 @@ FrontEnd {
 }
 
 BackEnd {
-  s.MarkupContext s.DebugInfo s.Opt s.GenMode (e.SrcName) e.OutputName =
-    <Seq
-      (Desugar s.MarkupContext)
-      (HighLevelRASL <SelectOptFlags s.Opt>)
-      (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
-      {
-        t.RASLModule =
-          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
-          #NoNative;
+  t.Config (e.SrcName) e.OutputName
+    = <Config-GetDebugMode t.Config> : s.MarkupContext s.DebugInfo
+    = <Config-GetOpt t.Config> : s.Opt
+    = <Config-GetGenMode t.Config> : s.GenMode
+    = <Seq
+        (Desugar s.MarkupContext)
+        (HighLevelRASL <SelectOptFlags s.Opt>)
+        (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
+        {
+          t.RASLModule =
+            <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
+            #NoNative;
 
-        t.RASLModule t.NativeModule =
-          <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
-          <BackEnd-NativeModule
-            t.NativeModule (e.SrcName) e.OutputName '.cpp'
-          >;
-      }
-    >;
+          t.RASLModule t.NativeModule =
+            <BackEnd-RASLModule t.RASLModule e.OutputName '.rasl'>
+            <BackEnd-NativeModule
+              t.NativeModule (e.SrcName) e.OutputName '.cpp'
+            >;
+        }
+      >;
 }
 
 BackEnd-RASLModule {

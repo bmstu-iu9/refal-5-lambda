@@ -1,0 +1,156 @@
+/*
+  Внутреннее представление:
+
+  [Condif (s.Option e.Value)*]
+*/
+$ENUM Config;
+
+/**
+  <Config-Create
+    t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
+    s.GrammarCheck t.TargetFileName
+    (e.TargetSuffix) ((e.Folder)*)
+  >
+    == t.Config
+
+  t.CppCompiler ::= #NoCppCompiler | ((e.CppCompiler) (e.Flags))
+  s.GenMode ::= #OnlyDirect | #OnlyInterpret
+  s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
+  t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
+  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
+  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
+  s.GrammarCheck ::= #NormalRun | #GrammarCheck
+  t.TargetFileName ::= (e.TargetFileName) | #DefaultTargetFileName
+*/
+$ENTRY Config-Create {
+  t.CppCompiler s.GenMode s.Opt t.ErrorFile (s.MarkupContext s.DebuggerInfo)
+  s.GrammarCheck t.TargetFileName (e.TargetSuffix) (e.Folders)
+    = [Config
+        (#CppCompiler <UnpackCppCompiler t.CppCompiler>)
+        (#GenMode s.GenMode)
+        (#Optimize s.Opt)
+        (#ErrorFile <UnpackErrorFile t.ErrorFile>)
+        (#DebugMode s.MarkupContext s.DebuggerInfo)
+        (#GrammarCheck s.GrammarCheck)
+        (#TargetFileName <UnpackTargetFileName t.TargetFileName>)
+        (#TargetSuffix e.TargetSuffix)
+        (#Folders e.Folders)
+      ];
+}
+
+UnpackCppCompiler {
+  #NoCppCompiler = #NoCppCompiler;
+  ((e.CppCompiler) (e.Flags)) = (e.CppCompiler) e.Flags;
+}
+
+UnpackErrorFile {
+  #NoErrorFile = /* пусто */;
+  (#ErrorFile e.ErrorFile) = e.ErrorFile;
+}
+
+UnpackTargetFileName {
+  #DefaultTargetFileName = #DefaultTargetFileName;
+  (e.TargetFileName) = e.TargetFileName;
+}
+
+/**
+  <Config-GetCppCompiler t.Config>
+    == #NoCppCompiler
+    == (e.CppCompiler) e.Flags
+*/
+$ENTRY Config-GetCppCompiler {
+  [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E]
+    = e.CppCompiler;
+}
+
+/**
+  <Config-GetCppCompiler-AsIs t.Config>
+    == t.CppCompiler
+*/
+$ENTRY Config-GetCppCompiler-AsIs {
+  [Config e.Params-B (#CppCompiler #NoCppCompiler) e.Params-E]
+    = #NoCppCompiler;
+
+  [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E]
+    = ((e.CppCompiler) (e.Flags));
+}
+
+/**
+  <Config-GetGenMode t.Config> == s.GenMode
+*/
+$ENTRY Config-GetGenMode {
+  [Config e.Params-B (#GenMode s.GenMode) e.Params-E] = s.GenMode;
+}
+
+/**
+  <Config-GetOpt t.Config> == s.Opt
+*/
+$ENTRY Config-GetOpt {
+  [Config e.Params-B (#Optimize s.Opt) e.Params-E] = s.Opt;
+}
+
+/**
+  <Config-GetErrorFile t.Config> == t.ErrorFile
+*/
+$ENTRY Config-GetErrorFile {
+  [Config e.Params-B (#ErrorFile) e.Params-E] = #NoErrorFile;
+
+  [Config e.Params-B (#ErrorFile e.ErrorFile) e.Params-E]
+    = #ErrorFile e.ErrorFile;
+}
+
+/**
+  <Config-GetDebugMode t.Config> == s.MarkupContext s.DebuggerInfo
+*/
+$ENTRY Config-GetDebugMode {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = s.MarkupContext s.DebuggerInfo;
+}
+
+/**
+  <Config-GetGrammarCheck t.Config> == s.GrammarCheck
+*/
+$ENTRY Config-GetGrammarCheck {
+  [Config e.Params-B (#GrammarCheck s.GrammarCheck) e.Params-E]
+    = s.GrammarCheck;
+}
+
+/**
+  <Config-GetTargetFileName t.Config>
+    == #DefaultTargetFileName
+    == e.TargetFileName
+*/
+$ENTRY Config-GetTargetFileName {
+  [Config e.Params-B (#TargetFileName #DefaultTargetFileName) e.Params-E]
+    = #DefaultTargetFileName;
+
+  [Config e.Params-B (#TargetFileName e.TargetFileName) e.Params-E]
+    = e.TargetFileName;
+}
+
+/**
+  <Config-SetTargetFileName t.Config e.TargetFileName> == t.Config^
+*/
+$ENTRY Config-SetTargetFileName {
+  [Config e.Params-B (#TargetFileName e.OldFileName) e.Params-E]
+  e.NewTargetFileName
+    = [Config
+        e.Params-B (#TargetFileName e.NewTargetFileName) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetSuffix t.Config> == e.TargetSuffix
+*/
+$ENTRY Config-GetTargetSuffix {
+  [Config e.Params-B (#TargetSuffix e.TargetSuffix) e.Params-E]
+    = e.TargetSuffix;
+}
+
+/**
+  <Config-GetSearchFolders t.Config> == (e.Folder)*
+*/
+$ENTRY Config-GetSearchFolders {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] = e.Folders;
+}

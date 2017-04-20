@@ -7,22 +7,13 @@ $EXTERN GetOpt-CheckRepeated;
 //FROM LibraryEx
 $EXTERN Fetch, Seq, MapReduce, Map;
 
+//FROM Config
+$EXTERN Config-Create;
+
 /**
   <ParseCommandLine e.Arguments>
-    == #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
-       s.GrammarCheck t.TargetFileName
-       (e.TargetSuffix) ((e.Folder)*) (s.ArgNum e.File)*
+    == #Success t.Config (s.ArgNum e.File)*
     == #Fails (s.ArgNum e.ErrorMessage)
-
-  t.CppCompiler ::= #NoCppCompiler | ((e.CppCompiler) (e.Flags))
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret
-  s.Opt ::= #OptNone | #OptPattern | #OptResult
-  t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
-  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
-  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
-  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
-  s.GrammarCheck ::= #NormalRun | #GrammarCheck
-  t.TargetFileName ::= (e.TargetFileName) | #DefaultTargetFileName
 */
 $ENTRY ParseCommandLine {
   e.Arguments =
@@ -199,7 +190,8 @@ $ENTRY ParseCommandLine {
             >;
         }
         {
-          () (e.Bag) e.FileNames = #Success e.Bag e.FileNames;
+          () (e.Bag) e.FileNames =
+            #Success <Config-Create e.Bag> e.FileNames;
 
           (e.Errors) (e.Bag) e.FileNames =
             #Fails

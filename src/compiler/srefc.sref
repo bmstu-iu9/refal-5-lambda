@@ -5,6 +5,11 @@ $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
 
+//FROM Config
+$EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
+  Config-GetCppCompiler-AsIs, Config-GetGrammarCheck, Config-GetTargetSuffix,
+  Config-GetSearchFolders;
+
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
   LoadBytes, FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
@@ -34,29 +39,31 @@ Main {
 }
 
 Main-SwValidCommandLine {
-  t.CommandLineSource
-  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-  t.TargetFileName (e.TargetSuffix) (e.Folders) /* файлов нет */ =
-    <ReportErrors
-      t.CommandLineSource #NoErrorFile (1 'no source files in command line')
-    >;
+  t.CommandLineSource #Success t.Config /* файлов нет */
+    = <ReportErrors
+        t.CommandLineSource t.Config (1 'no source files in command line')
+      >;
 
-  t.CommandLineSource
-  #Success t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-  t.TargetFileName (e.TargetSuffix) (e.Folders) e.Files =
-    <Main-SwFoundFiles
-      t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-      <CalcTargetFileName t.TargetFileName (e.TargetSuffix) e.Files>
-      <LookupSourceFiles (e.Folders) e.Files>
-    >;
+  t.CommandLineSource #Success t.Config e.Files
+    = <CalcTargetFileName
+        t.Config
+        (<Config-GetTargetFileName t.Config>)
+        e.Files
+      >
+    : e.TargetFileName^
+    = <Config-SetTargetFileName t.Config e.TargetFileName>
+    : t.Config^
+    = <Main-SwFoundFiles
+        t.CommandLineSource t.Config
+        <LookupSourceFiles t.Config e.Files>
+      >;
 
-  t.CommandLineSource #Fails e.Errors =
-    <ReportErrors t.CommandLineSource #NoErrorFile e.Errors>;
+  t.CommandLineSource #Fails e.Errors
+    = <ReportErrors t.CommandLineSource #NoErrorFile e.Errors>;
 }
 
 ReportErrors {
-  #CommandLine t.ErrorFile e.Errors =
+  #CommandLine t.Config e.Errors =
     <Map
       {
         (s.Pos e.Message) =
@@ -66,10 +73,10 @@ ReportErrors {
       }
       e.Errors
     >
-    <CreateErrorFileMark t.ErrorFile>
+    <CreateErrorFileMark t.Config>
     <Exit 1>;
 
-  (e.ConfigFile) t.ErrorFile e.Errors =
+  (e.ConfigFile) t.Config e.Errors =
     <Map
       {
         (s.Pos e.Message) =
@@ -79,21 +86,25 @@ ReportErrors {
       }
       e.Errors
     >
-    <CreateErrorFileMark t.ErrorFile>
+    <CreateErrorFileMark t.Config>
     <Exit 1>;
 }
 
 CreateErrorFileMark {
   #NoErrorFile = /* ничего */;
-  (#ErrorFile e.FileName) = <SaveFile (e.FileName)>;
+  t.Config = <CreateErrorFileMark-SwFile <Config-GetErrorFile t.Config>>;
+}
+
+CreateErrorFileMark-SwFile {
+  #NoErrorFile = /* ничего */;
+  #ErrorFile e.FileName = <SaveFile (e.FileName)>;
 }
 
 Main-SwFoundFiles {
-  t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-  (e.TargetFileName) e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
+  t.CommandLineSource t.Config
+  e.Files-B (s.Pos #NotFound e.FileName) e.Files-E =
     <ReportErrors
-      t.CommandLineSource t.ErrorFile
+      t.CommandLineSource t.Config
       <Map
         {
           (s.Pos^ #NotFound e.FileName^) =
@@ -112,23 +123,19 @@ Main-SwFoundFiles {
       >
     >;
 
-  t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-  (e.TargetFileName) e.Files =
+  t.CommandLineSource t.Config e.Files =
     <Main-SwRenamedTargets
-      t.CommandLineSource
-      t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-      (e.TargetFileName)
-      <RenameTargets t.CppCompiler e.Files>
+      t.CommandLineSource t.Config
+      <RenameTargets <Config-GetCppCompiler-AsIs t.Config> e.Files>
     >;
 }
 
 Main-SwRenamedTargets {
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck
-  (e.TargetFileName) e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
+  t.Config
+  e.Files-B (s.Pos #Collision e.Collision) e.Files-E =
     <ReportErrors
-      t.CommandLineSource t.ErrorFile
+      t.CommandLineSource t.Config
       <Map
         {
           (s.Pos^ #Collision (e.FirstTarget) e.SecondTarget) =
@@ -151,34 +158,39 @@ Main-SwRenamedTargets {
     >;
 
   t.CommandLineSource
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode s.GrammarCheck (e.TargetFileName)
-  e.Files =
-    <Main-SwCompiledFiles
-      t.CppCompiler t.ErrorFile s.GrammarCheck (e.TargetFileName)
-      <CompileFiles s.GenMode s.Opt t.DebugMode s.GrammarCheck e.Files>
-    >;
+  t.Config
+  e.Files
+    = <Config-GetGrammarCheck t.Config> : s.GrammarCheck
+    // TODO: Сделать рефакторинг, ибо не очень красиво
+    = <Main-SwCompiledFiles
+        t.Config s.GrammarCheck
+        <CompileFiles t.Config s.GrammarCheck e.Files>
+      >;
 }
 
 Main-SwCompiledFiles {
-  t.CppCompiler t.ErrorFile s.GrammarCheck (e.TargetFileName)
+  t.Config s.GrammarCheck
   e.Outputs-B #Fails e.OutputsErrors-E =
-    <CreateErrorFileMark t.ErrorFile>
+    <CreateErrorFileMark t.Config>
     <Exit 1>;
 
-  t.CppCompiler t.ErrorFile #NormalRun (e.TargetFileName) e.Outputs =
-    <Link t.CppCompiler t.ErrorFile (e.TargetFileName) e.Outputs>;
+  t.Config #NormalRun e.Outputs =
+    <Link
+      <Config-GetCppCompiler-AsIs t.Config>
+      t.Config e.Outputs
+    >;
 
-  t.CppCompiler t.ErrorFile #GrammarCheck (e.TargetFileName) e.Outputs =
+  t.Config #GrammarCheck e.Outputs =
     <WriteLine '** No syntax errors found **'>;
 }
 
 //------------------------------------------------------------------------------
 
 CalcTargetFileName {
-  (e.TargetFileName) (e.TargetSuffix) e.InputFiles =
-    (e.TargetFileName);
+  t.Config (e.TargetFileName) e.InputFiles =
+    e.TargetFileName;
 
-  #DefaultTargetFileName (e.TargetSuffix) (s.Pos e.FirstFile) e.OtherFiles =
+  t.Config #DefaultTargetFileName (s.Pos e.FirstFile) e.OtherFiles =
     <Fetch
       e.FirstFile
       <Seq
@@ -199,20 +211,18 @@ CalcTargetFileName {
           (e.LowerBaseName) e.BaseName =
             e.BaseName;
         }
-        {
-          e.BaseName = (e.BaseName e.TargetSuffix);
-        }
       >
-    >;
+    >
+    <Config-GetTargetSuffix t.Config>;
 }
 
 LookupSourceFiles {
-  (e.Folders) e.Files =
+  t.Config e.Files =
     <Map
       {
         (s.Pos e.FileName) =
           <Fetch
-            <FindFiles (e.Folders) (e.FileName)>
+            <FindFiles (<Config-GetSearchFolders t.Config>) (e.FileName)>
             {
               (s.ResultTag e.Info) = (s.Pos s.ResultTag e.Info);
             }
@@ -291,7 +301,7 @@ RenameLocations-Aux {
 }
 
 CompileFiles {
-  s.GenMode s.Opt t.DebugMode #NormalRun e.Files =
+  t.Config #NormalRun e.Files =
     <Map
       {
         (s.Pos #Output e.OutputName #NoNative) =
@@ -305,9 +315,7 @@ CompileFiles {
         (s.Pos #Source (e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
           <Fetch
-            <CompileFile
-              s.GenMode s.Opt t.DebugMode (e.Source) e.OutputName
-            >
+            <CompileFile t.Config (e.Source) e.OutputName>
             {
               #Success e.OutputName^ #NoNative =
                 (#RASL e.OutputName);
@@ -323,7 +331,7 @@ CompileFiles {
       e.Files
     >;
 
-  s.GenMode s.Opt t.DebugMode #GrammarCheck e.Files =
+  t.Config #GrammarCheck e.Files =
     <Map
       {
         (s.Pos #Output e.OutputName) =
@@ -338,32 +346,33 @@ CompileFiles {
 }
 
 Link {
-  #NoCppCompiler t.ErrorFile (e.TargetFileName) e.Files =
+  #NoCppCompiler t.Config e.Files =
     /* ничего не делаем */;
 
-  ((e.CommandLine) (e.Flags)) t.ErrorFile (e.TargetFileName) e.Files =
-    <PreLinkCleanupTemporary t.ErrorFile e.TargetFileName '.partial'>
-    <System
-      e.CommandLine
-      e.TargetFileName '.partial'
-      e.Flags
-      <Map
-        {
-          (#RASL e.FileName) = /* пусто */;
-          (#Native e.FileName) = ' "' e.FileName '"';
-        }
-        e.Files
+  ((e.CommandLine) (e.Flags)) t.Config e.Files
+    = <Config-GetTargetFileName t.Config> : e.TargetFileName
+    = <PreLinkCleanupTemporary t.Config e.TargetFileName '.partial'>
+      <System
+        e.CommandLine
+        e.TargetFileName '.partial'
+        e.Flags
+        <Map
+          {
+            (#RASL e.FileName) = /* пусто */;
+            (#Native e.FileName) = ' "' e.FileName '"';
+          }
+          e.Files
+        >
       >
-    >
-    <CheckCppCompilationSuccessed t.ErrorFile e.TargetFileName '.partial'>
-    <AppendRASLToBinary (e.TargetFileName '.partial') e.Files>
-    <PostLinkRename
-      t.ErrorFile (e.TargetFileName '.partial') (e.TargetFileName)
-    >;
+      <CheckCppCompilationSuccessed t.Config e.TargetFileName '.partial'>
+      <AppendRASLToBinary (e.TargetFileName '.partial') e.Files>
+      <PostLinkRename
+        t.Config (e.TargetFileName '.partial') (e.TargetFileName)
+      >;
 }
 
 PreLinkCleanupTemporary {
-  t.ErrorFile e.Temporary =
+  t.Config e.Temporary =
     <Fetch
       <ExistFile e.Temporary>
       {
@@ -378,7 +387,7 @@ PreLinkCleanupTemporary {
                 <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
 
               #False =
-                <LinkError t.ErrorFile 'Can''t remove file ' e.Temporary>;
+                <LinkError t.Config 'Can''t remove file ' e.Temporary>;
             }
           >;
       }
@@ -386,12 +395,12 @@ PreLinkCleanupTemporary {
 }
 
 CheckCppCompilationSuccessed {
-  t.ErrorFile e.TemporaryName =
+  t.Config e.TemporaryName =
     <Fetch
       <ExistFile e.TemporaryName>
       {
         #False =
-          <LinkError t.ErrorFile 'C++ compilation is failed'>;
+          <LinkError t.Config 'C++ compilation is failed'>;
 
         #True =
           /* ничего не делаем */;
@@ -437,7 +446,7 @@ AlignToPage {
 }
 
 PostLinkRename {
-  t.ErrorFile (e.TemporaryName) (e.TargetFileName) =
+  t.Config (e.TemporaryName) (e.TargetFileName) =
     <Fetch
       <ExistFile e.TargetFileName>
       {
@@ -446,9 +455,7 @@ PostLinkRename {
             <RemoveFile e.TargetFileName>
             {
               #True =
-                <LinkError
-                  t.ErrorFile 'Can''t remove file ' e.TargetFileName
-                >;
+                <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
 
               #False =
                 /* ничего не делаем */;
@@ -467,7 +474,7 @@ PostLinkRename {
 
         #False =
           <LinkError
-            t.ErrorFile
+            t.Config
             'Can''t rename from ' e.TemporaryName ' to ' e.TargetFileName
           >;
       }
@@ -475,9 +482,9 @@ PostLinkRename {
 }
 
 LinkError {
-  t.ErrorFile e.Message =
+  t.Config e.Message =
     <WriteLine 'LINK ERROR: ' e.Message>
-    <CreateErrorFileMark t.ErrorFile>
+    <CreateErrorFileMark t.Config>
     <Exit 1>;
 }
 
