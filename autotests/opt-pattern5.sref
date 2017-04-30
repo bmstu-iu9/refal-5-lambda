@@ -1,0 +1,144 @@
+ComposeVars-Debug {
+  (e.Substitute-B (e.Name) e.Substitute-E)
+  (e.Vars-B (e.Name) e.Vars-E) =
+    <WriteLine-1 'Full\n'
+      e.Vars-E '\n'
+      e.Vars-E
+    >;
+  () () = ;
+}
+
+WriteLine-1 {
+  'Full\n'  '\n' = ;
+}
+
+Go1 {
+  =
+    <ComposeVars-Debug
+      (('idx'))
+      (('idx'))
+    >;
+}
+
+//------------------------------------------------------------------------------
+
+Go2 {
+  =
+    <{ #A = ; } <BracketVsAtom (#A)>>
+    <{ #B = ; } <BracketVsAtom #B>>;
+}
+
+BracketVsAtom {
+  (#A) = #A;
+  #B = #B;
+}
+
+//------------------------------------------------------------------------------
+
+Go3 {
+  = ;
+  = ;
+}
+
+//------------------------------------------------------------------------------
+
+Test1 {
+  0 e.X = 0;
+  [Test1] e.X = 1;
+  [Go] e.X = 2;
+  [Eq] e.X = 3;
+}
+
+Eq { s.X s.X = ; }
+
+Go4 {
+  =
+    <Eq <Test1 0> 0>
+    <Eq <Test1 [Test1]> 1>
+    <Eq <Test1 [Go]> 2>
+    <Eq <Test1 [Eq]> 3>;
+}
+
+//------------------------------------------------------------------------------
+
+Test2 {
+  'a' = ;
+  Test2 = ;
+  1 = ;
+  #Test = ;
+  () = ;
+  [Test2] = ;
+}
+
+Go5 {
+  =
+    <Test2 'a'>
+    <Test2 Test2>
+    <Test2 1>
+    <Test2 #Test>
+    <Test2 ()>
+    <Test2 [Test2]>;
+}
+
+//------------------------------------------------------------------------------
+
+StrFromToken {
+  #TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
+  #TkCloseADT = '"]"';
+  #TkCloseCall = '">"';
+  #TkCloseBlock = '"}"';
+  #TkCloseBracket = '")"';
+  #TkComma = '","';
+  // #TkDirective s.Directive = '"$' <StrDirective s.Directive> '"';
+  #TkDirective s.Directive = '"$' s.Directive '"';
+  #TkEOF = 'end of file';
+  #TkError e.Message = 'LEXER ERROR: ' e.Message;
+  #TkIdentMarker = '"#"';
+  #TkName e.Name = 'Name ' e.Name;
+  // #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
+  #TkNumber s.Number = 'Number ' s.Number;
+  #TkOpenADT = '"["';
+  // Переполнение таблицы идентификаторов в тестовом режиме,
+  // строки закомментированы
+/*
+  #TkOpenCall = '"<"';
+  #TkOpenBlock = '"{"';
+  #TkOpenBracket = '"("';
+  #TkReplace = '"="';
+  #TkSemicolon = '";"';
+*/
+  #TkUnexpected e.Unexpected = 'Unexpected characters <' e.Unexpected '>';
+  #TkVariable s.Mode e.Index = s.Mode '.' e.Index;
+  #TkRedefinition = '"^"';
+
+  # Open s.OpenBracket = <StrFromToken s.OpenBracket>;
+  # Close s.CloseBracket = <StrFromToken s.CloseBracket>;
+}
+
+Go6 {
+  =
+    <{ '''A''' = ; } <StrFromToken #TkChar 'A'>>
+    <{ '"["' = ; } <StrFromToken #Open #TkOpenADT>>;
+}
+
+//------------------------------------------------------------------------------
+
+Go7 {
+    = <RenameLocations-Aux (/* пусто */) /* пусто */>
+      <RenameLocations-Aux (/* пусто */) '.cpp'>
+      <RenameLocations-Aux 'output' #TNative>;
+}
+
+RenameLocations-Aux {
+  (e.Source) e.Output = ;
+
+  (e.Source) e.Output '.cpp' = ;
+
+  e.Output t.Native = ;
+}
+
+//------------------------------------------------------------------------------
+
+$ENTRY Go {
+    = <Go1> <Go2> <Go3> <Go4> <Go5> <Go6> <Go7>;
+}
