@@ -191,9 +191,9 @@ CheckSentence {
       <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
       <Seq
         {
-          (e.ScopeVars^) e.PatternFunctionsAndErrors =
-          (e.PatternFunctionsAndErrors)
-          <CheckAssignments (e.Assignments) (e.ScopeVars)>;
+          (e.ScopeVars^) e.PatternFunctionsAndErrors
+            = (e.PatternFunctionsAndErrors)
+              <CheckAssignments (e.Assignments) (e.ScopeVars)>;
         }
         {
           (e.PatternFunctionsAndErrors^) (e.ScopeVars^) e.AssignmentsFunctionsAndErrors =
@@ -216,8 +216,8 @@ CheckAssignments {
       <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
       <Seq
         {
-          e.Errors^ =
-            (e.Errors)
+          e.ResultErrors^ =
+            (e.Errors e.ResultErrors)
             <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>;
         }
         {
