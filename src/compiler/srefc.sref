@@ -233,7 +233,20 @@ LookupSourceFiles {
 }
 
 RenameTargets {
-  #NoCppCompiler e.Files = e.Files;
+  #NoCppCompiler e.Files =
+    <Map
+      {
+        (s.Pos #Output e.FileName)
+          = (s.Pos #Output e.FileName #NoNative);
+
+        (s.Pos #OutputWithNative (e.FileName) e.NativeFileName)
+          = (s.Pos #Output e.FileName (e.NativeFileName));
+
+        (s.Pos #Source (e.Source) e.Output)
+          = (s.Pos #Source (e.Source) e.Output);
+      }
+      e.Files
+    >;
 
   (e.CppCompiler) e.Files =
     <ScanCollisions <Map GetFileName e.Files>>;
