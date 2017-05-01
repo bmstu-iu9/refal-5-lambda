@@ -1,3 +1,6 @@
+//FROM LibraryEx
+$EXTERN Fetch;
+
 /*
   Внутреннее представление:
 
@@ -6,52 +9,20 @@
 $ENUM Config;
 
 /**
-  <Config-Create
-    t.CppCompiler s.GenMode s.Opt t.ErrorFile t.DebugMode
-    s.GrammarCheck t.TargetFileName
-    (e.TargetSuffix) ((e.Folder)*)
-  >
-    == t.Config
-
-  t.CppCompiler ::= #NoCppCompiler | ((e.CppCompiler) (e.Flags))
-  s.GenMode ::= #OnlyDirect | #OnlyInterpret
-  s.Opt ::= #OptNone | #OptPattern | #OptResult | #OptBoth
-  t.ErrorFile ::= #NoErrorFile | (#ErrorFile e.FileName)
-  t.DebugMode ::= (s.MarkupContext s.DebuggerInfo)
-  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
-  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
-  s.GrammarCheck ::= #NormalRun | #GrammarCheck
-  t.TargetFileName ::= (e.TargetFileName) | #DefaultTargetFileName
+  <Config-Create> == t.Config
 */
 $ENTRY Config-Create {
-  t.CppCompiler s.GenMode s.Opt t.ErrorFile (s.MarkupContext s.DebuggerInfo)
-  s.GrammarCheck t.TargetFileName (e.TargetSuffix) (e.Folders)
+  /* пусто */
     = [Config
-        (#CppCompiler <UnpackCppCompiler t.CppCompiler>)
-        (#GenMode s.GenMode)
-        (#Optimize s.Opt)
-        (#ErrorFile <UnpackErrorFile t.ErrorFile>)
-        (#DebugMode s.MarkupContext s.DebuggerInfo)
-        (#GrammarCheck s.GrammarCheck)
-        (#TargetFileName <UnpackTargetFileName t.TargetFileName>)
-        (#TargetSuffix e.TargetSuffix)
-        (#Folders e.Folders)
+        (#CppCompiler #NoCppCompiler)
+        (#Optimize /* пусто */)
+        (#ErrorFile /* пусто */)
+        (#DebugMode #NoMarkupContext #NoDebugInfo)
+        (#GrammarCheck #NormalRun)
+        (#TargetFileName #DefaultTargetFileName)
+        (#TargetSuffix '.EXE')
+        (#Folders /* пусто */)
       ];
-}
-
-UnpackCppCompiler {
-  #NoCppCompiler = #NoCppCompiler;
-  ((e.CppCompiler) (e.Flags)) = (e.CppCompiler) e.Flags;
-}
-
-UnpackErrorFile {
-  #NoErrorFile = /* пусто */;
-  (#ErrorFile e.ErrorFile) = e.ErrorFile;
-}
-
-UnpackTargetFileName {
-  #DefaultTargetFileName = #DefaultTargetFileName;
-  (e.TargetFileName) = e.TargetFileName;
 }
 
 /**
@@ -60,15 +31,46 @@ UnpackTargetFileName {
     == (e.CppCompiler) e.Flags
 */
 $ENTRY Config-GetCppCompiler {
-  [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E]
-    = e.CppCompiler;
+  [Config e.Params-B (#CppCompiler #NoCppCompiler e.Flags) e.Params-E]
+    = #NoCppCompiler;
+
+  [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E]
+    = (e.CppCompiler) e.Flags;
 }
 
 /**
-  <Config-GetGenMode t.Config> == s.GenMode
+  <Config-SetCppCompiler t.Config e.CppCompiler>
+    == #Success t.Config
+*/
+$ENTRY Config-SetCppCompiler {
+  [Config e.Params-B (#CppCompiler t.OldCompiler e.Flags) e.Params-E]
+  e.CppCompiler
+    = #Success
+      [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E];
+}
+
+/**
+  <Config-SetCompilerFlags t.Config e.Flags> == #Success t.Config
+*/
+$ENTRY Config-SetCompilerFlags {
+  [Config e.Params-B (#CppCompiler t.CppCompiler e.Flags) e.Params-E]
+  e.NewFlags
+    = #Success
+      [Config
+        e.Params-B (#CppCompiler t.CppCompiler e.Flags e.NewFlags) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetGenMode t.Config>
+    == #OnlyDirect
+    == #OnlyInterpret
 */
 $ENTRY Config-GetGenMode {
-  [Config e.Params-B (#GenMode s.GenMode) e.Params-E] = s.GenMode;
+  [Config e.Params-B (#Optimize e.Opt-B #OptDirect e.Opt-E) e.Params-E]
+    = #OnlyDirect;
+
+  [Config e.Params] = #OnlyInterpret;
 }
 
 /**
@@ -77,10 +79,10 @@ $ENTRY Config-GetGenMode {
     == #Conjoint
 */
 $ENTRY Config-GetOptPattern {
-  [Config e.Params-B (#Optimize #OptNone) e.Params-E] = #Disjoint;
-  [Config e.Params-B (#Optimize #OptPattern) e.Params-E] = #Conjoint;
-  [Config e.Params-B (#Optimize #OptResult) e.Params-E] = #Disjoint;
-  [Config e.Params-B (#Optimize #OptBoth) e.Params-E] = #Conjoint;
+  [Config e.Params-B (#Optimize e.Opt-B #OptPattern e.Opt-E) e.Params-E]
+    = #Conjoint;
+
+  [Config e.Params] = #Disjoint;
 }
 
 /**
@@ -89,14 +91,93 @@ $ENTRY Config-GetOptPattern {
     == #OptResult
 */
 $ENTRY Config-GetOptResult {
-  [Config e.Params-B (#Optimize #OptNone) e.Params-E] = #NoOpt;
-  [Config e.Params-B (#Optimize #OptPattern) e.Params-E] = #NoOpt;
-  [Config e.Params-B (#Optimize #OptResult) e.Params-E] = #OptResult;
-  [Config e.Params-B (#Optimize #OptBoth) e.Params-E] = #OptResult;
+  [Config e.Params-B (#Optimize e.Opt-B #OptResult e.Opt-E) e.Params-E]
+    = #OptResult;
+
+  [Config e.Params] = #NoOpt;
 }
 
 /**
-  <Config-GetErrorFile t.Config> == t.ErrorFile
+  <Config-SetOptFlags t.Config e.Flags>
+    == #Success t.Config
+    == #Fails #BadValue-Opt e.Letters
+
+  e.Flags ::= s.Letter* s.Change?
+  s.Letter ::= 'd' | 'P' | 'R'
+  s.Change ::= '+' | '-' | '='
+*/
+$ENTRY Config-SetOptFlags {
+  [Config e.Params-B (#Optimize e.OldFlags) e.Params-E] e.NewFlags
+    = <Fetch
+        <ParseOptFlags e.NewFlags> {
+          #Success e.NewFlags^ s.FnChange
+            = #Success
+              [Config
+                e.Params-B
+                (#Optimize <s.FnChange (e.OldFlags) e.NewFlags>)
+                e.Params-E
+              ];
+
+          #Fails e.NotParsed s.FnChange
+            = #Fails #BadValue-Opt e.NotParsed;
+        }
+      >;
+}
+
+ParseOptFlags {
+  e.Flags '+' = <ParseOptLetters () e.Flags> Opt-Add;
+  e.Flags '-' = <ParseOptLetters () e.Flags> Opt-Remove;
+  e.Flags '=' = <ParseOptLetters () e.Flags> Opt-Assign;
+  e.Flags /* по умолчанию */ = <ParseOptLetters () e.Flags> Opt-Add;
+}
+
+ParseOptLetters {
+  (e.Scanned) 'P' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptPattern>) e.Flags>;
+
+  (e.Scanned) 'R' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptResult>) e.Flags>;
+
+  (e.Scanned) 'd' e.Flags
+    = <ParseOptLetters (<Flags-Unique e.Scanned #OptDirect>) e.Flags>;
+
+  (e.Scanned) /* пусто */ = #Success e.Scanned;
+
+  (e.Scanned) e.Unparsed = #Fails e.Unparsed;
+}
+
+Flags-Unique {
+  e.Flags-B s.Repeated e.Flags-E s.Repeated = e.Flags-B s.Repeated e.Flags-E;
+  e.Flags s.New = e.Flags s.New;
+}
+
+Opt-Add {
+  (e.OldFlags-B s.Repeated e.OldFlags-E) s.Repeated e.NewFlags
+    = <Opt-Add (e.OldFlags-B s.Repeated e.OldFlags-E) e.NewFlags>;
+
+  (e.OldFlags) s.NextNewFlag e.NewFlags
+    = <Opt-Add (e.OldFlags s.NextNewFlag) e.NewFlags>;
+
+  (e.OldFlags) /* пусто */ = e.OldFlags;
+}
+
+Opt-Remove {
+  (e.OldFlags-B s.Repeated e.OldFlags-E) s.Repeated e.NewFlags
+    = <Opt-Remove (e.OldFlags-B e.OldFlags-E) e.NewFlags>;
+
+  (e.OldFlags) s.NextNewFlag e.NewFlags = <Opt-Remove (e.OldFlags) e.NewFlags>;
+
+  (e.OldFlags) /* пусто */ = e.OldFlags;
+}
+
+Opt-Assign {
+  (e.OldFlags) e.NewFlags = e.NewFlags;
+}
+
+/**
+  <Config-GetErrorFile t.Config>
+    == #NoErrorFile
+    == #ErrorFile e.ErrorFile
 */
 $ENTRY Config-GetErrorFile {
   [Config e.Params-B (#ErrorFile) e.Params-E] = #NoErrorFile;
@@ -106,7 +187,28 @@ $ENTRY Config-GetErrorFile {
 }
 
 /**
-  <Config-GetDebugMode t.Config> == s.MarkupContext s.DebuggerInfo
+  <Config-SetErrorFile t.Cofnig e.ErrorFile>
+    == #Success t.Config
+    == #Fails #EmptyErrorFileName
+*/
+$ENTRY Config-SetErrorFile {
+  [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E] #NoErrorFile
+    = #Success [Config e.Params-B (#ErrorFile /* пусто */) e.Params-E];
+
+  [Config e.Params] #ErrorFile /* пусто */
+    = #Fails #EmptyErrorFile;
+
+  [Config e.Params-B (#ErrorFile e.OldErrorFile) e.Params-E]
+  #ErrorFile e.NewErrorFile
+    = #Success [Config e.Params-B (#ErrorFile e.NewErrorFile) e.Params-E];
+}
+
+/**
+  <Config-GetDebugMode t.Config>
+    == s.MarkupContext s.DebuggerInfo
+
+  s.MarkupContext ::= #MarkupContext | #NoMarkupContext
+  s.DebuggerInfo ::= #DebugInfo | #NoDebugInfo
 */
 $ENTRY Config-GetDebugMode {
   [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
@@ -114,11 +216,43 @@ $ENTRY Config-GetDebugMode {
 }
 
 /**
-  <Config-GetGrammarCheck t.Config> == s.GrammarCheck
+  <Config-SetMarkupContext t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetMarkupContext {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = #Success
+      [Config e.Params-B (#DebugMode #MarkupContext s.DebuggerInfo) e.Params-E];
+}
+
+/**
+  <Config-SetDebuggerInfo t.Context>
+    == #Success t.Config
+*/
+$ENTRY Config-SetDebugInfo {
+  [Config e.Params-B (#DebugMode s.MarkupContext s.DebuggerInfo) e.Params-E]
+    = #Success
+      [Config e.Params-B (#DebugMode s.MarkupContext #DebugInfo) e.Params-E];
+}
+
+/**
+  <Config-GetGrammarCheck t.Config>
+    == s.GrammarCheck
+
+  s.GrammarCheck ::= #NormalRun | #GrammarCheck
 */
 $ENTRY Config-GetGrammarCheck {
   [Config e.Params-B (#GrammarCheck s.GrammarCheck) e.Params-E]
     = s.GrammarCheck;
+}
+
+/**
+  <Config-SetGrammarCheck t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetGrammarCheck {
+  [Config e.Params-B (#GrammarCheck s.GrammarCheck) e.Params-E]
+    = #Success [Config e.Params-B (#GrammarCheck #GrammarCheck) e.Params-E];
 }
 
 /**
@@ -135,18 +269,21 @@ $ENTRY Config-GetTargetFileName {
 }
 
 /**
-  <Config-SetTargetFileName t.Config e.TargetFileName> == t.Config^
+  <Config-SetTargetFileName t.Config e.FileName>
+    == #Success t.Config
 */
 $ENTRY Config-SetTargetFileName {
-  [Config e.Params-B (#TargetFileName e.OldFileName) e.Params-E]
+  [Config e.Params-B (#TargetFileName e.OldTargetFileName) e.Params-E]
   e.NewTargetFileName
-    = [Config
+    = #Success
+      [Config
         e.Params-B (#TargetFileName e.NewTargetFileName) e.Params-E
       ];
 }
 
 /**
-  <Config-GetTargetSuffix t.Config> == e.TargetSuffix
+  <Config-GetTargetSuffix t.Config>
+    == e.TargetSuffix
 */
 $ENTRY Config-GetTargetSuffix {
   [Config e.Params-B (#TargetSuffix e.TargetSuffix) e.Params-E]
@@ -154,8 +291,27 @@ $ENTRY Config-GetTargetSuffix {
 }
 
 /**
-  <Config-GetSearchFolders t.Config> == (e.Folder)*
+  <Config-SetTargetSuffix t.Config e.Suffix>
+    == #Success t.Config
+*/
+$ENTRY Config-SetTargetSuffix {
+  [Config e.Params-B (#TargetSuffix e.OldTargetSuffix) e.Params-E]
+  e.NewTargetSuffix
+    = #Success [Config e.Params-B (#TargetSuffix e.NewTargetSuffix) e.Params-E];
+}
+
+/**
+  <Config-GetSearchFolders t.Config>
+    == (e.Folder)*
 */
 $ENTRY Config-GetSearchFolders {
   [Config e.Params-B (#Folders e.Folders) e.Params-E] = e.Folders;
+}
+
+/**
+  <Config-SetSearchFolder t.Config e.Folder> == t.Config
+*/
+$ENTRY Config-SetSearchFolder {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] e.NewFolder
+    = [Config e.Params-B (#Folders e.Folders (e.NewFolder)) e.Params-E];
 }

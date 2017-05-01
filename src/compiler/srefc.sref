@@ -52,7 +52,7 @@ Main-SwValidCommandLine {
       >
     : e.TargetFileName^
     = <Config-SetTargetFileName t.Config e.TargetFileName>
-    : t.Config^
+    : #Success t.Config^
     = <Main-SwFoundFiles
         t.CommandLineSource t.Config
         <LookupSourceFiles t.Config e.Files>
