@@ -65,18 +65,6 @@ $ENTRY Config-GetCppCompiler {
 }
 
 /**
-  <Config-GetCppCompiler-AsIs t.Config>
-    == t.CppCompiler
-*/
-$ENTRY Config-GetCppCompiler-AsIs {
-  [Config e.Params-B (#CppCompiler #NoCppCompiler) e.Params-E]
-    = #NoCppCompiler;
-
-  [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E]
-    = ((e.CppCompiler) (e.Flags));
-}
-
-/**
   <Config-GetGenMode t.Config> == s.GenMode
 */
 $ENTRY Config-GetGenMode {
@@ -84,10 +72,27 @@ $ENTRY Config-GetGenMode {
 }
 
 /**
-  <Config-GetOpt t.Config> == s.Opt
+  <Config-GetOptPattern t.Config>
+    == #Disjoint
+    == #Conjoint
 */
-$ENTRY Config-GetOpt {
-  [Config e.Params-B (#Optimize s.Opt) e.Params-E] = s.Opt;
+$ENTRY Config-GetOptPattern {
+  [Config e.Params-B (#Optimize #OptNone) e.Params-E] = #Disjoint;
+  [Config e.Params-B (#Optimize #OptPattern) e.Params-E] = #Conjoint;
+  [Config e.Params-B (#Optimize #OptResult) e.Params-E] = #Disjoint;
+  [Config e.Params-B (#Optimize #OptBoth) e.Params-E] = #Conjoint;
+}
+
+/**
+  <Config-GetOptResult t.Config>
+    == #NoOpt
+    == #OptResult
+*/
+$ENTRY Config-GetOptResult {
+  [Config e.Params-B (#Optimize #OptNone) e.Params-E] = #NoOpt;
+  [Config e.Params-B (#Optimize #OptPattern) e.Params-E] = #NoOpt;
+  [Config e.Params-B (#Optimize #OptResult) e.Params-E] = #OptResult;
+  [Config e.Params-B (#Optimize #OptBoth) e.Params-E] = #OptResult;
 }
 
 /**

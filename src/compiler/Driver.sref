@@ -17,7 +17,8 @@ $EXTERN EL-Create, EL-Destroy;
 $EXTERN CheckProgram;
 
 //FROM Config
-$EXTERN Config-GetDebugMode, Config-GetOpt, Config-GetGenMode;
+$EXTERN Config-GetDebugMode, Config-GetOptPattern, Config-GetOptResult,
+  Config-GetGenMode;
 
 //FROM Desugaring
 $EXTERN Desugar;
@@ -83,11 +84,12 @@ FrontEnd {
 BackEnd {
   t.Config (e.SrcName) e.OutputName
     = <Config-GetDebugMode t.Config> : s.MarkupContext s.DebugInfo
-    = <Config-GetOpt t.Config> : s.Opt
+    = <Config-GetOptPattern t.Config> : s.OptPattern
+    = <Config-GetOptResult t.Config> : s.OptResult
     = <Config-GetGenMode t.Config> : s.GenMode
     = <Seq
         (Desugar s.MarkupContext)
-        (HighLevelRASL <SelectOptFlags s.Opt>)
+        (HighLevelRASL s.OptPattern s.OptResult)
         (LowLevelRASL s.GenMode s.DebugInfo (e.SrcName))
         {
           t.RASLModule =
@@ -122,13 +124,6 @@ BackEnd-NativeModule {
       <GenProgram-Native (e.SrcName) (e.OutputName) t.NativeModule>
     >
     (e.OutputName);
-}
-
-SelectOptFlags {
-  #OptNone    = #Disjoint #NoOpt;
-  #OptPattern = #Conjoint #NoOpt;
-  #OptResult  = #Disjoint #OptResult;
-  #OptBoth    = #Conjoint #OptResult;
 }
 
 /**

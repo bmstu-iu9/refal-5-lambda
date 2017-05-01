@@ -7,7 +7,7 @@ $EXTERN ParseCommandLine;
 
 //FROM Config
 $EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
-  Config-GetCppCompiler-AsIs, Config-GetGrammarCheck, Config-GetTargetSuffix,
+  Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
   Config-GetSearchFolders;
 
 //FROM Library
@@ -126,7 +126,7 @@ Main-SwFoundFiles {
   t.CommandLineSource t.Config e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource t.Config
-      <RenameTargets <Config-GetCppCompiler-AsIs t.Config> e.Files>
+      <RenameTargets (<Config-GetCppCompiler t.Config>) e.Files>
     >;
 }
 
@@ -175,10 +175,7 @@ Main-SwCompiledFiles {
     <Exit 1>;
 
   t.Config #NormalRun e.Outputs =
-    <Link
-      <Config-GetCppCompiler-AsIs t.Config>
-      t.Config e.Outputs
-    >;
+    <Link (<Config-GetCppCompiler t.Config>) t.Config e.Outputs>;
 
   t.Config #GrammarCheck e.Outputs =
     <WriteLine '** No syntax errors found **'>;
@@ -233,7 +230,7 @@ LookupSourceFiles {
 }
 
 RenameTargets {
-  #NoCppCompiler e.Files =
+  (#NoCppCompiler) e.Files =
     <Map
       {
         (s.Pos #Output e.FileName)
@@ -248,7 +245,7 @@ RenameTargets {
       e.Files
     >;
 
-  (e.CppCompiler) e.Files =
+  ((e.CppCompiler) e.Flags) e.Files =
     <ScanCollisions <Map GetFileName e.Files>>;
 }
 
@@ -359,10 +356,10 @@ CompileFiles {
 }
 
 Link {
-  #NoCppCompiler t.Config e.Files =
+  (#NoCppCompiler) t.Config e.Files =
     /* ничего не делаем */;
 
-  ((e.CommandLine) (e.Flags)) t.Config e.Files
+  ((e.CommandLine) e.Flags) t.Config e.Files
     = <Config-GetTargetFileName t.Config> : e.TargetFileName
     = <PreLinkCleanupTemporary t.Config e.TargetFileName '.partial'>
       <System
