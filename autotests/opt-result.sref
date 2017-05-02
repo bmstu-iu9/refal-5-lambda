@@ -29,12 +29,12 @@ Go2 {
 
 Go3 {
   =
-    <CopyE 'abc!'><CopyE /* пусто */ '!'>;
+    <CopyE1 'abc!'><CopyE1 /* пусто */ '!'>;
 }
 
 NIL { e.Any = ; }
 
-CopyE {
+CopyE1 {
   e.Arg '!' = <NIL e.Arg e.Arg '!!'>;
 }
 
@@ -42,12 +42,10 @@ CopyE {
 
 Go4 {
   =
-    <CopyE ('abc') #X><CopyE (/* пусто */) #X>;
+    <CopyE2 ('abc') #X><CopyE2 (/* пусто */) #X>;
 }
 
-NIL { e.Any = ; }
-
-CopyE {
+CopyE2 {
   (e.Arg) t.X = <NIL (e.Arg) '-' e.Arg t.X>;
 }
 
