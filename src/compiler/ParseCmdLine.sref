@@ -21,15 +21,15 @@ $ENTRY ParseCommandLine {
       <GetOpt
         (
           (#CppCompiler #Required 'c' ('cpp-command'))
-          (#Opt #Required 'O')
-          (#ErrorFile #Required 'e' ('error-file'))
-          (#MarkupContext #None ('markup-context'))
-          (#DebugInfo #None 'g' ('debug-info'))
-          (#SearchFolder #Required 'd' ('dir') ('directory'))
-          (#CppFlags #Required 'CF' ('cppflags'))
           (#CppFlag #Required 'f' ('cppflag'))
-          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#CppFlags #Required 'CF' ('cppflags'))
+          (#DebugInfo #None 'g' ('debug-info'))
+          (#ErrorFile #Required 'e' ('error-file'))
           (#GrammarCheck #None ('grammar-check'))
+          (#MarkupContext #None ('markup-context'))
+          (#Opt #Required 'O')
+          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#TargetFileName #Required 'o' ('target-file'))
           (#TargetSuffix #Required ('targsuffix') ('targetsuffix') ('targsuf'))
         )
@@ -47,16 +47,33 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) Config-SetCppCompiler s.Num e.CppCompiler
                 >;
 
-            (t.Config e.Errors) (#CppFlags s.Num e.Flags)
-              = <Update
-                  t.Config (e.Errors) Config-SetCompilerFlags s.Num ' ' e.Flags
-                >;
-
             (t.Config e.Errors) (#CppFlag s.Num e.Flag)
               = <Update
                   t.Config (e.Errors)
                   Config-SetCompilerFlags s.Num ' "' e.Flag '"'
                 >;
+
+            (t.Config e.Errors) (#CppFlags s.Num e.Flags)
+              = <Update
+                  t.Config (e.Errors) Config-SetCompilerFlags s.Num ' ' e.Flags
+                >;
+
+            (t.Config e.Errors) (#DebugInfo s.Num)
+              = <Update t.Config (e.Errors) Config-SetDebugInfo s.Num>;
+
+            (t.Config e.Errors) (#ErrorFile s.Num e.FileName)
+              = <Update
+                  t.Config (e.Errors) Config-SetErrorFile s.Num e.FileName
+                >;
+
+            (t.Config e.Errors) (#GrammarCheck s.Num)
+              = <Update t.Config (e.Errors) Config-SetGrammarCheck s.Num>;
+
+            (t.Config e.Errors) (#MarkupContext s.Num)
+              = <Update t.Config (e.Errors) Config-SetMarkupContext s.Num>;
+
+            (t.Config e.Errors) (#Opt s.Num e.Flags)
+              = <Update t.Config (e.Errors) Config-SetOptFlags s.Num e.Flags>;
 
             (t.Config e.Errors) (#RuntimeFolder s.Num e.Path)
               = <Update
@@ -64,23 +81,6 @@ $ENTRY ParseCommandLine {
                   Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
                 >
                 (#SearchFolder s.Num e.Path);
-
-            (t.Config e.Errors) (#Opt s.Num e.Flags)
-              = <Update t.Config (e.Errors) Config-SetOptFlags s.Num e.Flags>;
-
-            (t.Config e.Errors) (#ErrorFile s.Num e.FileName)
-              = <Update
-                  t.Config (e.Errors) Config-SetErrorFile s.Num e.FileName
-                >;
-
-            (t.Config e.Errors) (#MarkupContext s.Num)
-              = <Update t.Config (e.Errors) Config-SetMarkupContext s.Num>;
-
-            (t.Config e.Errors) (#DebugInfo s.Num)
-              = <Update t.Config (e.Errors) Config-SetDebugInfo s.Num>;
-
-            (t.Config e.Errors) (#GrammarCheck s.Num)
-              = <Update t.Config (e.Errors) Config-SetGrammarCheck s.Num>;
 
             (t.Config e.Errors) (#TargetFileName s.Num e.FileName)
               = <Update
