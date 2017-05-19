@@ -42,57 +42,57 @@ $ENTRY ParseCommandLine {
         }
         (MapReduce
           {
-            (t.Config e.Errors^) (#CppCompiler s.Num e.CppCompiler)
+            (t.Config e.Errors) (#CppCompiler s.Num e.CppCompiler)
               = <Update
                   t.Config (e.Errors) Config-SetCppCompiler s.Num e.CppCompiler
                 >;
 
-            (t.Config e.Errors^) (#CppFlags s.Num e.Flags)
+            (t.Config e.Errors) (#CppFlags s.Num e.Flags)
               = <Update
                   t.Config (e.Errors) Config-SetCompilerFlags s.Num ' ' e.Flags
                 >;
 
-            (t.Config e.Errors^) (#CppFlag s.Num e.Flag)
+            (t.Config e.Errors) (#CppFlag s.Num e.Flag)
               = <Update
                   t.Config (e.Errors)
                   Config-SetCompilerFlags s.Num ' "' e.Flag '"'
                 >;
 
-            (t.Config e.Errors^) (#RuntimeFolder s.Num e.Path)
+            (t.Config e.Errors) (#RuntimeFolder s.Num e.Path)
               = <Update
                   t.Config (e.Errors)
                   Config-SetCompilerFlags s.Num ' -I"' e.Path '"'
                 >
                 (#SearchFolder s.Num e.Path);
 
-            (t.Config e.Errors^) (#Opt s.Num e.Flags)
+            (t.Config e.Errors) (#Opt s.Num e.Flags)
               = <Update t.Config (e.Errors) Config-SetOptFlags s.Num e.Flags>;
 
-            (t.Config e.Errors^) (#ErrorFile s.Num e.FileName)
+            (t.Config e.Errors) (#ErrorFile s.Num e.FileName)
               = <Update
                   t.Config (e.Errors) Config-SetErrorFile s.Num e.FileName
                 >;
 
-            (t.Config e.Errors^) (#MarkupContext s.Num)
+            (t.Config e.Errors) (#MarkupContext s.Num)
               = <Update t.Config (e.Errors) Config-SetMarkupContext s.Num>;
 
-            (t.Config e.Errors^) (#DebugInfo s.Num)
+            (t.Config e.Errors) (#DebugInfo s.Num)
               = <Update t.Config (e.Errors) Config-SetDebugInfo s.Num>;
 
-            (t.Config e.Errors^) (#GrammarCheck s.Num)
+            (t.Config e.Errors) (#GrammarCheck s.Num)
               = <Update t.Config (e.Errors) Config-SetGrammarCheck s.Num>;
 
-            (t.Config e.Errors^) (#TargetFileName s.Num e.FileName)
+            (t.Config e.Errors) (#TargetFileName s.Num e.FileName)
               = <Update
                   t.Config (e.Errors) Config-SetTargetFileName s.Num e.FileName
                 >;
 
-            (t.Config e.Errors^) (#TargetSuffix s.Num e.Suffix)
+            (t.Config e.Errors) (#TargetSuffix s.Num e.Suffix)
               = <Update
                   t.Config (e.Errors) Config-SetTargetSuffix s.Num e.Suffix
                 >;
 
-            (t.Config e.Errors^) t.Option
+            (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;
           }
         )
