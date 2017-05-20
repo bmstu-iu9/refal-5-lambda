@@ -361,10 +361,11 @@ Link {
 
   ((e.CommandLine) e.Flags) t.Config e.Files
     = <Config-GetTargetFileName t.Config> : e.TargetFileName
-    = <PreLinkCleanupTemporary t.Config e.TargetFileName '.partial'>
+    = e.TargetFileName '.partial' : e.IntermediateName
+    = <PreLinkCleanupTemporary t.Config e.IntermediateName>
       <System
         e.CommandLine
-        e.TargetFileName '.partial'
+        e.IntermediateName
         e.Flags
         <Map
           {
@@ -374,10 +375,10 @@ Link {
           e.Files
         >
       >
-      <CheckCppCompilationSuccessed t.Config e.TargetFileName '.partial'>
-      <AppendRASLToBinary (e.TargetFileName '.partial') e.Files>
+      <CheckCppCompilationSuccessed t.Config e.IntermediateName>
+      <AppendRASLToBinary (e.IntermediateName) e.Files>
       <PostLinkRename
-        t.Config (e.TargetFileName '.partial') (e.TargetFileName)
+        t.Config (e.IntermediateName) (e.TargetFileName)
       >;
 }
 
