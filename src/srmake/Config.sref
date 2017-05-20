@@ -1,0 +1,141 @@
+/*
+  Внутреннее представление:
+
+  [Config (s.Option e.Value)*]
+*/
+$ENUM Config;
+
+/**
+  <Config-Create> == t.Config
+*/
+$ENTRY Config-Create {
+  /* пусто */
+    = [Config
+        (#CppCompiler /* пусто */)
+        (#Folders /* пусто */)
+        (#SrefCompiler ('srefc-core') /* флаги */)
+        (#TargetFileName #DefaultTarget)
+        (#SourceFile #NotSet)
+      ];
+}
+
+/**
+  <Config-GetCppCompiler t.Config>
+    == e.CppCompiler
+*/
+$ENTRY Config-GetCppCompiler {
+  [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E]
+    = e.CppCompiler;
+}
+
+/**
+  <Config-SetCppCompiler t.Config e.CppCompiler>
+    == #Success t.Config
+*/
+$ENTRY Config-SetCppCompiler {
+  [Config e.Params-B (#CppCompiler e.OldCppCompiler) e.Params-E] e.CppCompiler
+    = #Success [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E];
+}
+
+/**
+  <Config-GetFolders t.Config>
+    == (s.FolderType e.Path)*
+
+  s.FolderType ::= #Search | #Runtime
+*/
+$ENTRY Config-GetFolders {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E]
+    = e.Folders;
+}
+
+/**
+  <Config-AddFolder t.Config s.FolderType e.Path>
+    == #Success t.Config
+*/
+$ENTRY Config-AddFolder {
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] #Search e.Path
+    = #Success
+      [Config e.Params-B (#Folders e.Folders (#Search e.Path)) e.Params-E];
+
+  [Config e.Params-B (#Folders e.Folders) e.Params-E] #Runtime e.Path
+    = #Success
+      [Config e.Params-B (#Folders e.Folders (#Runtime e.Path)) e.Params-E];
+}
+
+/**
+  <Config-GetSrefCompiler t.Config>
+    == e.SrefCompiler
+*/
+$ENTRY Config-GetSrefCompiler {
+  [Config e.Params-B (#SrefCompiler (e.Compiler) e.Flags) e.Params-E]
+    = e.Compiler e.Flags;
+}
+
+/**
+  <Config-SetSrefCompiler t.Config e.Compiler>
+    == #Success t.Config
+*/
+$ENTRY Config-SetSrefCompiler {
+  [Config e.Params-B (#SrefCompiler (e.OldCompiler) e.Flags) e.Params-E]
+  e.SrefCompiler
+    = #Success
+      [Config e.Params-B (#SrefCompiler (e.SrefCompiler) e.Flags) e.Params-E];
+}
+
+/**
+  <Config-AddSrefCompilerFlag t.Config e.Flags>
+    == #Success t.Config
+*/
+$ENTRY Config-AddSrefCompilerFlag {
+  [Config e.Params-B (#SrefCompiler t.SrefCompiler e.Flags) e.Params-E]
+  e.NewFlags
+    = #Success
+      [Config
+        e.Params-B
+        (#SrefCompiler t.SrefCompiler e.Flags ' "' e.NewFlags '"')
+        e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetFileName t.Config>
+    == #DefaultTarget
+    == e.TargetFileName
+*/
+$ENTRY Config-GetTargetFileName {
+  [Config e.Params-B (#TargetFileName e.TargetFileName) e.Params-E]
+    = e.TargetFileName;
+}
+
+/**
+  <Config-SetTargetFileName t.Config e.TargetFileName>
+    == #Success t.Config
+*/
+$ENTRY Config-SetTargetFileName {
+  [Config e.Params-B (#TargetFileName e.OldTargetFileName) e.Params-E]
+  e.NewTargetFileName
+    = #Success
+      [Config e.Params-B (#TargetFileName e.NewTargetFileName) e.Params-E];
+}
+
+/**
+  <Config-GetSourceFile t.Config>
+    == e.SourceFile
+*/
+$ENTRY Config-GetSourceFile {
+  [Config e.Params-B (#SourceFile e.FileName) e.Params-E]
+    = e.FileName;
+}
+
+/**
+  <Config-SetSourceFile t.Config e.SourceFile>
+    == #Success t.Config
+    == #Fails #ManySourceFiles
+*/
+$ENTRY Config-SetSourceFile {
+  [Config e.Params-B (#SourceFile #NotSet) e.Params-E] e.SourceFile
+    = #Success [Config e.Params-B (#SourceFile e.SourceFile) e.Params-E];
+
+  [Config e.Params-B (#SourceFile e.OldSourceFile) e.Params-E] e.SourceFile
+    = #Fails #ManySourceFiles;
+}

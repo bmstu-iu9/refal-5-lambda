@@ -1,14 +1,22 @@
-//FROM Library
-$EXTERN WriteLine, System, StrFromInt, Exit;
-
 //FROM LibraryEx
 $EXTERN ArgList, Map, Fetch;
+
+//FROM Library
+$EXTERN WriteLine, StrFromInt, Exit, System;
+
+//FROM ParseCmdLine
+$EXTERN ParseCommandLine;
 
 //FROM FileScanner
 $EXTERN CreateFileList;
 
-//FROM ParseCmdLine
-$EXTERN ParseCommandLine;
+//FROM Config
+$EXTERN
+  Config-GetFolders,
+  Config-GetSourceFile,
+  Config-GetSrefCompiler,
+  Config-GetCppCompiler,
+  Config-GetTargetFileName;
 
 $ENTRY Go { = <Main <ArgList>>; }
 
@@ -31,19 +39,19 @@ Main {
 }
 
 MakeProject {
-  #Success (e.CppCompiler) (e.SrefCompiler) t.Target (e.SourceFile) e.Folders =
+  #Success t.Config =
     <Make
-      (e.SrefCompiler) (e.CppCompiler) t.Target (e.Folders)
+      t.Config
       <CreateFileList
         (
           <Map
             {
               (s.FolderTag e.Folder) = (e.Folder);
             }
-            e.Folders
+            <Config-GetFolders t.Config>
           >
         )
-        e.SourceFile
+        <Config-GetSourceFile t.Config>
       >
     >;
 
@@ -61,8 +69,7 @@ MakeProject {
 }
 
 Make {
-  (e.SrefC) (e.CompilerCommand) t.Target (e.Directories)
-  e.Units-B (#NotFound e.UnitName) e.Units-E =
+  t.Config e.Units-B (#NotFound e.UnitName) e.Units-E =
     <Map
       {
         (#NotFound e.UnitName^) =
@@ -78,23 +85,12 @@ Make {
     >
     <Exit 1>;
 
-  (e.SrefC) (e.CompilerCommand) t.Target (e.Directories) e.Units =
+  t.Config e.Units =
     <System
-      e.SrefC ' -c "' e.CompilerCommand '"'
-      <Fetch
-        t.Target
-        {
-          #DefaultTarget = /* пусто */;
-          (e.TargetFile) = ' -o "' e.TargetFile '"';
-        }
-      >
-      <Map
-        {
-          (#Search e.Folder) = ' -d "' e.Folder '"';
-          (#Runtime e.Folder) = ' -D "' e.Folder '"';
-        }
-        e.Directories
-      >
+      <Config-GetSrefCompiler t.Config>
+      ' -c "' <Config-GetCppCompiler t.Config> '"'
+      <MakeTargetFileFlag t.Config>
+      <MakeSearchFolderFlags t.Config>
       <Map
         {
           (#Output e.Output) = ' "' e.Output '"';
@@ -104,4 +100,26 @@ Make {
         e.Units
       >
     >;
+}
+
+MakeTargetFileFlag {
+  t.Config
+    = <Fetch
+        <Config-GetTargetFileName t.Config>
+        {
+          #DefaultTarget = /* пусто */;
+          e.TargetFile = ' -o "' e.TargetFile '"';
+        }
+      >;
+}
+
+MakeSearchFolderFlags {
+  t.Config
+    = <Map
+        {
+          (#Search e.Folder) = ' -d "' e.Folder '"';
+          (#Runtime e.Folder) = ' -D "' e.Folder '"';
+        }
+        <Config-GetFolders t.Config>
+      >;
 }
