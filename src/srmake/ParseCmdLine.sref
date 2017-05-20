@@ -23,11 +23,11 @@ $ENTRY ParseCommandLine {
     <Fetch
       <GetOpt
         (
-          (#CppCompiler #Required 'c' ('cpp-command'))
-          (#SrefCompiler #Required 's' ('sref-command'))
-          (#SearchFolder #Required 'd' ('dir') ('directory'))
-          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
           (#CompilerOption #Required 'X' ('thru') ('through'))
+          (#CppCompiler #Required 'c' ('cpp-command'))
+          (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
+          (#SearchFolder #Required 'd' ('dir') ('directory'))
+          (#SrefCompiler #Required 's' ('sref-command'))
           (#TargetFileName #Required 'o' ('target-file'))
         )
         e.Arguments
