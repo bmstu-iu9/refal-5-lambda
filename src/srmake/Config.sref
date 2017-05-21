@@ -11,30 +11,56 @@ $ENUM Config;
 $ENTRY Config-Create {
   /* пусто */
     = [Config
-        (#CppCompiler /* пусто */)
+        (#CppCompilerExe /* пусто */)
+        (#CppCompilerLib /* пусто */)
         (#Folders /* пусто */)
         (#SrefCompiler ('srefc-core') /* флаги */)
         (#TargetFileName #DefaultTarget)
         (#SourceFile #NotSet)
+        (#Prefix /* пусто */)
+        (#References /* пусто */)
+        (#TargetMode #DefaultEXE)
       ];
 }
 
 /**
-  <Config-GetCppCompiler t.Config>
-    == e.CppCompiler
+  <Config-GetCppCompilerExe t.Config>
+    == e.CppCompilerExe
 */
-$ENTRY Config-GetCppCompiler {
-  [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E]
-    = e.CppCompiler;
+$ENTRY Config-GetCppCompilerExe {
+  [Config e.Params-B (#CppCompilerExe e.CppCompilerExe) e.Params-E]
+    = e.CppCompilerExe;
 }
 
 /**
-  <Config-SetCppCompiler t.Config e.CppCompiler>
+  <Config-SetCppCompilerExe t.Config e.CppCompilerExe>
     == #Success t.Config
 */
-$ENTRY Config-SetCppCompiler {
-  [Config e.Params-B (#CppCompiler e.OldCppCompiler) e.Params-E] e.CppCompiler
-    = #Success [Config e.Params-B (#CppCompiler e.CppCompiler) e.Params-E];
+$ENTRY Config-SetCppCompilerExe {
+  [Config e.Params-B (#CppCompilerExe e.OldCppCompilerExe) e.Params-E]
+  e.CppCompilerExe
+    = #Success
+      [Config e.Params-B (#CppCompilerExe e.CppCompilerExe) e.Params-E];
+}
+
+/**
+  <Config-GetCppCompilerLib t.Config>
+    == e.CppCompilerLib
+*/
+$ENTRY Config-GetCppCompilerLib {
+  [Config e.Params-B (#CppCompilerLib e.CppCompilerLib) e.Params-E]
+    = e.CppCompilerLib;
+}
+
+/**
+  <Config-SetCppCompilerLib t.Config e.CppCompilerLib>
+    == #Success t.Config
+*/
+$ENTRY Config-SetCppCompilerLib {
+  [Config e.Params-B (#CppCompilerLib e.OldCppCompilerLib) e.Params-E]
+  e.CppCompilerLib
+    = #Success
+      [Config e.Params-B (#CppCompilerLib e.CppCompilerLib) e.Params-E];
 }
 
 /**
@@ -138,4 +164,75 @@ $ENTRY Config-SetSourceFile {
 
   [Config e.Params-B (#SourceFile e.OldSourceFile) e.Params-E] e.SourceFile
     = #Fails #ManySourceFiles;
+}
+
+/**
+  <Config-GetPrefix t.Config>
+    == e.Prefix
+
+  При этом пустое значение префикса является допустимым — это означает,
+  что пользователь его не указал.
+*/
+$ENTRY Config-GetPrefix {
+  [Config e.Params-B (#Prefix e.Prefix) e.Params-E] = e.Prefix;
+}
+
+/**
+  <Config-SetPrefix t.Config e.Prefix>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrefix {
+  [Config e.Params-B (#Prefix e.OldPrefix) e.Params-E] e.NewPrefix
+    = #Success [Config e.Params-B (#Prefix e.NewPrefix) e.Params-E];
+}
+
+/**
+  <Config-GetReferences t.Config>
+    == (e.Reference)*
+*/
+$ENTRY Config-GetReferences {
+  [Config e.Params-B (#References e.References) e.Params-E]
+    = e.References;
+}
+
+/**
+  <Config-AddReference t.Config e.Reference>
+    = #Success t.Config
+*/
+$ENTRY Config-AddReference {
+  [Config e.Params-B (#References e.References) e.Params-E] e.NewReference
+    = #Success
+      [Config
+        e.Params-B (#References e.References (e.NewReference)) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetMode t.Config>
+    == #DefaultEXE
+    == s.TargetMode
+
+  s.TargetMode ::= #EXE | #LIB | #R
+*/
+$ENTRY Config-GetTargetMode {
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E]
+    = s.TargetMode;
+}
+
+/**
+  <Config-SetTargetMode t.Config s.TargetMode>
+    == #Success t.Config
+    == #Fails #TargetModeAlreadySet
+*/
+$ENTRY Config-SetTargetMode {
+  [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E] s.NewTargetMode
+    = #Success
+      [Config e.Params-B (#TargetMode s.NewTargetMode) e.Params-E];
+
+  // Допускаем повторное определение того же режима
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E] s.TargetMode
+    = #Success [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E];
+
+  [Config e.Params-B (#TargetMode s.OldTargetMode) e.Params-E] e.NewTargetMode
+    = #Falis #TargetModeAlreadySet;
 }

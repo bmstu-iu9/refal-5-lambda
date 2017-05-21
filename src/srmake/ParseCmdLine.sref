@@ -7,11 +7,15 @@ $EXTERN GetOpt;
 //FROM Config
 $EXTERN
   Config-Create,
-  Config-SetCppCompiler,
+  Config-SetCppCompilerExe,
+  Config-SetCppCompilerLib,
+  Config-SetPrefix,
+  Config-AddReference,
   Config-AddFolder,
   Config-SetSrefCompiler,
   Config-AddSrefCompilerFlag,
   Config-SetTargetFileName,
+  Config-SetTargetMode,
   Config-SetSourceFile;
 
 /**
@@ -28,26 +32,47 @@ $ENTRY ParseCommandLine {
     <Fetch
       <GetOpt
         (
-          (#CppCompiler #Required 'c' ('cpp-command'))
+          (#CppCompilerExe #Required 'c' ('cpp-command') ('cpp-command-exe'))
+          (#CppCompilerLib #Required ('cpp-command-lib'))
+          (#Prefix #Required 'p' ('prefix'))
+          (#Reference #Required 'r' ('reference'))
           (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#SrefCompiler #Required 's' ('sref-command'))
           (#SrefCompilerOption #Required 'X' ('thru') ('through'))
           (#TargetFileName #Required 'o' ('target-file'))
+          (#TargetMode-Exe #None 'x' ('makeexe'))
+          (#TargetMode-Lib #None 'l' ('makelib'))
+          (#TargetMode-R #None 'R')
         )
         e.Arguments
       >
       <Seq
-        (CheckRequiredOptions (#CppCompiler #FILE))
+        (CheckRequiredOptions (#CppCompilerExe /* #CppCompilerLib */ #FILE))
         {
           (e.Errors) e.Options
             = (<Config-Create> e.Errors) e.Options;
         }
         (MapReduce
           {
-            (t.Config e.Errors) (#CppCompiler s.Num e.CppCompiler)
+            (t.Config e.Errors) (#CppCompilerExe s.Num e.CppCompilerExe)
               = <Update
-                  t.Config (e.Errors) Config-SetCppCompiler s.Num e.CppCompiler
+                  t.Config (e.Errors)
+                  Config-SetCppCompilerExe s.Num e.CppCompilerExe
+                >;
+
+            (t.Config e.Errors) (#CppCompilerLib s.Num e.CppCompilerLib)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCppCompilerLib s.Num e.CppCompilerLib
+                >;
+
+            (t.Config e.Errors) (#Prefix s.Num e.Prefix)
+              = <Update t.Config (e.Errors) Config-SetPrefix s.Num e.Prefix>;
+
+            (t.Config e.Errors) (#Reference s.Num e.Reference)
+              = <Update
+                  t.Config (e.Errors) Config-AddReference s.Num e.Reference
                 >;
 
             (t.Config e.Errors) (#RuntimeFolder s.Num e.Folder)
@@ -76,6 +101,15 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors)
                   Config-SetTargetFileName s.Num e.TargetFile
                 >;
+
+            (t.Config e.Errors) (#TargetMode-Exe s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #EXE>;
+
+            (t.Config e.Errors) (#TargetMode-Lib s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #LIB>;
+
+            (t.Config e.Errors) (#TargetMode-R s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #R>;
 
             (t.Config e.Errors) (#FILE s.Num e.SourceFile)
               = <Update
@@ -109,11 +143,17 @@ $ENTRY ParseCommandLine {
                 (s.Pos #ManySourceFiles) =
                   (s.Pos 'many source files in command line');
 
-                (s.Pos #No #CppCompiler) =
+                (s.Pos #No #CppCompilerExe) =
                   (s.Pos 'option -c or --cpp-command not found');
 
                 (s.Pos #No #FILE) =
                   (s.Pos 'expected source filename in command line');
+
+                (s.Pos #TargetModeAlreadySet)
+                  = (s.Pos
+                      'options --makeexe (-x), --makelib (-l) and -R '
+                      'must appear one time'
+                    );
               }
               e.Errors
             >;

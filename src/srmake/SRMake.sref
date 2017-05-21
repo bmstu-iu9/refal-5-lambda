@@ -15,7 +15,10 @@ $EXTERN
   Config-GetFolders,
   Config-GetSourceFile,
   Config-GetSrefCompiler,
-  Config-GetCppCompiler,
+  Config-GetCppCompilerExe,
+  Config-GetCppCompilerLib,
+  Config-GetPrefix,
+  Config-GetReferences,
   Config-GetTargetFileName;
 
 $ENTRY Go { = <Main <ArgList>>; }
@@ -84,12 +87,25 @@ RunSrefCompiler {
 
   t.Config e.Units
     = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
-    = <Config-GetCppCompiler t.Config> : e.CppCompiler
+    = <Config-GetCppCompilerExe t.Config> : e.CppCompilerExe
+    = <Config-GetCppCompilerLib t.Config> : e.CppCompilerLib
     = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
+    = <Config-GetPrefix t.Config> : e.Prefix
+    = <Config-GetReferences t.Config> : e.References
     = <System
-        e.SrefCompiler ' -c "' e.CppCompiler '"' e.TargetFileFlag
+        e.SrefCompiler
+        ' --cpp-command-exe="' e.CppCompilerExe '"'
+        ' --cpp-command-lib="' e.CppCompilerLib '"'
+        e.TargetFileFlag
         e.SearchFolderFlags
+        ' --prefix="' e.Prefix '"'
+        <Map
+          {
+            (e.Reference) = ' --reference="' e.Reference '"';
+          }
+          e.References
+        >
         <Map
           {
             (#Output e.Output) = ' "' e.Output '"';
