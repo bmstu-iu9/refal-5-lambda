@@ -1,74 +1,130 @@
 //FROM LibraryEx
-$EXTERN LoadFile, Map, Trim, Fetch;
-
-//FROM FindFile
-$EXTERN FindFiles;
+$EXTERN Fetch, LoadFile, MapReduce, Inc, Trim, Map;
 
 //FROM Library
 $EXTERN ExistFile;
 
+//FROM Config
+$EXTERN
+  Config-AddReference,
+  Config-GetPrefix,
+  Config-SetPrefix,
+  Config-GetFolders;
+
+//FROM FindFile
+$EXTERN FindFiles;
+
+
 $ENTRY CreateFileList {
-  (e.Folders) e.Unit =
-    <DoCreateFileList
-      (e.Folders) () <FindFiles (e.Folders) (e.Unit)>
-    >;
+  t.Config e.Unit
+    = <DoCreateFileList
+        t.Config () <FindFilesEx t.Config #CMD-LINE e.Unit>
+      >;
 }
 
 DoCreateFileList {
-  (e.Folders) (e.Modules) = e.Modules;
+  t.Config (e.Modules) = t.Config e.Modules;
 
-  (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
-  (e.NextModule) e.NotScanned =
-    <DoCreateFileList
-      (e.Folders) (e.Modules-B (e.NextModule) e.Modules-E)
-      e.NotScanned
-    >;
+  t.Config (e.Modules-B (e.NextModule) e.Modules-E)
+  (e.NextModule) e.NotScanned
+    = <DoCreateFileList
+        t.Config (e.Modules-B (e.NextModule) e.Modules-E)
+        e.NotScanned
+      >;
 
-  (e.Folders) (e.Modules) (e.NextModule) e.NotScanned =
-    <DoCreateFileList
-      (e.Folders) (e.Modules (e.NextModule))
-      <LoadList (e.Folders) e.NextModule> e.NotScanned
-    >;
+  t.Config (e.Modules) (e.NextModule) e.NotScanned
+    = <LoadList t.Config e.NextModule> : t.Config^ e.NewNotScanned
+    = <DoCreateFileList
+        t.Config (e.Modules (e.NextModule))
+        e.NewNotScanned e.NotScanned
+      >;
 }
 
 FindImports {
-  e.Folders ('//FROM ' e.Name) =
-    <FindFiles (e.Folders) (<Trim e.Name>)>;
+  t.OriginConfig e.FileName
+    = <Fetch
+        <ExistFile e.FileName>
+        {
+          #True = <LoadFile e.FileName>;
+          #False = /* пусто */;
+        }
+      >
+    : e.FileContents
+    = <MapReduce
+        {
+          (t.Config s.LineNum) ('//FROM ' e.Name)
+            = (t.Config <Inc s.LineNum>)
+              <FindFilesEx t.Config (s.LineNum e.FileName) <Trim e.Name>>;
 
-  e.Folders (e.OtherLine) = ;
+          (t.Config s.LineNum) ('//PREFIX ' e.Name)
+            = <UpdatePrefix t.Config (s.LineNum e.FileName) <Trim e.Name>>
+            : t.Config^ e.Error
+            = (t.Config <Inc s.LineNum>)
+              e.Error;
+
+          (t.Config s.LineNum) ('//REFERENCE ' e.Name)
+            = <Config-AddReference t.Config <Trim e.Name>> : #Success t.Config^
+            = (t.Config <Inc s.LineNum>);
+
+          (t.Config s.LineNum) (e.OtherLine)
+            = (t.Config <Inc s.LineNum>);
+        }
+        (t.OriginConfig 1)
+        e.FileContents
+      >
+    : (t.Config s.LineNum) e.Units
+    = t.Config e.Units;
+}
+
+UpdatePrefix {
+  t.Config t.SrcPos e.Prefix
+    = <Fetch
+        <Config-GetPrefix t.Config>
+        {
+          #NotSet
+            = <Config-SetPrefix t.Config e.Prefix> : #Success t.Config^
+            = t.Config;
+
+          e.Prefix /* тот же самый */
+            = t.Config;
+
+          e.OtherPrefix
+            = t.Config (#Error t.SrcPos 'prefix already defined');
+        }
+      >;
+}
+
+FindFilesEx {
+  t.Config t.SrcPos e.UnitName
+    = <Map
+        {
+          (s.FolderTag e.Folder) = (e.Folder);
+        }
+        <Config-GetFolders t.Config>
+      >
+    : e.Folders
+    = <Fetch
+        <FindFiles (e.Folders) (e.UnitName)>
+        {
+          (#NotFound e.Unit)
+            = (#Error t.SrcPos 'Unit ' e.Unit ' not found');
+
+          t.FoundUnit = t.FoundUnit;
+        }
+      >;
 }
 
 LoadList {
-  (e.Folders) #Source (e.NextModule) e.Output =
-    <Map
-      (FindImports e.Folders) <LoadFile e.NextModule>
-    >;
+  t.Config #Source (e.NextModule) e.Output
+    = <FindImports t.Config e.NextModule>;
 
-  (e.Folders) #Output e.Output =
-    <Map
-      (FindImports e.Folders)
-      <LoadFile e.Output>
-      <LoadIfExist e.Output '.froms'>
-    >;
+  t.Config #Output e.Output
+    = <FindImports t.Config e.Output '.froms'>;
 
-  (e.Folders) #OutputWithNative (e.Output) e.Native =
-    <Map
-      (FindImports e.Folders)
-      <LoadFile e.Output>
-      <LoadIfExist e.Output '.froms'>
-      <LoadFile e.Native>
-    >;
+  t.Config #OutputWithNative (e.Output) e.Native
+    = <FindImports t.Config e.Output '.froms'> : t.Config^ e.FromsUnits
+    = <FindImports t.Config e.Native> : t.Config^ e.NativeUnits
+    = t.Config e.FromsUnits e.NativeUnits;
 
-  (e.Folders) #NotFound e.Unit = ;
-}
-
-LoadIfExist {
-  e.FileName =
-    <Fetch
-      <ExistFile e.FileName>
-      {
-        #True = <LoadFile e.FileName>;
-        #False = /* пусто */;
-      }
-    >;
+  t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
 }

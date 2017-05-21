@@ -51,9 +51,8 @@ MakeProject {
       >
     : e.Folders
     = <Config-GetSourceFile t.Config> : e.SourceFile
-    = <RunSrefCompiler
-        t.Config <CreateFileList (e.Folders) e.SourceFile>
-      >;
+    = <CreateFileList t.Config e.SourceFile> : t.Config^ e.Units
+    = <RunSrefCompiler t.Config e.Units>;
 
   #Fails e.Errors
     = <Map
@@ -68,20 +67,23 @@ MakeProject {
       <Exit 1>;
 }
 
+PrintSrcPos {
+  #CMD-LINE = 'command line';
+  (s.LineNum e.FileName) = e.FileName ':' <StrFromInt s.LineNum>;
+}
+
 RunSrefCompiler {
-  t.Config e.Units-B (#NotFound e.UnitName) e.Units-E
+  t.Config e.Units-B (#Error t.SrcPos e.Message) e.Units-E
     = <Map
         {
-          (#NotFound e.UnitName^) =
-            <WriteLine
-              'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
-            >;
+          (#Error t.SrcPos^ e.Message^) =
+            <WriteLine <PrintSrcPos t.SrcPos> ': ' e.Message>;
 
           (#Output e.Output) = ;
           (#OutputWithNative (e.Output) e.Native) = ;
           (#Source (e.Source) e.Output) = ;
         }
-        (#NotFound e.UnitName) e.Units-E
+        (#Error t.SrcPos e.Message) e.Units-E
       >
       <Exit 1>;
 
@@ -91,7 +93,7 @@ RunSrefCompiler {
     = <Config-GetCppCompilerLib t.Config> : e.CppCompilerLib
     = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
-    = <Config-GetPrefix t.Config> : e.Prefix
+    = <GetPrefix t.Config> : e.Prefix
     = <Config-GetReferences t.Config> : e.References
     = <System
         e.SrefCompiler
@@ -136,5 +138,16 @@ MakeSearchFolderFlags {
           (#Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
         }
         <Config-GetFolders t.Config>
+      >;
+}
+
+GetPrefix {
+  t.Config
+    = <Fetch
+        <Config-GetPrefix t.Config>
+        {
+          #NotSet = /* пусто */;
+          e.Prefix = e.Prefix;
+        }
       >;
 }

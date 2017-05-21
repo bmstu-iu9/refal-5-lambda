@@ -17,7 +17,7 @@ $ENTRY Config-Create {
         (#SrefCompiler ('srefc-core') /* флаги */)
         (#TargetFileName #DefaultTarget)
         (#SourceFile #NotSet)
-        (#Prefix /* пусто */)
+        (#Prefix #NotSet)
         (#References /* пусто */)
         (#TargetMode #DefaultEXE)
       ];
@@ -168,6 +168,7 @@ $ENTRY Config-SetSourceFile {
 
 /**
   <Config-GetPrefix t.Config>
+    == #NotSet
     == e.Prefix
 
   При этом пустое значение префикса является допустимым — это означает,
