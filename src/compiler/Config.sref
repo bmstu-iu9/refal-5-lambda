@@ -14,39 +14,90 @@ $ENUM Config;
 $ENTRY Config-Create {
   /* пусто */
     = [Config
-        (#CppCompiler #NoCppCompiler)
+        (#CppCompiler #NoCppCompilerExe #NoCppCompilerLib)
         (#Optimize /* пусто */)
         (#ErrorFile /* пусто */)
         (#DebugMode #NoMarkupContext #NoDebugInfo)
         (#GrammarCheck #NormalRun)
         (#TargetFileName #DefaultTargetFileName)
-        (#TargetSuffix '.EXE')
+        (#TargetMode #DefaultEXE)
+        (#TargetSuffix ('.EXE') ('.DLL'))
         (#Folders /* пусто */)
+        (#Prefix /* пусто */)
+        (#References /* пусто */)
+        (#Incorporateds /* пусто */)
       ];
 }
 
 /**
-  <Config-GetCppCompiler t.Config>
+  <Config-GetCppCompiler t.Config s.CompilerVariant>
     == #NoCppCompiler
     == (e.CppCompiler) e.Flags
+
+  s.CompileVariant ::= #EXE | #LIB
 */
 $ENTRY Config-GetCppCompiler {
-  [Config e.Params-B (#CppCompiler #NoCppCompiler e.Flags) e.Params-E]
+  [Config
+    e.Params-B
+   (#CppCompiler #NoCppCompilerExe t.CppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #EXE
     = #NoCppCompiler;
 
-  [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E]
-    = (e.CppCompiler) e.Flags;
+  [Config
+    e.Params-B
+    (#CppCompiler (e.CppCompilerExe) t.CppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #EXE
+    = (e.CppCompilerExe) e.Flags;
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe #NoCppCompilerLib e.Flags)
+    e.Params-E
+  ]
+  #LIB
+    = #NoCppCompiler;
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe (e.CppCompilerLib) e.Flags)
+    e.Params-E
+  ]
+  #LIB
+    = (e.CppCompilerLib) e.Flags;
 }
 
 /**
-  <Config-SetCppCompiler t.Config e.CppCompiler>
+  <Config-SetCppCompiler t.Config s.CompileVariant e.CppCompiler>
     == #Success t.Config
 */
 $ENTRY Config-SetCppCompiler {
-  [Config e.Params-B (#CppCompiler t.OldCompiler e.Flags) e.Params-E]
-  e.CppCompiler
+  [Config
+    e.Params-B
+    (#CppCompiler t.OldCompilerExe t.CppCompilerLib e.Flags) e.Params-E
+  ]
+  #EXE e.CppCompilerExe
     = #Success
-      [Config e.Params-B (#CppCompiler (e.CppCompiler) e.Flags) e.Params-E];
+      [Config
+        e.Params-B
+        (#CppCompiler (e.CppCompilerExe) t.CppCompilerLib e.Flags)
+        e.Params-E
+      ];
+
+  [Config
+    e.Params-B
+    (#CppCompiler t.CppCompilerExe t.OldCompilerLib e.Flags) e.Params-E
+  ]
+  #LIB e.CppCompilerLib
+    = #Success
+      [Config
+        e.Params-B
+        (#CppCompiler t.CppCompilerExe (e.CppCompilerLib) e.Flags)
+        e.Params-E
+      ];
 }
 
 /**
@@ -282,22 +333,57 @@ $ENTRY Config-SetTargetFileName {
 }
 
 /**
-  <Config-GetTargetSuffix t.Config>
+  <Config-GetTargetSuffix t.Config s.CompileVariant>
     == e.TargetSuffix
 */
 $ENTRY Config-GetTargetSuffix {
-  [Config e.Params-B (#TargetSuffix e.TargetSuffix) e.Params-E]
-    = e.TargetSuffix;
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #EXE
+    = e.TargetSuffixExe;
+
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #LIB
+    = e.TargetSuffixLib;
 }
 
 /**
-  <Config-SetTargetSuffix t.Config e.Suffix>
+  <Config-SetTargetSuffix t.Config s.CompileVariant e.Suffix>
     == #Success t.Config
 */
 $ENTRY Config-SetTargetSuffix {
-  [Config e.Params-B (#TargetSuffix e.OldTargetSuffix) e.Params-E]
-  e.NewTargetSuffix
-    = #Success [Config e.Params-B (#TargetSuffix e.NewTargetSuffix) e.Params-E];
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.OldTargetSuffixExe) (e.TargetSuffixLib))
+    e.Params-E
+  ]
+  #EXE e.NewTargetSuffixExe
+    = #Success
+      [Config
+        e.Params-B
+        (#TargetSuffix (e.NewTargetSuffixExe) (e.TargetSuffixLib))
+        e.Params-E
+      ];
+
+  [Config
+    e.Params-B
+    (#TargetSuffix (e.TargetSuffixExe) (e.OldTargetSuffixLib))
+    e.Params-E
+  ]
+  #LIB e.NewTargetSuffixLib
+    = #Success
+      [Config
+        e.Params-B
+        (#TargetSuffix (e.TargetSuffixExe) (e.NewTargetSuffixLib))
+        e.Params-E
+      ];
 }
 
 /**
@@ -314,4 +400,102 @@ $ENTRY Config-GetSearchFolders {
 $ENTRY Config-SetSearchFolder {
   [Config e.Params-B (#Folders e.Folders) e.Params-E] e.NewFolder
     = [Config e.Params-B (#Folders e.Folders (e.NewFolder)) e.Params-E];
+}
+
+/**
+  <Config-GetPrefix t.Config>
+    == e.Prefix
+
+  При этом пустое значение префикса является допустимым — это означает,
+  что пользователь его не указал.
+*/
+$ENTRY Config-GetPrefix {
+  [Config e.Params-B (#Prefix e.Prefix) e.Params-E]
+    = e.Prefix;
+}
+
+/**
+  <Config-SetPrefix t.Config e.Prefix>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrefix {
+  [Config e.Params-B (#Prefix e.OldPrefix) e.Params-E] e.NewPrefix
+    = #Success [Config e.Params-B (#Prefix e.NewPrefix) e.Params-E];
+}
+
+/**
+  <Config-GetReferences t.Config>
+    == (e.Reference)*
+*/
+$ENTRY Config-GetReferences {
+  [Config e.Params-B (#References e.References) e.Params-E]
+    = e.References;
+}
+
+/**
+  <Config-AddReference t.Config e.Reference>
+    = #Success t.Config
+*/
+$ENTRY Config-AddReference {
+  [Config e.Params-B (#References e.References) e.Params-E] e.NewReference
+    = #Success
+      [Config
+        e.Params-B (#References e.References (e.NewReference)) e.Params-E
+      ];
+}
+
+/**
+  <Config-GetTargetMode t.Config>
+    == s.TargetMode
+
+  s.TargetMode ::= #EXE | #LIB | #R
+*/
+$ENTRY Config-GetTargetMode {
+  [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E]
+    = #EXE;
+
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E]
+    = s.TargetMode;
+}
+
+/**
+  <Config-SetTargetMode t.Config s.TargetMode>
+    == #Success t.Config
+    == #Fails #TargetModeAlreadySet
+*/
+$ENTRY Config-SetTargetMode {
+  [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E] s.NewTargetMode
+    = #Success
+      [Config e.Params-B (#TargetMode s.NewTargetMode) e.Params-E];
+
+  // Допускаем повторное определение того же режима
+  [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E] s.TargetMode
+    = #Success [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E];
+
+  [Config e.Params-B (#TargetMode s.OldTargetMode) e.Params-E] e.NewTargetMode
+    = #Falis #TargetModeAlreadySet;
+}
+
+/**
+  <Config-GetIncorporateds t.Config>
+    == (e.IncorporatedName)*
+*/
+$ENTRY Config-GetIncorporateds {
+  [Config e.Params-B (#Incorporateds e.Incorporateds) e.Params-E]
+    = e.Incorporateds;
+}
+
+/**
+  <Config-AddIncorporated t.Config e.IncorporatedName>
+    == #Success t.Config
+*/
+$ENTRY Config-AddIncorporated {
+  [Config e.Params-B (#Incorporateds e.Incorporateds) e.Params-E]
+  e.IncorporatedName
+    = #Success
+      [Config
+        e.Params-B
+        (#Incorporateds e.Incorporateds (e.IncorporatedName))
+        e.Params-E
+      ];
 }

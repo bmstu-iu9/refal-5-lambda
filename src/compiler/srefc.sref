@@ -126,7 +126,7 @@ Main-SwFoundFiles {
   t.CommandLineSource t.Config e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource t.Config
-      <RenameTargets (<Config-GetCppCompiler t.Config>) e.Files>
+      <RenameTargets (<Config-GetCppCompiler t.Config #EXE>) e.Files>
     >;
 }
 
@@ -175,7 +175,7 @@ Main-SwCompiledFiles {
     <Exit 1>;
 
   t.Config #NormalRun e.Outputs =
-    <Link (<Config-GetCppCompiler t.Config>) t.Config e.Outputs>;
+    <Link (<Config-GetCppCompiler t.Config #EXE>) t.Config e.Outputs>;
 
   t.Config #GrammarCheck e.Outputs =
     <WriteLine '** No syntax errors found **'>;
@@ -210,7 +210,7 @@ CalcTargetFileName {
         }
       >
     >
-    <Config-GetTargetSuffix t.Config>;
+    <Config-GetTargetSuffix #EXE t.Config>;
 }
 
 LookupSourceFiles {

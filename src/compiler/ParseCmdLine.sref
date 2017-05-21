@@ -8,7 +8,8 @@ $EXTERN Fetch, Seq, MapReduce, Map;
 $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetOptFlags, Config-SetErrorFile, Config-SetMarkupContext,
   Config-SetDebugInfo, Config-SetGrammarCheck, Config-SetTargetFileName,
-  Config-SetTargetSuffix, Config-SetSearchFolder;
+  Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
+  Config-AddReference, Config-SetTargetMode, Config-AddIncorporated;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -20,18 +21,30 @@ $ENTRY ParseCommandLine {
     <Fetch
       <GetOpt
         (
-          (#CppCompiler #Required 'c' ('cpp-command'))
+          (#CppCompiler-Exe #Required 'c' ('cpp-command') ('cpp-command-exe'))
+          (#CppCompiler-Lib #Required ('cpp-command-lib'))
           (#CppFlag #Required 'f' ('cppflag'))
           (#CppFlags #Required 'CF' ('cppflags'))
           (#DebugInfo #None 'g' ('debug-info'))
           (#ErrorFile #Required 'e' ('error-file'))
           (#GrammarCheck #None ('grammar-check'))
+          (#Incorporated #Required ('incorporated'))
           (#MarkupContext #None ('markup-context'))
           (#Opt #Required 'O')
+          (#Prefix #Required 'p' ('prefix'))
+          (#Reference #Required 'r' ('reference'))
           (#RuntimeFolder #Required 'D' ('runtime-dir') ('runtime-directory'))
           (#SearchFolder #Required 'd' ('dir') ('directory'))
           (#TargetFileName #Required 'o' ('target-file'))
-          (#TargetSuffix #Required ('targsuffix') ('targetsuffix') ('targsuf'))
+          (#TargetMode-Exe #None 'x' ('makeexe'))
+          (#TargetMode-Lib #None 'l' ('makelib'))
+          (#TargetMode-R #None 'R')
+          (#TargetSuffix-Exe
+            #Required
+            ('targsuffix') ('targetsuffix') ('targsuf')
+            ('exesuffix') ('exesuf')
+          )
+          (#TargetSuffix-Lib #Required ('libsuffix') ('libsuf'))
         )
         e.Arguments
       >
@@ -42,9 +55,16 @@ $ENTRY ParseCommandLine {
         }
         (MapReduce
           {
-            (t.Config e.Errors) (#CppCompiler s.Num e.CppCompiler)
+            (t.Config e.Errors) (#CppCompiler-Exe s.Num e.CppCompiler)
               = <Update
-                  t.Config (e.Errors) Config-SetCppCompiler s.Num e.CppCompiler
+                  t.Config (e.Errors)
+                  Config-SetCppCompiler s.Num #EXE e.CppCompiler
+                >;
+
+            (t.Config e.Errors) (#CppCompiler-Lib s.Num e.CppCompiler)
+              = <Update
+                  t.Config (e.Errors)
+                  Config-SetCppCompiler s.Num #LIB e.CppCompiler
                 >;
 
             (t.Config e.Errors) (#CppFlag s.Num e.Flag)
@@ -69,11 +89,24 @@ $ENTRY ParseCommandLine {
             (t.Config e.Errors) (#GrammarCheck s.Num)
               = <Update t.Config (e.Errors) Config-SetGrammarCheck s.Num>;
 
+            (t.Config e.Errors) (#Incorporated s.Num e.Name)
+              = <Update
+                  t.Config (e.Errors) Config-AddIncorporated s.Num e.Name
+                >;
+
             (t.Config e.Errors) (#MarkupContext s.Num)
               = <Update t.Config (e.Errors) Config-SetMarkupContext s.Num>;
 
             (t.Config e.Errors) (#Opt s.Num e.Flags)
               = <Update t.Config (e.Errors) Config-SetOptFlags s.Num e.Flags>;
+
+            (t.Config e.Errors) (#Prefix s.Num e.Prefix)
+              = <Update t.Config (e.Errors) Config-SetPrefix s.Num e.Prefix>;
+
+            (t.Config e.Errors) (#Reference s.Num e.Reference)
+              = <Update
+                  t.Config (e.Errors) Config-AddReference s.Num e.Reference
+                >;
 
             (t.Config e.Errors) (#RuntimeFolder s.Num e.Path)
               = <Update
@@ -87,9 +120,23 @@ $ENTRY ParseCommandLine {
                   t.Config (e.Errors) Config-SetTargetFileName s.Num e.FileName
                 >;
 
-            (t.Config e.Errors) (#TargetSuffix s.Num e.Suffix)
+            (t.Config e.Errors) (#TargetMode-Exe s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #EXE>;
+
+            (t.Config e.Errors) (#TargetMode-Lib s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #LIB>;
+
+            (t.Config e.Errors) (#TargetMode-R s.Num)
+              = <Update t.Config (e.Errors) Config-SetTargetMode #R>;
+
+            (t.Config e.Errors) (#TargetSuffix-Exe s.Num e.Suffix)
               = <Update
-                  t.Config (e.Errors) Config-SetTargetSuffix s.Num e.Suffix
+                  t.Config (e.Errors) Config-SetTargetSuffix s.Num #EXE e.Suffix
+                >;
+
+            (t.Config e.Errors) (#TargetSuffix-Lib s.Num e.Suffix)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetSuffix s.Num #LIB e.Suffix
                 >;
 
             (t.Config e.Errors) t.Option
@@ -134,6 +181,12 @@ $ENTRY ParseCommandLine {
 
                 (s.Pos #EmptyErrorFileName)
                   = (s.Pos 'option --error-file expects non-empty argument');
+
+                (s.Pos #TargetModeAlreadySet)
+                  = (s.Pos
+                      'options --makeexe (-x), --makelib (-l) and -R '
+                      'must appear one time'
+                    );
               }
               e.Errors
             >;
