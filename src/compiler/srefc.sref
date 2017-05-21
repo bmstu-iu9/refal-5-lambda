@@ -59,7 +59,7 @@ Main-SwValidCommandLine {
       >;
 
   t.CommandLineSource #Fails e.Errors
-    = <ReportErrors t.CommandLineSource #NoErrorFile e.Errors>;
+    = <ReportErrors t.CommandLineSource #NoConfig e.Errors>;
 }
 
 ReportErrors {
@@ -91,7 +91,10 @@ ReportErrors {
 }
 
 CreateErrorFileMark {
-  #NoErrorFile = /* ничего */;
+  // Вызывается также при ошибке в командной строке, когда t.Config
+  // не удалось построить, поэтому #NoConfig
+  #NoConfig = /* ничего */;
+
   t.Config = <CreateErrorFileMark-SwFile <Config-GetErrorFile t.Config>>;
 }
 
