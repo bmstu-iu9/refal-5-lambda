@@ -123,7 +123,7 @@ MakeTargetFileFlag {
         <Config-GetTargetFileName t.Config>
         {
           #DefaultTarget = /* пусто */;
-          e.TargetFile = ' -o "' e.TargetFile '"';
+          e.TargetFile = ' --target-file="' e.TargetFile '"';
         }
       >;
 }
@@ -132,8 +132,8 @@ MakeSearchFolderFlags {
   t.Config
     = <Map
         {
-          (#Search e.Folder) = ' -d "' e.Folder '"';
-          (#Runtime e.Folder) = ' -D "' e.Folder '"';
+          (#Search e.Folder) = ' --directory="' e.Folder '"';
+          (#Runtime e.Folder) = ' --runtime-directory="' e.Folder '"';
         }
         <Config-GetFolders t.Config>
       >;
