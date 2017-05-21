@@ -16,21 +16,22 @@ $EXTERN ExistFile;
 */
 $ENTRY FindFiles {
   (e.Folders) e.Files =
-    <Map (AnalyzeFile-ByFolders #Current e.Folders) e.Files>;
-}
-
-AnalyzeFile-ByFolders {
-  e.Folders (e.FileName) =
-    <AnalyzeFile-CheckNotFound
-      (e.FileName)
-      <Map (AnalyzeInFolder e.FileName) e.Folders>
+    <Map
+      {
+        (e.FileName) =
+          <AnalyzeFile-CheckNotFound
+            (e.FileName)
+            <AnalyzeFile e.FileName>
+            <Map
+              {
+                (e.Folder) = <AnalyzeFile e.Folder '/' e.FileName>;
+              }
+              e.Folders
+            >
+          >;
+      }
+      e.Files
     >;
-}
-
-AnalyzeInFolder {
-  e.FileName #Current = <AnalyzeFile e.FileName>;
-
-  e.FileName (e.Folder) = <AnalyzeFile e.Folder '/' e.FileName>;
 }
 
 AnalyzeFile-CheckNotFound {
