@@ -21,85 +21,85 @@ $EXTERN
 $ENTRY Go { = <Main <ArgList>>; }
 
 Main {
-  (e.Program) =
-    <WriteLine 'Usage:'>
-    <WriteLine '  srmake flags... MainFileName[.sref]'>
-    <WriteLine>
-    <WriteLine 'flags:'>
-    <WriteLine '   [-s path\\to\\srefc.exe]'>
-    <WriteLine '   -c c++compiler'>
-    <WriteLine '   {-d search-dir}'>
-    <WriteLine '   [-o target]'>
-    <WriteLine '   -X flags-for-srefc'>;
+  (e.Program)
+    = <WriteLine 'Usage:'>
+      <WriteLine '  srmake flags... MainFileName[.sref]'>
+      <WriteLine>
+      <WriteLine 'flags:'>
+      <WriteLine '   [-s path\\to\\srefc.exe]'>
+      <WriteLine '   -c c++compiler'>
+      <WriteLine '   {-d search-dir}'>
+      <WriteLine '   [-o target]'>
+      <WriteLine '   -X flags-for-srefc'>;
 
-  (e.Program) e.Arguments =
-    <MakeProject
-      <ParseCommandLine e.Arguments>
-    >;
+  (e.Program) e.Arguments
+    = <MakeProject
+        <ParseCommandLine e.Arguments>
+      >;
 }
 
 MakeProject {
-  #Success t.Config =
-    <Make
-      t.Config
-      <CreateFileList
-        (
-          <Map
-            {
-              (s.FolderTag e.Folder) = (e.Folder);
-            }
-            <Config-GetFolders t.Config>
-          >
-        )
-        <Config-GetSourceFile t.Config>
-      >
-    >;
+  #Success t.Config
+    = <Make
+        t.Config
+        <CreateFileList
+          (
+            <Map
+              {
+                (s.FolderTag e.Folder) = (e.Folder);
+              }
+              <Config-GetFolders t.Config>
+            >
+          )
+          <Config-GetSourceFile t.Config>
+        >
+      >;
 
-  #Fails e.Errors =
-    <Map
-      {
-        (s.Pos e.Message) =
-          <WriteLine
-            'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
-          >;
-      }
-      e.Errors
-    >
-    <Exit 1>;
+  #Fails e.Errors
+    = <Map
+        {
+          (s.Pos e.Message) =
+            <WriteLine
+              'Command line argument ' <StrFromInt s.Pos> ': ' e.Message
+            >;
+        }
+        e.Errors
+      >
+      <Exit 1>;
 }
 
 Make {
-  t.Config e.Units-B (#NotFound e.UnitName) e.Units-E =
-    <Map
-      {
-        (#NotFound e.UnitName^) =
-          <WriteLine
-            'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
-          >;
-
-        (#Output e.Output) = ;
-        (#OutputWithNative (e.Output) e.Native) = ;
-        (#Source (e.Source) e.Output) = ;
-      }
-      (#NotFound e.UnitName) e.Units-E
-    >
-    <Exit 1>;
-
-  t.Config e.Units =
-    <System
-      <Config-GetSrefCompiler t.Config>
-      ' -c "' <Config-GetCppCompiler t.Config> '"'
-      <MakeTargetFileFlag t.Config>
-      <MakeSearchFolderFlags t.Config>
-      <Map
+  t.Config e.Units-B (#NotFound e.UnitName) e.Units-E
+    = <Map
         {
-          (#Output e.Output) = ' "' e.Output '"';
-          (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
-          (#Source (e.Source) e.Output) = ' "' e.Source '"';
+          (#NotFound e.UnitName^) =
+            <WriteLine
+              'COMMAND LINE ERROR: Unit ' e.UnitName ' not found'
+            >;
+
+          (#Output e.Output) = ;
+          (#OutputWithNative (e.Output) e.Native) = ;
+          (#Source (e.Source) e.Output) = ;
         }
-        e.Units
+        (#NotFound e.UnitName) e.Units-E
       >
-    >;
+      <Exit 1>;
+
+  t.Config e.Units
+    = <System
+        <Config-GetSrefCompiler t.Config>
+        ' -c "' <Config-GetCppCompiler t.Config> '"'
+        <MakeTargetFileFlag t.Config>
+        <MakeSearchFolderFlags t.Config>
+        <Map
+          {
+            (#Output e.Output) = ' "' e.Output '"';
+            (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
+            (#Source (e.Source) e.Output) = ' "' e.Source '"';
+          }
+          e.Units
+        >
+      >;
 }
 
 MakeTargetFileFlag {
