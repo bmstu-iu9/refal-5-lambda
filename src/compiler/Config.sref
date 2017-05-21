@@ -4,7 +4,7 @@ $EXTERN Fetch;
 /*
   Внутреннее представление:
 
-  [Condif (s.Option e.Value)*]
+  [Config (s.Option e.Value)*]
 */
 $ENUM Config;
 

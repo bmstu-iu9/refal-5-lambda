@@ -125,20 +125,6 @@ $ENTRY ParseCommandLine {
                 // У нас все опции с параметрами, не должно возникать
                 // (s.Pos #UnexpectedLongOptionParam (e.Option) e.Param) =
 
-                (s.Pos #RepeatOption s.Tag) =
-                  (
-                    s.Pos
-                    'option '
-                    <Fetch
-                      s.Tag {
-                        #CppCompiler = '-c or --cpp-command';
-                        #Opt = '-O';
-                        #ErrorFile = '-e or --error-file';
-                      }
-                    >
-                    ' must appear one time'
-                  );
-
                 (s.Pos #BadValue-Opt e.BadValue) =
                   (
                     s.Pos
