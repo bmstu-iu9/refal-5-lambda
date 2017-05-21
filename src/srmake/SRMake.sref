@@ -40,19 +40,16 @@ Main {
 
 MakeProject {
   #Success t.Config
-    = <Make
-        t.Config
-        <CreateFileList
-          (
-            <Map
-              {
-                (s.FolderTag e.Folder) = (e.Folder);
-              }
-              <Config-GetFolders t.Config>
-            >
-          )
-          <Config-GetSourceFile t.Config>
-        >
+    = <Map
+        {
+          (s.FolderTag e.Folder) = (e.Folder);
+        }
+        <Config-GetFolders t.Config>
+      >
+    : e.Folders
+    = <Config-GetSourceFile t.Config> : e.SourceFile
+    = <RunSrefCompiler
+        t.Config <CreateFileList (e.Folders) e.SourceFile>
       >;
 
   #Fails e.Errors
@@ -68,7 +65,7 @@ MakeProject {
       <Exit 1>;
 }
 
-Make {
+RunSrefCompiler {
   t.Config e.Units-B (#NotFound e.UnitName) e.Units-E
     = <Map
         {
@@ -86,11 +83,13 @@ Make {
       <Exit 1>;
 
   t.Config e.Units
+    = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
+    = <Config-GetCppCompiler t.Config> : e.CppCompiler
+    = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
+    = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
     = <System
-        <Config-GetSrefCompiler t.Config>
-        ' -c "' <Config-GetCppCompiler t.Config> '"'
-        <MakeTargetFileFlag t.Config>
-        <MakeSearchFolderFlags t.Config>
+        e.SrefCompiler ' -c "' e.CppCompiler '"' e.TargetFileFlag
+        e.SearchFolderFlags
         <Map
           {
             (#Output e.Output) = ' "' e.Output '"';
