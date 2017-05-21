@@ -17,7 +17,7 @@ goto :EOF
 setlocal
   set COMMON_SRFLAGS= ^
     -c "%CPPLINEE%" ^
-    --targsuffix=.exe ^
+    --exesuffix=.exe ^
     -D../../src/srlib ^
     -D../../src/srlib/platform-Windows ^
     -f-DSTEP_LIMIT=1000 ^

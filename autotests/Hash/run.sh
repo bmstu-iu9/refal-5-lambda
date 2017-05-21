@@ -6,7 +6,7 @@ LIBDIR=../../src/srlib
 
 run_all_tests() {
   COMMON_SRFLAGS="
-    --targsuffix=$(platform_suffix)
+    --exesuffix=$(platform_exe_suffix)
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
     -f-DSTEP_LIMIT=1000
@@ -33,7 +33,7 @@ run_all_tests() {
 compile() {
   echo Compiling $1
   SRC=$1
-  TARGET=${SRC%%.sref}$(platform_suffix)
+  TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
   if [ "$SRC" != "Hash.sref" ]; then
     ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINEE" $COMMON_SRFLAGS \
@@ -75,7 +75,7 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1$(platform_suffix) $1.rasl $1.cpp \
+  rm -f $1$(platform_exe_suffix) $1.rasl $1.cpp \
     __dump.txt __out.txt __written_file.txt
 }
 

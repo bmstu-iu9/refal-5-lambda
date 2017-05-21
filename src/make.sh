@@ -57,7 +57,7 @@ make_subdir() {
 
       $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC -o$TARGET
     )
-    mv $TARGET ../../bin/$TARGET$(platform_suffix)
+    mv $TARGET ../../bin/$TARGET$(platform_exe_suffix)
 
     mkdir -p ../../build/$DIR
     rm -f ../../build/$DIR/*

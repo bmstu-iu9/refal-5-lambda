@@ -18,8 +18,16 @@ platform_subdir_lookup() {
   echo $PLATFORMDIR
 }
 
-platform_suffix() {
+platform_exe_suffix() {
   if [ "$(platform_uname)" == "MINGW32" ]; then
     echo ".exe"
   fi  # else nothing to print
+}
+
+platform_lib_suffix() {
+  if [ "$(platform_uname)" == "MINGW32" ]; then
+    echo ".dll"
+  else
+    echo ".so"
+  fi
 }

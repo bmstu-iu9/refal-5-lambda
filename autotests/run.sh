@@ -26,7 +26,7 @@ run_test_aux_with_flags() {
   SREF=$1
   RASL=${SREF%%.sref}.rasl
   NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}$(platform_suffix)
+  EXE=${SREF%%.sref}$(platform_exe_suffix)
 
   ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
      2>__error.txt
@@ -56,7 +56,7 @@ run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
   RASL=${SREF%%.sref}.rasl
-  EXE=${SREF%%.sref}$(platform_suffix)
+  EXE=${SREF%%.sref}$(platform_exe_suffix)
 
   ../bin/srefc-core $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -83,7 +83,7 @@ run_test_aux_with_flags.FAILURE() {
   SREF=$1
   RASL=${SREF%%.sref}.rasl
   NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}$(platform_suffix)
+  EXE=${SREF%%.sref}$(platform_exe_suffix)
 
   ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
     2>__error.txt
@@ -125,9 +125,9 @@ run_test_aux.LEXGEN() {
     exit 1
   fi
 
-  ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_suffix) \
+  ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
     -c "$CPPLINEE" $COMMON_SRFLAGS 2>__error.txt
-  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_suffix) ]; then
+  if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
   fi
@@ -166,7 +166,7 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 
 run_test() {
   COMMON_SRFLAGS="
-    --targsuffix=$(platform_suffix)
+    --exesuffix=$(platform_exe_suffix)
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
     -f-DSTEP_LIMIT=1000

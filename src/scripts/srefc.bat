@@ -17,6 +17,8 @@ setlocal
   set PATH=%BINDIR%;%PATH%
   srefc-core ^
     %SREFC_FLAGS% ^
-    -c "%CPPLINEE%" --cppflags="%CPPLINE_FLAGS%" --targsuffix=.exe ^
+    --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
+    --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
+    --cppflags="%CPPLINE_FLAGS%" ^
     %* -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
 endlocal

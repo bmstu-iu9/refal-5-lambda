@@ -18,6 +18,8 @@ setlocal
   srmake-core ^
     -s srefc-core.exe ^
     %SRMAKE_FLAGS% ^
-    -c "%CPPLINEE%" --thru=--cppflags="\"%CPPLINE_FLAGS%\"" -X--targsuffix=.exe ^
+    --cpp-command-exe="%CPPLINEE%" -X--exesuffix=.exe ^
+    --cpp-command-lib="%CPPLINEL%" -X--libsuffix=.dll ^
+    --thru=--cppflags="\"%CPPLINE_FLAGS%\"" ^
     %* -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
 endlocal
