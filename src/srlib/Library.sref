@@ -581,7 +581,9 @@ $ENTRY System {
   fflush(stdout);
   fflush(stderr);
 
-  system(&command[0]);
+  // Skip return value
+  int ret = system(&command[0]);
+  (void) ret;
 
   refalrts::reset_allocator();
   refalrts::splice_to_freelist(arg_begin, arg_end);
@@ -1127,7 +1129,7 @@ $ENTRY FReadBytes {
   refalrts::Iter end = 0;
 
   clearerr(handle);
-  int cur_char;
+  int cur_char = 0;
   while (count > 0 && (cur_char = getc(handle)) != EOF) {
     /*
       Пользуемся тем фактом, что в данной реализации размещёные в свободной
