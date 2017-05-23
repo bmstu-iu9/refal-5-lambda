@@ -50,7 +50,7 @@ Main-SwValidCommandLine {
         (<Config-GetTargetFileName t.Config>)
         e.Files
       >
-    : e.TargetFileName^
+    : e.TargetFileName
     = <Config-SetTargetFileName t.Config e.TargetFileName>
     : #Success t.Config^
     = <Main-SwFoundFiles
@@ -187,10 +187,7 @@ Main-SwCompiledFiles {
 //------------------------------------------------------------------------------
 
 CalcTargetFileName {
-  t.Config (e.TargetFileName) e.InputFiles =
-    e.TargetFileName;
-
-  t.Config #DefaultTargetFileName (s.Pos e.FirstFile) e.OtherFiles =
+  t.Config (#DefaultTargetFileName) (s.Pos e.FirstFile) e.OtherFiles =
     <Fetch
       e.FirstFile
       <Seq
@@ -213,7 +210,10 @@ CalcTargetFileName {
         }
       >
     >
-    <Config-GetTargetSuffix #EXE t.Config>;
+    <Config-GetTargetSuffix t.Config #EXE>;
+
+  t.Config (e.TargetFileName) e.InputFiles =
+    e.TargetFileName;
 }
 
 LookupSourceFiles {
