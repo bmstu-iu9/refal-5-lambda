@@ -13,6 +13,29 @@ set LIBDIR=%DISTRDIR%\srlib
 
 :: Запуск
 setlocal
+  :: Команда shift не убирает первое слово из %*, убираем вручную.
+  :: Подстановка %ARGS:* =% убирает из переменной среды префикс
+  :: до первого пробела, включая этот пробел (см. ниже).
+  set ARGS=%*
+  if "%~1"=="--rich" goto MODE_RICH
+  if "%~1"=="--slim" goto MODE_SLIM
+  if "%~1"=="--scratch" goto MODE_SCRATCH
+  goto :MODE_DEFAULT
+
+:MODE_RICH
+  set ARGS=%ARGS:* =%
+:MODE_DEFAULT
+  goto END_SWITCH
+
+:MODE_SLIM
+  set ARGS=%ARGS:* =%
+  goto END_SWITCH
+
+:MODE_SCRATCH
+  set ARGS=%ARGS:* =%
+  goto END_SWITCH
+
+:END_SWITCH
   call "%DISTRDIR%\c-plus-plus.conf.bat"
   set PATH=%BINDIR%;%PATH%
   srmake-core ^
@@ -21,5 +44,5 @@ setlocal
     --cpp-command-exe="%CPPLINEE%" -X--exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" -X--libsuffix=.dll ^
     --thru=--cppflags="%CPPLINE_FLAGS%" ^
-    %* -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
+    %ARGS% -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
 endlocal

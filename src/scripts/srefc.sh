@@ -13,6 +13,23 @@ source "$BINDIR/platform-specific.sh"
 
 # Запуск
 (
+  case "$1" in
+    "--rich")
+      shift
+      ;;
+
+    "--slim")
+      shift
+      ;;
+
+    "--scratch")
+      shift
+      ;;
+
+    *)
+      ;;
+  esac
+
   source $DISTRDIR/c-plus-plus.conf.sh
   PATH=$BINDIR:$PATH
   srefc-core \
