@@ -59,12 +59,6 @@ ConsFunctionSentences {
                    );
         }
       >;
-    /*(#Function t.SrcPos #GN-Inline (e.Name)
-      #Sentences
-        ((e.Pattern) (e.Result))
-        (((#TkVariable t.SrcPos 'eX'))((#CallBrackets (#TkName t.SrcPos e.Name '%' <StrFromInt 1>)(#TkVariable t.SrcPos 'e' 'X'))))
-    )
-    <ConsFunctionSentencesRec 1 t.SrcPos (e.Name) e.Sentences>;*/
   t.SrcPos (e.Name) = (#Enum t.SrcPos #GN-Local e.Name);
   t.SrcPos (e.Name) e.Sentences =
     (#Function t.SrcPos #GN-Local (e.Name) #Sentences e.Sentences);
@@ -89,12 +83,6 @@ ConsFunctionSentencesRec {
                    );
         }
       >;
-    /*(#Function t.SrcPos #GN-Inline (e.Name '%' <StrFromInt s.Num>)
-      #Sentences
-        ((e.Pattern) (e.Result))
-        (((#TkVariable t.SrcPos 'eX'))((#CallBrackets (#TkName t.SrcPos e.Name '%' <StrFromInt <Inc s.Num>>)(#TkVariable t.SrcPos 'e' 'X'))))
-    )
-    <ConsFunctionSentencesRec <Inc s.Num> t.SrcPos (e.Name) e.Sentences>;*/
   s.Num t.SrcPos (e.Name) = (#Enum t.SrcPos #GN-Local e.Name '%' <StrFromInt s.Num>);
   s.Num t.SrcPos (e.Name) e.Sentences =
     (#Function t.SrcPos #GN-Local (e.Name '%' <StrFromInt s.Num>) #Sentences e.Sentences);
@@ -105,12 +93,14 @@ HardPatternTest {
   (#TkVariable t.SrcPos 'e' e.Index) = #True;
   (#TkVariable t.SrcPos 's' e.Index) e.Tail = <HardPatternTest e.Tail>;
   (#TkVariable t.SrcPos 't' e.Index) e.Tail = <HardPatternTest e.Tail>;
+  (#TkIdentifier e.Value) e.Tail = <HardPatternTest e.Tail>;
   (#Brackets e.Expr) e.Tail = <And <HardPatternTest e.Expr> <HardPatternTest e.Tail>>;
   (#ADT-Brackets t.SrcPos (e.Name) e.Expr) e.Tail = <And <HardPatternTest e.Expr> <HardPatternTest e.Tail>>;
   (#TkChar s.Char) e.Tail = <HardPatternTest e.Tail>;
   (#TkNumber s.Number) e.Tail = <HardPatternTest e.Tail>;
   e.Head (#TkVariable t.SrcPos 's' e.Index) = <HardPatternTest e.Head>;
   e.Head (#TkVariable t.SrcPos 't' e.Index) = <HardPatternTest e.Head>;
+  e.Head (#TkIdentifier e.Value) = <HardPatternTest e.Head>;
   e.Head (#Brackets e.Expr) = <And <HardPatternTest e.Expr> <HardPatternTest e.Head>>;
   e.Head (#ADT-Brackets t.SrcPos (e.Name) e.Expr) = <And <HardPatternTest e.Expr> <HardPatternTest e.Head>>;
   e.Head (#TkChar s.Char) = <HardPatternTest e.Head>;
@@ -122,43 +112,6 @@ And {
   #True #True = #True;
   e.x = #False;
 }
-
-
-/*
-GetInlineList {
-  (#Function t.SrcPos #GN-Inline (e.Name) e.Body) e.AST (e.List) (e.NewAST) =
-    <GetInlineList e.AST <AddInlineFunction (t.SrcPos (e.Name) e.Body) (e.List) (e.NewAST)>>;
-  (e.SomethingElse) e.AST (e.List) (e.NewAst) =
-    <GetInlineList e.AST (e.List) (e.NewAst (e.SomethingElse))>;
-  (e.List) (e.NewAst) = (e.List) (e.NewAst);
-}
-
-AddInlineFunction {
-  (t.SrcPos (e.Name) e.Body) (e.List) (e.NewAST) = 
-    (e.List (t.SrcPos (e.Name) e.Body) ) (e.NewAST (#Function t.SrcPos #GN-Inline (e.Name) e.Body));
-    
-  (t.SrcPos (e.Name) e.Body) (e.List) (e.NewAST)
-    = <CheckInlineBody t.SrcPos (e.Name) e.Body> : e.FuncsBodys
-    = (e.List e.FuncsBodys) (e.NewAST 
-      <Map
-        {
-          (t.SrcPos (e.Name) e.Body) = (#Function t.SrcPos #GN-Inline (e.Name) e.Body);
-        }
-        e.FuncsBodys
-      >
-    );
-}
-
-CheckInlineBody {
-  t.SrcPos (e.Name) #Sentences e.Sentences = <CheckInlineSentence 1 (e.Name) t.ScrPos e.Sentences>;
-}
-
-CheckInlineSentence {
-  s.Num (e.Name) t.ScrPos ((e.Pattern) (e.Result)) e.Sentences =
-    (t.ScrPos (e.Name '\'' s.Num) #Sentences ((e.Pattern) (e.Result))); //TODO all body
-}
-*/
-
 
 
 
