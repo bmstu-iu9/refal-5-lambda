@@ -150,6 +150,14 @@ ParseElement-SwDirective {
     (/* ничего не генерируем */)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
+    
+  t.ErrorList #Inline (#TkName s.LnNum e.Name) e.Tail =
+    <ParseFunction #GN-Inline (e.Name) t.ErrorList e.Tail>;
+
+  t.ErrorList #Inline t.Unexpected e.Tail =
+    (/* ничего не генерируем */)
+    <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
+    t.Unexpected e.Tail;
 
   t.ErrorList s.Directive e.Tail =
     <ParseNameList

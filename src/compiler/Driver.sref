@@ -1,5 +1,8 @@
 //FROM LibraryEx
-$EXTERN Fetch, Seq, SaveFile, SaveBytes;
+$EXTERN Fetch, Seq, SaveFile, SaveBytes, Map;
+
+//FROM Library
+$EXTERN WriteLine;
 
 //FROM LoadSource
 $EXTERN LoadSource;
@@ -16,9 +19,12 @@ $EXTERN EL-Create, EL-Destroy;
 //FROM Checker
 $EXTERN CheckProgram;
 
+//FROM Inliner
+$EXTERN InlineProgram;
+
 //FROM Config
 $EXTERN Config-GetDebugMode, Config-GetOptPattern, Config-GetOptResult,
-  Config-GetGenMode;
+  Config-GetGenMode, Config-GetOptInline;
 
 //FROM Desugaring
 $EXTERN Desugar;
@@ -41,30 +47,48 @@ $EXTERN GenProgram-Native;
     == #Fails
   t.Native ::= #NoNative | (e.NativeOutputName)
 */
-$ENTRY CompileFile {
-  t.Config (e.SrcName) e.OutputName '.rasl'=
-    <Fetch
-      e.SrcName
-      <Seq
-        <FrontEnd e.SrcName>
-        {
-          t.ErrorList e.AST =
-            <Fetch
-              <EL-Destroy t.ErrorList>
-              {
-                #EL-NoErrors =
-                  <Fetch
-                    e.AST
-                    <BackEnd t.Config (e.SrcName) e.OutputName>
-                  >;
 
-                #EL-HasErrors =
-                  #Fails;
-              }
-            >;
-        }
-      >
-    >;
+$ENTRY CompileFile {
+  t.Config (e.SrcName) e.OutputName '.rasl'
+    = <Config-GetOptInline t.Config> : s.OptInline
+    = <Fetch
+        e.SrcName
+        <Seq
+          <FrontEnd e.SrcName>
+          {
+            t.ErrorList e.AST =
+              //<WriteLine e.AST>
+              <Fetch
+                <EL-Destroy t.ErrorList>
+                {
+                  #EL-NoErrors
+                    = <RunInliner s.OptInline e.AST> : (e.AST^) e.Warnings
+                    = <Map
+                        {
+                          (s.LineNum e.Message)
+                            = <WriteLine s.LineNum e.Message>;
+                        }
+                        e.Warnings
+                      >
+                      //<WriteLine e.AST>
+                      <Fetch
+                        e.AST
+                        <BackEnd t.Config (e.SrcName) e.OutputName>
+                      >;
+    
+                  #EL-HasErrors =
+                    #Fails;
+                }
+              >;
+          }
+        >
+      >;
+}
+
+RunInliner {
+  s.OptInline e.AST = <InlineProgram e.AST>;
+  #NoOpt e.AST = (e.AST) /* No warnings beacos we do nothing */;
+  #OptInline e.AST = <InlineProgram e.AST>;
 }
 
 FrontEnd {

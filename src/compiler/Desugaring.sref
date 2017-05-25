@@ -19,12 +19,17 @@ $ENTRY Desugar {
     >;
 }
 
+ScopeClassChange {
+  #GN-Inline = #GN-Local;
+  s.ScopeClass = s.ScopeClass;
+}
+
 Pass-RemovePos {
   e.AST =
     <Map
       {
         (#Function t.SrcPos s.ScopeClass (e.Name) e.Body) =
-          (#Function s.ScopeClass (e.Name) <RemovePos-Body e.Body>);
+          (#Function <ScopeClassChange s.ScopeClass> (e.Name) <RemovePos-Body e.Body>);
 
         (#Ident t.SrcPos e.Name) =
           (#Ident e.Name);
