@@ -64,7 +64,7 @@ make_subdir() {
     find . ../common \
       \( -name '*.rasl' -o -name '*.cpp' \) \
       -exec mv '{}' ../../build/$DIR \;
-    cp $PATH_TO_SREFC/srlib/*.rasl ../../build/$DIR
-    cp $PATH_TO_SREFC/srlib/*.cpp ../../build/$DIR
+    cp $PATH_TO_SREFC/srlib/scratch/*.rasl ../../build/$DIR
+    cp $PATH_TO_SREFC/srlib/scratch/*.cpp ../../build/$DIR
   fi
 )

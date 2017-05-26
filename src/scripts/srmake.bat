@@ -24,15 +24,18 @@ setlocal
 
 :MODE_RICH
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
+  set D=-d "%LIBDIR%\rich"
   goto END_SWITCH
 
 :MODE_SLIM
   set ARGS=%ARGS:* =%
+  goto MODE_DEFAULT
   goto END_SWITCH
 
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
+:MODE_DEFAULT
+  set D=-D "%LIBDIR%\scratch" -D "%LIBDIR%\scratch\platform-Windows"
   goto END_SWITCH
 
 :END_SWITCH
@@ -43,6 +46,5 @@ setlocal
     %SRMAKE_FLAGS% ^
     --cpp-command-exe="%CPPLINEE%" -X--exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" -X--libsuffix=.dll ^
-    --thru=--cppflags="%CPPLINE_FLAGS%" ^
-    %ARGS% -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
+    --thru=--cppflags="%CPPLINE_FLAGS%" %D% %ARGS%
 endlocal

@@ -11,22 +11,42 @@ LIBDIR=$DISTRDIR/srlib
 
 source "$BINDIR/platform-specific.sh"
 
+set_rich_flags() {
+  D=(-d "$LIBDIR/rich")
+}
+
+set_slim_flags() {
+  set_default_flags
+}
+
+set_scratch_flags() {
+  D=(-D "$LIBDIR/scratch" -D "$(platform_subdir_lookup "$LIBDIR/scratch")")
+}
+
+set_default_flags() {
+  set_scratch_flags
+}
+
 # Запуск
 (
   case "$1" in
     "--rich")
+      set_rich_flags
       shift
       ;;
 
     "--slim")
       shift
+      set_slim_flags
       ;;
 
     "--scratch")
       shift
+      set_scratch_flags
       ;;
 
     *)
+      set_default_flags
       ;;
   esac
 
@@ -37,6 +57,5 @@ source "$BINDIR/platform-specific.sh"
     $SRMAKE_FLAGS \
     --cpp-command-exe="$CPPLINEE" -X--exesuffix=$(platform_exe_suffix) \
     --cpp-command-lib="$CPPLINEL" -X--libsuffix=$(platform_lib_suffix) \
-    --thru=--cppflags="$CPPLINE_FLAGS" \
-    $* -D "$LIBDIR" -D "$(platform_subdir_lookup "$LIBDIR")"
+    --thru=--cppflags="$CPPLINE_FLAGS" "${D[@]}" $*
 )

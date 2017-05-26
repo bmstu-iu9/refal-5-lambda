@@ -1,26 +1,50 @@
 #!/bin/bash
 
-prepare_srclib() {
-  ../../bin/srefc-core $SREFC_FLAGS $1
-  grep '//FROM' < $1.sref >> $1.rasl.froms
-  [ -e $1.cpp ] && mv $1.cpp ../../srlib
-  mv $1.rasl ../../srlib
-  mv $1.rasl.froms ../../srlib
-  cp $1.sref ../../srlib/src
+compile_scratch() {
+  SCRATCHDIR=../../srlib/scratch
+  mkdir -p $SCRATCHDIR
+  cp *.h *.cpp *.rasl $SCRATCHDIR
+
+  ../../bin/srefc-core $SREFC_FLAGS $SOURCES
+
+  for s in $SOURCES; do
+    grep '//FROM' < $s.sref > $SCRATCHDIR/$s.rasl.froms
+    [ -e $s.cpp ] && mv $s.cpp $SCRATCHDIR
+    mv $s.rasl $SCRATCHDIR
+  done
+
+  for d in platform-*; do
+    if [ -d $d ]; then
+      mkdir -p $SCRATCHDIR/$d
+      cp $d/*.cpp $SCRATCHDIR/$d
+      cp $d/*.rasl $SCRATCHDIR/$d
+    fi
+  done
 }
 
+compile_rich() {
+  RICHDIR=../../srlib/rich
+  mkdir -p $RICHDIR
+  ../../bin/srefc --scratch -o $RICHDIR/rich.exe-prefix $SOURCES $RT
+  for s in $SOURCES; do
+    rm -f $s.cpp $s.rasl
+  done
+  for s in $SOURCES $RT; do
+    cat /dev/null > $RICHDIR/$s.rasl
+    echo '//PREFIX rich' > $RICHDIR/$s.rasl.froms
+  done
+}
 
-mkdir -p ../../srlib/src
-cp LICENSE *.h *.rasl *.cpp ../../srlib
-prepare_srclib Library
-prepare_srclib LibraryEx
-prepare_srclib GetOpt
-prepare_srclib Hash
+(
+  SOURCES="Library LibraryEx GetOpt Hash"
+  RT="refalrts refalrts-platform-specific"
 
-for d in platform-*; do
-  if [ -d $d ]; then
-    mkdir -p ../../srlib/$d
-    cp $d/*.cpp ../../srlib/$d
-    cp $d/*.rasl ../../srlib/$d
-  fi
-done
+  mkdir -p ../../srlib/src
+  cp LICENSE ../../srlib
+  for s in $SOURCES; do
+    cp $s.sref ../../srlib/src
+  done
+
+  compile_scratch
+  compile_rich
+)

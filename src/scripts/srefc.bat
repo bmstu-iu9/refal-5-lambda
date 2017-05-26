@@ -24,15 +24,20 @@ setlocal
 
 :MODE_RICH
   set ARGS=%ARGS:* =%
-:MODE_DEFAULT
+  set D=-d "%LIBDIR%\rich"
+  set PREFIX=--prefix=rich
   goto END_SWITCH
 
 :MODE_SLIM
   set ARGS=%ARGS:* =%
+  goto MODE_DEFAULT
   goto END_SWITCH
 
 :MODE_SCRATCH
   set ARGS=%ARGS:* =%
+:MODE_DEFAULT
+  set D=-D "%LIBDIR%\scratch" -D "%LIBDIR%\scratch\platform-Windows"
+  set PREFIX=
   goto END_SWITCH
 
 :END_SWITCH
@@ -42,6 +47,5 @@ setlocal
     %SREFC_FLAGS% ^
     --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
-    --cppflags="%CPPLINE_FLAGS%" ^
-    %ARGS% -D "%LIBDIR%" -D "%LIBDIR%\platform-Windows"
+    --cppflags="%CPPLINE_FLAGS%" %PREFIX% %D% %ARGS%
 endlocal
