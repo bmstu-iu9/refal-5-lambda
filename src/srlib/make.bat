@@ -24,7 +24,7 @@ goto :EOF
   copy *.cpp %SCRATCHDIR%
   copy *.rasl %SCRATCHDIR%
 
-  ..\..\bin\srefc-core %SREFC_FLAGS% %SOURCES%
+  ..\..\bin\srefc-core -C %SREFC_FLAGS% %SOURCES%
 
   for %%s in (%SOURCES%) do (
     find "//FROM" < %%s.sref > %SCRATCHDIR%\%%s.rasl.froms

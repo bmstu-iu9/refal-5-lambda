@@ -24,7 +24,7 @@ $ENTRY ParseCommandLine {
           (#CppCompiler-Exe #Required 'c' ('cpp-command') ('cpp-command-exe'))
           (#CppCompiler-Lib #Required ('cpp-command-lib'))
           (#CppFlag #Required 'f' ('cppflag'))
-          (#CppFlags #Required 'CF' ('cppflags'))
+          (#CppFlags #Required 'F' ('cppflags'))
           (#DebugInfo #None 'g' ('debug-info'))
           (#ErrorFile #Required 'e' ('error-file'))
           (#GrammarCheck #None ('grammar-check'))
@@ -39,6 +39,7 @@ $ENTRY ParseCommandLine {
           (#TargetMode-Exe #None 'x' ('makeexe'))
           (#TargetMode-Lib #None 'l' ('makelib'))
           (#TargetMode-R #None 'R')
+          (#TargetMode-C #None 'C' ('compile-only'))
           (#TargetSuffix-Exe
             #Required
             ('targsuffix') ('targetsuffix') ('targsuf')
@@ -128,6 +129,11 @@ $ENTRY ParseCommandLine {
 
             (t.Config e.Errors) (#TargetMode-R s.Num)
               = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #R>;
+
+            (t.Config e.Errors) (#TargetMode-C s.Num)
+              = <Update
+                  t.Config (e.Errors) Config-SetTargetMode s.Num #CompileOnly
+                >;
 
             (t.Config e.Errors) (#TargetSuffix-Exe s.Num e.Suffix)
               = <Update

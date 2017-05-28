@@ -19,6 +19,7 @@ $EXTERN
   Config-GetCppCompilerLib,
   Config-GetPrefix,
   Config-GetReferences,
+  Config-GetTargetMode,
   Config-GetTargetFileName;
 
 $ENTRY Go { = <Main <ArgList>>; }
@@ -91,12 +92,14 @@ RunSrefCompiler {
     = <Config-GetSrefCompiler t.Config> : e.SrefCompiler
     = <Config-GetCppCompilerExe t.Config> : e.CppCompilerExe
     = <Config-GetCppCompilerLib t.Config> : e.CppCompilerLib
+    = <MakeTargetModeFlag t.Config> : e.TargetModeFlag
     = <MakeTargetFileFlag t.Config> : e.TargetFileFlag
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
     = <GetPrefix t.Config> : e.Prefix
     = <Config-GetReferences t.Config> : e.References
     = <System
         e.SrefCompiler
+        e.TargetModeFlag
         ' --cpp-command-exe="' e.CppCompilerExe '"'
         ' --cpp-command-lib="' e.CppCompilerLib '"'
         e.TargetFileFlag
@@ -116,6 +119,20 @@ RunSrefCompiler {
           }
           e.Units
         >
+      >;
+}
+
+MakeTargetModeFlag {
+  t.Config
+    = <Fetch
+        <Config-GetTargetMode t.Config>
+        {
+          #DefaultEXE = /* пусто */;
+          #EXE = ' --makeexe';
+          #LIB = ' --makelib';
+          #R = ' -R';
+          #CompileOnly = ' --compile-only';
+        }
       >;
 }
 

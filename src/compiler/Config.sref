@@ -333,7 +333,7 @@ $ENTRY Config-SetTargetFileName {
 }
 
 /**
-  <Config-GetTargetSuffix t.Config s.CompileVariant>
+  <Config-GetTargetSuffix t.Config s.TargetMode>
     == e.TargetSuffix
 */
 $ENTRY Config-GetTargetSuffix {
@@ -352,6 +352,10 @@ $ENTRY Config-GetTargetSuffix {
   ]
   #LIB
     = e.TargetSuffixLib;
+
+  [Config e.Params] #R = '.rasl-module';
+
+  [Config e.Params] #CompileOnly = /* пусто, потому что не важно */;
 }
 
 /**
@@ -448,7 +452,7 @@ $ENTRY Config-AddReference {
   <Config-GetTargetMode t.Config>
     == s.TargetMode
 
-  s.TargetMode ::= #EXE | #LIB | #R
+  s.TargetMode ::= #EXE | #LIB | #R | #CompileOnly
 */
 $ENTRY Config-GetTargetMode {
   [Config e.Params-B (#TargetMode #DefaultEXE) e.Params-E]

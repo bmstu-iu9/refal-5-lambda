@@ -5,7 +5,7 @@ compile_scratch() {
   mkdir -p $SCRATCHDIR
   cp *.h *.cpp *.rasl $SCRATCHDIR
 
-  ../../bin/srefc-core $SREFC_FLAGS $SOURCES
+  ../../bin/srefc-core -C $SREFC_FLAGS $SOURCES
 
   for s in $SOURCES; do
     grep '//FROM' < $s.sref > $SCRATCHDIR/$s.rasl.froms

@@ -6,10 +6,10 @@ setlocal
     set SREFC_FLAGS_PLUS=--markup-context --debug-info
     set SRMAKE_FLAGS_PLUS= ^
       -X--markup-context -X--debug-info ^
-      -X-C-DMEMORY_LIMIT=2500000 ^
-      -X-C-DSTEP_LIMIT=30000000 ^
-      -X-C-DIDENTS_LIMIT=1000 ^
-      -X-C-DENABLE_DEBUGGER
+      -X-F-DMEMORY_LIMIT=2500000 ^
+      -X-F-DSTEP_LIMIT=30000000 ^
+      -X-F-DIDENTS_LIMIT=1000 ^
+      -X-F-DENABLE_DEBUGGER
   ) else (
     set SREFC_FLAGS_PLUS=-OdPR
     set SRMAKE_FLAGS_PLUS=-X-OdPR

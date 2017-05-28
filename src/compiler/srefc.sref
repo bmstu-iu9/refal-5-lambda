@@ -8,7 +8,7 @@ $EXTERN ParseCommandLine;
 //FROM Config
 $EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
-  Config-GetSearchFolders;
+  Config-GetSearchFolders, Config-GetTargetMode;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
@@ -129,7 +129,7 @@ Main-SwFoundFiles {
   t.CommandLineSource t.Config e.Files =
     <Main-SwRenamedTargets
       t.CommandLineSource t.Config
-      <RenameTargets (<Config-GetCppCompiler t.Config #EXE>) e.Files>
+      <RenameTargets <Config-GetTargetMode t.Config> e.Files>
     >;
 }
 
@@ -164,24 +164,20 @@ Main-SwRenamedTargets {
   t.Config
   e.Files
     = <Config-GetGrammarCheck t.Config> : s.GrammarCheck
-    // TODO: Сделать рефакторинг, ибо не очень красиво
-    = <Main-SwCompiledFiles
-        t.Config s.GrammarCheck
-        <CompileFiles t.Config s.GrammarCheck e.Files>
+    = <Fetch
+        s.GrammarCheck <CompileFiles t.Config s.GrammarCheck e.Files>
+        {
+          s.GrammarCheck^ e.Outputs-B #Fails e.Outputs-E
+            = <CreateErrorFileMark t.Config>
+              <Exit 1>;
+
+          #NormalRun e.Outputs
+            = <Link t.CommandLineSource t.Config e.Outputs>;
+
+          #GrammarCheck e.Outputs =
+            <WriteLine '** No syntax errors found **'>;
+        }
       >;
-}
-
-Main-SwCompiledFiles {
-  t.Config s.GrammarCheck
-  e.Outputs-B #Fails e.OutputsErrors-E =
-    <CreateErrorFileMark t.Config>
-    <Exit 1>;
-
-  t.Config #NormalRun e.Outputs =
-    <Link (<Config-GetCppCompiler t.Config #EXE>) t.Config e.Outputs>;
-
-  t.Config #GrammarCheck e.Outputs =
-    <WriteLine '** No syntax errors found **'>;
 }
 
 //------------------------------------------------------------------------------
@@ -210,7 +206,7 @@ CalcTargetFileName {
         }
       >
     >
-    <Config-GetTargetSuffix t.Config #EXE>;
+    <Config-GetTargetSuffix t.Config <Config-GetTargetMode t.Config>>;
 
   t.Config (e.TargetFileName) e.InputFiles =
     e.TargetFileName;
@@ -233,7 +229,15 @@ LookupSourceFiles {
 }
 
 RenameTargets {
-  (#NoCppCompiler) e.Files =
+  #EXE e.Files = <RenameTargets-WithCpp e.Files>;
+  #LIB e.Files = <RenameTargets-WithCpp e.Files>;
+
+  #R e.Files = <RenameTargets-Stub e.Files>;
+  #CompileOnly e.Files = <RenameTargets-Stub e.Files>;
+}
+
+RenameTargets-Stub {
+  e.Files =
     <Map
       {
         (s.Pos #Output e.FileName)
@@ -247,9 +251,10 @@ RenameTargets {
       }
       e.Files
     >;
+}
 
-  ((e.CppCompiler) e.Flags) e.Files =
-    <ScanCollisions <Map GetFileName e.Files>>;
+RenameTargets-WithCpp {
+  e.Files = <ScanCollisions <Map GetFileName e.Files>>;
 }
 
 GetFileName {
@@ -359,9 +364,52 @@ CompileFiles {
 }
 
 Link {
-  (#NoCppCompiler) t.Config e.Files =
-    /* ничего не делаем */;
+  t.CommandLineSource t.Config e.Files
+    = <Fetch
+        <Config-GetTargetMode t.Config>
+        {
+          #EXE
+            = <Link-SwCppCompiler
+                t.CommandLineSource
+                (<Config-GetCppCompiler t.Config #EXE>) t.Config e.Files
+              >;
 
+          #LIB
+            = <Link-SwCppCompiler
+                t.CommandLineSource
+                (<Config-GetCppCompiler t.Config #LIB>) t.Config e.Files
+              >;
+
+          #R
+            = <WriteLine 'R modules is not supported yet'>;
+
+          #CompileOnly
+            = /* ничего не делаем */;
+        }
+      >;
+}
+
+Link-SwCppCompiler {
+  t.CommandLineSource
+  (#NoCppCompiler) t.Config e.Files
+    = <Fetch
+        <Config-GetTargetMode t.Config>
+        {
+          #EXE = 'x' 'exe';
+          #LIB = 'l' 'lib';
+        }
+      >
+    : s.Key e.FlagSuf
+    = <ReportErrors
+        t.CommandLineSource t.Config
+        (
+          1
+          'option -' s.Key ' (or --' e.FlagSuf ') require option '
+          '--cpp-command-' e.FlagSuf ' with nonempty value'
+        )
+      >;
+
+  t.CommandLineSource
   ((e.CommandLine) e.Flags) t.Config e.Files
     = <Config-GetTargetFileName t.Config> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName

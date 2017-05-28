@@ -213,7 +213,7 @@ $ENTRY Config-AddReference {
     == #DefaultEXE
     == s.TargetMode
 
-  s.TargetMode ::= #EXE | #LIB | #R
+  s.TargetMode ::= #EXE | #LIB | #R | #CompileOnly
 */
 $ENTRY Config-GetTargetMode {
   [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E]

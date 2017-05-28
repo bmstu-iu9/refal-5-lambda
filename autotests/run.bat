@@ -176,7 +176,7 @@ setlocal
   set SREF=%1
   set RASL=%~n1.rasl
 
-  ..\bin\srefc-core %SRFLAGS% %1 2> __error.txt
+  ..\bin\srefc-core -C %SRFLAGS% %1 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
