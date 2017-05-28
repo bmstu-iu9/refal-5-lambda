@@ -517,10 +517,10 @@ PostLinkRename {
             <RemoveFile e.TargetFileName>
             {
               #True =
-                <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
+                /* ничего не делаем */;
 
               #False =
-                /* ничего не делаем */;
+                <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
              }
            >;
 
