@@ -103,13 +103,13 @@ $ENTRY ParseCommandLine {
                 >;
 
             (t.Config e.Errors) (#TargetMode-Exe s.Num)
-              = <Update t.Config (e.Errors) Config-SetTargetMode #EXE>;
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #EXE>;
 
             (t.Config e.Errors) (#TargetMode-Lib s.Num)
-              = <Update t.Config (e.Errors) Config-SetTargetMode #LIB>;
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #LIB>;
 
             (t.Config e.Errors) (#TargetMode-R s.Num)
-              = <Update t.Config (e.Errors) Config-SetTargetMode #R>;
+              = <Update t.Config (e.Errors) Config-SetTargetMode s.Num #R>;
 
             (t.Config e.Errors) (#FILE s.Num e.SourceFile)
               = <Update

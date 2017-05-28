@@ -235,5 +235,5 @@ $ENTRY Config-SetTargetMode {
     = #Success [Config e.Params-B (#TargetMode s.TargetMode) e.Params-E];
 
   [Config e.Params-B (#TargetMode s.OldTargetMode) e.Params-E] e.NewTargetMode
-    = #Falis #TargetModeAlreadySet;
+    = #Fails #TargetModeAlreadySet;
 }
