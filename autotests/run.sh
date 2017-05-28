@@ -4,12 +4,32 @@ source ../src/scripts/platform-specific.sh
 
 LIBDIR=../src/srlib
 
+prepare_prefix() {
+  if [ ! -e _test_prefix.exe-prefix ]; then
+    echo Prepare common prefix...
+    ../bin/srefc-core -o _test_prefix.exe-prefix \
+      "${COMMON_SRFLAGS[@]}" $SRFLAGS_NAT 2>__error.txt
+      if [ $? -ge 100 ] || [ ! -e _test_prefix.exe-prefix ]; then
+        echo "CAN'T CREATE COMMON PREFIX, SEE __error.txt"
+        exit 1
+      fi
+    echo
+  fi
+}
+
 run_test_all_modes() {
+  if ! grep '%%' $1; then
+    prepare_prefix
+    SRFLAGS_PLUS="$SRFLAGS_PREF"
+  else
+    SRFLAGS_PLUS="$SRFLAGS_NAT"
+  fi
   SRFLAGS= $2 $1
   SRFLAGS=--markup-context $2 $1
   SRFLAGS=-OP $2 $1
   SRFLAGS=-OR $2 $1
   SRFLAGS=-OPR $2 $1
+  SRFLAGS_PLUS="$SRFLAGS_NAT"
   SRFLAGS=-Od $2 $1
   SRFLAGS=-OdP $2 $1
   SRFLAGS=-OdR $2 $1
@@ -28,8 +48,8 @@ run_test_aux_with_flags() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
-     2>__error.txt
+  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
@@ -85,8 +105,8 @@ run_test_aux_with_flags.FAILURE() {
   NATCPP=${SREF%%.sref}.cpp
   EXE=${SREF%%.sref}$(platform_exe_suffix)
 
-  ../bin/srefc-core $SREF -o $EXE -c "$CPPLINEE" $COMMON_SRFLAGS $SRFLAGS \
-    2>__error.txt
+  ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
+    $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e $EXE ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
@@ -111,6 +131,8 @@ run_test_aux_with_flags.FAILURE() {
 }
 
 run_test_aux.LEXGEN() {
+  prepare_prefix
+
   echo Passing $1 \(lexgen\)...
   SREF=$1
 
@@ -126,7 +148,7 @@ run_test_aux.LEXGEN() {
   fi
 
   ../bin/srefc-core _lexgen-out.sref -o _lexgen-out$(platform_exe_suffix) \
-    -c "$CPPLINEE" $COMMON_SRFLAGS 2>__error.txt
+    "${COMMON_SRFLAGS[@]}" $SRFLAGS_PREF 2>__error.txt
   if [ $? -ge 100 ] || [ ! -e _lexgen-out$(platform_exe_suffix) ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1
@@ -165,7 +187,8 @@ run_test_aux.BAD-SYNTAX-LEXGEN() {
 }
 
 run_test() {
-  COMMON_SRFLAGS="
+  COMMON_SRFLAGS=(
+    "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
@@ -175,9 +198,9 @@ run_test() {
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
     -f-DDONT_PRINT_STATISTICS
     -f-g
-    refalrts
-    refalrts-platform-specific
-  "
+  )
+  SRFLAGS_PREF=--prefix=_test_prefix
+  SRFLAGS_NAT="refalrts refalrts-platform-specific"
   SREF=$1
   SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   run_test_aux$SUFFIX $1
@@ -214,3 +237,5 @@ else
     run_test $s
   done
 fi
+
+[ -e _test-prefix.exe-prefix ] && rm _test_prefix.exe-prefix

@@ -17,7 +17,24 @@ setlocal
       for %%s in (%*) do call :RUN_TEST %%s || exit /b 1
     )
   )
+  if exist _test_prefix.exe-prefix erase _test_prefix.exe-prefix
 endlocal
+goto :EOF
+
+:PREPARE_PREFIX
+  if not exist _test_prefix.exe-prefix (
+     echo Prepare common prefix...
+    ..\bin\srefc-core -o _test_prefix.exe-prefix ^
+      %COMMON_SRFLAGS% %SRFLAGS_NAT% 2>__error.txt
+    if not exist _test_prefix.exe-prefix (
+      echo CAN'T CREATE COMMON PREFIX, SEE __error.txt
+      exit /b 1
+    )
+    erase __error.txt
+    if exist *.obj erase *.obj
+    if exist *.tds erase *.tds
+    echo.
+  )
 goto :EOF
 
 :RUN_ALL_TESTS_DIR
@@ -55,15 +72,22 @@ setlocal
     -f-DMEMORY_LIMIT=1000 ^
     -f-DIDENTS_LIMIT=25 ^
     -f-DDUMP_FILE="\\"__dump.txt\\"" ^
-    -f-DDONT_PRINT_STATISTICS ^
-    refalrts ^
-    refalrts-platform-specific
+    -f-DDONT_PRINT_STATISTICS
+  set SRFLAGS_PREF=--prefix=_test_prefix
+  set SRFLAGS_NAT=refalrts refalrts-platform-specific
   for %%s in (%~n1) do call :RUN_TEST_AUX%%~xs %1 || exit /b 1
 endlocal
 goto :EOF
 
 :RUN_TEST_ALL_MODES
 setlocal
+  find "%%" %1 > NUL
+  if errorlevel 1 (
+    call :PREPARE_PREFIX
+    set SRFLAGS_PLUS=%SRFLAGS_PREF%
+  ) else (
+    set SRFLAGS_PLUS=%SRFLAGS_NAT%
+  )
   set SRFLAGS=
   call :%2 %1 || exit /b 1
   set SRFLAGS=--markup-context
@@ -74,6 +98,7 @@ setlocal
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OPR
   call :%2 %1 || exit /b 1
+  set SRFLAGS_PLUS=%SRFLAGS_NAT%
   set SRFLAGS=-Od
   call :%2 %1 || exit /b 1
   set SRFLAGS=-OdP
@@ -101,7 +126,8 @@ setlocal
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+    2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -142,7 +168,8 @@ setlocal
   set NATCPP=%~n1.cpp
   set EXE=%~n1.exe
 
-  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% 2> __error.txt
+  ..\bin\srefc-core %SREF% -o %EXE% %COMMON_SRFLAGS% %SRFLAGS% %SRFLAGS_PLUS% ^
+    2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1
@@ -194,6 +221,8 @@ goto :EOF
 
 :RUN_TEST_AUX.LEXGEN
 setlocal
+  call :PREPARE_PREFIX
+
   echo Passing %1 (lexgen)...
   set SREF=%1
 
@@ -209,7 +238,7 @@ setlocal
   )
 
   ..\bin\srefc-core _lexgen-out.sref -o _lexgen-out.exe %COMMON_SRFLAGS% ^
-    2> __error.txt
+    %SRFLAGS_PREF% 2> __error.txt
   if errorlevel 100 (
     echo COMPILER ON %1 FAILS, SEE __error.txt
     exit /b 1

@@ -1,6 +1,6 @@
 //FROM LibraryEx
 $EXTERN ArgList, LoadFile, Map, SaveFile, Fetch, Seq, DelAccumulator, MapReduce,
-  Inc;
+  Inc, SaveBytes, LoadBytes;
 
 //FROM ParseCmdLine
 $EXTERN ParseCommandLine;
@@ -8,11 +8,11 @@ $EXTERN ParseCommandLine;
 //FROM Config
 $EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
-  Config-GetSearchFolders, Config-GetTargetMode;
+  Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
-  LoadBytes, FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
+  FSeek, Mod, FTell, FClose, RemoveFile, RenameFile;
 
 //FROM FindFile
 $EXTERN FindFiles;
@@ -369,15 +369,19 @@ Link {
         <Config-GetTargetMode t.Config>
         {
           #EXE
-            = <Link-SwCppCompiler
-                t.CommandLineSource
-                (<Config-GetCppCompiler t.Config #EXE>) t.Config e.Files
+            = <Link-ExeLib
+                t.CommandLineSource t.Config
+                (<Config-GetCppCompiler t.Config #EXE>)
+                (<Config-GetPrefix t.Config>)
+                e.Files
               >;
 
           #LIB
-            = <Link-SwCppCompiler
-                t.CommandLineSource
-                (<Config-GetCppCompiler t.Config #LIB>) t.Config e.Files
+            = <Link-ExeLib
+                t.CommandLineSource t.Config
+                (<Config-GetCppCompiler t.Config #LIB>)
+                (<Config-GetPrefix t.Config>)
+                e.Files
               >;
 
           #R
@@ -389,9 +393,9 @@ Link {
       >;
 }
 
-Link-SwCppCompiler {
-  t.CommandLineSource
-  (#NoCppCompiler) t.Config e.Files
+Link-ExeLib {
+  t.CommandLineSource t.Config
+  (#NoCppCompiler) (/* нет префикса */) e.Files
     = <Fetch
         <Config-GetTargetMode t.Config>
         {
@@ -409,24 +413,80 @@ Link-SwCppCompiler {
         )
       >;
 
-  t.CommandLineSource
-  ((e.CommandLine) e.Flags) t.Config e.Files
+  t.CommandLineSource t.Config
+  ((e.CommandLine) e.Flags) (/* нет префикса */) e.Files
+    = <Link-CppCompile t.Config ((e.CommandLine) e.Flags) e.Files>;
+
+  t.CommandLineSource t.Config
+  (e.AnyCommandLine) (e.Prefix)
+  e.Files-B (#Native e.FileName) e.Files-E
+    = <ReportErrors
+        t.CommandLineSource t.Config
+        (
+          1
+          'unexpected native file ' e.FileName ' while compilation runs '
+          'with prefix'
+        )
+      >;
+
+  t.CommandLineSource t.Config
+  (e.AnyCommandLine) (e.Prefix) e.Files
+    = <Fetch
+        <FindPrefix t.Config e.Prefix>
+        {
+          #Success e.PrefixFileName
+            = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
+
+          #Fails
+            = <ReportErrors
+                t.CommandLineSource t.Config
+                (1 'Can''t find prefix ' e.Prefix)
+              >;
+        }
+      >;
+}
+
+Link-WithPrefix {
+  (e.PrefixFileName) t.Config e.Files
+    = <Link-Aux
+        {
+          e.IntermediateName
+            = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>;
+        }
+        t.Config e.Files
+      >;
+}
+
+Link-CppCompile {
+  t.Config ((e.CommandLine) e.Flags) e.Files
+    = <Link-Aux
+        {
+          e.IntermediateName
+            = <System
+                e.CommandLine
+                e.IntermediateName
+                e.Flags
+                <Map
+                  {
+                    (#RASL e.FileName) = /* пусто */;
+                    (#Native e.FileName) = ' "' e.FileName '"';
+                  }
+                  e.Files
+                >
+              >
+              <CheckCppCompilationSuccessed t.Config e.IntermediateName>
+              <EnsureAligned4096 e.IntermediateName>;
+        }
+        t.Config e.Files
+      >;
+}
+
+Link-Aux {
+  s.FnCreatePrefix t.Config e.Files
     = <Config-GetTargetFileName t.Config> : e.TargetFileName
     = e.TargetFileName '.partial' : e.IntermediateName
     = <PreLinkCleanupTemporary t.Config e.IntermediateName>
-      <System
-        e.CommandLine
-        e.IntermediateName
-        e.Flags
-        <Map
-          {
-            (#RASL e.FileName) = /* пусто */;
-            (#Native e.FileName) = ' "' e.FileName '"';
-          }
-          e.Files
-        >
-      >
-      <CheckCppCompilationSuccessed t.Config e.IntermediateName>
+      <s.FnCreatePrefix e.IntermediateName>
       <AppendRASLToBinary (e.IntermediateName) e.Files>
       <PostLinkRename
         t.Config (e.IntermediateName) (e.TargetFileName)
@@ -470,13 +530,19 @@ CheckCppCompilationSuccessed {
     >;
 }
 
+EnsureAligned4096 {
+  e.BinaryName
+    = <FOpen ('ab') e.BinaryName> : s.FileHandle
+    = <AlignToPage s.FileHandle>
+      <FClose s.FileHandle>;
+}
+
 AppendRASLToBinary {
   (e.BinaryName) e.Files =
     <Fetch
       <FOpen ('ab') e.BinaryName>
       {
         s.FileHandle =
-          <AlignToPage s.FileHandle>
           <Map
             {
               (#RASL e.OutputName) =
@@ -541,6 +607,46 @@ PostLinkRename {
           >;
       }
     >;
+}
+
+FindPrefix {
+  t.Config e.Prefix
+    = <Fetch
+        <Config-GetTargetMode t.Config>
+        {
+          #EXE = '.exe-prefix';
+          #LIB = '.lib-prefix';
+        }
+      >
+    : e.PrefixExt
+    = <DoFindPrefix
+        (e.Prefix e.PrefixExt) (#Current) <Config-GetSearchFolders t.Config>
+      >;
+}
+
+DoFindPrefix {
+  (e.PrefixName) (e.NextFolder) e.Folders
+    = <GlueNames (e.NextFolder) (e.PrefixName)> : e.PrefixFileName
+    = <Fetch
+        <ExistFile e.PrefixFileName>
+        {
+          #True = #Success e.PrefixFileName;
+          #False = <DoFindPrefix (e.PrefixName) e.Folders>;
+        }
+      >;
+
+  (e.PrefixName) /* кончились папки */
+    = #Fails;
+}
+
+GlueNames {
+  (#Current) (e.FileName) = e.FileName;
+  (e.Folder) (e.FileName) = e.Folder '/' e.FileName;
+}
+
+CopyPrefix {
+  (e.OriginalPrefixName) (e.NewExeName)
+    = <SaveBytes (e.NewExeName) <LoadBytes e.OriginalPrefixName>>;
 }
 
 LinkError {

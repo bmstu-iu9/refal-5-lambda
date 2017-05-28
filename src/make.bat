@@ -10,9 +10,11 @@ setlocal
       -X-F-DSTEP_LIMIT=30000000 ^
       -X-F-DIDENTS_LIMIT=1000 ^
       -X-F-DENABLE_DEBUGGER
+    set DEFAULT_SCRIPT_FLAGS=--rich
   ) else (
     set SREFC_FLAGS_PLUS=-OdPR
     set SRMAKE_FLAGS_PLUS=-X-OdPR
+    set DEFAULT_SCRIPT_FLAGS=--scratch
   )
 
   set SREFC_FLAGS=%SREFC_FLAGS% %SREFC_FLAGS_PLUS%
@@ -42,9 +44,12 @@ setlocal
   if {%PATH_TO_SREFC%}=={} (
     set PATH_TO_SREFC=..\..
   )
+  if {%SCRIPT_FLAGS%}=={} (
+    set SCRIPT_FLAGS=%DEFAULT_SCRIPT_FLAGS%
+  )
   if not exist ..\..\build\%DIR%\nul mkdir ..\..\build\%DIR%
   if exist ..\..\build\%DIR%\*.* erase /Q ..\..\build\%DIR%\*.*
-  call %PATH_TO_SREFC%\bin\srmake -d ..\common %MAINSRC% -o %TARGET%.exe
+  call %PATH_TO_SREFC%\bin\srmake %SCRIPT_FLAGS% -d ..\common %MAINSRC% -o %TARGET%.exe
   move %TARGET%.exe ..\..\bin
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds

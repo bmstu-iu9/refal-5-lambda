@@ -18,9 +18,11 @@ make_subdir() {
       -X-F-DIDENTS_LIMIT=1000
       -X-F-DENABLE_DEBUGGER
     "
+    DEFAULT_SCRIPT_FLAGS=--rich
   else
     SREFC_FLAGS_PLUS=-OPR
     SRMAKE_FLAGS_PLUS=-X-OPR
+    DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
   if [ -z "$1" ]; then
@@ -48,6 +50,10 @@ make_subdir() {
       PATH_TO_SREFC=../..
     fi
 
+    if [ -z "$SCRIPT_FLAGS" ]; then
+      SCRIPT_FLAGS=$DEFAULT_SCRIPT_FLAGS
+    fi
+
     source $PATH_TO_SREFC/bin/platform-specific.sh
 
     mkdir -p $PATH_TO_SREFC/bin
@@ -55,7 +61,7 @@ make_subdir() {
       export CPPLINE_FLAGS="$CPPLINE_FLAGS"
       export SRMAKE_FLAGS="$SRMAKE_FLAGS $SRMAKE_FLAGS_PLUS"
 
-      $PATH_TO_SREFC/bin/srmake -d ../common $MAINSRC -o$TARGET
+      $PATH_TO_SREFC/bin/srmake $SCRIPT_FLAGS -d ../common $MAINSRC -o$TARGET
     )
     mv $TARGET ../../bin/$TARGET$(platform_exe_suffix)
 
