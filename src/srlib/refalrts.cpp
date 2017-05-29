@@ -5625,27 +5625,27 @@ int main(int argc, char **argv) {
   refalrts::vm::g_argc = argc;
   refalrts::vm::g_argv = argv;
 
-  refalrts::create_closure =
-    refalrts::dynamic::malloc<refalrts::RefalFunction>();
-  // TODO: выдача сообщения об ошибке
-  assert(refalrts::create_closure != 0);
-  new (refalrts::create_closure) refalrts::RefalFunction(
-    rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
-  );
-
-  refalrts::dynamic::enumerate_blocks();
-
-  unsigned unresolved = refalrts::dynamic::find_unresolved_externals();
-  if (unresolved > 0) {
-    refalrts::dynamic::free_idents_table();
-    refalrts::dynamic::free_funcs_table();
-    refalrts::dynamic::cleanup_module();
-    fprintf(stderr, "Found %u unresolved externals\n", unresolved);
-    return 157;
-  }
-
   refalrts::FnResult res;
   try {
+    refalrts::create_closure =
+      refalrts::dynamic::malloc<refalrts::RefalFunction>();
+    // TODO: выдача сообщения об ошибке
+    assert(refalrts::create_closure != 0);
+    new (refalrts::create_closure) refalrts::RefalFunction(
+      rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
+    );
+
+    refalrts::dynamic::enumerate_blocks();
+
+    unsigned unresolved = refalrts::dynamic::find_unresolved_externals();
+    if (unresolved > 0) {
+      refalrts::dynamic::free_idents_table();
+      refalrts::dynamic::free_funcs_table();
+      refalrts::dynamic::cleanup_module();
+      fprintf(stderr, "Found %u unresolved externals\n", unresolved);
+      return 157;
+    }
+
     refalrts::profiler::start_profiler();
     res = refalrts::vm::run();
     fflush(stderr);
