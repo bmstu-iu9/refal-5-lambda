@@ -3021,9 +3021,10 @@ bool refalrts::dynamic::seek_rasl_signature(FILE *stream) {
       exit(155);
     }
 
-    static const char sample_sig[] = {
-      '\x01', '\x08', '\0', '\0', '\0', 'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
+    static char sample_sig[] = {
+      '\x00', '\x08', '\0', '\0', '\0', 'R', 'A', 'S', 'L', 'C', 'O', 'D', 'E'
     };
+    sample_sig[0] = cBlockTypeStart;
     char actual_sig[sizeof(sample_sig)];
     size_t read = fread(actual_sig, sizeof(actual_sig), 1, stream);
     if (read != 1) {
