@@ -8,7 +8,8 @@ $EXTERN ParseCommandLine;
 //FROM Config
 $EXTERN Config-GetTargetFileName, Config-SetTargetFileName, Config-GetErrorFile,
   Config-GetCppCompiler, Config-GetGrammarCheck, Config-GetTargetSuffix,
-  Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix;
+  Config-GetSearchFolders, Config-GetTargetMode, Config-GetPrefix,
+  Config-GetChmodXCommand;
 
 //FROM Library
 $EXTERN WriteLine, StrFromInt, Exit, System, ExistFile, FOpen, FWriteBytes,
@@ -451,9 +452,22 @@ Link-WithPrefix {
     = <Link-Aux
         {
           e.IntermediateName
-            = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>;
+            = <CopyPrefix (e.PrefixFileName) (e.IntermediateName)>
+              <Chmod-X-Prefix t.Config e.IntermediateName>;
         }
         t.Config e.Files
+      >;
+}
+
+Chmod-X-Prefix {
+  t.Config e.IntermediateName
+    = <Fetch
+        <Config-GetChmodXCommand t.Config>
+        {
+          /* пусто */ = /* ничего не делаем */;
+          e.ChmodXCommand
+            = <System e.ChmodXCommand ' "' e.IntermediateName '"'>;
+        }
       >;
 }
 

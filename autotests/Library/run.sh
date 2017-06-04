@@ -5,7 +5,8 @@ source ../../src/scripts/platform-specific.sh
 LIBDIR=../../src/srlib
 
 run_all_tests() {
-  COMMON_SRFLAGS="
+  COMMON_SRFLAGS=(
+    "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
@@ -17,7 +18,8 @@ run_all_tests() {
     -f-g
     refalrts
     refalrts-platform-specific
-  "
+    --chmod-x-command="chmod +x"
+  )
 
   cp $LIBDIR/Library.sref .
   for s in $*; do
@@ -174,7 +176,7 @@ compile() {
   TARGET=${SRC%%.sref}$(platform_exe_suffix)
 
   if [ "$SRC" != "Library.sref" ]; then
-    ../../bin/srefc-core $SRC -o $TARGET -c "$CPPLINEE" $COMMON_SRFLAGS \
+    ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
       Library 2>__error.txt
     if [ $? -ge 100 ] || [ ! -e $TARGET ]; then
       echo COMPILER FAILS ON $SRC, SEE __error.txt

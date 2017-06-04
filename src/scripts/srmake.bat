@@ -46,5 +46,6 @@ setlocal
     %SRMAKE_FLAGS% ^
     --cpp-command-exe="%CPPLINEE%" -X--exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" -X--libsuffix=.dll ^
-    --thru=--cppflags="%CPPLINE_FLAGS%" %D% %ARGS%
+    --thru=--cppflags="%CPPLINE_FLAGS%" -X--chmod-x-command= ^
+    %D% %ARGS%
 endlocal

@@ -58,5 +58,6 @@ set_default_flags() {
     $SREFC_FLAGS \
     --cpp-command-exe="$CPPLINEE" --exesuffix=$(platform_exe_suffix) \
     --cpp-command-lib="$CPPLINEL" --libsuffix=$(platform_lib_suffix) \
-    --cppflags="$CPPLINE_FLAGS" $PREFIX "${D[@]}" $*
+    --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
+    $PREFIX "${D[@]}" $*
 )

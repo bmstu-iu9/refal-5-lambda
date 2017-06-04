@@ -26,6 +26,8 @@ compile_rich() {
   RICHDIR=../../srlib/rich
   mkdir -p $RICHDIR
   ../../bin/srefc --scratch -o $RICHDIR/rich.exe-prefix $SOURCES $RT
+  # Префикс не должен быть исполнимым
+  chmod -x $RICHDIR/rich.exe-prefix
   for s in $SOURCES; do
     rm -f $s.cpp $s.rasl
   done

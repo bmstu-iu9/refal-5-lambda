@@ -57,5 +57,6 @@ set_default_flags() {
     $SRMAKE_FLAGS \
     --cpp-command-exe="$CPPLINEE" -X--exesuffix=$(platform_exe_suffix) \
     --cpp-command-lib="$CPPLINEL" -X--libsuffix=$(platform_lib_suffix) \
-    --thru=--cppflags="$CPPLINE_FLAGS" "${D[@]}" $*
+    --thru=--cppflags="$CPPLINE_FLAGS"  -X--chmod-x-command="chmod +x" \
+    "${D[@]}" $*
 )

@@ -198,6 +198,7 @@ run_test() {
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
     -f-DDONT_PRINT_STATISTICS
     -f-g
+    --chmod-x-command="chmod +x"
   )
   SRFLAGS_PREF=--prefix=_test_prefix
   SRFLAGS_NAT="refalrts refalrts-platform-specific"
@@ -238,4 +239,4 @@ else
   done
 fi
 
-[ -e _test-prefix.exe-prefix ] && rm _test_prefix.exe-prefix
+[ -e _test_prefix.exe-prefix ] && rm _test_prefix.exe-prefix

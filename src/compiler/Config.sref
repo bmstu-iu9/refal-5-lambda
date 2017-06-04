@@ -26,6 +26,7 @@ $ENTRY Config-Create {
         (#Prefix /* пусто */)
         (#References /* пусто */)
         (#Incorporateds /* пусто */)
+        (#ChmodXCommand /* пусто */)
       ];
 }
 
@@ -502,4 +503,23 @@ $ENTRY Config-AddIncorporated {
         (#Incorporateds e.Incorporateds (e.IncorporatedName))
         e.Params-E
       ];
+}
+
+/**
+  <Config-GetChmodXCommand t.Config>
+    == e.ChmodXCommand
+*/
+$ENTRY Config-GetChmodXCommand {
+  [Config e.Params-B (#ChmodXCommand e.Command) e.Params-E]
+    = e.Command;
+}
+
+/**
+  <Config-SetChmodXCommand t.Config>
+    == #Success t.Config
+*/
+$ENTRY Config-SetChmodXCommand {
+  [Config e.Params-B (#ChmodXCommand e.OldCommand) e.Params-E]
+  e.NewCommand
+    = #Success [Config e.Params-B (#ChmodXCommand e.NewCommand) e.Params-E];
 }

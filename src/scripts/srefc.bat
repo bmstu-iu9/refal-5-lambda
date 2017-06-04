@@ -47,5 +47,6 @@ setlocal
     %SREFC_FLAGS% ^
     --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
-    --cppflags="%CPPLINE_FLAGS%" %PREFIX% %D% %ARGS%
+    --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
+    %PREFIX% %D% %ARGS%
 endlocal
