@@ -12,12 +12,17 @@ rd /q /s bin compiler doc lexgen srlib srmake
 xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake
+xcopy /e /y /i ..\build\srlib-rich-prefix srlib-rich-prefix
 md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
 ren bin\*.sh *.
 copy ..\src\scripts\platform-specific.sh bin
-xcopy /e /i /y ..\srlib srlib
+md srlib
+xcopy /e /i /y ..\srlib\scratch srlib\scratch
+md srlib\rich
+copy ..\srlib\rich\*.rasl srlib\rich
+copy ..\srlib\rich\*.froms srlib\rich
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples
 copy ..\doc\*.pdf doc

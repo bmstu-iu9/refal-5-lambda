@@ -45,11 +45,12 @@ goto :EOF
   set RICHDIR=..\..\srlib\rich
   mkdir %RICHDIR%\x
   rmdir %RICHDIR%\x
-  call ..\..\bin\srefc.bat --scratch -o %RICHDIR%\rich.exe-prefix %SOURCES% %RT%
-  for %%s in (%SOURCES%) do (
-    erase %%s.cpp %%s.rasl
-  )
-  if exist %RICHDIR%\*.tds erase %RICHDIR%\*.tds
+
+  pushd ..\srlib-rich-prefix
+  call make.bat
+  popd
+  move ..\..\bin\rich-prefix.exe %RICHDIR%\rich.exe-prefix
+
   for %%s in (%SOURCES% %RT%) do (
     copy NUL %RICHDIR%\%%s.rasl
     echo //PREFIX rich > %RICHDIR%\%%s.rasl.froms

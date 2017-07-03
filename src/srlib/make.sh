@@ -24,13 +24,14 @@ compile_scratch() {
 
 compile_rich() {
   RICHDIR=../../srlib/rich
+
   mkdir -p $RICHDIR
-  ../../bin/srefc --scratch -o $RICHDIR/rich.exe-prefix $SOURCES $RT
+  ( cd ../srlib-rich-prefix && ./make.sh "$SOURCES $RT" )
+
+  mv ../../bin/rich-prefix* $RICHDIR/rich.exe-prefix
   # Префикс не должен быть исполнимым
   chmod -x $RICHDIR/rich.exe-prefix
-  for s in $SOURCES; do
-    rm -f $s.cpp $s.rasl
-  done
+
   for s in $SOURCES $RT; do
     cat /dev/null > $RICHDIR/$s.rasl
     echo '//PREFIX rich' > $RICHDIR/$s.rasl.froms
