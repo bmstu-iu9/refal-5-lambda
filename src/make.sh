@@ -20,8 +20,8 @@ make_subdir() {
     "
     DEFAULT_SCRIPT_FLAGS=--rich
   else
-    SREFC_FLAGS_PLUS=-OPR
-    SRMAKE_FLAGS_PLUS=-X-OPR
+    SREFC_FLAGS_PLUS=-OdPR
+    SRMAKE_FLAGS_PLUS=-X-OdPR
     DEFAULT_SCRIPT_FLAGS=--scratch
   fi
 
