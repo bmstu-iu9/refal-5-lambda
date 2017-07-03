@@ -34,7 +34,7 @@ $ENTRY LowLevelRASL {
         (MapReduce
           CalcDigest
           // Числа выбраны случайно: hexdump /dev/urandom
-          (<HashLittle2-Chars 4001567069 291363191 e.SrcName>)
+          (<HashLittle2-Chars 4001567069 291363191 <Canonize e.SrcName>>)
         )
         (Map (MarkFunctionGenMode s.GenMode))
         {
@@ -44,6 +44,11 @@ $ENTRY LowLevelRASL {
         }
       >
     >;
+}
+
+Canonize {
+  e.Canonized '\\' e.NotCanonized = e.Canonized '/' <Canonize e.NotCanonized>;
+  e.Canonized = e.Canonized;
 }
 
 AddSavers {
