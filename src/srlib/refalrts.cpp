@@ -297,8 +297,7 @@ refalrts::Iter refalrts::ident_right(
 }
 
 bool refalrts::brackets_term(
-  refalrts::Iter& res_first, refalrts::Iter& res_last,
-  refalrts::Iter& pos
+  refalrts::Iter& res_first, refalrts::Iter& res_last, refalrts::Iter& pos
 ) {
   if (pos->tag != cDataOpenBracket) {
     return false;
@@ -385,8 +384,8 @@ refalrts::Iter refalrts::brackets_right(
 
 void refalrts::bracket_pointers(
   refalrts::Iter left_bracket,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   right_bracket = left_bracket->link_info;
 }
 
@@ -508,8 +507,8 @@ refalrts::Iter refalrts::adt_right(
 void refalrts::adt_pointers(
   refalrts::Iter left_bracket,
   refalrts::Iter& tag,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   refalrts::Iter pnext = next(left_bracket);
   tag = pnext;
   right_bracket = left_bracket->link_info;
@@ -542,8 +541,8 @@ refalrts::Iter refalrts::call_left(
 void refalrts::call_pointers(
   refalrts::Iter left_bracket,
   refalrts::Iter& tag,
-  refalrts::Iter& right_bracket)
-{
+  refalrts::Iter& right_bracket
+) {
   refalrts::Iter pnext = next(left_bracket);
   tag = pnext;
   right_bracket = left_bracket->link_info;
@@ -2477,8 +2476,7 @@ refalrts::dynamic::DynamicHash<Key, Value>::DynamicHash()
 }
 
 template <typename Key, typename Value>
-refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash()
-{
+refalrts::dynamic::DynamicHash<Key, Value>::~DynamicHash() {
   size_t table_size = size_t(1) << m_table_power;
   for (size_t i = 0; i < table_size; ++i) {
     Node *node = m_table[i];
@@ -3470,8 +3468,7 @@ refalrts::FnResult refalrts::vm::run() {
 
 namespace {
 
-void print_indent(FILE *output, int level)
-{
+void print_indent(FILE *output, int level) {
   enum { cPERIOD = 4 };
   putc('\n', output);
   if (level < 0) {
