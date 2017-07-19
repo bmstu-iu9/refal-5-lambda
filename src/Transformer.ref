@@ -5,7 +5,15 @@ $EXTERN Builtins;
   <Transform t.Unit*> == t.Unit*
 */
 $ENTRY Transform {
-  e.Units = <DoTransform <GetFunctionNames (<Builtins>) e.Units>>;
+  e.Units
+    = <Transform-Step
+        UnCondition <Transform-Step UnBlock e.Units>
+      >;
+}
+
+Transform-Step {
+  s.FnMode e.Units
+    = <DoTransform s.FnMode <GetFunctionNames (<Builtins>) e.Units>>;
 }
 
 GetFunctionNames {
@@ -25,21 +33,41 @@ GetFunctionNames {
 }
 
 DoTransform {
-  (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
-    , <Function (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+  s.FnMode (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
+    , <Mu s.FnMode (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
     : (e.NewNames) e.NewFunctions
     = e.NewFunctions
-      <DoTransform (e.NewNames) e.Units>;
+      <DoTransform s.FnMode (e.NewNames) e.Units>;
 
-  (e.Names) (Extern e.ExternNames) e.Units
+  s.FnMode (e.Names) (Extern e.ExternNames) e.Units
     = (Extern e.ExternNames)
-      <DoTransform (e.Names) e.Units>;
+      <DoTransform s.FnMode (e.Names) e.Units>;
 
-  (e.Names) (SpecialComment t.SrcPos e.Text) e.Units
+  s.FnMode (e.Names) (SpecialComment t.SrcPos e.Text) e.Units
     = (SpecialComment t.SrcPos e.Text)
-      <DoTransform (e.Names) e.Units>;
+      <DoTransform s.FnMode (e.Names) e.Units>;
 
-  (e.Names) /* пусто */ = /* пусто */;
+  s.FnMode (e.Names) /* пусто */ = /* пусто */;
+}
+
+** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
+
+/**
+  <UnBlock (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+    == (e.NewNames) e.NewFunctions
+*/
+UnBlock {
+  (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
+    = (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+}
+
+/**
+  <UnBlock (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+    == (e.NewNames) e.NewFunctions
+*/
+UnCondition {
+  (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
+    = (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences);
 }
 
 Function {
