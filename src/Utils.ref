@@ -108,3 +108,23 @@ $ENTRY Unique {
 
   e.UniqueItems = e.UniqueItems;
 }
+
+/**
+  <Apply t.Function e.Arg> == e.Res
+  t.Function ::= s.FuncName | (t.Function e.Bounded)
+*/
+$ENTRY Apply {
+  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
+
+  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
+}
+
+/**
+  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
+*/
+$ENTRY Map {
+  t.Function t.NextItem e.Items
+    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
+
+  t.Function /* пусто */ = /* пусто */;
+}
