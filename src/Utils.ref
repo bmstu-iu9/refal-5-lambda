@@ -6,7 +6,7 @@ $ENTRY ArgList {
 }
 
 DoArgList {
-  s.N /* пусто */ = /* пусто */;
+  s.N /* РїСѓСЃС‚Рѕ */ = /* РїСѓСЃС‚Рѕ */;
   s.N e.Arg =
     (e.Arg) <DoArgList <Inc s.N> <Arg s.N>>;
 }
@@ -29,19 +29,19 @@ $ENTRY Dec {
 
 
 /**
-  <PrintLines (e.Line)*> == пусто
+  <PrintLines (e.Line)*> == РїСѓСЃС‚Рѕ
 */
 $ENTRY PrintLines {
   (e.Line) e.Lines =
     <Prout e.Line>
     <PrintLines e.Lines>;
 
-  /* пусто */ = /* ничего не печатаем */;
+  /* РїСѓСЃС‚Рѕ */ = /* РЅРёС‡РµРіРѕ РЅРµ РїРµС‡Р°С‚Р°РµРј */;
 }
 
 
 /**
-  <SaveFile (e.FileName) (e.Line)*> == пусто
+  <SaveFile (e.FileName) (e.Line)*> == РїСѓСЃС‚Рѕ
 */
 $ENTRY SaveFile {
   (e.FileName) e.Lines =
@@ -55,7 +55,7 @@ DoSaveFile {
     <Put 20 e.Line>
     <DoSaveFile e.Lines>;
 
-  /* пусто */ = /* всё */;
+  /* РїСѓСЃС‚Рѕ */ = /* РІСЃС‘ */;
 }
 
 
@@ -96,7 +96,7 @@ DoBuiltins {
   (s.Number s.Name s.Type) e.Builtins
     = (<Explode s.Name>) <DoBuiltins e.Builtins>;
 
-  /* пусто */ = /* пусто */;
+  /* РїСѓСЃС‚Рѕ */ = /* РїСѓСЃС‚Рѕ */;
 }
 
 /**
