@@ -1,5 +1,5 @@
 *$FROM Utils;
-$EXTERN Builtins;
+$EXTERN Builtins, Map;
 
 /**
   <Transform t.Unit*> == t.Unit*
@@ -58,8 +58,111 @@ DoTransform {
 */
 UnBlock {
   (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
-    = (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+    = <DoUnBlock
+        (e.Names) t.SrcPos (e.Name /* — имя текущей функции */) s.Scope
+        (e.Name /* — префикс */)
+        (/* scanned functions */)
+        (/* scanned sentences */)
+        e.Sentences
+        (/* unscanned functions */)
+      >;
 }
+
+DoUnBlock {
+  (e.Names) t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions) (e.ScannedSentences)
+  e.Sentences-B (e.BlockedSentence) e.Sentences-E
+  (e.UnscannedFunctions)
+    , <WithBlock e.BlockedSentence>
+    : (e.SentencePrefix) CALL-BLOCK (e.BlockResult) e.SubSentences
+    , <NewName (e.Names) e.Prefix> : (e.RefilledNames) e.NewName
+    , <BlockScopeVars e.SentencePrefix> : e.ScopeVars
+    = <DoUnBlock
+        (e.RefilledNames) t.SrcPos (e.Name) s.Scope (e.Prefix)
+        (e.ScannedFunctions)
+        (
+          e.ScannedSentences
+          e.Sentences-B
+          (
+            e.SentencePrefix
+            RETURN ((Call t.SrcPos (e.NewName) e.ScopeVars e.BlockResult))
+          )
+        )
+        e.Sentences-E
+        (
+          e.UnscannedFunctions
+          (
+            (e.NewName)
+            <Map
+              (transformer_AddScopeVars e.ScopeVars) e.SubSentences
+            >
+          )
+        )
+      >;
+
+  (e.Names) t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions) (e.ScannedSentences) e.UnscannedSentences
+  (e.UnscannedFunctions)
+    = <DoUnBlock-NextFunction
+        (e.Names) t.SrcPos (e.Prefix)
+        (
+          e.ScannedFunctions
+          (Function
+            t.SrcPos (e.Name) s.Scope e.ScannedSentences e.UnscannedSentences
+          )
+        )
+        (e.UnscannedFunctions)
+      >;
+}
+
+DoUnBlock-NextFunction {
+  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
+  (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
+    = <DoUnBlock
+        (e.Names) t.SrcPos (e.NextFunctionName) Local (e.Prefix)
+        (e.ScannedFunctions)
+        (/* scanned sentences */)
+        e.NextFunctionSentences
+        (e.UnscannedFunctions)
+      >;
+
+  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
+  (/* пусто */)
+    = (e.Names) e.ScannedFunctions;
+}
+
+WithBlock {
+  (e.Pattern) e.Sentence = <DoWithBlock ((e.Pattern)) e.Sentence>;
+}
+
+DoWithBlock {
+  (e.Prefix) (Condition t.CondResult t.CondPattern) e.Tail
+    = <DoWithBlock (e.Prefix (Condition t.CondResult t.CondPattern)) e.Tail>;
+
+  (e.Prefix) CALL-BLOCK t.Result e.SubSentences
+    = (e.Prefix) CALL-BLOCK t.Result e.SubSentences;
+
+  (e.Prefix) RETURN t.Result
+    = /* пусто */;
+}
+
+BlockScopeVars {
+  (e.Pattern) e.Conditions
+    = <Map
+        transformer_MakeVariables
+        <ExtractVariables ((e.Pattern) e.Conditions RETURN ())>
+      >;
+}
+
+$ENTRY transformer_MakeVariables {
+  ('e' e.Index) = (Brackets (Variable NO-POS 'e' e.Index));
+  (s.VarType e.Index) = (Variable NO-POS s.VarType e.Index);
+}
+
+$ENTRY transformer_AddScopeVars {
+  e.ScopeVars ((e.Pattern) e.Tail) = ((e.ScopeVars e.Pattern) e.Tail);
+}
+
 
 /**
   <UnBlock (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
