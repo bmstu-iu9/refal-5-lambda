@@ -14,7 +14,7 @@ Perform {
       <Mu ('Test' <Explode s.NextTest>)>
       <Perform e.Tests>;
 
-  /* пусто */ = /* ничего не делаем */
+  /* РїСѓСЃС‚Рѕ */ = /* РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј */
 }
 
 AssertEq {
@@ -39,7 +39,7 @@ TestAllSubstrings {
 }
 
 AllSubstrings {
-  e.String, <Br Substr '=' /* пусто */> : NotEmpty = ;
+  e.String, <Br Substr '=' /* РїСѓСЃС‚Рѕ */> : NotEmpty = ;
 
   e.Begin e.Middle e.End
     , <Br Substr '=' <Dg Substr> (e.Middle)>
@@ -107,7 +107,7 @@ SimpleCondition-Edge {
 
 TestSimpleCondition {
   = <AssertEq <SimpleCondition ('ABC') 'ABC'> (Equals 'ABC')>
-    <AssertEq <SimpleCondition (/* пусто */) /* пусто */> (Equals /* пусто */)>
+    <AssertEq <SimpleCondition (/* РїСѓСЃС‚Рѕ */) /* РїСѓСЃС‚Рѕ */> (Equals /* РїСѓСЃС‚Рѕ */)>
     <AssertEq <SimpleCondition ('AAA') 'BBB'> (NotEquals ('AAA') 'BBB')>
     <AssertEq <SimpleCondition 'fail'> (FORMAT 'fail')>
     <AssertEq <SimpleCondition-Edge ('ABC') 'ABC'> (Equals 'ABC')>
@@ -122,9 +122,9 @@ SimpleRepeatedCondition {
         X = Equals e.X e.Y e.X e.Y;
 
         Y, e.X: e.Z, e.Y: e.X
-          = <Prout e.X e.Y e.X e.X e.Y 'копирований быть не должно'>;
+          = <Prout e.X e.Y e.X e.X e.Y 'РєРѕРїРёСЂРѕРІР°РЅРёР№ Р±С‹С‚СЊ РЅРµ РґРѕР»Р¶РЅРѕ'>;
       };
-  
+
 
   e.Other = FORMAT e.Other;
 }
@@ -245,7 +245,7 @@ Intersect {
   (e.B1 s.1 e.E1) (e.B2 s.2 e.E2), <Eq s.1 s.2>: True
     = s.1 <Intersect (e.E1) (e.B2 e.E2)>;
 
-  (e.1) (e.2) = /* пусто */
+  (e.1) (e.2) = /* РїСѓСЃС‚Рѕ */
 }
 
 Eq {
