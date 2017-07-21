@@ -126,8 +126,7 @@ DoUnBlock-NextFunction {
         (e.UnscannedFunctions)
       >;
 
-  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
-  (/* пусто */)
+  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions) (/* пусто */)
     = (e.Names) e.ScannedFunctions;
 }
 
@@ -165,13 +164,447 @@ $ENTRY transformer_AddScopeVars {
 
 
 /**
-  <UnBlock (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+  <UnCondition (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
     == (e.NewNames) e.NewFunctions
 */
 UnCondition {
   (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
-    = (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+    = <DoUnCondition
+        (e.Names) t.SrcPos (e.Name /* — имя текущей функции */) s.Scope
+        (e.Name /* — префикс */)
+        (/* scanned functions */)
+        e.Sentences
+        (/* unscanned functions */)
+      >;
 }
+
+DoUnCondition {
+  (e.Names) t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions)
+  e.Sentences-B (e.ConditionalSentence) e.Sentences-E
+  (e.UnscannedFunctions)
+    , <UnConditionSentence
+        (e.Names) (e.Prefix) (e.ConditionalSentence) e.Sentences-E
+      >
+    : Success (e.RefilledNames) (e.TransformedSentences) e.NewFunctions
+    = <DoUnCondition-NextFunction
+        (e.RefilledNames) t.SrcPos (e.Prefix)
+        (
+          e.ScannedFunctions
+          (Function
+            t.SrcPos (e.Name) s.Scope
+            e.Sentences-B
+            e.TransformedSentences
+          )
+        )
+        (e.UnscannedFunctions e.NewFunctions)
+      >;
+
+  (e.Names) t.SrcPos (e.Name) s.Scope (e.Prefix)
+  (e.ScannedFunctions) e.Sentences (e.UnscannedFunctions)
+    = <DoUnCondition-NextFunction
+        (e.Names) t.SrcPos (e.Prefix)
+        (
+          e.ScannedFunctions
+          (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+        )
+        (e.UnscannedFunctions)
+      >;
+}
+
+DoUnCondition-NextFunction {
+  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
+  (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
+    = <DoUnCondition
+        (e.Names) t.SrcPos (e.NextFunctionName) Local (e.Prefix)
+        (e.ScannedFunctions)
+        e.NextFunctionSentences
+        (e.UnscannedFunctions)
+      >;
+
+  (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions) (/* пусто */)
+    = (e.Names) e.ScannedFunctions
+}
+
+/**
+  <UnConditionSentence
+    (e.Names) (e.Prefix) (e.ConditionalSentence) e.ContinuationSentences
+  >
+    == Success (e.RefilledNames) (e.TransformedSentences) e.NewFunctions
+    == Fails
+*/
+UnConditionSentence {
+  (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
+    , e.Sentence
+    : {
+        (e.Pattern) (Condition t.CondResult t.CondPattern) e.Tail
+          , <AnalyzeContinuation (e.Names) (e.Prefix) e.ContinuationSentences>
+          : (e.RefilledNames1) t.ContName e.ContFunction
+          , <NewName (e.RefilledNames1) e.Prefix '_DEBUG'>
+          : (e.RefilledNames) e.DebugFunction
+          , <ExtractVariables (e.Sentence)> : e.Variables
+          = Success
+            (e.RefilledNames)
+            (
+              (e.Sentence)
+              <MakeContinuationSentence t.ContName>
+            )
+            (
+              (e.DebugFunction)
+              <DebugPrintMatchTemplates
+                <PatternSteps (e.Variables) e.Pattern>
+              >
+            )
+            e.ContFunction;
+
+        (e.Pattern) RETURN (e.Result) = Fails;
+      };
+}
+
+AnalyzeContinuation {
+  (e.Names) (e.Prefix) /* пусто */ = (e.Names) NoContinuation /* пусто */;
+
+  (e.Names) (e.Prefix) e.Sentences
+    , <NewName (e.Names) e.Prefix '_cont'> : (e.RefilledNames) e.ContName
+    = (e.RefilledNames)
+      (e.ContName)
+      ((e.ContName) e.Sentences);
+}
+
+MakeContinuationSentence {
+  NoContinuation = /* пусто */;
+  (e.ContName)
+    = (
+        ((Variable NO-POS 'eOther'))
+        RETURN
+        ((Call NO-POS (e.ContName) (Variable NO-POS 'eOther')))
+      );
+}
+
+DebugPrintMatchTemplates {
+  e.Templates ((e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7))
+    = <DebugPrintMatchTemplates e.Templates>
+      ((e.T1) RETURN ((Compound 'T1')))
+      ((e.T2) RETURN ((Compound 'T2')))
+      ((e.T3) RETURN ((Compound 'T3')))
+      ((e.T4) RETURN ((Compound 'T4')))
+      ((e.T5) RETURN ((Compound 'T5')))
+      ((e.T5-sub) RETURN ((Compound 'T5 substitute')))
+      ((e.T6) RETURN ((Compound 'T6')))
+      ((e.T7) RETURN ((Compound 'T7')));
+
+  ((e.T0))
+    = ((e.T0) RETURN ((Compound 'T0')));
+}
+
+PatternSteps {
+  (e.UsedVariables) e.Pattern
+    = <Open 'a' 5 'log.txt'>
+      <DoPatternSteps
+        (e.UsedVariables) (/* bound variables */) (HOLE e.Pattern)
+      >;
+}
+
+DoPatternSteps {
+  t.UsedVariables (e.BoundEVariables) e.HolesAndItems
+    , e.HolesAndItems
+    : {
+        /* Жёсткие элементы */
+        e.HolesAndItems-B (HOLE t.Item e.Pattern) e.HolesAndItems-E
+          , <HardItem (e.BoundEVariables) t.Item> : True
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables)
+              e.HolesAndItems-B t.Item (HOLE e.Pattern) e.HolesAndItems-E
+            >;
+
+        e.HolesAndItems-B (HOLE e.Pattern t.Item) e.HolesAndItems-E
+          , <HardItem (e.BoundEVariables) t.Item> : True
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables)
+              e.HolesAndItems-B (HOLE e.Pattern) t.Item e.HolesAndItems-E
+            >;
+
+        /* Закрытая e-переменная */
+        e.HolesAndItems-B
+        (HOLE (Variable t.SrcPos 'e' e.Index))
+        e.HolesAndItems-E
+          = <DoPatternSteps
+              t.UsedVariables (e.BoundEVariables (e.Index))
+              e.HolesAndItems-B
+              (Variable t.SrcPos 'e' e.Index)
+              e.HolesAndItems-E
+            >;
+
+         /* Пустая дырка */
+         e.HolesAndItems-B (HOLE /* пусто */) e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B e.HolesAndItems-E
+             >;
+
+         /* Скобки */
+         e.HolesAndItems-B
+         (HOLE (Brackets e.InBrackets) e.Pattern)
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (LeftBracket)
+               (HOLE e.InBrackets)
+               (RightBracket)
+               (HOLE e.Pattern)
+               e.HolesAndItems-E
+             >;
+
+         e.HolesAndItems-B
+         (HOLE e.Pattern (Brackets e.InBrackets))
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables)
+               e.HolesAndItems-B
+               (HOLE e.Pattern)
+               (LeftBracket)
+               (HOLE e.InBrackets)
+               (RightBracket)
+               e.HolesAndItems-E
+             >;
+
+         /* Открытая e-переменная */
+         e.HolesAndItems-B
+         (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern)
+         e.HolesAndItems-E
+           = <DoPatternSteps
+               t.UsedVariables (e.BoundEVariables (e.Index))
+               e.HolesAndItems-B
+               (OpenE t.SrcPos 'e' e.Index)
+               (HOLE e.Pattern)
+               e.HolesAndItems-E
+             >
+             (
+               <Map
+                 transformer_BindBrackets
+                 <T1 t.UsedVariables e.HolesAndItems>
+                 <T2 t.UsedVariables e.HolesAndItems>
+                 <T3 t.UsedVariables e.HolesAndItems>
+                 <T4 t.UsedVariables e.HolesAndItems>
+                 <T5 t.UsedVariables e.HolesAndItems>
+                 <T5-sub t.UsedVariables t.SrcPos e.Index>
+                 <T6 t.UsedVariables e.HolesAndItems>
+                 <T7 t.UsedVariables e.HolesAndItems>
+               >
+             );
+
+           /* Конец разбора */
+           e.OnlyItems
+             = (<transformer_BindBrackets <T0 e.OnlyItems>>);
+      };
+}
+
+HardItem {
+  (e.BoundEVariables) (Compound e.Compound) = True;
+  (e.BoundEVariables) (Number s.Number) = True;
+  (e.BoundEVariables) (Char s.Char) = True;
+
+  (e.BoundEVariables) (Variable t.SrcPos 's' e.Index) = True;
+  (e.BoundEVariables) (Variable t.SrcPos 't' e.Index) = True;
+
+  (e.BoundEVariables-B (e.Index) e.BoundEVariables-E)
+  (Variable t.SrcPos 'e' e.Index) = True;
+
+  (e.BoundEVariables) (Variable t.SrcPos 'e' e.Index) = False;
+  (e.BoundEVariables) (Brackets e.Pattern) = False;
+}
+
+$ENTRY transformer_BindBrackets {
+  (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
+}
+
+DoBindBrackets {
+  (t.MultiBracket e.Scanned) t.Symbol e.Tail
+    , <Symbol t.Symbol> : True
+    = <DoBindBrackets (t.MultiBracket e.Scanned t.Symbol) e.Tail>;
+
+  (t.MultiBracket e.Scanned) (Variable t.SrcPos s.Type e.Index) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Variable t.SrcPos s.Type e.Index)) e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (OpenE t.SrcPos s.Type e.Index) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets (Variable t.SrcPos s.Type e.Index)))
+        e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (Brackets e.InBrackets) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets e.InBrackets)) e.Tail
+      >;
+
+  (t.MultiBracket e.Scanned) (LeftBracket) e.Tail
+    = <DoBindBrackets ((t.MultiBracket e.Scanned)) e.Tail>;
+
+  ((t.MultiBracket e.Scanned) e.InBrackets) (RightBracket) e.Tail
+    = <DoBindBrackets
+        (t.MultiBracket e.Scanned (Brackets e.InBrackets)) e.Tail
+      >;
+
+  ('$' e.Scanned) = e.Scanned;
+}
+
+/*
+  Смысл функций T1…T7 поясняется в «Подход к преобразованию условий.md».
+*/
+
+T1 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewName t.UsedVars1 't' e.Index '_next'> : t.UsedVars2 e.tX_next
+    , <NewName t.UsedVars2 'e' e.Index '_rest'> : t.UsedVars3 e.eX_rest
+    = (
+        e.Items
+        (Brackets (Variable t.SrcPos e.eX_fix))
+        (Variable t.SrcPos e.tX_next)
+        (Variable t.SrcPos e.eX_rest)
+        <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
+      );
+}
+
+PassiveHoles {
+  t.UsedVariables
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern)
+  e.ItemsAndHoles
+    , <NewName t.UsedVariables 'e' e.Index '_rest'> : t.NewVars e.eX_rest
+    = e.Items
+      (Variable t.SrcPos e.eX_rest)
+      <PassiveHoles t.NewVars e.ItemsAndHoles>;
+
+  t.UsedVariables e.Items = e.Items;
+}
+
+T2 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewName t.UsedVars1 't' e.Index '_next'> : t.UsedVars2 e.tX_next
+    , <NewName t.UsedVars2 'e' e.Index '_rest'> : t.UsedVars3 e.eX_rest
+    = (
+        e.Items
+        (Brackets (Variable t.SrcPos e.eX_fix) (Variable t.SrcPos e.tX_next))
+        (Variable t.SrcPos e.eX_rest)
+        <PassiveHoles t.UsedVars3 e.ItemsAndHoles>
+      );
+}
+
+T3 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    = (
+        e.Items
+        (Brackets (Variable t.SrcPos e.eX_fix))
+        <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
+      );
+}
+
+T4 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    = (
+        e.Items (Variable t.SrcPos e.eX_fix)
+        <PassiveHoles t.UsedVars1 e.ItemsAndHoles>
+      );
+}
+
+T5 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <T5-sub t.UsedVars t.SrcPos e.Index>
+    : (t.SourceVar t.eX_fix t.eX_var)
+    = (
+        e.Items (Brackets t.eX_fix) t.eX_var
+        <Substitute
+          e.Pattern <T5-UnHole e.ItemsAndHoles> (t.SourceVar t.eX_fix t.eX_var)
+        >
+      );
+}
+
+T5-UnHole {
+  e.Items (HOLE e.Pattern) e.ItemsAndHoles
+    = e.Items e.Pattern <T5-UnHole e.ItemsAndHoles>;
+
+  e.Items = e.Items;
+}
+
+T5-sub {
+  t.UsedVars t.SrcPos e.Index
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewName t.UsedVars 'e' e.Index '_var'> : t.UsedVars2 e.eX_var
+    = (
+        (Variable t.SrcPos 'e' e.Index)
+        (Variable t.SrcPos e.eX_fix)
+        (Variable t.SrcPos e.eX_var)
+      );
+}
+
+Substitute {
+  (Variable t.SrcPos1 s.Type e.Index) e.Tail
+  ((Variable t.SrcPos2 s.Type e.Index) e.Expr)
+    = e.Expr
+      <Substitute e.Tail ((Variable t.SrcPos2 s.Type e.Index) e.Expr)>;
+
+  (Brackets e.InBrackets) e.Tail (t.Variable e.Expr)
+    = (Brackets <Substitute e.InBrackets (t.Variable e.Expr)>)
+      <Substitute e.Tail (t.Variable e.Expr)>;
+
+  t.OtherItem e.Tail (t.Variable e.Expr)
+    = t.OtherItem <Substitute e.Tail (t.Variable e.Expr)>;
+
+  /* пусто */ (t.Variable e.Expr)
+    = /* пусто */;
+}
+
+T6 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewName t.UsedVars1 'e' e.Index '_rest'> : t.UsedVars2 e.eX_rest
+    = (
+        e.Items
+        (Brackets (Variable t.SrcPos e.eX_fix))
+        (Variable t.SrcPos e.eX_rest)
+        <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
+      );
+}
+
+T7 {
+  t.UsedVars
+  e.Items (HOLE (Variable t.SrcPos 'e' e.Index) e.Pattern) e.ItemsAndHoles
+    , <NewName t.UsedVars 'e' e.Index '_fix'> : t.UsedVars1 e.eX_fix
+    , <NewName t.UsedVars1 'e' e.Index '_rest'> : t.UsedVars2 e.eX_rest
+    = (
+        e.Items
+        (Variable t.SrcPos e.eX_fix) (Variable t.SrcPos e.eX_rest)
+        <PassiveHoles t.UsedVars2 e.ItemsAndHoles>
+      );
+}
+
+T0 {
+  e.Items = (<DoT0 e.Items>);
+}
+
+DoT0 {
+  (OpenE t.SrcPos 'e' e.Index) e.Tail
+    = (Brackets (Variable t.SrcPos 'e' e.Index)) <DoT0 e.Tail>;
+
+  (Brackets e.InBrackets) e.Tail = (Brackets <DoT0 e.InBrackets>) <DoT0 e.Tail>;
+
+  t.OtherItem e.Tail = t.OtherItem <DoT0 e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
 
 Function {
   (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences
@@ -329,7 +762,7 @@ ScanFunction-Condition-Aux {
   (e.ScannedFunctions) (e.ScannedSentences)
   (t.Pattern (Condition (e.CondResult) (e.CondPattern)) e.Tail)
   t.Continuation (e.UnscannedFunctions)
-    , <PatternSteps t.Variables t.Pattern>
+    , <OldPatternSteps t.Variables t.Pattern>
     : {
         (() (e.Pattern)) (t.PatternVars /* пусто */) t.NewUsedVars
           /* частный случай — нет открытых переменных */
@@ -344,7 +777,7 @@ ScanFunction-Condition-Aux {
                   t.Pattern
                   RETURN (
                     (Call
-                      () (e.ConditionCheckName) 
+                      () (e.ConditionCheckName)
                       <VariablesAsContext CONTEXT-RESULT t.PatternVars> e.CondResult
                     )
                   )
@@ -372,7 +805,7 @@ ScanFunction-Condition-Aux {
               )
             >;
 
-        e.PatternSteps t.NewUsedVars
+        e.OldPatternSteps t.NewUsedVars
           = <ScanFunction
               t.Names t.SrcPos (e.Name) s.Scope (e.Prefix)
               (e.ScannedFunctions)
@@ -380,7 +813,7 @@ ScanFunction-Condition-Aux {
                 e.ScannedSentences
                 (Comment 'Before condition')
                 (t.Pattern (Condition (e.CondResult) (e.CondPattern)) e.Tail)
-                <DebugPrintPatternSteps e.PatternSteps>
+                <DebugPrintPatternSteps e.OldPatternSteps>
                 (Comment 'After condition')
                 <GenContinuation t.Continuation eOTHER-Generator>
               )
@@ -390,22 +823,22 @@ ScanFunction-Condition-Aux {
       };
 }
 
-PatternSteps {
+OldPatternSteps {
   t.UsedVars (e.Pattern)
     = (() (e.Pattern))
-      <DoPatternSteps t.UsedVars (/* pattern vars */) (e.Pattern)>
+      <DoOldPatternSteps t.UsedVars (/* pattern vars */) (e.Pattern)>
 }
 
-DoPatternSteps {
+DoOldPatternSteps {
   t.UsedVars t.PatternVars e.SubPatterns-B (t.Symbol e.Expr) e.SubPatterns-E
     , <Symbol t.Symbol>: True
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
       >;
 
   t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr t.Symbol) e.SubPatterns-E
     , <Symbol t.Symbol>: True
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.UsedVars t.PatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
       >;
 
@@ -413,7 +846,7 @@ DoPatternSteps {
     , <HardVariable t.PatternVars t.Var>: True s.Type e.Index
     , <AddVariable t.UsedVars t.PatternVars s.Type e.Index>
     : t.NewUsedVars t.NewPatternVars
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.NewUsedVars t.NewPatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
       >;
 
@@ -421,26 +854,26 @@ DoPatternSteps {
     , <HardVariable t.PatternVars t.Var>: True s.Type e.Index
     , <AddVariable t.UsedVars t.PatternVars s.Type e.Index>
     : t.NewUsedVars t.NewPatternVars
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.NewUsedVars t.NewPatternVars e.SubPatterns-B (e.Expr) e.SubPatterns-E
       >;
 
   t.UsedVars t.PatternVars
   e.SubPatterns-B ((Brackets e.SubExpr) e.Expr) e.SubPatterns-E
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.UsedVars t.PatternVars
         e.SubPatterns-B (e.SubExpr) (e.Expr) e.SubPatterns-E
       >;
 
   t.UsedVars t.PatternVars
   e.SubPatterns-B (e.Expr (Brackets e.SubExpr)) e.SubPatterns-E
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.UsedVars t.PatternVars
         e.SubPatterns-B (e.Expr) (e.SubExpr) e.SubPatterns-E
       >;
 
   t.UsedVars t.PatternVars e.SubPatterns-B () e.SubPatterns-E
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.UsedVars t.PatternVars e.SubPatterns-B e.SubPatterns-E
       >;
 
@@ -448,7 +881,7 @@ DoPatternSteps {
   e.SubPatterns-B ((Variable t.SrcPos 'e' e.Index)) e.SubPatterns-E
     , <AddVariable t.UsedVars t.PatternVars 'e' e.Index>
     : t.NewUsedVars e.NewPatternVars
-    = <DoPatternSteps
+    = <DoOldPatternSteps
         t.NewUsedVars e.NewPatternVars e.SubPatterns-B e.SubPatterns-E
       >;
 
@@ -461,7 +894,7 @@ DoPatternSteps {
     , <AddVariable t.UsedVars t.PatternVars 'e' e.Index>
     : t.NewUsedVars t.NewPatternVars
     = (t.PatternVars (t.Variable e.Expr) e.SubPatterns)
-      <DoPatternSteps
+      <DoOldPatternSteps
         t.NewUsedVars t.NewPatternVars (e.Expr) e.SubPatterns
       >;
 }
