@@ -1,6 +1,7 @@
 $ENTRY RunTests {
   = <Perform
       AllSubstrings
+      AllSubstrings-Hard
       Document
       SimpleCondition
       SimpleRepeatedCondition
@@ -47,6 +48,33 @@ AllSubstrings {
     = ;
 
   e.String = <Dg Substr>;
+}
+
+*$*****************************************************************************
+
+TestAllSubstrings-Hard {
+  = <AssertEq
+      <AllSubstrings-Hard 'abcdef'>
+      (
+        ('a') ('ab') ('abc') ('abcd') ('abcde') ('abcdef')
+        ('b') ('bc') ('bcd') ('bcde') ('bcdef')
+        ('c') ('cd') ('cde') ('cdef')
+        ('d') ('de') ('def')
+        ('e') ('ef')
+        ('f')
+      )
+    >;
+}
+
+AllSubstrings-Hard {
+  e.String, <Br Substr '=' /* пусто */> : NotEmpty = ;
+
+  e.Begin e.Middle e.End
+    , e.Middle : t.1 e.2
+    , <Br Substr '=' <Dg Substr> (e.Middle)> : /* пусто */
+    , e.Middle : t.3
+    , e.End : /* пусто */
+    = <Dg Substr>;
 }
 
 *$*****************************************************************************
