@@ -1,5 +1,11 @@
 $ENTRY RunTests {
-  = <Perform SimpleCondition SimpleRepeatedCondition SimpleOneELoop>;
+  = <Perform
+      AllSubstrings
+      Document
+      SimpleCondition
+      SimpleRepeatedCondition
+      SimpleOneELoop
+    >;
 }
 
 Perform {
@@ -14,6 +20,76 @@ Perform {
 AssertEq {
   e.Equals (e.Equals) =
 }
+
+*$*****************************************************************************
+
+TestAllSubstrings {
+  = <AssertEq
+      <AllSubstrings 'abcdef'>
+      (
+        () ('a') ('ab') ('abc') ('abcd') ('abcde') ('abcdef')
+        () ('b') ('bc') ('bcd') ('bcde') ('bcdef')
+        () ('c') ('cd') ('cde') ('cdef')
+        () ('d') ('de') ('def')
+        () ('e') ('ef')
+        () ('f')
+        ()
+      )
+    >;
+}
+
+AllSubstrings {
+  e.String, <Br Substr '=' /* пусто */> : NotEmpty = ;
+
+  e.Begin e.Middle e.End
+    , <Br Substr '=' <Dg Substr> (e.Middle)>
+    : NotEmpty
+    = ;
+
+  e.String = <Dg Substr>;
+}
+
+*$*****************************************************************************
+
+TestDocument {
+  = <AssertEq
+      <F-doc
+        (
+          A
+          (B (A B) C)
+          Q
+          (D (A (B (A B) C) Q D) ED)
+          R
+        )
+        (A A B A A B F)
+      >
+      (
+        Ok
+        (A (B (A B) C) Q)
+        (D)
+        (A A B)
+      )
+    >
+    <AssertEq
+      <F-doc (A (B (A B) C) D) (E E F)>
+      (Fail)
+    >;
+}
+
+F-doc {
+  (e.A (e.B (e.A e.B) e.C) e.D) (e.E e.E e.F)
+    , <G-doc (e.A) (e.B) (e.E)> : Ok
+    = Ok (e.A) (e.B) (e.E);
+
+  e.Other = Fail;
+}
+
+G-doc {
+  (e.A) (D) (A A B) = Ok;
+  e.Other = Fail;
+}
+
+
 
 *$*****************************************************************************
 
