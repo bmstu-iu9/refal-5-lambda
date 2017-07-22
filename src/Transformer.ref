@@ -239,38 +239,30 @@ UnConditionSentence {
     , e.Sentence
     : {
         (e.Pattern) (Condition (e.CondResult) t.CondPattern) e.Tail
-          , <AnalyzeContinuation (e.Names) (e.Prefix) e.ContinuationSentences>
-          : (e.RefilledNames1) t.ContName e.ContFunction
-          , <NewName (e.RefilledNames1) e.Prefix '_check'>
-          : (e.RefilledNames2) e.CheckFunction
-          , <ExtractVariables (e.Sentence)> : e.SentenceVariables
-          , <BlockScopeVars (e.Pattern)> : e.PatternVarsAsExpr
-          , <ConditionSubFunctions
-              (e.RefilledNames2) (e.SentenceVariables) (e.Prefix) t.ContName
-              (e.CheckFunction) (e.PatternVarsAsExpr)
-              (e.CondResult) t.CondPattern (e.Tail)
-              <PatternSteps (e.SentenceVariables) e.Pattern>
-            >
-          : (e.RefilledNames3) e.SubFunctions
           = Success
-            (e.RefilledNames3)
-            (
-              (
-                (e.Pattern)
-                RETURN
-                (
-                  (Call
-                    NO-POS (e.CheckFunction) e.PatternVarsAsExpr e.CondResult
-                  )
-                )
-              )
-              <MakeContinuationSentence t.ContName>
-            )
-            e.SubFunctions
-            e.ContFunction;
+            <UnConditionSentence-Aux
+              (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
+            >;
 
         (e.Pattern) RETURN (e.Result) = Fails;
       };
+}
+
+UnConditionSentence-Aux {
+  (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
+    , <AnalyzeContinuation (e.Names) (e.Prefix) e.ContinuationSentences>
+    : (e.Names1) t.ContName e.ContFunction
+    , <ConditionSubFunctions (e.Names1) (e.Prefix) t.ContName e.Sentence>
+    : (e.Names2) (e.CallCheckSentence) e.SubFunctions
+    = (e.Names2)
+      (
+        (e.CallCheckSentence)
+        <MakeContinuationSentence
+          t.ContName ((Variable NO-POS 'eOther')) ((Variable NO-POS 'eOther'))
+        >
+      )
+      e.SubFunctions
+      e.ContFunction;
 }
 
 AnalyzeContinuation {
@@ -284,13 +276,10 @@ AnalyzeContinuation {
 }
 
 MakeContinuationSentence {
-  NoContinuation = /* пусто */;
-  (e.ContName)
-    = (
-        ((Variable NO-POS 'eOther'))
-        RETURN
-        ((Call NO-POS (e.ContName) (Variable NO-POS 'eOther')))
-      );
+  NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
+
+  (e.ContName) (e.Pattern) (e.ContArg)
+    = ((e.Pattern) RETURN ((Call NO-POS (e.ContName) e.ContArg)));
 }
 
 DebugPrintMatchTemplates {
@@ -622,14 +611,35 @@ DoT0 {
 
 /**
   <ConditionSubFunctions
-    (e.Names) (e.VarNames) (e.Prefix) t.ContName
-    (e.CheckFunction) (e.PatternVarsAsExpr)
-    (e.CondResult) (e.CondPattern) (e.CheckSentenceTail)
-    e.PatternSteps
+    (e.Names) (e.Prefix) t.ContName e.Sentence
   >
     == (e.Names) e.SubFunctions
 */
 ConditionSubFunctions {
+  (e.Names) (e.Prefix) t.ContName
+  e.Sentence
+    , e.Sentence
+    : (e.Pattern) (Condition (e.CondResult) (e.CondPattern)) e.SentenceTail
+    , <NewName (e.Names) e.Prefix '_check'> : (e.RefilledNames1) e.CheckFunction
+    , <ExtractVariables (e.Sentence)> : e.SentenceVariables
+    , <BlockScopeVars (e.Pattern)> : e.PatternVarsAsExpr
+    , <ConditionSubFunctions-Aux
+        (e.RefilledNames1) (e.SentenceVariables) (e.Prefix) t.ContName
+        (e.CheckFunction) (e.PatternVarsAsExpr)
+        (e.CondResult) (e.CondPattern) (e.SentenceTail)
+        <PatternSteps (e.SentenceVariables) e.Pattern>
+      >
+    : (e.RefilledNames2) e.SubFunctions
+    = (e.RefilledNames2)
+      (
+        (e.Pattern)
+        RETURN
+        ((Call NO-POS (e.CheckFunction) e.PatternVarsAsExpr e.CondResult))
+      )
+      e.SubFunctions;
+}
+
+ConditionSubFunctions-Aux {
   (e.Names) (e.VarNames) (e.Prefix) t.ContName
   (e.CheckFunction) (e.PatternVarsAsExpr)
   (e.CondResult) (e.CondPattern) (e.CheckSentenceTail)
@@ -700,18 +710,19 @@ DoOpenEChain {
         (e.CheckFunction) (e.CheckFunctionArg)
         e.TemplateSet
       >
-    : (e.RefilledNames) (e.NextForward) e.NewFunctions
+    : (e.RefilledNames) e.NewFunctions
     = (e.RefilledNames) e.GeneratedFunctions e.NewFunctions;
 
   (e.CurrentForward) (e.Names) (e.Prefix) t.ContName
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.GeneratedFunctions) (e.TemplateSet) e.TemplateSets
+    , <NewName (e.Names) e.Prefix '_forward'> : (e.Names1) e.NextForward
     , <MakeOpenE-ForwardNext
-        (e.CurrentForward) (e.Names) (e.Prefix) PlusOne
+        (e.CurrentForward) (e.Names1) (e.Prefix) (e.NextForward)
         (e.CheckFunction) (e.CheckFunctionArg)
         e.TemplateSet
       >
-    : (e.RefilledNames) (e.NextForward) e.NewFunctions
+    : (e.RefilledNames) e.NewFunctions
     = <DoOpenEChain
         (e.NextForward) (e.RefilledNames) (e.Prefix) t.ContName
         (e.CheckFunction) (e.CheckFunctionArg)
@@ -723,14 +734,12 @@ MakeOpenE-ForwardNext {
   (e.CurrentForwardName) (e.Names) (e.Prefix) t.ContName
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
-    , <NewName (e.Names) e.Prefix '_forward'> : (e.Names1) e.NextForwardName
-    , <NewName (e.Names1) e.Prefix '_next'> : (e.RefilledNames) e.NextName
+    , <NewName (e.Names) e.Prefix '_next'> : (e.RefilledNames) e.NextName
     = (e.RefilledNames)
-      (e.NextForwardName)
       (
         (e.CurrentForwardName)
         ((e.T1) RETURN ((Call NO-POS (e.NextName) e.T2)))
-        <MakeOpenE-Cont t.ContName (e.NextForwardName) (e.T3) (e.T4)>
+        <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
         (e.NextName)
@@ -744,24 +753,8 @@ MakeOpenE-ForwardNext {
             )
           )
         )
-        <MakeOpenE-Cont t.ContName (e.NextForwardName) (e.T6) (e.T7)>
+        <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
-}
-
-MakeOpenE-Cont {
-  NoContinuation (e.NextForwardName) (e.Pattern) (e.ContArg)
-    = /* пусто */;
-
-  PlusOne (e.NextForwardName) (e.Pattern) (e.ContArg)
-    = <MakeOpenE-Cont-Aux (e.NextForwardName) (e.Pattern) (e.ContArg)>;
-
-  (e.ContName) (e.NextForwardName) (e.Pattern) (e.ContArg)
-    = <MakeOpenE-Cont-Aux (e.ContName) (e.Pattern) (e.ContArg)>;
-}
-
-MakeOpenE-Cont-Aux {
-  (e.ContName) (e.Pattern) (e.ContArg)
-    = ((e.Pattern) RETURN ((Call NO-POS (e.ContName) e.ContArg)));
 }
 
 ExtractVariables {
