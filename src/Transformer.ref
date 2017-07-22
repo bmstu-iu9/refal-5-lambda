@@ -282,22 +282,6 @@ MakeContinuationSentence {
     = ((e.Pattern) RETURN ((Call NO-POS (e.ContName) e.ContArg)));
 }
 
-DebugPrintMatchTemplates {
-  e.Templates ((e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7))
-    = <DebugPrintMatchTemplates e.Templates>
-      ((e.T1) RETURN ((Compound 'T1')))
-      ((e.T2) RETURN ((Compound 'T2')))
-      ((e.T3) RETURN ((Compound 'T3')))
-      ((e.T4) RETURN ((Compound 'T4')))
-      ((e.T5) RETURN ((Compound 'T5')))
-      ((e.T5-sub) RETURN ((Compound 'T5 substitute')))
-      ((e.T6) RETURN ((Compound 'T6')))
-      ((e.T7) RETURN ((Compound 'T7')));
-
-  ((e.T0))
-    = ((e.T0) RETURN ((Compound 'T0')));
-}
-
 PatternSteps {
   (e.UsedVariables) e.Pattern
     = <DoPatternSteps
