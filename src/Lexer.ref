@@ -14,13 +14,13 @@ $EXTERN LoadFile, Inc;
     TkChar ~ char
     TkVariable ~ s.VarType e.VarName
     TkOpenBracket, TkCloseBracket, TkCloseCall,
-    TkOpenBlock, TkCloseBlock ~ пусто
-    TkOpenCall ~ char* -- имя функции
-    TkComma, TkColon, TkAssign, TkSemicolon ~ пусто
-    TkExtern, TkEntry ~ пусто
+    TkOpenBlock, TkCloseBlock ~ РїСѓСЃС‚Рѕ
+    TkOpenCall ~ char* -- РёРјСЏ С„СѓРЅРєС†РёРё
+    TkComma, TkColon, TkAssign, TkSemicolon ~ РїСѓСЃС‚Рѕ
+    TkExtern, TkEntry ~ РїСѓСЃС‚Рѕ
     TkSpecComment ~ char*
-    TkEOF ~ пусто
-    TkError ~ char* -- сообщение об ошибке в лексике
+    TkEOF ~ РїСѓСЃС‚Рѕ
+    TkError ~ char* -- СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ РІ Р»РµРєСЃРёРєРµ
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY Scan {
@@ -118,7 +118,7 @@ IsPunctuation {
         e.Types-B (s.Punct s.TokType) e.Types-E =
     s.TokType;
 
-  s.Other = /* пусто */;
+  s.Other = /* РїСѓСЃС‚Рѕ */;
 }
 
 DoScan-Keyword {
@@ -206,7 +206,7 @@ DoScan-CComment {
   t.Pos (e.Comment) () e.Lines =
     <DoScan-CComment <IncLine t.Pos> () e.Lines>;
 
-  t.Pos (e.Comment) /* пусто */ =
+  t.Pos (e.Comment) /* РїСѓСЃС‚Рѕ */ =
     (TkError t.Pos 'Unexpected EOF, unclosed comment')
     (TkEOF <IncCol t.Pos Len e.Comment>);
 }
@@ -247,7 +247,7 @@ SimpleEscapedChar {
     {
       e.Escapes-B (s.Escaped s.Char) e.Escapes-E = s.Char;
 
-      e.Escapes = /* пусто */;
+      e.Escapes = /* РїСѓСЃС‚Рѕ */;
     }
 }
 
@@ -284,7 +284,7 @@ HexDigit {
       'Lu' s.Digit = <DoHexDigit 'ABCDEF' 10 s.Digit>;
       'Ll' s.Digit = <DoHexDigit 'abcdef' 10 s.Digit>;
 
-      s.Other = /* пусто */;
+      s.Other = /* РїСѓСЃС‚Рѕ */;
     };
 }
 
@@ -294,7 +294,7 @@ DoHexDigit {
   s.OtherDigit e.Samples s.Val s.Digit =
     <DoHexDigit e.Samples <Inc s.Val> s.Digit>;
 
-  /* нет образцов */ s.BadVal s.Digit = /* пусто */;
+  /* РЅРµС‚ РѕР±СЂР°Р·С†РѕРІ */ s.BadVal s.Digit = /* РїСѓСЃС‚Рѕ */;
 }
 
 DoScan-Compound {
