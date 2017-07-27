@@ -52,13 +52,6 @@ $ENTRY StrFromToken {
   # Close s.CloseBracket = <StrFromToken s.CloseBracket>;
 }
 
-NormalizeName {
-  e.Name-B '_' e.Name-E =
-    <NormalizeName e.Name-B '-' e.Name-E>;
-
-  e.Name = e.Name;
-}
-
 NormalizeToken {
   (#TkDirective e.Directive) =
     <ValidDirective e.Directive>;
@@ -84,7 +77,7 @@ NormalizeToken {
   (#TkLiteral-FF 'f') = (#TkChar '\x0C');
   (#TkLiteral-VT 'v') = (#TkChar '\x0b');
 
-  (#TkName e.Name) = (#TkName <NormalizeName e.Name>);
+  (#TkName e.Name) = (#TkName e.Name);
 
   (#TkNewLine e.Accumulated) = (#TkNewLine);
 
@@ -92,8 +85,7 @@ NormalizeToken {
 
   (#TkPunctuation s.Punctuation) = (<SwPunctuation s.Punctuation>);
 
-  (#TkVariable s.Type '.' e.Index) =
-    (#TkVariable s.Type <NormalizeName e.Index>);
+  (#TkVariable s.Type '.' e.Index) = (#TkVariable s.Type e.Index);
 
   (#TkNativeLine e.Line) = (#TkNativeLine <Trim-R e.Line>);
 
@@ -203,7 +195,7 @@ CollectNativeLines-Aux {
   :XDigit: = '0123456789ABCDEFabcdef' .
   :Punctuation: = '<>(){}[]=;:,#^'.
 
-  :StartIdentifier: = :UpLetter:.
+  :StartIdentifier: = :UpLetter: :LoLetter: '_'.
   :TailIdentifier: = :UpLetter: :LoLetter: :Digit: '_-'.
   :VarName: = :TailIdentifier:.
   :VarMode: = 'set'.
@@ -220,8 +212,8 @@ CollectNativeLines-Aux {
   Main =
     :Space:               !-                    Main                      |
     :Punctuation:         !#TkPunctuation       Main                      |
-    :StartIdentifier:                           Name                      |
     :VarMode:                                   VariableStart             |
+    :StartIdentifier:                           Name                      |
     :Digit:                                     Number                    |
     '$'                   !-                    Directive                 |
     '\''                  !-                    StringLiteral-Start       |
@@ -240,7 +232,7 @@ CollectNativeLines-Aux {
 
   VariableStart =
     '.'                                         VariableIndex             |
-            !"Expected dot"                     Main                      .
+                                                Name                      .
 
   VariableIndex =
     :VarName:                                   VariableIndexTail         |
@@ -400,6 +392,32 @@ Main {
   (e.Accum) ',' e.Text = (#TkPunctuation e.Accum ',') <Main () e.Text>;
   (e.Accum) '#' e.Text = (#TkPunctuation e.Accum '#') <Main () e.Text>;
   (e.Accum) '^' e.Text = (#TkPunctuation e.Accum '^') <Main () e.Text>;
+  (e.Accum) 's' e.Text = <VariableStart (e.Accum 's') e.Text>;
+  (e.Accum) 'e' e.Text = <VariableStart (e.Accum 'e') e.Text>;
+  (e.Accum) 't' e.Text = <VariableStart (e.Accum 't') e.Text>;
+  (e.Accum) 'a' e.Text = <Name (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <Name (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <Name (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <Name (e.Accum 'd') e.Text>;
+  (e.Accum) 'f' e.Text = <Name (e.Accum 'f') e.Text>;
+  (e.Accum) 'g' e.Text = <Name (e.Accum 'g') e.Text>;
+  (e.Accum) 'h' e.Text = <Name (e.Accum 'h') e.Text>;
+  (e.Accum) 'i' e.Text = <Name (e.Accum 'i') e.Text>;
+  (e.Accum) 'j' e.Text = <Name (e.Accum 'j') e.Text>;
+  (e.Accum) 'k' e.Text = <Name (e.Accum 'k') e.Text>;
+  (e.Accum) 'l' e.Text = <Name (e.Accum 'l') e.Text>;
+  (e.Accum) 'm' e.Text = <Name (e.Accum 'm') e.Text>;
+  (e.Accum) 'n' e.Text = <Name (e.Accum 'n') e.Text>;
+  (e.Accum) 'o' e.Text = <Name (e.Accum 'o') e.Text>;
+  (e.Accum) 'p' e.Text = <Name (e.Accum 'p') e.Text>;
+  (e.Accum) 'q' e.Text = <Name (e.Accum 'q') e.Text>;
+  (e.Accum) 'r' e.Text = <Name (e.Accum 'r') e.Text>;
+  (e.Accum) 'u' e.Text = <Name (e.Accum 'u') e.Text>;
+  (e.Accum) 'v' e.Text = <Name (e.Accum 'v') e.Text>;
+  (e.Accum) 'w' e.Text = <Name (e.Accum 'w') e.Text>;
+  (e.Accum) 'x' e.Text = <Name (e.Accum 'x') e.Text>;
+  (e.Accum) 'y' e.Text = <Name (e.Accum 'y') e.Text>;
+  (e.Accum) 'z' e.Text = <Name (e.Accum 'z') e.Text>;
   (e.Accum) 'A' e.Text = <Name (e.Accum 'A') e.Text>;
   (e.Accum) 'B' e.Text = <Name (e.Accum 'B') e.Text>;
   (e.Accum) 'C' e.Text = <Name (e.Accum 'C') e.Text>;
@@ -426,9 +444,7 @@ Main {
   (e.Accum) 'X' e.Text = <Name (e.Accum 'X') e.Text>;
   (e.Accum) 'Y' e.Text = <Name (e.Accum 'Y') e.Text>;
   (e.Accum) 'Z' e.Text = <Name (e.Accum 'Z') e.Text>;
-  (e.Accum) 's' e.Text = <VariableStart (e.Accum 's') e.Text>;
-  (e.Accum) 'e' e.Text = <VariableStart (e.Accum 'e') e.Text>;
-  (e.Accum) 't' e.Text = <VariableStart (e.Accum 't') e.Text>;
+  (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
   (e.Accum) '0' e.Text = <Number (e.Accum '0') e.Text>;
   (e.Accum) '1' e.Text = <Number (e.Accum '1') e.Text>;
   (e.Accum) '2' e.Text = <Number (e.Accum '2') e.Text>;
@@ -451,6 +467,11 @@ StartNative-NewLine {
   (e.Accum) '\r' e.Text = <StartNative-NewLine () e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Native-Begin () e.Text>;
   (e.Accum) e.Text = (#TokenError 'Native inlines expects new line after two percents') <Main () e.Text>;
+}
+
+VariableStart {
+  (e.Accum) '.' e.Text = <VariableIndex (e.Accum '.') e.Text>;
+  (e.Accum) e.Text = <Name (e.Accum) e.Text>;
 }
 
 Name {
@@ -519,11 +540,6 @@ Name {
   (e.Accum) '_' e.Text = <Name (e.Accum '_') e.Text>;
   (e.Accum) '-' e.Text = <Name (e.Accum '-') e.Text>;
   (e.Accum) e.Text = (#TkName e.Accum) <Main () e.Text>;
-}
-
-VariableStart {
-  (e.Accum) '.' e.Text = <VariableIndex (e.Accum '.') e.Text>;
-  (e.Accum) e.Text = (#TokenError 'Expected dot') <Main () e.Text>;
 }
 
 Number {
