@@ -301,7 +301,11 @@ CollectNativeLines-Aux {
             !#TkLiteral-OCode                   StringLiteral             .
 
   StringLiteral-Escape-XCode =
-    :XDigit:                                    StringLiteral-Escape-XCode|
+    :XDigit:                                    StringLiteral-Escape-Xnext|
+            !"Expected hexadecimal digit"       StringLiteral             .
+
+  StringLiteral-Escape-Xnext =
+    :XDigit:                                    StringLiteral-Escape-Xnext|
             !#TkLiteral-XCode                   StringLiteral             .
 
   StringLiteral-Quote =
@@ -876,29 +880,29 @@ StringLiteral-Escape-OCode {
 }
 
 StringLiteral-Escape-XCode {
-  (e.Accum) '0' e.Text = <StringLiteral-Escape-XCode (e.Accum '0') e.Text>;
-  (e.Accum) '1' e.Text = <StringLiteral-Escape-XCode (e.Accum '1') e.Text>;
-  (e.Accum) '2' e.Text = <StringLiteral-Escape-XCode (e.Accum '2') e.Text>;
-  (e.Accum) '3' e.Text = <StringLiteral-Escape-XCode (e.Accum '3') e.Text>;
-  (e.Accum) '4' e.Text = <StringLiteral-Escape-XCode (e.Accum '4') e.Text>;
-  (e.Accum) '5' e.Text = <StringLiteral-Escape-XCode (e.Accum '5') e.Text>;
-  (e.Accum) '6' e.Text = <StringLiteral-Escape-XCode (e.Accum '6') e.Text>;
-  (e.Accum) '7' e.Text = <StringLiteral-Escape-XCode (e.Accum '7') e.Text>;
-  (e.Accum) '8' e.Text = <StringLiteral-Escape-XCode (e.Accum '8') e.Text>;
-  (e.Accum) '9' e.Text = <StringLiteral-Escape-XCode (e.Accum '9') e.Text>;
-  (e.Accum) 'A' e.Text = <StringLiteral-Escape-XCode (e.Accum 'A') e.Text>;
-  (e.Accum) 'B' e.Text = <StringLiteral-Escape-XCode (e.Accum 'B') e.Text>;
-  (e.Accum) 'C' e.Text = <StringLiteral-Escape-XCode (e.Accum 'C') e.Text>;
-  (e.Accum) 'D' e.Text = <StringLiteral-Escape-XCode (e.Accum 'D') e.Text>;
-  (e.Accum) 'E' e.Text = <StringLiteral-Escape-XCode (e.Accum 'E') e.Text>;
-  (e.Accum) 'F' e.Text = <StringLiteral-Escape-XCode (e.Accum 'F') e.Text>;
-  (e.Accum) 'a' e.Text = <StringLiteral-Escape-XCode (e.Accum 'a') e.Text>;
-  (e.Accum) 'b' e.Text = <StringLiteral-Escape-XCode (e.Accum 'b') e.Text>;
-  (e.Accum) 'c' e.Text = <StringLiteral-Escape-XCode (e.Accum 'c') e.Text>;
-  (e.Accum) 'd' e.Text = <StringLiteral-Escape-XCode (e.Accum 'd') e.Text>;
-  (e.Accum) 'e' e.Text = <StringLiteral-Escape-XCode (e.Accum 'e') e.Text>;
-  (e.Accum) 'f' e.Text = <StringLiteral-Escape-XCode (e.Accum 'f') e.Text>;
-  (e.Accum) e.Text = (#TkLiteral-XCode e.Accum) <StringLiteral () e.Text>;
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-Xnext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-Xnext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-Xnext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-Xnext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-Xnext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-Xnext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-Xnext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-Xnext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-Xnext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-Xnext (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <StringLiteral () e.Text>;
 }
 
 SL-E-C1 {
@@ -925,6 +929,32 @@ SL-E-OC1 {
   (e.Accum) '6' e.Text = (#TkLiteral-OCode e.Accum '6') <StringLiteral () e.Text>;
   (e.Accum) '7' e.Text = (#TkLiteral-OCode e.Accum '7') <StringLiteral () e.Text>;
   (e.Accum) e.Text = (#TkLiteral-OCode e.Accum) <StringLiteral () e.Text>;
+}
+
+StringLiteral-Escape-Xnext {
+  (e.Accum) '0' e.Text = <StringLiteral-Escape-Xnext (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <StringLiteral-Escape-Xnext (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <StringLiteral-Escape-Xnext (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <StringLiteral-Escape-Xnext (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <StringLiteral-Escape-Xnext (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <StringLiteral-Escape-Xnext (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <StringLiteral-Escape-Xnext (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <StringLiteral-Escape-Xnext (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <StringLiteral-Escape-Xnext (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <StringLiteral-Escape-Xnext (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <StringLiteral-Escape-Xnext (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TkLiteral-XCode e.Accum) <StringLiteral () e.Text>;
 }
 
 SL-E-C2 {
