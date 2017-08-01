@@ -84,7 +84,7 @@ PrepareBracket {
     '$FORWARD' NameList |
     '$SWAP' NameList |
     '$ESWAP' NameList |
-    '$LABEL' NameList |
+    '$LABEL' NameList-Idents |
     '$ENTRY' Function |
     Function .
 */
@@ -151,6 +151,9 @@ ParseElement-SwDirective {
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
 
+  t.ErrorList #Ident e.Tail =
+    <ParseNameList-Idents (/* generated */) t.ErrorList e.Tail>;
+
   t.ErrorList s.Directive e.Tail =
     <ParseNameList
       (/* generated */) t.ErrorList
@@ -167,7 +170,7 @@ ParseNameList {
   (e.AST) t.ErrorList s.ASTItem s.ScopeClass
   (#TkName s.LnNum e.Name) e.Tail =
     <ParseNameList-Tail
-      (e.AST <Wrap s.ASTItem s.LnNum s.ScopeClass e.Name>)
+      (e.AST (s.ASTItem s.LnNum s.ScopeClass e.Name))
       t.ErrorList s.ASTItem s.ScopeClass e.Tail
     >;
 
@@ -176,13 +179,6 @@ ParseNameList {
     (e.AST)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
-}
-
-Wrap {
-  #Ident s.LnNum s.ScopeClass e.Name = (#Ident s.LnNum e.Name);
-
-  s.ASTItem s.LnNum s.ScopeClass e.Name =
-    (s.ASTItem s.LnNum s.ScopeClass e.Name);
 }
 
 ParseNameList-Tail {
@@ -196,6 +192,43 @@ ParseNameList-Tail {
     (e.AST)
     <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
     t.Unexpected e.Tail;
+}
+
+/*
+  NameList-Idents =
+    (Name | Compound) ',' NameList-Idents | (Name | Compound) ';' .
+*/
+
+ParseNameList-Idents {
+  (e.AST) t.ErrorList (#TkName s.LnNum e.Name) e.Tail
+    = <ParseNameList-Idents-Tail
+        (e.AST (#Ident s.LnNum e.Name)) t.ErrorList e.Tail
+      >;
+
+  (e.AST) t.ErrorList (#TkCompound s.LnNum e.Name) e.Tail
+    = <ParseNameList-Idents-Tail
+        (e.AST (#Ident s.LnNum e.Name)) t.ErrorList e.Tail
+      >;
+
+  (e.AST) t.ErrorList t.Unexpected e.Tail
+    = (e.AST)
+      <EL-AddUnexpected
+        t.ErrorList t.Unexpected 'identifier name or compound symbol'
+      >
+      t.Unexpected e.Tail;
+}
+
+ParseNameList-Idents-Tail {
+  (e.AST) t.ErrorList (#TkComma s.LnNum) e.Tail
+    = <ParseNameList-Idents (e.AST) t.ErrorList e.Tail>;
+
+  (e.AST) t.ErrorList (#TkSemicolon s.LnNum) e.Tail
+    = (e.AST) t.ErrorList e.Tail;
+
+  (e.AST) t.ErrorList t.Unexpected e.Tail
+    = (e.AST)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'comma or semicolon'>
+      t.Unexpected e.Tail;
 }
 
 /*
@@ -396,6 +429,11 @@ ParsePattern {
       (e.Scanned) e.Tail
     >;
 
+  t.ErrorList (e.MultiBrackets) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
+    <ParsePattern
+      t.ErrorList (e.MultiBrackets) (e.Scanned (#TkIdentifier e.Name)) e.Tail
+    >;
+
   // Переменные
 
   t.ErrorList (e.MultiBracket)
@@ -580,6 +618,11 @@ ParseResult {
     <ParseResult
       <EL-AddErrorAt t.ErrorList s.LnNum 'Missed name after "#"'>
       (e.MultiBracket) (e.Scanned) e.Tail
+    >;
+
+  t.ErrorList (e.MultiBracket) (e.Scanned) (#TkCompound s.LnNum e.Name) e.Tail =
+    <ParseResult
+      t.ErrorList (e.MultiBracket) (e.Scanned (#TkIdentifier e.Name)) e.Tail
     >;
 
   // Переменные

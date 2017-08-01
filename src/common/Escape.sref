@@ -1,8 +1,8 @@
 //FROM Library
-$EXTERN Div, Mod, Ord, Compare;
+$EXTERN Div, Mod, Ord, Compare, Chr, Add, Mul;
 
 //FROM LibraryEx
-$EXTERN Fetch, Map;
+$EXTERN Fetch, Map, Reduce;
 
 OctDigit {
   0 = '0'; 1 = '1'; 2 = '2'; 3 = '3';
@@ -35,4 +35,147 @@ $ENTRY EscapeChar {
 
 $ENTRY EscapeString {
   e.String = <Map EscapeChar e.String>;
+}
+
+// Функция используется в Lexer.sref и здесь. Не очень красивое
+// её месторасположение, но если переносить в LibraryEx, то нужно расширять
+// основание степени счисления до 36.
+$ENTRY CharFromNum {
+  s.Base e.Chars =
+    <Chr
+      <Reduce
+        {
+          s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
+        }
+        0 <Map DigitFromChar e.Chars>
+      >
+    >;
+}
+
+DigitFromChar {
+  s.Char =
+    <Fetch
+      (0 '0') (1 '1') (2 '2') (3 '3')
+      (4 '4') (5 '5') (6 '6') (7 '7')
+      (8 '8') (9 '9') (10 'Aa') (11 'Bb')
+      (12 'Cc') (13 'Dd') (14 'Ee') (15 'Ff')
+      {
+        e.Assoc-B (s.Digit e.Vars-B s.Char e.Vars-E) e.Assoc-E =
+          s.Digit;
+      }
+    >;
+}
+
+$ENTRY UnEscapeString-SR {
+  e.String = <DoUnEscapeString-SR () e.String>;
+}
+
+OctDigits { = '01234567'; }
+DecDigits { = '0123456789'; }
+HexDigits { = '01234567AaBbCcDdEeFf'; }
+
+DoUnEscapeString-SR {
+  (e.Scanned) '\\x' e.HexAndTail
+    = <DoUnEscapeString-SR-Hex
+        (e.Scanned) (<HexDigits>) (/* scanned number */) e.HexAndTail
+      >;
+
+  (e.Scanned) '\\X' e.HexAndTail
+    = <DoUnEscapeString-SR-Hex
+        (e.Scanned) (<HexDigits>) (/* scanned number */) e.HexAndTail
+      >;
+
+  (e.Scanned) '\\d' e.DecAndTail
+    = <DoUnEscapeString-SR-DecOct
+        (e.Scanned) (10 <DecDigits>) (/* scanned number */) e.DecAndTail
+      >;
+
+  (e.Scanned) '\\D' e.DecAndTail
+    = <DoUnEscapeString-SR-DecOct
+        (e.Scanned) (10 <DecDigits>) (/* scanned number */) e.DecAndTail
+      >;
+
+  (e.Scanned) '\\' e.EscapedAndTail
+    = <DoUnEscapeString-SR-Escape (e.Scanned) (<OctDigits>) e.EscapedAndTail>;
+
+  (e.Scanned) s.SimpleChar e.Tail
+    = <DoUnEscapeString-SR (e.Scanned s.SimpleChar) e.Tail>;
+
+  (e.Scanned) /* пусто */ = #Success e.Scanned;
+}
+
+DoUnEscapeString-SR-Hex {
+  (e.Scanned) (e.ValidDigits-B s.Digit e.ValidDigits-E)
+  (e.ScannedNumber) s.Digit e.Tail
+    = <DoUnEscapeString-SR-Hex
+        (e.Scanned) (e.ValidDigits-B s.Digit e.ValidDigits-E)
+        (e.ScannedNumber s.Digit) e.Tail
+      >;
+
+  (e.Scanned) (e.ValidDigits) (/* пусто */) e.Tail
+    = #Fail #BadEscapeCode '\\x' <Prefix3 e.Tail>;
+
+  (e.Scanned) (e.ValidDitits) (e.ScannedHex) e.Tail
+    = <DoUnEscapeString-SR (e.Scanned <CharFromNum 16 e.ScannedHex>) e.Tail>;
+}
+
+Prefix3 {
+  s.1 s.2 s.3 s.4 e.Tail = s.1 s.2 s.3 '...';
+  e.ShortExpr = e.ShortExpr;
+}
+
+DoUnEscapeString-SR-DecOct {
+  (e.Scanned) (s.Base e.ValidDigits) (s.D1 s.D2 s.D3) e.Tail
+    = <DoUnEscapeString-SR
+        (e.Scanned <CharFromNum s.Base s.D1 s.D2 s.D3>) e.Tail
+      >;
+
+  (e.Scanned) (s.Base e.ValidDigits-B s.Digit e.ValidDigits-E)
+  (e.ScannedNumber) s.Digit e.Tail
+    = <DoUnEscapeString-SR-DecOct
+        (e.Scanned) (s.Base e.ValidDigits-B s.Digit e.ValidDigits-E)
+        (e.ScannedNumber s.Digit) e.Tail
+      >;
+
+  (e.Scanned) (s.Base e.ValidDigits) (/* пусто */) e.Tail
+    // Выполняется только для десятичных констант
+    = #Fail #BadEscapeCode '\\d' <Prefix3 e.Tail>;
+
+  (e.Scanned) (s.Base e.ValidDigits) (e.ScannedNumber) e.Tail
+    = <DoUnEscapeString-SR
+        (e.Scanned <CharFromNum s.Base e.ScannedNumber>) e.Tail
+      >;
+}
+
+DoUnEscapeString-SR-Escape {
+  (e.Scanned) (e.Octs-B s.Oct e.Octs-E) s.Oct e.Tail
+    = <DoUnEscapeString-SR-DecOct
+        (e.Scanned) (8 e.Octs-B s.Oct e.Octs-E) (s.Oct) e.Tail
+      >;
+
+  (e.Scanned) (e.Octs) s.Next e.Tail
+    = <Fetch
+        <SingularEscape s.Next>
+        {
+          #Success s.Char = <DoUnEscapeString-SR (e.Scanned s.Char) e.Tail>;
+          #Fails = #Fails #BadEscapeSymbol '\\' s.Next;
+        }
+      >;
+
+  (e.Scanned) (e.Octs) /* пусто */
+    = #Fails #EOLAfterSlash;
+}
+
+SingularEscape {
+  'r' = #Success '\r';
+  'n' = #Success '\n';
+  't' = #Success '\t';
+  'a' = #Success '\a';
+  'b' = #Success '\b';
+  'f' = #Success '\f';
+  'v' = #Success '\v';
+  '\\' = #Success '\\';
+  '' = #Success '';
+  '"' = #Success '"';
+  s.Other = #Fails;
 }

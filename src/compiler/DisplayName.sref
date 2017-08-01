@@ -1,11 +1,11 @@
 //FROM Library
-$EXTERN StrFromInt;
+$EXTERN StrFromInt, Ord;
 
 //FROM Escape
 $EXTERN EscapeString;
 
 //FROM LibraryEx
-$EXTERN Map;
+$EXTERN Map, Fetch;
 
 $ENTRY DisplayName {
   e.Name #Hash s.Cookie1 s.Cookie2 =
@@ -43,10 +43,23 @@ DecorateChars {
         {
           '-' = 'm_';
           '_' = 'u_';
-          s.Other = s.Other;
+          s.Other
+            = <Fetch
+                <AlphaNumber>
+                {
+                  e.AlNum-B s.Other e.AlNum-E = s.Other;
+                  e.AlNum = 'k' <StrFromInt <Ord s.Other>> '_';
+                }
+              >;
         }
         e.Name
       >;
+}
+
+AlphaNumber {
+  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    'abcdefghijklmnopqrstuvwxyz'
+    '0123456789';
 }
 
 CNameSuf {

@@ -88,7 +88,7 @@ $ENTRY TextFromExpr {
           <Offset s.SampleOffset> <Offset s.CopyOffset>;
 
         (#TkIdentifier e.Name s.Offset) =
-          ' # ' <DisplayName e.Name> <Offset s.Offset>;
+          ' # ' <SafeDisplayName e.Name> <Offset s.Offset>;
 
         (#Tile e.SubRange) = ' Tile{' <TextFromExpr e.SubRange> ' }';
         (#AsIs e.SubRange) = ' AsIs:' <TextFromExpr e.SubRange>;
@@ -101,6 +101,21 @@ $ENTRY TextFromExpr {
       }
       <TextFromExpr-Prepare e.Expr>
     >;
+}
+
+SafeDisplayName {
+  e.Name
+    = <Map
+        {
+          '\n' = '$n';
+          '\r' = '$r';
+          ' ' = '$_';
+          '\t' = '$t';
+          '$' = '$$';
+          s.Other = s.Other;
+        }
+        <DisplayName e.Name>
+      >;
 }
 
 TextFromExpr-Prepare {

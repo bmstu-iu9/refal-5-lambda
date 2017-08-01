@@ -1,4 +1,4 @@
-$LABEL _-x;
+$LABEL _-x, "A + B\n";
 
 $ENTRY Go {
 %%
@@ -7,6 +7,11 @@ $ENTRY Go {
 
   refalrts::RefalIdentifier mingled = refalrts::ident_implode("_-x");
   if (mingled != ident_u_m_x) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  mingled = refalrts::ident_implode("A + B\n");
+  if (mingled != ident_Ak32_k43_k32_Bk10_) {
     return refalrts::cRecognitionImpossible;
   }
 

@@ -1,9 +1,11 @@
 //FROM LibraryEx
-$EXTERN FastIntFromStr, Trim-R, Reduce, Map, Fetch, Inc,
-  Seq, MapReduce, DelAccumulator;
+$EXTERN FastIntFromStr, Trim-R, Map, Fetch, Inc, Seq, MapReduce, DelAccumulator;
 
 //FROM Library
-$EXTERN Chr, StrFromInt, Mul, Add;
+$EXTERN Chr, StrFromInt;
+
+//FROM Escape
+$EXTERN EscapeChar, EscapeString, CharFromNum, UnEscapeString-SR;
 
 $ENTRY LexFolding {
   e.SourceText =
@@ -24,7 +26,8 @@ StrDirective {
 }
 
 $ENTRY StrFromToken {
-  #TkChar s.Char = '' s.Char ''; // игнорируем проблему escape-символов
+  #TkChar s.Char = '' <EscapeChar s.Char> '';
+  #TkCompound e.Chars = '"' <EscapeString e.Chars> '"';
   #TkCloseADT = '"]"';
   #TkCloseCall = '">"';
   #TkCloseBlock = '"}"';
@@ -77,6 +80,11 @@ NormalizeToken {
   (#TkLiteral-FF 'f') = (#TkChar '\x0C');
   (#TkLiteral-VT 'v') = (#TkChar '\x0b');
 
+  (#TkCompound '"' e.CompoundRep '"')
+    // Всегда успешно, это гарантируется конечным автоматом
+    = <UnEscapeString-SR e.CompoundRep> : #Success e.Compound
+    = (#TkCompound e.Compound);
+
   (#TkName e.Name) = (#TkName e.Name);
 
   (#TkNewLine e.Accumulated) = (#TkNewLine);
@@ -92,32 +100,6 @@ NormalizeToken {
   (#TkUnexpected e.Unexpected) = (#TkUnexpected e.Unexpected);
 
   (#TokenError e.Message) = (#TkError e.Message);
-}
-
-CharFromNum {
-  s.Base e.Chars =
-    <Chr
-      <Reduce
-        {
-          s.Accum s.Next = <Add <Mul s.Accum s.Base> s.Next>;
-        }
-        0 <Map DigitFromChar e.Chars>
-      >
-    >;
-}
-
-DigitFromChar {
-  s.Char =
-    <Fetch
-      (0 '0') (1 '1') (2 '2') (3 '3')
-      (4 '4') (5 '5') (6 '6') (7 '7')
-      (8 '8') (9 '9') (10 'Aa') (11 'Bb')
-      (12 'Cc') (13 'Dd') (14 'Ee') (15 'Ff')
-      {
-        e.Assoc-B (s.Digit e.Vars-B s.Char e.Vars-E) e.Assoc-E =
-          s.Digit;
-      }
-    >;
 }
 
 ValidDirective {
@@ -201,6 +183,7 @@ CollectNativeLines-Aux {
   :VarMode: = 'set'.
   :DirectiveBody: = :UpLetter:.
   :Space: = ' \t\r'.
+  :CompoundOneCharEscape: = 'nrtabfv\\\'"' :ODigit:.
 
   :Other: = :Any:.
 
@@ -217,6 +200,7 @@ CollectNativeLines-Aux {
     :Digit:                                     Number                    |
     '$'                   !-                    Directive                 |
     '\''                  !-                    StringLiteral-Start       |
+    '"'                                         CompoundSymbol            |
     '/'                                         StartComment              |
     '\n'                  !#TkNewLine           Root                      |
                           !#TkEOF                                         |
@@ -311,6 +295,30 @@ CollectNativeLines-Aux {
   StringLiteral-Quote =
     '\''    !#TkLiteral-Char                    StringLiteral             |
                                                 Main                      .
+
+  CompoundSymbol =
+    '"'     !#TkCompound                        Main                      |
+    '\\'                                        Compound-Escape           |
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected EOF in compound symbol"                          |
+    :Any:                                       CompoundSymbol            .
+
+  Compound-Escape =
+    :CompoundOneCharEscape:                     CompoundSymbol            |
+    'd'                                         Compound-Escape-Dec       |
+    'D'                                         Compound-Escape-Dec       |
+    'x'                                         Compound-Escape-Hex       |
+    'X'                                         Compound-Escape-Hex       |
+    '\n'    !"Unclosed quote"                   Main                      |
+            !"Unexpected escape sequence"       CompoundSymbol            .
+
+  Compound-Escape-Dec =
+    :Digit:                                     CompoundSymbol            |
+            !"Expected decimal digit"           CompoundSymbol            .
+
+  Compound-Escape-Hex =
+    :XDigit:                                    CompoundSymbol            |
+            !"Expected hexadecimal digit"       CompoundSymbol            .
 
   StartComment =
     '*'     !-                                  CComment                  |
@@ -461,6 +469,7 @@ Main {
   (e.Accum) '9' e.Text = <Number (e.Accum '9') e.Text>;
   (e.Accum) '$' e.Text = <Directive () e.Text>;
   (e.Accum) '\'' e.Text = <StringLiteral-Start () e.Text>;
+  (e.Accum) '\"' e.Text = <CompoundSymbol (e.Accum '\"') e.Text>;
   (e.Accum) '/' e.Text = <StartComment (e.Accum '/') e.Text>;
   (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) = (#TkEOF e.Accum);
@@ -595,6 +604,14 @@ StringLiteral-Start {
   (e.Accum) e.Text = <StringLiteral (e.Accum) e.Text>;
 }
 
+CompoundSymbol {
+  (e.Accum) '\"' e.Text = (#TkCompound e.Accum '\"') <Main () e.Text>;
+  (e.Accum) '\\' e.Text = <Compound-Escape (e.Accum '\\') e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) = (#TokenError 'Unexpected EOF in compound symbol');
+  (e.Accum) s.Any e.Text = <CompoundSymbol (e.Accum s.Any) e.Text>;
+}
+
 StartComment {
   (e.Accum) '*' e.Text = <CComment () e.Text>;
   (e.Accum) '/' e.Text = <CppComment () e.Text>;
@@ -710,6 +727,33 @@ StringLiteral {
   (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
   (e.Accum) = (#TokenError 'Unexpected EOF in string literal');
   (e.Accum) s.Any e.Text = (#TkLiteral-Char e.Accum s.Any) <StringLiteral () e.Text>;
+}
+
+Compound-Escape {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) 'n' e.Text = <CompoundSymbol (e.Accum 'n') e.Text>;
+  (e.Accum) 'r' e.Text = <CompoundSymbol (e.Accum 'r') e.Text>;
+  (e.Accum) 't' e.Text = <CompoundSymbol (e.Accum 't') e.Text>;
+  (e.Accum) 'a' e.Text = <CompoundSymbol (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <CompoundSymbol (e.Accum 'b') e.Text>;
+  (e.Accum) 'f' e.Text = <CompoundSymbol (e.Accum 'f') e.Text>;
+  (e.Accum) 'v' e.Text = <CompoundSymbol (e.Accum 'v') e.Text>;
+  (e.Accum) '\\' e.Text = <CompoundSymbol (e.Accum '\\') e.Text>;
+  (e.Accum) '\'' e.Text = <CompoundSymbol (e.Accum '\'') e.Text>;
+  (e.Accum) '\"' e.Text = <CompoundSymbol (e.Accum '\"') e.Text>;
+  (e.Accum) 'd' e.Text = <Compound-Escape-Dec (e.Accum 'd') e.Text>;
+  (e.Accum) 'D' e.Text = <Compound-Escape-Dec (e.Accum 'D') e.Text>;
+  (e.Accum) 'x' e.Text = <Compound-Escape-Hex (e.Accum 'x') e.Text>;
+  (e.Accum) 'X' e.Text = <Compound-Escape-Hex (e.Accum 'X') e.Text>;
+  (e.Accum) '\n' e.Text = (#TokenError 'Unclosed quote') <Main () e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Unexpected escape sequence') <CompoundSymbol () e.Text>;
 }
 
 CComment {
@@ -835,6 +879,46 @@ StringLiteral-Escape {
 StringLiteral-Quote {
   (e.Accum) '\'' e.Text = (#TkLiteral-Char e.Accum '\'') <StringLiteral () e.Text>;
   (e.Accum) e.Text = <Main (e.Accum) e.Text>;
+}
+
+Compound-Escape-Dec {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <CompoundSymbol (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <CompoundSymbol (e.Accum '9') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected decimal digit') <CompoundSymbol () e.Text>;
+}
+
+Compound-Escape-Hex {
+  (e.Accum) '0' e.Text = <CompoundSymbol (e.Accum '0') e.Text>;
+  (e.Accum) '1' e.Text = <CompoundSymbol (e.Accum '1') e.Text>;
+  (e.Accum) '2' e.Text = <CompoundSymbol (e.Accum '2') e.Text>;
+  (e.Accum) '3' e.Text = <CompoundSymbol (e.Accum '3') e.Text>;
+  (e.Accum) '4' e.Text = <CompoundSymbol (e.Accum '4') e.Text>;
+  (e.Accum) '5' e.Text = <CompoundSymbol (e.Accum '5') e.Text>;
+  (e.Accum) '6' e.Text = <CompoundSymbol (e.Accum '6') e.Text>;
+  (e.Accum) '7' e.Text = <CompoundSymbol (e.Accum '7') e.Text>;
+  (e.Accum) '8' e.Text = <CompoundSymbol (e.Accum '8') e.Text>;
+  (e.Accum) '9' e.Text = <CompoundSymbol (e.Accum '9') e.Text>;
+  (e.Accum) 'A' e.Text = <CompoundSymbol (e.Accum 'A') e.Text>;
+  (e.Accum) 'B' e.Text = <CompoundSymbol (e.Accum 'B') e.Text>;
+  (e.Accum) 'C' e.Text = <CompoundSymbol (e.Accum 'C') e.Text>;
+  (e.Accum) 'D' e.Text = <CompoundSymbol (e.Accum 'D') e.Text>;
+  (e.Accum) 'E' e.Text = <CompoundSymbol (e.Accum 'E') e.Text>;
+  (e.Accum) 'F' e.Text = <CompoundSymbol (e.Accum 'F') e.Text>;
+  (e.Accum) 'a' e.Text = <CompoundSymbol (e.Accum 'a') e.Text>;
+  (e.Accum) 'b' e.Text = <CompoundSymbol (e.Accum 'b') e.Text>;
+  (e.Accum) 'c' e.Text = <CompoundSymbol (e.Accum 'c') e.Text>;
+  (e.Accum) 'd' e.Text = <CompoundSymbol (e.Accum 'd') e.Text>;
+  (e.Accum) 'e' e.Text = <CompoundSymbol (e.Accum 'e') e.Text>;
+  (e.Accum) 'f' e.Text = <CompoundSymbol (e.Accum 'f') e.Text>;
+  (e.Accum) e.Text = (#TokenError 'Expected hexadecimal digit') <CompoundSymbol () e.Text>;
 }
 
 CComment-CheckNested {
