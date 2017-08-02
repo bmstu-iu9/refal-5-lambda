@@ -1,0 +1,44 @@
+//FROM LibraryEx
+$EXTERN Fetch, Seq;
+
+/**
+  <Desugar e.AST> == t.ReducedAST
+
+  t.ReducedAST ::=
+      #Empty
+    | (#Char s.Char)
+    | (#Star t.ReducedAST)
+    | (#Alt t.Left t.Right)
+    | (#Cat t.Left t.Right)
+
+  t.Left, t.Right ::= t.ReducedAST
+*/
+$ENTRY Flex-Desugar {
+  e.AST =
+    <Fetch
+      e.AST
+      <Seq
+        Pass-RemoveRange
+        Pass-RemoveOpt
+        Pass-RemoveOneMany
+      >
+    >;
+}
+
+/*
+    Функция принимает абстрактное синтаксическое дерево
+    и формирует новое с устранением избыточных элементов
+    и созданием необходимых.
+*/
+
+Pass-RemoveRange {
+  e.AST = e.AST;
+}
+
+Pass-RemoveOpt {
+  e.AST = e.AST;
+}
+
+Pass-RemoveOneMany {
+  e.AST = e.AST;
+}

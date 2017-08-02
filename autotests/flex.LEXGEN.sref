@@ -1,0 +1,14 @@
+$ENTRY Go {
+  = ;
+}
+
+/*GEN:FLEX
+  Nums = /[0-9]+/
+  /abc\x39/ -> A
+  /def\071/ -> BAB
+  /\n   [a-z0-9]   [^x]  [a\-z\]0\-9]/ -> O07
+  /\n\t\r\\  \/ / -> OoOoO
+  /{Nums}(\.{Nums})?/ -> Float
+  <Regex,Group>/\\{GenericEscape}/ -> GenericEscape
+  GenericEscape = /[ntrbaf\070\x3A]|x[0-9a-fA-F]+|[0-7]|[0-7][0-7]|[0-7][0-7][0-7]/
+GEN:END*/

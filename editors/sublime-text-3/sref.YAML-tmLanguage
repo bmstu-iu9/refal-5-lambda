@@ -21,7 +21,7 @@ patterns:
 
 - comment: identifier
   name: variable.language.sref
-  match: '\b[A-Z!?][A-Za-z0-9_-]*\b'
+  match: '\b[A-Z][A-Za-z0-9_-]*\b'
 
 - comment: single quoted strings 
   name: string.quoted.single.sref
