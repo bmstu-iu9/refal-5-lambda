@@ -138,8 +138,6 @@ ASTItemFromDirective {
 
   // Директивы $FORWARD и $LABEL эквивалентны пустому месту
   #Forward = #Declaration #GN-Local;
-  // Для меток не важно: entry или local.
-  #Ident   = #Ident       #GN-Entry;
 }
 
 ParseElement-SwDirective {

@@ -175,8 +175,8 @@ Main-SwRenamedTargets {
           #NormalRun e.Outputs
             = <Link t.CommandLineSource t.Config e.Outputs>;
 
-          #GrammarCheck e.Outputs =
-            <WriteLine '** No syntax errors found **'>;
+          #GrammarCheck e.Outputs
+            = <WriteLine '** No syntax errors found **'>;
         }
       >;
 }
