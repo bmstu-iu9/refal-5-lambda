@@ -18,4 +18,4 @@ Test-FTell {
 }
 
 Eq { s.X s.X = ; }
-NIL { e.Any = /* пусто */; }
+NIL { e.Any = /* РїСѓСЃС‚Рѕ */; }
