@@ -5,10 +5,12 @@ syntax keyword simpleRefalKeyword $EXTERN $FORWARD $LABEL $ENUM $EENUM
 syntax keyword simpleRefalKeyword $EASTEREGG
 syntax match simpleRefalBrokenKeyword /\$\a*\>/
 syntax match simpleRefalVariable /\<[ste]\.[A-Za-z0-9_-]\+\>/
-syntax match simpleRefalIdentifier /\<[A-Z][A-Za-z0-9_-]*\>/
+syntax match simpleRefalIdentifier /\<[A-Za-z_][A-Za-z0-9_-]*\>/
 syntax match simpleRefalNumber /\<\d*\>/
 syntax match simpleRefalBrokenString /'[^']*$/
 syntax match simpleRefalString /'\(\(\\.\)\|[^']\)*'/
+syntax match simpleRefalBrokenCompound /"[^"]*$/
+syntax match simpleRefalString /"\(\(\\.\)\|[^"]\)*"/
 syntax region simpleRefalComment start=/\/\*/ skip=/\n/ end=/\*\//
 syntax region simpleRefalComment start=/\/\// end=/$/
 " Классический комментарий РЕФАЛ-5

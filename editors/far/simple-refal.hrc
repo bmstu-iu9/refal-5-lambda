@@ -107,7 +107,7 @@
 
       <regexp match='/\b[stev]\.[\w_\-\d]+\M(\W|$)/'
               region0="simpleRefalVariable"/>
-      <regexp match='/\b*[A-Z][\w_\-\d]*\M(\W|$)/'
+      <regexp match='/\b*[A-Za-z_][\w_\-\d]*\M(\W|$)/'
               region0="simpleRefalFunction"/>
 
       <block start="/'/" end="/'|$/"
