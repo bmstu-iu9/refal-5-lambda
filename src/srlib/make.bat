@@ -53,7 +53,7 @@ goto :EOF
 
   for %%s in (%SOURCES% %RT%) do (
     copy NUL %RICHDIR%\%%s.rasl
-    echo //PREFIX rich > %RICHDIR%\%%s.rasl.froms
+    echo //PREFIX rich> %RICHDIR%\%%s.rasl.froms
     if exist %%s.obj erase %%s.obj
   )
 goto :EOF
