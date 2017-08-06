@@ -20,6 +20,7 @@ $ENTRY Config-Create {
         (#Prefix #NotSet)
         (#References /* пусто */)
         (#TargetMode #DefaultEXE)
+        (#Prelude /* пусто */)
       ];
 }
 
@@ -236,4 +237,23 @@ $ENTRY Config-SetTargetMode {
 
   [Config e.Params-B (#TargetMode s.OldTargetMode) e.Params-E] e.NewTargetMode
     = #Fails #TargetModeAlreadySet;
+}
+
+/**
+  <Config-GetPrelude t.Config> == e.Prelude
+
+  Пустое значение является допустимым — означает, что стандартное вступление
+  подключать не надо.
+*/
+$ENTRY Config-GetPrelude {
+  [Config e.Params-B (#Prelude e.Prelude) e.Params-E] = e.Prelude;
+}
+
+/**
+  <Config-SetPrelude t.Config e.Prelude>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrelude {
+  [Config e.Params-B (#Prelude e.OldPrelude) e.Params-E] e.NewPrelude
+    = #Success [Config e.Params-B (#Prelude e.NewPrelude) e.Params-E];
 }

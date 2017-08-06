@@ -13,6 +13,7 @@ setlocal
 
   call :COMPILE_SCRATCH
   call :COMPILE_RICH
+  call :PREPARE_COMMON
 endlocal
 goto :EOF
 
@@ -56,4 +57,8 @@ goto :EOF
     echo //PREFIX rich> %RICHDIR%\%%s.rasl.froms
     if exist %%s.obj erase %%s.obj
   )
+goto :EOF
+
+:PREPARE_COMMON
+  xcopy /e /i /y common ..\..\srlib\common
 goto :EOF

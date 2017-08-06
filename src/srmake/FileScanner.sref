@@ -6,6 +6,7 @@ $EXTERN ExistFile;
 
 //FROM Config
 $EXTERN
+  Config-GetPrelude,
   Config-AddReference,
   Config-GetFolders,
   Config-GetPrefix,
@@ -44,25 +45,46 @@ DoCreateFileList {
 }
 
 FindImports {
-  t.Config #Source (e.NextModule) e.Output
-    = <FindImports-Aux t.Config e.NextModule>;
+  t.Config #Source (s.Dialect e.NextModule) e.Output
+    = <FindImports-Aux t.Config s.Dialect e.NextModule>;
 
   t.Config #Output e.Output
-    = <FindImports-Aux t.Config e.Output '.froms'>;
+    = <FindImports-Aux t.Config #Froms e.Output '.froms'>;
 
   t.Config #OutputWithNative (e.Output) e.Native
-    = <FindImports-Aux t.Config e.Output '.froms'> : t.Config^ e.FromsUnits
-    = <FindImports-Aux t.Config e.Native> : t.Config^ e.NativeUnits
+    = <FindImports-Aux t.Config #Froms e.Output '.froms'> : t.Config^ e.FromsUnits
+    = <FindImports-Aux t.Config "C++" e.Native> : t.Config^ e.NativeUnits
     = t.Config e.FromsUnits e.NativeUnits;
 
-  t.Config #Include e.IncludeFile
-    = <FindImports-Aux t.Config e.IncludeFile>;
+  t.Config #Include s.Dialect e.IncludeFile
+    = <FindImports-Aux t.Config s.Dialect e.IncludeFile>;
 
   t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
 }
 
+CommentForDialect {
+  #R5 = '*$';
+  #SR = '//';
+  #Froms = '//';
+  "C++" = '//';
+}
+
+PreludePseudoIncludeLine {
+  t.Config #R5
+    = <Fetch
+        <Config-GetPrelude t.Config>
+        {
+          /* пусто */ = /* пусто */;
+          e.Prelude = (#Prelude e.Prelude);
+        }
+      >;
+
+  t.Config s.Other = /* пусто */;
+}
+
 FindImports-Aux {
-  t.OriginConfig e.FileName
+  t.OriginConfig s.Dialect e.FileName
+    = <CommentForDialect s.Dialect> : e.CommentPrefix
     = <Fetch
         <ExistFile e.FileName>
         {
@@ -71,19 +93,20 @@ FindImports-Aux {
         }
       >
     : e.FileContents
+    = <PreludePseudoIncludeLine t.OriginConfig s.Dialect> : e.PseudoLine
     = <MapReduce
         {
-          (t.Config s.LineNum) ('//FROM ' e.Name)
+          (t.Config s.LineNum) (e.CommentPrefix 'FROM ' e.Name)
             = (t.Config <Inc s.LineNum>)
               <FindFilesEx t.Config (s.LineNum e.FileName) <Trim e.Name>>;
 
-          (t.Config s.LineNum) ('//PREFIX ' e.Name)
+          (t.Config s.LineNum) (e.CommentPrefix 'PREFIX ' e.Name)
             = <UpdatePrefix t.Config (s.LineNum e.FileName) <Trim e.Name>>
             : t.Config^ e.Error
             = (t.Config <Inc s.LineNum>)
               e.Error;
 
-          (t.Config s.LineNum) ('//REFERENCE ' e.Name)
+          (t.Config s.LineNum) (e.CommentPrefix 'REFERENCE ' e.Name)
             = <Config-AddReference t.Config <Trim e.Name>> : #Success t.Config^
             = (t.Config <Inc s.LineNum>);
 
@@ -94,11 +117,17 @@ FindImports-Aux {
                 <UnEscapeString-SR e.EscapedName>
               >;
 
+          (t.Config s.LineNum) (#Prelude e.PreludeName)
+            = (t.Config s.LineNum)  // не инкрементируем, это псевдострочка
+              <FindIncludeEx
+                t.Config (s.LineNum e.FileName) #Success e.PreludeName
+              >;
+
           (t.Config s.LineNum) (e.OtherLine)
             = (t.Config <Inc s.LineNum>);
         }
         (t.OriginConfig 1)
-        e.FileContents
+        e.PseudoLine e.FileContents
       >
     : (t.Config s.LineNum) e.Units
     = t.Config e.Units;
@@ -153,7 +182,7 @@ FindIncludeEx {
     = <Fetch
         <FindInclude (<GetFolders t.Config>) e.FileName>
         {
-          #Success e.FullPath = (#Include e.FullPath);
+          #Success s.Dialect e.FullPath = (#Include s.Dialect e.FullPath);
 
           #Fails
             = (#Error t.SrcPos 'Include ' e.FileName ' not found');

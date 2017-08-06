@@ -10,7 +10,7 @@ $EXTERN Config-Create, Config-SetCppCompiler, Config-SetCompilerFlags,
   Config-SetDebugInfo, Config-SetGrammarCheck, Config-SetTargetFileName,
   Config-SetTargetSuffix, Config-SetSearchFolder, Config-SetPrefix,
   Config-AddReference, Config-SetTargetMode, Config-AddIncorporated,
-  Config-SetChmodXCommand;
+  Config-SetChmodXCommand, Config-SetPrelude;
 
 /**
   <ParseCommandLine e.Arguments>
@@ -48,6 +48,7 @@ $ENTRY ParseCommandLine {
           )
           (#TargetSuffix-Lib #Required ('libsuffix') ('libsuf'))
           (#ChmodXCommand #Required ('chmod-x') ('chmod-x-command'))
+          (#Prelude #Required ('prelude'))
         )
         e.Arguments
       >
@@ -151,6 +152,9 @@ $ENTRY ParseCommandLine {
               = <Update
                   t.Config (e.Errors) Config-SetChmodXCommand s.Num e.Command
                 >;
+
+            (t.Config e.Errors) (#Prelude s.Num e.Prelude)
+              = <Update t.Config (e.Errors) Config-SetPrelude s.Num e.Prelude>;
 
             (t.Config e.Errors) t.Option
               = (t.Config e.Errors) t.Option;

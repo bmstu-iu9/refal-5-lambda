@@ -16,6 +16,7 @@ $EXTERN
   Config-AddSrefCompilerFlag,
   Config-SetTargetFileName,
   Config-SetTargetMode,
+  Config-SetPrelude,
   Config-SetSourceFile;
 
 /**
@@ -45,6 +46,7 @@ $ENTRY ParseCommandLine {
           (#TargetMode-Lib #None 'l' ('makelib'))
           (#TargetMode-R #None 'R')
           (#TargetMode-C #None 'C' ('compile-only'))
+          (#Prelude #Required ('prelude'))
         )
         e.Arguments
       >
@@ -116,6 +118,9 @@ $ENTRY ParseCommandLine {
               = <Update
                   t.Config (e.Errors) Config-SetTargetMode s.Num #CompileOnly
                 >;
+
+            (t.Config e.Errors) (#Prelude s.Num e.Prelude)
+              = <Update t.Config (e.Errors) Config-SetPrelude s.Num e.Prelude>;
 
             (t.Config e.Errors) (#FILE s.Num e.SourceFile)
               = <Update

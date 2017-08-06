@@ -5,8 +5,13 @@ $EXTERN Fetch, Seq, Map, UnBracket, MapReduce, SaveBytes, SaveFile;
 $EXTERN EL-Destroy, EL-Create, EL-AddErrorAt, EL-Concat;
 
 //FROM Config
-$EXTERN Config-GetSearchFolders, Config-GetDebugMode, Config-GetOptPattern,
-  Config-GetOptResult, Config-GetGenMode;
+$EXTERN
+  Config-GetPrelude,
+  Config-GetSearchFolders,
+  Config-GetDebugMode,
+  Config-GetOptPattern,
+  Config-GetOptResult,
+  Config-GetGenMode;
 
 //FROM Checker
 $EXTERN CheckProgram;
@@ -39,15 +44,16 @@ $EXTERN GenProgram-RASL;
 $EXTERN GenProgram-Native;
 
 /**
-  <CompileFile t.Config (e.SrcName) e.OutputName>
+  <CompileFile t.Config (s.Dialect e.SrcName) e.OutputName>
     == #Success e.OutputName t.Native
     == #Fails
+  s.Dialect ::= #R5 | #SR
   t.Native ::= #NoNative | (e.NativeOutputName)
 */
 $ENTRY CompileFile {
-  t.Config (e.SrcName) e.OutputName '.rasl'=
+  t.Config (s.Dialect e.SrcName) e.OutputName '.rasl'=
     <Fetch
-      e.SrcName
+      s.Dialect e.SrcName
       <Seq
         (FrontEnd t.Config)
         {
@@ -71,12 +77,14 @@ $ENTRY CompileFile {
 }
 
 FrontEnd {
-  t.Config e.SrcName
-    = <Config-GetSearchFolders t.Config> : e.SearchFolders
-    = <LoadAST e.SrcName> : t.ErrorList e.FirstAST
+  t.Config s.Dialect e.SrcName
+    = <LoadAST t.Config s.Dialect e.SrcName> : t.ErrorList e.FirstAST
     = <ResolveIncludes
-        (e.SearchFolders) (/* bad includes */)
-        (t.ErrorList ((e.SrcName) (e.SrcName)) (/* scanned */) e.FirstAST)
+        t.Config (/* bad includes */)
+        (
+          t.ErrorList s.Dialect ((e.SrcName) (e.SrcName))
+          (/* scanned */) e.FirstAST
+        )
       >
     : e.IncludeUnits
     = <GlueErrorListsAndASTs (e.SrcName) e.IncludeUnits> : t.ErrorList^ e.AST
@@ -84,22 +92,43 @@ FrontEnd {
 }
 
 LoadAST {
-  e.SrcName
+  t.Config #R5 e.SrcName
+    = <LoadSource e.SrcName> : e.SrcText
+    = <CleanupRefal5Comments e.SrcText '\n'> : e.SrcText^
+    = <LexFolding e.SrcText> : e.Tokens
+    = <ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
+    = <Fetch
+        <Config-GetPrelude t.Config>
+        {
+          /* пусто */ = t.ErrorList e.AST;
+          e.Prelude = t.ErrorList (#Include 0 e.Prelude) e.AST;
+        }
+      >;
+
+  t.Config #SR e.SrcName
     = <LoadSource e.SrcName> : e.SrcText
     = <LexFolding e.SrcText> : e.Tokens
     = <ParseProgram <EL-Create e.SrcName> e.Tokens>;
 }
 
+CleanupRefal5Comments {
+  '*' e.Comment '\n' e.Tail = '\n' <CleanupRefal5Comments e.Tail>;
+
+  e.NormalLine '\n' e.Tail = e.NormalLine '\n' <CleanupRefal5Comments e.Tail>;
+
+  /* пусто */ = /* пусто */;
+}
+
 ResolveIncludes {
-  (e.SearchFolders) (e.BadIncludes-B (e.IncludeName) e.BadIncludes-E)
+  t.Config (e.BadIncludes-B (e.IncludeName) e.BadIncludes-E)
   e.Units-B
   (
-    t.ErrorList (e.Aliases)
+    t.ErrorList s.Dialect (e.Aliases)
     (e.ScannedAST) e.AST-B (#Include s.LnNum e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes
-        (e.SearchFolders)
+        t.Config
         (e.BadIncludes-B (e.IncludeName) e.BadIncludes-E)
         e.Units-B
         (
@@ -107,25 +136,25 @@ ResolveIncludes {
             t.ErrorList s.LnNum
             'Include file "' e.IncludeName '" is not found'
           >
-          (e.Aliases)
+          s.Dialect (e.Aliases)
           (e.ScannedAST e.AST-B (#Include s.LnNum e.IncludeName)) e.AST-E
         )
         e.Units-E
       >;
 
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   e.Units-B
   (
-    t.ErrorList (e.Aliases)
+    t.ErrorList s.Dialect (e.Aliases)
     (e.ScannedAST) e.AST-B (#Include s.LnNum e.IncludeName) e.AST-E
   )
   e.Units-E
     = <ResolveIncludes-CheckAlias
-        (e.SearchFolders) (e.BadIncludes)
+        t.Config (e.BadIncludes)
         (e.Units-B)
         (
           (
-            t.ErrorList (e.Aliases)
+            t.ErrorList s.Dialect (e.Aliases)
             (e.ScannedAST e.AST-B (#Include s.LnNum e.IncludeName)) e.AST-E
           )
         )
@@ -133,10 +162,13 @@ ResolveIncludes {
         (e.IncludeName)
       >;
 
-  (e.SearchFolders) (e.BadIncludes) e.Units
+  t.Config (e.BadIncludes) e.Units
     = <Map
         {
-          (t.ErrorList ((e.Name) (e.FullPath) e.Aliases) (e.ScannedAST) e.NotScannedAST)
+          (
+            t.ErrorList s.Dialect ((e.Name) (e.FullPath) e.Aliases)
+            (e.ScannedAST) e.NotScannedAST
+          )
             = (t.ErrorList (e.FullPath) e.ScannedAST e.NotScannedAST);
         }
         e.Units
@@ -144,12 +176,12 @@ ResolveIncludes {
 }
 
 ResolveIncludes-CheckAlias {
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   e.Groups-B
   (
     e.Units-B
     (
-      t.ErrorList (e.Aliases-B (e.IncludeName) e.Aliases-E)
+      t.ErrorList s.Dialect (e.Aliases-B (e.IncludeName) e.Aliases-E)
       (e.ScannedAST) e.NotScannedAST
     )
     e.Units-E
@@ -157,14 +189,14 @@ ResolveIncludes-CheckAlias {
   e.Groups-E
   (e.IncludeName)
     = <ResolveIncludes
-        (e.SearchFolders) (e.BadIncludes)
+        t.Config (e.BadIncludes)
         <Map
           UnBracket
           e.Groups-B
           (
             e.Units-B
             (
-              t.ErrorList (e.Aliases-B (e.IncludeName) e.Aliases-E)
+              t.ErrorList s.Dialect (e.Aliases-B (e.IncludeName) e.Aliases-E)
               (e.ScannedAST) e.NotScannedAST
             )
             e.Units-E
@@ -173,46 +205,48 @@ ResolveIncludes-CheckAlias {
         >
       >;
 
-   (e.SearchFolders) (e.BadIncludes)
+   t.Config (e.BadIncludes)
    (e.Units-B) (t.CheckedUnit) (e.Units-E) (e.IncludeName)
      = <ResolveIncludes-CheckValid
-         (e.SearchFolders) (e.BadIncludes)
+         t.Config (e.BadIncludes)
          (e.Units-B) (t.CheckedUnit) (e.Units-E)
-         (e.IncludeName) <FindInclude (e.SearchFolders) e.IncludeName>
+         (e.IncludeName)
+         <FindInclude (<Config-GetSearchFolders t.Config>) e.IncludeName>
        >;
 }
 
 ResolveIncludes-CheckValid {
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   (e.Units-B)
   (t.CheckedUnit)
   (e.Units-E)
-  (e.IncludeName) # Success e.FullPath
+  (e.IncludeName) # Success s.Dialect e.FullPath
     = <ResolveIncludes-CheckEqualAST
-        (e.SearchFolders) (e.BadIncludes)
+        t.Config (e.BadIncludes)
         (e.Units-B) (t.CheckedUnit) (e.Units-E)
-        (e.IncludeName) (e.FullPath) (<LoadAST e.FullPath>)
+        s.Dialect (e.IncludeName) (e.FullPath)
+        (<LoadAST t.Config s.Dialect e.FullPath>)
       >;
 
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   (e.Units-B)
   (
     (
-      t.ErrorList (e.Aliases)
+      t.ErrorList s.Dialect (e.Aliases)
       (e.ScannedAST (#Include s.LnNum e.IncludeName)) e.NotScannedAST
     )
   )
   (e.Units-E)
   (e.IncludeName) #Fails
     = <ResolveIncludes
-        (e.SearchFolders) (e.BadIncludes (e.IncludeName))
+        t.Config (e.BadIncludes (e.IncludeName))
         e.Units-B
         (
           <EL-AddErrorAt
             t.ErrorList s.LnNum
             'Include file "' e.IncludeName '" is not found'
           >
-          (e.Aliases)
+          s.Dialect (e.Aliases)
           (e.ScannedAST (#Include s.LnNum e.IncludeName)) e.NotScannedAST
         )
         e.Units-E
@@ -220,24 +254,25 @@ ResolveIncludes-CheckValid {
 }
 
 ResolveIncludes-CheckEqualAST {
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   e.Groups-B
   (
     e.Units-B
-    (t.ErrorList (e.Aliases) (e.ScannedAST) e.NotScannedAST)
+    (t.ErrorList s.Dialect (e.Aliases) (e.ScannedAST) e.NotScannedAST)
     e.Units-E
   )
   e.Groups-E
-  (e.IncludeName) (e.FullPath) (t.NewErrorList e.ScannedAST e.NotScannedAST)
+  s.Dialect (e.IncludeName) (e.FullPath)
+  (t.NewErrorList e.ScannedAST e.NotScannedAST)
     = <ResolveIncludes
-        (e.SearchFolders) (e.BadIncludes)
+        t.Config (e.BadIncludes)
         <Map
           UnBracket
           e.Groups-B
           (
             e.Units-B
             (
-              t.ErrorList (e.Aliases (e.IncludeName) (e.FullPath))
+              t.ErrorList s.Dialect (e.Aliases (e.IncludeName) (e.FullPath))
               (e.ScannedAST) e.NotScannedAST
             )
             e.Units-E
@@ -246,13 +281,16 @@ ResolveIncludes-CheckEqualAST {
         >
       >;
 
-  (e.SearchFolders) (e.BadIncludes)
+  t.Config (e.BadIncludes)
   (e.Units-B) (t.CheckedUnit) (e.Units-E)
-  (e.IncludeName) (e.FullPath) (t.ErrorList e.AST)
+  s.Dialect (e.IncludeName) (e.FullPath) (t.ErrorList e.AST)
     = <ResolveIncludes
-        (e.SearchFolders) (e.BadIncludes)
+        t.Config (e.BadIncludes)
         e.Units-B
-        (t.ErrorList ((e.IncludeName) (e.FullPath)) (/* scanned */) e.AST)
+        (
+          t.ErrorList s.Dialect ((e.IncludeName) (e.FullPath))
+          (/* scanned */) e.AST
+        )
         t.CheckedUnit
         e.Units-E
       >;

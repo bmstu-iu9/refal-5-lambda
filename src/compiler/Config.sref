@@ -27,6 +27,7 @@ $ENTRY Config-Create {
         (#References /* пусто */)
         (#Incorporateds /* пусто */)
         (#ChmodXCommand /* пусто */)
+        (#Prelude /* пусто */)
       ];
 }
 
@@ -522,4 +523,23 @@ $ENTRY Config-SetChmodXCommand {
   [Config e.Params-B (#ChmodXCommand e.OldCommand) e.Params-E]
   e.NewCommand
     = #Success [Config e.Params-B (#ChmodXCommand e.NewCommand) e.Params-E];
+}
+
+/**
+  <Config-GetPrelude t.Config> == e.Prelude
+
+  Пустое значение является допустимым — означает, что стандартное вступление
+  подключать не надо.
+*/
+$ENTRY Config-GetPrelude {
+  [Config e.Params-B (#Prelude e.Prelude) e.Params-E] = e.Prelude;
+}
+
+/**
+  <Config-SetPrelude t.Config e.Prelude>
+    == #Success t.Config
+*/
+$ENTRY Config-SetPrelude {
+  [Config e.Params-B (#Prelude e.OldPrelude) e.Params-E] e.NewPrelude
+    = #Success [Config e.Params-B (#Prelude e.NewPrelude) e.Params-E];
 }

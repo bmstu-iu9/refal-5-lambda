@@ -114,7 +114,7 @@ Main-SwFoundFiles {
           (s.Pos^ #NotFound e.FileName^) =
             (s.Pos 'file ' e.FileName ' is not found');
 
-          (s.Pos^ #Source (e.Source) e.Output) =
+          (s.Pos^ #Source (s.Dialect e.Source) e.Output) =
             /* пусто */;
 
           (s.Pos^ #Output e.Output) =
@@ -148,7 +148,7 @@ Main-SwRenamedTargets {
               'files ' e.FirstTarget ' and ' e.SecondTarget ' have same name'
             );
 
-          (s.Pos^ #Source (e.Source) e.Output) =
+          (s.Pos^ #Source (s.Dialect e.Source) e.Output) =
             /* пусто */;
 
           (s.Pos^ #Output e.Output) =
@@ -193,13 +193,16 @@ CalcTargetFileName {
           e.LastPartName = (<Lower e.LastPartName>) e.LastPartName;
         }
         {
+          (e.LowerBaseName '.ref') e.BaseName '.' s.R s.E s.F =
+            e.BaseName;
+
           (e.LowerBaseName '.sref') e.BaseName '.' s.S s.R s.E s.F =
             e.BaseName;
 
           (e.LowerBaseName '.rasl') e.BaseName '.' s.R s.A s.S s.L =
             e.BaseName;
 
-          (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P s.P =
+          (e.LowerBaseName '.cpp') e.BaseName '.' s.C s.P1 s.P2 =
             e.BaseName;
 
           (e.LowerBaseName) e.BaseName =
@@ -247,8 +250,8 @@ RenameTargets-Stub {
         (s.Pos #OutputWithNative (e.FileName) e.NativeFileName)
           = (s.Pos #Output e.FileName (e.NativeFileName));
 
-        (s.Pos #Source (e.Source) e.Output)
-          = (s.Pos #Source (e.Source) e.Output);
+        (s.Pos #Source (s.Dialect e.Source) e.Output)
+          = (s.Pos #Source (s.Dialect e.Source) e.Output);
       }
       e.Files
     >;
@@ -268,8 +271,11 @@ GetFileName {
       (s.Pos #Output e.FileName (e.NativeFileName))
     );
 
-  (s.Pos #Source (e.Source) e.Output) =
-    ((<GetBaseNameLowerCase e.Output>) (s.Pos #Source (e.Source) e.Output));
+  (s.Pos #Source (s.Dialect e.Source) e.Output) =
+    (
+      (<GetBaseNameLowerCase e.Output>)
+      (s.Pos #Source (s.Dialect e.Source) e.Output)
+    );
 }
 
 ScanCollisions {
@@ -304,12 +310,14 @@ RenameLocations-Aux {
     <DelAccumulator
       <MapReduce
         {
-          0 (s.Pos #Source (e.Source) e.Output) =
-            1 (s.Pos #Source (e.Source) e.Output);
+          0 (s.Pos #Source (s.Dialect e.Source) e.Output) =
+            1 (s.Pos #Source (s.Dialect e.Source) e.Output);
 
-          s.Num (s.Pos #Source (e.Source) e.Output '.rasl') =
+          s.Num (s.Pos #Source (s.Dialect e.Source) e.Output '.rasl') =
             <Inc s.Num>
-            (s.Pos #Source (e.Source) e.Output '@' <StrFromInt s.Num> '.rasl');
+            (s.Pos #Source
+              (s.Dialect e.Source) e.Output '@' <StrFromInt s.Num> '.rasl'
+            );
 
           s.Num (s.Pos #Output e.Output t.Native) =
             s.Num (s.Pos #Output e.Output t.Native);
@@ -331,10 +339,10 @@ CompileFiles {
           <WriteLine '+Linking (+ natives) ' e.OutputName>
           (#RASL e.OutputName) (#Native e.NativeName);
 
-        (s.Pos #Source (e.Source) e.OutputName) =
+        (s.Pos #Source (s.Dialect e.Source) e.OutputName) =
           <WriteLine '*Compiling ' e.Source ':'>
           <Fetch
-            <CompileFile t.Config (e.Source) e.OutputName>
+            <CompileFile t.Config (s.Dialect e.Source) e.OutputName>
             {
               #Success e.OutputName^ #NoNative =
                 (#RASL e.OutputName);
@@ -356,7 +364,7 @@ CompileFiles {
         (s.Pos #Output e.OutputName) =
           <WriteLine '+Skipping native file ' e.OutputName> (e.OutputName);
 
-        (s.Pos #Source (e.Source) e.OutputName) =
+        (s.Pos #Source (s.Dialect e.Source) e.OutputName) =
           <WriteLine '*Grammar checking ' e.Source ':'>
           <GrammarCheck e.Source>;
       }

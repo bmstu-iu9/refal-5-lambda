@@ -48,5 +48,6 @@ setlocal
     --cpp-command-exe="%CPPLINEE%" --exesuffix=.exe ^
     --cpp-command-lib="%CPPLINEL%" --libsuffix=.dll ^
     --cppflags="%CPPLINE_FLAGS%" --chmod-x-command= ^
+    -d "%LIBDIR%\common" --prelude=refal5-builtins.srefi ^
     %PREFIX% %D% %ARGS%
 endlocal

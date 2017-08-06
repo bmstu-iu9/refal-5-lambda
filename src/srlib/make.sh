@@ -38,6 +38,10 @@ compile_rich() {
   done
 }
 
+prepare_common() {
+  cp -R common ../../common
+}
+
 (
   SOURCES="Library LibraryEx GetOpt Hash"
   RT="refalrts refalrts-platform-specific"
@@ -50,4 +54,5 @@ compile_rich() {
 
   compile_scratch
   compile_rich
+  prepare_common
 )

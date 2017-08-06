@@ -19,6 +19,7 @@ $EXTERN
   Config-GetCppCompilerLib,
   Config-GetPrefix,
   Config-GetReferences,
+  Config-GetPrelude,
   Config-GetTargetMode,
   Config-GetTargetFileName;
 
@@ -82,7 +83,7 @@ RunSrefCompiler {
 
           (#Output e.Output) = ;
           (#OutputWithNative (e.Output) e.Native) = ;
-          (#Source (e.Source) e.Output) = ;
+          (#Source (s.Dialect e.Source) e.Output) = ;
           (#Include e.Include) = ;
         }
         (#Error t.SrcPos e.Message) e.Units-E
@@ -98,6 +99,7 @@ RunSrefCompiler {
     = <MakeSearchFolderFlags t.Config> : e.SearchFolderFlags
     = <GetPrefix t.Config> : e.Prefix
     = <Config-GetReferences t.Config> : e.References
+    = <Config-GetPrelude t.Config> : e.Prelude
     = <System
         e.SrefCompiler
         e.TargetModeFlag
@@ -106,6 +108,7 @@ RunSrefCompiler {
         e.TargetFileFlag
         e.SearchFolderFlags
         ' --prefix="' e.Prefix '"'
+        ' --prelude="' e.Prelude '"'
         <Map
           {
             (e.Reference) = ' --reference="' e.Reference '"';
@@ -116,7 +119,7 @@ RunSrefCompiler {
           {
             (#Output e.Output) = ' "' e.Output '"';
             (#OutputWithNative (e.Output) e.Native) = ' "' e.Output '"';
-            (#Source (e.Source) e.Output) = ' "' e.Source '"';
+            (#Source (s.Dialect e.Source) e.Output) = ' "' e.Source '"';
             (#Include e.Include) = /* пусто */;
           }
           e.Units

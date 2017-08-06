@@ -59,5 +59,6 @@ set_default_flags() {
     --cpp-command-exe="$CPPLINEE" --exesuffix=$(platform_exe_suffix) \
     --cpp-command-lib="$CPPLINEL" --libsuffix=$(platform_lib_suffix) \
     --cppflags="$CPPLINE_FLAGS" --chmod-x-command="chmod +x" \
+    -d "$LIBDIR/common" --prelude=refal5-builtins.srefi \
     $PREFIX "${D[@]}" $*
 )
