@@ -12,7 +12,10 @@ $EXTERN
   Config-SetPrefix;
 
 //FROM FindFile
-$EXTERN FindFiles;
+$EXTERN FindFiles, FindInclude;
+
+//FROM Escape
+$EXTERN UnEscapeString-SR;
 
 
 $ENTRY CreateFileList {
@@ -52,6 +55,9 @@ FindImports {
     = <FindImports-Aux t.Config e.Native> : t.Config^ e.NativeUnits
     = t.Config e.FromsUnits e.NativeUnits;
 
+  t.Config #Include e.IncludeFile
+    = <FindImports-Aux t.Config e.IncludeFile>;
+
   t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
 }
 
@@ -81,6 +87,13 @@ FindImports-Aux {
             = <Config-AddReference t.Config <Trim e.Name>> : #Success t.Config^
             = (t.Config <Inc s.LineNum>);
 
+          (t.Config s.LineNum) ('$INCLUDE "' e.EscapedName '";')
+            = (t.Config <Inc s.LineNum>)
+              <FindIncludeEx
+                t.Config (s.LineNum e.FileName)
+                <UnEscapeString-SR e.EscapedName>
+              >;
+
           (t.Config s.LineNum) (e.OtherLine)
             = (t.Config <Inc s.LineNum>);
         }
@@ -93,21 +106,24 @@ FindImports-Aux {
 
 FindFilesEx {
   t.Config t.SrcPos e.UnitName
-    = <Map
-        {
-          (s.FolderTag e.Folder) = (e.Folder);
-        }
-        <Config-GetFolders t.Config>
-      >
-    : e.Folders
     = <Fetch
-        <FindFiles (e.Folders) (e.UnitName)>
+        <FindFiles (<GetFolders t.Config>) (e.UnitName)>
         {
           (#NotFound e.Unit)
             = (#Error t.SrcPos 'Unit ' e.Unit ' not found');
 
           t.FoundUnit = t.FoundUnit;
         }
+      >;
+}
+
+GetFolders {
+  t.Config
+    = <Map
+        {
+          (s.FolderTag e.Folder) = (e.Folder);
+        }
+        <Config-GetFolders t.Config>
       >;
 }
 
@@ -127,4 +143,26 @@ UpdatePrefix {
             = t.Config (#Error t.SrcPos 'prefix already defined');
         }
       >;
+}
+
+FindIncludeEx {
+  t.Config t.SrcPos #Fails e.ErrorMessage
+    = (#Error t.SrcPos <FormatEscapeError e.ErrorMessage>);
+
+  t.Config t.SrcPos #Success e.FileName
+    = <Fetch
+        <FindInclude (<GetFolders t.Config>) e.FileName>
+        {
+          #Success e.FullPath = (#Include e.FullPath);
+
+          #Fails
+            = (#Error t.SrcPos 'Include ' e.FileName ' not found');
+        }
+      >;
+}
+
+FormatEscapeError {
+  #BadEscapeCode e.Text = 'Bad escape code ' e.Text;
+  #BadEscapeSymbol e.BadSymbol = 'Bad escaped symbol ' e.BadSymbol;
+  #EOLAfterSlash = 'End-of-line after \\';
 }
