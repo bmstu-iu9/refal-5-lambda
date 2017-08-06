@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="SimpleRefal"
                 index="3"
-                filemasks="*.sref">
+                filemasks="*.sref;*.srefi">  <!-- TODO: проверить правильность -->
                 <Style name="Default"
                         index="0,11"
                         fg="0,0,0"
@@ -56,7 +56,7 @@
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
-                            value="$EXTERN $ENTRY $SWAP $ESWAP $LABEL $FORWARD $ENUM $EENUM $EASTEREGG"/>
+                            value="$EXTERN $ENTRY $SWAP $ESWAP $LABEL $FORWARD $ENUM $EENUM $EASTEREGG $INCLUDE"/>
                         <!-- Secondary keywords and identifiers -->
                         <Set index="1"
                             value=" "/>

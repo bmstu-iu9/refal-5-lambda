@@ -5,6 +5,7 @@
 	<key>fileTypes</key>
 	<array>
 		<string>sref</string>
+		<string>srefi</string>
 	</array>
 	<key>name</key>
 	<string>Simple Refal</string>
@@ -18,7 +19,7 @@
 			<key>comment</key>
 			<string>keywords</string>
 			<key>match</key>
-			<string>\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG</string>
+			<string>\$ENTRY|\$SWAP|\$ESWAP|\$EXTERN|\$FORWARD|\$LABEL|\$ENUM|\$EENUM|\$EASTEREGG|\$INCLUDE</string>
 			<key>name</key>
 			<string>keyword.other.sref</string>
 		</dict>

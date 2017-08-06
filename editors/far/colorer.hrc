@@ -16,6 +16,6 @@
 
   <prototype name="SimpleRefal" description="Simple Refal">
     <location link="simple-refal.hrc"/>
-    <filename>/\.sref$/i</filename>
+    <filename>/\.srefi?$/i</filename>
   </prototype>
 </hrc>
