@@ -30,5 +30,7 @@ mkdir doc/historical/Дрогунов
 cp ../doc/historical/Дрогунов/*.pdf doc/historical/Дрогунов
 cp ../LICENSE .
 cp ../README.md .
+mkdir editors
+cp -R ../editors editors
 ./bootstrap.sh
 popd

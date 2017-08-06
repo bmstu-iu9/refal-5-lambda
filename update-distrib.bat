@@ -38,5 +38,7 @@ md doc\historical\Дрогунов
 copy ..\doc\historical\Дрогунов\*.pdf doc\historical\Дрогунов
 copy ..\LICENSE .
 copy ..\README.md .
+md editors
+xcopy /e /i /y ..\editors editors
 call bootstrap.bat
 popd
