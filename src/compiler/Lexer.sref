@@ -343,7 +343,7 @@ CollectNativeLines-Aux {
                                                 CComment                  .
 
   CppComment =
-    '\n'    !#TkNewLine                         Main                      |
+    '\n'    !#TkNewLine                         Root                      |
             !#TkEOF                                                       |
     :Any:   !-                                  CppComment                .
 
@@ -767,7 +767,7 @@ CComment {
 }
 
 CppComment {
-  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Main () e.Text>;
+  (e.Accum) '\n' e.Text = (#TkNewLine e.Accum '\n') <Root () e.Text>;
   (e.Accum) = (#TkEOF e.Accum);
   (e.Accum) s.Any e.Text = <CppComment () e.Text>;
 }
