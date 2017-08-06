@@ -9,8 +9,8 @@ $EXTERN Map, Sort;
 
 /**
   Внутренний формат:
-  [ErrorList (e.FileName) (s.LineNumber e.Message)*]
-  s.LineNumber ::= #NoLine | s.Number
+  [ErrorList (e.FileName) (t.SrcPos e.Message)*]
+  t.SrcPos ::= #NoPos | (#FileLine s.LineNumber e.FileName)
 */
 $ENUM ErrorList;
 
@@ -20,12 +20,22 @@ $ENTRY EL-Create {
 
 $ENTRY EL-AddError {
   [ErrorList (e.FileName) e.Errors] e.Message =
-    [ErrorList (e.FileName) e.Errors (#NoLine e.Message)];
+    [ErrorList (e.FileName) e.Errors (#NoPos e.Message)];
 }
 
 $ENTRY EL-AddErrorAt {
+  [ErrorList (e.FileName) e.Errors] #NoPos e.Message =
+    [ErrorList
+      (e.FileName) e.Errors (#NoPos e.Message)
+    ];
+
   [ErrorList (e.FileName) e.Errors] s.LineNumber e.Message =
-    [ErrorList (e.FileName) e.Errors (s.LineNumber e.Message)];
+    [ErrorList
+      (e.FileName) e.Errors ((#FileLine s.LineNumber e.FileName) e.Message)
+    ];
+
+  [ErrorList (e.FileName) e.Errors] t.SrcPos e.Message =
+    [ErrorList (e.FileName) e.Errors (t.SrcPos e.Message)];
 }
 
 $ENTRY EL-AddUnexpected {
@@ -48,16 +58,21 @@ $ENTRY EL-AddUnexpected {
     >;
 }
 
+$ENTRY EL-Concat {
+  [ErrorList (e.FileName-L) e.Errors-L] [ErrorList (e.FileName-R) e.Errors-R]
+    = [ErrorList (e.FileName-L) e.Errors-L e.Errors-R];
+}
+
 $ENTRY EL-Destroy {
   [ErrorList (e.FileName)] = #EL-NoErrors;
 
   [ErrorList (e.FileName) e.Errors] =
     <Map
       {
-        (#NoLine e.Message) =
+        (#NoPos e.Message) =
           <WriteLine '  ERROR: ' e.Message>;
 
-        (s.LineNumber e.Message) =
+        ((#FileLine s.LineNumber e.FileName^) e.Message) =
           <WriteLine
             e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
           >;

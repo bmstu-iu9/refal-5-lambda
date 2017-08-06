@@ -85,6 +85,7 @@ PrepareBracket {
     '$SWAP' NameList |
     '$ESWAP' NameList |
     '$LABEL' NameList-Idents |
+    '$INCLUDE ' Compound ';' |
     '$ENTRY' Function |
     Function .
 */
@@ -149,6 +150,9 @@ ParseElement-SwDirective {
     <EL-AddUnexpected t.ErrorList t.Unexpected 'function name'>
     t.Unexpected e.Tail;
 
+  t.ErrorList #Include e.Tail =
+    <ParseInclude t.ErrorList e.Tail>;
+
   t.ErrorList #Ident e.Tail =
     <ParseNameList-Idents (/* generated */) t.ErrorList e.Tail>;
 
@@ -158,6 +162,21 @@ ParseElement-SwDirective {
       <ASTItemFromDirective s.Directive>
       e.Tail
     >;
+}
+
+ParseInclude {
+  t.ErrorList (#TkCompound s.LnNum1 e.Compound) (#TkSemicolon s.LnNum2) e.Tail
+    = ((#Include s.LnNum1 e.Compound)) t.ErrorList e.Tail;
+
+  t.ErrorList (#TkCompound s.LnNum e.Compound) t.Unexpected e.Tail
+    = ((#Include s.LnNum e.Compound))
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+      t.Unexpected e.Tail;
+
+  t.ErrorList t.Unexpected e.Tail
+    = (/* ничего не генерируем */)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'compound symbol'>
+      t.Unexpected e.Tail;
 }
 
 /*

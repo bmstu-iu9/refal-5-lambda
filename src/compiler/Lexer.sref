@@ -23,6 +23,7 @@ StrDirective {
   #Swap = 'SWAP';
   #ESwap = 'ESWAP';
   #Ident = 'LABEL';
+  #Include = 'INCLUDE';
 }
 
 $ENTRY StrFromToken {
@@ -111,6 +112,7 @@ ValidDirective {
   'SWAP' = (#TkDirective #Swap);
   'ESWAP' = (#TkDirective #ESwap);
   'LABEL' = (#TkDirective #Ident);
+  'INCLUDE' = (#TkDirective #Include);
   'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
   e.Other = (#TkError 'Unknown directive $' e.Other);
 }

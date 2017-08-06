@@ -1,0 +1,5 @@
+$INCLUDE "include-cyclic-A";
+
+$ENTRY Go {
+  = <F> <G>;
+}

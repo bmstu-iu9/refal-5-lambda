@@ -108,3 +108,46 @@ AnalyzeFile {
       }
     >;
 }
+
+/**
+  <FindInclude (e.Folders) e.FileName>
+    == #Success e.FullPath
+    == #Fails
+*/
+$ENTRY FindInclude {
+  (e.Folders) e.FileName
+    = <Fetch
+        <AnalyzeInclude e.FileName>
+        <Map
+          {
+            (e.Folder) = <AnalyzeInclude e.Folder '/' e.FileName>;
+          }
+          e.Folders
+        >
+        {
+          e.Variants-B (#Success e.FullPath) e.Variants-E = #Success e.FullPath;
+
+          e.Variants = #Fails;
+        }
+      >;
+}
+
+AnalyzeInclude {
+  e.FileName '.srefi'
+    = <Fetch
+        <ExistFile-T e.FileName '.srefi'>
+        {
+          #True e.FullPath = (#Success e.FullPath);
+          #False e.FullPath = (#Fails);
+        }
+      >;
+
+  e.FileName
+    = <Fetch
+        <ExistFile-T e.FileName '.srefi'>
+        {
+          #True e.FullPath = (#Success e.FullPath);
+          #False e.FullPath = (#Fails);
+        }
+      >;
+}
