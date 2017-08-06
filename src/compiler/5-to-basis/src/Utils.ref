@@ -1,0 +1,130 @@
+/**
+  <ArgList> == (e.Arg)*
+*/
+$ENTRY ArgList {
+  = <DoArgList 1 <Arg 0>>;
+}
+
+DoArgList {
+  s.N /* пусто */ = /* пусто */;
+  s.N e.Arg =
+    (e.Arg) <DoArgList <Inc s.N> <Arg s.N>>;
+}
+
+
+/**
+  <Inc e.Num> == e.Num+1
+*/
+$ENTRY Inc {
+  e.Num = <Add 1 e.Num>;
+}
+
+
+/**
+  <Dec e.Num> == e.Num-1
+*/
+$ENTRY Dec {
+  e.Num = <Sub (e.Num) 1>;
+}
+
+
+/**
+  <PrintLines (e.Line)*> == пусто
+*/
+$ENTRY PrintLines {
+  (e.Line) e.Lines =
+    <Prout e.Line>
+    <PrintLines e.Lines>;
+
+  /* пусто */ = /* ничего не печатаем */;
+}
+
+
+/**
+  <SaveFile (e.FileName) (e.Line)*> == пусто
+*/
+$ENTRY SaveFile {
+  (e.FileName) e.Lines =
+    <Open 'w' 20 e.FileName>
+    <DoSaveFile e.Lines>
+    <Close 20>;
+}
+
+DoSaveFile {
+  (e.Line) e.Lines =
+    <Put 20 e.Line>
+    <DoSaveFile e.Lines>;
+
+  /* пусто */ = /* всё */;
+}
+
+
+/**
+  <LoadFile e.FileName> == (e.Line)*
+*/
+$ENTRY LoadFile {
+  e.FileName =
+    <Open 'r' 20 e.FileName>
+    <DoLoadFile <Get 20>>
+    <Close 20>;
+}
+
+DoLoadFile {
+  e.Line 0 = (e.Line);
+
+  e.Line = (e.Line) <DoLoadFile <Get 20>>;
+}
+
+
+/**
+  <OneOf t.Elem e.SampleElems> == True | False
+*/
+$ENTRY OneOf {
+  t.Elem e.Elems-B t.Elem e.Elems-E = True;
+  t.Elem e.Elems = False;
+}
+
+
+/**
+  <Builtins> == (e.FunctionName)*
+*/
+$ENTRY Builtins {
+  = ('+') ('-') ('*') ('/') ('%') <DoBuiltins <ListOfBuiltin>>;
+}
+
+DoBuiltins {
+  (s.Number s.Name s.Type) e.Builtins
+    = (<Explode s.Name>) <DoBuiltins e.Builtins>;
+
+  /* пусто */ = /* пусто */;
+}
+
+/**
+  <Unique t.Item*> == t.Item*
+*/
+$ENTRY Unique {
+  e.Items-B t.Item e.Items-M t.Item e.Items-E
+    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
+
+  e.UniqueItems = e.UniqueItems;
+}
+
+/**
+  <Apply t.Function e.Arg> == e.Res
+  t.Function ::= s.FuncName | (t.Function e.Bounded)
+*/
+$ENTRY Apply {
+  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
+
+  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
+}
+
+/**
+  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
+*/
+$ENTRY Map {
+  t.Function t.NextItem e.Items
+    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
+
+  t.Function /* пусто */ = /* пусто */;
+}
