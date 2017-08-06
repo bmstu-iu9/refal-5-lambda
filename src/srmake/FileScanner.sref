@@ -7,9 +7,9 @@ $EXTERN ExistFile;
 //FROM Config
 $EXTERN
   Config-AddReference,
+  Config-GetFolders,
   Config-GetPrefix,
-  Config-SetPrefix,
-  Config-GetFolders;
+  Config-SetPrefix;
 
 //FROM FindFile
 $EXTERN FindFiles;
@@ -33,7 +33,7 @@ DoCreateFileList {
       >;
 
   t.Config (e.Modules) (e.NextModule) e.NotScanned
-    = <LoadList t.Config e.NextModule> : t.Config^ e.NewNotScanned
+    = <FindImports t.Config e.NextModule> : t.Config^ e.NewNotScanned
     = <DoCreateFileList
         t.Config (e.Modules (e.NextModule))
         e.NewNotScanned e.NotScanned
@@ -41,6 +41,21 @@ DoCreateFileList {
 }
 
 FindImports {
+  t.Config #Source (e.NextModule) e.Output
+    = <FindImports-Aux t.Config e.NextModule>;
+
+  t.Config #Output e.Output
+    = <FindImports-Aux t.Config e.Output '.froms'>;
+
+  t.Config #OutputWithNative (e.Output) e.Native
+    = <FindImports-Aux t.Config e.Output '.froms'> : t.Config^ e.FromsUnits
+    = <FindImports-Aux t.Config e.Native> : t.Config^ e.NativeUnits
+    = t.Config e.FromsUnits e.NativeUnits;
+
+  t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
+}
+
+FindImports-Aux {
   t.OriginConfig e.FileName
     = <Fetch
         <ExistFile e.FileName>
@@ -76,24 +91,6 @@ FindImports {
     = t.Config e.Units;
 }
 
-UpdatePrefix {
-  t.Config t.SrcPos e.Prefix
-    = <Fetch
-        <Config-GetPrefix t.Config>
-        {
-          #NotSet
-            = <Config-SetPrefix t.Config e.Prefix> : #Success t.Config^
-            = t.Config;
-
-          e.Prefix /* тот же самый */
-            = t.Config;
-
-          e.OtherPrefix
-            = t.Config (#Error t.SrcPos 'prefix already defined');
-        }
-      >;
-}
-
 FindFilesEx {
   t.Config t.SrcPos e.UnitName
     = <Map
@@ -114,17 +111,20 @@ FindFilesEx {
       >;
 }
 
-LoadList {
-  t.Config #Source (e.NextModule) e.Output
-    = <FindImports t.Config e.NextModule>;
+UpdatePrefix {
+  t.Config t.SrcPos e.Prefix
+    = <Fetch
+        <Config-GetPrefix t.Config>
+        {
+          #NotSet
+            = <Config-SetPrefix t.Config e.Prefix> : #Success t.Config^
+            = t.Config;
 
-  t.Config #Output e.Output
-    = <FindImports t.Config e.Output '.froms'>;
+          e.Prefix /* тот же самый */
+            = t.Config;
 
-  t.Config #OutputWithNative (e.Output) e.Native
-    = <FindImports t.Config e.Output '.froms'> : t.Config^ e.FromsUnits
-    = <FindImports t.Config e.Native> : t.Config^ e.NativeUnits
-    = t.Config e.FromsUnits e.NativeUnits;
-
-  t.Config #Error t.SrcPos e.Message = t.Config /* пусто */;
+          e.OtherPrefix
+            = t.Config (#Error t.SrcPos 'prefix already defined');
+        }
+      >;
 }
