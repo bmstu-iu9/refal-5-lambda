@@ -1,5 +1,5 @@
 *$FROM R5-Utils
-$EXTERN R5-ArgList, R5-PrintLines, R5-SaveFile;
+$EXTERN R5-PrintLines, R5-SaveFile, R5-Builtins;
 
 *$FROM R5-Lexer
 $EXTERN R5-Scan;
@@ -13,45 +13,84 @@ $EXTERN R5-Transform;
 *$FROM R5-Plainer
 $EXTERN R5-Plain;
 
-*$FROM R5-Tests
-$EXTERN R5-RunTests;
+$ENTRY R5-Preprocess {
+  (e.Source) (e.Destination)
+    , <R5-Parse <R5-Scan e.Source>>
+    : {
+        Success e.Functions =
+          <R5-SaveFile
+            (e.Destination)
+            <R5-Plain <AddMu <R5-Transform e.Functions>>>
+          >;
 
-$ENTRY Go {
-  = <Main <R5-ArgList>>;
+        Fails e.Errors =
+          <R5-PrintLines
+            <FormatErrors e.Errors>
+          >;
+      };
 }
 
-Title { = 'Convertor full Refal-5 sources to Basis Refal subset'; }
+AddMu {
+  e.AST
+    , <R5-Builtins> : e.Builtins
+    /* Пока они косвенно не вызываются */
+    , <DoAddMu-Names e.Builtins> : e.MuBuiltins
+    , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
+    = (Function NoPos ('Mu') Local e.MuBuiltins e.MuAST) e.AST;
+}
 
-Main {
-  (e.ProgName) (e.Source) (e.Destination) e.Skipped,
-      <R5-PrintLines
-        (<Title>)
-        ('Source:      ' e.Source)
-        ('Destination: ' e.Destination)
-      >
-      <R5-Parse <R5-Scan e.Source>>:
-    {
-      Success e.Functions =
-        <R5-SaveFile
-          (e.Destination)
-          <R5-Plain <R5-Transform e.Functions>>
-        >;
+DoAddMu-Names {
+  /* Служебное имя, пропускаем */
+  (e.NextName '$$') e.Tail = <DoAddMu-Names e.Tail>;
 
-      Fails e.Errors =
-        <R5-PrintLines
-          <FormatErrors e.Errors>
-        >;
-    };
+  /* Пустое имя, пропускаем */
+  () e.Tail = <DoAddMu-Names e.Tail>;
 
-  (e.ProgName) ('_tests_')
-    = <R5-RunTests>;
+  (e.NextName) e.Tail = <MuSentence e.NextName> <DoAddMu-Names e.Tail>;
+  /* пусто */ = /* пусто */;
+}
 
-  (e.ProgName) e.Other =
-    <R5-PrintLines
-      (<Title>)
-      ('Bad command line. Expected command line syntax:')
-      ('  refgo ' e.ProgName ' source.ref destination.ref')
-    >;
+MuSentence {
+  e.Name
+    = <MuSentence-Special e.Name>
+      (((Compound e.Name) <Var-eX>) RETURN (<Call-eX e.Name>))
+      (((Brackets <Chars e.Name>) <Var-eX>) RETURN (<Call-eX e.Name>));
+}
+
+Var-eX {
+  = (Variable NoPos 'eX');
+}
+
+Call-eX {
+  e.Name = (Call NoPos (e.Name) <Var-eX>);
+}
+
+MuSentence-Special {
+  s.Name, '+-*/%?' : e.Chars-B s.Name e.Chars-E
+    = (((Char s.Name) <Var-eX>) RETURN (<Call-eX s.Name>));
+
+  e.OtherName = /* пусто */;
+}
+
+Chars {
+  s.Char e.Chars = (Char s.Char) <Chars e.Chars>;
+  /* пусто */ = /* пусто */;
+}
+
+DoAddMu-AST {
+  (e.MuSentences) e.Tail (Extern e.Names)
+    = <DoAddMu-AST (<DoAddMu-Names e.Names> e.MuSentences) e.Tail>
+      (Extern e.Names);
+
+  (e.MuSentences) e.Tail (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+    = <DoAddMu-AST (<MuSentence e.Name> e.MuSentences) e.Tail>
+      (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+
+  (e.MuSentences) e.Tail (SpecialComment t.SrcPos e.Text)
+    = <DoAddMu-AST (e.MuSentences) e.Tail>
+      (SpecialComment t.SrcPos e.Text);
+
+  (e.MuSentences) /* пусто */ = (e.MuSentences);
 }
 
 FormatErrors {

@@ -91,17 +91,40 @@ FrontEnd {
     = <CheckProgram t.ErrorList e.AST> e.AST;
 }
 
+//FROM Library
+$EXTERN System, ExistFile, RemoveFile;
+
 LoadAST {
   t.Config #R5 e.SrcName
-    = <SR-LoadSource e.SrcName> : e.SrcText
-    = <CleanupRefal5Comments e.SrcText '\n'> : e.SrcText^
-    = <SR-LexFolding e.SrcText> : e.Tokens
-    = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
+    = <System
+        'refgo R5-Go+R5-Lexer+R5-Main+R5-Parser+R5-Plainer+R5-Tests+'
+        'R5-Transformer+R5-Utils "' e.SrcName '" out.tmp'
+      >
+    : /* пусто */
     = <Fetch
-        <Config-GetPrelude t.Config>
+        <ExistFile 'out.tmp'>
         {
-          /* пусто */ = t.ErrorList e.AST;
-          e.Prelude = t.ErrorList (#Include 0 e.Prelude) e.AST;
+          #True
+            = <SR-LoadSource 'out.tmp'> : e.SrcText
+            = <SR-LexFolding e.SrcText> : e.Tokens
+            = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
+            = <Fetch
+                <Config-GetPrelude t.Config>
+                {
+                  /* пусто */ = t.ErrorList e.AST;
+                  e.Prelude = t.ErrorList (#Include 1 e.Prelude) e.AST;
+                }
+              >;
+
+          #False
+            = <EL-AddErrorAt <EL-Create e.SrcName> 1 'can\'t preprocess file'>;
+        }
+      >
+      <Fetch
+        <RemoveFile 'out.tmp'>
+        {
+          #True = ;
+          #False = /* игнорируем */;
         }
       >;
 
@@ -109,14 +132,6 @@ LoadAST {
     = <SR-LoadSource e.SrcName> : e.SrcText
     = <SR-LexFolding e.SrcText> : e.Tokens
     = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
-}
-
-CleanupRefal5Comments {
-  '*' e.Comment '\n' e.Tail = '\n' <CleanupRefal5Comments e.Tail>;
-
-  e.NormalLine '\n' e.Tail = e.NormalLine '\n' <CleanupRefal5Comments e.Tail>;
-
-  /* пусто */ = /* пусто */;
 }
 
 ResolveIncludes {

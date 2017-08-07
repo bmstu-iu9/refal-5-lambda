@@ -1,1 +1,323 @@
-// ���� �����
+//FROM Library
+$EXTERN Arg, Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine, Explode,
+  FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
+  SymbType, SymbCompare, Implode;
+
+Prout {
+  // В первом приближении достаточно
+  e.Text = <WriteLine e.Text>;
+}
+
+$SWAP __file_handles;
+
+Open {
+  s.Mode s.Number e.FileName
+    = <__Open-SwOpened
+        (s.Mode s.Number e.FileName)
+        <__read __file_handles>
+      >;
+}
+
+__read {
+  s.Swap
+    = <s.Swap> : e.Content
+    = <s.Swap e.Content> e.Content;
+}
+
+__write {
+  s.Swap e.Content
+    = <s.Swap e.Content> : e.OldContent
+    = /* пусто */;
+}
+
+__Open-SwOpened {
+  (s.Mode s.Number e.FileName) e.Handles-B (s.Number s.Handle) e.Handles-E
+    = <FClose s.Handle>
+      <Open s.Mode s.Number e.FileName>;
+
+  (s.Mode s.Number) e.Handles
+    = <Open s.Mode s.Number 'REFAL' <Symb s.Number> '.DAT'>;
+
+  (s.Mode s.Number e.FileName) e.Handles
+    = <FOpen s.Mode e.FileName> : s.Handle
+    = <__write __file_handles (s.Number s.Handle) e.Handles>;
+}
+
+__handle_for_num {
+  s.Mode s.Number
+    = <__handle_for_num_opened s.Mode s.Number <__read __file_handles>>;
+}
+
+__handle_for_num_opened {
+  s.Mode s.Number e.Handles-B (s.Number s.Handle) e.Handles-E = s.Handle;
+  s.Mode s.Number e.Handles
+    = <Open s.Mode s.Number> <__handle_for_num s.Mode s.Number>;
+}
+
+Close {
+  s.Number = <__Close-SwOpened s.Number <__read __file_handles>>;
+}
+
+__Close-SwOpened {
+  s.Number e.Handles-B (s.Number s.Handle) e.Handles-E
+    = <FClose s.Handle>
+      <__write __file_handles e.Handles-B e.Handles-E>;
+}
+
+Get {
+  s.Number
+    = <FReadLine <__handle_for_num 'r' s.Number>> : s.Handle e.Line
+    = e.Line;
+}
+
+Putout {
+  s.Number e.Line
+    = <FWriteLine <__handle_for_num 'w' s.Number> e.Line> : s.Handle
+    = /* пусто */;
+}
+
+Symb {
+  s.Number = <StrFromInt s.Number>;
+}
+
+Numb {
+  // Пока пускай фейлится
+  e.String = <IntFromStr e.String> : #Success s.Number = s.Number;
+}
+
+First {
+  s.N e.Expr = <__DoFirst s.N () e.Expr>;
+}
+
+__DoFirst {
+  0 (e.Scanned) e.Expr = (e.Scanned) e.Expr;
+  s.N (e.Scanned) /* пусто */ = (e.Scanned) /* пусто */;
+
+  s.N (e.Scanned) t.Next e.Expr
+    = <__DoFirst <Sub s.N 1> (e.Scanned t.Next) e.Expr>;
+}
+
+// Функция слишком длинная для одного предложения
+ListOfBuiltin {
+  = <__ListOfBuiltin_1> <__ListOfBuiltin_2>;
+}
+
+__ListOfBuiltin_1 {
+  = (1 #Mu #special)
+    (2 #Add #regular)
+    (3 #Arg #regular)
+    (4 #Br #regular)
+    (5 #Card #regular)
+    (6 #Chr #regular)
+    (7 #Cp #regular)
+    (8 #Dg #regular)
+    (9 #Dgall #regular)
+    (10 #Div #regular)
+    (11 #Divmod #regular)
+    (12 #Explode #regular)
+    (13 #First #regular)
+    (14 #Get #regular)
+    (15 #Implode #regular)
+    (16 #Last #regular)
+    (17 #Lenw #regular)
+    (18 #Lower #regular)
+    (19 #Mod #regular)
+    (20 #Mul #regular)
+    (21 #Numb #regular)
+    (22 #Open #regular)
+    (23 #Ord #regular)
+    (24 #Print #regular)
+    (25 #Prout #regular)
+    (26 #Put #regular)
+    (27 #Putout #regular)
+    (28 #Rp #regular)
+    (29 #Step #regular)
+    (30 #Sub #regular)
+    (31 #Symb #regular)
+    (32 #Time #regular)
+    (33 #Type #regular)
+    (34 #Upper #regular)
+    (35 #Sysfun #regular);
+}
+
+__ListOfBuiltin_2 {
+  = (42 "Imp$$" #regular)
+    (43 "Stop$$" #regular)
+    (44 "" #regular)
+    (45 #Freeze #regular)
+    (46 #Freezer #regular)
+    (47 #Dn #regular)
+    (48 #Up #special)
+    (49 #Ev-met #special)
+    (50 #Residue #special)
+    (51 #GetEnv #regular)
+    (52 #System #regular)
+    (53 #Exit #regular)
+    (54 #Close #regular)
+    (55 #ExistFile #regular)
+    (56 #GetCurrentDirectory #regular)
+    (57 #RemoveFile #regular)
+    (58 #Implode_Ext #regular)
+    (59 #Explode_Ext #regular)
+    (60 #TimeElapsed #regular)
+    (61 #Compare #regular)
+    (62 #DeSysfun #regular)
+    (63 #XMLParse #regular)
+    (64 #Random #regular)
+    (65 #RandomDigit #regular)
+    (66 #Write #regular)
+    (67 #ListOfBuiltin #regular)
+    (68 #SizeOf #regular)
+    (69 #GetPID #regular)
+    (70 #int4fab_1 #regular)
+    (71 #GetPPID #regular);
+}
+
+Type {
+  s.Symbol e.Tail = <__Type-SwSymbol <SymbType s.Symbol> s.Symbol> e.Tail;
+  (e.Brackets) e.Tail = 'B0' (e.Brackets) e.Tail;
+  /* пусто */ = '*0' /* пусто */;
+}
+
+__Type-SwSymbol {
+  #TypeCharacter s.Symbol
+    = <__Type-SwCharacter
+        ('L'
+          ('u' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+          ('l' 'abcdefghijklmnopqrstuvwxyz')
+        )
+        ('D' ('0' '0123456789'))
+        ('P' ('l' ' '))
+        s.Symbol <SymbCompare ' ' s.Symbol> <SymbCompare s.Symbol '\x80'>
+      >;
+
+  #TypeIdentifier s.Symbol
+    = <__Type-SwIdentifier s.Symbol <Explode s.Symbol>>;
+
+  #TypeNumber s.Symbol = 'N0' s.Symbol;
+
+  // Остальные типы не поддерживаем
+}
+
+__Type-SwCharacter {
+  e.Types-B
+  (s.Type e.SubTypes-B (s.SubType e.Chars-B s.Char e.Chars-E) e.SubTypes-E)
+  e.Types-E
+  s.Char s.Cmp1 s.Cmp2
+    = s.Type s.SubType s.Char;
+
+ e.Types s.Char '<' '<' = 'Pl' s.Char;
+ e.Types s.Char s.Cmp1 s.Cmp2 = 'Ol' s.Char;
+}
+
+__fetch { e.Arg s.Func = <s.Func e.Arg>; }
+
+__Type-SwIdentifier {
+  // Повторяем поведение, описанное в refio.c
+  s.Symbol s.First e.Tail
+    = <__fetch
+        <Type s.First>
+        {
+          'L' s.SubType s.First
+            = <__Type-DoSwIdentifier s.Symbol e.Tail>;
+
+          s.Type s.SubType s.First = 'Wq' s.Symbol;
+        }
+      >;
+}
+
+__Type-DoSwIdentifier {
+  s.Symbol s.Next e.Tail
+    = <__fetch
+        <__IdentTail s.Next>
+        {
+          #True = <__Type-DoSwIdentifier s.Symbol e.Tail>;
+          #False = 'Wq' s.Symbol;
+        }
+      >;
+
+  s.Symbol = 'Wi' s.Symbol;
+}
+
+__IdentTail {
+  s.Char
+    = <__fetch
+        <Type s.Char>
+        {
+          'W' s.SubType s.Char^ = #True;
+          'D0' s.Char^ = #True;
+          s.Type s.SubType '-' = #True;
+          s.Type s.SubType '_' = #True;
+          s.Type s.SubType s.Char^ = #False;
+        }
+      >;
+}
+
+Compare {
+  s.Num1 s.Num2
+    = <{ '<' = '-'; '=' = '0'; '>' = '+'; } <SymbCompare s.Num1 s.Num2>>;
+}
+
+$SWAP __store;
+
+Br {
+  e.Key '=' e.Value = <__store ((e.Key) e.Value) <__store>>;
+}
+
+Dg {
+  e.Key = <__Dg-SwExist (e.Key) <__store>>;
+}
+
+__Dg-SwExist {
+  (e.Key) e.Store-B ((e.Key) e.Value) e.Store-E
+    = e.Value <__store e.Store-B e.Store-E>;
+
+  (e.Key) e.Store = /* пусто */ <__store e.Store>;
+}
+
+Explode_Ext {
+  s.Compound = <Explode s.Compound>;
+}
+
+Implode_Ext {
+  e.String = <Implode e.String>;
+}
+
+// Не реализованные пока функции
+$ENUM Card;
+$ENUM Cp;
+$ENUM Dgall;
+$ENUM Divmod;
+$ENUM Implode;
+$ENUM Last;
+$ENUM Lenw;
+$ENUM Lower;
+$ENUM Print;
+$ENUM Put;
+$ENUM Rp;
+$ENUM Step;
+$ENUM Time;
+$ENUM Upper;
+$ENUM Sysfun;
+$ENUM Freeze;
+$ENUM Freezer;
+$ENUM Dn;
+$ENUM Up;
+$ENUM Ev-met;
+$ENUM Residue;
+$ENUM GetEnv;
+$ENUM System;
+$ENUM Exit;
+$ENUM ExistFile;
+$ENUM GetCurrentDirectory;
+$ENUM RemoveFile;
+$ENUM TimeElapsed;
+$ENUM DeSysfun;
+$ENUM XMLParse;
+$ENUM Random;
+$ENUM RandomDigit;
+$ENUM Write;
+$ENUM SizeOf;
+$ENUM GetPID;
+$ENUM int4fab_1;
+$ENUM GetPPID;

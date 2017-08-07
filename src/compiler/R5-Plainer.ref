@@ -33,7 +33,7 @@ DoPlain {
       <R5-Plain e.Units>;
 
   (SpecialComment t.SrcPos e.Text) e.Units
-    = ('*' e.Text)
+    = ('//*' e.Text)
       <R5-Plain e.Units>;
 
   /* пусто */ = /* пусто */;
@@ -230,7 +230,7 @@ MultilineTerm-Prefix {
             (e.Indent ')' e.Suffix);
 
         (Call t.SrcPos (e.Function) e.Expr)
-          = (e.Prefix '<' e.Function)
+          = (e.Prefix '<' <FuncDesugar e.Function>)
             <Expression (e.Indent '  ') (e.Indent '  ') e.Expr>
             (e.Indent '>' e.Suffix);
 
@@ -239,8 +239,18 @@ MultilineTerm-Prefix {
       };
 }
 
+FuncDesugar {
+  '+' = 'Add';
+  '-' = 'Sub';
+  '*' = 'Mul';
+  '/' = 'Div';
+  '%' = 'Mod';
+  '?' = 'Residue';
+  e.NormalName = e.NormalName;
+}
+
 Compound {
-  e.Chars, <IsIdent e.Chars>: True e.Textual = e.Textual;
+  e.Chars, <IsIdent e.Chars>: True e.Textual = '#' e.Textual;
 
   e.Chars = '\"' <DoCompound e.Chars> '\"'
 }
@@ -254,6 +264,8 @@ IsIdent {
   s.Initial e.Tail
     , <Type s.Initial>: 'L' s.SubType s.Initial
     = <DoIsIdent (s.Initial) e.Tail>;
+
+  e.Other = False;
 }
 
 DoIsIdent {
@@ -304,7 +316,7 @@ HexDigit {
 }
 
 Variable {
-  t.SrcPos s.Type e.Index = s.Type '.' e.Index;
+  t.SrcPos s.Type e.Index = s.Type '.' s.Type e.Index;
 }
 
 Brackets {
@@ -312,9 +324,10 @@ Brackets {
 }
 
 Call {
-  t.SrcPos (e.Function) /* пусто */ = '<' e.Function '>';
+  t.SrcPos (e.Function) /* пусто */ = '<' <FuncDesugar e.Function> '>';
 
-  t.SrcPos (e.Function) e.Expr = '<' e.Function ' ' <InlineExpr e.Expr> '>'
+  t.SrcPos (e.Function) e.Expr
+    = '<' <FuncDesugar e.Function> ' ' <InlineExpr e.Expr> '>'
 }
 
 InlineExpr {

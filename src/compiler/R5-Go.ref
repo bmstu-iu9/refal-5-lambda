@@ -1,0 +1,34 @@
+*$FROM R5-Utils
+$EXTERN R5-ArgList, R5-PrintLines;
+
+*$FROM R5-Tests
+$EXTERN R5-RunTests;
+
+*$FROM R5-Main
+$EXTERN R5-Preprocess;
+
+$ENTRY Go {
+  = <Main <R5-ArgList>>;
+}
+
+Title { = 'Convertor full Refal-5 sources to Basis Refal subset'; }
+
+Main {
+  (e.ProgName) (e.Source) (e.Destination) e.Skipped
+    = <R5-PrintLines
+        (<Title>)
+        ('Source:      ' e.Source)
+        ('Destination: ' e.Destination)
+      >
+      <R5-Preprocess (e.Source) (e.Destination)>;
+
+  (e.ProgName) ('_tests_')
+    = <R5-RunTests>;
+
+  (e.ProgName) e.Other =
+    <R5-PrintLines
+      (<Title>)
+      ('Bad command line. Expected command line syntax:')
+      ('  refgo ' e.ProgName ' source.ref destination.ref')
+    >;
+}

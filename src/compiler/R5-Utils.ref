@@ -52,7 +52,7 @@ $ENTRY R5-SaveFile {
 
 DoSaveFile {
   (e.Line) e.Lines =
-    <Put 20 e.Line>
+    <Putout 20 e.Line>
     <DoSaveFile e.Lines>;
 
   /* пусто */ = /* всё */;
