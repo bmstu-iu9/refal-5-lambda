@@ -2,7 +2,7 @@
 $EXTERN Map, Fetch, Max, Seq, Inc, Compare, MapReduce, DelAccumulator;
 
 //FROM Library
-$EXTERN Add, StrFromInt;
+$EXTERN Add, StrFromInt, WriteLine, Exit;
 
 //FROM Hash
 $EXTERN HashLittle2-Chars;
@@ -476,6 +476,26 @@ LowLevelRASL-RASL {
     >;
 }
 
+OverflowFailure {
+  e.Function #CmdIssueMemory s.Memory
+    = <WriteLine 'Compilation failure in function ' e.Function ':'>
+      <WriteLine
+        '  this function requests ' <StrFromInt s.Memory> ' local variables, '
+        'but maximum size is 256.'
+      >
+      <WriteLine '  Compilation aborted.'>
+      <Exit 1>;
+
+  e.Function #CmdOnFailGoTo s.Memory
+    = <WriteLine 'Compilation failure in function ' e.Function ':'>
+      <WriteLine
+        '  this function try jump over ' <StrFromInt s.Memory> ' commands, '
+        'but maximum jump length is 256.'
+      >
+      <WriteLine '  Compilation aborted.'>
+      <Exit 1>;
+}
+
 ClassifyItems-RASL {
   s.DebugInfo (e.FuncScopeClass)
   (#Function-ToRASL s.ScopeClass (e.Name) e.FunctionBody) =
@@ -485,6 +505,12 @@ ClassifyItems-RASL {
       <Seq
         (RemoveDebugInfo s.DebugInfo)
         ConvertInterpretCommands
+        {
+          e.Commands-B (#OVERFLOW s.Type s.Count) e.Commands-E
+            = <OverflowFailure e.Name s.Type s.Count>;
+
+          e.Commands = e.Commands;
+        }
         PrepareOpenEStack
         {
           e.FunctionBody^ =
@@ -584,6 +610,16 @@ DoLength {
 }
 
 ConvertOneInterpretCommand {
+  (#CmdIssueMemory s.Memory)
+    = <Fetch
+        <Compare s.Memory 256>
+        {
+          '<' = (#CmdIssueMemory s.Memory);
+
+          s.Other = (#OVERFLOW #CmdIssueMemory s.Memory);
+        }
+      >;
+
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
       <Compare s.Number 256> {
@@ -619,16 +655,20 @@ ConvertOneInterpretCommand {
       s.Mode '.' e.Index '#' <StrFromInt s.Depth> s.Offset
     );
 
-  (#CmdSentence e.SubCommands) =
-    <Fetch
-      <Length-T <ConvertInterpretCommands e.SubCommands>>
-      {
-        s.Length e.SubCommands^ =
-          (#CmdOnFailGoTo s.Length)
-          e.SubCommands
-          (#CmdProfilerStopSentence);
-      }
-    >;
+  (#CmdSentence e.SubCommands)
+    = <Length-T <ConvertInterpretCommands e.SubCommands>>
+    : s.Length e.SubCommands^
+    = <Fetch
+        <Compare s.Length 256>
+        {
+          '<'
+             = (#CmdOnFailGoTo s.Length)
+               e.SubCommands
+               (#CmdProfilerStopSentence);
+
+           s.Other = (#OVERFLOW #CmdOnFailGoTo s.Length);
+        }
+      >;
 
   (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands) =
     (#CmdEPrepare s.BracketNum s.VarNumber)

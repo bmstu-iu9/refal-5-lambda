@@ -35,6 +35,7 @@ goto :EOF
     if exist *.tds erase *.tds
     echo.
   )
+  exit /b 0
 goto :EOF
 
 :RUN_ALL_TESTS_DIR
@@ -83,7 +84,7 @@ goto :EOF
 setlocal
   find "%%" %1 > NUL
   if errorlevel 1 (
-    call :PREPARE_PREFIX
+    call :PREPARE_PREFIX || exit /b 1
     set SRFLAGS_PLUS=%SRFLAGS_PREF%
   ) else (
     set SRFLAGS_PLUS=%SRFLAGS_NAT%
@@ -221,7 +222,7 @@ goto :EOF
 
 :RUN_TEST_AUX.LEXGEN
 setlocal
-  call :PREPARE_PREFIX
+  call :PREPARE_PREFIX || exit /b 1
 
   echo Passing %1 (lexgen)...
   set SREF=%1
