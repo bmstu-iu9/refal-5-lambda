@@ -3396,6 +3396,7 @@ void refalrts::vm::Stack<T>::reserve(size_t size) {
     T *new_memory = new T[size];
     delete[] m_memory;
     m_memory = new_memory;
+    m_capacity = size;
   }
   m_size = size;
   for (size_t i = 0; i < m_size; ++i) {
