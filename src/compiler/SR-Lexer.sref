@@ -7,7 +7,7 @@ $EXTERN Chr, StrFromInt;
 //FROM Escape
 $EXTERN EscapeChar, EscapeString, CharFromNum, UnEscapeString-SR;
 
-$ENTRY LexFolding {
+$ENTRY SR-LexFolding {
   e.SourceText =
     <NormalizeTokens
       <Root () e.SourceText>
@@ -26,7 +26,7 @@ StrDirective {
   #Include = 'INCLUDE';
 }
 
-$ENTRY StrFromToken {
+$ENTRY SR-StrFromToken {
   #TkChar s.Char = '' <EscapeChar s.Char> '';
   #TkCompound e.Chars = '"' <EscapeString e.Chars> '"';
   #TkCloseADT = '"]"';
@@ -52,8 +52,8 @@ $ENTRY StrFromToken {
   #TkRedefinition = '"^"';
   #TkNativeBlock e.Block = 'native code insertion';
 
-  # Open s.OpenBracket = <StrFromToken s.OpenBracket>;
-  # Close s.CloseBracket = <StrFromToken s.CloseBracket>;
+  # Open s.OpenBracket = <SR-StrFromToken s.OpenBracket>;
+  # Close s.CloseBracket = <SR-StrFromToken s.CloseBracket>;
 }
 
 NormalizeToken {

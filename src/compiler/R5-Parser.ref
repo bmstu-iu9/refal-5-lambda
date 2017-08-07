@@ -1,5 +1,5 @@
-*$FROM Utils;
-$EXTERN OneOf;
+*$FROM R5-Utils
+$EXTERN R5-OneOf;
 
 /**
   <Parse e.Tokens>
@@ -26,7 +26,7 @@ $EXTERN OneOf;
     | (Call t.SrcPos (e.Function) t.Terms*)
   s.VarType ::= 's' | 't' | 'e'
 */
-$ENTRY Parse {
+$ENTRY R5-Parse {
   e.Tokens =
     <Semantics <Program  e.Tokens>>;
 }
@@ -41,7 +41,7 @@ $ENTRY Parse {
 Program {
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type TkSpecComment TkExtern TkEntry TkName TkSemicolon>: True =
+      <R5-OneOf s.Type TkSpecComment TkExtern TkEntry TkName TkSemicolon>: True =
     <Program-AfterUnit <Unit t.NextToken e.Tokens>>;
 
   (TkEOF t.Pos) = /* всё */;
@@ -77,7 +77,7 @@ Unit {
         (/* игнорируем */) e.Tokens;
 
       (s.Type t.Pos e.Value),
-          <OneOf s.Type TkEntry TkName>: True =
+          <R5-OneOf s.Type TkEntry TkName>: True =
         <Function t.NextToken e.Tokens>;
 
       /* других типов быть не должно */
@@ -132,7 +132,7 @@ NameList-DoNames {
 
   (e.Names) (e.Errors) t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <OneOf s.Type TkExtern TkEntry TkSpecComment TkEOF>: True =
+      <R5-OneOf s.Type TkExtern TkEntry TkSpecComment TkEOF>: True =
     (
       (Extern e.Names)
       e.Errors
@@ -355,7 +355,7 @@ ExtensionChain-AfterResult {
         (TkSemicolon t.Pos) e.Tokens;
 
       (s.Type t.Pos),
-          <OneOf s.Type TkComma TkAssign>: True =
+          <R5-OneOf s.Type TkComma TkAssign>: True =
         <ExtensionChain-AfterPattern
           (e.Errors (Error t.Pos 'Missed \':\'')) t.Result
           <Pattern (TkComma t.Pos) e.Tokens>
@@ -585,7 +585,7 @@ DoExpression-AfterCall {
 
 Expression-CheckBrackets {
   s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens,
-      <OneOf s.Type TkCloseBracket TkCloseCall>: True =
+      <R5-OneOf s.Type TkCloseBracket TkCloseCall>: True =
     <Expression-CheckBrackets-AfterSubexpr
       s.Kind
       (e.Errors (Error t.Pos 'unbalanced ' <TokName s.Type>))
@@ -652,13 +652,13 @@ Semantics {
     };
 }
 
-*$FROM Utils;
-$EXTERN Builtins;
+*$FROM R5-Utils
+$EXTERN R5-Builtins;
 
 FilterUnitsAndFunctionNames {
   e.ErrorsUnits =
     <DoFilterUnitsAndFunctionNames
-      e.ErrorsUnits (<Builtins>)
+      e.ErrorsUnits (<R5-Builtins>)
     >;
 }
 

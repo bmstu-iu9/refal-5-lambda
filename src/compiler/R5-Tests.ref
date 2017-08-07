@@ -1,4 +1,4 @@
-$ENTRY RunTests {
+$ENTRY R5-RunTests {
   = <Perform
       AllSubstrings
       AllSubstrings-Hard

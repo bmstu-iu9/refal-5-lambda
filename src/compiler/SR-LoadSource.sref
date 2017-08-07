@@ -1,7 +1,7 @@
 //FROM LibraryEx
 $EXTERN Fetch, Map, LoadFile;
 
-$ENTRY LoadSource {
+$ENTRY SR-LoadSource {
   e.FileName =
     <Fetch
       <Map LinearizeLine <LoadFile e.FileName>>

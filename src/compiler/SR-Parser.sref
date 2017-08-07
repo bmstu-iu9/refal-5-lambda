@@ -5,7 +5,7 @@ $EXTERN Fetch, Map, Inc, Seq, Dec;
 $EXTERN EL-AddUnexpected, EL-AddErrorAt;
 
 
-$ENTRY ParseProgram {
+$ENTRY SR-ParseProgram {
   t.ErrorList e.Tokens =
     <ParseElements
       t.ErrorList

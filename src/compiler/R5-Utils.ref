@@ -1,21 +1,21 @@
 /**
   <ArgList> == (e.Arg)*
 */
-$ENTRY ArgList {
+$ENTRY R5-ArgList {
   = <DoArgList 1 <Arg 0>>;
 }
 
 DoArgList {
   s.N /* пусто */ = /* пусто */;
   s.N e.Arg =
-    (e.Arg) <DoArgList <Inc s.N> <Arg s.N>>;
+    (e.Arg) <DoArgList <R5-Inc s.N> <Arg s.N>>;
 }
 
 
 /**
   <Inc e.Num> == e.Num+1
 */
-$ENTRY Inc {
+$ENTRY R5-Inc {
   e.Num = <Add 1 e.Num>;
 }
 
@@ -23,7 +23,7 @@ $ENTRY Inc {
 /**
   <Dec e.Num> == e.Num-1
 */
-$ENTRY Dec {
+$ENTRY R5-Dec {
   e.Num = <Sub (e.Num) 1>;
 }
 
@@ -31,10 +31,10 @@ $ENTRY Dec {
 /**
   <PrintLines (e.Line)*> == пусто
 */
-$ENTRY PrintLines {
+$ENTRY R5-PrintLines {
   (e.Line) e.Lines =
     <Prout e.Line>
-    <PrintLines e.Lines>;
+    <R5-PrintLines e.Lines>;
 
   /* пусто */ = /* ничего не печатаем */;
 }
@@ -43,7 +43,7 @@ $ENTRY PrintLines {
 /**
   <SaveFile (e.FileName) (e.Line)*> == пусто
 */
-$ENTRY SaveFile {
+$ENTRY R5-SaveFile {
   (e.FileName) e.Lines =
     <Open 'w' 20 e.FileName>
     <DoSaveFile e.Lines>
@@ -62,7 +62,7 @@ DoSaveFile {
 /**
   <LoadFile e.FileName> == (e.Line)*
 */
-$ENTRY LoadFile {
+$ENTRY R5-LoadFile {
   e.FileName =
     <Open 'r' 20 e.FileName>
     <DoLoadFile <Get 20>>
@@ -79,7 +79,7 @@ DoLoadFile {
 /**
   <OneOf t.Elem e.SampleElems> == True | False
 */
-$ENTRY OneOf {
+$ENTRY R5-OneOf {
   t.Elem e.Elems-B t.Elem e.Elems-E = True;
   t.Elem e.Elems = False;
 }
@@ -88,7 +88,7 @@ $ENTRY OneOf {
 /**
   <Builtins> == (e.FunctionName)*
 */
-$ENTRY Builtins {
+$ENTRY R5-Builtins {
   = ('+') ('-') ('*') ('/') ('%') <DoBuiltins <ListOfBuiltin>>;
 }
 
@@ -102,29 +102,9 @@ DoBuiltins {
 /**
   <Unique t.Item*> == t.Item*
 */
-$ENTRY Unique {
+$ENTRY R5-Unique {
   e.Items-B t.Item e.Items-M t.Item e.Items-E
-    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
+    = e.Items-B <R5-Unique e.Items-M t.Item e.Items-E>;
 
   e.UniqueItems = e.UniqueItems;
-}
-
-/**
-  <Apply t.Function e.Arg> == e.Res
-  t.Function ::= s.FuncName | (t.Function e.Bounded)
-*/
-$ENTRY Apply {
-  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
-
-  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
-}
-
-/**
-  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
-*/
-$ENTRY Map {
-  t.Function t.NextItem e.Items
-    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
-
-  t.Function /* пусто */ = /* пусто */;
 }

@@ -1,11 +1,11 @@
-*$FROM Utils;
-$EXTERN Builtins, Map, Unique;
+*$FROM R5-Utils
+$EXTERN R5-Builtins, R5-Unique;
 
 
 /**
   <Transform t.Unit*> == t.Unit*
 */
-$ENTRY Transform {
+$ENTRY R5-Transform {
   e.Units
     = <Transform-Step
         UnCondition <Transform-Step UnBlock e.Units>
@@ -14,7 +14,7 @@ $ENTRY Transform {
 
 Transform-Step {
   s.FnMode e.Units
-    = <DoTransform s.FnMode <GetFunctionNames (<Builtins>) e.Units>>;
+    = <DoTransform s.FnMode <GetFunctionNames (<R5-Builtins>) e.Units>>;
 }
 
 GetFunctionNames {
@@ -154,12 +154,12 @@ BlockScopeVars {
       >;
 }
 
-$ENTRY transformer_MakeVariables {
+transformer_MakeVariables {
   ('e' e.Index) = (Brackets (Variable NO-POS 'e' e.Index));
   (s.VarType e.Index) = (Variable NO-POS s.VarType e.Index);
 }
 
-$ENTRY transformer_AddScopeVars {
+transformer_AddScopeVars {
   e.ScopeVars ((e.Pattern) e.Tail) = ((e.ScopeVars e.Pattern) e.Tail);
 }
 
@@ -399,7 +399,7 @@ HardItem {
   (e.BoundEVariables) (Brackets e.Pattern) = False;
 }
 
-$ENTRY transformer_BindBrackets {
+transformer_BindBrackets {
   (e.Expr) = (<DoBindBrackets ('$') e.Expr>);
 }
 
@@ -742,7 +742,7 @@ MakeOpenE-ForwardNext {
 }
 
 ExtractVariables {
-  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+  e.Sentences = <R5-Unique <ExtractVariables-Sentences e.Sentences>>;
 }
 
 ExtractVariables-Sentences {
@@ -807,4 +807,24 @@ Symbol {
   (Number s.Number) = True;
   (Char s.Char) = True;
   t.Other = False;
+}
+
+/**
+  <Apply t.Function e.Arg> == e.Res
+  t.Function ::= s.FuncName | (t.Function e.Bounded)
+*/
+Apply {
+  s.FuncName e.Arg = <Mu s.FuncName e.Arg>;
+
+  (t.Function e.Bounded) e.Arg = <Apply t.Function e.Bounded e.Arg>;
+}
+
+/**
+  <Map t.Function t.Item*> == <Apply t.Function t.Item>*
+*/
+Map {
+  t.Function t.NextItem e.Items
+    = <Apply t.Function t.NextItem> <Map t.Function e.Items>;
+
+  t.Function /* пусто */ = /* пусто */;
 }

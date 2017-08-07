@@ -16,14 +16,14 @@ $EXTERN
 //FROM Checker
 $EXTERN CheckProgram;
 
-//FROM LoadSource
-$EXTERN LoadSource;
+//FROM SR-LoadSource
+$EXTERN SR-LoadSource;
 
-//FROM Lexer
-$EXTERN LexFolding;
+//FROM SR-Lexer
+$EXTERN SR-LexFolding;
 
-//FROM Parser
-$EXTERN ParseProgram;
+//FROM SR-Parser
+$EXTERN SR-ParseProgram;
 
 //FROM FindFile
 $EXTERN FindInclude;
@@ -93,10 +93,10 @@ FrontEnd {
 
 LoadAST {
   t.Config #R5 e.SrcName
-    = <LoadSource e.SrcName> : e.SrcText
+    = <SR-LoadSource e.SrcName> : e.SrcText
     = <CleanupRefal5Comments e.SrcText '\n'> : e.SrcText^
-    = <LexFolding e.SrcText> : e.Tokens
-    = <ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
+    = <SR-LexFolding e.SrcText> : e.Tokens
+    = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
     = <Fetch
         <Config-GetPrelude t.Config>
         {
@@ -106,9 +106,9 @@ LoadAST {
       >;
 
   t.Config #SR e.SrcName
-    = <LoadSource e.SrcName> : e.SrcText
-    = <LexFolding e.SrcText> : e.Tokens
-    = <ParseProgram <EL-Create e.SrcName> e.Tokens>;
+    = <SR-LoadSource e.SrcName> : e.SrcText
+    = <SR-LexFolding e.SrcText> : e.Tokens
+    = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens>;
 }
 
 CleanupRefal5Comments {
@@ -454,9 +454,9 @@ $ENTRY GrammarCheck {
     <Fetch
       e.SrcName
       <Seq
-        LoadSource
-        LexFolding
-        (ParseProgram <EL-Create e.SrcName>)
+        SR-LoadSource
+        SR-LexFolding
+        (SR-ParseProgram <EL-Create e.SrcName>)
         {
           t.ErrorList e.AST =
             <Fetch

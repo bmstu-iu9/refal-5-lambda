@@ -1,7 +1,7 @@
 /**
   <Plain t.Units*> == (e.TextLine)*
 */
-$ENTRY Plain {
+$ENTRY R5-Plain {
   e.Units =
     <UndoubleEmtpyLines <TrimLines <DoPlain e.Units>>>;
 }
@@ -26,15 +26,15 @@ Trim-R {
 DoPlain {
   (Extern e.Names) e.Units
     = <Extern e.Names>
-      <Plain e.Units>;
+      <R5-Plain e.Units>;
 
   (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
     = <Function (e.Name) s.Scope e.Sentences>
-      <Plain e.Units>;
+      <R5-Plain e.Units>;
 
   (SpecialComment t.SrcPos e.Text) e.Units
     = ('*' e.Text)
-      <Plain e.Units>;
+      <R5-Plain e.Units>;
 
   /* пусто */ = /* пусто */;
 }

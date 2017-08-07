@@ -1,53 +1,53 @@
-*$FROM Utils;
-$EXTERN ArgList, PrintLines, SaveFile;
+*$FROM R5-Utils
+$EXTERN R5-ArgList, R5-PrintLines, R5-SaveFile;
 
-*$FROM Lexer;
-$EXTERN Scan;
+*$FROM R5-Lexer
+$EXTERN R5-Scan;
 
-*$FROM Parser;
-$EXTERN Parse;
+*$FROM R5-Parser
+$EXTERN R5-Parse;
 
-*$FROM Transformer;
-$EXTERN Transform;
+*$FROM R5-Transformer
+$EXTERN R5-Transform;
 
-*$FROM Plainer;
-$EXTERN Plain;
+*$FROM R5-Plainer
+$EXTERN R5-Plain;
 
-*$FROM Tests;
-$EXTERN RunTests;
+*$FROM R5-Tests
+$EXTERN R5-RunTests;
 
 $ENTRY Go {
-  = <Main <ArgList>>;
+  = <Main <R5-ArgList>>;
 }
 
 Title { = 'Convertor full Refal-5 sources to Basis Refal subset'; }
 
 Main {
   (e.ProgName) (e.Source) (e.Destination) e.Skipped,
-      <PrintLines
+      <R5-PrintLines
         (<Title>)
         ('Source:      ' e.Source)
         ('Destination: ' e.Destination)
       >
-      <Parse <Scan e.Source>>:
+      <R5-Parse <R5-Scan e.Source>>:
     {
       Success e.Functions =
-        <SaveFile
+        <R5-SaveFile
           (e.Destination)
-          <Plain <Transform e.Functions>>
+          <R5-Plain <R5-Transform e.Functions>>
         >;
 
       Fails e.Errors =
-        <PrintLines
+        <R5-PrintLines
           <FormatErrors e.Errors>
         >;
     };
 
   (e.ProgName) ('_tests_')
-    = <RunTests>;
+    = <R5-RunTests>;
 
   (e.ProgName) e.Other =
-    <PrintLines
+    <R5-PrintLines
       (<Title>)
       ('Bad command line. Expected command line syntax:')
       ('  refgo ' e.ProgName ' source.ref destination.ref')
