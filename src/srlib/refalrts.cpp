@@ -886,11 +886,14 @@ bool refalrts::repeated_evar_left(
 
       first = 0;
       last = 0;
-    } else {
+    } else if (current != first) {
       evar_b = first;
       evar_e = prev(current);
 
       first = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
     }
 
     return true;
@@ -935,11 +938,14 @@ bool refalrts::repeated_evar_right(
 
       first = 0;
       last = 0;
-    } else {
+    } else if (current != last) {
       evar_b = next(current);
       evar_e = last;
 
       last = current;
+    } else {
+      evar_b = 0;
+      evar_e = 0;
     }
 
     return true;
