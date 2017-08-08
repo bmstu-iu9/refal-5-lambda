@@ -86,7 +86,7 @@ $ENTRY EL-Destroy {
             e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
           >;
 
-        ((#FileColRow (s.Row s.Col) e.FileName^) e.Message)
+        ((#FileRowCol (s.Row s.Col) e.FileName^) e.Message)
           = <WriteLine
               e.FileName ':' <StrFromInt s.Row> ':' <StrFromInt s.Col>
               ':' e.Message

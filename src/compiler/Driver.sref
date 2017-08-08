@@ -123,7 +123,7 @@ LoadAST {
                   t.ErrorList ((s.Line s.Col e.FileName) e.Message)
                     = <EL-AddErrorAt
                         t.ErrorList
-                        (#FileColRow (s.Line s.Col) e.FileName)
+                        (#FileRowCol (s.Line s.Col) e.FileName)
                         e.Message
                       >;
                 }
