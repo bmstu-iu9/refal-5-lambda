@@ -39,7 +39,7 @@ compile_rich() {
 }
 
 prepare_common() {
-  cp -R common ../../common
+  cp -R common ../../srlib/common
 }
 
 (
