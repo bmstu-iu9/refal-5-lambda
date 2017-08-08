@@ -3,7 +3,7 @@
 */
 $ENTRY R5-Plain {
   e.Units =
-    <UndoubleEmtpyLines <TrimLines <DoPlain e.Units>>>;
+    <UndoubleEmptyLines <TrimLines <DoPlain e.Units>>>;
 }
 
 TrimLines {
@@ -12,8 +12,8 @@ TrimLines {
   /* пусто */ = /* пусто */;
 }
 
-UndoubleEmtpyLines {
-  e.Lines-B () () e.Lines-E = e.Lines-B <UndoubleEmtpyLines () e.Lines-E>;
+UndoubleEmptyLines {
+  e.Lines-B () () e.Lines-E = e.Lines-B <UndoubleEmptyLines () e.Lines-E>;
 
   e.Lines = e.Lines;
 }
