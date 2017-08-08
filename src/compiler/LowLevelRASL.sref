@@ -481,7 +481,7 @@ OverflowFailure {
     = <WriteLine 'Compilation failure in function ' e.Function ':'>
       <WriteLine
         '  this function requests ' <StrFromInt s.Memory> ' local variables, '
-        'but maximum size is 256.'
+        'but maximum size is 255.'
       >
       <WriteLine '  Compilation aborted.'>
       <Exit 1>;
@@ -490,7 +490,7 @@ OverflowFailure {
     = <WriteLine 'Compilation failure in function ' e.Function ':'>
       <WriteLine
         '  this function try jump over ' <StrFromInt s.Memory> ' commands, '
-        'but maximum jump length is 256.'
+        'but maximum jump length is 255.'
       >
       <WriteLine '  Compilation aborted.'>
       <Exit 1>;
