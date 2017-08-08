@@ -18,7 +18,7 @@ prepare_prefix() {
 }
 
 run_test_all_modes() {
-  if ! grep '%%' $1; then
+  if ! grep '%%' $1 > /dev/null; then
     prepare_prefix
     SRFLAGS_PLUS="$SRFLAGS_PREF"
   else
