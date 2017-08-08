@@ -10,7 +10,11 @@ $EXTERN Map, Sort;
 /**
   Внутренний формат:
   [ErrorList (e.FileName) (t.SrcPos e.Message)*]
-  t.SrcPos ::= #NoPos | (#FileLine s.LineNumber e.FileName)
+  t.SrcPos ::=
+      #NoPos
+    | (#FileLine s.LineNumber e.FileName)
+    | (#RowCol s.Row s.Col)
+    | (#FileRowCol (s.Row s.Col) e.FileName)
 */
 $ENUM ErrorList;
 
@@ -33,6 +37,11 @@ $ENTRY EL-AddErrorAt {
     [ErrorList
       (e.FileName) e.Errors ((#FileLine s.LineNumber e.FileName) e.Message)
     ];
+
+  [ErrorList (e.FileName) e.Errors] (#RowCol s.Row s.Col) e.Message
+    = [ErrorList
+        (e.FileName) e.Errors ((#FileRowCol (s.Row s.Col) e.FileName) e.Message)
+      ];
 
   [ErrorList (e.FileName) e.Errors] t.SrcPos e.Message =
     [ErrorList (e.FileName) e.Errors (t.SrcPos e.Message)];
@@ -76,6 +85,12 @@ $ENTRY EL-Destroy {
           <WriteLine
             e.FileName ':' <StrFromInt s.LineNumber> ':ERROR: ' e.Message
           >;
+
+        ((#FileColRow (s.Row s.Col) e.FileName^) e.Message)
+          = <WriteLine
+              e.FileName ':' <StrFromInt s.Row> ':' <StrFromInt s.Col>
+              ':' e.Message
+            >;
       }
       <Sort e.Errors>
     >

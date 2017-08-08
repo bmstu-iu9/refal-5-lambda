@@ -16,6 +16,9 @@ $EXTERN
 //FROM Checker
 $EXTERN CheckProgram;
 
+//FROM R5-Main
+$EXTERN R5-Preprocess;
+
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
 
@@ -91,21 +94,19 @@ FrontEnd {
     = <CheckProgram t.ErrorList e.AST> e.AST;
 }
 
-//FROM Library
-$EXTERN System, ExistFile, RemoveFile;
-
 LoadAST {
   t.Config #R5 e.SrcName
-    = <System
-        'refgo R5-Go+R5-Lexer+R5-Main+R5-Parser+R5-Plainer+R5-Tests+'
-        'R5-Transformer+R5-Utils "' e.SrcName '" out.tmp'
-      >
-    : /* пусто */
     = <Fetch
-        <ExistFile 'out.tmp'>
+        <R5-Preprocess e.SrcName>
         {
-          #True
-            = <SR-LoadSource 'out.tmp'> : e.SrcText
+          #Success e.Lines
+            = <Map
+                {
+                  (e.Line) = e.Line '\n';
+                }
+                e.Lines
+              >
+            : e.SrcText
             = <SR-LexFolding e.SrcText> : e.Tokens
             = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
             = <Fetch
@@ -116,15 +117,20 @@ LoadAST {
                 }
               >;
 
-          #False
-            = <EL-AddErrorAt <EL-Create e.SrcName> 1 'can\'t preprocess file'>;
-        }
-      >
-      <Fetch
-        <RemoveFile 'out.tmp'>
-        {
-          #True = ;
-          #False = /* игнорируем */;
+          #Fails e.Errors
+            = <MapReduce
+                {
+                  t.ErrorList ((s.Line s.Col e.FileName) e.Message)
+                    = <EL-AddErrorAt
+                        t.ErrorList
+                        (#FileColRow (s.Line s.Col) e.FileName)
+                        e.Message
+                      >;
+                }
+                <EL-Create e.SrcName>
+                e.Errors
+              >
+              /* пусто дерево */;
         }
       >;
 

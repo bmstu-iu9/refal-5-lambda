@@ -23,6 +23,7 @@ xcopy /e /i /y ..\srlib\scratch srlib\scratch
 md srlib\rich
 copy ..\srlib\rich\*.rasl srlib\rich
 copy ..\srlib\rich\*.froms srlib\rich
+xcopy /e /i /y ..\srlib\common srlib\common
 md doc
 xcopy /e /i /y ..\doc\examples doc\examples
 copy ..\doc\*.pdf doc

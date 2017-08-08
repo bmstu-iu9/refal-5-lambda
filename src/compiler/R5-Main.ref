@@ -1,5 +1,5 @@
 *$FROM R5-Utils
-$EXTERN R5-PrintLines, R5-SaveFile, R5-Builtins;
+$EXTERN R5-Builtins;
 
 *$FROM R5-Lexer
 $EXTERN R5-Scan;
@@ -14,19 +14,13 @@ $EXTERN R5-Transform;
 $EXTERN R5-Plain;
 
 $ENTRY R5-Preprocess {
-  (e.Source) (e.Destination)
+  e.Source
     , <R5-Parse <R5-Scan e.Source>>
     : {
         Success e.Functions =
-          <R5-SaveFile
-            (e.Destination)
-            <R5-Plain <AddMu <R5-Transform e.Functions>>>
-          >;
+          Success <R5-Plain <AddMu <R5-Transform e.Functions>>>;
 
-        Fails e.Errors =
-          <R5-PrintLines
-            <FormatErrors e.Errors>
-          >;
+        Fails e.Errors = Fails e.Errors;
       };
 }
 
@@ -91,12 +85,4 @@ DoAddMu-AST {
       (SpecialComment t.SrcPos e.Text);
 
   (e.MuSentences) /* пусто */ = (e.MuSentences);
-}
-
-FormatErrors {
-  ((s.Line s.Col e.FileName) e.Message) e.Errors =
-    <Prout e.FileName ':' <Symb s.Line> ':' <Symb s.Col> ':' e.Message>
-    <FormatErrors e.Errors>;
-
-  /* пусто */ = /* всё */
 }

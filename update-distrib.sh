@@ -15,6 +15,7 @@ mkdir srlib
 cp -R ../srlib/scratch srlib/scratch
 mkdir srlib/rich
 cp ../srlib/rich/*.{rasl,froms} srlib/rich
+cp -R ../srlib/common srlib/common
 mkdir doc
 cp -R ../doc/examples doc/examples
 cp ../doc/*.pdf doc

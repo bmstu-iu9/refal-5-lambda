@@ -1,5 +1,5 @@
 *$FROM R5-Utils
-$EXTERN R5-ArgList, R5-PrintLines;
+$EXTERN R5-ArgList, R5-PrintLines, R5-Builtins, R5-SaveFile;
 
 *$FROM R5-Tests
 $EXTERN R5-RunTests;
@@ -20,7 +20,7 @@ Main {
         ('Source:      ' e.Source)
         ('Destination: ' e.Destination)
       >
-      <R5-Preprocess (e.Source) (e.Destination)>;
+      <Main-Preprocess (e.Source) (e.Destination)>;
 
   (e.ProgName) ('_tests_')
     = <R5-RunTests>;
@@ -31,4 +31,26 @@ Main {
       ('Bad command line. Expected command line syntax:')
       ('  refgo ' e.ProgName ' source.ref destination.ref')
     >;
+}
+
+Main-Preprocess {
+  (e.Source) (e.Destination)
+    , <R5-Preprocess e.Source>
+    : {
+        Success e.Lines =
+          <R5-SaveFile (e.Destination) e.Lines>;
+
+        Fails e.Errors =
+          <R5-PrintLines
+            <FormatErrors e.Errors>
+          >;
+      };
+}
+
+FormatErrors {
+  ((s.Line s.Col e.FileName) e.Message) e.Errors =
+    <Prout e.FileName ':' <Symb s.Line> ':' <Symb s.Col> ':' e.Message>
+    <FormatErrors e.Errors>;
+
+  /* пусто */ = /* всё */
 }
