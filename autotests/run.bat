@@ -8,7 +8,7 @@ setlocal
   set RUNTIME=../src/srlib/refalrts.cpp ^
     ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (
-    for %%s in (*.sref) do call :RUN_TEST %%s || exit /b 1
+    for %%s in (*.sref *.ref) do call :RUN_TEST %%s || exit /b 1
     call :RUN_ALL_TESTS_DIR || exit /b 1
   ) else (
     if {%1}=={--dir} (
@@ -67,11 +67,12 @@ setlocal
   set COMMON_SRFLAGS= ^
     -c "%CPPLINEE%" ^
     --exesuffix=.exe ^
+    --prelude=test-prelude.srefi ^
     -D../src/srlib ^
     -D../src/srlib/platform-Windows ^
-    -f-DSTEP_LIMIT=1000 ^
+    -f-DSTEP_LIMIT=1500 ^
     -f-DMEMORY_LIMIT=1000 ^
-    -f-DIDENTS_LIMIT=25 ^
+    -f-DIDENTS_LIMIT=200 ^
     -f-DDUMP_FILE="\\"__dump.txt\\"" ^
     -f-DDONT_PRINT_STATISTICS
   set SRFLAGS_PREF=--prefix=_test_prefix

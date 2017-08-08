@@ -44,9 +44,9 @@ run_test_aux() {
 run_test_aux_with_flags() {
   echo Passing $1 \(flags $SRFLAGS\)...
   SREF=$1
-  RASL=${SREF%%.sref}.rasl
-  NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}$(platform_exe_suffix)
+  RASL=${SREF%.*}.rasl
+  NATCPP=${SREF%.*}.cpp
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
   ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
     $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
@@ -75,8 +75,8 @@ run_test_aux_with_flags() {
 run_test_aux.BAD-SYNTAX() {
   echo Passing $1 \(syntax error recovering\)...
   SREF=$1
-  RASL=${SREF%%.sref}.rasl
-  EXE=${SREF%%.sref}$(platform_exe_suffix)
+  RASL=${SREF%.*}.rasl
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
   ../bin/srefc-core -C $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
@@ -101,9 +101,9 @@ run_test_aux.FAILURE() {
 run_test_aux_with_flags.FAILURE() {
   echo Passing $1 \(expecting failure, flags $SRFLAGS\)...
   SREF=$1
-  RASL=${SREF%%.sref}.rasl
-  NATCPP=${SREF%%.sref}.cpp
-  EXE=${SREF%%.sref}$(platform_exe_suffix)
+  RASL=${SREF%.*}.rasl
+  NATCPP=${SREF%.*}.cpp
+  EXE=${SREF%.*}$(platform_exe_suffix)
 
   ../bin/srefc-core $SREF -o $EXE "${COMMON_SRFLAGS[@]}" \
     $SRFLAGS $SRFLAGS_PLUS 2>__error.txt
@@ -190,11 +190,12 @@ run_test() {
   COMMON_SRFLAGS=(
     "-c $CPPLINEE"
     --exesuffix=$(platform_exe_suffix)
+    --prelude=test-prelude.srefi
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
-    -f-DSTEP_LIMIT=1000
+    -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
-    -f-DIDENTS_LIMIT=25
+    -f-DIDENTS_LIMIT=200
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
     -f-DDONT_PRINT_STATISTICS
     -f-g
@@ -203,7 +204,7 @@ run_test() {
   SRFLAGS_PREF=--prefix=_test_prefix
   SRFLAGS_NAT="refalrts refalrts-platform-specific"
   SREF=$1
-  SUFFIX=`echo ${SREF%%.sref} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
+  SUFFIX=`echo ${SREF%.*} | sed 's/[^.]*\(\.[^.]*\)*/\1/'`
   run_test_aux$SUFFIX $1
 }
 
@@ -227,7 +228,7 @@ run_all_dir_tests() {
 }
 
 if [ -z "$1" ]; then
-  for s in *.sref; do
+  for s in *.sref *.ref; do
     run_test $s
   done
   run_all_dir_tests

@@ -1,18 +1,21 @@
-$ENTRY R5-RunTests {
+$ENTRY Go {
   = <Perform
-      AllSubstrings
-      AllSubstrings-Hard
-      Document
-      SimpleCondition
-      SimpleRepeatedCondition
-      SimpleOneELoop
+      TestAllSubstrings
+      TestAllSubstrings-Hard
+      TestDocument
+      TestSimpleCondition
+      TestSimpleRepeatedCondition
+      TestSimpleOneELoop
+      TestIntersect
+      TestDelim
+      TestDelim2
     >;
 }
 
 Perform {
   s.NextTest e.Tests
-    = <Prout '* Run test ' s.NextTest>
-      <Mu ('Test' <Explode s.NextTest>)>
+    = /*<Prout '* Run test ' s.NextTest>*/
+      <Mu s.NextTest>
       <Perform e.Tests>;
 
   /* пусто */ = /* ничего не делаем */
@@ -79,6 +82,7 @@ AllSubstrings-Hard {
 
 *$*****************************************************************************
 
+/* Функция из документа doc/5-to-basis/Подход к преобразованию условий.md */
 TestDocument {
   = <AssertEq
       <F-doc
@@ -224,50 +228,13 @@ TestSimpleOneELoop {
     >
 }
 
-/*
-SimpleOneELoop {
-  (e.Sample) e.Items-B ((e.Key) (e.Value)) e.Items-E
-    = <SimpleOneELoop1
-        (e.Sample) (e.Items-B) (e.Key) (e.Value) (e.Items-E)
-        e.Key
-      >;
-
-
-  e.OTHER = <SimpleOneELoop0 e.OTHER>;
-}
-
-SimpleOneELoop1 {
-  (e.Sample) (e.Items-B) (e.Key) (e.Value) (e.Items-E)
-  e.Sample
-    = (e.Items-B) (e.Value) (e.Items-E);
-
-  (e.Sample) (e.Items-B) (e.Key) (e.Value) (e.Items-E)
-  e.OTHER
-    = <SimpleOneELoop2
-        (e.Sample) (e.Items-B) ((e.Key) (e.Value)) e.Items-E
-      >;
-}
-
-SimpleOneELoop2 {
-  (e.Sample) (e.Items-B1) t.Items-B e.Items-B2 ((e.Key) (e.Value)) e.Items-E
-    = <SimpleOneELoop1
-        (e.Sample) (e.Items-B1 t.Items-B e.Items-B2) (e.Key) (e.Value) (e.Items-E)
-        e.Key
-      >;
-
-  (e.Sample) (e.Items-B1) e.Items-B2
-    = <SimpleOneELoop0 (e.Sample) e.Items-B1 e.Items-B2>;
-}
-
-SimpleOneELoop0 {
-  (e.Sample) e.Items = (e.Items);
-}
-
-*/
-
-
 *$*****************************************************************************
 
+
+TestIntersect {
+  = <AssertEq <Intersect ('horunziy') ('heminguey')> ('huniy')>
+    <AssertEq <Intersect ('abcd') ('0123')> (/* пусто */)>;
+}
 
 Intersect {
   (e.B1 s.1 e.E1) (e.B2 s.2 e.E2), <Eq s.1 s.2>: True
@@ -281,6 +248,11 @@ Eq {
   t.X t.Y = False;
 }
 
+TestDelim {
+  = <AssertEq <Delim 'hello|world'> (('hello') 'world')>
+    <AssertEq <Delim 'hello world'> (NoDelim)>;
+}
+
 Delim {
   e.Prefix t.Delim e.Suffix, <DelimTerm t.Delim>: True = (e.Prefix) e.Suffix;
 
@@ -291,61 +263,18 @@ DelimTerm {
   '|' = True; t.Other = False;
 }
 
+
+TestDelim2 {
+  = <AssertEq <Delim2 'hellohello|world'> (('hello') ('hello'))>
+    <AssertEq <Delim2 'hello|world'> (Fail)>
+    <AssertEq <Delim2 'hello world'> (Fail)>;
+}
+
 Delim2 {
-  e.Prefix e.Prefix t.Delim e.Suffix, <DelimTerm t.Delim>: True = <F e.Prefix> <G e.Prefix>;
+  e.Prefix e.Prefix t.Delim e.Suffix, <DelimTerm t.Delim>: True
+    = <F e.Prefix> <G e.Prefix>;
   e.Other = Fail;
 }
 
-F { e.X = }
-G { e.X = }
-
-FindXY {
-  (e.XB (e.XX) e.XE) e.YB (e.YY) e.YE
-    , <CheckX e.XX (e.YY)>: True
-    , <CheckY e.XX (e.YY)>: True
-    = Ok;
-
-  (e.X) e.Y = Fail;
-}
-
-CheckX { e.Any = True; }
-CheckY { e.Any = True; }
-
-NonsenceFunc {
-  e.Begin (e.Inner) e.Inner e.Begin e.End
-    , <Valid e.Begin>: e.End
-    = <F e.Begin> <G e.Inner e.End> <H e.Inner e.Begin e.End>;
-
-  s.ABC = s.ABC
-}
-
-Valid { e.X = e.X }
-H { e.X = }
-
-RepeatedNonsence {
-  (e.Repeated) e.Repeated e.Tail, <Tail e.Tail>: e.Tail
-    = <F (e.Tail) e.Repeated> <F (e.Repeated) e.Tail>;
-
-  s.ABC = s.ABC
-}
-
-Tail { e.X = e.X }
-
-KeyValue {
-  (e.Sample) e.Items-B (e.Key (e.Value)) e.Items-E
-    , <EqualNoCase (e.Sample) e.Key>: True = Found e.Value;
-
-  (e.Sample) e.Items = NotFound;
-}
-
-EqualNoCase {
-  (e.X) e.X = True; (e.X) e.Y = False;
-}
-
-KeyValueRep {
-  (e.Key) e.Items-B (e.Key (e.Value)) e.Items-E
-    , <CheckX e.Value>: True
-    = Found (e.Key) (e.Key) e.Value;
-
-  (e.Key) e.Items = NotFound;
-}
+F { e.X = (e.X) }
+G { e.X = (e.X) }
