@@ -89,7 +89,7 @@ $ENTRY R5-OneOf {
   <Builtins> == (e.FunctionName)*
 */
 $ENTRY R5-Builtins {
-  = ('+') ('-') ('*') ('/') ('%') <DoBuiltins <ListOfBuiltin>>;
+  = ('+') ('-') ('*') ('/') ('%') ('?') <DoBuiltins <ListOfBuiltin>>;
 }
 
 DoBuiltins {
