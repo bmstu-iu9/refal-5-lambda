@@ -1,0 +1,91 @@
+/**
+  <R5-ConvertAST t.Units*> == e.AST
+*/
+$ENTRY R5-ConvertAST {
+  e.Units = <Map ConvertAST-Unit e.Units>;
+}
+
+Map {
+  s.Func t.Item e.Items = <Mu s.Func t.Item> <Map s.Func e.Items>;
+
+  s.Func /* пусто */ = /* пусто */
+}
+
+ConvertAST-Unit {
+  (Extern e.Names) = <Map ConvertExtern e.Names>;
+
+  (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+    = <ConvertFunction t.SrcPos (e.Name) s.Scope e.Sentences>;
+
+  (SpecialComment t.SrcPos e.Text) = /* пропускаем */;
+}
+
+ConvertExtern {
+  (e.ExternName) = (Declaration NoPos GN-Entry e.ExternName);
+}
+
+ConvertFunction {
+  t.SrcPos (e.Name) s.Scope e.Sentences
+    = (Function
+        <ConvertSrcPos t.SrcPos>
+        <ConvertScopeClass s.Scope>
+        (e.Name)
+        Sentences
+        <Map ConvertSentence e.Sentences>
+      );
+}
+
+ConvertSrcPos {
+  NoPos = NoPos;
+  NO-POS = NoPos;
+  (s.Line s.Col e.FileName) = (RowCol s.Line s.Col);
+}
+
+ConvertScopeClass {
+  Entry = GN-Entry; Local = GN-Local;
+}
+
+ConvertSentence {
+  /*
+    Здесь полагаем, что работаем после трансформера: нет ни условий, ни блоков.
+  */
+  (Comment e.Text) = /* игнорируем */;
+
+  ((e.Pattern) RETURN (e.Result))
+    = ((<ConvertExpr e.Pattern>) (<ConvertExpr e.Result>));
+}
+
+ConvertExpr {
+  e.Terms = <Map ConvertTerm e.Terms>;
+}
+
+ConvertTerm {
+  (Compound e.Chars) = (TkIdentifier e.Chars);
+  (Number s.Number) = (TkNumber s.Number);
+  (Char s.Char) = (TkChar s.Char);
+
+  (Variable t.SrcPos s.Type e.Index)
+    /*
+      s.Type s.Type e.Index — Простой Рефал не поддерживает переменные
+      с одним индексом, но разного типа
+    */
+    = (TkVariable <ConvertSrcPos t.SrcPos> s.Type s.Type e.Index);
+
+  (Brackets e.Expr) = (Brackets <ConvertExpr e.Expr>);
+
+  (Call t.SrcPos (e.Function) e.Expr)
+    = (CallBrackets
+         (TkName <ConvertSrcPos t.SrcPos> <FuncDesugar e.Function>)
+         <ConvertExpr e.Expr>
+      );
+}
+
+FuncDesugar {
+  '+' = 'Add';
+  '-' = 'Sub';
+  '*' = 'Mul';
+  '/' = 'Div';
+  '%' = 'Mod';
+  '?' = 'Residue';
+  e.NormalName = e.NormalName;
+}

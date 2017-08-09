@@ -28,8 +28,8 @@ $EXTERN R5-AddMu;
 //FROM R5-Transformer
 $EXTERN R5-Transform;
 
-//FROM R5-Plainer
-$EXTERN R5-Plain;
+//FROM R5-ConvertAST
+$EXTERN R5-ConvertAST;
 
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
@@ -149,10 +149,7 @@ LoadAST {
     = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
     = <R5-AddMu e.AST> : e.AST^
     = <R5-Transform e.AST> : e.AST^
-    = <R5-Plain e.AST> : e.Lines
-    = <Map { (e.Line) = e.Line '\n'; } e.Lines> : e.SrcText
-    = <SR-LexFolding e.SrcText> : e.Tokens^
-    = <SR-ParseProgram t.ErrorList e.Tokens> : t.ErrorList^ e.AST^
+    = <R5-ConvertAST e.AST> : e.AST^
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
@@ -353,26 +350,31 @@ GlueErrorListsAndASTs {
 
 PatchASTSrcPos {
   (e.FileName) e.AST
-    = { s.LnNum = (#FileLine s.LnNum e.FileName); } : s.FnPatch
+    = {
+        #NoPos = #NoPos;
+        s.LnNum = (#FileLine s.LnNum e.FileName);
+        (#RowCol s.Row s.Col) = (#FileRowCol (s.Row s.Col) e.FileName);
+      }
+    : s.FnPatch
     = <Map
         {
-          (#Function s.LnNum s.ScopeClass (e.Name) e.Body)
+          (#Function t.SrcPos s.ScopeClass (e.Name) e.Body)
             = (#Function
-                <s.FnPatch s.LnNum>
+                <s.FnPatch t.SrcPos>
                 s.ScopeClass (e.Name)
                 <PatchASTSrcPos-Body s.FnPatch e.Body>
               );
 
-          (#Ident s.LnNum e.Name) = (#Ident <s.FnPatch s.LnNum> e.Name);
+          (#Ident t.SrcPos e.Name) = (#Ident <s.FnPatch t.SrcPos> e.Name);
 
-          (#NativeBlock s.LnNum e.Name)
-            = (#NativeBlock <s.FnPatch s.LnNum> e.Name);
+          (#NativeBlock t.SrcPos e.Name)
+            = (#NativeBlock <s.FnPatch t.SrcPos> e.Name);
 
-          (#Include s.LnNum e.IncludeName)
+          (#Include t.SrcPos e.IncludeName)
             = /* пропускаем */;
 
-          (s.EnumSwapDeclaration s.LnNum s.ScopeClass e.Name)
-            = (s.EnumSwapDeclaration <s.FnPatch s.LnNum> s.ScopeClass e.Name);
+          (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
+            = (s.EnumSwapDeclaration <s.FnPatch t.SrcPos> s.ScopeClass e.Name);
         }
         e.AST
       >;
@@ -403,28 +405,28 @@ PatchASTSrcPos-Body {
         e.Sentences
       >;
 
-  s.FnPatch #NativeBody s.LnNum e.Code
-    = #NativeBody <s.FnPatch s.LnNum> e.Code;
+  s.FnPatch #NativeBody t.SrcPos e.Code
+    = #NativeBody <s.FnPatch t.SrcPos> e.Code;
 }
 
 PatchASTSrcPos-Expr {
   s.FnPatch e.Expression
     = <Map
         {
-          (#TkVariable s.LnNum s.Mode e.Index)
-            = (#TkVariable <s.FnPatch s.LnNum> s.Mode e.Index);
+          (#TkVariable t.SrcPos s.Mode e.Index)
+            = (#TkVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
 
-          (#TkNewVariable s.LnNum s.Mode e.Index)
-            = (#TkNewVariable <s.FnPatch s.LnNum> s.Mode e.Index);
+          (#TkNewVariable t.SrcPos s.Mode e.Index)
+            = (#TkNewVariable <s.FnPatch t.SrcPos> s.Mode e.Index);
 
-          (#TkName s.LnNum e.Name) = (#TkName <s.FnPatch s.LnNum> e.Name);
+          (#TkName t.SrcPos e.Name) = (#TkName <s.FnPatch t.SrcPos> e.Name);
 
           (#Brackets e.InBrackets)
             = (#Brackets <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>);
 
-          (#ADT-Brackets s.LnNum (e.Name) e.InBrackets)
+          (#ADT-Brackets t.SrcPos (e.Name) e.InBrackets)
             = (#ADT-Brackets
-                <s.FnPatch s.LnNum>
+                <s.FnPatch t.SrcPos>
                 (e.Name)
                 <PatchASTSrcPos-Expr s.FnPatch e.InBrackets>
               );
