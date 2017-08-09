@@ -1,29 +1,4 @@
 /**
-  <Inc e.Num> == e.Num+1
-*/
-$ENTRY R5-Inc {
-  e.Num = <Add 1 e.Num>;
-}
-
-
-/**
-  <LoadFile e.FileName> == (e.Line)*
-*/
-$ENTRY R5-LoadFile {
-  e.FileName =
-    <Open 'r' 20 e.FileName>
-    <DoLoadFile <Get 20>>
-    <Close 20>;
-}
-
-DoLoadFile {
-  e.Line 0 = (e.Line);
-
-  e.Line = (e.Line) <DoLoadFile <Get 20>>;
-}
-
-
-/**
   <OneOf t.Elem e.SampleElems> == True | False
 */
 $ENTRY R5-OneOf {
@@ -44,14 +19,4 @@ DoBuiltins {
     = (<Explode s.Name>) <DoBuiltins e.Builtins>;
 
   /* пусто */ = /* пусто */;
-}
-
-/**
-  <Unique t.Item*> == t.Item*
-*/
-$ENTRY R5-Unique {
-  e.Items-B t.Item e.Items-M t.Item e.Items-E
-    = e.Items-B <R5-Unique e.Items-M t.Item e.Items-E>;
-
-  e.UniqueItems = e.UniqueItems;
 }

@@ -1,5 +1,5 @@
-*$FROM R5-Utils
-$EXTERN R5-LoadFile, R5-Inc;
+*$FROM LibraryEx
+$EXTERN LoadFile, Inc;
 
 /**
   <Scan e.SourceFile> == t.Token*
@@ -25,15 +25,15 @@ $EXTERN R5-LoadFile, R5-Inc;
 */
 $ENTRY R5-Scan {
   e.FileName =
-    <DoScan (1 1 e.FileName) <R5-LoadFile e.FileName>>;
+    <DoScan (1 1 e.FileName) <LoadFile e.FileName>>;
 }
 
 IncLine {
-  (s.Line s.Col e.FileName) = (<R5-Inc s.Line> 1 e.FileName);
+  (s.Line s.Col e.FileName) = (<Inc s.Line> 1 e.FileName);
 }
 
 IncCol {
-  (s.Line s.Col e.FileName) = (s.Line <R5-Inc s.Col> e.FileName);
+  (s.Line s.Col e.FileName) = (s.Line <Inc s.Col> e.FileName);
 
   t.Pos Len = t.Pos;
   t.Pos Len s.First e.String = <IncCol <IncCol t.Pos> Len e.String>;
@@ -67,7 +67,7 @@ DoScan {
 
   (s.Line 1 e.FileName) ('*$' e.Line) e.Lines =
     (TkSpecComment '*$' e.Line)
-    <DoScan (<R5-Inc s.Line> 1 e.FileName) e.Lines>;
+    <DoScan (<Inc s.Line> 1 e.FileName) e.Lines>;
 
   t.Pos ('*' e.Comment) e.Lines
     = <DoScan <IncLine t.Pos> e.Lines>;
@@ -292,7 +292,7 @@ DoHexDigit {
   s.Digit e.Samples s.Val s.Digit = s.Val;
 
   s.OtherDigit e.Samples s.Val s.Digit =
-    <DoHexDigit e.Samples <R5-Inc s.Val> s.Digit>;
+    <DoHexDigit e.Samples <Inc s.Val> s.Digit>;
 
   /* нет образцов */ s.BadVal s.Digit = /* пусто */;
 }

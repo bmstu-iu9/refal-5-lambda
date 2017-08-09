@@ -742,7 +742,14 @@ MakeOpenE-ForwardNext {
 }
 
 ExtractVariables {
-  e.Sentences = <R5-Unique <ExtractVariables-Sentences e.Sentences>>;
+  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+}
+
+Unique {
+  e.Items-B t.Item e.Items-M t.Item e.Items-E
+    = e.Items-B <Unique e.Items-M t.Item e.Items-E>;
+
+  e.UniqueItems = e.UniqueItems;
 }
 
 ExtractVariables-Sentences {
