@@ -22,11 +22,11 @@ $EXTERN R5-Scan;
 //FROM R5-Parser
 $EXTERN R5-Parse;
 
-//FROM R5-Transformer
-$EXTERN R5-Transform;
-
 //FROM R5-MuGen
 $EXTERN R5-AddMu;
+
+//FROM R5-Transformer
+$EXTERN R5-Transform;
 
 //FROM R5-Plainer
 $EXTERN R5-Plain;
@@ -117,14 +117,14 @@ R5-Parse-Wrapped {
           #Fails e.Errors
             = <MapReduce
                 {
-                  t.ErrorList ((s.Line s.Col e.FileName) e.Message)
+                  t.ErrorList^ ((s.Line s.Col e.FileName) e.Message)
                     = <EL-AddErrorAt
                         t.ErrorList
                         (#FileRowCol (s.Line s.Col) e.FileName)
                         e.Message
                       >;
                 }
-                <EL-Create e.SrcName>
+                t.ErrorList
                 e.Errors
               >
               /* пусто дерево */;
@@ -147,8 +147,8 @@ LoadAST {
   t.Config #R5 e.SrcName
     = <R5-Scan e.SrcName> : e.Tokens
     = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
-    = <R5-Transform e.AST> : e.AST^
     = <R5-AddMu e.AST> : e.AST^
+    = <R5-Transform e.AST> : e.AST^
     = <R5-Plain e.AST> : e.Lines
     = <Map { (e.Line) = e.Line '\n'; } e.Lines> : e.SrcText
     = <SR-LexFolding e.SrcText> : e.Tokens^
