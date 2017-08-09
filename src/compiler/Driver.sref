@@ -16,8 +16,20 @@ $EXTERN
 //FROM Checker
 $EXTERN CheckProgram;
 
-//FROM R5-Main
-$EXTERN R5-Preprocess;
+//FROM R5-Lexer
+$EXTERN R5-Scan;
+
+//FROM R5-Parser
+$EXTERN R5-Parse;
+
+//FROM R5-Transformer
+$EXTERN R5-Transform;
+
+//FROM R5-MuGen
+$EXTERN R5-AddMu;
+
+//FROM R5-Plainer
+$EXTERN R5-Plain;
 
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
@@ -94,28 +106,13 @@ FrontEnd {
     = <CheckProgram t.ErrorList e.AST> e.AST;
 }
 
-LoadAST {
-  t.Config #R5 e.SrcName
+R5-Parse-Wrapped {
+  (e.SrcName) e.Tokens
+    = <EL-Create e.SrcName> : t.ErrorList
     = <Fetch
-        <R5-Preprocess e.SrcName>
+        <R5-Parse e.Tokens>
         {
-          #Success e.Lines
-            = <Map
-                {
-                  (e.Line) = e.Line '\n';
-                }
-                e.Lines
-              >
-            : e.SrcText
-            = <SR-LexFolding e.SrcText> : e.Tokens
-            = <SR-ParseProgram <EL-Create e.SrcName> e.Tokens> : t.ErrorList e.AST
-            = <Fetch
-                <Config-GetPrelude t.Config>
-                {
-                  /* пусто */ = t.ErrorList e.AST;
-                  e.Prelude = t.ErrorList (#Include 1 e.Prelude) e.AST;
-                }
-              >;
+          #Success e.AST = t.ErrorList e.AST;
 
           #Fails e.Errors
             = <MapReduce
@@ -133,6 +130,30 @@ LoadAST {
               /* пусто дерево */;
         }
       >;
+}
+
+PreludeIncludeLine {
+  t.Config
+    = <Fetch
+        <Config-GetPrelude t.Config>
+        {
+          /* пусто */ = /* пусто */;
+          e.Prelude = (#Include 1 e.Prelude);
+        }
+      >;
+}
+
+LoadAST {
+  t.Config #R5 e.SrcName
+    = <R5-Scan e.SrcName> : e.Tokens
+    = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
+    = <R5-Transform e.AST> : e.AST^
+    = <R5-AddMu e.AST> : e.AST^
+    = <R5-Plain e.AST> : e.Lines
+    = <Map { (e.Line) = e.Line '\n'; } e.Lines> : e.SrcText
+    = <SR-LexFolding e.SrcText> : e.Tokens^
+    = <SR-ParseProgram t.ErrorList e.Tokens> : t.ErrorList^ e.AST^
+    = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
     = <SR-LoadSource e.SrcName> : e.SrcText
