@@ -1,61 +1,8 @@
 /**
-  <ArgList> == (e.Arg)*
-*/
-$ENTRY R5-ArgList {
-  = <DoArgList 1 <Arg 0>>;
-}
-
-DoArgList {
-  s.N /* пусто */ = /* пусто */;
-  s.N e.Arg =
-    (e.Arg) <DoArgList <R5-Inc s.N> <Arg s.N>>;
-}
-
-
-/**
   <Inc e.Num> == e.Num+1
 */
 $ENTRY R5-Inc {
   e.Num = <Add 1 e.Num>;
-}
-
-
-/**
-  <Dec e.Num> == e.Num-1
-*/
-$ENTRY R5-Dec {
-  e.Num = <Sub (e.Num) 1>;
-}
-
-
-/**
-  <PrintLines (e.Line)*> == пусто
-*/
-$ENTRY R5-PrintLines {
-  (e.Line) e.Lines =
-    <Prout e.Line>
-    <R5-PrintLines e.Lines>;
-
-  /* пусто */ = /* ничего не печатаем */;
-}
-
-
-/**
-  <SaveFile (e.FileName) (e.Line)*> == пусто
-*/
-$ENTRY R5-SaveFile {
-  (e.FileName) e.Lines =
-    <Open 'w' 20 e.FileName>
-    <DoSaveFile e.Lines>
-    <Close 20>;
-}
-
-DoSaveFile {
-  (e.Line) e.Lines =
-    <Putout 20 e.Line>
-    <DoSaveFile e.Lines>;
-
-  /* пусто */ = /* всё */;
 }
 
 
