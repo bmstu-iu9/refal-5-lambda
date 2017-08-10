@@ -1,5 +1,5 @@
 *$FROM R5-Utils
-$EXTERN R5-Builtins, R5-Unique;
+$EXTERN R5-Builtins;
 
 
 /**
