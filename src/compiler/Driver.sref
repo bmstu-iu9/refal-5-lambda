@@ -28,9 +28,6 @@ $EXTERN R5-AddMu;
 //FROM R5-Transformer
 $EXTERN R5-Transform;
 
-//FROM R5-ConvertAST
-$EXTERN R5-ConvertAST;
-
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
 
@@ -149,7 +146,6 @@ LoadAST {
     = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
     = <R5-AddMu e.AST> : e.AST^
     = <R5-Transform e.AST> : e.AST^
-    = <R5-ConvertAST e.AST> : e.AST^
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
