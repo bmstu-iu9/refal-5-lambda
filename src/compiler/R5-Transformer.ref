@@ -65,10 +65,10 @@ UnBlock {
 DoUnBlock {
   (e.Names) t.SrcPos (e.Name) s.Scope (e.Prefix)
   (e.ScannedFunctions) (e.ScannedSentences)
-  e.Sentences-B (e.BlockedSentence) e.Sentences-E
+  e.Sentences-B
+  (e.SentencePrefix (e.BlockResult) ((Sentences e.SubSentences)))
+  e.Sentences-E
   (e.UnscannedFunctions)
-    , <WithBlock e.BlockedSentence>
-    : (e.SentencePrefix) (e.BlockResult) ((Sentences e.SubSentences))
     , <NewName (e.Names) e.Prefix> : (e.RefilledNames) e.NewName
     , <BlockScopeVars e.SentencePrefix> : e.ScopeVars
     = <DoUnBlock
@@ -128,24 +128,6 @@ DoUnBlock-NextFunction {
 
   (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions) (/* пусто */)
     = (e.Names) e.ScannedFunctions;
-}
-
-WithBlock {
-  (e.Pattern) e.Sentence = <DoWithBlock ((e.Pattern)) e.Sentence>;
-}
-
-DoWithBlock {
-  (e.Prefix) (Condition t.CondResult (/* нет блоков */) t.CondPattern) e.Tail
-    = <DoWithBlock
-        (e.Prefix (Condition t.CondResult (/* нет блоков */) t.CondPattern))
-        e.Tail
-      >;
-
-  (e.Prefix) t.Result ((Sentences e.SubSentences))
-    = (e.Prefix) t.Result ((Sentences e.SubSentences));
-
-  (e.Prefix) t.Result (/* нет блока */)
-    = /* пусто */;
 }
 
 BlockScopeVars {
