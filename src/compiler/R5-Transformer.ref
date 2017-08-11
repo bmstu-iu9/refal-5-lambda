@@ -68,7 +68,7 @@ DoUnBlock {
   e.Sentences-B (e.BlockedSentence) e.Sentences-E
   (e.UnscannedFunctions)
     , <WithBlock e.BlockedSentence>
-    : (e.SentencePrefix) CALL-BLOCK (e.BlockResult) e.SubSentences
+    : (e.SentencePrefix) (e.BlockResult) ((Sentences e.SubSentences))
     , <NewName (e.Names) e.Prefix> : (e.RefilledNames) e.NewName
     , <BlockScopeVars e.SentencePrefix> : e.ScopeVars
     = <DoUnBlock
@@ -79,12 +79,12 @@ DoUnBlock {
           e.Sentences-B
           (
             e.SentencePrefix
-            RETURN
             (
               (CallBrackets
                 (TkName t.SrcPos e.NewName) e.ScopeVars e.BlockResult
               )
             )
+            (/* нет блока */)
           )
         )
         e.Sentences-E
@@ -135,13 +135,16 @@ WithBlock {
 }
 
 DoWithBlock {
-  (e.Prefix) (Condition t.CondResult t.CondPattern) e.Tail
-    = <DoWithBlock (e.Prefix (Condition t.CondResult t.CondPattern)) e.Tail>;
+  (e.Prefix) (Condition t.CondResult (/* нет блоков */) t.CondPattern) e.Tail
+    = <DoWithBlock
+        (e.Prefix (Condition t.CondResult (/* нет блоков */) t.CondPattern))
+        e.Tail
+      >;
 
-  (e.Prefix) CALL-BLOCK t.Result e.SubSentences
-    = (e.Prefix) CALL-BLOCK t.Result e.SubSentences;
+  (e.Prefix) t.Result ((Sentences e.SubSentences))
+    = (e.Prefix) t.Result ((Sentences e.SubSentences));
 
-  (e.Prefix) RETURN t.Result
+  (e.Prefix) t.Result (/* нет блока */)
     = /* пусто */;
 }
 
@@ -149,7 +152,7 @@ BlockScopeVars {
   (e.Pattern) e.Conditions
     = <Map
         transformer_MakeVariables
-        <ExtractVariables ((e.Pattern) e.Conditions RETURN ())>
+        <ExtractVariables ((e.Pattern) e.Conditions () ())>
       >;
 }
 
@@ -236,13 +239,15 @@ UnConditionSentence {
   (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
     , e.Sentence
     : {
-        (e.Pattern) (Condition (e.CondResult) t.CondPattern) e.Tail
+        (e.Pattern)
+        (Condition (e.CondResult) (/* нет блоков */) t.CondPattern)
+        e.Tail
           = Success
             <UnConditionSentence-Aux
               (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
             >;
 
-        (e.Pattern) RETURN (e.Result) = Fails;
+        (e.Pattern) (e.Result) (/* нет блока */) = Fails;
       };
 }
 
@@ -277,7 +282,11 @@ MakeContinuationSentence {
   NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
 
   (e.ContName) (e.Pattern) (e.ContArg)
-    = ((e.Pattern) RETURN ((CallBrackets (TkName NoPos e.ContName) e.ContArg)));
+    = (
+        (e.Pattern)
+        ((CallBrackets (TkName NoPos e.ContName) e.ContArg))
+        (/* нет блоков */)
+      );
 }
 
 PatternSteps {
@@ -605,7 +614,9 @@ ConditionSubFunctions {
   (e.Names) (e.Prefix) t.ContName
   e.Sentence
     , e.Sentence
-    : (e.Pattern) (Condition (e.CondResult) (e.CondPattern)) e.SentenceTail
+    : (e.Pattern)
+      (Condition (e.CondResult) (/* нет блоков */) (e.CondPattern))
+      e.SentenceTail
     , <NewName (e.Names) e.Prefix '_check'> : (e.RefilledNames1) e.CheckFunction
     , <ExtractVariables (e.Sentence)> : e.SentenceVariables
     , <BlockScopeVars (e.Pattern)> : e.PatternVarsAsExpr
@@ -619,12 +630,12 @@ ConditionSubFunctions {
     = (e.RefilledNames2)
       (
         (e.Pattern)
-        RETURN
         (
           (CallBrackets
             (TkName NoPos e.CheckFunction) e.PatternVarsAsExpr e.CondResult
           )
         )
+        (/* нет блока */)
       )
       e.SubFunctions;
 }
@@ -663,8 +674,7 @@ OpenEChain {
       (
         (
           (e.PatternVarsAsExpr (TkVariable NoPos e.eOther))
-          RETURN
-          ((CallBrackets (TkName NoPos e.ContName) e.T0))
+          ((CallBrackets (TkName NoPos e.ContName) e.T0)) (/* нет блоков */)
         )
       )
       /* пусто */;
@@ -684,8 +694,7 @@ OpenEChain {
       (
         (
           (e.PatternVarsAsExpr (TkVariable NoPos e.eOther))
-          RETURN
-          ((CallBrackets (TkName NoPos e.NextForward) e.T0))
+          ((CallBrackets (TkName NoPos e.NextForward) e.T0)) (/* нет блоков */)
         )
       )
       e.NewFunctions;
@@ -728,20 +737,23 @@ MakeOpenE-ForwardNext {
     = (e.RefilledNames)
       (
         (e.CurrentForwardName)
-        ((e.T1) RETURN ((CallBrackets (TkName NoPos e.NextName) e.T2)))
+        (
+          (e.T1)
+          ((CallBrackets (TkName NoPos e.NextName) e.T2)) (/* нет блоков */)
+        )
         <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
         (e.NextName)
         (
           (e.T5)
-          RETURN
           (
             (CallBrackets
               (TkName NoPos e.CheckFunction)
               <Substitute e.CheckFunctionArg (e.T5-sub)>
             )
           )
+          (/* нет блоков */)
         )
         <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
@@ -768,14 +780,14 @@ ExtractVariables-Sentences {
 }
 
 ExtractVariables-Tail {
-  (Condition (e.Result) (e.Pattern)) e.Tail
+  (Condition (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Expr e.Pattern>
       <ExtractVariables-Tail e.Tail>;
 
-  RETURN (e.Result) = <ExtractVariables-Expr e.Result>;
+  (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
 
-  CALL-BLOCK (e.Result) e.Sentences
+  (e.Result) ((Sentences e.Sentences))
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Sentences e.Sentences>;
 }

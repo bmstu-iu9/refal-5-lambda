@@ -23,8 +23,11 @@ DoAddMu-Names {
 MuSentence {
   e.Name
     = <MuSentence-Special e.Name>
-      (((TkIdentifier e.Name) <Var-eX>) RETURN (<Call-eX e.Name>))
-      (((Brackets <Chars e.Name>) <Var-eX>) RETURN (<Call-eX e.Name>));
+      (((TkIdentifier e.Name) <Var-eX>) (<Call-eX e.Name>) (/* нет блоков */))
+      (
+        ((Brackets <Chars e.Name>) <Var-eX>)
+        (<Call-eX e.Name>) (/* нет блоков */)
+      );
 }
 
 Var-eX {
@@ -42,7 +45,7 @@ Call-eX {
 
 MuSentence-Special {
   s.Name, '+-*/%?' : e.Chars-B s.Name e.Chars-E
-    = (((TkChar s.Name) <Var-eX>) RETURN (<Call-eX s.Name>));
+    = (((TkChar s.Name) <Var-eX>) (<Call-eX s.Name>) (/* нет блоков */));
 
   e.OtherName = /* пусто */;
 }

@@ -26,6 +26,6 @@ ConvertSentence {
   /*
     Здесь полагаем, что работаем после трансформера: нет ни условий, ни блоков.
   */
-  ((e.Pattern) RETURN (e.Result))
+  ((e.Pattern) (e.Result) (/* нет блоков */))
     = ((e.Pattern) (e.Result) (/* нет блоков */));
 }

@@ -13,8 +13,10 @@ $EXTERN R5-OneOf;
   t.Function ::=
       (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
   s.ScopeClass ::= GN-Entry | GN-Local
-  t.Sentence ::= (t.Pattern (Condition t.Result t.Pattern)* e.SentenceTail)
-  e.SentenceTail ::= RETURN t.Result | CALL-BLOCK t.Result t.Sentence*
+  t.Sentence ::=
+    (t.Pattern (Condition t.Result (e.Blocks) t.Pattern)* e.SentenceTail)
+  e.SentenceTail ::= t.Result (e.Blocks)
+  e.Blocks ::= (Sentences t.Sentence*)*
 
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
@@ -288,7 +290,7 @@ Sentence-AfterPattern {
 
   (e.Errors) t.Pattern t.Unexpected e.Tokens =
     (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
-    (t.Pattern RETURN (/* пустой результат */))
+    (t.Pattern (/* пустой результат */) (/* нет блоков */))
     t.Unexpected e.Tokens;
 }
 
@@ -302,7 +304,7 @@ UnexpectedTokenInSentence {
 Sentence-AfterResult {
   (e.Errors) t.Pattern (e.ResultErrors) t.Result e.Tokens =
     (e.Errors e.ResultErrors)
-    (t.Pattern RETURN t.Result)
+    (t.Pattern t.Result (/* нет блоков */))
     e.Tokens
 }
 
@@ -349,7 +351,7 @@ ExtensionChain-AfterResult {
 
       (TkSemicolon t.Pos) =
         (e.Errors (Error t.Pos 'Mistaken \',\' for \'=\''))
-        (RETURN t.Result)
+        (t.Result) (/* нет блоков */)
         (TkSemicolon t.Pos) e.Tokens;
 
       (s.Type t.Pos),
@@ -361,14 +363,14 @@ ExtensionChain-AfterResult {
 
       t.Unexpected =
         (e.Errors <UnexpectedTokenInSentence t.Unexpected>)
-        (RETURN t.Result) t.Unexpected e.Tokens
+        (t.Result (/* нет блоков */)) t.Unexpected e.Tokens
     }
 }
 
 ExtensionChain-AfterBlock {
   (e.Errors) t.Result (e.BlockErrors) (e.Sentences) e.Tokens =
     (e.Errors e.BlockErrors)
-    (CALL-BLOCK t.Result e.Sentences)
+    (t.Result ((Sentences e.Sentences)))
     e.Tokens;
 }
 
@@ -404,7 +406,10 @@ ExtensionChain-AfterPattern {
 
       t.Unexpected =
         (e.Errors e.PatternErrors <UnexpectedTokenInSentence t.Unexpected>)
-        ((Condition t.Result t.Pattern) RETURN (/* пустой результат */))
+        (
+          (Condition t.Result (/* нет блоков */) t.Pattern)
+          (/* пустой результат */) (/* нет блоков */)
+        )
         t.Unexpected e.Tokens;
     }
 }
@@ -413,7 +418,10 @@ ExtensionChain-AfterExtensionChain {
   (e.Errors) t.Result t.Pattern
   (e.ChainErrors) (e.Conditions-And-SentenceTail) e.Tokens =
     (e.Errors e.ChainErrors)
-    ((Condition t.Result t.Pattern) e.Conditions-And-SentenceTail)
+    (
+      (Condition t.Result (/* нет блоков */) t.Pattern)
+      e.Conditions-And-SentenceTail
+    )
     e.Tokens;
 }
 
@@ -421,7 +429,10 @@ ExtensionChain-AfterPattern-AfterResult {
   (e.Errors) t.Result t.Pattern
   (e.ResultErrors) t.FinalResult e.Tokens =
     (e.Errors e.ResultErrors)
-    ((Condition t.Result t.Pattern) RETURN t.FinalResult)
+    (
+      (Condition t.Result (/* нет блоков */) t.Pattern)
+      t.FinalResult (/* нет блоков */)
+    )
     e.Tokens;
 }
 
@@ -708,17 +719,20 @@ ExtractCheckable {
 }
 
 ExtractCheckable-Tail {
-  (Condition (e.Result) (e.Pattern)) e.Tail =
+  (Condition (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail =
     (Condition
-      (<ExtractCheckable-Expr e.Result>) (<ExtractCheckable-Expr e.Pattern>)
+      (<ExtractCheckable-Expr e.Result>)
+      (/* нет блоков */)
+      (<ExtractCheckable-Expr e.Pattern>)
     )
     <ExtractCheckable-Tail e.Tail>;
 
-  RETURN (e.Result) = RETURN (<ExtractCheckable-Expr e.Result>);
+  (e.Result) (/* нет блоков */)
+    = (<ExtractCheckable-Expr e.Result>) (/* нет блоков */);
 
-  CALL-BLOCK (e.Result) e.Sentences =
-    CALL-BLOCK (<ExtractCheckable-Expr e.Result>)
-    <ExtractCheckable-Sentences e.Sentences>;
+  (e.Result) ((Sentences e.Sentences)) =
+    (<ExtractCheckable-Expr e.Result>)
+    ((Sentences <ExtractCheckable-Sentences e.Sentences>));
 }
 
 ExtractCheckable-Sentences {
@@ -755,14 +769,15 @@ CheckSentence {
 }
 
 CheckSentence-Tail {
-  (e.FuncNames) (e.Variables) (Condition (e.ResultItems) (e.PatternItems)) e.Tail =
+  (e.FuncNames) (e.Variables)
+  (Condition (e.ResultItems) (/* нет блоков */) (e.PatternItems)) e.Tail =
     <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
     <CheckSentence-Tail (e.FuncNames) (e.Variables e.PatternItems) e.Tail>;
 
-  (e.FuncNames) (e.Variables) RETURN (e.ResultItems) =
+  (e.FuncNames) (e.Variables) (e.ResultItems) (/* нет блоков */) =
     <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>;
 
-  (e.FuncNames) (e.Variables) CALL-BLOCK (e.ResultItems) e.Sentences =
+  (e.FuncNames) (e.Variables) (e.ResultItems) ((Sentences e.Sentences)) =
     <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
     <CheckSentences (e.FuncNames) (e.Variables) e.Sentences>;
 }
