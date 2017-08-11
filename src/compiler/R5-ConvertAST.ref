@@ -59,12 +59,12 @@ ConvertTerm {
   (TkNumber s.Number) = (TkNumber s.Number);
   (TkChar s.Char) = (TkChar s.Char);
 
-  (Variable t.SrcPos s.Type e.Index)
+  (TkVariable t.SrcPos s.Type e.Index)
     = (TkVariable <ConvertSrcPos t.SrcPos> s.Type e.Index);
 
   (Brackets e.Expr) = (Brackets <ConvertExpr e.Expr>);
 
-  (Call t.SrcPos (e.Function) e.Expr)
+  (CallBrackets (TkName t.SrcPos e.Function) e.Expr)
     = (CallBrackets
          (TkName <ConvertSrcPos t.SrcPos> e.Function)
          <ConvertExpr e.Expr>

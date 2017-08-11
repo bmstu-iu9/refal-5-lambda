@@ -20,9 +20,9 @@ $EXTERN R5-OneOf;
       (TkIdentifier e.Chars*)
     | (TkNumber s.Number)
     | (TkChar s.Char)
-    | (Variable t.SrcPos s.VarType e.Index)
+    | (TkVariable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
-    | (Call t.SrcPos (e.Function) t.Terms*)
+    | (CallBrackets (TkName t.SrcPos e.Function) t.Terms*)
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Parse {
@@ -498,7 +498,7 @@ DoExpression {
       (TkVariable t.Pos s.VarType e.Index) =
         <DoExpression
           s.Kind (e.Errors)
-          (e.Collected (Variable t.Pos s.VarType e.Index)) e.Tokens
+          (e.Collected (TkVariable t.Pos s.VarType e.Index)) e.Tokens
         >;
 
       (TkOpenBracket t.Pos) =
@@ -538,7 +538,8 @@ DoExpression-AfterCall {
   (e.SubexprErrors) (e.BracketTerms) (TkCloseCall t.Pos) e.Tokens =
     <DoExpression
       Result (e.Errors e.SubexprErrors)
-      (e.Collected (Call t.CallPos (e.FuncName) e.BracketTerms)) e.Tokens
+      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
+      e.Tokens
     >;
 
   Pattern (e.Errors) (e.Collected) t.CallPos (e.FuncName)
@@ -559,7 +560,7 @@ DoExpression-AfterCall {
   (e.SubexprErrors) (e.BracketTerms) (s.Type t.Pos e.Value) e.Tokens =
     <DoExpression
       Result (e.Errors e.SubexprErrors (Error t.Pos 'Missed \'>\''))
-      (e.Collected (Call t.CallPos (e.FuncName) e.BracketTerms))
+      (e.Collected (CallBrackets (TkName t.CallPos e.FuncName) e.BracketTerms))
       (s.Type t.Pos e.Value) e.Tokens
     >;
 
@@ -732,12 +733,13 @@ ExtractCheckable-Expr {
 }
 
 ExtractCheckable-Term {
-  (Variable t.SrcPos s.VarType e.Index) = (Variable t.SrcPos s.VarType e.Index);
+  (TkVariable t.SrcPos s.VarType e.Index)
+    = (TkVariable t.SrcPos s.VarType e.Index);
 
   (Brackets e.Expr) = <ExtractCheckable-Expr e.Expr>;
 
-  (Call t.Pos (e.Name) e.Expr) =
-    (Call t.Pos e.Name) <ExtractCheckable-Expr e.Expr>;
+  (CallBrackets (TkName t.Pos e.Name) e.Expr) =
+    (TkName t.Pos e.Name) <ExtractCheckable-Expr e.Expr>;
 
   t.OtherTerm = /* здесь нет переменных */;
 }
@@ -763,7 +765,7 @@ CheckSentence-Tail {
 }
 
 CheckResult {
-  (e.FuncNames) (e.Variables) (Call t.Pos e.Name) e.Items,
+  (e.FuncNames) (e.Variables) (TkName t.Pos e.Name) e.Items,
       e.FuncNames:
     {
       e.Names-B (e.Name) e.Names-E =
@@ -774,10 +776,10 @@ CheckResult {
         <CheckResult (e.FuncNames) (e.Variables) e.Items>;
     };
 
-  (e.FuncNames) (e.Variables) (Variable t.Pos s.Type e.Index) e.Items,
+  (e.FuncNames) (e.Variables) (TkVariable t.Pos s.Type e.Index) e.Items,
       e.Variables:
     {
-      e.Vars-B (Variable t.DeclPos s.Type e.Index) e.Vars-E =
+      e.Vars-B (TkVariable t.DeclPos s.Type e.Index) e.Vars-E =
         <CheckResult (e.FuncNames) (e.Variables) e.Items>;
 
       e.Vars =

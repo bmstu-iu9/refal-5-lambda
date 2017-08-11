@@ -29,7 +29,7 @@ MuSentence {
 }
 
 Var-eX {
-  = (Variable NoPos 'eX');
+  = (TkVariable NoPos 'eX');
 }
 
 Call-eX {
@@ -38,7 +38,7 @@ Call-eX {
     : e.SugarNames-B (s.SugarName e.RealName) e.SugarNames-E
     = <Call-eX e.RealName>;
 
-  e.Name = (Call NoPos (e.Name) <Var-eX>);
+  e.Name = (CallBrackets (TkName NoPos e.Name) <Var-eX>);
 }
 
 MuSentence-Special {
