@@ -60,11 +60,7 @@ ConvertTerm {
   (TkChar s.Char) = (TkChar s.Char);
 
   (Variable t.SrcPos s.Type e.Index)
-    /*
-      s.Type s.Type e.Index — Простой Рефал не поддерживает переменные
-      с одним индексом, но разного типа
-    */
-    = (TkVariable <ConvertSrcPos t.SrcPos> s.Type s.Type e.Index);
+    = (TkVariable <ConvertSrcPos t.SrcPos> s.Type e.Index);
 
   (Brackets e.Expr) = (Brackets <ConvertExpr e.Expr>);
 

@@ -1,3 +1,0 @@
-$ENTRY Test-InvalidMode {
-  t.X e.X = ;
-}

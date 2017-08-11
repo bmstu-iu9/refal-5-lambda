@@ -1,0 +1,7 @@
+$ENTRY Go {
+  = <{ 'bca' = ; } <Test-InvalidMode 'abc'>>;
+}
+
+Test-InvalidMode {
+  t.X e.X = e.X t.X;
+}

@@ -259,11 +259,6 @@ CheckPattern {
         (#TkVariable t.SrcPos s.Mode e.Index) =
           (e.KnownVars-B (s.Mode e.Index) e.KnownVars-E);
 
-        (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
-        (#TkVariable t.SrcPos s.NewMode e.Index) =
-          (e.KnownVars-B (s.OldMode e.Index) e.KnownVars-E)
-          (#Error t.SrcPos #InvalidMode s.OldMode s.NewMode e.Index);
-
         (e.KnownVars) (#TkVariable t.SrcPos s.Mode e.Index) =
           (e.KnownVars (s.Mode e.Index));
 
