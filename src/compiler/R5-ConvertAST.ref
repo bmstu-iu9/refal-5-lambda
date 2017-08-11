@@ -25,21 +25,9 @@ ConvertExtern {
 ConvertFunction {
   t.SrcPos (e.Name) s.Scope e.Sentences
     = (Function
-        <ConvertSrcPos t.SrcPos>
-        <ConvertScopeClass s.Scope>
-        (e.Name)
-        Sentences
-        <Map ConvertSentence e.Sentences>
+        t.SrcPos s.Scope (e.Name)
+        Sentences <Map ConvertSentence e.Sentences>
       );
-}
-
-ConvertSrcPos {
-  NoPos = NoPos;
-  (RowCol s.Line s.Col) = (RowCol s.Line s.Col);
-}
-
-ConvertScopeClass {
-  GN-Entry = GN-Entry; GN-Local = GN-Local;
 }
 
 ConvertSentence {
@@ -47,26 +35,5 @@ ConvertSentence {
     Здесь полагаем, что работаем после трансформера: нет ни условий, ни блоков.
   */
   ((e.Pattern) RETURN (e.Result))
-    = ((<ConvertExpr e.Pattern>) (<ConvertExpr e.Result>) (/* нет блоков */));
-}
-
-ConvertExpr {
-  e.Terms = <Map ConvertTerm e.Terms>;
-}
-
-ConvertTerm {
-  (TkIdentifier e.Chars) = (TkIdentifier e.Chars);
-  (TkNumber s.Number) = (TkNumber s.Number);
-  (TkChar s.Char) = (TkChar s.Char);
-
-  (TkVariable t.SrcPos s.Type e.Index)
-    = (TkVariable <ConvertSrcPos t.SrcPos> s.Type e.Index);
-
-  (Brackets e.Expr) = (Brackets <ConvertExpr e.Expr>);
-
-  (CallBrackets (TkName t.SrcPos e.Function) e.Expr)
-    = (CallBrackets
-         (TkName <ConvertSrcPos t.SrcPos> e.Function)
-         <ConvertExpr e.Expr>
-      );
+    = ((e.Pattern) (e.Result) (/* нет блоков */));
 }
