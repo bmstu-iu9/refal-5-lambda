@@ -70,17 +70,7 @@ ConvertTerm {
 
   (Call t.SrcPos (e.Function) e.Expr)
     = (CallBrackets
-         (TkName <ConvertSrcPos t.SrcPos> <FuncDesugar e.Function>)
+         (TkName <ConvertSrcPos t.SrcPos> e.Function)
          <ConvertExpr e.Expr>
       );
-}
-
-FuncDesugar {
-  '+' = 'Add';
-  '-' = 'Sub';
-  '*' = 'Mul';
-  '/' = 'Div';
-  '%' = 'Mod';
-  '?' = 'Residue';
-  e.NormalName = e.NormalName;
 }

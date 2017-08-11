@@ -80,10 +80,11 @@ DoScan {
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
     <DoScan-Ident t.Pos ('<' s.StartIdent) (e.Line) e.Lines>;
 
-  t.Pos ('<' s.Arithm e.Line) e.Lines,
-      '+-*/%': e.Arithms-B s.Arithm e.Arithms-E =
-    (TkOpenCall t.Pos s.Arithm)
-    <DoScan <IncCol t.Pos Len '<' s.Arithm> (e.Line) e.Lines>;
+  t.Pos ('<' s.SugarName e.Line) e.Lines
+    , ('+Add') ('-Sub') ('*Mul') ('/Div') ('%Mod') ('?Residue')
+    : e.SugarNames-B (s.SugarName e.RealName) e.SugarNames-E
+    = (TkOpenCall t.Pos e.RealName)
+      <DoScan <IncCol t.Pos Len '<' s.SugarName> (e.Line) e.Lines>;
 
   t.Pos ('<' e.Line) e.Lines =
     (TkError t.Pos 'Identifier expected after \'<\'')

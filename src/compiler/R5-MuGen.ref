@@ -33,6 +33,11 @@ Var-eX {
 }
 
 Call-eX {
+  s.SugarName
+    , ('+Add') ('-Sub') ('*Mul') ('/Div') ('%Mod') ('?Residue')
+    : e.SugarNames-B (s.SugarName e.RealName) e.SugarNames-E
+    = <Call-eX e.RealName>;
+
   e.Name = (Call NoPos (e.Name) <Var-eX>);
 }
 
