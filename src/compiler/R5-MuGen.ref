@@ -4,7 +4,6 @@ $EXTERN R5-Builtins;
 $ENTRY R5-AddMu {
   e.AST
     , <R5-Builtins> : e.Builtins
-    /* Пока они косвенно не вызываются */
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
     = (Function NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
