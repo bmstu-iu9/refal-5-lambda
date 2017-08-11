@@ -35,12 +35,11 @@ ConvertFunction {
 
 ConvertSrcPos {
   NoPos = NoPos;
-  NO-POS = NoPos;
-  (s.Line s.Col e.FileName) = (RowCol s.Line s.Col);
+  (RowCol s.Line s.Col) = (RowCol s.Line s.Col);
 }
 
 ConvertScopeClass {
-  Entry = GN-Entry; Local = GN-Local;
+  GN-Entry = GN-Entry; GN-Local = GN-Local;
 }
 
 ConvertSentence {

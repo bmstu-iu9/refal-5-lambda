@@ -7,7 +7,7 @@ $ENTRY R5-AddMu {
     /* Пока они косвенно не вызываются */
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
-    = (Function NoPos ('Mu') Local e.MuBuiltins e.MuAST) e.AST;
+    = (Function NoPos ('Mu') GN-Local e.MuBuiltins e.MuAST) e.AST;
 }
 
 DoAddMu-Names {

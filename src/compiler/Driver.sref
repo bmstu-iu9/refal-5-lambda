@@ -117,10 +117,10 @@ R5-Parse-Wrapped {
           #Fails e.Errors
             = <MapReduce
                 {
-                  t.ErrorList^ ((s.Line s.Col e.FileName) e.Message)
+                  t.ErrorList^ ((#RowCol s.Line s.Col) e.Message)
                     = <EL-AddErrorAt
                         t.ErrorList
-                        (#FileRowCol (s.Line s.Col) e.FileName)
+                        (#FileRowCol (s.Line s.Col) e.SrcName)
                         e.Message
                       >;
                 }

@@ -4,8 +4,8 @@ $EXTERN LoadFile, Inc;
 /**
   <Scan e.SourceFile> == t.Token*
 
-  t.Token ::= (s.TokType t.Pos e.TokValue)
-  t.Pos ::= (s.Line s.Col e.FileName)
+  t.Token ::= (s.TokType t.SrcPos e.TokValue)
+  t.SrcPos ::= (RowCol s.Line s.Col)
 
   s.TokType ~ e.TokValue ::=
     TkName ~ char*
@@ -24,21 +24,21 @@ $EXTERN LoadFile, Inc;
 */
 $ENTRY R5-Scan {
   e.FileName =
-    <DoScan (1 1 e.FileName) <LoadFile e.FileName>>;
+    <DoScan (RowCol 1 1) <LoadFile e.FileName>>;
 }
 
 IncLine {
-  (s.Line s.Col e.FileName) = (<Inc s.Line> 1 e.FileName);
+  (RowCol s.Line s.Col) = (RowCol <Inc s.Line> 1);
 }
 
 IncCol {
-  (s.Line s.Col e.FileName) = (s.Line <Inc s.Col> e.FileName);
+  (RowCol s.Line s.Col) = (RowCol s.Line <Inc s.Col>);
 
   t.Pos Len = t.Pos;
   t.Pos Len s.First e.String = <IncCol <IncCol t.Pos> Len e.String>;
 
-  (s.Line s.Col e.FileName) '+' s.Number =
-    (s.Line <+ s.Col s.Number> e.FileName);
+  (RowCol s.Line s.Col) '+' s.Number =
+    (RowCol s.Line <+ s.Col s.Number>);
 }
 
 DoScan {
@@ -64,8 +64,8 @@ DoScan {
   t.Pos ('/*' e.Line) e.Lines =
     <DoScan-CComment t.Pos ('/*') (e.Line) e.Lines>;
 
-  (s.Line 1 e.FileName) ('*' e.Line) e.Lines =
-    <DoScan (<Inc s.Line> 1 e.FileName) e.Lines>;
+  (RowCol s.Line 1) ('*' e.Comment) e.Lines =
+    <DoScan (RowCol <Inc s.Line> 1) e.Lines>;
 
   t.Pos (s.StartIdent e.Line) e.Lines,
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =

@@ -10,8 +10,8 @@ $EXTERN R5-OneOf;
   t.Unit ::= t.Function | t.Extern
   t.Extern ::= (Extern (e.Name)*)
 
-  t.Function ::= (Function t.SrcPos (e.Name) s.Scope t.Sentence*)
-  s.Scope ::= Entry | Local
+  t.Function ::= (Function t.SrcPos (e.Name) s.ScopeClass t.Sentence*)
+  s.ScopeClass ::= GN-Entry | GN-Local
   t.Sentence ::= (t.Pattern (Condition t.Result t.Pattern)* e.SentenceTail)
   e.SentenceTail ::= RETURN t.Result | CALL-BLOCK t.Result t.Sentence*
 
@@ -152,12 +152,12 @@ NameList-DoNames {
 Function {
   (TkEntry t.EntryPos) (TkName t.NamePos e.Name) e.Tokens =
     <Function-AfterBlock
-      t.EntryPos (e.Name) Entry <Block e.Tokens>
+      t.EntryPos (e.Name) GN-Entry <Block e.Tokens>
     >;
 
   (TkName t.Pos e.Name) e.Tokens =
     <Function-AfterBlock
-      t.Pos (e.Name) Local <Block e.Tokens>
+      t.Pos (e.Name) GN-Local <Block e.Tokens>
     >;
 
   (TkEntry t.Pos) e.Tokens =

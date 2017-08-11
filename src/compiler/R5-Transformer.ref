@@ -112,7 +112,7 @@ DoUnBlock-NextFunction {
   (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
   (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
     = <DoUnBlock
-        (e.Names) t.SrcPos (e.NextFunctionName) Local (e.Prefix)
+        (e.Names) t.SrcPos (e.NextFunctionName) GN-Local (e.Prefix)
         (e.ScannedFunctions)
         (/* scanned sentences */)
         e.NextFunctionSentences
@@ -147,8 +147,8 @@ BlockScopeVars {
 }
 
 transformer_MakeVariables {
-  ('e' e.Index) = (Brackets (Variable NO-POS 'e' e.Index));
-  (s.VarType e.Index) = (Variable NO-POS s.VarType e.Index);
+  ('e' e.Index) = (Brackets (Variable NoPos 'e' e.Index));
+  (s.VarType e.Index) = (Variable NoPos s.VarType e.Index);
 }
 
 transformer_AddScopeVars {
@@ -209,7 +209,7 @@ DoUnCondition-NextFunction {
   (e.Names) t.SrcPos (e.Prefix) (e.ScannedFunctions)
   (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
     = <DoUnCondition
-        (e.Names) t.SrcPos (e.NextFunctionName) Local (e.Prefix)
+        (e.Names) t.SrcPos (e.NextFunctionName) GN-Local (e.Prefix)
         (e.ScannedFunctions)
         e.NextFunctionSentences
         (e.UnscannedFunctions)
@@ -250,7 +250,7 @@ UnConditionSentence-Aux {
       (
         (e.CallCheckSentence)
         <MakeContinuationSentence
-          t.ContName ((Variable NO-POS 'eOther')) ((Variable NO-POS 'eOther'))
+          t.ContName ((Variable NoPos 'eOther')) ((Variable NoPos 'eOther'))
         >
       )
       e.SubFunctions
@@ -271,7 +271,7 @@ MakeContinuationSentence {
   NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
 
   (e.ContName) (e.Pattern) (e.ContArg)
-    = ((e.Pattern) RETURN ((Call NO-POS (e.ContName) e.ContArg)));
+    = ((e.Pattern) RETURN ((Call NoPos (e.ContName) e.ContArg)));
 }
 
 PatternSteps {
@@ -610,7 +610,7 @@ ConditionSubFunctions {
       (
         (e.Pattern)
         RETURN
-        ((Call NO-POS (e.CheckFunction) e.PatternVarsAsExpr e.CondResult))
+        ((Call NoPos (e.CheckFunction) e.PatternVarsAsExpr e.CondResult))
       )
       e.SubFunctions;
 }
@@ -648,9 +648,9 @@ OpenEChain {
     = (e.Names)
       (
         (
-          (e.PatternVarsAsExpr (Variable NO-POS e.eOther))
+          (e.PatternVarsAsExpr (Variable NoPos e.eOther))
           RETURN
-          ((Call NO-POS (e.ContName) e.T0))
+          ((Call NoPos (e.ContName) e.T0))
         )
       )
       /* пусто */;
@@ -669,9 +669,9 @@ OpenEChain {
     = (e.RefilledNames)
       (
         (
-          (e.PatternVarsAsExpr (Variable NO-POS e.eOther))
+          (e.PatternVarsAsExpr (Variable NoPos e.eOther))
           RETURN
-          ((Call NO-POS (e.NextForward) e.T0))
+          ((Call NoPos (e.NextForward) e.T0))
         )
       )
       e.NewFunctions;
@@ -714,7 +714,7 @@ MakeOpenE-ForwardNext {
     = (e.RefilledNames)
       (
         (e.CurrentForwardName)
-        ((e.T1) RETURN ((Call NO-POS (e.NextName) e.T2)))
+        ((e.T1) RETURN ((Call NoPos (e.NextName) e.T2)))
         <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
@@ -724,7 +724,7 @@ MakeOpenE-ForwardNext {
           RETURN
           (
             (Call
-              NO-POS (e.CheckFunction)
+              NoPos (e.CheckFunction)
               <Substitute e.CheckFunctionArg (e.T5-sub)>
             )
           )
