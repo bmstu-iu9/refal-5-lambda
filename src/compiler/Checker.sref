@@ -186,7 +186,7 @@ CheckFunctionBodyRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result))
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (/* нет блоков */))
     = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
@@ -198,7 +198,8 @@ CheckSentence {
 DoCheckAssignments {
   () (e.ScopeVars) e.Errors = (e.ScopeVars) e.Errors;
 
-  ((#Assign (e.Result) (e.Pattern)) e.Assignments) (e.ScopeVars) e.Errors
+  ((#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments)
+  (e.ScopeVars) e.Errors
     = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
     : e.ResultFunctionsAndErrors
     = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>

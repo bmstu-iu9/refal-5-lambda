@@ -322,35 +322,35 @@ DoParseBlock {
 ParseSentence {
   t.ErrorList e.Tokens
     = <ParseSentencePart t.ErrorList e.Tokens>
-    : ((e.StartPattern) (e.Result)) t.ErrorList^ t.NextToken e.Tokens^
+    : ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList^ t.NextToken e.Tokens^
     = <Fetch
         t.NextToken
         {
           (#TkSemicolon t.SrcPos)
-            = ((e.StartPattern) (e.Result)) t.ErrorList e.Tokens;
+            = ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 
           (#TkColon t.SrcPos)
             = <ParseSentence t.ErrorList e.Tokens>
-            : ((e.InnerPattern) e.Assignments (e.EndResult))
+            : ((e.InnerPattern) e.Assignments (e.EndResult) (e.EndBlocks))
               t.ErrorList^ e.Tokens^
-            = (#Assign (e.Result) (e.InnerPattern)) e.Assignments
+            = (#Assign (e.Result) (e.Blocks) (e.InnerPattern)) e.Assignments
             : e.Assignments^
-            = ((e.StartPattern) e.Assignments (e.EndResult))
+            = ((e.StartPattern) e.Assignments (e.EndResult) (e.EndBlocks))
               t.ErrorList e.Tokens;
 
           (#TkCloseBlock t.SrcPos)
-            = ((e.StartPattern) (e.Result))
+            = ((e.StartPattern) (e.Result) (e.Blocks))
               <EL-AddErrorAt t.ErrorList t.SrcPos 'Missed semicolon'>
               (#TkCloseBlock t.SrcPos) e.Tokens;
 
           (#TkEOF t.SrcPos)
             = e.Tokens : /* пусто */
-            = ((e.StartPattern) (e.Result))
+            = ((e.StartPattern) (e.Result) (e.Blocks))
               <EL-AddErrorAt t.ErrorList t.SrcPos 'Unexpected EOF in function'>
               (#TkEOF t.SrcPos);
 
           t.Unexpected
-            = ((e.StartPattern) (e.Result))
+            = ((e.StartPattern) (e.Result) (e.Blocks))
               <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
               e.Tokens;
         }
@@ -361,8 +361,9 @@ ParseSentencePart {
   t.ErrorList e.Tokens
     = <ParsePattern t.ErrorList e.Tokens> : t.ErrorList^ (e.Pattern) e.Tokens^
     = <Expect #TkReplace ('=') t.ErrorList e.Tokens> : t.ErrorList^ e.Tokens^
-    = <ParseResult t.ErrorList e.Tokens> : t.ErrorList^ (e.Result) e.Tokens^
-    = ((e.Pattern) (e.Result)) t.ErrorList e.Tokens;
+    = <ParseResult t.ErrorList e.Tokens>
+    : t.ErrorList^ (e.Result) (e.Blocks) e.Tokens^
+    = ((e.Pattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 }
 
 ParsePattern {
@@ -566,7 +567,9 @@ ParseResult {
   t.ErrorList e.Tokens
     = <DoParseResult
         t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
-      >;
+      >
+    : t.ErrorList^ (e.Result) e.Tail
+    = t.ErrorList (e.Result) (/* нет блоков */) e.Tail;
 }
 
 /*

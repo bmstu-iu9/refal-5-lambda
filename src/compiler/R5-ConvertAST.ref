@@ -52,7 +52,7 @@ ConvertSentence {
   (Comment e.Text) = /* игнорируем */;
 
   ((e.Pattern) RETURN (e.Result))
-    = ((<ConvertExpr e.Pattern>) (<ConvertExpr e.Result>));
+    = ((<ConvertExpr e.Pattern>) (<ConvertExpr e.Result>) (/* нет блоков */));
 }
 
 ConvertExpr {

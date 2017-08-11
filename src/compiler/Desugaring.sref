@@ -44,20 +44,21 @@ RemovePos-Body {
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result)) =
+        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */)) =
           (
             (<RemovePos-Expr e.Pattern>)
             <Map
               {
-                (#Assign (e.Result^) (e.Pattern^)) =
+                (#Assign (e.Result^) (/* нет блоков */) (e.Pattern^)) =
                   (#Assign
                     (<RemovePos-Expr e.Result>)
+                    (/* нет блоков */)
                     (<RemovePos-Expr e.Pattern>)
                   );
               }
               e.Assigns
             >
-            (<RemovePos-Expr e.Result>)
+            (<RemovePos-Expr e.Result>) (/* нет блоков */)
           );
       }
       e.Sentences
@@ -117,7 +118,7 @@ EnumerateVars-Sentences {
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result)) =
+        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */)) =
           <Fetch
             <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
             <Seq
@@ -132,7 +133,7 @@ EnumerateVars-Sentences {
                     <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
                     {
                       (e.ScopeVars^) e.Result^ =
-                        ((e.Pattern) e.Assigns (e.Result));
+                        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */));
                     }
                   >;
               }
@@ -151,7 +152,7 @@ EnumerateVars-Assignments {
      (e.ScopeVars) s.Depth e.RAssignments;
 
   (e.RAssignments) s.Depth (e.ScopeVars)
-  (#Assign (e.Result) (e.Pattern)) e.Assignments =
+  (#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments =
     <Fetch
       <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
       <Seq
@@ -163,7 +164,7 @@ EnumerateVars-Assignments {
         {
           s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
             <EnumerateVars-Assignments
-              (e.RAssignments (#Assign (e.Result) (e.Pattern)))
+              (e.RAssignments (#Assign (e.Result) (/* нет блоков */) (e.Pattern)))
                s.Depth (e.ScopeVars) e.Assignments
             >;
         }
@@ -247,12 +248,13 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result))
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
      = #Sentences
         (
           (e.Pattern)
           <NameNestedAssigns (e.MainName) e.Assigns>
           (<NameNestedResult (e.MainName) e.Result>)
+          (/* нет блоков */)
         );
 
   (e.MainName) #Sentences e.Sentences
@@ -260,13 +262,14 @@ NameNestedBody {
       <DelAccumulator
         <MapReduce
           {
-            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result))
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
               = e.MainName '$' s.SentenceNumber: e.MainName^
               = <Inc s.SentenceNumber>
                 (
                   (e.Pattern)
                   <NameNestedAssigns (e.MainName) e.Assigns>
                   (<NameNestedResult (e.MainName) e.Result>)
+                  (/* нет блоков */)
                 );
           }
           1 e.Sentences
@@ -282,12 +285,13 @@ NameNestedAssigns {
     = <DelAccumulator
         <MapReduce
           {
-            s.AssignId (#Assign (e.Result) (e.Pattern))
+            s.AssignId (#Assign (e.Result) (/* нет блоков */) (e.Pattern))
               = e.MainName '=' s.AssignId: e.MainName^
               = <Inc s.AssignId>
                 (#Assign
                   (e.MainName)
                   (<NameNestedResult (e.MainName) e.Result>)
+                  (/* нет блоков */)
                   (e.Pattern)
                 );
           }
@@ -375,13 +379,17 @@ RemoveAssigns-Sentences {
 }
 
 RemoveAssigns-Sentence {
-  ((e.Pattern) (e.Result))
+  ((e.Pattern) (e.Result) (/* нет блоков */))
     = ((e.Pattern) (<RemoveAssigns-Result e.Result>));
 
   (
     (e.Pattern)
-    (#Assign (e.AssignName) (e.AssignResult) (e.AssignPattern)) e.Assignments
+    (#Assign
+      (e.AssignName) (e.AssignResult) (/* нет блоков */) (e.AssignPattern)
+    )
+    e.Assignments
     (e.Result)
+    (/* нет блоков */)
   )
     = (
         (e.Pattern)
@@ -391,7 +399,7 @@ RemoveAssigns-Sentence {
               (e.AssignName)
               #Sentences
               <RemoveAssigns-Sentence
-                ((e.AssignPattern) e.Assignments (e.Result))
+                ((e.AssignPattern) e.Assignments (e.Result) (/* нет блоков */))
               >
             )
             <RemoveAssigns-Result e.AssignResult>

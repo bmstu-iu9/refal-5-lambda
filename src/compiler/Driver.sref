@@ -386,20 +386,20 @@ PatchASTSrcPos-Body {
     = #Sentences
       <Map
         {
-          ((e.Pattern) e.Assigns (e.Result))
+          ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
             = (
                 (<s.FnPatchExpr e.Pattern>)
                 <Map
                   {
-                    (#Assign (e.Result^) (e.Pattern^))
+                    (#Assign (e.Result^) (/* нет блоков */) (e.Pattern^))
                       = (#Assign
-                          (<s.FnPatchExpr e.Result>)
+                          (<s.FnPatchExpr e.Result>) (/* нет блоков */)
                           (<s.FnPatchExpr e.Pattern>)
                         );
                   }
                   e.Assigns
                 >
-                (<s.FnPatchExpr e.Result>)
+                (<s.FnPatchExpr e.Result>) (/* нет блоков */)
               );
         }
         e.Sentences

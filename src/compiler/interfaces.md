@@ -79,7 +79,11 @@
     e.Body ::=
         #Sentences t.Sentence*
       | #NativeBody t.SrcPos e.Code
-    t.Sentence ::= ((e.Pattern) (e.Result))
+    t.Sentence ::= ((e.Pattern) t.AssignOrCondition* (e.Result) (e.Blocks))
+    t.AssignOrCondition ::=
+        (#Assign (e.Result) (e.Blocks) (e.Pattern))
+      | (#Condition (e.Result) (e.Blocks) (e.Pattern))
+    e.Blocks ::= (e.Body)*
     e.Pattern, e.Result ::= e.Expression
     e.Code ::= (s.Char*)*
 
