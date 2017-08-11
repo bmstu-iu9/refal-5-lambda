@@ -186,19 +186,31 @@ CheckFunctionBodyRec {
 }
 
 CheckSentence {
-  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (/* нет блоков */))
+  e.ScopeVars ((e.Pattern) e.Assignments (e.Result) (e.Blocks))
     = <CheckPattern (e.ScopeVars) <FlatExpr e.Pattern>>
     : (e.ScopeVars^) e.PatternFunctionsAndErrors
     = <DoCheckAssignments (e.Assignments) (e.ScopeVars) /* нет ошибок */>
     : (e.ScopeVars^) e.AssignmentsFunctionsAndErrors
-    = e.PatternFunctionsAndErrors e.AssignmentsFunctionsAndErrors
-      <CheckResult (e.ScopeVars) <FlatExpr e.Result>>;
+    = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
+    : e.ResultFunctionsAndErrors
+    = <Map
+        {
+          (e.BlockBody)
+            = <CheckFunctionBodyRec (e.ScopeVars) e.BlockBody>;
+        }
+        e.Blocks
+      >
+    : e.BlocksFunctionsAndErrors
+    = e.PatternFunctionsAndErrors
+      e.AssignmentsFunctionsAndErrors
+      e.ResultFunctionsAndErrors
+      e.BlocksFunctionsAndErrors;
 }
 
 DoCheckAssignments {
   () (e.ScopeVars) e.Errors = (e.ScopeVars) e.Errors;
 
-  ((#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments)
+  ((s.ChainType (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments)
   (e.ScopeVars) e.Errors
     = <CheckResult (e.ScopeVars) <FlatExpr e.Result>>
     : e.ResultFunctionsAndErrors

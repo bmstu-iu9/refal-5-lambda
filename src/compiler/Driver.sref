@@ -25,9 +25,6 @@ $EXTERN R5-Parse;
 //FROM R5-MuGen
 $EXTERN R5-AddMu;
 
-//FROM R5-Transformer
-$EXTERN R5-Transform;
-
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
 
@@ -145,7 +142,6 @@ LoadAST {
     = <R5-Scan e.SrcName> : e.Tokens
     = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
     = <R5-AddMu e.AST> : e.AST^
-    = <R5-Transform e.AST> : e.AST^
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
@@ -382,20 +378,28 @@ PatchASTSrcPos-Body {
     = #Sentences
       <Map
         {
-          ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
+          ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
             = (
                 (<s.FnPatchExpr e.Pattern>)
                 <Map
                   {
-                    (#Assign (e.Result^) (/* нет блоков */) (e.Pattern^))
-                      = (#Assign
+                    (s.ChainType (e.Result^) (/* нет блоков */) (e.Pattern^))
+                      = (s.ChainType
                           (<s.FnPatchExpr e.Result>) (/* нет блоков */)
                           (<s.FnPatchExpr e.Pattern>)
                         );
                   }
-                  e.Assigns
+                  e.ConditionsAndAssigns
                 >
-                (<s.FnPatchExpr e.Result>) (/* нет блоков */)
+                (<s.FnPatchExpr e.Result>)
+                (
+                  <Map
+                    {
+                      (e.Body) = (<PatchASTSrcPos-Body s.FnPatch e.Body>);
+                    }
+                    e.Blocks
+                  >
+                )
               );
         }
         e.Sentences

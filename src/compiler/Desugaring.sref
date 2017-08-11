@@ -4,11 +4,16 @@ $EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 //FROM Library
 $EXTERN StrFromInt;
 
+//FROM R5-Transformer
+$EXTERN R5-Transform-Blocks, R5-Transform-Conditions;
+
 $ENTRY Desugar {
   s.MarkupContext e.AST =
     <Fetch
       e.AST
       <Seq
+        R5-Transform-Blocks
+        R5-Transform-Conditions
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
