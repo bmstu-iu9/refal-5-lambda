@@ -377,9 +377,9 @@ DoPatternSteps {
 }
 
 HardItem {
-  (e.BoundEVariables) (Compound e.Compound) = True;
-  (e.BoundEVariables) (Number s.Number) = True;
-  (e.BoundEVariables) (Char s.Char) = True;
+  (e.BoundEVariables) (TkIdentifier e.Compound) = True;
+  (e.BoundEVariables) (TkNumber s.Number) = True;
+  (e.BoundEVariables) (TkChar s.Char) = True;
 
   (e.BoundEVariables) (Variable t.SrcPos 's' e.Index) = True;
   (e.BoundEVariables) (Variable t.SrcPos 't' e.Index) = True;
@@ -802,9 +802,9 @@ DoNewName {
 }
 
 Symbol {
-  (Compound e.Chars) = True;
-  (Number s.Number) = True;
-  (Char s.Char) = True;
+  (TkIdentifier e.Chars) = True;
+  (TkNumber s.Number) = True;
+  (TkChar s.Char) = True;
   t.Other = False;
 }
 

@@ -55,9 +55,9 @@ ConvertExpr {
 }
 
 ConvertTerm {
-  (Compound e.Chars) = (TkIdentifier e.Chars);
-  (Number s.Number) = (TkNumber s.Number);
-  (Char s.Char) = (TkChar s.Char);
+  (TkIdentifier e.Chars) = (TkIdentifier e.Chars);
+  (TkNumber s.Number) = (TkNumber s.Number);
+  (TkChar s.Char) = (TkChar s.Char);
 
   (Variable t.SrcPos s.Type e.Index)
     /*

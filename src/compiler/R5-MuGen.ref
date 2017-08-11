@@ -24,7 +24,7 @@ DoAddMu-Names {
 MuSentence {
   e.Name
     = <MuSentence-Special e.Name>
-      (((Compound e.Name) <Var-eX>) RETURN (<Call-eX e.Name>))
+      (((TkIdentifier e.Name) <Var-eX>) RETURN (<Call-eX e.Name>))
       (((Brackets <Chars e.Name>) <Var-eX>) RETURN (<Call-eX e.Name>));
 }
 
@@ -43,13 +43,13 @@ Call-eX {
 
 MuSentence-Special {
   s.Name, '+-*/%?' : e.Chars-B s.Name e.Chars-E
-    = (((Char s.Name) <Var-eX>) RETURN (<Call-eX s.Name>));
+    = (((TkChar s.Name) <Var-eX>) RETURN (<Call-eX s.Name>));
 
   e.OtherName = /* пусто */;
 }
 
 Chars {
-  s.Char e.Chars = (Char s.Char) <Chars e.Chars>;
+  s.Char e.Chars = (TkChar s.Char) <Chars e.Chars>;
   /* пусто */ = /* пусто */;
 }
 

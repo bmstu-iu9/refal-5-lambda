@@ -17,9 +17,9 @@ $EXTERN R5-OneOf;
 
   t.Pattern, t.Result ::= (t.Term*)
   t.Term ::=
-      (Compound e.Chars*)
-    | (Number s.Number)
-    | (Char s.Char)
+      (TkIdentifier e.Chars*)
+    | (TkNumber s.Number)
+    | (TkChar s.Char)
     | (Variable t.SrcPos s.VarType e.Index)
     | (Brackets t.Term*)
     | (Call t.SrcPos (e.Function) t.Terms*)
@@ -477,22 +477,22 @@ DoExpression {
     {
       (TkName t.Pos e.Name) =
         <DoExpression
-          s.Kind (e.Errors) (e.Collected (Compound e.Name)) e.Tokens
+          s.Kind (e.Errors) (e.Collected (TkIdentifier e.Name)) e.Tokens
         >;
 
       (TkCompound t.Pos e.Symbols) =
         <DoExpression
-          s.Kind (e.Errors) (e.Collected (Compound e.Symbols)) e.Tokens
+          s.Kind (e.Errors) (e.Collected (TkIdentifier e.Symbols)) e.Tokens
         >;
 
       (TkMacroDigit t.Pos s.Number) =
         <DoExpression
-          s.Kind (e.Errors) (e.Collected (Number s.Number)) e.Tokens
+          s.Kind (e.Errors) (e.Collected (TkNumber s.Number)) e.Tokens
         >;
 
       (TkChar t.Pos s.Char) =
         <DoExpression
-          s.Kind (e.Errors) (e.Collected (Char s.Char)) e.Tokens
+          s.Kind (e.Errors) (e.Collected (TkChar s.Char)) e.Tokens
         >;
 
       (TkVariable t.Pos s.VarType e.Index) =
