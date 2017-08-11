@@ -78,7 +78,7 @@ run_test_aux.BAD-SYNTAX() {
   RASL=${SREF%.*}.rasl
   EXE=${SREF%.*}$(platform_exe_suffix)
 
-  ../bin/srefc-core -C $SRFLAGS $SREF 2>__error.txt
+  ../bin/srefc-core --prelude=test-prelude.srefi -C $SRFLAGS $SREF 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER ON $SREF FAILS, SEE __error.txt
     exit 1

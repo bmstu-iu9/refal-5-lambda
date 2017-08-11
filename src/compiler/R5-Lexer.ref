@@ -69,8 +69,8 @@ DoScan {
     (TkSpecComment '*$' e.Line)
     <DoScan (<Inc s.Line> 1 e.FileName) e.Lines>;
 
-  t.Pos ('*' e.Comment) e.Lines
-    = <DoScan <IncLine t.Pos> e.Lines>;
+  (s.Line 1 e.FileName) ('*' e.Line) e.Lines =
+    <DoScan (<Inc s.Line> 1 e.FileName) e.Lines>;
 
   t.Pos (s.StartIdent e.Line) e.Lines,
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
