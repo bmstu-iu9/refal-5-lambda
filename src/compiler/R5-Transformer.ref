@@ -18,26 +18,27 @@ Transform-Step {
 }
 
 GetFunctionNames {
-  (e.Names) e.Units (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+  (e.Names) e.Units (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences)
     = <GetFunctionNames (e.Names (e.Name)) e.Units>
-      (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+      (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences);
 
-  (e.Names) e.Units (Extern e.ExternalNames)
-    = <GetFunctionNames (e.Names e.ExternalNames) e.Units>
-      (Extern e.ExternalNames);
+  (e.Names) e.Units (Declaration t.SrcPos GN-Entry e.Name)
+    = <GetFunctionNames (e.Names (e.Name)) e.Units>
+      (Declaration t.SrcPos GN-Entry e.Name);
 
   (e.Names) /* пусто */ = (e.Names);
 }
 
 DoTransform {
-  s.FnMode (e.Names) (Function t.SrcPos (e.Name) s.Scope e.Sentences) e.Units
+  s.FnMode (e.Names)
+  (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences) e.Units
     , <Mu s.FnMode (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
     : (e.NewNames) e.NewFunctions
     = e.NewFunctions
       <DoTransform s.FnMode (e.NewNames) e.Units>;
 
-  s.FnMode (e.Names) (Extern e.ExternNames) e.Units
-    = (Extern e.ExternNames)
+  s.FnMode (e.Names) (Declaration t.SrcPos GN-Entry e.Name) e.Units
+    = (Declaration t.SrcPos GN-Entry e.Name)
       <DoTransform s.FnMode (e.Names) e.Units>;
 
   s.FnMode (e.Names) /* пусто */ = /* пусто */;
@@ -106,7 +107,8 @@ DoUnBlock {
         (
           e.ScannedFunctions
           (Function
-            t.SrcPos (e.Name) s.Scope e.ScannedSentences e.UnscannedSentences
+            t.SrcPos s.Scope (e.Name)
+            Sentences e.ScannedSentences e.UnscannedSentences
           )
         )
         (e.UnscannedFunctions)
@@ -190,9 +192,8 @@ DoUnCondition {
         (
           e.ScannedFunctions
           (Function
-            t.SrcPos (e.Name) s.Scope
-            e.Sentences-B
-            e.TransformedSentences
+            t.SrcPos s.Scope (e.Name)
+            Sentences e.Sentences-B e.TransformedSentences
           )
         )
         (e.UnscannedFunctions e.NewFunctions)
@@ -204,7 +205,7 @@ DoUnCondition {
         (e.Names) t.SrcPos (e.Prefix)
         (
           e.ScannedFunctions
-          (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+          (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences)
         )
         (e.UnscannedFunctions)
       >;

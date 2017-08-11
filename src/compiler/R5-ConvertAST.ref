@@ -12,18 +12,10 @@ Map {
 }
 
 ConvertAST-Unit {
-  (Extern e.Names) = <Map ConvertExtern e.Names>;
+  (Declaration t.SrcPos GN-Entry e.ExternName)
+    = (Declaration t.SrcPos GN-Entry e.ExternName);
 
-  (Function t.SrcPos (e.Name) s.Scope e.Sentences)
-    = <ConvertFunction t.SrcPos (e.Name) s.Scope e.Sentences>;
-}
-
-ConvertExtern {
-  (e.ExternName) = (Declaration NoPos GN-Entry e.ExternName);
-}
-
-ConvertFunction {
-  t.SrcPos (e.Name) s.Scope e.Sentences
+  (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences)
     = (Function
         t.SrcPos s.Scope (e.Name)
         Sentences <Map ConvertSentence e.Sentences>

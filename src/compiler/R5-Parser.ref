@@ -8,9 +8,10 @@ $EXTERN R5-OneOf;
 
   t.Error ::= (t.Pos e.Message)
   t.Unit ::= t.Function | t.Extern
-  t.Extern ::= (Extern (e.Name)*)
+  t.Extern ::= (Declaration NoPos GN-Entry e.Name)
 
-  t.Function ::= (Function t.SrcPos (e.Name) s.ScopeClass t.Sentence*)
+  t.Function ::=
+      (Function t.SrcPos s.ScopeClass (e.Name) Sentences t.Sentence*)
   s.ScopeClass ::= GN-Entry | GN-Local
   t.Sentence ::= (t.Pattern (Condition t.Result t.Pattern)* e.SentenceTail)
   e.SentenceTail ::= RETURN t.Result | CALL-BLOCK t.Result t.Sentence*
@@ -87,7 +88,9 @@ Unit {
 */
 NameList {
   (TkName t.Pos e.Name) e.Tokens =
-    <NameList-DoNames ((e.Name)) (/* errors */) e.Tokens>;
+    <NameList-DoNames
+      (<Extern t.Pos e.Name> /* externs and errors */) e.Tokens
+    >;
 
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value) =
@@ -95,51 +98,50 @@ NameList {
     t.NextToken e.Tokens;
 }
 
+Extern {
+  t.Pos e.Name = (Declaration t.Pos GN-Entry e.Name);
+}
+
 NameList-DoNames {
-  (e.Names) (e.Errors)
+  (e.ExternsAndErrors)
   (TkComma t.CommaPos) (TkName t.NamePos e.Name) e.Tokens =
-    <NameList-DoNames (e.Names (e.Name)) (e.Errors) e.Tokens>;
+    <NameList-DoNames (e.ExternsAndErrors <Extern t.NamePos e.Name>) e.Tokens>;
 
-  (e.Names) (e.Errors) (TkSemicolon t.Pos) e.Tokens =
-    ((Extern e.Names) e.Errors) e.Tokens;
+  (e.ExternsAndErrors) (TkSemicolon t.Pos) e.Tokens =
+    (e.ExternsAndErrors) e.Tokens;
 
-  (e.Names) (e.Errors) (TkComma t.Pos) e.Tokens =
+  (e.ExternsAndErrors) (TkComma t.Pos) e.Tokens =
     <NameList-DoNames
-      (e.Names)
-      (e.Errors (Error t.Pos 'expected name after comma'))
+      (e.ExternsAndErrors (Error t.Pos 'expected name after comma'))
       e.Tokens
     >;
 
-  (e.Names) (e.Errors)
+  (e.ExternsAndErrors)
   (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens =
     (
-      (Extern e.Names)
-      e.Errors
+      e.ExternsAndErrors
       (Error t.NamePos 'missed semicolon after previous $EXTERN declaration')
     )
     (TkName t.NamePos e.Name) (TkOpenBlock t.BracketPos) e.Tokens;
 
-  (e.Names) (e.Errors) (TkName t.Pos e.Name) e.Tokens =
+  (e.ExternsAndErrors) (TkName t.Pos e.Name) e.Tokens =
     <NameList-DoNames
-      (e.Names)
-      (e.Errors (Error t.Pos 'missed comma after external name'))
+      (e.ExternsAndErrors (Error t.Pos 'missed comma after external name'))
       e.Tokens
     >;
 
-  (e.Names) (e.Errors) t.NextToken e.Tokens,
+  (e.ExternsAndErrors) t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
       <R5-OneOf s.Type TkExtern TkEntry TkEOF>: True =
     (
-      (Extern e.Names)
-      e.Errors
+      e.ExternsAndErrors
       (Error t.Pos 'missed semicolon')
     )
     t.NextToken e.Tokens;
 
-  (e.Names) (e.Errors) t.NextToken e.Tokens =
+  (e.ExternsAndErrors) t.NextToken e.Tokens =
     <NameList-DoNames
-      (e.Names)
-      (e.Errors <UnexpectedToken t.NextToken 'comma or semicolon'>)
+      (e.ExternsAndErrors <UnexpectedToken t.NextToken 'comma or semicolon'>)
       e.Tokens
     >;
 }
@@ -167,7 +169,7 @@ Function {
 
 Function-AfterBlock {
   t.Pos (e.Name) s.Scope (e.Errors) (e.Sentences) e.Tokens =
-    (e.Errors (Function t.Pos (e.Name) s.Scope e.Sentences))
+    (e.Errors (Function t.Pos s.Scope (e.Name) Sentences e.Sentences))
     e.Tokens;
 }
 
@@ -662,13 +664,13 @@ DoFilterUnitsAndFunctionNames {
   (Error t.Pos e.Message) e.ErrorsUnits (e.Names) =
     <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
 
-  (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits (e.Names) =
-    (Function t.Pos (e.Name) s.Scope e.Sentences)
+  (Function t.Pos s.Scope (e.Name) Sentences e.Sentences) e.ErrorsUnits (e.Names) =
+    (Function t.Pos s.Scope (e.Name) Sentences e.Sentences)
     <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
 
-  (Extern e.ExternalNames) e.ErrorsUnits (e.Names) =
-    (Extern e.ExternalNames)
-    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names e.ExternalNames)>;
+  (Declaration t.SrcPos GN-Entry e.Name) e.ErrorsUnits (e.Names) =
+    (Declaration t.SrcPos GN-Entry e.Name)
+    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
 
   /* кончились юниты и ошибки */ (e.Names) = (e.Names);
 }
@@ -678,11 +680,12 @@ FindSemanticsErrors {
     (t.Pos e.Message)
     <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
 
-  (e.FuncNames) (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits =
+  (e.FuncNames) (Function t.Pos s.Scope (e.Name) Sentences e.Sentences)
+  e.ErrorsUnits =
     <CheckSentences (e.FuncNames) (/* variables */) e.Sentences>
     <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
 
-  (e.FuncNames) (Extern e.Names) e.ErrorsUnits =
+  (e.FuncNames) (Declaration t.SrcPos GN-Entry e.Name) e.ErrorsUnits =
     <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
 
   (e.FuncNames) /* кончились ошибки и юниты */ = /* пусто */

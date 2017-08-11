@@ -7,7 +7,7 @@ $ENTRY R5-AddMu {
     /* Пока они косвенно не вызываются */
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
-    = (Function NoPos ('Mu') GN-Local e.MuBuiltins e.MuAST) e.AST;
+    = (Function NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
 }
 
 DoAddMu-Names {
@@ -54,13 +54,14 @@ Chars {
 }
 
 DoAddMu-AST {
-  (e.MuSentences) e.Tail (Extern e.Names)
-    = <DoAddMu-AST (<DoAddMu-Names e.Names> e.MuSentences) e.Tail>
-      (Extern e.Names);
-
-  (e.MuSentences) e.Tail (Function t.SrcPos (e.Name) s.Scope e.Sentences)
+  (e.MuSentences) e.Tail (Declaration t.SrcPos GN-Entry e.Name)
     = <DoAddMu-AST (<MuSentence e.Name> e.MuSentences) e.Tail>
-      (Function t.SrcPos (e.Name) s.Scope e.Sentences);
+      (Declaration t.SrcPos GN-Entry e.Name);
+
+  (e.MuSentences) e.Tail
+  (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences)
+    = <DoAddMu-AST (<MuSentence e.Name> e.MuSentences) e.Tail>
+      (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences);
 
   (e.MuSentences) /* пусто */ = (e.MuSentences);
 }
