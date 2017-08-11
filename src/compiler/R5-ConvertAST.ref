@@ -16,8 +16,6 @@ ConvertAST-Unit {
 
   (Function t.SrcPos (e.Name) s.Scope e.Sentences)
     = <ConvertFunction t.SrcPos (e.Name) s.Scope e.Sentences>;
-
-  (SpecialComment t.SrcPos e.Text) = /* пропускаем */;
 }
 
 ConvertExtern {
@@ -49,8 +47,6 @@ ConvertSentence {
   /*
     Здесь полагаем, что работаем после трансформера: нет ни условий, ни блоков.
   */
-  (Comment e.Text) = /* игнорируем */;
-
   ((e.Pattern) RETURN (e.Result))
     = ((<ConvertExpr e.Pattern>) (<ConvertExpr e.Result>) (/* нет блоков */));
 }

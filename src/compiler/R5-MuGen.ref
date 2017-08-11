@@ -57,9 +57,5 @@ DoAddMu-AST {
     = <DoAddMu-AST (<MuSentence e.Name> e.MuSentences) e.Tail>
       (Function t.SrcPos (e.Name) s.Scope e.Sentences);
 
-  (e.MuSentences) e.Tail (SpecialComment t.SrcPos e.Text)
-    = <DoAddMu-AST (e.MuSentences) e.Tail>
-      (SpecialComment t.SrcPos e.Text);
-
   (e.MuSentences) /* пусто */ = (e.MuSentences);
 }

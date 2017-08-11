@@ -26,10 +26,6 @@ GetFunctionNames {
     = <GetFunctionNames (e.Names e.ExternalNames) e.Units>
       (Extern e.ExternalNames);
 
-  (e.Names) e.Units (SpecialComment t.SrcPos e.Text)
-    = <GetFunctionNames (e.Names) e.Units>
-      (SpecialComment t.SrcPos e.Text);
-
   (e.Names) /* пусто */ = (e.Names);
 }
 
@@ -42,10 +38,6 @@ DoTransform {
 
   s.FnMode (e.Names) (Extern e.ExternNames) e.Units
     = (Extern e.ExternNames)
-      <DoTransform s.FnMode (e.Names) e.Units>;
-
-  s.FnMode (e.Names) (SpecialComment t.SrcPos e.Text) e.Units
-    = (SpecialComment t.SrcPos e.Text)
       <DoTransform s.FnMode (e.Names) e.Units>;
 
   s.FnMode (e.Names) /* пусто */ = /* пусто */;

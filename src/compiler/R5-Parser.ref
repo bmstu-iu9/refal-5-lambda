@@ -7,9 +7,8 @@ $EXTERN R5-OneOf;
     == Fails t.Error*
 
   t.Error ::= (t.Pos e.Message)
-  t.Unit ::= t.Function | t.Extern | t.SpecialComment
+  t.Unit ::= t.Function | t.Extern
   t.Extern ::= (Extern (e.Name)*)
-  t.SpecialComment ::= (SpecialComment t.SrcPos e.Text)
 
   t.Function ::= (Function t.SrcPos (e.Name) s.Scope t.Sentence*)
   s.Scope ::= Entry | Local
@@ -41,7 +40,7 @@ $ENTRY R5-Parse {
 Program {
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <R5-OneOf s.Type TkSpecComment TkExtern TkEntry TkName TkSemicolon>: True =
+      <R5-OneOf s.Type TkExtern TkEntry TkName TkSemicolon>: True =
     <Program-AfterUnit <Unit t.NextToken e.Tokens>>;
 
   (TkEOF t.Pos) = /* всё */;
@@ -67,9 +66,6 @@ Unit {
   t.NextToken e.Tokens,
       t.NextToken:
     {
-      (TkSpecComment t.Pos e.Text) =
-        ((SpecialComment t.Pos e.Text)) e.Tokens;
-
       (TkExtern t.Pos) =
         <NameList e.Tokens>;
 
@@ -132,7 +128,7 @@ NameList-DoNames {
 
   (e.Names) (e.Errors) t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <R5-OneOf s.Type TkExtern TkEntry TkSpecComment TkEOF>: True =
+      <R5-OneOf s.Type TkExtern TkEntry TkEOF>: True =
     (
       (Extern e.Names)
       e.Errors
@@ -631,7 +627,6 @@ TokName {
   TkSemicolon = '\';\'';
   TkExtern = '$EXTERN';
   TkEntry = '$ENTRY';
-  TkSpecComment = '\'*$\'-comment';
   TkEOF = 'end of file';
 }
 
@@ -666,10 +661,6 @@ DoFilterUnitsAndFunctionNames {
   (Error t.Pos e.Message) e.ErrorsUnits (e.Names) =
     <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
 
-  (SpecialComment t.Pos e.Text) e.ErrorsUnits (e.Names) =
-    (SpecialComment t.Pos e.Text)
-    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
-
   (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits (e.Names) =
     (Function t.Pos (e.Name) s.Scope e.Sentences)
     <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
@@ -684,9 +675,6 @@ DoFilterUnitsAndFunctionNames {
 FindSemanticsErrors {
   (e.FuncNames) (Error t.Pos e.Message) e.ErrorsUnits =
     (t.Pos e.Message)
-    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
-
-  (e.FuncNames) (SpecialComment t.Pos e.Text) e.ErrorsUnits =
     <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
 
   (e.FuncNames) (Function t.Pos (e.Name) s.Scope e.Sentences) e.ErrorsUnits =
