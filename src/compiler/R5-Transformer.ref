@@ -19,27 +19,19 @@ $ENTRY R5-Transform-Conditions {
 
 Transform-Step {
   s.FnMode e.Units
-    = <DoTransform s.FnMode e.Units>;
+    = <Map (Transform-Step-Aux s.FnMode) e.Units>;
 }
 
-DoTransform {
-  s.FnMode (Function s.Scope (e.Name) Sentences e.Sentences) e.Units
-    , <Mu s.FnMode (e.Name) s.Scope e.Sentences>
-    : e.NewFunctions
-    = e.NewFunctions
-      <DoTransform s.FnMode e.Units>;
+Transform-Step-Aux {
+  s.FnMode (Function s.Scope (e.Name) Sentences e.Sentences)
+    = <Mu s.FnMode (e.Name) s.Scope e.Sentences>;
 
-  s.FnMode (Ident e.Name) e.Units
-    = (Ident e.Name) <DoTransform s.FnMode e.Units>;
+  s.FnMode (Ident e.Name) = (Ident e.Name);
 
-  s.FnMode (NativeBlock t.SrcPos e.Code) e.Units
-    = (NativeBlock t.SrcPos e.Code) <DoTransform s.FnMode e.Units>;
+  s.FnMode (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-  s.FnMode (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Units
-    = (s.EnumSwapDeclaration s.ScopeClass e.Name)
-      <DoTransform s.FnMode e.Units>;
-
-  s.FnMode /* пусто */ = /* пусто */;
+  s.FnMode (s.EnumSwapDeclaration s.ScopeClass e.Name)
+    = (s.EnumSwapDeclaration s.ScopeClass e.Name);
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
