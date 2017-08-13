@@ -429,16 +429,16 @@ RemoveAssigns-Sentence {
     = (
         (e.Pattern)
         (
-          (#CallBrackets
-            (#Closure
-              (e.AssignName)
-              #Sentences
-              <RemoveAssigns-Sentence
+          <RemoveAssigns-Result
+            (#CallBrackets
+              (#Closure
+                (e.AssignName)
+                #Sentences
                 ((e.AssignPattern) e.Assignments (e.Result) (/* нет блоков */))
-              >
+              )
+              e.AssignResult
             )
-            <RemoveAssigns-Result e.AssignResult>
-          )
+          >
         )
       );
 }
