@@ -197,9 +197,7 @@ UnConditionSentence {
     , e.Sentence
     : {
         (e.Pattern)
-        (Condition
-          (e.ConditionName) (e.CondResult) (/* нет блоков */) t.CondPattern
-        )
+        (Condition (e.ConditionName) (e.CondResult) t.CondPattern)
         e.Tail
           = Success
             <UnConditionSentence-Aux
@@ -208,14 +206,12 @@ UnConditionSentence {
             >;
 
         (e.Pattern)
-        (Assign
-          (e.AssignName) t.AssignResult (/* нет блоков */) t.AssignPattern
-        )
+        (Assign (e.AssignName) t.AssignResult t.AssignPattern)
         e.Tail
           /* не интересны предложени с присваиваниями */
           = Fails;
 
-        (e.Pattern) (e.Result) (/* нет блока */) = Fails;
+        (e.Pattern) (e.Result) = Fails;
       };
 }
 
@@ -255,11 +251,7 @@ MakeContinuationSentence {
   NoContinuation (e.Pattern) (e.ContArg) = /* пусто */;
 
   (e.ContName) (e.Pattern) (e.ContArg)
-    = (
-        (e.Pattern)
-        ((CallBrackets (TkName e.ContName) e.ContArg))
-        (/* нет блоков */)
-      );
+    = ((e.Pattern) ((CallBrackets (TkName e.ContName) e.ContArg)));
 }
 
 PatternSteps {
@@ -575,9 +567,7 @@ ConditionSubFunctions {
   (e.ConditionName) t.ContName e.Sentence
     , e.Sentence
     : (e.Pattern)
-      (Condition
-        (e.ConditionName) (e.CondResult) (/* нет блоков */) (e.CondPattern)
-      )
+      (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
     , <ExtractVariables-Condition (e.Sentence)> : e.SentenceVariables
@@ -596,7 +586,6 @@ ConditionSubFunctions {
             (TkName e.CheckFunction) e.PatternVarsAsExpr e.CondResult
           )
         )
-        (/* нет блока */)
       )
       e.SubFunctions;
 }
@@ -605,7 +594,7 @@ ConditionScopeVars {
   (e.Pattern) e.Conditions
     = <Map
         transformer_MakeVariables
-        <ExtractVariables-Condition ((e.Pattern) e.Conditions () ())>
+        <ExtractVariables-Condition ((e.Pattern) e.Conditions ())>
       >;
 }
 
@@ -641,7 +630,7 @@ OpenEChain {
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
-          ((CallBrackets (TkName e.ContName) e.T0)) (/* нет блоков */)
+          ((CallBrackets (TkName e.ContName) e.T0))
         )
       )
       /* пусто */;
@@ -660,7 +649,7 @@ OpenEChain {
     = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
-          ((CallBrackets (TkName e.NextForward) e.T0)) (/* нет блоков */)
+          ((CallBrackets (TkName e.NextForward) e.T0))
         )
       )
       e.NewFunctions;
@@ -701,26 +690,15 @@ MakeOpenE-ForwardNext {
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
     , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
+    , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
     = (
         (e.CurrentForwardName)
-        (
-          (e.T1)
-          ((CallBrackets (TkName e.NextName) e.T2)) (/* нет блоков */)
-        )
+        ((e.T1) ((CallBrackets (TkName e.NextName) e.T2)))
         <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
         (e.NextName)
-        (
-          (e.T5)
-          (
-            (CallBrackets
-              (TkName e.CheckFunction)
-              <Substitute e.CheckFunctionArg (e.T5-sub)>
-            )
-          )
-          (/* нет блоков */)
-        )
+        ((e.T5) ((CallBrackets (TkName e.CheckFunction) e.CheckFuncArgSubst)))
         <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
 }
@@ -772,16 +750,12 @@ ExtractVariables-Tail-Block {
 }
 
 ExtractVariables-Tail-Condition {
-  (Condition (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
+  (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Expr e.Pattern>
       <ExtractVariables-Tail-Condition e.Tail>;
 
-  (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
-
-  (e.Result) (((e.BlockName) Sentences e.Sentences))
-    = <ExtractVariables-Expr e.Result>
-      <ExtractVariables-Sentences-Condition e.Sentences>;
+  (e.Result) = <ExtractVariables-Expr e.Result>;
 }
 
 ExtractVariables-Expr {

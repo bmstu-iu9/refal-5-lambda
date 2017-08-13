@@ -16,8 +16,8 @@ $ENTRY Desugar {
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
         R5-Transform-Blocks
-        R5-Transform-Conditions
         Pass-RemoveAssigns
+        R5-Transform-Conditions
         (Pass-FlatNestedFuncs s.MarkupContext)
         Pass-CreatePredeclarations
       >
@@ -414,33 +414,55 @@ RemoveAssigns-Sentences {
 }
 
 RemoveAssigns-Sentence {
-  ((e.Pattern) (e.Result) (/* нет блоков */))
-    = ((e.Pattern) (<RemoveAssigns-Result e.Result>));
-
   (
     (e.Pattern)
+    e.Conditions
     (#Assign
       (e.AssignName) (e.AssignResult) (/* нет блоков */) (e.AssignPattern)
     )
-    e.Assignments
+    e.ConditionsAndAssigns
     (e.Result)
     (/* нет блоков */)
   )
+    = (#Closure
+        (e.AssignName)
+        #Sentences
+        ((e.AssignPattern) e.ConditionsAndAssigns (e.Result) (/* нет блоков */))
+      )
+    : t.DesugaredClosure
     = (
         (e.Pattern)
+        <RemoveAssigns-Conditions e.Conditions>
         (
           <RemoveAssigns-Result
-            (#CallBrackets
-              (#Closure
-                (e.AssignName)
-                #Sentences
-                ((e.AssignPattern) e.Assignments (e.Result) (/* нет блоков */))
-              )
-              e.AssignResult
-            )
+            (#CallBrackets t.DesugaredClosure e.AssignResult)
           >
         )
       );
+
+  ((e.Pattern) e.Conditions (e.Result) (/* нет блоков */))
+    = (
+        (e.Pattern)
+        <RemoveAssigns-Conditions e.Conditions>
+        (<RemoveAssigns-Result e.Result>)
+      );
+}
+
+RemoveAssigns-Conditions {
+  e.Conditions
+    = <Map
+        {
+          (#Condition
+            (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)
+          )
+            = (#Condition
+                (e.ConditionName)
+                (<RemoveAssigns-Result e.Result>)
+                (e.Pattern)
+              );
+        }
+        e.Conditions
+      >;
 }
 
 RemoveAssigns-Result {
