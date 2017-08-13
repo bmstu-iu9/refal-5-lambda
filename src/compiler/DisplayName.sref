@@ -17,7 +17,6 @@ $ENTRY DisplayName {
 }
 
 DisplayNameSuf {
-  '\\' s.Num e.Suffix = '\\' <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
   s.Tag s.Num e.Suffix = s.Tag <StrFromInt s.Num> <DisplayNameSuf e.Suffix>;
   /* пусто */ = /* пусто */;
 }
@@ -66,5 +65,7 @@ CNameSuf {
   '$' s.Num e.Suffix = 'S' <StrFromInt s.Num> <CNameSuf e.Suffix>;
   '\\' s.Num e.Suffix = 'L' <StrFromInt s.Num> <CNameSuf e.Suffix>;
   '=' s.Num e.Suffix = 'A' <StrFromInt s.Num> <CNameSuf e.Suffix>;
+  ':' s.Num e.Suffix = 'B' <StrFromInt s.Num> <CNameSuf e.Suffix>;
+  '?' s.Num e.Suffix = 'C' <StrFromInt s.Num> <CNameSuf e.Suffix>;
   /* пусто */ = /* пусто */;
 }

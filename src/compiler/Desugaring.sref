@@ -14,9 +14,9 @@ $ENTRY Desugar {
       <Seq
         Pass-RemovePos
         Pass-EnumerateVariables
+        Pass-NameNestedFuncs
         R5-Transform-Blocks
         R5-Transform-Conditions
-        Pass-NameNestedFuncs
         Pass-RemoveAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
         Pass-CreatePredeclarations
@@ -262,13 +262,13 @@ Pass-NameNestedFuncs {
 }
 
 NameNestedBody {
-  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
+  (e.MainName) #Sentences ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
      = #Sentences
         (
           (e.Pattern)
           <NameNestedAssigns (e.MainName) e.Assigns>
           (<NameNestedResult (e.MainName) e.Result>)
-          (/* нет блоков */)
+          (<NameNestedBlocks (e.MainName) e.Blocks>)
         );
 
   (e.MainName) #Sentences e.Sentences
@@ -276,14 +276,14 @@ NameNestedBody {
       <DelAccumulator
         <MapReduce
           {
-            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
+            s.SentenceNumber ((e.Pattern) e.Assigns (e.Result) (e.Blocks^))
               = e.MainName '$' s.SentenceNumber: e.MainName^
               = <Inc s.SentenceNumber>
                 (
                   (e.Pattern)
                   <NameNestedAssigns (e.MainName) e.Assigns>
                   (<NameNestedResult (e.MainName) e.Result>)
-                  (/* нет блоков */)
+                  (<NameNestedBlocks (e.MainName) e.Blocks>)
                 );
           }
           1 e.Sentences
@@ -294,18 +294,34 @@ NameNestedBody {
     = #NativeBody t.SrcPos e.Code;
 }
 
+NameNestedBlocks {
+  (e.MainName) e.Blocks
+    = <MapReduce
+        {
+          s.BlockNumber (e.Body)
+            = e.MainName ':' s.BlockNumber : e.MainName^
+            = <Inc s.BlockNumber>
+              ((e.MainName) <NameNestedBody (e.MainName) e.Body>);
+        }
+        1 e.Blocks
+      >
+    : s.BlockNumber e.Blocks^
+    = e.Blocks;
+}
+
 NameNestedAssigns {
   (e.MainName) e.Assigns
     = <DelAccumulator
         <MapReduce
           {
-            s.AssignId (#Assign (e.Result) (/* нет блоков */) (e.Pattern))
-              = e.MainName '=' s.AssignId: e.MainName^
+            s.AssignId (s.ChainType (e.Result) (e.Blocks) (e.Pattern))
+              = <ChainTypeMarker s.ChainType> : s.Marker
+              = e.MainName s.Marker s.AssignId : e.MainName^
               = <Inc s.AssignId>
-                (#Assign
+                (s.ChainType
                   (e.MainName)
                   (<NameNestedResult (e.MainName) e.Result>)
-                  (/* нет блоков */)
+                  (<NameNestedBlocks (e.MainName) e.Blocks>)
                   (e.Pattern)
                 );
           }
@@ -313,6 +329,11 @@ NameNestedAssigns {
           e.Assigns
         >
       >;
+}
+
+ChainTypeMarker {
+  #Assign = '=';
+  #Condition = '?';
 }
 
 NameNestedResult {

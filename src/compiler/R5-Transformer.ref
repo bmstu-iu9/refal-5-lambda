@@ -19,60 +19,39 @@ $ENTRY R5-Transform-Conditions {
 
 Transform-Step {
   s.FnMode e.Units
-    = <DoTransform s.FnMode <GetFunctionNames (<R5-Builtins>) e.Units>>;
-}
-
-GetFunctionNames {
-  (e.Names) e.Units (Function s.Scope (e.Name) Sentences e.Sentences)
-    = <GetFunctionNames (e.Names (e.Name)) e.Units>
-      (Function s.Scope (e.Name) Sentences e.Sentences);
-
-  (e.Names) e.Units (Ident e.Name)
-    = <GetFunctionNames (e.Names) e.Units> (Ident e.Name);
-
-  (e.Names) e.Units (NativeBlock t.SrcPos e.Code)
-    = <GetFunctionNames (e.Names) e.Units> (NativeBlock t.SrcPos e.Code);
-
-  (e.Names) e.Units (s.EnumSwapDeclaration s.ScopeClass e.Name)
-    = <GetFunctionNames (e.Names (e.Name)) e.Units>
-      (s.EnumSwapDeclaration s.ScopeClass e.Name);
-
-  (e.Names) /* пусто */ = (e.Names);
+    = <DoTransform s.FnMode e.Units>;
 }
 
 DoTransform {
-  s.FnMode (e.Names)
-  (Function s.Scope (e.Name) Sentences e.Sentences) e.Units
-    , <Mu s.FnMode (e.Names) (e.Name) s.Scope e.Sentences>
-    : (e.NewNames) e.NewFunctions
+  s.FnMode (Function s.Scope (e.Name) Sentences e.Sentences) e.Units
+    , <Mu s.FnMode (e.Name) s.Scope e.Sentences>
+    : e.NewFunctions
     = e.NewFunctions
-      <DoTransform s.FnMode (e.NewNames) e.Units>;
+      <DoTransform s.FnMode e.Units>;
 
-  s.FnMode (e.Names) (Ident e.Name) e.Units
-    = (Ident e.Name) <DoTransform s.FnMode (e.Names) e.Units>;
+  s.FnMode (Ident e.Name) e.Units
+    = (Ident e.Name) <DoTransform s.FnMode e.Units>;
 
-  s.FnMode (e.Names) (NativeBlock t.SrcPos e.Code) e.Units
-    = (NativeBlock t.SrcPos e.Code) <DoTransform s.FnMode (e.Names) e.Units>;
+  s.FnMode (NativeBlock t.SrcPos e.Code) e.Units
+    = (NativeBlock t.SrcPos e.Code) <DoTransform s.FnMode e.Units>;
 
-  s.FnMode (e.Names) (s.EnumSwapDeclaration s.ScopeClass e.Name)
-  e.Units
+  s.FnMode (s.EnumSwapDeclaration s.ScopeClass e.Name) e.Units
     = (s.EnumSwapDeclaration s.ScopeClass e.Name)
-      <DoTransform s.FnMode (e.Names) e.Units>;
+      <DoTransform s.FnMode e.Units>;
 
-  s.FnMode (e.Names) /* пусто */ = /* пусто */;
+  s.FnMode /* пусто */ = /* пусто */;
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
 
 /**
-  <UnBlock (e.Names) (e.Name) s.Scope e.Sentences>
-    == (e.NewNames) e.NewFunctions
+  <UnBlock (e.Name) s.Scope e.Sentences>
+    == e.NewFunctions
 */
 UnBlock {
-  (e.Names) (e.Name) s.Scope e.Sentences
+  (e.Name) s.Scope e.Sentences
     = <DoUnBlock
-        (e.Names) (e.Name /* — имя текущей функции */) s.Scope
-        (e.Name /* — префикс */)
+        (e.Name /* — имя текущей функции */) s.Scope
         (/* scanned functions */)
         (/* scanned sentences */)
         e.Sentences
@@ -81,23 +60,22 @@ UnBlock {
 }
 
 DoUnBlock {
-  (e.Names) (e.Name) s.Scope (e.Prefix)
+  (e.Name) s.Scope
   (e.ScannedFunctions) (e.ScannedSentences)
   e.Sentences-B
-  (e.SentencePrefix (e.BlockResult) ((Sentences e.SubSentences)))
+  (e.SentencePrefix (e.BlockResult) (((e.BlockName) Sentences e.SubSentences)))
   e.Sentences-E
   (e.UnscannedFunctions)
-    , <NewFuncName (e.Names) e.Prefix> : (e.RefilledNames) e.NewName
     , <BlockScopeVars e.SentencePrefix> : e.ScopeVars
     = <DoUnBlock
-        (e.RefilledNames) (e.Name) s.Scope (e.Prefix)
+        (e.Name) s.Scope
         (e.ScannedFunctions)
         (
           e.ScannedSentences
           e.Sentences-B
           (
             e.SentencePrefix
-            ((CallBrackets (TkName e.NewName) e.ScopeVars e.BlockResult))
+            ((CallBrackets (TkName e.BlockName) e.ScopeVars e.BlockResult))
             (/* нет блока */)
           )
         )
@@ -105,7 +83,7 @@ DoUnBlock {
         (
           e.UnscannedFunctions
           (
-            (e.NewName)
+            (e.BlockName)
             <Map
               (transformer_AddScopeVars e.ScopeVars) e.SubSentences
             >
@@ -113,11 +91,10 @@ DoUnBlock {
         )
       >;
 
-  (e.Names) (e.Name) s.Scope (e.Prefix)
+  (e.Name) s.Scope
   (e.ScannedFunctions) (e.ScannedSentences) e.UnscannedSentences
   (e.UnscannedFunctions)
     = <DoUnBlock-NextFunction
-        (e.Names) (e.Prefix)
         (
           e.ScannedFunctions
           (Function
@@ -130,18 +107,17 @@ DoUnBlock {
 }
 
 DoUnBlock-NextFunction {
-  (e.Names) (e.Prefix) (e.ScannedFunctions)
+  (e.ScannedFunctions)
   (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
     = <DoUnBlock
-        (e.Names) (e.NextFunctionName) GN-Local (e.Prefix)
+        (e.NextFunctionName) GN-Local
         (e.ScannedFunctions)
         (/* scanned sentences */)
         e.NextFunctionSentences
         (e.UnscannedFunctions)
       >;
 
-  (e.Names) (e.Prefix) (e.ScannedFunctions) (/* пусто */)
-    = (e.Names) e.ScannedFunctions;
+  (e.ScannedFunctions) (/* пусто */) = e.ScannedFunctions;
 }
 
 BlockScopeVars {
@@ -163,14 +139,13 @@ transformer_AddScopeVars {
 
 
 /**
-  <UnCondition (e.Names) (e.Name) s.Scope e.Sentences>
-    == (e.NewNames) e.NewFunctions
+  <UnCondition (e.Name) s.Scope e.Sentences>
+    == e.NewFunctions
 */
 UnCondition {
-  (e.Names) (e.Name) s.Scope e.Sentences
+  (e.Name) s.Scope e.Sentences
     = <DoUnCondition
-        (e.Names) (e.Name /* — имя текущей функции */) s.Scope
-        (e.Name /* — префикс */)
+        (e.Name /* — имя текущей функции */) s.Scope
         (/* scanned functions */)
         e.Sentences
         (/* unscanned functions */)
@@ -178,16 +153,15 @@ UnCondition {
 }
 
 DoUnCondition {
-  (e.Names) (e.Name) s.Scope (e.Prefix)
+  (e.Name) s.Scope
   (e.ScannedFunctions)
   e.Sentences-B (e.ConditionalSentence) e.Sentences-E
   (e.UnscannedFunctions)
     , <UnConditionSentence
-        (e.Names) (e.Prefix) (e.ConditionalSentence) e.Sentences-E
+        (e.ConditionalSentence) e.Sentences-E
       >
-    : Success (e.RefilledNames) (e.TransformedSentences) e.NewFunctions
+    : Success (e.TransformedSentences) e.NewFunctions
     = <DoUnCondition-NextFunction
-        (e.RefilledNames) (e.Prefix)
         (
           e.ScannedFunctions
           (Function
@@ -197,10 +171,9 @@ DoUnCondition {
         (e.UnscannedFunctions e.NewFunctions)
       >;
 
-  (e.Names) (e.Name) s.Scope (e.Prefix)
+  (e.Name) s.Scope
   (e.ScannedFunctions) e.Sentences (e.UnscannedFunctions)
     = <DoUnCondition-NextFunction
-        (e.Names) (e.Prefix)
         (
           e.ScannedFunctions
           (Function s.Scope (e.Name) Sentences e.Sentences)
@@ -210,40 +183,42 @@ DoUnCondition {
 }
 
 DoUnCondition-NextFunction {
-  (e.Names) (e.Prefix) (e.ScannedFunctions)
+  (e.ScannedFunctions)
   (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
     = <DoUnCondition
-        (e.Names) (e.NextFunctionName) GN-Local (e.Prefix)
+        (e.NextFunctionName) GN-Local
         (e.ScannedFunctions)
         e.NextFunctionSentences
         (e.UnscannedFunctions)
       >;
 
-  (e.Names) (e.Prefix) (e.ScannedFunctions) (/* пусто */)
-    = (e.Names) e.ScannedFunctions
+  (e.ScannedFunctions) (/* пусто */) = e.ScannedFunctions
 }
 
 /**
-  <UnConditionSentence
-    (e.Names) (e.Prefix) (e.ConditionalSentence) e.ContinuationSentences
-  >
-    == Success (e.RefilledNames) (e.TransformedSentences) e.NewFunctions
+  <UnConditionSentence (e.ConditionalSentence) e.ContinuationSentences>
+    == Success (e.TransformedSentences) e.NewFunctions
     == Fails
 */
 UnConditionSentence {
-  (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
+  (e.Sentence) e.ContinuationSentences
     , e.Sentence
     : {
         (e.Pattern)
-        (Condition (e.CondResult) (/* нет блоков */) t.CondPattern)
+        (Condition
+          (e.ConditionName) (e.CondResult) (/* нет блоков */) t.CondPattern
+        )
         e.Tail
           = Success
             <UnConditionSentence-Aux
-              (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
+              (e.ConditionName)
+              (e.Sentence) e.ContinuationSentences
             >;
 
         (e.Pattern)
-        (Assign t.AssignResult (/* нет блоков */) t.AssignPattern)
+        (Assign
+          (e.AssignName) t.AssignResult (/* нет блоков */) t.AssignPattern
+        )
         e.Tail
           /* не интересны предложени с присваиваниями */
           = Fails;
@@ -253,13 +228,12 @@ UnConditionSentence {
 }
 
 UnConditionSentence-Aux {
-  (e.Names) (e.Prefix) (e.Sentence) e.ContinuationSentences
-    , <AnalyzeContinuation (e.Names) (e.Prefix) e.ContinuationSentences>
-    : (e.Names1) t.ContName e.ContFunction
-    , <ConditionSubFunctions (e.Names1) (e.Prefix) t.ContName e.Sentence>
-    : (e.Names2) (e.CallCheckSentence) e.SubFunctions
-    = (e.Names2)
-      (
+  (e.ConditionName) (e.Sentence) e.ContinuationSentences
+    , <AnalyzeContinuation (e.ConditionName) e.ContinuationSentences>
+    : t.ContName e.ContFunction
+    , <ConditionSubFunctions (e.ConditionName) t.ContName e.Sentence>
+    : (e.CallCheckSentence) e.SubFunctions
+    = (
         (e.CallCheckSentence)
         <MakeContinuationSentence
           t.ContName ((TkVariable 'eOther' 0)) ((TkVariable 'eOther' 0))
@@ -269,14 +243,20 @@ UnConditionSentence-Aux {
       e.ContFunction;
 }
 
-AnalyzeContinuation {
-  (e.Names) (e.Prefix) /* пусто */ = (e.Names) NoContinuation /* пусто */;
+/*
+  Схема нумерации замыканий:
+  ?0 - функция проверки,
+  ?1 - функция продолжения (может отсутствовать)
+  ?n, n - чётное, - функция forward,
+  ?n, n - нечётное, - функция next.
+*/
 
-  (e.Names) (e.Prefix) e.Sentences
-    , <NewFuncName (e.Names) e.Prefix '_cont'> : (e.RefilledNames) e.ContName
-    = (e.RefilledNames)
-      (e.ContName)
-      ((e.ContName) e.Sentences);
+AnalyzeContinuation {
+  (e.ConditionName) /* пусто */ = NoContinuation /* пусто */;
+
+  (e.ConditionName) e.Sentences
+    , e.ConditionName '?' 1 : e.ContName
+    = (e.ContName) ((e.ContName) e.Sentences);
 }
 
 MakeContinuationSentence {
@@ -596,31 +576,28 @@ DoT0 {
 }
 
 /**
-  <ConditionSubFunctions
-    (e.Names) (e.Prefix) t.ContName e.Sentence
-  >
-    == (e.Names) e.SubFunctions
+  <ConditionSubFunctions (e.ConditionName) t.ContName e.Sentence>
+    == e.SubFunctions
 */
 ConditionSubFunctions {
-  (e.Names) (e.Prefix) t.ContName
-  e.Sentence
+  (e.ConditionName) t.ContName e.Sentence
     , e.Sentence
     : (e.Pattern)
-      (Condition (e.CondResult) (/* нет блоков */) (e.CondPattern))
+      (Condition
+        (e.ConditionName) (e.CondResult) (/* нет блоков */) (e.CondPattern)
+      )
       e.SentenceTail
-    , <NewFuncName (e.Names) e.Prefix '_check'>
-    : (e.RefilledNames1) e.CheckFunction
+    , e.ConditionName '?' 0 : e.CheckFunction
     , <ExtractVariables (e.Sentence)> : e.SentenceVariables
     , <BlockScopeVars (e.Pattern)> : e.PatternVarsAsExpr
     , <ConditionSubFunctions-Aux
-        (e.RefilledNames1) (e.SentenceVariables) (e.Prefix) t.ContName
+        (e.ConditionName)  (e.SentenceVariables) t.ContName
         (e.CheckFunction) (e.PatternVarsAsExpr)
         (e.CondResult) (e.CondPattern) (e.SentenceTail)
         <PatternSteps (e.SentenceVariables) e.Pattern>
       >
-    : (e.RefilledNames2) e.SubFunctions
-    = (e.RefilledNames2)
-      (
+    : e.SubFunctions
+    = (
         (e.Pattern)
         (
           (CallBrackets
@@ -633,18 +610,17 @@ ConditionSubFunctions {
 }
 
 ConditionSubFunctions-Aux {
-  (e.Names) (e.VarNames) (e.Prefix) t.ContName
+  (e.ConditionName) (e.VarNames) t.ContName
   (e.CheckFunction) (e.PatternVarsAsExpr)
   (e.CondResult) (e.CondPattern) (e.CheckSentenceTail)
   e.PatternSteps
     , <OpenEChain
-        (e.Names) (e.VarNames) (e.Prefix) t.ContName (e.CheckFunction)
+        (e.ConditionName) (e.VarNames) t.ContName (e.CheckFunction)
         (e.PatternVarsAsExpr) (e.CondResult)
         e.PatternSteps
       >
-    : (e.RefilledNames) (e.ContSentence) e.OpenEFunctions
-    = (e.RefilledNames)
-      (
+    : (e.ContSentence) e.OpenEFunctions
+    = (
         (e.CheckFunction)
         ((e.PatternVarsAsExpr e.CondPattern) e.CheckSentenceTail)
         e.ContSentence
@@ -653,17 +629,16 @@ ConditionSubFunctions-Aux {
 }
 
 OpenEChain {
-  (e.Names) (e.VarNames) (e.Prefix) NoContinuation
+  (e.ConditionName) (e.VarNames) NoContinuation
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
-    = (e.Names) (/* пусто */) /* пусто */;
+    = (/* пусто */) /* пусто */;
 
-  (e.Names) (e.VarNames) (e.Prefix) (e.ContName)
+  (e.ConditionName) (e.VarNames) (e.ContName)
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
     , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
-    = (e.Names)
-      (
+    = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
           ((CallBrackets (TkName e.ContName) e.T0)) (/* нет блоков */)
@@ -671,19 +646,18 @@ OpenEChain {
       )
       /* пусто */;
 
-  (e.Names) (e.VarNames) (e.Prefix) t.ContName
+  (e.ConditionName) (e.VarNames) t.ContName
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) e.Templates
-    , <NewFuncName (e.Names) e.Prefix '_forward'> : (e.NewNames) e.NextForward
+    , e.ConditionName '?' 2 : e.NextForward
     , <DoOpenEChain
-        (e.NextForward) (e.NewNames) (e.Prefix) t.ContName
+        (e.ConditionName) 2 (e.NextForward) t.ContName
         (e.CheckFunction) (e.PatternVarsAsExpr e.CondResult)
         (/* generated */) e.Templates
       >
-    : (e.RefilledNames) e.NewFunctions
+    : e.NewFunctions
     , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
-    = (e.RefilledNames)
-      (
+    = (
         (
           (e.PatternVarsAsExpr (TkVariable e.eOther))
           ((CallBrackets (TkName e.NextForward) e.T0)) (/* нет блоков */)
@@ -693,41 +667,41 @@ OpenEChain {
 }
 
 DoOpenEChain {
-  (e.CurrentForward) (e.Names) (e.Prefix) t.ContName
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.GeneratedFunctions) (e.TemplateSet) /* пусто */
     , <MakeOpenE-ForwardNext
-        (e.CurrentForward) (e.Names) (e.Prefix) t.ContName
+        (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
         (e.CheckFunction) (e.CheckFunctionArg)
         e.TemplateSet
       >
-    : (e.RefilledNames) e.NewFunctions
-    = (e.RefilledNames) e.GeneratedFunctions e.NewFunctions;
+    : e.NewFunctions
+    = e.GeneratedFunctions e.NewFunctions;
 
-  (e.CurrentForward) (e.Names) (e.Prefix) t.ContName
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForward) t.ContName
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.GeneratedFunctions) (e.TemplateSet) e.TemplateSets
-    , <NewFuncName (e.Names) e.Prefix '_forward'> : (e.Names1) e.NextForward
+    , <+ 2 s.CurrentForwardId> : s.NextForwardId
+    , e.ConditionName '?' s.NextForwardId : e.NextForward
     , <MakeOpenE-ForwardNext
-        (e.CurrentForward) (e.Names1) (e.Prefix) (e.NextForward)
+        (e.ConditionName) s.CurrentForwardId (e.CurrentForward) (e.NextForward)
         (e.CheckFunction) (e.CheckFunctionArg)
         e.TemplateSet
       >
-    : (e.RefilledNames) e.NewFunctions
+    : e.NewFunctions
     = <DoOpenEChain
-        (e.NextForward) (e.RefilledNames) (e.Prefix) t.ContName
+        (e.ConditionName) s.NextForwardId (e.NextForward) t.ContName
         (e.CheckFunction) (e.CheckFunctionArg)
         (e.GeneratedFunctions e.NewFunctions) e.TemplateSets
       >;
 }
 
 MakeOpenE-ForwardNext {
-  (e.CurrentForwardName) (e.Names) (e.Prefix) t.ContName
+  (e.ConditionName) s.CurrentForwardId (e.CurrentForwardName) t.ContName
   (e.CheckFunction) (e.CheckFunctionArg)
   (e.T1) (e.T2) (e.T3) (e.T4) (e.T5) (e.T5-sub) (e.T6) (e.T7)
-    , <NewFuncName (e.Names) e.Prefix '_next'> : (e.RefilledNames) e.NextName
-    = (e.RefilledNames)
-      (
+    , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
+    = (
         (e.CurrentForwardName)
         (
           (e.T1)
@@ -772,14 +746,14 @@ ExtractVariables-Sentences {
 }
 
 ExtractVariables-Tail {
-  (Condition (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
+  (Condition (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Expr e.Pattern>
       <ExtractVariables-Tail e.Tail>;
 
   (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
 
-  (e.Result) ((Sentences e.Sentences))
+  (e.Result) (((e.BlockName) Sentences e.Sentences))
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Sentences e.Sentences>;
 }
@@ -797,27 +771,6 @@ ExtractVariables-Expr {
   /* пусто */ = /* пусто */;
 }
 
-
-NewFuncName {
-  (e.Names-B (e.Prefix) e.Names-E) e.Prefix
-    = <DoNewFuncName ((e.Prefix) e.Names-B e.Names-E) e.Prefix 0>;
-
-  (e.Names) e.Prefix = ((e.Prefix) e.Names) e.Prefix;
-}
-
-DoNewFuncName {
-  (e.Names) e.Prefix s.SufNo
-    , e.Prefix <Symb s.SufNo>: e.NewName
-    , e.Names
-    : {
-        e.Names-B (e.NewName) e.Names-E
-          = <DoNewFuncName
-              ((e.NewName) e.Names-B e.Names-E) e.Prefix <+ s.SufNo 1>
-            >;
-
-        e.Names = ((e.NewName) e.Names) e.NewName;
-      };
-}
 
 NewVarName {
   (e.Names-B (e.Prefix e.Suffix s.Depth) e.Names-E) e.Prefix s.Depth (e.Suffix)
