@@ -6,7 +6,7 @@ $EXTERN R5-Builtins;
   <R5-Transform-Blocks t.Unit*> == t.Unit*
 */
 $ENTRY R5-Transform-Blocks {
-  e.Units = <Transform-Step UnBlock e.Units>;
+  e.Units = <Transform-Step-UnBlock e.Units>;
 }
 
 /**
@@ -14,12 +14,17 @@ $ENTRY R5-Transform-Blocks {
 */
 $ENTRY R5-Transform-Conditions {
   e.Units
-    = <Transform-Step UnCondition e.Units>;
+    = <Transform-Step-UnCondition e.Units>;
 }
 
-Transform-Step {
-  s.FnMode e.Units
-    = <DoTransform s.FnMode <GetFunctionNames (<R5-Builtins>) e.Units>>;
+Transform-Step-UnBlock {
+  e.Units
+    = <DoTransform-UnBlock <GetFunctionNames (<R5-Builtins>) e.Units>>;
+}
+
+Transform-Step-UnCondition {
+  e.Units
+    = <DoTransform-UnCondition <GetFunctionNames (<R5-Builtins>) e.Units>>;
 }
 
 GetFunctionNames {
@@ -40,26 +45,44 @@ GetFunctionNames {
   (e.Names) /* пусто */ = (e.Names);
 }
 
-DoTransform {
-  s.FnMode (e.Names)
-  (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences) e.Units
-    , <Mu s.FnMode (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+DoTransform-UnBlock {
+  (e.Names) (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences) e.Units
+    , <UnBlock (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
     : (e.NewNames) e.NewFunctions
     = e.NewFunctions
-      <DoTransform s.FnMode (e.NewNames) e.Units>;
+      <DoTransform-UnBlock (e.NewNames) e.Units>;
 
-  s.FnMode (e.Names) (Ident t.SrcPos e.Name) e.Units
-    = (Ident t.SrcPos e.Name) <DoTransform s.FnMode (e.Names) e.Units>;
+  (e.Names) (Ident t.SrcPos e.Name) e.Units
+    = (Ident t.SrcPos e.Name) <DoTransform-UnBlock (e.Names) e.Units>;
 
-  s.FnMode (e.Names) (NativeBlock t.SrcPos e.Code) e.Units
-    = (NativeBlock t.SrcPos e.Code) <DoTransform s.FnMode (e.Names) e.Units>;
+  (e.Names) (NativeBlock t.SrcPos e.Code) e.Units
+    = (NativeBlock t.SrcPos e.Code) <DoTransform-UnBlock (e.Names) e.Units>;
 
-  s.FnMode (e.Names) (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
-  e.Units
+  (e.Names) (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name) e.Units
     = (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
-      <DoTransform s.FnMode (e.Names) e.Units>;
+      <DoTransform-UnBlock (e.Names) e.Units>;
 
-  s.FnMode (e.Names) /* пусто */ = /* пусто */;
+  (e.Names) /* пусто */ = /* пусто */;
+}
+
+DoTransform-UnCondition {
+  (e.Names) (Function t.SrcPos s.Scope (e.Name) Sentences e.Sentences) e.Units
+    , <UnCondition (e.Names) t.SrcPos (e.Name) s.Scope e.Sentences>
+    : (e.NewNames) e.NewFunctions
+    = e.NewFunctions
+      <DoTransform-UnCondition (e.NewNames) e.Units>;
+
+  (e.Names) (Ident t.SrcPos e.Name) e.Units
+    = (Ident t.SrcPos e.Name) <DoTransform-UnCondition (e.Names) e.Units>;
+
+  (e.Names) (NativeBlock t.SrcPos e.Code) e.Units
+    = (NativeBlock t.SrcPos e.Code) <DoTransform-UnCondition (e.Names) e.Units>;
+
+  (e.Names) (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name) e.Units
+    = (s.EnumSwapDeclaration t.SrcPos s.ScopeClass e.Name)
+      <DoTransform-UnCondition (e.Names) e.Units>;
+
+  (e.Names) /* пусто */ = /* пусто */;
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
