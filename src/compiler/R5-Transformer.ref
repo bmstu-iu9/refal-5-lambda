@@ -116,7 +116,7 @@ BlockScopeVars {
   (e.Pattern) e.Conditions
     = <Map
         transformer_MakeVariables
-        <ExtractVariables ((e.Pattern) e.Conditions () ())>
+        <ExtractVariables-Block ((e.Pattern) e.Conditions () ())>
       >;
 }
 
@@ -580,8 +580,8 @@ ConditionSubFunctions {
       )
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
-    , <ExtractVariables (e.Sentence)> : e.SentenceVariables
-    , <BlockScopeVars (e.Pattern)> : e.PatternVarsAsExpr
+    , <ExtractVariables-Condition (e.Sentence)> : e.SentenceVariables
+    , <ConditionScopeVars (e.Pattern)> : e.PatternVarsAsExpr
     , <ConditionSubFunctions-Aux
         (e.ConditionName)  (e.SentenceVariables) t.ContName
         (e.CheckFunction) (e.PatternVarsAsExpr)
@@ -599,6 +599,14 @@ ConditionSubFunctions {
         (/* нет блока */)
       )
       e.SubFunctions;
+}
+
+ConditionScopeVars {
+  (e.Pattern) e.Conditions
+    = <Map
+        transformer_MakeVariables
+        <ExtractVariables-Condition ((e.Pattern) e.Conditions () ())>
+      >;
 }
 
 ConditionSubFunctions-Aux {
@@ -717,8 +725,12 @@ MakeOpenE-ForwardNext {
       );
 }
 
-ExtractVariables {
-  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
+ExtractVariables-Block {
+  e.Sentences = <Unique <ExtractVariables-Sentences-Block e.Sentences>>;
+}
+
+ExtractVariables-Condition {
+  e.Sentences = <Unique <ExtractVariables-Sentences-Condition e.Sentences>>;
 }
 
 Unique {
@@ -728,26 +740,48 @@ Unique {
   e.UniqueItems = e.UniqueItems;
 }
 
-ExtractVariables-Sentences {
+ExtractVariables-Sentences-Block {
   ((e.Pattern) e.Tail) e.Sentences
     = <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail e.Tail>
-      <ExtractVariables-Sentences e.Sentences>;
+      <ExtractVariables-Tail-Block e.Tail>
+      <ExtractVariables-Sentences-Block e.Sentences>;
 
   /* пусто */ = /* пусто */;
 }
 
-ExtractVariables-Tail {
+ExtractVariables-Sentences-Condition {
+  ((e.Pattern) e.Tail) e.Sentences
+    = <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail-Condition e.Tail>
+      <ExtractVariables-Sentences-Condition e.Sentences>;
+
+  /* пусто */ = /* пусто */;
+}
+
+ExtractVariables-Tail-Block {
   (Condition (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail e.Tail>;
+      <ExtractVariables-Tail-Block e.Tail>;
 
   (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
 
   (e.Result) (((e.BlockName) Sentences e.Sentences))
     = <ExtractVariables-Expr e.Result>
-      <ExtractVariables-Sentences e.Sentences>;
+      <ExtractVariables-Sentences-Block e.Sentences>;
+}
+
+ExtractVariables-Tail-Condition {
+  (Condition (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Expr e.Pattern>
+      <ExtractVariables-Tail-Condition e.Tail>;
+
+  (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
+
+  (e.Result) (((e.BlockName) Sentences e.Sentences))
+    = <ExtractVariables-Expr e.Result>
+      <ExtractVariables-Sentences-Condition e.Sentences>;
 }
 
 ExtractVariables-Expr {
