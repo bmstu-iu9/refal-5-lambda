@@ -139,27 +139,14 @@ EnumerateVars-Sentences {
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */)) =
-          <Fetch
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
-            <Seq
-              {
-                (e.ScopeVars^) e.Pattern^ =
-                  <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
-                  (e.Pattern);
-              }
-              {
-                (e.ScopeVars^) s.Depth^ e.Assigns^ (e.Pattern^) =
-                  <Fetch
-                    <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
-                    {
-                      (e.ScopeVars^) e.Result^ =
-                        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */));
-                    }
-                  >;
-              }
-            >
-          >;
+        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
+          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+          : (e.ScopeVars^) e.Pattern^
+          = <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
+          : (e.ScopeVars^) s.Depth^ e.Assigns^
+          = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+          : (e.ScopeVars^) e.Result^
+          = ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */));
       }
       e.Sentences
     >;
@@ -173,24 +160,16 @@ EnumerateVars-Assignments {
      (e.ScopeVars) s.Depth e.RAssignments;
 
   (e.RAssignments) s.Depth (e.ScopeVars)
-  (#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments =
-    <Fetch
-      <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result> <Inc s.Depth>
-      <Seq
-        {
-          (e.ScopeVars^) e.Result^ s.Depth^  =
-            s.Depth
-            <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern> (e.Result);
-        }
-        {
-          s.Depth^ (e.ScopeVars^) e.Pattern^ (e.Result^) =
-            <EnumerateVars-Assignments
-              (e.RAssignments (#Assign (e.Result) (/* нет блоков */) (e.Pattern)))
-               s.Depth (e.ScopeVars) e.Assignments
-            >;
-        }
-      >
-    >;
+  (#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments
+    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
+    : (e.ScopeVars^) e.Result^
+    = <Inc s.Depth> : s.Depth^
+    = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
+    : (e.ScopeVars^) e.Pattern^
+    = <EnumerateVars-Assignments
+        (e.RAssignments (#Assign (e.Result) (/* нет блоков */) (e.Pattern)))
+        s.Depth (e.ScopeVars) e.Assignments
+      >;
 }
 
 EnumerateVars-Expr {
