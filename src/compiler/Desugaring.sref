@@ -13,9 +13,9 @@ $ENTRY Desugar {
       e.AST
       <Seq
         Pass-RemovePos
+        Pass-EnumerateVariables
         R5-Transform-Blocks
         R5-Transform-Conditions
-        Pass-EnumerateVariables
         Pass-NameNestedFuncs
         Pass-RemoveAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
@@ -125,7 +125,7 @@ Pass-EnumerateVariables {
         (#Function s.ScopeClass (e.Name) e.Body) =
           (#Function
             s.ScopeClass (e.Name)
-            <EnumerateVars-Sentences 1 (/* переменные */) e.Body>
+            <EnumerateVars-Body 1 (/* переменные */) e.Body>
           );
 
         t.OtherProgramElement = t.OtherProgramElement;
@@ -134,19 +134,21 @@ Pass-EnumerateVariables {
     >;
 }
 
-EnumerateVars-Sentences {
+EnumerateVars-Body {
   s.Depth (e.ScopeVars) #Sentences e.Sentences =
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */))
+        ((e.Pattern) e.Assigns (e.Result) (e.Blocks))
           = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
           : (e.ScopeVars^) e.Pattern^
           = <EnumerateVars-Assignments () s.Depth (e.ScopeVars) e.Assigns>
           : (e.ScopeVars^) s.Depth^ e.Assigns^
           = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
           : (e.ScopeVars^) e.Result^
-          = ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */));
+          = <EnumerateVars-Blocks <Inc s.Depth> (e.ScopeVars) e.Blocks>
+          : e.Blocks^
+          = ((e.Pattern) e.Assigns (e.Result) (e.Blocks));
       }
       e.Sentences
     >;
@@ -155,19 +157,31 @@ EnumerateVars-Sentences {
     #NativeBody t.SrcPos e.Code;
 }
 
+EnumerateVars-Blocks {
+  s.Depth (e.ScopeVars) e.Blocks
+    = <Map
+        {
+          (e.Body) = (<EnumerateVars-Body s.Depth (e.ScopeVars) e.Body>);
+        }
+        e.Blocks
+      >;
+}
+
 EnumerateVars-Assignments {
   (e.RAssignments) s.Depth (e.ScopeVars) /* пусто */ =
      (e.ScopeVars) s.Depth e.RAssignments;
 
   (e.RAssignments) s.Depth (e.ScopeVars)
-  (#Assign (e.Result) (/* нет блоков */) (e.Pattern)) e.Assignments
+  (s.ChainType (e.Result) (e.Blocks) (e.Pattern)) e.Assignments
+    = <AssignOrCondition s.ChainType> : /* пусто */
     = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Result>
     : (e.ScopeVars^) e.Result^
     = <Inc s.Depth> : s.Depth^
+    = <EnumerateVars-Blocks s.Depth (e.ScopeVars) e.Blocks> : e.Blocks^
     = <EnumerateVars-Expr s.Depth (e.ScopeVars) e.Pattern>
     : (e.ScopeVars^) e.Pattern^
     = <EnumerateVars-Assignments
-        (e.RAssignments (#Assign (e.Result) (/* нет блоков */) (e.Pattern)))
+        (e.RAssignments (s.ChainType (e.Result) (e.Blocks) (e.Pattern)))
         s.Depth (e.ScopeVars) e.Assignments
       >;
 }
@@ -218,7 +232,7 @@ EnumerateVars-Expr {
 
         (e.ScopeVars) (#Closure e.Sentences) =
           <Fetch
-            <EnumerateVars-Sentences <Inc s.Depth> (e.ScopeVars) e.Sentences>
+            <EnumerateVars-Body <Inc s.Depth> (e.ScopeVars) e.Sentences>
             {
               e.Sentences^ =
                 (e.ScopeVars) (#Closure e.Sentences);

@@ -262,7 +262,7 @@ UnConditionSentence-Aux {
       (
         (e.CallCheckSentence)
         <MakeContinuationSentence
-          t.ContName ((TkVariable 'eOther')) ((TkVariable 'eOther'))
+          t.ContName ((TkVariable 'eOther' 0)) ((TkVariable 'eOther' 0))
         >
       )
       e.SubFunctions
@@ -661,7 +661,7 @@ OpenEChain {
   (e.Names) (e.VarNames) (e.Prefix) (e.ContName)
   (e.CheckFunction) (e.PatternVarsAsExpr) (e.CondResult)
   ((e.T0)) /* пусто */
-    , <NewVarName (e.VarNames) 'e' ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
     = (e.Names)
       (
         (
@@ -681,7 +681,7 @@ OpenEChain {
         (/* generated */) e.Templates
       >
     : (e.RefilledNames) e.NewFunctions
-    , <NewVarName (e.VarNames) 'e' ('Other')> : (e.NewVarNames) e.eOther
+    , <NewVarName (e.VarNames) 'e' 0 ('Other')> : (e.NewVarNames) e.eOther
     = (e.RefilledNames)
       (
         (
@@ -820,15 +820,19 @@ DoNewFuncName {
 }
 
 NewVarName {
-  (e.Names-B (e.Prefix e.Suffix) e.Names-E) e.Prefix (e.Suffix)
-    = <DoNewVarName ((e.Prefix) e.Names-B e.Names-E) e.Prefix e.Suffix 0>;
+  (e.Names-B (e.Prefix e.Suffix s.Depth) e.Names-E) e.Prefix s.Depth (e.Suffix)
+    = <DoNewVarName
+        ((e.Prefix e.Suffix s.Depth) e.Names-B e.Names-E)
+        e.Prefix e.Suffix s.Depth 0
+      >;
 
-  (e.Names) e.Prefix (e.Suffix) = ((e.Prefix) e.Names) e.Prefix e.Suffix;
+  (e.Names) e.Prefix s.Depth (e.Suffix)
+    = ((e.Prefix e.Suffix s.Depth) e.Names) e.Prefix e.Suffix s.Depth;
 }
 
 DoNewVarName {
-  (e.Names) e.Prefix s.SufNo
-    , e.Prefix <Symb s.SufNo>: e.NewName
+  (e.Names) e.Prefix s.Depth s.SufNo
+    , e.Prefix <Symb s.SufNo> s.Depth: e.NewName
     , e.Names
     : {
         e.Names-B (e.NewName) e.Names-E
