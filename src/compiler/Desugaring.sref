@@ -12,9 +12,9 @@ $ENTRY Desugar {
     <Fetch
       e.AST
       <Seq
+        Pass-RemovePos
         R5-Transform-Blocks
         R5-Transform-Conditions
-        Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
         Pass-RemoveAssigns
@@ -49,27 +49,43 @@ RemovePos-Body {
     #Sentences
     <Map
       {
-        ((e.Pattern) e.Assigns (e.Result) (/* нет блоков */)) =
+        ((e.Pattern) e.Assigns (e.Result) (e.Blocks)) =
           (
             (<RemovePos-Expr e.Pattern>)
             <Map
               {
-                (#Assign (e.Result^) (/* нет блоков */) (e.Pattern^)) =
-                  (#Assign
-                    (<RemovePos-Expr e.Result>)
-                    (/* нет блоков */)
-                    (<RemovePos-Expr e.Pattern>)
-                  );
+                (s.ChainType (e.Result^) (e.Blocks^) (e.Pattern^))
+                  = <AssignOrCondition s.ChainType> : /* пусто */
+                  = (s.ChainType
+                      (<RemovePos-Expr e.Result>)
+                      (<RemovePos-Blocks e.Blocks>)
+                      (<RemovePos-Expr e.Pattern>)
+                    );
               }
               e.Assigns
             >
-            (<RemovePos-Expr e.Result>) (/* нет блоков */)
+            (<RemovePos-Expr e.Result>)
+            (<RemovePos-Blocks e.Blocks>)
           );
       }
       e.Sentences
     >;
 
   #NativeBody t.SrcPos e.Code = #NativeBody t.SrcPos e.Code;
+}
+
+AssignOrCondition {
+  #Assign = ; #Condition = ;
+}
+
+RemovePos-Blocks {
+  e.Blocks
+    = <Map
+        {
+          (e.Body) = (<RemovePos-Body e.Body>);
+        }
+        e.Blocks
+      >;
 }
 
 RemovePos-Expr {
