@@ -515,19 +515,7 @@ ExtractNested {
 ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) #Sentences e.Sentences
     = <MapReduce
-        {
-          ((e.NestedFuncs) (e.BorrowedVars))
-          ((e.Pattern) (e.Result))
-            = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
-            : (e.BorrowedVars^) e.LocalVars
-            = <ExtractNested-Result
-                s.MarkupContext
-                (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
-              >
-            : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
-            = ((e.NestedFuncs e.ResultNestedFuncs) (e.BorrowedVars))
-              ((e.Pattern) (e.Result));
-        }
+        (ExtractNested-Sentence s.MarkupContext e.ScopeVars)
         ((/* вложенные функции */) (/* заимствованные переменные */))
         e.Sentences
       >
@@ -537,6 +525,19 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) #NativeBody t.SrcPos e.Code =
     (/* нет заимстовованных переменных */) (/* нет вложенных функций */)
     #NativeBody t.SrcPos e.Code;
+}
+
+ExtractNested-Sentence {
+  s.MarkupContext e.ScopeVars ((e.NestedFuncs) (e.BorrowedVars))
+  ((e.Pattern) (e.Result))
+    = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
+    : (e.BorrowedVars^) e.LocalVars
+    = <ExtractNested-Result
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
+      >
+    : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
+    = ((e.NestedFuncs e.ResultNestedFuncs) (e.BorrowedVars))
+      ((e.Pattern) (e.Result));
 }
 
 ExtractNested-Pattern {
