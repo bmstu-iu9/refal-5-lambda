@@ -103,27 +103,18 @@ FrontEnd {
 R5-Parse-Wrapped {
   (e.SrcName) e.Tokens
     = <EL-Create e.SrcName> : t.ErrorList
-    = <Fetch
-        <R5-Parse e.Tokens>
+    = <R5-Parse e.Tokens> : (e.Errors) e.AST
+    = <MapReduce
         {
-          #Success e.AST = t.ErrorList e.AST;
-
-          #Fails e.Errors
-            = <MapReduce
-                {
-                  t.ErrorList^ ((#RowCol s.Line s.Col) e.Message)
-                    = <EL-AddErrorAt
-                        t.ErrorList
-                        (#FileRowCol (s.Line s.Col) e.SrcName)
-                        e.Message
-                      >;
-                }
-                t.ErrorList
-                e.Errors
-              >
-              /* пусто дерево */;
+          t.ErrorList^ ((#RowCol s.Line s.Col) e.Message)
+            = <EL-AddErrorAt
+                t.ErrorList (#FileRowCol (s.Line s.Col) e.SrcName) e.Message
+              >;
         }
-      >;
+        t.ErrorList
+        e.Errors
+      >
+      e.AST;
 }
 
 PreludeIncludeLine {

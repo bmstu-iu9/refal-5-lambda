@@ -3,8 +3,7 @@ $EXTERN R5-OneOf;
 
 /**
   <Parse e.Tokens>
-    == Success t.Unit*
-    == Fails t.Error*
+    == (t.Error*) t.Unit*
 
   t.Error ::= (t.Pos e.Message)
   t.Unit ::= t.Function | t.Extern
@@ -29,8 +28,24 @@ $EXTERN R5-OneOf;
   s.VarType ::= 's' | 't' | 'e'
 */
 $ENTRY R5-Parse {
-  e.Tokens =
-    <Semantics <Program  e.Tokens>>;
+  e.Tokens = <FilterErrors <Program  e.Tokens>>;
+}
+
+FilterErrors {
+  e.UnitsAndErrors
+    = <DoFilterErrors (/* errors */) (/* units */) e.UnitsAndErrors>;
+}
+
+DoFilterErrors {
+  (e.Errors) (e.Units) e.Units-B (Error t.Pos e.Message) e.UnitsAndErrors-E
+    = <DoFilterErrors
+        (e.Errors (t.Pos e.Message)) (e.Units e.Units-B) e.UnitsAndErrors-E
+      >;
+
+  (e.Errors) (e.Units) t.Unit e.UnitsAndErrors
+    = <DoFilterErrors (e.Errors) (e.Units t.Unit) e.UnitsAndErrors>;
+
+  (e.Errors) (e.Units) /* пусто */ = (e.Errors) e.Units;
 }
 
 /*
@@ -642,169 +657,4 @@ TokName {
   TkExtern = '$EXTERN';
   TkEntry = '$ENTRY';
   TkEOF = 'end of file';
-}
-
-
-/*
- <Semantics t.ErrorUnit*>
-    == Success t.Unit*
-    == Fails t.Error*
-*/
-Semantics {
-  e.ErrorsUnits,
-      <FilterUnitsAndFunctionNames e.ErrorsUnits>: e.Units (e.Functions),
-      <FindSemanticsErrors (e.Functions) e.ErrorsUnits>:
-    {
-      /* пусто */ = Success e.Units;
-
-      e.Errors = Fails e.Errors;
-    };
-}
-
-*$FROM R5-Utils
-$EXTERN R5-Builtins;
-
-FilterUnitsAndFunctionNames {
-  e.ErrorsUnits =
-    <DoFilterUnitsAndFunctionNames
-      e.ErrorsUnits (<R5-Builtins>)
-    >;
-}
-
-DoFilterUnitsAndFunctionNames {
-  (Error t.Pos e.Message) e.ErrorsUnits (e.Names) =
-    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names)>;
-
-  (Function t.Pos s.Scope (e.Name) Sentences e.Sentences) e.ErrorsUnits (e.Names) =
-    (Function t.Pos s.Scope (e.Name) Sentences e.Sentences)
-    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
-
-  (Declaration t.SrcPos GN-Entry e.Name) e.ErrorsUnits (e.Names) =
-    (Declaration t.SrcPos GN-Entry e.Name)
-    <DoFilterUnitsAndFunctionNames e.ErrorsUnits (e.Names (e.Name))>;
-
-  /* кончились юниты и ошибки */ (e.Names) = (e.Names);
-}
-
-FindSemanticsErrors {
-  (e.FuncNames) (Error t.Pos e.Message) e.ErrorsUnits =
-    (t.Pos e.Message)
-    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
-
-  (e.FuncNames) (Function t.Pos s.Scope (e.Name) Sentences e.Sentences)
-  e.ErrorsUnits =
-    <CheckSentences (e.FuncNames) (/* variables */) e.Sentences>
-    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
-
-  (e.FuncNames) (Declaration t.SrcPos GN-Entry e.Name) e.ErrorsUnits =
-    <FindSemanticsErrors (e.FuncNames) e.ErrorsUnits>;
-
-  (e.FuncNames) /* кончились ошибки и юниты */ = /* пусто */
-}
-
-CheckSentences {
-  (e.FuncNames) (e.Variables) (e.Sentence) e.Sentences =
-    <CheckSentence
-      (e.FuncNames) (e.Variables) <ExtractCheckable e.Sentence>
-    >
-    <CheckSentences (e.FuncNames) (e.Variables) e.Sentences>;
-
-  (e.FuncNames) (e.Variables) /* всё */ = /* всё */;
-}
-
-ExtractCheckable {
-  (e.Pattern) e.Conditions-And-SentenceTail =
-    (<ExtractCheckable-Expr e.Pattern>)
-    <ExtractCheckable-Tail e.Conditions-And-SentenceTail>;
-}
-
-ExtractCheckable-Tail {
-  (Condition (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail =
-    (Condition
-      (<ExtractCheckable-Expr e.Result>)
-      (/* нет блоков */)
-      (<ExtractCheckable-Expr e.Pattern>)
-    )
-    <ExtractCheckable-Tail e.Tail>;
-
-  (e.Result) (/* нет блоков */)
-    = (<ExtractCheckable-Expr e.Result>) (/* нет блоков */);
-
-  (e.Result) ((Sentences e.Sentences)) =
-    (<ExtractCheckable-Expr e.Result>)
-    ((Sentences <ExtractCheckable-Sentences e.Sentences>));
-}
-
-ExtractCheckable-Sentences {
-  (e.Sentence) e.Sentences =
-    (<ExtractCheckable e.Sentence>) <ExtractCheckable-Sentences e.Sentences>;
-
-  /* пусто */ = /* пусто */;
-}
-
-ExtractCheckable-Expr {
-  t.Term e.Expr =
-    <ExtractCheckable-Term t.Term> <ExtractCheckable-Expr e.Expr>;
-
-  /* пусто */ = /* пусто */;
-}
-
-ExtractCheckable-Term {
-  (TkVariable t.SrcPos s.VarType e.Index)
-    = (TkVariable t.SrcPos s.VarType e.Index);
-
-  (Brackets e.Expr) = <ExtractCheckable-Expr e.Expr>;
-
-  (CallBrackets (TkName t.Pos e.Name) e.Expr) =
-    (TkName t.Pos e.Name) <ExtractCheckable-Expr e.Expr>;
-
-  t.OtherTerm = /* здесь нет переменных */;
-}
-
-CheckSentence {
-  (e.FuncNames) (e.Variables) (e.PatternItems) e.Tail =
-    <CheckSentence-Tail
-      (e.FuncNames) (e.Variables e.PatternItems) e.Tail
-    >;
-}
-
-CheckSentence-Tail {
-  (e.FuncNames) (e.Variables)
-  (Condition (e.ResultItems) (/* нет блоков */) (e.PatternItems)) e.Tail =
-    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
-    <CheckSentence-Tail (e.FuncNames) (e.Variables e.PatternItems) e.Tail>;
-
-  (e.FuncNames) (e.Variables) (e.ResultItems) (/* нет блоков */) =
-    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>;
-
-  (e.FuncNames) (e.Variables) (e.ResultItems) ((Sentences e.Sentences)) =
-    <CheckResult (e.FuncNames) (e.Variables) e.ResultItems>
-    <CheckSentences (e.FuncNames) (e.Variables) e.Sentences>;
-}
-
-CheckResult {
-  (e.FuncNames) (e.Variables) (TkName t.Pos e.Name) e.Items,
-      e.FuncNames:
-    {
-      e.Names-B (e.Name) e.Names-E =
-        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
-
-      e.Names =
-        (t.Pos 'function ' e.Name ' not declared')
-        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
-    };
-
-  (e.FuncNames) (e.Variables) (TkVariable t.Pos s.Type e.Index) e.Items,
-      e.Variables:
-    {
-      e.Vars-B (TkVariable t.DeclPos s.Type e.Index) e.Vars-E =
-        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
-
-      e.Vars =
-        (t.Pos 'variable ' s.Type '.' e.Index ' not declared')
-        <CheckResult (e.FuncNames) (e.Variables) e.Items>;
-    };
-
-  (e.FuncNames) (e.Variables) /* всё */ =
-    /* всё */;
 }
