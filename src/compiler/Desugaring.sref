@@ -522,11 +522,11 @@ ExtractNestedRec {
             : (e.BorrowedVars^) e.LocalVars
             = <ExtractNested-Result
                 s.MarkupContext
-                (e.NestedFuncs) (e.BorrowedVars)
-                (e.ScopeVars) (e.LocalVars) e.Result
+                (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
               >
-            : (e.NestedFuncs^) (e.BorrowedVars^) e.Result^
-            = ((e.NestedFuncs) (e.BorrowedVars)) ((e.Pattern) (e.Result));
+            : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
+            = ((e.NestedFuncs e.ResultNestedFuncs) (e.BorrowedVars))
+              ((e.Pattern) (e.Result));
         }
         ((/* вложенные функции */) (/* заимствованные переменные */))
         e.Sentences
@@ -586,11 +586,10 @@ UpdateBorrowedVars {
 
 ExtractNested-Result {
   s.MarkupContext
-  (e.OriginNestedFuncs) (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars)
-  e.OriginResult
+  (e.OriginBorrowedVars) (e.ScopeVars) (e.LocalVars) e.OriginResult
     = <MapReduce
         (ExtractNested-Result-Term s.MarkupContext (e.ScopeVars) (e.LocalVars))
-        ((e.OriginNestedFuncs) (e.OriginBorrowedVars)) e.OriginResult
+        ((/* nested funcs */) (e.OriginBorrowedVars)) e.OriginResult
       >
     : ((e.NestedFuncs) (e.BorrowedVars)) e.Result
     = (e.NestedFuncs) (e.BorrowedVars) e.Result;
@@ -609,11 +608,10 @@ ExtractNested-Result-Term {
   ((e.NestedFuncs) (e.BorrowedVars)) (#Brackets e.InBrackets)
     = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-    : (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^
-    = ((e.NestedFuncs) (e.BorrowedVars))
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
       (#Brackets e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
@@ -621,11 +619,10 @@ ExtractNested-Result-Term {
   (#ADT-Brackets (e.Name) e.InBrackets)
     = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-    : (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^
-    = ((e.NestedFuncs) (e.BorrowedVars))
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
       (#ADT-Brackets (e.Name) e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
@@ -633,11 +630,10 @@ ExtractNested-Result-Term {
   (#CallBrackets e.InBrackets)
     = <ExtractNested-Result
         s.MarkupContext
-        (e.NestedFuncs) (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
-        e.InBrackets
+        (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.InBrackets
       >
-    : (e.NestedFuncs^) (e.BorrowedVars^) e.InBrackets^
-    = ((e.NestedFuncs) (e.BorrowedVars))
+    : (e.InBracketsNestedFuncs) (e.BorrowedVars^) e.InBrackets^
+    = ((e.NestedFuncs e.InBracketsNestedFuncs) (e.BorrowedVars))
       (#CallBrackets e.InBrackets);
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
