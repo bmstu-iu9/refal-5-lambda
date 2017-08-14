@@ -328,14 +328,29 @@ CheckResult {
 CheckValidUsings {
   (
     e.DeclarationsAndErrors-B
-    (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+    (#Declare t.SrcPos s.ScopeClass e.Name)
     e.DeclarationsAndErrors-E
   )
   (#TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
     <CheckValidUsings
       (
         e.DeclarationsAndErrors-B
-        (s.DeclareDefine t.SrcPos s.ScopeClass e.Name)
+        (#Declare t.SrcPos s.ScopeClass e.Name)
+        e.DeclarationsAndErrors-E
+      )
+      e.NameRefsAndErrors
+    >;
+
+  (
+    e.DeclarationsAndErrors-B
+    (#Define t.SrcPos s.ScopeClass e.Name)
+    e.DeclarationsAndErrors-E
+  )
+  (#TkName t.SrcPosName e.Name) e.NameRefsAndErrors =
+    <CheckValidUsings
+      (
+        e.DeclarationsAndErrors-B
+        (#Define t.SrcPos s.ScopeClass e.Name)
         e.DeclarationsAndErrors-E
       )
       e.NameRefsAndErrors
