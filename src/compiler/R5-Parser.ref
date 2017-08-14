@@ -1,6 +1,3 @@
-*$FROM R5-Utils
-$EXTERN R5-OneOf;
-
 /**
   <Parse e.Tokens>
     == (t.Error*) t.Unit*
@@ -58,7 +55,7 @@ DoFilterErrors {
 Program {
   t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <R5-OneOf s.Type TkExtern TkEntry TkName TkSemicolon>: True =
+      <OneOf s.Type TkExtern TkEntry TkName TkSemicolon>: True =
     <Program-AfterUnit <Unit t.NextToken e.Tokens>>;
 
   (TkEOF t.Pos) = /* всё */;
@@ -69,6 +66,11 @@ Program {
       t.Unexpected '$EXTERN, $ENTRY, function name or special comment'
     >
     <Program e.Tokens>;
+}
+
+OneOf {
+  t.Elem e.Elems-B t.Elem e.Elems-E = True;
+  t.Elem e.Elems = False;
 }
 
 Program-AfterUnit {
@@ -91,7 +93,7 @@ Unit {
         (/* игнорируем */) e.Tokens;
 
       (s.Type t.Pos e.Value),
-          <R5-OneOf s.Type TkEntry TkName>: True =
+          <OneOf s.Type TkEntry TkName>: True =
         <Function t.NextToken e.Tokens>;
 
       /* других типов быть не должно */
@@ -149,7 +151,7 @@ NameList-DoNames {
 
   (e.ExternsAndErrors) t.NextToken e.Tokens,
       t.NextToken: (s.Type t.Pos e.Value),
-      <R5-OneOf s.Type TkExtern TkEntry TkEOF>: True =
+      <OneOf s.Type TkExtern TkEntry TkEOF>: True =
     (
       e.ExternsAndErrors
       (Error t.Pos 'missed semicolon')
@@ -370,7 +372,7 @@ ExtensionChain-AfterResult {
         (TkSemicolon t.Pos) e.Tokens;
 
       (s.Type t.Pos),
-          <R5-OneOf s.Type TkComma TkAssign>: True =
+          <OneOf s.Type TkComma TkAssign>: True =
         <ExtensionChain-AfterPattern
           (e.Errors (Error t.Pos 'Missed \':\'')) t.Result
           <Pattern (TkComma t.Pos) e.Tokens>
@@ -610,7 +612,7 @@ DoExpression-AfterCall {
 
 Expression-CheckBrackets {
   s.Kind (e.Errors) (e.Expression) (s.Type t.Pos) e.Tokens,
-      <R5-OneOf s.Type TkCloseBracket TkCloseCall>: True =
+      <OneOf s.Type TkCloseBracket TkCloseCall>: True =
     <Expression-CheckBrackets-AfterSubexpr
       s.Kind
       (e.Errors (Error t.Pos 'unbalanced ' <TokName s.Type>))

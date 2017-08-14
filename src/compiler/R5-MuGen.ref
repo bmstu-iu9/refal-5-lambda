@@ -1,12 +1,20 @@
-*$FROM R5-Utils
-$EXTERN R5-Builtins;
-
 $ENTRY R5-AddMu {
   e.AST
-    , <R5-Builtins> : e.Builtins
+    , <Builtins> : e.Builtins
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
     = (Function NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
+}
+
+Builtins {
+  = ('+') ('-') ('*') ('/') ('%') ('?') <DoBuiltins <ListOfBuiltin>>;
+}
+
+DoBuiltins {
+  (s.Number s.Name s.Type) e.Builtins
+    = (<Explode s.Name>) <DoBuiltins e.Builtins>;
+
+  /* пусто */ = /* пусто */;
 }
 
 DoAddMu-Names {
