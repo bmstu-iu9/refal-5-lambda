@@ -5,7 +5,7 @@ $EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 $EXTERN StrFromInt;
 
 //FROM R5-Transformer
-$EXTERN R5-Transform-Blocks, R5-Transform-Conditions;
+$EXTERN R5-Transform-Conditions;
 
 $ENTRY Desugar {
   s.MarkupContext e.AST =
@@ -15,8 +15,7 @@ $ENTRY Desugar {
         Pass-RemovePos
         Pass-EnumerateVariables
         Pass-NameNestedFuncs
-        R5-Transform-Blocks
-        Pass-RemoveAssigns
+        Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
         R5-Transform-Conditions
         Pass-CreatePredeclarations
@@ -385,7 +384,7 @@ NameNestedResultRec {
     >;
 }
 
-Pass-RemoveAssigns {
+Pass-RemoveBlocksAndAssigns {
   e.AST =
     <Map
       {
@@ -414,38 +413,35 @@ RemoveAssigns-Sentences {
 }
 
 RemoveAssigns-Sentence {
+  /*
+    Присваивание есть синтаксический сахар — выражается через блок:
+    … = R : { B }… P …  --->  … = R : { B }… : { P … }
+  */
   (
-    (e.Pattern)
-    e.Conditions
-    (#Assign
-      (e.AssignName) (e.AssignResult) (/* нет блоков */) (e.AssignPattern)
-    )
-    e.ConditionsAndAssigns
-    (e.Result)
-    (/* нет блоков */)
+    (e.Pattern) e.Conditions
+    (#Assign (e.AssignName) (e.AssignResult) (e.Blocks) (e.AssignPattern))
+    e.SentenceTail
   )
-    = (#Closure
-        (e.AssignName)
-        #Sentences
-        ((e.AssignPattern) e.ConditionsAndAssigns (e.Result) (/* нет блоков */))
-      )
-    : t.DesugaredClosure
-    = (
-        (e.Pattern)
-        <RemoveAssigns-Conditions e.Conditions>
+    = <RemoveAssigns-Sentence
         (
-          <RemoveAssigns-Result
-            (#CallBrackets t.DesugaredClosure e.AssignResult)
-          >
+          (e.Pattern) e.Conditions
+          (e.AssignResult)
+          (
+            e.Blocks
+            ((e.AssignName) #Sentences ((e.AssignPattern) e.SentenceTail))
+          )
         )
-      );
+      >;
 
-  ((e.Pattern) e.Conditions (e.Result) (/* нет блоков */))
-    = (
-        (e.Pattern)
-        <RemoveAssigns-Conditions e.Conditions>
-        (<RemoveAssigns-Result e.Result>)
-      );
+  /*
+    Блоки, в свою очередь — тоже синтаксический сахар, являются замыканиями,
+    которые по очереди применяются к результату
+  */
+  ((e.Pattern) e.Conditions (e.Result) (e.Blocks))
+    = <RemoveAssigns-Conditions e.Conditions> : e.Conditions^
+    = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
+    = <RemoveAssigns-Result e.Result> : e.Result^
+    = ((e.Pattern) e.Conditions (e.Result));
 }
 
 RemoveAssigns-Conditions {
@@ -453,8 +449,9 @@ RemoveAssigns-Conditions {
     = <Map
         {
           (#Condition
-            (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)
+            (e.ConditionName) (e.Result) (e.Blocks) (e.Pattern)
           )
+            = <RemoveAssigns-WindBlocks (e.Result) e.Blocks> : (e.Result^)
             = (#Condition
                 (e.ConditionName)
                 (<RemoveAssigns-Result e.Result>)
@@ -462,6 +459,17 @@ RemoveAssigns-Conditions {
               );
         }
         e.Conditions
+      >;
+}
+
+RemoveAssigns-WindBlocks {
+  (e.Result) e.Blocks
+    = <Reduce
+        {
+          (e.Result) ((e.BlockName) e.Body)
+            = ((#CallBrackets (#Closure (e.BlockName) e.Body) e.Result));
+        }
+        (e.Result) e.Blocks
       >;
 }
 
@@ -684,7 +692,7 @@ ExtractNested-Result-Term {
   (#Closure (e.ClosureName) e.Body)
      = <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
      : (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^
-    = <Fetch
+     = <Fetch
         (e.NestedBorrowedVars) e.Body
         {
           // Случай функции без контекста, нативной функции в том числе
@@ -701,8 +709,8 @@ ExtractNested-Result-Term {
                 #Sentences
                 <Map
                   {
-                    ((e.Pattern) (e.Result))
-                      = ((e.Context e.Pattern) (e.Result));
+                    ((e.Pattern) e.Conditions (e.Result))
+                      = ((e.Context e.Pattern) e.Conditions (e.Result));
                   }
                   e.Sentences
                 >
