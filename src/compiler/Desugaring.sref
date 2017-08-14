@@ -17,7 +17,7 @@ $ENTRY Desugar {
         Pass-NameNestedFuncs
         Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
-        Pass-UnCondition
+        (Pass-UnCondition s.MarkupContext)
         Pass-CreatePredeclarations
       >
     >;

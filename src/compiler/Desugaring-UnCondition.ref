@@ -1,35 +1,38 @@
 /**
-  <R5-Transform t.Unit*> == t.Unit*
+  <R5-Transform s.MarkupContext t.Unit*> == t.Unit*
+
+  s.MarkupContext ::= MarkupContext | NoMarkupContext
 */
 $ENTRY Pass-UnCondition {
-  e.Units
-    = <Map Transform-Unit e.Units>;
+  s.MarkupContext e.Units
+    = <Map (Transform-Unit s.MarkupContext) e.Units>;
 }
 
 Transform-Unit {
-  (Function s.Scope (e.Name) Sentences e.Sentences)
-    = <UnCondition (e.Name) s.Scope e.Sentences>;
+  s.MarkupContext (Function s.Scope (e.Name) Sentences e.Sentences)
+    = <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>;
 
-  (Ident e.Name) = (Ident e.Name);
+  s.MarkupContext (Ident e.Name) = (Ident e.Name);
 
-  (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
+  s.MarkupContext (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-  (s.EnumSwapDeclaration s.ScopeClass e.Name)
+  s.MarkupContext (s.EnumSwapDeclaration s.ScopeClass e.Name)
     = (s.EnumSwapDeclaration s.ScopeClass e.Name);
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
 
 /**
-  <UnCondition (e.Name) s.Scope e.Sentences>
+  <UnCondition s.MarkupContext (e.Name) s.Scope e.Sentences>
     == e.NewFunctions
 */
 UnCondition {
-  (e.Name) s.Scope e.Sentences
-    = <DoUnCondition (s.Scope (e.Name) e.Sentences)>;
+  s.MarkupContext (e.Name) s.Scope e.Sentences
+    = <DoUnCondition s.MarkupContext (s.Scope (e.Name) e.Sentences)>;
 }
 
 DoUnCondition {
+  s.MarkupContext
   (s.Scope (e.Name) e.Sentences-B (e.ConditionalSentence) e.Sentences-E)
   e.UnscannedFunctions
     , e.ConditionalSentence
@@ -38,31 +41,36 @@ DoUnCondition {
       e.Tail
 
     , <UnConditionSentence
-        (e.ConditionName) (e.ConditionalSentence) e.Sentences-E
+        s.MarkupContext (e.ConditionName) (e.ConditionalSentence) e.Sentences-E
       >
     : (e.TransformedSentences) e.NewFunctions
 
     = (Function
         s.Scope (e.Name) Sentences e.Sentences-B e.TransformedSentences
       )
-      <DoUnCondition e.UnscannedFunctions e.NewFunctions>;
+      <DoUnCondition s.MarkupContext e.UnscannedFunctions e.NewFunctions>;
 
+  s.MarkupContext
   (s.Scope (e.Name) e.Sentences) e.UnscannedFunctions
     = (Function s.Scope (e.Name) Sentences e.Sentences)
-      <DoUnCondition e.UnscannedFunctions>;
+      <DoUnCondition s.MarkupContext e.UnscannedFunctions>;
 
-  /* пусто */ = /* пусто */;
+  s.MarkupContext /* пусто */ = /* пусто */;
 }
 
 /**
-  <UnConditionSentence (e.ConditionalSentence) e.ContinuationSentences>
+  <UnConditionSentence
+    s.MarkupContext (e.ConditionalSentence) e.ContinuationSentences
+  >
     == (e.TransformedSentences) e.NewFunctions
 */
 UnConditionSentence {
-  (e.ConditionName) (e.Sentence) e.ContinuationSentences
+  s.MarkupContext (e.ConditionName) (e.Sentence) e.ContinuationSentences
     , <AnalyzeContinuation (e.ConditionName) e.ContinuationSentences>
     : t.ContName e.ContFunction
-    , <ConditionSubFunctions (e.ConditionName) t.ContName e.Sentence>
+    , <ConditionSubFunctions
+        s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+      >
     : (e.CallCheckSentence) e.SubFunctions
     = (
         (e.CallCheckSentence)
@@ -403,18 +411,20 @@ DoT0 {
 }
 
 /**
-  <ConditionSubFunctions (e.ConditionName) t.ContName e.Sentence>
+  <ConditionSubFunctions
+    s.MarkupContext (e.ConditionName) t.ContName e.Sentence
+  >
     == (e.CallCheckSentence) e.SubFunctions
 */
 ConditionSubFunctions {
-  (e.ConditionName) t.ContName e.Sentence
+  s.MarkupContext (e.ConditionName) t.ContName e.Sentence
     , e.Sentence
     : (e.Pattern)
       (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
     , <ExtractVariables (e.Sentence)> : e.SentenceVariables
-    , <ConditionContext e.Pattern> : e.PatternVarsAsExpr
+    , <ConditionContext s.MarkupContext e.Pattern> : e.PatternVarsAsExpr
     , <PatternSteps (e.SentenceVariables) e.Pattern> : e.PatternSteps
     , <OpenEChain
         (e.ConditionName) (e.SentenceVariables) t.ContName (e.CheckFunction)
@@ -440,16 +450,21 @@ ConditionSubFunctions {
 }
 
 ConditionContext {
-  e.Pattern
+  s.MarkupContext e.Pattern
     = <Map
-        transformer_MakeVariables
+        (transformer_MakeVariables s.MarkupContext)
         <Unique <ExtractVariables-Expr e.Pattern>>
       >;
 }
 
 transformer_MakeVariables {
-  ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
-  (s.VarType e.Index) = (TkVariable s.VarType e.Index);
+  MarkupContext ('e' e.Index)
+    = (TkIdentifier VAR 'e' e.Index) (Brackets (TkVariable 'e' e.Index));
+  MarkupContext (s.VarType e.Index)
+    = (TkIdentifier VAR s.VarType e.Index) (TkVariable s.VarType e.Index);
+
+  NoMarkupContext ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
+  NoMarkupContext (s.VarType e.Index) = (TkVariable s.VarType e.Index);
 }
 
 OpenEChain {
