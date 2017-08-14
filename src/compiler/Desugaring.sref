@@ -516,7 +516,8 @@ ExtractNestedRec {
   s.MarkupContext (e.ScopeVars) #Sentences e.Sentences
     = <MapReduce
         {
-          ((e.NestedFuncs) (e.BorrowedVars)) ((e.Pattern) (e.Result))
+          ((e.NestedFuncs) (e.BorrowedVars))
+          ((e.Pattern) (e.Result))
             = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
             : (e.BorrowedVars^) e.LocalVars
             = <ExtractNested-Result
@@ -641,58 +642,44 @@ ExtractNested-Result-Term {
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars))
-  (#Closure (e.ClosureName) e.Body) =
-    <Fetch
-      <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
-      {
-        (/* свободные переменные в функции отсутствуют */)
-        (e.NestedNestedFuncs) #Sentences e.Sentences =
-          (
-            (
-              e.NestedFuncs e.NestedNestedFuncs
-              (#Function #GN-Local (e.ClosureName) #Sentences e.Sentences)
-            )
-            (e.BorrowedVars)
-          )
-          (#TkName e.ClosureName);
+  (#Closure (e.ClosureName) e.Body)
+     = <ExtractNestedRec s.MarkupContext (e.ScopeVars e.LocalVars) e.Body>
+     : (e.NestedBorrowedVars) (e.NestedNestedFuncs) e.Body^
+    = <Fetch
+        (e.NestedBorrowedVars) e.Body
+        {
+          // Случай функции без контекста, нативной функции в том числе
+          (/* нет захваченных переменных */) e.Body^
+            = (#Function #GN-Local (e.ClosureName) e.Body)
+              (e.BorrowedVars)
+              (#TkName e.ClosureName);
 
-        (e.NestedBorrowedVars) (e.NestedNestedFuncs) #Sentences e.Sentences =
-          (
-            (
-              e.NestedFuncs e.NestedNestedFuncs
-              (#Function
+          // Случай функции с контекстом
+          (e.NestedBorrowedVars) #Sentences e.Sentences
+            = <CreateContext s.MarkupContext e.NestedBorrowedVars> : e.Context
+            = (#Function
                 #GN-Local (e.ClosureName)
                 #Sentences
                 <Map
-                  (AddContextToSentence s.MarkupContext e.NestedBorrowedVars)
+                  {
+                    ((e.Pattern) (e.Result))
+                      = ((e.Context e.Pattern) (e.Result));
+                  }
                   e.Sentences
                 >
               )
-            )
-            <Reduce
-              (CheckBorrowed (e.ScopeVars))
-              (e.BorrowedVars) e.NestedBorrowedVars
-            >
-          )
-          (#CallBrackets
-            (#TkName #CreateClosure)
-            (#TkName e.ClosureName)
-            <CreateContext s.MarkupContext e.NestedBorrowedVars>
-          );
-
-        (/* свободные переменные в нативной функции отсутствуют */)
-        (/* вложенные функции в нативной функции отсутствуют */)
-        #NativeBody t.SrcPos e.Code =
-          (
-            (
-              e.NestedFuncs
-              (#Function #GN-Local (e.ClosureName) #NativeBody t.SrcPos e.Code)
-            )
-            (e.BorrowedVars)
-          )
-          (#TkName e.ClosureName);
-      }
-    >;
+              <Reduce
+                (CheckBorrowed (e.ScopeVars))
+                (e.BorrowedVars) e.NestedBorrowedVars
+              >
+              (#CallBrackets
+                (#TkName #CreateClosure) (#TkName e.ClosureName) e.Context
+              );
+        }
+      >
+    : t.Function (e.BorrowedVars^) t.ClosureTerm
+    = ((e.NestedFuncs e.NestedNestedFuncs t.Function) (e.BorrowedVars))
+      t.ClosureTerm;
 
   s.MarkupContext (e.ScopeVars) (e.LocalVars)
   ((e.NestedFuncs) (e.BorrowedVars)) t.OtherTerm =
@@ -710,11 +697,6 @@ CheckBorrowed {
 
   (e.ScopeVars) (e.BorrowedVars) (s.Mode e.Index) =
     (e.BorrowedVars);
-}
-
-AddContextToSentence {
-  s.MarkupContext e.Context ((e.Pattern) (e.Result)) =
-    ((<CreateContext s.MarkupContext e.Context> e.Pattern) (e.Result));
 }
 
 CreateContext {
