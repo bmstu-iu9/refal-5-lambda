@@ -26,80 +26,39 @@ Transform-Unit {
 */
 UnCondition {
   (e.Name) s.Scope e.Sentences
-    = <DoUnCondition
-        (e.Name /* — имя текущей функции */) s.Scope
-        (/* scanned functions */)
-        e.Sentences
-        (/* unscanned functions */)
-      >;
+    = <DoUnCondition (s.Scope (e.Name) e.Sentences)>;
 }
 
 DoUnCondition {
-  (e.Name) s.Scope
-  (e.ScannedFunctions)
-  e.Sentences-B (e.ConditionalSentence) e.Sentences-E
-  (e.UnscannedFunctions)
+  (s.Scope (e.Name) e.Sentences-B (e.ConditionalSentence) e.Sentences-E)
+  e.UnscannedFunctions
+    , e.ConditionalSentence
+    : (e.Pattern)
+      (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
+      e.Tail
+
     , <UnConditionSentence
-        (e.ConditionalSentence) e.Sentences-E
+        (e.ConditionName) (e.ConditionalSentence) e.Sentences-E
       >
-    : Success (e.TransformedSentences) e.NewFunctions
-    = <DoUnCondition-NextFunction
-        (
-          e.ScannedFunctions
-          (Function
-            s.Scope (e.Name) Sentences e.Sentences-B e.TransformedSentences
-          )
-        )
-        (e.UnscannedFunctions e.NewFunctions)
-      >;
+    : (e.TransformedSentences) e.NewFunctions
 
-  (e.Name) s.Scope
-  (e.ScannedFunctions) e.Sentences (e.UnscannedFunctions)
-    = <DoUnCondition-NextFunction
-        (
-          e.ScannedFunctions
-          (Function s.Scope (e.Name) Sentences e.Sentences)
-        )
-        (e.UnscannedFunctions)
-      >;
-}
+    = (Function
+        s.Scope (e.Name) Sentences e.Sentences-B e.TransformedSentences
+      )
+      <DoUnCondition e.UnscannedFunctions e.NewFunctions>;
 
-DoUnCondition-NextFunction {
-  (e.ScannedFunctions)
-  (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
-    = <DoUnCondition
-        (e.NextFunctionName) GN-Local
-        (e.ScannedFunctions)
-        e.NextFunctionSentences
-        (e.UnscannedFunctions)
-      >;
+  (s.Scope (e.Name) e.Sentences) e.UnscannedFunctions
+    = (Function s.Scope (e.Name) Sentences e.Sentences)
+      <DoUnCondition e.UnscannedFunctions>;
 
-  (e.ScannedFunctions) (/* пусто */) = e.ScannedFunctions
+  /* пусто */ = /* пусто */;
 }
 
 /**
   <UnConditionSentence (e.ConditionalSentence) e.ContinuationSentences>
-    == Success (e.TransformedSentences) e.NewFunctions
-    == Fails
+    == (e.TransformedSentences) e.NewFunctions
 */
 UnConditionSentence {
-  (e.Sentence) e.ContinuationSentences
-    , e.Sentence
-    : {
-        (e.Pattern)
-        (Condition (e.ConditionName) (e.CondResult) t.CondPattern)
-        e.Tail
-          = Success
-            <UnConditionSentence-Aux
-              (e.ConditionName)
-              (e.Sentence) e.ContinuationSentences
-            >;
-
-        (e.Pattern) (e.Result) = Fails;
-      };
-}
-
-UnConditionSentence-Aux {
   (e.ConditionName) (e.Sentence) e.ContinuationSentences
     , <AnalyzeContinuation (e.ConditionName) e.ContinuationSentences>
     : t.ContName e.ContFunction
@@ -128,7 +87,7 @@ AnalyzeContinuation {
 
   (e.ConditionName) e.Sentences
     , e.ConditionName '?' 1 : e.ContName
-    = (e.ContName) ((e.ContName) e.Sentences);
+    = (e.ContName) (GN-Local (e.ContName) e.Sentences);
 }
 
 MakeContinuationSentence {
@@ -499,7 +458,7 @@ ConditionSubFunctions-Aux {
       >
     : (e.ContSentence) e.OpenEFunctions
     = (
-        (e.CheckFunction)
+        GN-Local (e.CheckFunction)
         ((e.PatternVarsAsExpr e.CondPattern) e.CheckSentenceTail)
         e.ContSentence
       )
@@ -581,12 +540,12 @@ MakeOpenE-ForwardNext {
     , e.ConditionName '?' <+ 1 s.CurrentForwardId> : e.NextName
     , <Substitute e.CheckFunctionArg (e.T5-sub)> : e.CheckFuncArgSubst
     = (
-        (e.CurrentForwardName)
+        GN-Local (e.CurrentForwardName)
         ((e.T1) ((CallBrackets (TkName e.NextName) e.T2)))
         <MakeContinuationSentence t.ContName (e.T3) (e.T4)>
       )
       (
-        (e.NextName)
+        GN-Local (e.NextName)
         ((e.T5) ((CallBrackets (TkName e.CheckFunction) e.CheckFuncArgSubst)))
         <MakeContinuationSentence t.ContName (e.T6) (e.T7)>
       );
