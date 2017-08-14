@@ -1,134 +1,24 @@
-*$FROM R5-Utils
-$EXTERN R5-Builtins;
-
-
-/**
-  <R5-Transform-Blocks t.Unit*> == t.Unit*
-*/
-$ENTRY R5-Transform-Blocks {
-  e.Units = <Transform-Step UnBlock e.Units>;
-}
-
 /**
   <R5-Transform t.Unit*> == t.Unit*
 */
 $ENTRY R5-Transform-Conditions {
   e.Units
-    = <Transform-Step UnCondition e.Units>;
+    = <Map Transform-Unit e.Units>;
 }
 
-Transform-Step {
-  s.FnMode e.Units
-    = <Map (Transform-Step-Aux s.FnMode) e.Units>;
-}
+Transform-Unit {
+  (Function s.Scope (e.Name) Sentences e.Sentences)
+    = <UnCondition (e.Name) s.Scope e.Sentences>;
 
-Transform-Step-Aux {
-  s.FnMode (Function s.Scope (e.Name) Sentences e.Sentences)
-    = <Mu s.FnMode (e.Name) s.Scope e.Sentences>;
+  (Ident e.Name) = (Ident e.Name);
 
-  s.FnMode (Ident e.Name) = (Ident e.Name);
+  (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
 
-  s.FnMode (NativeBlock t.SrcPos e.Code) = (NativeBlock t.SrcPos e.Code);
-
-  s.FnMode (s.EnumSwapDeclaration s.ScopeClass e.Name)
+  (s.EnumSwapDeclaration s.ScopeClass e.Name)
     = (s.EnumSwapDeclaration s.ScopeClass e.Name);
 }
 
 ** НАМЕРЕННО ОТКАЗЫВАЕМСЯ ОТ ОТСЛЕЖИВАНИЯ КОПИРОВАНИЯ ПОВТОРНЫХ ПЕРЕМЕННЫХ
-
-/**
-  <UnBlock (e.Name) s.Scope e.Sentences>
-    == e.NewFunctions
-*/
-UnBlock {
-  (e.Name) s.Scope e.Sentences
-    = <DoUnBlock
-        (e.Name /* — имя текущей функции */) s.Scope
-        (/* scanned functions */)
-        (/* scanned sentences */)
-        e.Sentences
-        (/* unscanned functions */)
-      >;
-}
-
-DoUnBlock {
-  (e.Name) s.Scope
-  (e.ScannedFunctions) (e.ScannedSentences)
-  e.Sentences-B
-  (e.SentencePrefix (e.BlockResult) (((e.BlockName) Sentences e.SubSentences)))
-  e.Sentences-E
-  (e.UnscannedFunctions)
-    , <BlockScopeVars e.SentencePrefix> : e.ScopeVars
-    = <DoUnBlock
-        (e.Name) s.Scope
-        (e.ScannedFunctions)
-        (
-          e.ScannedSentences
-          e.Sentences-B
-          (
-            e.SentencePrefix
-            ((CallBrackets (TkName e.BlockName) e.ScopeVars e.BlockResult))
-            (/* нет блока */)
-          )
-        )
-        e.Sentences-E
-        (
-          e.UnscannedFunctions
-          (
-            (e.BlockName)
-            <Map
-              (transformer_AddScopeVars e.ScopeVars) e.SubSentences
-            >
-          )
-        )
-      >;
-
-  (e.Name) s.Scope
-  (e.ScannedFunctions) (e.ScannedSentences) e.UnscannedSentences
-  (e.UnscannedFunctions)
-    = <DoUnBlock-NextFunction
-        (
-          e.ScannedFunctions
-          (Function
-            s.Scope (e.Name)
-            Sentences e.ScannedSentences e.UnscannedSentences
-          )
-        )
-        (e.UnscannedFunctions)
-      >;
-}
-
-DoUnBlock-NextFunction {
-  (e.ScannedFunctions)
-  (((e.NextFunctionName) e.NextFunctionSentences) e.UnscannedFunctions)
-    = <DoUnBlock
-        (e.NextFunctionName) GN-Local
-        (e.ScannedFunctions)
-        (/* scanned sentences */)
-        e.NextFunctionSentences
-        (e.UnscannedFunctions)
-      >;
-
-  (e.ScannedFunctions) (/* пусто */) = e.ScannedFunctions;
-}
-
-BlockScopeVars {
-  (e.Pattern) e.Conditions
-    = <Map
-        transformer_MakeVariables
-        <ExtractVariables-Block ((e.Pattern) e.Conditions () ())>
-      >;
-}
-
-transformer_MakeVariables {
-  ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
-  (s.VarType e.Index) = (TkVariable s.VarType e.Index);
-}
-
-transformer_AddScopeVars {
-  e.ScopeVars ((e.Pattern) e.Tail) = ((e.ScopeVars e.Pattern) e.Tail);
-}
-
 
 /**
   <UnCondition (e.Name) s.Scope e.Sentences>
@@ -204,12 +94,6 @@ UnConditionSentence {
               (e.ConditionName)
               (e.Sentence) e.ContinuationSentences
             >;
-
-        (e.Pattern)
-        (Assign (e.AssignName) t.AssignResult t.AssignPattern)
-        e.Tail
-          /* не интересны предложени с присваиваниями */
-          = Fails;
 
         (e.Pattern) (e.Result) = Fails;
       };
@@ -570,7 +454,7 @@ ConditionSubFunctions {
       (Condition (e.ConditionName) (e.CondResult) (e.CondPattern))
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
-    , <ExtractVariables-Condition (e.Sentence)> : e.SentenceVariables
+    , <ExtractVariables (e.Sentence)> : e.SentenceVariables
     , <ConditionScopeVars (e.Pattern)> : e.PatternVarsAsExpr
     , <ConditionSubFunctions-Aux
         (e.ConditionName)  (e.SentenceVariables) t.ContName
@@ -594,8 +478,13 @@ ConditionScopeVars {
   (e.Pattern) e.Conditions
     = <Map
         transformer_MakeVariables
-        <ExtractVariables-Condition ((e.Pattern) e.Conditions ())>
+        <ExtractVariables ((e.Pattern) e.Conditions ())>
       >;
+}
+
+transformer_MakeVariables {
+  ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
+  (s.VarType e.Index) = (TkVariable s.VarType e.Index);
 }
 
 ConditionSubFunctions-Aux {
@@ -703,12 +592,8 @@ MakeOpenE-ForwardNext {
       );
 }
 
-ExtractVariables-Block {
-  e.Sentences = <Unique <ExtractVariables-Sentences-Block e.Sentences>>;
-}
-
-ExtractVariables-Condition {
-  e.Sentences = <Unique <ExtractVariables-Sentences-Condition e.Sentences>>;
+ExtractVariables {
+  e.Sentences = <Unique <ExtractVariables-Sentences e.Sentences>>;
 }
 
 Unique {
@@ -718,42 +603,20 @@ Unique {
   e.UniqueItems = e.UniqueItems;
 }
 
-ExtractVariables-Sentences-Block {
+ExtractVariables-Sentences {
   ((e.Pattern) e.Tail) e.Sentences
     = <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail-Block e.Tail>
-      <ExtractVariables-Sentences-Block e.Sentences>;
+      <ExtractVariables-Tail e.Tail>
+      <ExtractVariables-Sentences e.Sentences>;
 
   /* пусто */ = /* пусто */;
 }
 
-ExtractVariables-Sentences-Condition {
-  ((e.Pattern) e.Tail) e.Sentences
-    = <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail-Condition e.Tail>
-      <ExtractVariables-Sentences-Condition e.Sentences>;
-
-  /* пусто */ = /* пусто */;
-}
-
-ExtractVariables-Tail-Block {
-  (Condition (e.ConditionName) (e.Result) (/* нет блоков */) (e.Pattern)) e.Tail
-    = <ExtractVariables-Expr e.Result>
-      <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail-Block e.Tail>;
-
-  (e.Result) (/* нет блоков */) = <ExtractVariables-Expr e.Result>;
-
-  (e.Result) (((e.BlockName) Sentences e.Sentences))
-    = <ExtractVariables-Expr e.Result>
-      <ExtractVariables-Sentences-Block e.Sentences>;
-}
-
-ExtractVariables-Tail-Condition {
+ExtractVariables-Tail {
   (Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Tail
     = <ExtractVariables-Expr e.Result>
       <ExtractVariables-Expr e.Pattern>
-      <ExtractVariables-Tail-Condition e.Tail>;
+      <ExtractVariables-Tail e.Tail>;
 
   (e.Result) = <ExtractVariables-Expr e.Result>;
 }
