@@ -1,7 +1,7 @@
 /**
   <R5-Transform t.Unit*> == t.Unit*
 */
-$ENTRY R5-Transform-Conditions {
+$ENTRY Pass-UnCondition {
   e.Units
     = <Map Transform-Unit e.Units>;
 }
@@ -404,7 +404,7 @@ DoT0 {
 
 /**
   <ConditionSubFunctions (e.ConditionName) t.ContName e.Sentence>
-    == e.SubFunctions
+    == (e.CallCheckSentence) e.SubFunctions
 */
 ConditionSubFunctions {
   (e.ConditionName) t.ContName e.Sentence
@@ -414,14 +414,20 @@ ConditionSubFunctions {
       e.SentenceTail
     , e.ConditionName '?' 0 : e.CheckFunction
     , <ExtractVariables (e.Sentence)> : e.SentenceVariables
-    , <ConditionScopeVars (e.Pattern)> : e.PatternVarsAsExpr
-    , <ConditionSubFunctions-Aux
-        (e.ConditionName)  (e.SentenceVariables) t.ContName
-        (e.CheckFunction) (e.PatternVarsAsExpr)
-        (e.CondResult) (e.CondPattern) (e.SentenceTail)
-        <PatternSteps (e.SentenceVariables) e.Pattern>
+    , <ConditionContext e.Pattern> : e.PatternVarsAsExpr
+    , <PatternSteps (e.SentenceVariables) e.Pattern> : e.PatternSteps
+    , <OpenEChain
+        (e.ConditionName) (e.SentenceVariables) t.ContName (e.CheckFunction)
+        (e.PatternVarsAsExpr) (e.CondResult)
+        e.PatternSteps
       >
-    : e.SubFunctions
+    : (e.ContSentence) e.OpenEFunctions
+    , (
+        GN-Local (e.CheckFunction)
+        ((e.PatternVarsAsExpr e.CondPattern) e.SentenceTail)
+        e.ContSentence
+      )
+    : t.CheckFunction
     = (
         (e.Pattern)
         (
@@ -430,39 +436,20 @@ ConditionSubFunctions {
           )
         )
       )
-      e.SubFunctions;
+      t.CheckFunction e.OpenEFunctions;
 }
 
-ConditionScopeVars {
-  (e.Pattern) e.Conditions
+ConditionContext {
+  e.Pattern
     = <Map
         transformer_MakeVariables
-        <ExtractVariables ((e.Pattern) e.Conditions ())>
+        <Unique <ExtractVariables-Expr e.Pattern>>
       >;
 }
 
 transformer_MakeVariables {
   ('e' e.Index) = (Brackets (TkVariable 'e' e.Index));
   (s.VarType e.Index) = (TkVariable s.VarType e.Index);
-}
-
-ConditionSubFunctions-Aux {
-  (e.ConditionName) (e.VarNames) t.ContName
-  (e.CheckFunction) (e.PatternVarsAsExpr)
-  (e.CondResult) (e.CondPattern) (e.CheckSentenceTail)
-  e.PatternSteps
-    , <OpenEChain
-        (e.ConditionName) (e.VarNames) t.ContName (e.CheckFunction)
-        (e.PatternVarsAsExpr) (e.CondResult)
-        e.PatternSteps
-      >
-    : (e.ContSentence) e.OpenEFunctions
-    = (
-        GN-Local (e.CheckFunction)
-        ((e.PatternVarsAsExpr e.CondPattern) e.CheckSentenceTail)
-        e.ContSentence
-      )
-      e.OpenEFunctions;
 }
 
 OpenEChain {

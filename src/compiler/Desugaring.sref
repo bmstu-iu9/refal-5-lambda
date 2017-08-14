@@ -4,8 +4,8 @@ $EXTERN Fetch, Seq, Map, MapReduce, Inc, DelAccumulator, Reduce, Sort;
 //FROM Library
 $EXTERN StrFromInt;
 
-//FROM R5-Transformer
-$EXTERN R5-Transform-Conditions;
+//FROM Desugaring-UnCondition
+$EXTERN Pass-UnCondition;
 
 $ENTRY Desugar {
   s.MarkupContext e.AST =
@@ -17,7 +17,7 @@ $ENTRY Desugar {
         Pass-NameNestedFuncs
         Pass-RemoveBlocksAndAssigns
         (Pass-FlatNestedFuncs s.MarkupContext)
-        R5-Transform-Conditions
+        Pass-UnCondition
         Pass-CreatePredeclarations
       >
     >;
