@@ -17,8 +17,8 @@ $ENTRY Desugar {
         Pass-NameNestedFuncs
         R5-Transform-Blocks
         Pass-RemoveAssigns
-        R5-Transform-Conditions
         (Pass-FlatNestedFuncs s.MarkupContext)
+        R5-Transform-Conditions
         Pass-CreatePredeclarations
       >
     >;
@@ -529,15 +529,57 @@ ExtractNestedRec {
 
 ExtractNested-Sentence {
   s.MarkupContext e.ScopeVars ((e.NestedFuncs) (e.BorrowedVars))
-  ((e.Pattern) (e.Result))
+  ((e.Pattern) e.Conditions (e.Result))
+
     = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
     : (e.BorrowedVars^) e.LocalVars
+
+    = <ExtractNested-Conditions
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.Conditions
+      >
+    : (e.ConditionsNestedFuncs) (e.BorrowedVars^) (e.LocalVars^)
+      e.Conditions^
+
     = <ExtractNested-Result
         s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
       >
     : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
-    = ((e.NestedFuncs e.ResultNestedFuncs) (e.BorrowedVars))
-      ((e.Pattern) (e.Result));
+
+    = (
+        (e.NestedFuncs e.ConditionsNestedFuncs e.ResultNestedFuncs)
+        (e.BorrowedVars)
+      )
+      ((e.Pattern) e.Conditions (e.Result));
+}
+
+ExtractNested-Conditions {
+  s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+  (#Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Conditions
+
+    = <ExtractNested-Result
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) e.Result
+      >
+    : (e.ResultNestedFuncs) (e.BorrowedVars^) e.Result^
+
+    = <ExtractNested-Pattern (e.ScopeVars) (e.BorrowedVars) e.Pattern>
+    : (e.BorrowedVars^) e.PatternLocalVars
+
+    = <Uniq e.LocalVars e.PatternLocalVars> : e.LocalVars^
+
+    = <ExtractNested-Conditions
+        s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars)
+        e.Conditions
+      >
+    : (e.ConditionsNestedFuncs) (e.BorrowedVars^) (e.LocalVars^)
+      e.Conditions^
+
+    = (e.ResultNestedFuncs e.ConditionsNestedFuncs) (e.BorrowedVars)
+      (e.LocalVars)
+      (#Condition (e.ConditionName) (e.Result) (e.Pattern)) e.Conditions;
+
+  s.MarkupContext (e.BorrowedVars) (e.ScopeVars) (e.LocalVars) /* пусто */
+    = (/* нет вложенных функций */) (e.BorrowedVars) (e.LocalVars) /* пусто */;
 }
 
 ExtractNested-Pattern {
