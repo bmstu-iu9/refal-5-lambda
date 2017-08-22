@@ -3307,12 +3307,13 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
+  char  filename[cMaxLen] = {0};
   fgets(line, cMaxLen, m_in);
-  if (strncmp(line, " >> ", sizeof(" >> ") - 1) == 0) {
-    return fopen(line + sizeof(" >> ") - 1, "a");
+  if (sscanf(line, " >> %s", filename) == 1) {
+    return fopen(filename, "a");
   }
-  else if (strncmp(line, " > ", sizeof(" > ") - 1) == 0) {
-    return fopen(line + sizeof(" > ") - 1, "w");
+  else if (sscanf(line, " > %s", filename) == 1) {
+    return fopen(filename, "w");
   }
   else {
     return stdout;
