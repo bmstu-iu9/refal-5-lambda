@@ -3338,11 +3338,9 @@ static int refalrts::debugger::RefalDebugger::parse_line (char **line)
 
 static void refalrts::debugger::RefalDebugger::skip_space(char **ptr)
 {
-  char *tmp = *ptr;
-  while (*tmp == '\n' || *tmp == '\t' || *tmp == ' ') {
-    tmp++;
+  while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
+    (*ptr)++;
   }
-  *ptr = tmp;
 }
 
 static char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr)
