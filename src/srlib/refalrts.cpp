@@ -3475,10 +3475,10 @@ FILE *refalrts::debugger::RefalDebugger::get_out() {
   fgets(line, cMaxLen, m_in);
   int val = parse_line (&line_ptr);
   if (val == 1) {
-    return fopen(line, "a");
+    return fopen(line_ptr, "a");
   }
   else if (val == 0) {
-    return fopen(line, "w");
+    return fopen(line_ptr, "w");
   }
   else {
     return stdout;
