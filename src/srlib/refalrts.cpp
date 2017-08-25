@@ -3378,19 +3378,19 @@ void refalrts::debugger::RefalDebugger::write_byte (char **from, char **out, cha
 int refalrts::debugger::RefalDebugger::parse2hex (unsigned char *in) {
   unsigned char ret;
   if ( (*in - '0') <= 9){
-    ret = *in - '0';
+    ret = *in - (unsigned char)'0';
   }
   else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') { // см. ASCII table
-    ret = ((*in & ~(1 << 5)) - 'A') + 10; // Переключением 6-го бита в 0, мы переводим маленькие латинские буквы в большие
+    ret = ((*in & ~(1 << 5)) - (unsigned char)'A') + 10; // Переключением 6-го бита в 0, мы переводим маленькие латинские буквы в большие
   }
   else return -1;
   ret <<= 4;
   
   if ( (*(in+1) - '0') <= 9) {
-    ret |= *(in+1) - '0';
+    ret |= *(in+1) - (unsigned char)'0';
   }
   else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    ret |= (*(in+1) & ~(1 << 5)) - 'A' + 10;
+    ret |= (*(in+1) & ~(1 << 5)) - (unsigned char)'A' + 10;
   }
   else return -1;
   return ret;
@@ -3473,7 +3473,7 @@ FILE *refalrts::debugger::RefalDebugger::get_out() {
     return fopen(line, "a");
   }
   else if (val == 0) {
-    return fopen(filename, "w");
+    return fopen(line, "w");
   }
   else {
     return stdout;
