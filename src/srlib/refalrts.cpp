@@ -3019,6 +3019,14 @@ public:
   void print_res_option(FILE *out);
   bool print_var_option(const char *var_name, FILE *out);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
+  
+  static int parse_line(char **line);
+  static void skip_space (char **ptr);
+  static char *skip_nonspace (char *ptr);
+  static int check_bracket (char **ptr);
+  static void write_byte (char **from, char **out, char **str_p, char val);
+  static int parse2hex (unsigned char *in);
+  static int quotation_mark_parse(char *from, char *out);
 
   refalrts::FnResult handle_function_call(
     Iter begin, Iter end, RefalFunction *callee
@@ -3303,17 +3311,174 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 }
 
 //=============================================================================
-//  Работа с потоками вывода
+//  Работа с потоками вывода и парсинг строки
+
+int refalrts::debugger::RefalDebugger::parse_line (char **line)
+{
+  char *line_ptr = *line;
+  skip_space(&line_ptr);
+  int val = check_bracket(&line_ptr);
+  if (val == -1) {
+    return -1;
+  }
+  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
+  if (*line_ptr == '"') {
+    if (quotation_mark_parse(line_ptr+1, *line) == -1) {
+      return -1;
+    }
+  }
+  else
+  {
+    *line = line_ptr;
+    char *end = skip_nonspace(line_ptr);
+    *end = '\0';
+  }
+  return val;
+}
+
+void refalrts::debugger::RefalDebugger::skip_space(char **ptr)
+{
+  while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
+    (*ptr)++;
+  }
+}
+
+char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr)
+{
+  while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
+    ptr++;
+  }
+  return ptr;
+}
+
+int refalrts::debugger::RefalDebugger::check_bracket(char **ptr)
+{
+  if (**ptr == '>') {
+    (*ptr)++;
+    if (**ptr == '>') {
+      (*ptr)++;
+      return 1;
+    }
+    return 0;
+  }
+  return -1;
+}
+
+// from - источкник, из которого копируем строку
+// out - назначение, по которому копируется строка
+// и дописывается 1 байт val (от эскейп-последовательности)
+// str_p - адрес, до которого происходит копирование из from
+// (*str_p - *from) - количество байт, которое копируем
+void refalrts::debugger::RefalDebugger::write_byte(char **from,
+   char **out, char **str_p, char val)
+{
+  memmove(*out, *from, *str_p - *from);
+  *out += (*str_p - *from) + 1;
+  *(*out - 1) = val;
+  *str_p += 2;
+  *from = *str_p;
+}
+
+int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
+  unsigned char ret;
+  if ( (*in - '0') <= 9){
+    ret = static_cast<unsigned char>(*in - '0');
+  } // обнулением 6-го бита, мы переводим маленькие латинские буквы в большие
+  else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') { // см. ASCII table
+    ret = static_cast<unsigned char>(((*in & ~(1 << 5)) - 'A') + 10); 
+  }
+  else return -1;
+  ret <<= 4;
+  
+  if ( (*(in+1) - '0') <= 9) {
+    ret |= static_cast<unsigned char>(*(in+1) - '0');
+  }
+  else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
+    ret |= static_cast<unsigned char>((*(in+1) & ~(1 << 5)) - 'A' + 10);
+  }
+  else return -1;
+  return ret;
+}
+
+int refalrts::debugger::RefalDebugger::quotation_mark_parse(
+  char *from, char *out)
+{
+  char *str_p = from;
+
+  for (;;) {
+    switch (*str_p) {
+    case '"':
+      switch (*(str_p + 1)) {
+      case '\n':
+      case '\t':
+      case ' ':
+      case '\0':
+        memmove(out, from, str_p - from);
+        *(out + (str_p - from)) = '\0';
+        return 0;
+      case 'a':
+        write_byte(&from, &out, &str_p, '\a');
+        continue;
+      case 'b':
+        write_byte(&from, &out, &str_p, '\b');
+        continue;
+      case 'f':
+        write_byte(&from, &out, &str_p, '\f');
+        continue;
+      case 'n':
+        write_byte(&from, &out, &str_p, '\n');
+        continue;
+      case 'r':
+        write_byte(&from, &out, &str_p, '\r');
+        continue;
+      case 't':
+       write_byte(&from, &out, &str_p, '\t');
+        continue;
+      case 'v':
+        write_byte(&from, &out, &str_p, '\v');
+        continue;
+      case 'e':
+        write_byte(&from, &out, &str_p, '\e');
+        continue;
+      case '"':
+        write_byte(&from, &out, &str_p, '"');
+        continue;
+      case 'x':
+        {
+          int hexval = parse2hex((unsigned char *)str_p + 2);
+          if (hexval == -1) {
+            return -1;
+          }
+          memmove(out, from, str_p - from);
+          out += (str_p - from) + 1;
+          *(out-1) = hexval;
+          str_p += 4;
+          from = str_p;
+          continue;
+        }
+      default:
+        return -1;
+      }
+    case '\0':
+      return -1;
+    default :
+      str_p++;
+      continue;
+    }
+  }
+}
+
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
-  char  filename[cMaxLen] = {0};
+  char *line_ptr = line;
   fgets(line, cMaxLen, m_in);
-  if (sscanf(line, " >> %s", filename) == 1) {
-    return fopen(filename, "a");
+  int val = parse_line (&line_ptr);
+  if (val == 1) {
+    return fopen(line_ptr, "a");
   }
-  else if (sscanf(line, " > %s", filename) == 1) {
-    return fopen(filename, "w");
+  else if (val == 0) {
+    return fopen(line_ptr, "w");
   }
   else {
     return stdout;
