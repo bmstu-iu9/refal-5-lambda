@@ -3020,7 +3020,7 @@ public:
   bool print_var_option(const char *var_name, FILE *out);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
   
-  int parse_line(char *line);
+  int parse_line(char **line);
   void skip_space (char **ptr);
   char *skip_nonspace (char *ptr);
   int check_bracket (char **ptr);
@@ -3313,9 +3313,9 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 //=============================================================================
 //  Работа с потоками вывода и парсинг строки
 
-int refalrts::debugger::RefalDebugger::parse_line (char *line)
+int refalrts::debugger::RefalDebugger::parse_line (char **line)
 {
-  char *line_ptr = line;
+  char *line_ptr = *line;
   refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
   int val = refalrts::debugger::RefalDebugger::check_bracket(&line_ptr);
   if (val == -1) {
@@ -3323,12 +3323,13 @@ int refalrts::debugger::RefalDebugger::parse_line (char *line)
   }
   refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
   if (*line_ptr == '"') {
-    if (refalrts::debugger::RefalDebugger::quotation_mark_parse(line_ptr+1, line) == -1) {
+    if (refalrts::debugger::RefalDebugger::quotation_mark_parse(line_ptr+1, *line) == -1) {
 	  return -1;
     }
 	}
   else
   {
+    *line = line_ptr;
     char *end = refalrts::debugger::RefalDebugger::skip_nonspace(line_ptr);
     *end = '\0';
   }
@@ -3466,8 +3467,9 @@ int refalrts::debugger::RefalDebugger::quotation_mark_parse(char *from, char *ou
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
+  char *line_ptr = line;
   fgets(line, cMaxLen, m_in);
-  int val = refalrts::debugger::RefalDebugger::parse_line (line);
+  int val = refalrts::debugger::RefalDebugger::parse_line (&line_ptr);
   if (val == 1) {
     return fopen(line, "a");
   }
