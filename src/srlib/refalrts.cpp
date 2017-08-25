@@ -3324,9 +3324,9 @@ int refalrts::debugger::RefalDebugger::parse_line (char **line)
   refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
   if (*line_ptr == '"') {
     if (refalrts::debugger::RefalDebugger::quotation_mark_parse(line_ptr+1, *line) == -1) {
-	  return -1;
+      return -1;
     }
-	}
+  }
   else
   {
     *line = line_ptr;
@@ -3380,13 +3380,13 @@ int refalrts::debugger::RefalDebugger::parse2hex (unsigned char *in) {
   if ( (*in - '0') <= 9){
     ret = *in - '0';
   }
-  else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') {
-    ret = ((*in & ~(1 << 5)) - 'A') + 10;
+  else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') { // см. ASCII table
+    ret = ((*in & ~(1 << 5)) - 'A') + 10; // Переключением 5-го бита в 0, мы переводим маленькие латинские буквы в большие
   }
   else return -1;
   ret <<= 4;
   
-  if ( (*(in+1) - '0') <= 9){
+  if ( (*(in+1) - '0') <= 9) {
     ret |= *(in+1) - '0';
   }
   else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
@@ -3442,18 +3442,17 @@ int refalrts::debugger::RefalDebugger::quotation_mark_parse(char *from, char *ou
         {
           int tmp = refalrts::debugger::RefalDebugger::parse2hex((unsigned char *)str_p + 2);
           if (tmp == -1) {
-	          fprintf(stderr, "Error escape sequence HEX parse!!\n");
-		        return -1;
-		      }
-		      memmove(out, from, str_p - from);
+            return -1;
+          }
+          memmove(out, from, str_p - from);
           out += (str_p - from) + 1;
           *(out-1) = tmp;
           str_p += 4;
           from = str_p;
-	        continue;
+          continue;
         }
-	    default:
-		    return -1;
+      default:
+        return -1;
       }
     case '\0':
       return -1;
