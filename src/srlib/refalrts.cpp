@@ -3313,7 +3313,7 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 //=============================================================================
 //  Работа с потоками вывода и парсинг строки
 
-static int refalrts::debugger::RefalDebugger::parse_line (char **line)
+int refalrts::debugger::RefalDebugger::parse_line (char **line)
 {
   char *line_ptr = *line;
   skip_space(&line_ptr);
@@ -3336,14 +3336,14 @@ static int refalrts::debugger::RefalDebugger::parse_line (char **line)
   return val;
 }
 
-static void refalrts::debugger::RefalDebugger::skip_space(char **ptr)
+void refalrts::debugger::RefalDebugger::skip_space(char **ptr)
 {
   while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
     (*ptr)++;
   }
 }
 
-static char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr)
+char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr)
 {
   while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
     ptr++;
@@ -3351,7 +3351,7 @@ static char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr)
   return ptr;
 }
 
-static int refalrts::debugger::RefalDebugger::check_bracket(char **ptr)
+int refalrts::debugger::RefalDebugger::check_bracket(char **ptr)
 {
   if (**ptr == '>') {
     (*ptr)++;
@@ -3369,7 +3369,7 @@ static int refalrts::debugger::RefalDebugger::check_bracket(char **ptr)
 // и дописывается 1 байт val (от эскейп-последовательности)
 // str_p - адрес, до которого происходит копирование из from
 // (*str_p - *from) - количество байт, которое копируем
-static void refalrts::debugger::RefalDebugger::write_byte(char **from,
+void refalrts::debugger::RefalDebugger::write_byte(char **from,
    char **out, char **str_p, char val)
 {
   memmove(*out, *from, *str_p - *from);
@@ -3379,7 +3379,7 @@ static void refalrts::debugger::RefalDebugger::write_byte(char **from,
   *from = *str_p;
 }
 
-static int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
+int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
   unsigned char ret;
   if ( (*in - '0') <= 9){
     ret = static_cast<unsigned char>(*in - '0');
@@ -3400,7 +3400,7 @@ static int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
   return ret;
 }
 
-static int refalrts::debugger::RefalDebugger::quotation_mark_parse(
+int refalrts::debugger::RefalDebugger::quotation_mark_parse(
   char *from, char *out)
 {
   char *str_p = from;
@@ -3445,8 +3445,8 @@ static int refalrts::debugger::RefalDebugger::quotation_mark_parse(
         continue;
       case 'x':
         {
-          int tmp = parse2hex((unsigned char *)str_p + 2);
-          if (tmp == -1) {
+          int hexval = parse2hex((unsigned char *)str_p + 2);
+          if (hexval == -1) {
             return -1;
           }
           memmove(out, from, str_p - from);
