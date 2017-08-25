@@ -3019,6 +3019,14 @@ public:
   void print_res_option(FILE *out);
   bool print_var_option(const char *var_name, FILE *out);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
+  
+  int parse_line(char *line);
+  void skip_space (char **ptr);
+  char *skip_nonspace (char *ptr);
+  int check_bracket (char **ptr);
+  void write_byte (char **from, char **out, char **str_p, char val);
+  int parse2hex (unsigned char *in);
+  int quotation_mark_parse(char *from, char *out);
 
   refalrts::FnResult handle_function_call(
     Iter begin, Iter end, RefalFunction *callee
@@ -3303,16 +3311,167 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 }
 
 //=============================================================================
-//  Работа с потоками вывода
+//  Работа с потоками вывода и парсинг строки
+
+int refalrts::debugger::RefalDebugger::parse_line (char *line)
+{
+  char *line_ptr = line;
+  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
+  int val = refalrts::debugger::RefalDebugger::check_bracket(&line_ptr);
+  if (val == -1) {
+    return -1;
+  }
+  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
+  if (*line_ptr == '"') {
+    if (refalrts::debugger::RefalDebugger::quotation_mark_parse(line_ptr+1, line) == -1) {
+	  return -1;
+    }
+	}
+  else
+  {
+    char *end = refalrts::debugger::RefalDebugger::skip_nonspace(line_ptr);
+    *end = '\0';
+  }
+  return val;
+}
+
+void refalrts::debugger::RefalDebugger::skip_space (char **ptr)
+{
+  char *tmp = *ptr;
+  while (*tmp == '\n' || *tmp == '\t' || *tmp == ' ') {
+    tmp++;
+  }
+  *ptr = tmp;
+}
+
+char *refalrts::debugger::RefalDebugger::skip_nonspace (char *ptr)
+{
+  while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
+    ptr++;
+  }
+  return ptr;
+}
+
+int refalrts::debugger::RefalDebugger::check_bracket (char **ptr)
+{
+  if (**ptr == '>') {
+    (*ptr)++;
+    if (**ptr == '>') {
+      (*ptr)++;
+      return 1;
+    }
+    return 0;
+  }
+  return -1;
+}
+
+void refalrts::debugger::RefalDebugger::write_byte (char **from, char **out, char **str_p, char val)
+{
+  memmove(*out, *from, *str_p - *from);
+  *out += (*str_p - *from) + 1;
+  *(*out - 1) = val;
+  *str_p += 2;
+  *from = *str_p;
+}
+
+int refalrts::debugger::RefalDebugger::parse2hex (unsigned char *in) {
+  unsigned char ret;
+  if ( (*in - '0') <= 9){
+    ret = *in - '0';
+  }
+  else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') {
+    ret = ((*in & ~(1 << 5)) - 'A') + 10;
+  }
+  else return -1;
+  ret <<= 4;
+  
+  if ( (*(in+1) - '0') <= 9){
+    ret |= *(in+1) - '0';
+  }
+  else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
+    ret |= (*(in+1) & ~(1 << 5)) - 'A' + 10;
+  }
+  else return -1;
+  return ret;
+}
+
+int refalrts::debugger::RefalDebugger::quotation_mark_parse(char *from, char *out)
+{
+  char *str_p = from;
+
+  for (;;) {
+    switch (*str_p) {
+    case '"':
+      switch (*(str_p + 1)) {
+      case '\n':
+      case '\t':
+      case ' ':
+      case '\0':
+        memmove(out, from, str_p - from);
+        *(out + (str_p - from)) = '\0';
+        return 0;
+      case 'a':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\a');
+        continue;
+      case 'b':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\b');
+        continue;
+      case 'f':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\f');
+        continue;
+      case 'n':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\n');
+        continue;
+      case 'r':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\r');
+        continue;
+      case 't':
+       refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\t');
+        continue;
+      case 'v':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\v');
+        continue;
+      case 'e':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '\e');
+        continue;
+      case '"':
+        refalrts::debugger::RefalDebugger::write_byte(&from, &out, &str_p, '"');
+        continue;
+      case 'x':
+        {
+          int tmp = refalrts::debugger::RefalDebugger::parse2hex((unsigned char *)str_p + 2);
+          if (tmp == -1) {
+	          fprintf(stderr, "Error escape sequence HEX parse!!\n");
+		        return -1;
+		      }
+		      memmove(out, from, str_p - from);
+          out += (str_p - from) + 1;
+          *(out-1) = tmp;
+          str_p += 4;
+          from = str_p;
+	        continue;
+        }
+	    default:
+		    return -1;
+      }
+    case '\0':
+      return -1;
+    default :
+      str_p++;
+      continue;
+    }
+  }
+}
+
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
-  char  filename[cMaxLen] = {0};
   fgets(line, cMaxLen, m_in);
-  if (sscanf(line, " >> %s", filename) == 1) {
-    return fopen(filename, "a");
+  int val = refalrts::debugger::RefalDebugger::parse_line (line);
+  if (val == 1) {
+    return fopen(line, "a");
   }
-  else if (sscanf(line, " > %s", filename) == 1) {
+  else if (val == 0) {
     return fopen(filename, "w");
   }
   else {
