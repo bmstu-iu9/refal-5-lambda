@@ -3451,7 +3451,7 @@ int refalrts::debugger::RefalDebugger::quotation_mark_parse(
           }
           memmove(out, from, str_p - from);
           out += (str_p - from) + 1;
-          *(out-1) = tmp;
+          *(out-1) = hexval;
           str_p += 4;
           from = str_p;
           continue;
