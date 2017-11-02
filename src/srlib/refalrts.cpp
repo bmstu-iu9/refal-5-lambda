@@ -3938,6 +3938,24 @@ public:
   bool print_var_option(const char *var_name, FILE *out);
   refalrts::FnResult debugger_loop(Iter begin, Iter end);
 
+  enum RedirectionType {
+    cRedirectionType_None = -1,
+    cRedirectionType_Write = 0,
+    cRedirectionType_Append = 1,
+  };
+
+  enum {
+    cBadHexVal = -1
+  };
+
+  static RedirectionType parse_redirection(char **line);
+  static void skip_space (char **ptr);
+  static char *skip_nonspace (char *ptr);
+  static RedirectionType check_bracket (char **ptr);
+  static void write_byte (char **from, char **out, char **str_p, char val);
+  static int parse2hex (unsigned char *in);
+  static bool quotation_mark_parse(char *from, char *out);
+
   refalrts::FnResult handle_function_call(
     Iter begin, Iter end, RefalFunction *callee
   );
@@ -4221,21 +4239,193 @@ void refalrts::debugger::BreakpointSet::print(FILE *out = stdout) {
 }
 
 //=============================================================================
-//  Работа с потоками вывода
+//  Работа с потоками вывода и парсинг строки
+
+refalrts::debugger::RefalDebugger::RedirectionType
+refalrts::debugger::RefalDebugger::parse_redirection(char **line) {
+  char *line_ptr = *line;
+
+  skip_space(&line_ptr);
+
+  RedirectionType result = check_bracket(&line_ptr);
+  if (result == cRedirectionType_None) {
+    return cRedirectionType_None;
+  }
+
+  refalrts::debugger::RefalDebugger::skip_space(&line_ptr);
+
+  if (*line_ptr == '"') {
+    if (! quotation_mark_parse(line_ptr+1, *line)) {
+      return cRedirectionType_None;
+    }
+  } else {
+    *line = line_ptr;
+    char *end = skip_nonspace(line_ptr);
+    *end = '\0';
+  }
+
+  return result;
+}
+
+void refalrts::debugger::RefalDebugger::skip_space(char **ptr) {
+  while (**ptr == '\n' || **ptr == '\t' || **ptr == ' ') {
+    (*ptr)++;
+  }
+}
+
+char *refalrts::debugger::RefalDebugger::skip_nonspace(char *ptr) {
+  while (*ptr != '\n' && *ptr != '\t' && *ptr != ' ') {
+    ptr++;
+  }
+
+  return ptr;
+}
+
+refalrts::debugger::RefalDebugger::RedirectionType
+refalrts::debugger::RefalDebugger::check_bracket(char **ptr) {
+  if (**ptr == '>') {
+    (*ptr)++;
+    if (**ptr == '>') {
+      (*ptr)++;
+      return cRedirectionType_Append;
+    }
+    return cRedirectionType_Write;
+  }
+  return cRedirectionType_None;
+}
+
+// from - источкник, из которого копируем строку
+// out - назначение, по которому копируется строка
+// и дописывается 1 байт val (от эскейп-последовательности)
+// str_p - адрес, до которого происходит копирование из from
+// (*str_p - *from) - количество байт, которое копируем
+void refalrts::debugger::RefalDebugger::write_byte(
+  char **from, char **out, char **str_p, char val
+) {
+  memmove(*out, *from, *str_p - *from);
+  *out += (*str_p - *from) + 1;
+  *(*out - 1) = val;
+  *str_p += 2;
+  *from = *str_p;
+}
+
+int refalrts::debugger::RefalDebugger::parse2hex(unsigned char *in) {
+  unsigned char ret;
+  if ( (*in - '0') <= 9){
+    ret = static_cast<unsigned char>(*in - '0');
+  } else if ( (*in & ~(1 << 5)) - 'A' <= 'F' - 'A') {
+    // обнулением 6-го бита, мы переводим маленькие латинские буквы в большие
+    // см. ASCII table
+    ret = static_cast<unsigned char>(((*in & ~(1 << 5)) - 'A') + 10);
+  } else {
+    return cBadHexVal;
+  }
+  ret <<= 4;
+
+  if ( (*(in+1) - '0') <= 9) {
+    ret |= static_cast<unsigned char>(*(in+1) - '0');
+  } else if ( (*(in+1) & ~(1 << 5)) - 'A' <= 'F' - 'A') {
+    ret |= static_cast<unsigned char>((*(in+1) & ~(1 << 5)) - 'A' + 10);
+  } else {
+    return cBadHexVal;
+  }
+  return ret;
+}
+
+bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
+  char *from, char *out
+) {
+  char *str_p = from;
+
+  for (;;) {
+    switch (*str_p) {
+    case '"':
+      switch (*(str_p + 1)) {
+      case '\n':
+      case '\t':
+      case ' ':
+      case '\0':
+        memmove(out, from, str_p - from);
+        *(out + (str_p - from)) = '\0';
+        return true;
+
+      case 'a':
+        write_byte(&from, &out, &str_p, '\a');
+        continue;
+
+      case 'b':
+        write_byte(&from, &out, &str_p, '\b');
+        continue;
+
+      case 'f':
+        write_byte(&from, &out, &str_p, '\f');
+        continue;
+
+      case 'n':
+        write_byte(&from, &out, &str_p, '\n');
+        continue;
+
+      case 'r':
+        write_byte(&from, &out, &str_p, '\r');
+        continue;
+
+      case 't':
+        write_byte(&from, &out, &str_p, '\t');
+        continue;
+
+      case 'v':
+        write_byte(&from, &out, &str_p, '\v');
+        continue;
+
+      case 'e':
+        write_byte(&from, &out, &str_p, '\e');
+        continue;
+
+      case '"':
+        write_byte(&from, &out, &str_p, '"');
+        continue;
+
+      case 'x':
+        {
+          int hexval = parse2hex((unsigned char *)str_p + 2);
+          if (hexval == cBadHexVal) {
+            return -1;
+          }
+          memmove(out, from, str_p - from);
+          out += (str_p - from) + 1;
+          *(out-1) = static_cast<char>(hexval);
+          str_p += 4;
+          from = str_p;
+          continue;
+        }
+
+      default:
+        return false;
+      }
+
+    case '\0':
+      return false;
+
+    default :
+      str_p++;
+      continue;
+    }
+  }
+}
+
 
 FILE *refalrts::debugger::RefalDebugger::get_out() {
   char line[cMaxLen] = {0};
-  char  filename[cMaxLen] = {0};
+  char *line_ptr = line;
   if (fgets(line, cMaxLen, m_in) == 0) {
     return stdout;
   }
-  if (sscanf(line, " >> %s", filename) == 1) {
-    return fopen(filename, "a");
-  }
-  else if (sscanf(line, " > %s", filename) == 1) {
-    return fopen(filename, "w");
-  }
-  else {
+  RedirectionType type = parse_redirection(&line_ptr);
+  if (type == cRedirectionType_Append) {
+    return fopen(line_ptr, "a");
+  } else if (type == cRedirectionType_Write) {
+    return fopen(line_ptr, "w");
+  } else {
     return stdout;
   }
 }
