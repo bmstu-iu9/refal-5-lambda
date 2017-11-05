@@ -1,14 +1,14 @@
 #!/bin/bash
 
 platform_uname() {
+  # uname для Cygwin и MinGW выдаёт имя в виде CYGWIN_osver или MINGW32_osver,
+  # номер версии обрезаем
   uname | sed 's/_.*$//'
 }
 
 platform_subdir_lookup() {
   LIBDIR=$1
 
-  # uname для Cygwin и MinGW выдаёт имя в виде CYGWIN_osver или MINGW32_osver,
-  # номер версии обрезаем
   PLATFORMDIR="$LIBDIR/platform-$(platform_uname)"
 
   if [ ! -d $PLATFORMDIR ]; then
