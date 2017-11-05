@@ -13,8 +13,6 @@ syntax match simpleRefalBrokenCompound /"[^"]*$/
 syntax match simpleRefalCompound /"\(\(\\.\)\|[^"]\)*"/
 syntax region simpleRefalComment start=/\/\*/ skip=/\n/ end=/\*\//
 syntax region simpleRefalComment start=/\/\// end=/$/
-" Классический комментарий РЕФАЛ-5
-" syntax region simpleRefalComment start=/^\*/ end=/$/
 syntax region simpleRefalInlineNative
   \ matchgroup=simpleRefalInlineNativeEdge
   \ start=/^%%$/ end=/^%%$/ contains=@simpleRefalCpp
