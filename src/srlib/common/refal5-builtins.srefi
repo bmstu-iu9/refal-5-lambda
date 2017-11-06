@@ -1,12 +1,22 @@
+//==============================================================================
+// Предобъявления и определения встроенных функций Рефала-5λ
+//==============================================================================
+
+
+/********************************* REFACTORED *********************************/
+
+// 25. Prout
+
+//FROM Library
+$EXTERN Prout, Proud, Trout;
+
+
+/******************************* NOT REFACTORED *******************************/
+
 //FROM Library
 $EXTERN Arg, Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine, Explode,
   FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
   SymbType, SymbCompare, Implode;
-
-Prout {
-  // В первом приближении достаточно
-  e.Text = <WriteLine e.Text>;
-}
 
 $SWAP __file_handles;
 

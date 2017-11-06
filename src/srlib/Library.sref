@@ -12,8 +12,67 @@
 %%
 
 //==============================================================================
-// Библиотека "встроенных" функций
+// Функции стандартной библиотеки Library Простого Рефала
+// и встроенные функции Рефала-5λ
 //==============================================================================
+
+/********************************* REFACTORED *********************************/
+
+
+//------------------------------------------------------------------------------
+// Функции, написанные на C++
+//------------------------------------------------------------------------------
+
+%%
+namespace {
+
+extern refalrts::FnResult write_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+}  // unnamed namespace
+%%
+
+
+//------------------------------------------------------------------------------
+// Встроенные функции Рефала-5λ
+//------------------------------------------------------------------------------
+
+
+/**
+  25. <Prout e.AnyExpression> == []
+*/
+$ENTRY Prout {
+%%
+  return write_line(arg_begin, arg_end);
+%%
+}
+
+/**
+  Proud and Trout is synonyms for Prout :-)
+*/
+$ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
+$ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
+
+
+//------------------------------------------------------------------------------
+// Стандартные функции Простого Рефала
+//------------------------------------------------------------------------------
+
+
+/**
+  <WriteLine e.AnyExpression> == []
+
+  Synonym for Prout
+*/
+$ENTRY WriteLine {
+%%
+  return write_line(arg_begin, arg_end);
+%%
+}
+
+
+/******************************* NOT REFACTORED *******************************/
 
 // Основные перечисления
 
@@ -110,6 +169,8 @@ $ENTRY Mod {
 // Ввод-вывод
 
 %%
+namespace {
+
 refalrts::FnResult write_to_stream(
   FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
 ) {
@@ -192,10 +253,10 @@ refalrts::FnResult write_to_stream(
     return refalrts::cSuccess;
   }
 }
-%%
 
-$ENTRY WriteLine {
-%%
+extern refalrts::FnResult write_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -207,8 +268,10 @@ $ENTRY WriteLine {
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 $ENTRY FWriteLine {
 %%
