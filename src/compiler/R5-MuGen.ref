@@ -3,7 +3,7 @@ $ENTRY R5-AddMu {
     , <Builtins> : e.Builtins
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
-    = (Function NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
+    = (Function MuGen-NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
 }
 
 Builtins {
@@ -39,7 +39,7 @@ MuSentence {
 }
 
 Var-eX {
-  = (TkVariable NoPos 'eX');
+  = (TkVariable MuGen-NoPos 'eX');
 }
 
 Call-eX {
@@ -48,7 +48,7 @@ Call-eX {
     : e.SugarNames-B (s.SugarName e.RealName) e.SugarNames-E
     = <Call-eX e.RealName>;
 
-  e.Name = (CallBrackets (TkName NoPos e.Name) <Var-eX>);
+  e.Name = (CallBrackets (TkName MuGen-NoPos e.Name) <Var-eX>);
 }
 
 MuSentence-Special {
