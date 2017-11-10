@@ -96,6 +96,11 @@ DoScan {
   t.Pos ('\"' e.Line) e.Lines =
     <DoScan-Compound t.Pos <IncCol t.Pos> () (e.Line) e.Lines>;
 
+  t.Pos ('\\' e.LineWithEscapes) e.Lines
+    , <ScanEscape t.Pos e.LineWithEscapes>
+    : t.ScannedToken t.Pos1 e.RestOfLine
+    = t.ScannedToken <DoScan t.Pos1 (e.RestOfLine) e.Lines>;
+
   t.Pos (s.Other e.Line) e.Lines =
     (TkError t.Pos 'Bad character \'' s.Other '\'')
     <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
