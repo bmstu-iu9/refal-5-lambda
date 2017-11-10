@@ -240,6 +240,7 @@ DoScan-Chars {
 SimpleEscapedChar {
   s.Escaped
     , ('\'\'') ('\"\"') ('\\\\') ('n\n') ('r\r') ('t\t')
+      ('((') ('))') ('<<') ('>>')
     : {
         e.Escapes-B (s.Escaped s.Char) e.Escapes-E = s.Char;
 
