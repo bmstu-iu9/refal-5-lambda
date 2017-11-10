@@ -248,30 +248,37 @@ SimpleEscapedChar {
       }
 }
 
+ScanEscape {
+  t.Pos s.Escaped e.Line
+    , <SimpleEscapedChar s.Escaped> : s.Char
+    = (TkChar t.Pos s.Char)
+      <IncCol t.Pos Len '\\' s.Escaped> e.Line;
+
+  t.Pos 'x' s.Hex1 s.Hex2 e.Line
+    , <HexDigit s.Hex1> : s.Num1
+    , <HexDigit s.Hex2> : s.Num2
+    = (TkChar t.Pos <Chr <+ <* s.Num1 16> s.Num2>>)
+      <IncCol t.Pos Len '\\x' s.Hex1 s.Hex2> e.Line;
+
+  t.Pos 'x' e.Line
+    = (TkError t.Pos 'After \\x must be two hex digits')
+      <IncCol t.Pos Len '\\x'> e.Line;
+
+
+  t.Pos s.Other e.Line
+    = (TkError t.Pos 'Bad escape sequence \\' s.Other)
+      <IncCol t.Pos Len '\\' s.Other> e.Line;
+
+  t.Pos /* пусто */
+    = (TkError t.Pos 'Unexpected \\ at end of line')
+      t.Pos /* пусто */;
+}
+
 DoScan-Chars-Escape {
-  t.Pos (s.Escaped e.Line) e.Lines,
-      <SimpleEscapedChar s.Escaped>: s.Char =
-    (TkChar t.Pos s.Char)
-    <DoScan-Chars <IncCol t.Pos Len '\\' s.Escaped> (e.Line) e.Lines>;
-
-  t.Pos ('x' s.Hex1 s.Hex2 e.Line) e.Lines,
-      <HexDigit s.Hex1>: s.Num1,
-      <HexDigit s.Hex2>: s.Num2 =
-    (TkChar t.Pos <Chr <+ <* s.Num1 16> s.Num2>>)
-    <DoScan-Chars <IncCol t.Pos Len '\\x' s.Hex1 s.Hex2> (e.Line) e.Lines>;
-
-  t.Pos ('x' e.Line) e.Lines =
-    (TkError t.Pos 'After \\x must be two hex digits')
-    <DoScan-Chars <IncCol t.Pos Len '\\x'> (e.Line) e.Lines>;
-
-
-  t.Pos (s.Other e.Line) e.Lines =
-    (TkError t.Pos 'Bad escape sequence \\' s.Other)
-    <DoScan-Chars <IncCol t.Pos Len '\\' s.Other> (e.Line) e.Lines>;
-
-  t.Pos () e.Lines =
-    (TkError t.Pos 'Unexpected \\ at end of string literal')
-    <DoScan <IncLine t.Pos> e.Lines>;
+  t.Pos (e.LineWithEscapes) e.Lines
+    , <ScanEscape t.Pos e.LineWithEscapes>
+    : t.ScannedToken t.Pos1 e.RestOfLine
+    = t.ScannedToken <DoScan-Chars t.Pos1 (e.RestOfLine) e.Lines>;
 }
 
 HexDigit {
