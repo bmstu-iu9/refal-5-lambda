@@ -23,6 +23,12 @@ $EXTERN Explode;
 $EXTERN Prout, Proud, Trout;
 
 
+// 59. Explode_Ext
+
+//FROM Library
+$EXTERN Explode_Ext;
+
+
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
@@ -295,10 +301,6 @@ __Dg-SwExist {
     = e.Value <__store e.Store-B e.Store-E>;
 
   (e.Key) e.Store = /* пусто */ <__store e.Store>;
-}
-
-Explode_Ext {
-  s.Compound = <Explode s.Compound>;
 }
 
 Implode_Ext {

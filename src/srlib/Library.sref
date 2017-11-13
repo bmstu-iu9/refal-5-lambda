@@ -82,6 +82,16 @@ $ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
 $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
 
 
+/**
+  59. <Explode_Ext s.COMPOUND> == s.CHAR*
+*/
+$ENTRY Explode_Ext {
+%%
+  return explode(arg_begin, arg_end);
+%%
+}
+
+
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------
