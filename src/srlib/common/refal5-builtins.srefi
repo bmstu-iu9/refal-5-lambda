@@ -10,6 +10,13 @@
 //FROM Library
 $EXTERN Arg;
 
+
+// 12. Explode
+
+//FROM Library
+$EXTERN Explode;
+
+
 // 25. Prout
 
 //FROM Library
@@ -19,7 +26,7 @@ $EXTERN Prout, Proud, Trout;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine, Explode,
+$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine,
   FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
   SymbType, SymbCompare, Implode;
 

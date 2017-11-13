@@ -28,6 +28,10 @@ namespace {
 
 extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+extern refalrts::FnResult explode(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
 extern refalrts::FnResult write_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -51,6 +55,15 @@ $ENTRY Arg {
 %%
 }
 
+
+/**
+  12. <Explode s.COMPOUND> == s.CHAR*
+*/
+$ENTRY Explode {
+%%
+  return explode(arg_begin, arg_end);
+%%
+}
 
 
 /**
@@ -1109,8 +1122,12 @@ $ENTRY Implode {
 %%
 }
 
-$ENTRY Explode {
 %%
+namespace {
+
+refalrts::FnResult explode(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -1134,8 +1151,10 @@ $ENTRY Explode {
   refalrts::splice_evar(arg_begin, content_b, content_e);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 $ENTRY FWriteBytes {
 %%
