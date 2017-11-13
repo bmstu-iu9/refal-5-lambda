@@ -1,0 +1,6 @@
+$ENTRY Go {
+  = <Eq True <ExistFile 'detect.ref'>>
+    <Eq False <ExistFile 'not-exist.txt'>>;
+}
+
+Eq { s.X s.X = <Prout s.X>; }

@@ -29,7 +29,6 @@ run_all_tests() {
   simple_tests ok \
     Library-Math-OK \
     Library-FOpen-FReadLine-FClose \
-    Library-ExistFile \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
     Library-SymbType \

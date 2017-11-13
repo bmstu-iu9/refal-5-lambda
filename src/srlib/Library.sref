@@ -40,6 +40,10 @@ extern refalrts::FnResult refal_getenv(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
+extern refalrts::FnResult exist_file(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
 }  // unnamed namespace
 %%
 
@@ -93,6 +97,17 @@ $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
 $ENTRY GetEnv {
 %%
   return refal_getenv(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  55. <ExistFile e.FileName> == True | False
+  e.FileName ::= s.CHAR*
+*/
+$ENTRY ExistFile {
+%%
+  return exist_file(arg_begin, arg_end);
 %%
 }
 
@@ -595,11 +610,10 @@ refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   return refalrts::cSuccess;
 }
 
-}  // unnamed namespace
-%%
 
-$ENTRY ExistFile {
-%%
+extern refalrts::FnResult exist_file(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::Iter pfunc_name =
@@ -626,8 +640,10 @@ $ENTRY ExistFile {
 
   refalrts::splice_to_freelist(pfunc_name, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 %%
 namespace {

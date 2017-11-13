@@ -1,8 +1,0 @@
-//FROM Library
-$EXTERN ExistFile;
-
-$ENTRY Go {
-  =
-    <{ #True = ; } <ExistFile '2lines.txt'>>
-    <{ #False = ; } <ExistFile 'not-exist.txt'>>;
-}

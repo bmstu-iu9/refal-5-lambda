@@ -29,6 +29,12 @@ $EXTERN Prout, Proud, Trout;
 $EXTERN GetEnv;
 
 
+// 55. ExistFile
+
+//FROM Library
+$EXTERN ExistFile;
+
+
 // 59. Explode_Ext
 
 //FROM Library
@@ -337,7 +343,6 @@ $ENUM Ev-met;
 $ENUM Residue;
 $ENUM System;
 $ENUM Exit;
-$ENUM ExistFile;
 $ENUM GetCurrentDirectory;
 $ENUM RemoveFile;
 $ENUM TimeElapsed;
