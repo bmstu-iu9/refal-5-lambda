@@ -20,7 +20,7 @@ lookup_compilers() {
 
   # Поиск refc/refgo
   rm -f detect.rsl
-  refc detect.ref || :
+  refc detect.ref 2>/dev/null || :
   if valid_rsl_detected; then
     REFAL_COMPILERS=refc
     REFC_EXIST=1
