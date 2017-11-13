@@ -88,16 +88,6 @@ run_all_tests() {
     cleanup Library-ReadLine-2lines-no-eol
   fi
 
-  if [ -e Library-Arg ]; then
-    echo Pass Library-Arg test...
-    ./Library-Arg Hello "Hello, World"
-    if [ $? -gt 0 ]; then
-      echo TEST FAILED, SEE __dump.txt
-      exit
-    fi
-    cleanup Library-Arg
-  fi
-
   if [ -e Library-GetEnv ]; then
     echo Pass Library-GetEnv test...
     (

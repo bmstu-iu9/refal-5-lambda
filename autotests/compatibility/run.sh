@@ -176,7 +176,7 @@ compile_srefc() {
 execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  ./$EXE > __out.txt || {
+  ./$EXE Hello "Hello, World" "" / > __out.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -214,7 +214,7 @@ compile_crefal() {
 execute_OK_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  echo Y | refgo "$RSL" >__out.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL" Hello "Hello, World" "" / >__out.txt 2>__dump.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -250,7 +250,7 @@ compile_refc() {
 execute_OK_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  echo Y | refgo "$RSL" >__out.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL" Hello "Hello, World" "" / >__out.txt 2>__dump.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }

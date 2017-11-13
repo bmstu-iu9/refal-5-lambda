@@ -1,0 +1,15 @@
+$ENTRY Go {
+  = <Eq ('Hello') <Arg 1>>
+    <Eq ('Hello, World') <Arg 2>>
+    <Eq () <Arg 3>>
+    <Prefix-Arg <Arg 0> (<Arg 4>)>
+    <Eq () <Arg 5>>;
+}
+
+Prefix-Arg {
+  e.Folder s.Sep e.File (s.Sep) = <Prefix-Arg e.File (s.Sep)>;
+
+  'Arg' e.Suffix (s.Sep) = <Prout 'Arg'>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

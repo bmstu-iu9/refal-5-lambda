@@ -94,16 +94,6 @@ setlocal
     call :CLEANUP Library-ReadLine-2lines-no-eol
   )
 
-  if exist Library-Arg.exe (
-    echo Pass Library-Arg test...
-    Library-Arg.exe Hello "Hello, World"
-    if errorlevel 1 (
-      echo TEST FAILED, SEE __dump.txt
-      exit /b 1
-    )
-    call :CLEANUP Library-Arg
-  )
-
   if exist Library-GetEnv.exe (
     echo Pass Library-GetEnv test...
     setlocal

@@ -26,6 +26,8 @@
 %%
 namespace {
 
+extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
+
 extern refalrts::FnResult write_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -37,6 +39,18 @@ extern refalrts::FnResult write_line(
 //------------------------------------------------------------------------------
 // Встроенные функции Рефала-5λ
 //------------------------------------------------------------------------------
+
+
+/**
+  3. <Arg s.NUMBER> == e.Arg
+  e.Arg ::= s.CHAR*
+*/
+$ENTRY Arg {
+%%
+  return arg(arg_begin, arg_end);
+%%
+}
+
 
 
 /**
@@ -511,8 +525,10 @@ $ENTRY FClose {
 %%
 }
 
-$ENTRY Arg {
 %%
+namespace {
+
+refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -539,8 +555,10 @@ $ENTRY Arg {
   refalrts::splice_evar(arg_begin, param_begin, param_end);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 $ENTRY ExistFile {
 %%

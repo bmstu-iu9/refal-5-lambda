@@ -5,6 +5,11 @@
 
 /********************************* REFACTORED *********************************/
 
+// 3. Arg
+
+//FROM Library
+$EXTERN Arg;
+
 // 25. Prout
 
 //FROM Library
@@ -14,7 +19,7 @@ $EXTERN Prout, Proud, Trout;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Arg, Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine, Explode,
+$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine, Explode,
   FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
   SymbType, SymbCompare, Implode;
 
