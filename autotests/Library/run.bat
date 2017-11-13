@@ -94,16 +94,6 @@ setlocal
     call :CLEANUP Library-ReadLine-2lines-no-eol
   )
 
-  if exist Library-GetEnv.exe (
-    echo Pass Library-GetEnv test...
-    setlocal
-    set Foo=Bar
-    set NoEnv=
-    call :RUN_EXE Library-GetEnv || exit /b 1
-    endlocal
-    call :CLEANUP Library-GetEnv
-  )
-
   if exist Library-Exit.exe (
     echo Pass Library-Exit test...
     Library-Exit.exe

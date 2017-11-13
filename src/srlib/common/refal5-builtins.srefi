@@ -23,6 +23,12 @@ $EXTERN Explode;
 $EXTERN Prout, Proud, Trout;
 
 
+// 51. GetEnv
+
+//FROM Library
+$EXTERN GetEnv;
+
+
 // 59. Explode_Ext
 
 //FROM Library
@@ -329,7 +335,6 @@ $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
 $ENUM Residue;
-$ENUM GetEnv;
 $ENUM System;
 $ENUM Exit;
 $ENUM ExistFile;

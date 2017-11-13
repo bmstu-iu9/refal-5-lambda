@@ -36,6 +36,10 @@ extern refalrts::FnResult write_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
+extern refalrts::FnResult refal_getenv(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
 }  // unnamed namespace
 %%
 
@@ -80,6 +84,17 @@ $ENTRY Prout {
 */
 $ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
 $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
+
+
+/**
+  51. <GetEnv e.EnvVar> == e.EnvValue
+  e.EnvVar, e.EnvValue ::= s.CHAR*
+*/
+$ENTRY GetEnv {
+%%
+  return refal_getenv(arg_begin, arg_end);
+%%
+}
 
 
 /**
@@ -614,8 +629,12 @@ $ENTRY ExistFile {
 %%
 }
 
-$ENTRY GetEnv {
 %%
+namespace {
+
+refalrts::FnResult refal_getenv(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter envname_b = 0;
   refalrts::Iter envname_e = 0;
   refalrts::call_left(envname_b, envname_e, arg_begin, arg_end);
@@ -644,8 +663,10 @@ $ENTRY GetEnv {
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 $ENTRY Exit {
 %%

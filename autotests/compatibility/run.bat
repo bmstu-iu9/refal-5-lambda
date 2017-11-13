@@ -110,6 +110,8 @@ setlocal
       endlocal
       exit /b 1
     )
+    set Foo=Bar
+    set NoEnv=
     call :EXECUTE_OK.%%c "%~1" || exit /b 1
     move __out.txt __out.txt.%%c >NUL
     echo %%c>__last.txt

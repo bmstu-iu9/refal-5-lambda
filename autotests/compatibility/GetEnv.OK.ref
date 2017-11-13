@@ -1,0 +1,6 @@
+$ENTRY Go {
+  = <Eq ('Bar') <GetEnv 'Foo'>>
+    <Eq () <GetEnv 'NoEnv'>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

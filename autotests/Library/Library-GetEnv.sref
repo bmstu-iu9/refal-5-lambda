@@ -1,8 +1,0 @@
-//FROM Library
-$EXTERN GetEnv;
-
-$ENTRY Go {
-  =
-    <{ 'Bar' = ; } <GetEnv 'Foo'>>
-    <{ /* пусто */ = ; } <GetEnv 'NoEnv'>>;
-}

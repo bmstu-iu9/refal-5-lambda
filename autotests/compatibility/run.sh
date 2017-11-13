@@ -90,7 +90,11 @@ run_test_result_OK() {
       exit 1
     }
 
-    execute_OK_$c "$1" || exit 1
+    (
+      export Foo=Bar
+      unset NoEnv
+      execute_OK_$c "$1"
+    ) || exit 1
     mv __out.txt __out.txt.$c
     LAST=$c
     echo

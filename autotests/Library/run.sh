@@ -88,20 +88,6 @@ run_all_tests() {
     cleanup Library-ReadLine-2lines-no-eol
   fi
 
-  if [ -e Library-GetEnv ]; then
-    echo Pass Library-GetEnv test...
-    (
-      export Foo=Bar
-      export NoEnv=
-      run_exe Library-GetEnv
-    )
-    if [ $? -gt 0 ]; then
-      exit 1
-    else
-      cleanup Library-GetEnv
-    fi
-  fi
-
   if [ -e Library-Exit ]; then
     echo Pass Library-Exit test...
     ./Library-Exit
