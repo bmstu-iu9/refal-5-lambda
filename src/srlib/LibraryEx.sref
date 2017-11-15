@@ -253,17 +253,6 @@ Lexicon-T-Aux {
     (e.ScannedRight t.NextRight e.Right);
 }
 
-$ENTRY Type {
-  (e.InBracket) = #TypeBracket;
-  s.Symbol = <SymbType s.Symbol>;
-}
-
-$ENTRY Type-T {
-  (e.InBrackets) e.Tail = #TypeBracket (e.InBrackets) e.Tail;
-  s.Symbol e.Tail = <SymbType s.Symbol> s.Symbol e.Tail;
-  = '*';
-}
-
 $ENTRY Trim {
   e.Line = <Trim-L <Trim-R e.Line>>;
 }
