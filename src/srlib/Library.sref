@@ -455,6 +455,31 @@ refalrts::FnResult write_line(
   return refalrts::cSuccess;
 }
 
+bool file_handle_left(
+  refalrts::Iter& pfile_handle, refalrts::Iter& first, refalrts::Iter& last
+) {
+  return refalrts::svar_left(pfile_handle, first, last)
+    && refalrts::cDataFile == pfile_handle->tag;
+}
+
+FILE *extract_file_handle(
+  refalrts::Iter pfile_handle
+) {
+  return static_cast<FILE*>(pfile_handle->file_info);
+}
+
+bool open_and_reinit_file_handle(
+  refalrts::Iter pfile_handle, const char *filename, const char *mode
+) {
+  if (FILE *f = fopen(filename, mode)) {
+    pfile_handle->tag = refalrts::cDataFile;
+    pfile_handle->file_info = f;
+    return true;
+  } else {
+    return false;
+  }
+}
+
 }  // unnamed namespace
 %%
 
@@ -466,14 +491,11 @@ $ENTRY FWriteLine {
 
   refalrts::Iter pfile_handle = 0;
 
-  if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
-  ) {
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
   refalrts::FnResult fnres = write_to_stream(handle, content_b, content_e);
   if (fnres != refalrts::cSuccess) {
     return fnres;
@@ -557,16 +579,15 @@ $ENTRY FReadLine {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
   refalrts::reset_allocator();
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
   refalrts::Iter str_begin, str_end;
   refalrts::FnResult fn_result = read_from_stream(handle, str_begin, str_end);
   if (fn_result != refalrts::cSuccess) {
@@ -658,11 +679,7 @@ $ENTRY FOpen {
     return refalrts::cRecognitionImpossible;
   }
 
-  if (FILE *f = fopen(filename, mode.c_str())) {
-    refalrts::Iter file_ptr = arg_begin;
-    file_ptr->tag = refalrts::cDataFile;
-    file_ptr->file_info = f;
-  } else {
+  if (! open_and_reinit_file_handle(arg_begin, filename, mode.c_str())) {
     return refalrts::cRecognitionImpossible;
   }
 
@@ -679,14 +696,13 @@ $ENTRY FClose {
 
   refalrts::Iter pfile_handle = 0;
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
   if (EOF == fclose(handle)) {
     return refalrts::cRecognitionImpossible;
   }
@@ -1282,14 +1298,11 @@ $ENTRY FWriteBytes {
 
   refalrts::Iter pfile_handle = 0;
 
-  if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
-  ) {
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
 
   int fputc_return = 0;
 
@@ -1329,8 +1342,7 @@ $ENTRY FReadBytes {
   refalrts::Iter pcount_bytes = 0;
 
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(pcount_bytes, content_b, content_e)
     || refalrts::cDataNumber != pcount_bytes->tag
     || ! refalrts::empty_seq(content_b, content_e)
@@ -1340,7 +1352,7 @@ $ENTRY FReadBytes {
 
   refalrts::reset_allocator();
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
   refalrts::RefalNumber count = pcount_bytes->number_info;
 
   refalrts::Iter begin = 0;
@@ -1387,14 +1399,13 @@ $ENTRY FTell {
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
   ) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
   long int pos = ftell(handle);
 
   if (pos == -1L) {
@@ -1419,8 +1430,7 @@ $ENTRY FSeek {
   refalrts::Iter poffset = 0;
 
   if (
-    ! refalrts::svar_left(pfile_handle, content_b, content_e)
-    || refalrts::cDataFile != pfile_handle->tag
+    ! file_handle_left(pfile_handle, content_b, content_e)
     || ! refalrts::svar_left(porigin, content_b, content_e)
     || refalrts::cDataIdentifier != porigin->tag
     || ! refalrts::svar_left(psign, content_b, content_e)
@@ -1432,7 +1442,7 @@ $ENTRY FSeek {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = static_cast<FILE*>(pfile_handle->file_info);
+  FILE *handle = extract_file_handle(pfile_handle);
 
   int origin;
   if (USE_IDENT(BEGIN) == porigin->ident_info) {
