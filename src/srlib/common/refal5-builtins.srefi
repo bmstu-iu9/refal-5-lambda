@@ -23,6 +23,12 @@ $EXTERN Explode;
 $EXTERN Prout, Proud, Trout;
 
 
+// 33. Type
+
+//FROM Library
+$EXTERN Type;
+
+
 // 51. GetEnv
 
 //FROM Library
@@ -46,7 +52,7 @@ $EXTERN Explode_Ext;
 //FROM Library
 $EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine,
   FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
-  SymbType, SymbCompare, Implode;
+  SymbCompare, Implode;
 
 $SWAP __file_handles;
 
@@ -211,86 +217,6 @@ __ListOfBuiltin_2 {
     (69 #GetPID #regular)
     (70 #int4fab_1 #regular)
     (71 #GetPPID #regular);
-}
-
-Type {
-  s.Symbol e.Tail = <__Type-SwSymbol <SymbType s.Symbol> s.Symbol> e.Tail;
-  (e.Brackets) e.Tail = 'B0' (e.Brackets) e.Tail;
-  /* пусто */ = '*0' /* пусто */;
-}
-
-__Type-SwSymbol {
-  #TypeCharacter s.Symbol
-    = <__Type-SwCharacter
-        ('L'
-          ('u' 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-          ('l' 'abcdefghijklmnopqrstuvwxyz')
-        )
-        ('D' ('0' '0123456789'))
-        ('P' ('l' ' '))
-        s.Symbol <SymbCompare ' ' s.Symbol> <SymbCompare s.Symbol '\x80'>
-      >;
-
-  #TypeIdentifier s.Symbol
-    = <__Type-SwIdentifier s.Symbol <Explode s.Symbol>>;
-
-  #TypeNumber s.Symbol = 'N0' s.Symbol;
-
-  // Остальные типы не поддерживаем
-}
-
-__Type-SwCharacter {
-  e.Types-B
-  (s.Type e.SubTypes-B (s.SubType e.Chars-B s.Char e.Chars-E) e.SubTypes-E)
-  e.Types-E
-  s.Char s.Cmp1 s.Cmp2
-    = s.Type s.SubType s.Char;
-
- e.Types s.Char '<' '<' = 'Pl' s.Char;
- e.Types s.Char s.Cmp1 s.Cmp2 = 'Ol' s.Char;
-}
-
-__fetch { e.Arg s.Func = <s.Func e.Arg>; }
-
-__Type-SwIdentifier {
-  // Повторяем поведение, описанное в refio.c
-  s.Symbol s.First e.Tail
-    = <__fetch
-        <Type s.First>
-        {
-          'L' s.SubType s.First
-            = <__Type-DoSwIdentifier s.Symbol e.Tail>;
-
-          s.Type s.SubType s.First = 'Wq' s.Symbol;
-        }
-      >;
-}
-
-__Type-DoSwIdentifier {
-  s.Symbol s.Next e.Tail
-    = <__fetch
-        <__IdentTail s.Next>
-        {
-          #True = <__Type-DoSwIdentifier s.Symbol e.Tail>;
-          #False = 'Wq' s.Symbol;
-        }
-      >;
-
-  s.Symbol = 'Wi' s.Symbol;
-}
-
-__IdentTail {
-  s.Char
-    = <__fetch
-        <Type s.Char>
-        {
-          'W' s.SubType s.Char^ = #True;
-          'D0' s.Char^ = #True;
-          s.Type s.SubType '-' = #True;
-          s.Type s.SubType '_' = #True;
-          s.Type s.SubType s.Char^ = #False;
-        }
-      >;
 }
 
 Compare {

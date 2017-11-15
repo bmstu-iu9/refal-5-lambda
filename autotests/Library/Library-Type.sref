@@ -1,0 +1,25 @@
+//FROM Library
+$EXTERN Type;
+
+$ENTRY Go {
+  e.CapturedVariable    // нужна для создания замыкания
+    = <{ 'H0' s.Handle = ; } <Type <MakeHandle>>>
+      <{ 'Fg' Go = ; } <Type Go>>
+      <{ 'Fc' s.Closure = ; } <Type { = e.CapturedVariable; }>>
+      <{ 'Ba' [Go] = ; } <Type [Go]>>;
+}
+
+MakeHandle {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  arg_begin->tag = refalrts::cDataFile;
+  arg_begin->file_info = 0;
+
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
+%%
+}

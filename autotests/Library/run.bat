@@ -36,6 +36,7 @@ setlocal
     Library-IntFromStr-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^
     Library-SymbType ^
+    Library-Type ^
     Library-Implode-Explode ^
     Library-FReadBytes ^
     Library-FTell ^
@@ -230,6 +231,7 @@ goto :EOF
 :CLEANUP
   if exist %1.rasl erase %1.rasl
   if exist %1.exe erase %1.exe
+  if exist %1.cpp erase %1.cpp
   if exist __dump.txt erase __dump.txt
   if exist __out.txt erase __out.txt
   if exist __written_file.txt erase __written_file.txt

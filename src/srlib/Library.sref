@@ -91,6 +91,129 @@ $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
 
 
 /**
+  33. <Type e.Expr> == s.Type s.SubType e.Expr
+
+  s.Type and s.SubType describes begin of e.Expr
+
+  s.Type s.SubType ::=
+      'Lu' -- latin uppercase letter
+    | 'Ll' -- latin lowercase letter
+    | 'D0' -- decimal digit
+    | 'Wi' -- identifier (compound symbol that can be written w/o quotes)
+    | 'Wq' -- other compound symbol (must be enclosed to "...")
+    | 'N0' -- macrodigit
+    | 'Pu' -- uppercase printable symbol (isupper(c) returns true)
+    | 'Pl' -- lowercase printable symbol
+    | 'Ou' -- uppercase other symbol (isupper(c) returns true)
+    | 'Ol' -- lowercase other symbol
+    | 'B0' -- structure brackets (parenthesis)
+    | '*0' -- e.Expr is empty expression
+
+      -- extensions of Refal-5λ
+    | 'H0' -- handle (pointer, refalrts::Node::file_info)
+    | 'Fg' -- global function
+    | 'Fc' -- closure capturing context
+    | 'Ba' -- ADT brackets [square brackets]
+*/
+$ENTRY Type {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  char type = '*';
+  char subtype = '0';
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    switch (content_b->tag) {
+    case refalrts::cDataChar:
+      {
+        char ch = content_b->char_info;
+
+        if (isdigit(ch)) {
+          type = 'D';
+        } else {
+          if (isalpha(ch)) {
+            type = 'L';
+          } else if (isprint(ch)) {
+            type = 'P';
+          } else {
+            type = 'O';
+          }
+
+          if (isupper(ch)) {
+            subtype = 'u';
+          } else {
+            subtype = 'l';
+          }
+        }
+      }
+      break;
+
+    case refalrts::cDataNumber:
+      type = 'N';
+      break;
+
+    case refalrts::cDataFunction:
+      type = 'F';
+      subtype = 'g';
+      break;
+
+    case refalrts::cDataIdentifier:
+      {
+        const char *name = content_b->ident_info->name();
+
+        type = 'W';
+        subtype = 'q';
+        if (isalpha(*name)) {
+          while (
+            *name != '\0' && (isalnum(*name) || *name == '_' || *name == '-')
+          ) {
+            ++name;
+          }
+
+          if (*name == '\0') {
+            subtype = 'i';
+          }
+        }
+      }
+      break;
+
+    case refalrts::cDataOpenADT:
+      type = 'B';
+      subtype = 'a';
+      break;
+
+    case refalrts::cDataOpenBracket:
+      type = 'B';
+      break;
+
+    case refalrts::cDataFile:
+      type = 'H';
+      break;
+
+    case refalrts::cDataClosure:
+      type = 'F';
+      subtype = 'c';
+      break;
+
+    default:
+      refalrts_switch_default_violation(content_b->tag);
+      // break;
+    }
+  }
+
+  refalrts::reinit_char(arg_begin, type);
+  refalrts::reinit_char(pfunc_name, subtype);
+  refalrts::splice_to_freelist(arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
   51. <GetEnv e.EnvVar> == e.EnvValue
   e.EnvVar, e.EnvValue ::= s.CHAR*
 */

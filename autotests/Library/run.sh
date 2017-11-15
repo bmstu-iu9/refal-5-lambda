@@ -32,6 +32,7 @@ run_all_tests() {
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
     Library-SymbType \
+    Library-Type \
     Library-Implode-Explode \
     Library-FReadBytes \
     Library-FTell \
@@ -202,7 +203,8 @@ run_exe() {
 }
 
 cleanup() {
-  rm -f $1$(platform_exe_suffix) $1.rasl __dump.txt __out.txt __written_file.txt
+  rm -f $1$(platform_exe_suffix) $1.rasl $1.cpp
+  rm -f __dump.txt __out.txt __written_file.txt
 }
 
 compare() {
