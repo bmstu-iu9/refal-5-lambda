@@ -74,6 +74,9 @@ DoScan {
       <Type s.StartIdent>: 'L' s.Case s.StartIdent =
     <DoScan-Ident t.Pos (s.StartIdent) (e.Line) e.Lines>;
 
+  t.Pos ('_' e.Line) e.Lines
+    = <DoScan-Ident t.Pos ('_') (e.Line) e.Lines>;
+
   t.Pos (s.Punctuation e.Line) e.Lines,
       <IsPunctuation s.Punctuation>: s.TokType =
     (s.TokType t.Pos)
