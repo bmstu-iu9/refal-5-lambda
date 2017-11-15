@@ -11,6 +11,12 @@
 $EXTERN Arg;
 
 
+// 5. Card
+
+//FROM Library
+$EXTERN Card;
+
+
 // 12. Explode
 
 //FROM Library
@@ -246,7 +252,6 @@ Implode_Ext {
 }
 
 // Не реализованные пока функции
-$ENUM Card;
 $ENUM Cp;
 $ENUM Dgall;
 $ENUM Divmod;

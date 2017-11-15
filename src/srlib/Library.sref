@@ -28,6 +28,10 @@ namespace {
 
 extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
+extern refalrts::FnResult read_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
 extern refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -60,6 +64,16 @@ extern refalrts::FnResult exist_file(
 $ENTRY Arg {
 %%
   return arg(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  5. <Card> == s.CHAR* 0?
+*/
+$ENTRY Card {
+%%
+  return read_line(arg_begin, arg_end);
 %%
 }
 
@@ -248,6 +262,16 @@ $ENTRY Explode_Ext {
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------
+
+
+/**
+  5. <ReadLine> == s.CHAR* 0?
+*/
+$ENTRY ReadLine {
+%%
+  return read_line(arg_begin, arg_end);
+%%
+}
 
 
 /**
@@ -537,6 +561,8 @@ $ENTRY FWriteLine {
 }
 
 %%
+namespace {
+
 refalrts::FnResult read_from_stream(
   FILE *input, refalrts::Iter& begin, refalrts::Iter& end
 ) {
@@ -573,10 +599,10 @@ refalrts::FnResult read_from_stream(
 
   return refalrts::cSuccess;
 }
-%%
 
-$ENTRY ReadLine {
-%%
+extern refalrts::FnResult read_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -596,8 +622,10 @@ $ENTRY ReadLine {
   refalrts::splice_evar(arg_begin, str_begin, str_end);
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 $ENTRY FReadLine {
 %%

@@ -211,7 +211,7 @@ goto :EOF
 :EXECUTE_OK.srefc
 setlocal
   set EXE=%~n1.exe
-  %EXE% Hello "Hello, World" "" \ > __out.txt
+  echo Y| %EXE% Hello "Hello, World" "" \ > __out.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
@@ -223,7 +223,7 @@ goto :EOF
 :EXECUTE_FAIL.srefc
 setlocal
   set EXE=%~n1.exe
-  %EXE% > __out.txt
+  echo Y| %EXE% > __out.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -257,7 +257,7 @@ goto :EOF
 
 :EXECUTE_OK.crefal
 setlocal
-  echo Y | refgo "%~n1"-crefal Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1"-crefal Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
@@ -268,7 +268,7 @@ goto :EOF
 
 :EXECUTE_FAIL.crefal
 setlocal
-  echo Y | refgo "%~n1"-crefal >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1"-crefal >__out.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -300,7 +300,7 @@ goto :EOF
 
 :EXECUTE_OK.refc
 setlocal
-  echo Y | refgo "%~n1" Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1" Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
@@ -311,7 +311,7 @@ goto :EOF
 
 :EXECUTE_FAIL.refc
 setlocal
-  echo Y | refgo "%~n1" >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1" >__out.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal

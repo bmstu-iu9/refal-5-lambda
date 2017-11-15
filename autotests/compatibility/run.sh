@@ -180,7 +180,7 @@ compile_srefc() {
 execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  ./$EXE Hello "Hello, World" "" / > __out.txt || {
+  echo Y | ./$EXE Hello "Hello, World" "" / > __out.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -189,7 +189,7 @@ execute_OK_srefc() {
 execute_FAIL_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  if ./$EXE > __out.txt; then
+  if echo Y | ./$EXE > __out.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
