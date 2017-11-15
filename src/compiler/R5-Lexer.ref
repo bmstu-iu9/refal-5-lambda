@@ -50,6 +50,9 @@ DoScan {
   t.Pos (' ' e.Line) e.Lines =
     <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
 
+  t.Pos ('\t' e.Line) e.Lines =
+    <DoScan <IncCol t.Pos> (e.Line) e.Lines>;
+
   t.Pos ('$' e.Line) e.Lines =
     <DoScan-Keyword t.Pos (e.Line) e.Lines>;
 
