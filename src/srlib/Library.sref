@@ -274,11 +274,6 @@ $LABEL Success;
 $LABEL Fails;
 $LABEL True;
 $LABEL False;
-$LABEL TypeNumber;
-$LABEL TypeCharacter;
-$LABEL TypeFunction;
-$LABEL TypeFile;
-$LABEL TypeIdentifier;
 $LABEL CURRENT;
 $LABEL BEGIN;
 $LABEL END;
@@ -1215,53 +1210,6 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
 $ENTRY SymbCompare {
 %%
   BINARY(COMPARE_BINARY);
-%%
-}
-
-$ENTRY SymbType {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter atom = 0;
-  if (
-    ! refalrts::svar_left(atom, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::RefalIdentifier type_tag;
-  switch(atom->tag) {
-    case refalrts::cDataNumber:
-      type_tag = USE_IDENT(TypeNumber);
-      break;
-
-    case refalrts::cDataChar:
-      type_tag = USE_IDENT(TypeCharacter);
-      break;
-
-    case refalrts::cDataFunction:
-      type_tag = USE_IDENT(TypeFunction);
-      break;
-
-    case refalrts::cDataIdentifier:
-      type_tag = USE_IDENT(TypeIdentifier);
-      break;
-
-    case refalrts::cDataFile:
-      type_tag = USE_IDENT(TypeFile);
-      break;
-
-    default:
-      return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::reinit_ident(arg_begin, type_tag);
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
-  return refalrts::cSuccess;
 %%
 }
 

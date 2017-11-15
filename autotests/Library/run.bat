@@ -35,7 +35,6 @@ setlocal
     Library-FOpen-FReadLine-FClose ^
     Library-IntFromStr-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^
-    Library-SymbType ^
     Library-Type ^
     Library-Implode-Explode ^
     Library-FReadBytes ^
@@ -49,7 +48,6 @@ setlocal
     Library-Math-Mod-Fail ^
     Library-FOpen-Fail ^
     Library-SymbCompare-Fail ^
-    Library-SymbType-Fail ^
     Library-Implodes-Fail ^
     || exit /b 1
 

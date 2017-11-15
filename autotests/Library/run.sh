@@ -31,7 +31,6 @@ run_all_tests() {
     Library-FOpen-FReadLine-FClose \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
-    Library-SymbType \
     Library-Type \
     Library-Implode-Explode \
     Library-FReadBytes \
@@ -44,7 +43,6 @@ run_all_tests() {
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
     Library-SymbCompare-Fail \
-    Library-SymbType-Fail \
     Library-Implodes-Fail
 
   if [ -e Library-WriteLine ]; then
