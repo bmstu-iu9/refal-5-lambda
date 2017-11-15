@@ -50,7 +50,7 @@ $EXTERN Explode_Ext;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord, WriteLine,
+$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
   FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
