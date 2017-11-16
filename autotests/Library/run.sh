@@ -42,6 +42,8 @@ run_all_tests() {
     Library-Math-Div-Fail \
     Library-Math-Mod-Fail \
     Library-FOpen-Fail \
+    Library-FClose-0-Fail \
+    Library-FClose-unopened-Fail \
     Library-FWrite-unopened-file-Fail \
     Library-SymbCompare-Fail \
     Library-Implodes-Fail
