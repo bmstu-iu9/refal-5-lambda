@@ -28,12 +28,26 @@ namespace {
 
 extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-extern refalrts::FnResult read_line(
+extern refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
-extern refalrts::FnResult explode(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
+enum {
+  cFlags_Autoopen       = 1 << 0,
+  cFlags_Read           = 1 << 1,
+  cFlags_Write          = 1 << 2,
+  cFlags_ReturnHandle   = 1 << 3,
+  cFlags_NoHandle       = 1 << 4,
+  cFlags_Transparent    = 1 << 5,
+
+  cFlags_StreamMask     = 3 << 6,
+  cFlags_StdIn          = 1 << 6,
+  cFlags_StdOut         = 2 << 6,
+  cFlags_StdErr         = 3 << 6,
+};
+
+extern refalrts::FnResult fread_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
 extern refalrts::FnResult write_line(
@@ -73,7 +87,7 @@ $ENTRY Arg {
 */
 $ENTRY Card {
 %%
-  return read_line(arg_begin, arg_end);
+  return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
 %%
 }
 
@@ -84,6 +98,18 @@ $ENTRY Card {
 $ENTRY Explode {
 %%
   return explode(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  14. <Get s.FileNo> == s.CHAR* 0?
+*/
+$ENTRY Get {
+%%
+  return fread_line(
+    arg_begin, arg_end, cFlags_Autoopen | cFlags_Read | cFlags_StdIn
+  );
 %%
 }
 
@@ -265,11 +291,21 @@ $ENTRY Explode_Ext {
 
 
 /**
-  5. <ReadLine> == s.CHAR* 0?
+  <FReadLine s.FileNo> == s.CHAR* 0?
+*/
+$ENTRY FReadLine {
+%%
+  return fread_line(arg_begin, arg_end, cFlags_ReturnHandle | cFlags_StdIn);
+%%
+}
+
+
+/**
+  <ReadLine> == s.CHAR* 0?
 */
 $ENTRY ReadLine {
 %%
-  return read_line(arg_begin, arg_end);
+  return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
 %%
 }
 
@@ -489,21 +525,50 @@ bool file_handle_left(
     && refalrts::cDataNumber == pfile_handle->tag;
 }
 
-FILE *extract_file_handle(
-  refalrts::Iter pfile_handle
-) {
-  assert(refalrts::cDataNumber == pfile_handle->tag);
-
-  refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
-  return g_file_handles[file_no];
-}
-
 void close_all_files_at_exit(void *) {
   for (size_t i = 0; i < cMaxFileHandles; ++i) {
     if (g_file_handles[i] != 0) {
       fclose(g_file_handles[i]);
       g_file_handles[i] = 0;    // на всякий случай
     }
+  }
+}
+
+FILE *extract_file_handle(refalrts::Iter pfile_handle, unsigned flags = 0) {
+  bool is_stdin = (flags & cFlags_StreamMask) == cFlags_StdIn;
+  bool is_stdout = (flags & cFlags_StreamMask) == cFlags_StdOut;
+  bool is_stderr = (flags & cFlags_StreamMask) == cFlags_StdErr;
+
+  FILE *default_handle =
+    is_stdin ? stdin : is_stdout ? stdout : is_stderr ? stderr : 0;
+
+  if (flags & cFlags_NoHandle) {
+    assert(is_stdin + is_stdout + is_stderr == 1);
+    return default_handle;
+  } else {
+    assert(refalrts::cDataNumber == pfile_handle->tag);
+
+    bool autoopen = flags & cFlags_Autoopen;
+    refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+    if (file_no == 0) {
+      assert(is_stdin + is_stdout + is_stderr <= 1);
+      return default_handle;
+    } else if (g_file_handles[file_no] == 0 && autoopen) {
+      refalrts::at_exit(close_all_files_at_exit, 0);
+
+      char default_name[sizeof("REFAL4294967296.DAT")];
+      sprintf(default_name, "REFAL%d.DAT", file_no);
+
+      bool default_read = (flags & cFlags_Read);
+      bool default_write = (flags & cFlags_Write);
+      assert(default_read + default_write == 1);
+
+      const char *default_mode = default_read ? "r" : default_write ? "w" : 0;
+      g_file_handles[file_no] = fopen(default_name, default_mode);
+    }
+
+    return g_file_handles[file_no];
   }
 }
 
@@ -554,7 +619,7 @@ $ENTRY FWriteLine {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(pfile_handle, cFlags_Write | cFlags_StdErr);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -610,43 +675,18 @@ refalrts::FnResult read_from_stream(
   return refalrts::cSuccess;
 }
 
-extern refalrts::FnResult read_line(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
+refalrts::FnResult fread_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 ) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
-  if (! refalrts::empty_seq(content_b, content_e)) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::reset_allocator();
-
-  refalrts::Iter str_begin, str_end;
-  refalrts::FnResult fn_result = read_from_stream(stdin, str_begin, str_end);
-  if (fn_result != refalrts::cSuccess) {
-    return fn_result;
-  }
-
-  refalrts::splice_evar(arg_begin, str_begin, str_end);
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
-
-}  // unnamed namespace
-%%
-
-$ENTRY FReadLine {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
+  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
   refalrts::Iter pfile_handle = 0;
 
   if (
-    ! file_handle_left(pfile_handle, content_b, content_e)
+    (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e))
     || ! refalrts::empty_seq(content_b, content_e)
   ) {
     return refalrts::cRecognitionImpossible;
@@ -654,7 +694,7 @@ $ENTRY FReadLine {
 
   refalrts::reset_allocator();
 
-  FILE *handle = extract_file_handle(pfile_handle);
+  FILE *handle = extract_file_handle(pfile_handle, flags);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -666,14 +706,12 @@ $ENTRY FReadLine {
   }
 
   refalrts::Iter res = refalrts::splice_evar(arg_begin, str_begin, str_end);
-  refalrts::splice_stvar(res, pfile_handle);
+  if (flags & cFlags_ReturnHandle) {
+    refalrts::splice_stvar(res, pfile_handle);
+  }
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
-
-%%
-namespace {
 
 refalrts::FnResult string_from_seq(
   std::vector<char>& string, refalrts::Iter begin, refalrts::Iter end

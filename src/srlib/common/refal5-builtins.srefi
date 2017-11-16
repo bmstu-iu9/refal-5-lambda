@@ -23,6 +23,12 @@ $EXTERN Card;
 $EXTERN Explode;
 
 
+// 14. Get
+
+//FROM Library
+$EXTERN Get;
+
+
 // 25. Prout
 
 //FROM Library
@@ -57,7 +63,7 @@ $EXTERN Explode_Ext;
 
 //FROM Library
 $EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
-  FOpen, FClose, FReadLine, FWriteLine, IntFromStr, StrFromInt,
+  FOpen, FClose, FWriteLine, IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
 $SWAP __file_handles;
@@ -114,12 +120,6 @@ __Close-SwOpened {
   s.Number e.Handles-B (s.Number s.Handle) e.Handles-E
     = <FClose s.Handle>
       <__write __file_handles e.Handles-B e.Handles-E>;
-}
-
-Get {
-  s.Number
-    = <FReadLine <__handle_for_num 'r' s.Number>> : s.Handle e.Line
-    = e.Line;
 }
 
 Putout {
