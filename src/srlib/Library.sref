@@ -50,6 +50,12 @@ extern refalrts::FnResult fread_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
+extern refalrts::FnResult refal_open(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+extern bool get_free_handle(refalrts::RefalNumber& free_file);
+
 extern refalrts::FnResult write_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -110,6 +116,17 @@ $ENTRY Get {
   return fread_line(
     arg_begin, arg_end, cFlags_Autoopen | cFlags_Read | cFlags_StdIn
   );
+%%
+}
+
+
+/**
+  22. <Open s.Mode s.FileNo e.FileName> == []
+  s.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
+*/
+$ENTRY Open {
+%%
+  return refal_open(arg_begin, arg_end);
 %%
 }
 
@@ -291,11 +308,50 @@ $ENTRY Explode_Ext {
 
 
 /**
+  <FOpen t.Mode e.FileName> == s.FileNo
+  t.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
+*/
+$ENTRY FOpen {
+  t.Mode s.FileNameChar e.FileName
+    = <GetFreeHandle> : s.FreeHandle
+    = <Open t.Mode s.FreeHandle s.FileNameChar e.FileName>
+      s.FreeHandle;
+}
+
+
+/**
   <FReadLine s.FileNo> == s.CHAR* 0?
 */
 $ENTRY FReadLine {
 %%
   return fread_line(arg_begin, arg_end, cFlags_ReturnHandle | cFlags_StdIn);
+%%
+}
+
+
+/*
+  <GetFreeHandle> == s.FileNo
+  Function fails if free handle is not found.
+*/
+GetFreeHandle {
+%%
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::Iter pfunc_name =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber free_file = 0;
+  if (! get_free_handle(free_file)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reinit_number(arg_begin, free_file);
+  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -572,24 +628,12 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle, unsigned flags = 0) {
   }
 }
 
-bool open_and_reinit_file_handle(
-  refalrts::Iter pfile_handle, const char *filename, const char *mode
-) {
-  int free_file = 1;
+bool get_free_handle(refalrts::RefalNumber& free_file) {
+  free_file = 1;
   while (free_file < cMaxFileHandles && g_file_handles[free_file] != 0)
     ++free_file;
 
-  if (
-    free_file != cMaxFileHandles
-    && (g_file_handles[free_file] = fopen(filename, mode)) != 0
-  ) {
-    refalrts::at_exit(close_all_files_at_exit, 0);
-    pfile_handle->tag = refalrts::cDataNumber;
-    pfile_handle->number_info = free_file;
-    return true;
-  } else {
-    return false;
-  }
+  return free_file < cMaxFileHandles;
 }
 
 bool release_file_handle(refalrts::Iter pfile_handle) {
@@ -602,6 +646,27 @@ bool release_file_handle(refalrts::Iter pfile_handle) {
   bool successful_closed = EOF != fclose(g_file_handles[file_no]);
   g_file_handles[file_no] = 0;
   return successful_closed;
+}
+
+bool reopen_handle(
+  refalrts::Iter pfile_handle, const char *filename, const char *mode
+) {
+  assert(refalrts::cDataNumber == pfile_handle->tag);
+
+  refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+
+  if (g_file_handles[file_no] != 0) {
+    release_file_handle(pfile_handle);
+  }
+
+  char default_name[sizeof("REFAL4294967296.DAT")];
+  if ((filename == 0 || strlen(filename) == 0)) {
+    sprintf(default_name, "REFAL%d.DAT", file_no);
+    filename = default_name;
+  }
+
+  refalrts::at_exit(close_all_files_at_exit, 0);
+  return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
 }
 
 }  // unnamed namespace
@@ -745,28 +810,30 @@ refalrts::FnResult string_from_seq(
   }
 }
 
-} // unnamed namespace
-%%
-
-$ENTRY FOpen {
-%%
+refalrts::FnResult refal_open(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
   std::string mode;
 
   refalrts::Iter mode_b = 0;
   refalrts::Iter mode_e = 0;
+  refalrts::Iter pmode = 0;
 
-  if (refalrts::char_left('r', content_b, content_e)) {
+  if (! refalrts::tvar_left(pmode, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (refalrts::char_term('r', pmode)) {
     mode = "r";
-  } else if (refalrts::char_left('w', content_b, content_e)) {
+  } else if (refalrts::char_term('w', pmode)) {
     mode = "w";
-  } else if (refalrts::char_left('a', content_b, content_e)) {
+  } else if (refalrts::char_term('a', pmode)) {
     mode = "a";
-  } else if (refalrts::brackets_left(mode_b, mode_e, content_b, content_e)) {
+  } else if (refalrts::brackets_term(mode_b, mode_e, pmode)) {
     char mode_str[100] = { '\0' };  // должно хватить
     unsigned len =
       refalrts::read_chars(mode_str, sizeof(mode_str) - 1, mode_b, mode_e);
@@ -776,26 +843,34 @@ $ENTRY FOpen {
     }
 
     mode = mode_str;
+  } else if (refalrts::cDataIdentifier == pmode->tag) {
+    mode = pmode->ident_info->name();
   } else {
     return refalrts::cRecognitionImpossible;
   }
 
+  refalrts::Iter pfile_handle = 0;
+  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
   char filename[FILENAME_MAX + 1] = { '\0' };
-  unsigned len =
-    refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
+  refalrts::read_chars(filename, FILENAME_MAX, content_b, content_e);
 
-  if (! refalrts::empty_seq(content_b, content_e) || len == 0) {
+  if (! refalrts::empty_seq(content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  if (! open_and_reinit_file_handle(arg_begin, filename, mode.c_str())) {
+  if (! reopen_handle(pfile_handle, filename, mode.c_str())) {
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::splice_to_freelist(pfunc_name, arg_end);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+} // unnamed namespace
+%%
 
 $ENTRY FClose {
 %%

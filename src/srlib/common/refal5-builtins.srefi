@@ -29,6 +29,12 @@ $EXTERN Explode;
 $EXTERN Get;
 
 
+// 22. Open
+
+//FROM Library
+$EXTERN Open;
+
+
 // 25. Prout
 
 //FROM Library
@@ -68,7 +74,7 @@ $EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
 
 $SWAP __file_handles;
 
-Open {
+___Open {
   s.Mode s.Number e.FileName
     = <__Open-SwOpened
         (s.Mode s.Number e.FileName)
@@ -91,10 +97,10 @@ __write {
 __Open-SwOpened {
   (s.Mode s.Number e.FileName) e.Handles-B (s.Number s.Handle) e.Handles-E
     = <FClose s.Handle>
-      <Open s.Mode s.Number e.FileName>;
+      <___Open s.Mode s.Number e.FileName>;
 
   (s.Mode s.Number) e.Handles
-    = <Open s.Mode s.Number 'REFAL' <Symb s.Number> '.DAT'>;
+    = <___Open s.Mode s.Number 'REFAL' <Symb s.Number> '.DAT'>;
 
   (s.Mode s.Number e.FileName) e.Handles
     = <FOpen s.Mode e.FileName> : s.Handle
@@ -109,7 +115,7 @@ __handle_for_num {
 __handle_for_num_opened {
   s.Mode s.Number e.Handles-B (s.Number s.Handle) e.Handles-E = s.Handle;
   s.Mode s.Number e.Handles
-    = <Open s.Mode s.Number> <__handle_for_num s.Mode s.Number>;
+    = <___Open s.Mode s.Number> <__handle_for_num s.Mode s.Number>;
 }
 
 Close {
