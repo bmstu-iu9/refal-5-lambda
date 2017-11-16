@@ -651,6 +651,12 @@ enum BlockType { /*BlockTypeNumber:cBlockType;*/
   cBlockTypeReference = 7,
 };
 
+
+typedef void (*AtExitCB)(void *data);
+
+void at_exit(AtExitCB callback, void *data);
+
+
 } // namespace refalrts
 
 #endif // RefalRTS_H_

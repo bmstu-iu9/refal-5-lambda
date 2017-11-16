@@ -498,6 +498,15 @@ FILE *extract_file_handle(
   return g_file_handles[file_no];
 }
 
+void close_all_files_at_exit(void *) {
+  for (size_t i = 0; i < cMaxFileHandles; ++i) {
+    if (g_file_handles[i] != 0) {
+      fclose(g_file_handles[i]);
+      g_file_handles[i] = 0;    // на всякий случай
+    }
+  }
+}
+
 bool open_and_reinit_file_handle(
   refalrts::Iter pfile_handle, const char *filename, const char *mode
 ) {
@@ -509,6 +518,7 @@ bool open_and_reinit_file_handle(
     free_file != cMaxFileHandles
     && (g_file_handles[free_file] = fopen(filename, mode)) != 0
   ) {
+    refalrts::at_exit(close_all_files_at_exit, 0);
     pfile_handle->tag = refalrts::cDataNumber;
     pfile_handle->number_info = free_file;
     return true;
