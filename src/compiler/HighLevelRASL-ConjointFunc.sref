@@ -8,7 +8,7 @@ $EXTERN CreateHardPattern;
 $EXTERN CreateGlobalGen, SplitGen, PatternComment, ReverseGen;
 
 //FROM HighLevelRASL-Common
-$EXTERN GenPattern, GenResult;
+$EXTERN GenPattern, MakeSavers, GenResult;
 
 $ENTRY HighLevelRASL-Function-Conjoint {
   s.FnGenInitSubst s.FnGenSubst s.FnGenResult
@@ -47,12 +47,16 @@ $ENTRY HighLevelRASL-Function-Conjoint {
     = <MapReduce
         {
           s.MaxMemory ((e.Substitute) (e.HardGenComment) (e.Result))
+            = <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
+            : e.SubstitutesAnsJunks
+            = <MakeSavers s.ContextSize e.SubstitutesAnsJunks>
+            : s.ContextSize^ (e.CmdSaves) e.SubstitutesAnsJunks^
             = <GenResult
                 s.FnGenResult (e.Result)
                 <s.FnGenSubst
                   s.ContextSize
-                  <ComposeVars (e.MarkedPattern) (e.Substitute) (e.Vars)>
-                  (/* commands */)
+                  e.SubstitutesAnsJunks
+                  (e.CmdSaves)
                 >
               >
             : (#CmdIssueMemory s.Memory) e.Commands

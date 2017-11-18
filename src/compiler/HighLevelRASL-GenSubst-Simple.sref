@@ -4,6 +4,9 @@ $EXTERN Inc2, IncVarOffset, PrintVar, FakeOffset, TextFromExpr;
 //FROM LibraryEx
 $EXTERN Inc;
 
+//FROM HighLevelRASL-Common
+$EXTERN MakeSavers;
+
 /**
   <GenInitSubst-Simple e.FuncName>
     == s.B0-Offset s.ContextTop
@@ -523,20 +526,24 @@ DoGenSubst {
       (e.Commands (#CmdVar #AlgRight s.Num 't' s.ContextOffset))
     >;
 
+  // Open e loops
   s.ContextOffset
-  e.Substs-B
   (#Junk e.Junk) (#E s.Num (#TkVariable 'e' e.Index) e.Range)
-  e.Substs-E
-  (e.Vars) (e.Commands) =
-    <DoGenSubst
-      <Inc2 s.ContextOffset>
-      e.Substs-B
-      (#Junk e.Junk (#TkVariable 'e' e.Index s.ContextOffset))
-      (#E s.Num e.Range)
-      e.Substs-E
-      (e.Vars ('e' (e.Index) s.ContextOffset))
-      (e.Commands (#CmdOpenedE #AlgLeft s.Num s.ContextOffset))
-    >;
+  e.SubstitutesAnsJunks
+  (e.Vars) (e.Commands)
+    = s.ContextOffset : s.VarOffset
+    = (#CmdOpenedE #AlgLeft s.Num s.VarOffset) : t.CmdOpenedE
+    = <MakeSavers
+        <Inc2 s.ContextOffset>
+        (#Junk e.Junk (#TkVariable 'e' e.Index s.ContextOffset))
+        (#E s.Num e.Range) e.SubstitutesAnsJunks
+      >
+    : s.ContextOffset^ (e.CmdSaves) e.SubstitutesAnsJunks^
+    = <DoGenSubst
+        s.ContextOffset e.SubstitutesAnsJunks
+        (e.Vars ('e' (e.Index) s.VarOffset))
+        (e.Commands t.CmdOpenedE e.CmdSaves)
+      >;
 
   // Завершение разбора.
   s.ContextOffset (#Junk e.MarkedPattern) (e.Vars) (e.Commands) =

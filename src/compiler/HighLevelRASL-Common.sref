@@ -2,7 +2,7 @@
 $EXTERN Add;
 
 //FROM LibraryEx
-$EXTERN Inc, StrFromInt, Map, Fetch;
+$EXTERN Inc, StrFromInt, Map, Fetch, MapReduce;
 
 //FROM DisplayName
 $EXTERN DisplayName;
@@ -244,4 +244,32 @@ BuildString {
     <BuildString (e.Chars s.Value) e.Tail>;
 
   (e.Chars) e.Tail = (e.Chars) e.Tail;
+}
+
+/**
+  <MakeSavers s.ContextOffset e.SubstitutesAnsJunks>
+    == s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks
+*/
+$ENTRY MakeSavers {
+  s.OriginContextOffset e.SubstitutesAnsJunks
+    = <MapReduce
+        {
+          (s.ContextOffset e.CmdSaves) (#Junk e.Junk)
+            = (s.ContextOffset e.CmdSaves) (#Junk e.Junk);
+
+          (s.ContextOffset e.CmdSaves) (#E s.Num e.Range)
+            = (
+                <Inc2 s.ContextOffset>
+                e.CmdSaves (#CmdSave s.Num s.ContextOffset)
+              )
+              (#E s.ContextOffset e.Range);
+
+          (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range)
+            = (s.ContextOffset e.CmdSaves) (s.S-or-T s.Num e.Range);
+        }
+        (s.OriginContextOffset /* CmdSave's */)
+        e.SubstitutesAnsJunks
+      >
+    : (s.ContextOffset^ e.CmdSaves) e.SubstitutesAnsJunks^
+    = s.ContextOffset (e.CmdSaves) e.SubstitutesAnsJunks;
 }

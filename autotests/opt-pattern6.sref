@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = <{ 2 ('ABC') ('C@xyz') = ; } <Test ('ABC') ('ABC@xyz')>>;
+}
+
+Test {
+  (e.Rep ) (e.Rep 'A' e.Rest) = 1 (e.Rep) (e.Rest);
+  (e.Var1) ('AB' e.Var2     ) = 2 (e.Var1) (e.Var2);
+}
