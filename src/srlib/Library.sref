@@ -44,6 +44,8 @@ enum {
   cFlags_StdIn          = 1 << 6,
   cFlags_StdOut         = 2 << 6,
   cFlags_StdErr         = 3 << 6,
+
+  cFlags_NoEOL          = 1 << 8,
 };
 
 extern refalrts::FnResult fread_line(
@@ -356,6 +358,19 @@ $ENTRY Explode_Ext {
 }
 
 
+/**
+  66. <Write s.FileNo e.AnyExpression> == []
+*/
+$ENTRY Write {
+%%
+  return fwrite_line(
+    arg_begin, arg_end,
+    cFlags_Autoopen | cFlags_Write | cFlags_StdErr | cFlags_NoEOL
+  );
+%%
+}
+
+
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------
@@ -550,7 +565,7 @@ $ENTRY Mod {
 namespace {
 
 refalrts::FnResult write_to_stream(
-  FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end
+  FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end, unsigned flags
 ) {
   if (ferror(out)) {
     return refalrts::cRecognitionImpossible;
@@ -624,7 +639,9 @@ refalrts::FnResult write_to_stream(
     return refalrts::cRecognitionImpossible;
   }
 
-  printf_res = fprintf(out, "\n");
+  if (! (flags & cFlags_NoEOL)) {
+    printf_res = fprintf(out, "\n");
+  }
   if (printf_res < 0) {
     return refalrts::cRecognitionImpossible;
   } else {
@@ -750,7 +767,8 @@ refalrts::FnResult fwrite_line(
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::FnResult fnres = write_to_stream(handle, content_b, content_e);
+  refalrts::FnResult fnres =
+    write_to_stream(handle, content_b, content_e, flags);
   if (fnres != refalrts::cSuccess) {
     return fnres;
   }

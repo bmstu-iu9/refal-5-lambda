@@ -121,11 +121,11 @@ setlocal
           endlocal
           exit /b 1
         )
-        fc %%o "%~n1.%%o" > __diff.txt
+        fc /b %%o "%~n1.%%o"
         if errorlevel 1 (
           echo ERROR: Invalid output to %%o. See %~n1.%%o and %%o
           echo ERROR: Difference between %~n1.%%o and %%o:
-          type __diff.txt
+          fc %%o "%~n1.%%o"
           endlocal
           exit /b 1
         )

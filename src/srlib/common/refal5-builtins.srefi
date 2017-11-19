@@ -89,6 +89,12 @@ $EXTERN ExistFile;
 $EXTERN Explode_Ext;
 
 
+// 66. Write
+
+//FROM Library
+$EXTERN Write;
+
+
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
@@ -247,7 +253,6 @@ $ENUM DeSysfun;
 $ENUM XMLParse;
 $ENUM Random;
 $ENUM RandomDigit;
-$ENUM Write;
 $ENUM SizeOf;
 $ENUM GetPID;
 $ENUM int4fab_1;
