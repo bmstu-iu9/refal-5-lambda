@@ -439,7 +439,7 @@ refalrts::FnResult write_to_stream(
   }
 }
 
-extern refalrts::FnResult write_line(
+refalrts::FnResult write_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
   refalrts::Iter content_b = 0;
@@ -729,7 +729,7 @@ refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
 }
 
 
-extern refalrts::FnResult exist_file(
+refalrts::FnResult exist_file(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 ) {
   refalrts::Iter content_b = 0;
