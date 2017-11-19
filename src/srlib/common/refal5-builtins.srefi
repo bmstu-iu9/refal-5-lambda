@@ -71,6 +71,12 @@ $EXTERN Type;
 $EXTERN GetEnv;
 
 
+// 54. Close
+
+//FROM Library
+$EXTERN Close;
+
+
 // 55. ExistFile
 
 //FROM Library
@@ -87,12 +93,8 @@ $EXTERN Explode_Ext;
 
 //FROM Library
 $EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
-  FClose, IntFromStr, StrFromInt,
+  IntFromStr, StrFromInt,
   SymbCompare, Implode;
-
-Close {
-  s.Number = <FClose s.Number>;  // temporary definition
-}
 
 Symb {
   s.Number = <StrFromInt s.Number>;

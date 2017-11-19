@@ -64,6 +64,12 @@ extern refalrts::FnResult refal_getenv(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
+enum CloseMode { cCloseMode_Silent, cCloseMode_Fail };
+
+extern refalrts::FnResult close(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
+);
+
 extern refalrts::FnResult exist_file(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
@@ -319,6 +325,17 @@ $ENTRY GetEnv {
 
 
 /**
+  54. <Close s.FileNo> == []
+  If file not opened function never does.
+*/
+$ENTRY Close {
+%%
+  return close(arg_begin, arg_end, cCloseMode_Silent);
+%%
+}
+
+
+/**
   55. <ExistFile e.FileName> == True | False
   e.FileName ::= s.CHAR*
 */
@@ -342,6 +359,17 @@ $ENTRY Explode_Ext {
 //------------------------------------------------------------------------------
 // Стандартные функции Простого Рефала
 //------------------------------------------------------------------------------
+
+
+/**
+  <FClose s.FileNo> == []
+  If file not opened function never does.
+*/
+$ENTRY FClose {
+%%
+  return close(arg_begin, arg_end, cCloseMode_Fail);
+%%
+}
 
 
 /**
@@ -912,11 +940,9 @@ refalrts::FnResult refal_open(
   return refalrts::cSuccess;
 }
 
-} // unnamed namespace
-%%
-
-$ENTRY FClose {
-%%
+refalrts::FnResult close(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, CloseMode mode
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
@@ -930,21 +956,32 @@ $ENTRY FClose {
   }
 
   FILE *handle = extract_file_handle(pfile_handle);
-  if (! handle) {
-    return refalrts::cRecognitionImpossible;
-  }
+  switch (mode) {
+  case cCloseMode_Silent:
+    if (handle) {
+      if (! release_file_handle(pfile_handle)) {
+        return refalrts::cRecognitionImpossible;
+      }
+    }
+    break;
 
-  if (! release_file_handle(pfile_handle)) {
-    return refalrts::cRecognitionImpossible;
+  case cCloseMode_Fail:
+    if (! handle) {
+      return refalrts::cRecognitionImpossible;
+    }
+
+    if (! release_file_handle(pfile_handle)) {
+      return refalrts::cRecognitionImpossible;
+    }
+    break;
+
+  default:
+    refalrts_switch_default_violation(mode);
   }
 
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
-
-%%
-namespace {
 
 refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end) {
   refalrts::Iter content_b = 0;
