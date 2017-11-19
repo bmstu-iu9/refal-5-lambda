@@ -56,8 +56,8 @@ extern refalrts::FnResult refal_open(
 
 extern bool get_free_handle(refalrts::RefalNumber& free_file);
 
-extern refalrts::FnResult write_line(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
+extern refalrts::FnResult fwrite_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 );
 
 extern refalrts::FnResult refal_getenv(
@@ -132,11 +132,23 @@ $ENTRY Open {
 
 
 /**
+  24. <Print e.AnyExpression> == e.AnyExpression
+*/
+$ENTRY Print {
+%%
+  return fwrite_line(
+    arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut | cFlags_Transparent
+  );
+%%
+}
+
+
+/**
   25. <Prout e.AnyExpression> == []
 */
 $ENTRY Prout {
 %%
-  return write_line(arg_begin, arg_end);
+  return fwrite_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut);
 %%
 }
 
@@ -145,6 +157,31 @@ $ENTRY Prout {
 */
 $ENTRY Proud { e.AnyExpression = <Prout e.AnyExpression>; }
 $ENTRY Trout { e.AnyExpression = <Prout e.AnyExpression>; }
+
+
+/**
+  26. <Put s.FileNo e.AnyExpression> == e.AnyExpression
+*/
+$ENTRY Put {
+%%
+  return fwrite_line(
+    arg_begin, arg_end,
+    cFlags_Autoopen | cFlags_Write | cFlags_StdErr | cFlags_Transparent
+  );
+%%
+}
+
+
+/**
+  27. <Putout s.FileNo e.AnyExpression> == []
+*/
+$ENTRY Putout {
+%%
+  return fwrite_line(
+    arg_begin, arg_end, cFlags_Autoopen | cFlags_Write | cFlags_StdErr
+  );
+%%
+}
 
 
 /**
@@ -329,6 +366,18 @@ $ENTRY FReadLine {
 }
 
 
+/**
+  <FWriteLine s.FileNo e.AnyExpression> == s.FileNo
+*/
+$ENTRY FWriteLine {
+%%
+  return fwrite_line(
+    arg_begin, arg_end, cFlags_Write | cFlags_StdErr | cFlags_ReturnHandle
+  );
+%%
+}
+
+
 /*
   <GetFreeHandle> == s.FileNo
   Function fails if free handle is not found.
@@ -373,7 +422,7 @@ $ENTRY ReadLine {
 */
 $ENTRY WriteLine {
 %%
-  return write_line(arg_begin, arg_end);
+  return fwrite_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdOut);
 %%
 }
 
@@ -555,21 +604,6 @@ refalrts::FnResult write_to_stream(
   }
 }
 
-refalrts::FnResult write_line(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::FnResult fnres = write_to_stream(stdout, content_b, content_e);
-  if (fnres != refalrts::cSuccess) {
-    return fnres;
-  }
-
-  refalrts::splice_to_freelist(arg_begin, arg_end);
-  return refalrts::cSuccess;
-}
 
 enum { cMaxFileHandles = 40 };
 FILE *g_file_handles[cMaxFileHandles];
@@ -669,22 +703,21 @@ bool reopen_handle(
   return (g_file_handles[file_no] = fopen(filename, mode)) != 0;
 }
 
-}  // unnamed namespace
-%%
-
-$ENTRY FWriteLine {
-%%
+refalrts::FnResult fwrite_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::call_left(content_b, content_e, arg_begin, arg_end);
 
+  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
   refalrts::Iter pfile_handle = 0;
 
-  if (! file_handle_left(pfile_handle, content_b, content_e)) {
+  if (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e)) {
     return refalrts::cRecognitionImpossible;
   }
 
-  FILE *handle = extract_file_handle(pfile_handle, cFlags_Write | cFlags_StdErr);
+  FILE *handle = extract_file_handle(pfile_handle, flags);
   if (! handle) {
     return refalrts::cRecognitionImpossible;
   }
@@ -694,11 +727,21 @@ $ENTRY FWriteLine {
     return fnres;
   }
 
-  refalrts::splice_stvar(arg_begin, pfile_handle);
+  refalrts::Iter res = arg_begin;
+  if (flags & cFlags_Transparent) {
+    res = refalrts::splice_evar(res, content_b, content_e);
+  }
+
+  if (flags & cFlags_ReturnHandle) {
+    refalrts::splice_stvar(res, pfile_handle);
+  }
+
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
-%%
 }
+
+}  // unnamed namespace
+%%
 
 %%
 namespace {

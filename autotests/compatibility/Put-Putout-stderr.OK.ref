@@ -1,0 +1,6 @@
+$ENTRY Go {
+  = <Eq ('Hello' 1 (2) "3") <Put 0 'Hello' 1 (2) "3">>
+    <Eq () <Putout 0 "World!">>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

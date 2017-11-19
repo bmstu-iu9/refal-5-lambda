@@ -35,10 +35,28 @@ $EXTERN Get;
 $EXTERN Open;
 
 
+// 24. Print
+
+//FROM
+$EXTERN Print;
+
+
 // 25. Prout
 
 //FROM Library
 $EXTERN Prout, Proud, Trout;
+
+
+// 26. Put
+
+//FROM Library
+$EXTERN Put;
+
+
+// 27. Putout
+
+//FROM Library
+$EXTERN Putout;
 
 
 // 33. Type
@@ -69,69 +87,11 @@ $EXTERN Explode_Ext;
 
 //FROM Library
 $EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
-  FOpen, FClose, FWriteLine, IntFromStr, StrFromInt,
+  FClose, IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
-$SWAP __file_handles;
-
-___Open {
-  s.Mode s.Number e.FileName
-    = <__Open-SwOpened
-        (s.Mode s.Number e.FileName)
-        <__read __file_handles>
-      >;
-}
-
-__read {
-  s.Swap
-    = <s.Swap> : e.Content
-    = <s.Swap e.Content> e.Content;
-}
-
-__write {
-  s.Swap e.Content
-    = <s.Swap e.Content> : e.OldContent
-    = /* пусто */;
-}
-
-__Open-SwOpened {
-  (s.Mode s.Number e.FileName) e.Handles-B (s.Number s.Handle) e.Handles-E
-    = <FClose s.Handle>
-      <___Open s.Mode s.Number e.FileName>;
-
-  (s.Mode s.Number) e.Handles
-    = <___Open s.Mode s.Number 'REFAL' <Symb s.Number> '.DAT'>;
-
-  (s.Mode s.Number e.FileName) e.Handles
-    = <FOpen s.Mode e.FileName> : s.Handle
-    = <__write __file_handles (s.Number s.Handle) e.Handles>;
-}
-
-__handle_for_num {
-  s.Mode s.Number
-    = <__handle_for_num_opened s.Mode s.Number <__read __file_handles>>;
-}
-
-__handle_for_num_opened {
-  s.Mode s.Number e.Handles-B (s.Number s.Handle) e.Handles-E = s.Handle;
-  s.Mode s.Number e.Handles
-    = <___Open s.Mode s.Number> <__handle_for_num s.Mode s.Number>;
-}
-
 Close {
-  s.Number = <__Close-SwOpened s.Number <__read __file_handles>>;
-}
-
-__Close-SwOpened {
-  s.Number e.Handles-B (s.Number s.Handle) e.Handles-E
-    = <FClose s.Handle>
-      <__write __file_handles e.Handles-B e.Handles-E>;
-}
-
-Putout {
-  s.Number e.Line
-    = <FWriteLine <__handle_for_num 'w' s.Number> e.Line> : s.Handle
-    = /* пусто */;
+  s.Number = <FClose s.Number>;  // temporary definition
 }
 
 Symb {
@@ -265,8 +225,6 @@ $ENUM Implode;
 $ENUM Last;
 $ENUM Lenw;
 $ENUM Lower;
-$ENUM Print;
-$ENUM Put;
 $ENUM Rp;
 $ENUM Step;
 $ENUM Time;

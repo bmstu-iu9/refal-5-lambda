@@ -1,0 +1,9 @@
+$ENTRY Go {
+  = <Eq ('Hello') <Put 15 'Hello'>>
+    <Eq () <Putout 15 'World'>>
+    <Eq () <Open 'w' 8 'written_file.txt'>>
+    <Eq ('Hello,') <Put 8 'Hello,'>>
+    <Eq () <Putout 8 'World!'>>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

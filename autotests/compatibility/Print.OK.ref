@@ -1,0 +1,8 @@
+$ENTRY Go {
+  = <Eq
+      ((Hello 1 'Hello') ('World' 2 "$$123"))
+      <Print (Hello 1 'Hello') ('World' 2 "$$123")>
+    >;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

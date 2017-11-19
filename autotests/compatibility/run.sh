@@ -1,6 +1,7 @@
 #!/bin/bash
 
 main() {
+  OUTPUT_FILES="stdout.txt stderr.txt written_file.txt REFAL15.DAT"
   lookup_compilers
   if [ -z "$REFC_EXIST$SREFC_EXIST$CREFAL_EXIST" ]; then
     echo NO REFAL COMPILERS FOUND, EXITING
@@ -95,22 +96,37 @@ run_test_result_OK() {
       unset NoEnv
       execute_OK_$c "$1"
     ) || exit 1
-    mv __out.txt __out.txt.$c
+    for o in $OUTPUT_FILES; do
+      SAMPLE="${1%%.ref}.$o"
+      if [ -e "$SAMPLE" ]; then
+        if [ ! -e $o ]; then
+          echo ERROR: File $o must be created but is absent
+          exit 1
+        fi
+        cmp $o "$SAMPLE" > /dev/null || {
+          echo ERROR: Invalid output to $o. See $SAMPLE and $o
+          echo ERROR: Difference between $SAMPLE and $o:
+          diff -u $o "$SAMPLE"
+          exit 1
+        }
+      fi
+    done
+    mv stdout.txt stdout.txt.$c
     LAST=$c
     echo
   done
 
   for c in $REFAL_COMPILERS; do
-    cmp __out.txt.$LAST __out.txt.$c > /dev/null || {
+    cmp stdout.txt.$LAST stdout.txt.$c > /dev/null || {
       echo ERROR: Outputs of $c and $LAST is different:
-      diff -u __out.txt.$LAST __out.txt.$c
+      diff -u stdout.txt.$LAST stdout.txt.$c
       exit 1
     }
   done
 
   for c in $REFAL_COMPILERS; do
     cleanup_$c "$1"
-    rm -f __out.txt.$c
+    rm -f stdout.txt.$c
   done
 }
 
@@ -180,7 +196,7 @@ compile_srefc() {
 execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  echo Y | ./$EXE Hello "Hello, World" "" / > __out.txt || {
+  echo Y | ./$EXE Hello "Hello, World" "" / > stdout.txt 2>stderr.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -189,7 +205,7 @@ execute_OK_srefc() {
 execute_FAIL_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
-  if echo Y | ./$EXE > __out.txt; then
+  if echo Y | ./$EXE > stdout.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
@@ -197,12 +213,17 @@ execute_FAIL_srefc() {
   fi
 }
 
+cleanup_common() {
+  rm -f __dump.txt $OUTPUT_FILES
+}
+
 cleanup_srefc() {
+  cleanup_common
   SRC=$1
   RASL=${SRC%%.ref}.rasl
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   CPP=${SRC%%.ref}.cpp
-  rm -f "$RASL" "$EXE" "$CPP" __dump.txt __out.txt
+  rm -f "$RASL" "$EXE" "$CPP"
   rm -f Library.*
 }
 
@@ -218,16 +239,17 @@ compile_crefal() {
 execute_OK_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  echo Y | refgo "$RSL" Hello "Hello, World" "" / >__out.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL" Hello "Hello, World" "" / >stdout.txt 2>__dump.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
+  mv __dump.txt stderr.txt
 }
 
 execute_FAIL_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  if echo Y | refgo "$RSL" >__out.txt 2>__dump.txt; then
+  if echo Y | refgo "$RSL" >stdout.txt 2>__dump.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
@@ -236,10 +258,11 @@ execute_FAIL_crefal() {
 }
 
 cleanup_crefal() {
+  cleanup_common
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
   LIS=${SRC%%.ref}.lis
-  rm -f "$RSL" "$LIS" __dump.txt __out.txt
+  rm -f "$RSL" "$LIS"
 }
 
 compile_refc() {
@@ -254,16 +277,17 @@ compile_refc() {
 execute_OK_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  echo Y | refgo "$RSL" Hello "Hello, World" "" / >__out.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL" Hello "Hello, World" "" / >stdout.txt 2>__dump.txt || {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
+  mv __dump.txt stderr.txt
 }
 
 execute_FAIL_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  if echo Y | refgo "$RSL" >__out.txt 2>__dump.txt; then
+  if echo Y | refgo "$RSL" >stdout.txt 2>__dump.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
@@ -272,10 +296,11 @@ execute_FAIL_refc() {
 }
 
 cleanup_refc() {
+  cleanup_common
   SRC=$1
   RSL=${SRC%%.ref}.rsl
   LIS=${SRC%%.ref}.lis
-  rm -f "$RSL" "$LIS" __dump.txt __out.txt
+  rm -f "$RSL" "$LIS"
 }
 
 main "$@"

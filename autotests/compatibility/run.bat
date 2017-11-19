@@ -4,6 +4,7 @@ goto :EOF
 
 :MAIN
 setlocal
+  set OUTPUT_FILES=stdout.txt stderr.txt written_file.txt REFAL15.DAT
   call :LOOKUP_COMPILERS
   if {%REFC_EXIST%%SREFC_EXIST%%CREFAL_EXIST%}=={} (
     echo NO REFAL COMPILERS FOUND, EXITING
@@ -113,13 +114,30 @@ setlocal
     set Foo=Bar
     set NoEnv=
     call :EXECUTE_OK.%%c "%~1" || exit /b 1
-    move __out.txt __out.txt.%%c >NUL
+    for %%o in (%OUTPUT_FILES%) do (
+      if exist "%~n1.%%o" (
+        if not exist %%o (
+          echo ERROR: File %%o must be created but is absent
+          endlocal
+          exit /b 1
+        )
+        fc %%o "%~n1.%%o" > __diff.txt
+        if errorlevel 1 (
+          echo ERROR: Invalid output to %%o. See %~n1.%%o and %%o
+          echo ERROR: Difference between %~n1.%%o and %%o:
+          type __diff.txt
+          endlocal
+          exit /b 1
+        )
+      )
+    )
+    move stdout.txt stdout.txt.%%c >NUL
     echo %%c>__last.txt
     echo.
   )
   set /P LAST=<__last.txt
   for %%c in (%REFAL_COMPILERS%) do (
-    fc __out.txt.%LAST% __out.txt.%%c > __diff.txt
+    fc stdout.txt.%LAST% stdout.txt.%%c > __diff.txt
     if errorlevel 1 (
       echo ERROR: Outputs of %%c and %LAST% is different:
       type __diff.txt
@@ -129,7 +147,7 @@ setlocal
   )
   for %%c in (%REFAL_COMPILERS%) do (
     call :CLEANUP.%%c "%~n1"
-    if exist __out.txt.%%c erase __out.txt.%%c
+    if exist stdout.txt.%%c erase stdout.txt.%%c
   )
   erase __last.txt
   if exist __diff.txt erase __diff.txt
@@ -211,7 +229,7 @@ goto :EOF
 :EXECUTE_OK.srefc
 setlocal
   set EXE=%~n1.exe
-  echo Y| %EXE% Hello "Hello, World" "" \ > __out.txt
+  echo Y| %EXE% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
@@ -223,7 +241,7 @@ goto :EOF
 :EXECUTE_FAIL.srefc
 setlocal
   set EXE=%~n1.exe
-  echo Y| %EXE% > __out.txt
+  echo Y| %EXE% > stdout.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -233,13 +251,19 @@ setlocal
 endlocal
 exit /b 0
 
+:CLEANUP_COMMON
+setlocal
+  if exist __dump.txt erase __dump.txt
+  for %%o in (%OUTPUT_FILES%) do if exist %%o erase %%o
+endlocal
+goto :EOF
+
 :CLEANUP.srefc
 setlocal
+  call :CLEANUP_COMMON
   if exist "%~1.rasl" erase "%~1.rasl"
   if exist "%~1.exe" erase "%~1.exe"
   if exist "%~1.cpp" erase "%~1.cpp"
-  if exist __dump.txt erase __dump.txt
-  if exist __out.txt erase __out.txt
   erase Library.*
 endlocal
 goto :EOF
@@ -257,18 +281,20 @@ goto :EOF
 
 :EXECUTE_OK.crefal
 setlocal
-  echo Y| refgo "%~n1"-crefal Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1"-crefal Hello "Hello, World" "" \ ^
+    >stdout.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
     exit /b 1
   )
+  move __dump.txt stderr.txt
 endlocal
 goto :EOF
 
 :EXECUTE_FAIL.crefal
 setlocal
-  echo Y| refgo "%~n1"-crefal >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1"-crefal >stdout.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -280,10 +306,9 @@ exit /b 0
 
 :CLEANUP.crefal
 setlocal
+  call :CLEANUP_COMMON
   if exist "%~1-crefal.rsl" erase "%~1-crefal.rsl"
   if exist "%~1.lis" erase "%~1.lis"
-  if exist __dump.txt erase __dump.txt
-  if exist __out.txt erase __out.txt
 endlocal
 goto :EOF
 
@@ -300,18 +325,19 @@ goto :EOF
 
 :EXECUTE_OK.refc
 setlocal
-  echo Y| refgo "%~n1" Hello "Hello, World" "" \ >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1" Hello "Hello, World" "" \ >stdout.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
     exit /b 1
   )
+  move __dump.txt stderr.txt
 endlocal
 goto :EOF
 
 :EXECUTE_FAIL.refc
 setlocal
-  echo Y| refgo "%~n1" >__out.txt 2>__dump.txt
+  echo Y| refgo "%~n1" >stdout.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -323,9 +349,8 @@ exit /b 0
 
 :CLEANUP.refc
 setlocal
+  call :CLEANUP_COMMON
   if exist "%~1.rsl" erase "%~1.rsl"
   if exist "%~1.lis" erase "%~1.lis"
-  if exist __dump.txt erase __dump.txt
-  if exist __out.txt erase __out.txt
 endlocal
 goto :EOF
