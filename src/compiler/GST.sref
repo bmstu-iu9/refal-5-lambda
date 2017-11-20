@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Fetch, Compare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
+$EXTERN Fetch, TermCompare, Inc, Seq, Reduce, Map, MapReduce, DelAccumulator,
   UnBracket;
 
 //FROM Library
@@ -232,7 +232,7 @@ FindHeavyTile {
         (s.MaxWeight s.IndexP s.IndexR e.MaxItems)
         (s.Weight s.CurIndexP s.CurIndexR e.Items) =
           <Fetch
-            <Compare s.MaxWeight s.Weight>
+            <TermCompare s.MaxWeight s.Weight>
             {
               '<' =
                 (s.Weight s.CurIndexP s.CurIndexR e.Items)

@@ -178,9 +178,6 @@ SwDoArgList {
   s.Next e.Arg = (e.Arg) <DoArgList s.Next>;
 }
 
-//DEPRECATED
-$ENTRY Compare { t.X t.Y = <TermCompare t.X t.Y>; }
-
 $ENTRY TermCompare {
   (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
 
@@ -208,9 +205,6 @@ Lexicon-Aux {
   '=' (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
   '>' (e.Left) (e.Right) = '>';
 }
-
-//DEPRECATED
-$ENTRY Compare-T { t.X t.Y = <TermCompare-T t.X t.Y>; }
 
 $ENTRY TermCompare-T {
   (e.Left) (e.Right) = <Lexicon-T () (e.Left) () (e.Right)>;

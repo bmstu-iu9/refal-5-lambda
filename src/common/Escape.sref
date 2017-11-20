@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN Div, Mod, Ord, Compare, Chr, Add, Mul;
+$EXTERN Div, Mod, Ord, TermCompare, Chr, Add, Mul;
 
 //FROM LibraryEx
 $EXTERN Fetch, Map, Reduce;
@@ -20,7 +20,7 @@ $ENTRY EscapeChar {
 
   s.Other =
     <Fetch
-      <Compare s.Other ' '> <Ord s.Other>
+      <TermCompare s.Other ' '> <Ord s.Other>
       {
         '<' s.Code =
           '\\'

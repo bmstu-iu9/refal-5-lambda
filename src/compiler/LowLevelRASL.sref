@@ -1,5 +1,5 @@
 //FROM LibraryEx
-$EXTERN Map, Fetch, Seq, Inc, Compare, MapReduce, DelAccumulator;
+$EXTERN Map, Fetch, Seq, Inc, TermCompare, MapReduce, DelAccumulator;
 
 //FROM Library
 $EXTERN Add, StrFromInt, WriteLine, Exit;
@@ -253,7 +253,7 @@ DoLength {
 ConvertOneInterpretCommand {
   (#CmdIssueMemory s.Memory)
     = <Fetch
-        <Compare s.Memory 256>
+        <TermCompare s.Memory 256>
         {
           '<' = (#CmdIssueMemory s.Memory);
 
@@ -263,7 +263,7 @@ ConvertOneInterpretCommand {
 
   (#CmdNumber s.Direction s.BracketNumber s.Number) =
     <Fetch
-      <Compare s.Number 256> {
+      <TermCompare s.Number 256> {
         '<' = (#CmdNum s.Direction s.BracketNumber s.Number);
 
         s.Other = (#CmdHugeNum s.Direction s.BracketNumber s.Number);
@@ -272,7 +272,7 @@ ConvertOneInterpretCommand {
 
   (#CmdNumberSave s.Direction s.BracketNumber s.SaveOffset s.Number) =
     <Fetch
-      <Compare s.Number 256> {
+      <TermCompare s.Number 256> {
         '<' =
           (#CmdNumSave s.Direction s.BracketNumber s.SaveOffset s.Number);
 
@@ -283,7 +283,7 @@ ConvertOneInterpretCommand {
 
   (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number) =
     <Fetch
-      <Compare s.Number 256> {
+      <TermCompare s.Number 256> {
         '<' = (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number);
         s.Other = (#CmdCreateElem s.CreateMode s.ElemNo #ElHugeNumber s.Number);
       }
@@ -300,7 +300,7 @@ ConvertOneInterpretCommand {
     = <Length-T <ConvertInterpretCommands e.SubCommands>>
     : s.Length e.SubCommands^
     = <Fetch
-        <Compare s.Length 256>
+        <TermCompare s.Length 256>
         {
           '<'
              = (#CmdOnFailGoTo s.Length)
