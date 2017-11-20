@@ -178,7 +178,10 @@ SwDoArgList {
   s.Next e.Arg = (e.Arg) <DoArgList s.Next>;
 }
 
-$ENTRY Compare {
+//DEPRECATED
+$ENTRY Compare { t.X t.Y = <TermCompare t.X t.Y>; }
+
+$ENTRY TermCompare {
   (e.Left) (e.Right) = <Lexicon (e.Left) (e.Right)>;
 
   (e.Left) s.Right = '>';
@@ -190,7 +193,7 @@ $ENTRY Compare {
 Lexicon {
   (t.FirstLeft e.Left) (t.FirstRight e.Right) =
     <Lexicon-Aux
-      <Compare t.FirstLeft t.FirstRight>
+      <TermCompare t.FirstLeft t.FirstRight>
       (e.Left) (e.Right)
     >;
 
@@ -206,7 +209,10 @@ Lexicon-Aux {
   '>' (e.Left) (e.Right) = '>';
 }
 
-$ENTRY Compare-T {
+//DEPRECATED
+$ENTRY Compare-T { t.X t.Y = <TermCompare-T t.X t.Y>; }
+
+$ENTRY TermCompare-T {
   (e.Left) (e.Right) = <Lexicon-T () (e.Left) () (e.Right)>;
 
   (e.Left) s.Right = '>' (e.Left) s.Right;
@@ -220,7 +226,7 @@ Lexicon-T {
   (e.ScannedRight) (t.FirstRight e.Right) =
     <Lexicon-T-Aux
       (e.ScannedLeft) (e.ScannedRight)
-      <Compare-T t.FirstLeft t.FirstRight>
+      <TermCompare-T t.FirstLeft t.FirstRight>
       (e.Left) (e.Right)
     >;
 
@@ -300,7 +306,7 @@ $ENTRY Sort {
           {
             ((e.Less) (e.Equal) (e.Greater)) t.Next =
               <Fetch
-                <Compare t.Next t.Pivot>
+                <TermCompare t.Next t.Pivot>
                 {
                   '<' = ((e.Less t.Next) (e.Equal) (e.Greater));
                   '=' = ((e.Less) (e.Equal t.Next) (e.Greater));
@@ -321,7 +327,7 @@ $ENTRY Sort {
 $ENTRY Min {
   t.X t.Y =
     <Fetch
-      <Compare t.X t.Y>
+      <TermCompare t.X t.Y>
       {
         '<' = t.X;
         s.Other = t.Y;
@@ -335,7 +341,7 @@ $ENTRY Min {
 $ENTRY Max {
   t.X t.Y =
     <Fetch
-      <Compare t.X t.Y>
+      <TermCompare t.X t.Y>
       {
         '>' = t.X;
         s.Other = t.Y;
