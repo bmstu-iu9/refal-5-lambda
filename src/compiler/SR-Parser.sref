@@ -41,7 +41,8 @@ PrepareBracket {
     '$ESWAP' NameList |
     '$LABEL' NameList |
     '$ENTRY' Function |
-    Function .
+    Function |
+    NATIVE-BLOCK .
 
   NameList = Name ',' NameList | Name ';' .
 
@@ -249,7 +250,7 @@ ParseNameList-Idents-Tail {
 }
 
 /*
-  Function = Name '{' Sentence* '}'
+  Function = Name Block.
 */
 
 ParseFunction {
@@ -270,11 +271,13 @@ ParseFunction {
 }
 
 /*
+  Block = "{" Sentence* "}" | "{" NATIVE-BLOCK "}".
+
   <ParseBlock t.ErrorList e.Tokens>
     == t.FunctionBody t.ErrorList e.Tokens
 
   t.FunctionBody ::= (#Sentences ((e.Pattern) e.Assignment* (e.Result))*)
-  
+
   e.Assignment = (#Assign (e.Result) (e.Pattern))
 
   Открывающая скобка должна отсутствовать во входном потоке.
@@ -563,13 +566,27 @@ StrFromBracket {
   #CallBrackets = '<';
 }
 
+/*
+  Result = ResultExpr Blocks.
+  Blocks = ":" Block Blocks | empty.
+*/
 ParseResult {
   t.ErrorList e.Tokens
     = <DoParseResult
         t.ErrorList (/* мультискобки */) (/* просканировано */) e.Tokens
       >
     : t.ErrorList^ (e.Result) e.Tail
-    = t.ErrorList (e.Result) (/* нет блоков */) e.Tail;
+    = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^
+    = t.ErrorList (e.Result) (e.Blocks) e.Tail;
+}
+
+ParseBlocks {
+  t.ErrorList (#TkColon s.ColonPos) (#TkOpenBlock s.OpenBlockPos) e.Tail
+    = <ParseBlock t.ErrorList e.Tail> : (e.Block) t.ErrorList^ e.Tail^
+    = <ParseBlocks t.ErrorList e.Tail> : t.ErrorList^ (e.Blocks) e.Tail^
+    = t.ErrorList ((e.Block) e.Blocks) e.Tail;
+
+  t.ErrorList e.Tokens = t.ErrorList (/* нет блоков */) e.Tokens;
 }
 
 /*

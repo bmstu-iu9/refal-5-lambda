@@ -466,7 +466,7 @@ RemoveAssigns-WindBlocks {
   (e.Result) e.Blocks
     = <Reduce
         {
-          (e.Result) ((e.BlockName) e.Body)
+          (e.Result^) ((e.BlockName) e.Body)
             = ((#CallBrackets (#Closure (e.BlockName) e.Body) e.Result));
         }
         (e.Result) e.Blocks

@@ -366,39 +366,46 @@ PatchASTSrcPos {
 
 PatchASTSrcPos-Body {
   s.FnPatch #Sentences e.Sentences
-    = { e.Expr = <PatchASTSrcPos-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
-    = #Sentences
-      <Map
-        {
-          ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
-            = (
-                (<s.FnPatchExpr e.Pattern>)
-                <Map
-                  {
-                    (s.ChainType (e.Result^) (/* нет блоков */) (e.Pattern^))
-                      = (s.ChainType
-                          (<s.FnPatchExpr e.Result>) (/* нет блоков */)
-                          (<s.FnPatchExpr e.Pattern>)
-                        );
-                  }
-                  e.ConditionsAndAssigns
-                >
-                (<s.FnPatchExpr e.Result>)
-                (
-                  <Map
-                    {
-                      (e.Body) = (<PatchASTSrcPos-Body s.FnPatch e.Body>);
-                    }
-                    e.Blocks
-                  >
-                )
-              );
-        }
-        e.Sentences
-      >;
+    = #Sentences <Map (PatchASTSrcPos-Sentence s.FnPatch) e.Sentences>;
 
   s.FnPatch #NativeBody t.SrcPos e.Code
     = #NativeBody <s.FnPatch t.SrcPos> e.Code;
+}
+
+PatchASTSrcPos-Sentence {
+  s.FnPatch ((e.Pattern) e.ConditionsAndAssigns (e.Result) (e.Blocks))
+    = { e.Expr = <PatchASTSrcPos-Expr s.FnPatch e.Expr>; } : s.FnPatchExpr
+    = (
+        (<s.FnPatchExpr e.Pattern>)
+        <PatchASTSrcPos-Chain s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns>
+        (<s.FnPatchExpr e.Result>)
+        (<PatchASTSrcPos-Blocks s.FnPatch e.Blocks>)
+      );
+}
+
+PatchASTSrcPos-Chain {
+  s.FnPatch s.FnPatchExpr e.ConditionsAndAssigns
+    = <Map
+        {
+          (s.ChainType (e.Result^) (e.Blocks) (e.Pattern^))
+            = (s.ChainType
+                (<s.FnPatchExpr e.Result>)
+                (<PatchASTSrcPos-Blocks s.FnPatch e.Blocks>)
+                (<s.FnPatchExpr e.Pattern>)
+              );
+        }
+        e.ConditionsAndAssigns
+      >;
+}
+
+PatchASTSrcPos-Blocks {
+  s.FnPatch e.Blocks
+    = <Map
+        {
+          (e.Body) = (<PatchASTSrcPos-Body s.FnPatch e.Body>);
+        }
+        e.Blocks
+      >;
 }
 
 PatchASTSrcPos-Expr {
