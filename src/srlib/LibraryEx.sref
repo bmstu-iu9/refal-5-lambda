@@ -1,6 +1,6 @@
 //FROM Library
 $EXTERN FOpen, FClose, FReadLine, FWriteLine, Add, Sub, IntFromStr, Arg,
-  SymbCompare, SymbType, FReadBytes, FWriteBytes;
+  SymbCompare, FReadBytes, FWriteBytes;
 
 // Расширения библиотеки и функции, реализуемые
 // средствами самого Простого Рефала
