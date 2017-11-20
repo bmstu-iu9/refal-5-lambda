@@ -127,11 +127,19 @@ MakeRefalName {
   e.Name = 'refalrts::RefalFuncName(' <NameAndCookies e.Name> ')';
 }
 
+FormatOffsets {
+  e.Chars #Offset s.Offset e.Text
+    = e.Chars <StrFromInt s.Offset> <FormatOffsets e.Text>;
+
+  e.Chars = e.Chars;
+}
+
 GenCommand-Native {
   // ---------------------------------------------------------------------------
   // Создания глобальных объектов, общие команды
 
-  (e.Indent) (#CmdComment e.Text) = (e.Indent) (e.Indent '//' e.Text);
+  (e.Indent) (#CmdComment e.Text)
+    = (e.Indent) (e.Indent '//' <FormatOffsets e.Text>);
 
   // ---------------------------------------------------------------------------
   // Команды режима прямой кодогенерации
