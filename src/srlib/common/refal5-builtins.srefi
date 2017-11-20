@@ -5,6 +5,12 @@
 
 /********************************* REFACTORED *********************************/
 
+// 2. Add
+
+//FROM Library
+$EXTERN Add;
+
+
 // 3. Arg
 
 //FROM Library
@@ -59,6 +65,12 @@ $EXTERN Put;
 $EXTERN Putout;
 
 
+// 30. Sub
+
+//FROM Library
+$EXTERN Sub;
+
+
 // 33. Type
 
 //FROM Library
@@ -83,6 +95,12 @@ $EXTERN Close;
 $EXTERN ExistFile;
 
 
+// 61. Compare
+
+//FROM Library
+$EXTERN Compare;
+
+
 // 59. Explode_Ext
 
 //FROM Library
@@ -98,7 +116,7 @@ $EXTERN Write;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Add, Sub, Mul, Div, Mod, Chr, Ord,
+$EXTERN Mul, Div, Mod, Chr, Ord,
   IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
@@ -197,11 +215,6 @@ __ListOfBuiltin_2 {
     (69 #GetPID #regular)
     (70 #int4fab_1 #regular)
     (71 #GetPPID #regular);
-}
-
-Compare {
-  s.Num1 s.Num2
-    = <{ '<' = '-'; '=' = '0'; '>' = '+'; } <SymbCompare s.Num1 s.Num2>>;
 }
 
 $SWAP __store;

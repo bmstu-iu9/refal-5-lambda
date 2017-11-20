@@ -86,6 +86,150 @@ extern refalrts::FnResult exist_file(
 
 
 /**
+  2. <Add t.FirstNumber e.SecondNumber> == e.NormedNumber
+
+  t.FirstNumber ::= s.NUMBER | ({'+'|'-'}? s.NUMBER+)
+  e.SecondNumber ::= {'+'|'-'}? s.NUMBER+
+  e.NormedNumber ::= '-'? s.NUMBER+
+*/
+$ENTRY Add {
+  // optimization for two digits
+  s.First s.Second = <Add-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Add-Normed (e.First) e.Second>;
+}
+
+NormArithmArg {
+  // TODO: заменить на условия!!!
+  0 e.Second
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = (0) s.SecondSign e.Second;
+
+  // TODO: заменить на условия!!!
+  s.First e.Second
+    = <Type s.First> : 'N' s.SubType s.First^
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = ('+' s.First) s.SecondSign e.Second;
+
+  // TODO: заменить на условия!!!
+  (e.First) e.Second
+    = <NormNumber e.First> : s.FirstSign e.First^
+    = <NormNumber e.Second> : s.SecondSign e.Second^
+    = (s.FirstSign e.First) s.SecondSign e.Second;
+
+  e.OtherArg = /* empty */;
+}
+
+NormNumber {
+  '+' 0 = 0;
+  '+' 0 e.Digits = <NormNumber '+' e.Digits>;
+
+  '-' 0 = 0;
+  '-' 0 e.Digits = <NormNumber '-' e.Digits>;
+
+  0 = 0;
+  0 e.Digits = <NormNumber '+' e.Digits>;
+
+  // TODO: заменить на условия!!!
+  '+' e.Digits
+    = <AllDigits e.Digits> : #True
+    = '+' e.Digits;
+
+  '-' e.Digits
+    = <AllDigits e.Digits> : #True
+    = '-' e.Digits;
+
+  // TODO: переписать через условия!!!
+  e.Digits
+    = <Type e.Digits>
+    : {
+        'N' s.SubType e.Digits^ = <NormNumber '+' e.Digits>;
+        s.Type s.SubType e.NotIsDigits = /* empty */;
+      };
+}
+
+AllDigits {
+  e.Items = <AllDigits-SwFirst <Type e.Items>>;
+}
+
+AllDigits-SwFirst {
+  'N' s.SubType s.Digit /* empty */ = #True;
+  'N' s.SubType s.Digit e.Items = <AllDigits e.Items>;
+  s.Type s.SubType e.Expr = #False;
+}
+
+Add-Normed {
+  ('+' e.First) '+' e.Second = <Add-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = <Sub-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = e.First;
+  ('-' e.First) '+' e.Second = <Sub-Nat (e.Second) e.First>;
+  ('-' e.First) '-' e.Second = '-' <Add-Nat (e.First) e.Second>;
+  ('-' e.First) 0            = '-' e.First;
+  (0)           '+' e.Second = e.Second;
+  (0)           e.NegOrZero  = e.NegOrZero;
+}
+
+Add-Nat {
+  (e.First s.FirstLast) e.Second s.SecondLast
+    = <Add-Digits s.FirstLast s.SecondLast>
+    : {
+        s.LastSum = <Add-Nat (e.First) e.Second> s.LastSum;
+        1 s.LastSum = <Add-Nat (e.First) <Add-Nat (e.Second) 1>> s.LastSum;
+      };
+
+  /* one of brackets is empty */
+  (e.First) e.Second = e.First e.Second;
+}
+
+%%
+
+#define ARITHM_PRELUDE \
+  refalrts::Iter pFirst = 0, pSecond = 0; \
+  refalrts::Iter pFunc \
+    = refalrts::call_left(pFirst, pSecond, arg_begin, arg_end); \
+  \
+  if (pFirst->next != pSecond) { \
+    return refalrts::cRecognitionImpossible; \
+  } \
+  \
+  if ( \
+    refalrts::cDataNumber != pFirst->tag \
+    || refalrts::cDataNumber != pSecond->tag \
+  ) { \
+    return refalrts::cRecognitionImpossible; \
+  } \
+  \
+  refalrts::RefalNumber first = pFirst->number_info; \
+  refalrts::RefalNumber second = pSecond->number_info;
+
+%%
+
+Add-Digits {
+%%
+  ARITHM_PRELUDE
+
+  refalrts::RefalNumber sum = first + second;
+
+  if (sum >= first) {
+    pFirst->number_info = sum;
+    refalrts::splice_to_freelist(arg_begin, pFunc);
+    refalrts::splice_to_freelist(pSecond, arg_end);
+  } else {
+    pFirst->number_info = 1;
+    pSecond->number_info = sum;
+    refalrts::splice_to_freelist(arg_begin, pFunc);
+    refalrts::splice_to_freelist(arg_end, arg_end);
+  }
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+/**
   3. <Arg s.NUMBER> == e.Arg
   e.Arg ::= s.CHAR*
 */
@@ -189,6 +333,103 @@ $ENTRY Putout {
     arg_begin, arg_end, cFlags_Autoopen | cFlags_Write | cFlags_StdErr
   );
 %%
+}
+
+
+/**
+  30. <Sub t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Sub {
+  // optimization for two digits
+  s.First s.Second = <Sub-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Sub-Normed (e.First) e.Second>;
+}
+
+Sub-Digits {
+%%
+  ARITHM_PRELUDE
+
+  if (first >= second) {
+    refalrts::reinit_number(arg_begin, first - second);
+    refalrts::splice_to_freelist(pFunc, arg_end);
+  } else {
+    refalrts::reinit_char(arg_begin, '-');
+    refalrts::reinit_number(pFunc, second - first);
+    refalrts::splice_to_freelist(pFirst, arg_end);
+  }
+
+  return refalrts::cSuccess;
+%%
+}
+
+Sub-Normed {
+  ('+' e.First) '+' e.Second = <Sub-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = <Add-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = e.First;
+  ('-' e.First) '+' e.Second = '-' <Add-Nat (e.First) e.Second>;
+  ('-' e.First) '-' e.Second = <Neg <Sub-Nat (e.First) e.Second>>;
+  ('-' e.First) 0            = '-' e.First;
+  (0)           '+' e.Second = '-' e.Second;
+  (0)           '-' e.Second = e.Second;
+  (0)           0            = 0;
+}
+
+Neg {
+  0 = 0;
+  '-' e.Digits = e.Digits;
+  e.Digits = '-' e.Digits;
+}
+
+Sub-Nat {
+  (e.First) e.Second
+    = <Compare-Nat (e.First) e.Second>
+    : {
+        '+' = <Sub-Nat-Nat (e.First) e.Second>;
+        '-' = '-' <Sub-Nat-Nat (e.Second) e.First>;
+        '0' = 0;
+      };
+}
+
+Sub-Nat-Nat {
+  (e.First s.FirstLast) e.Second s.SecondLast
+    = s.FirstLast s.SecondLast
+    : {
+%%
+        ARITHM_PRELUDE
+
+        refalrts::RefalNumber diff = first - second;
+
+        if (diff <= first) {
+          pFirst->number_info = diff;
+          refalrts::splice_to_freelist(arg_begin, pFunc);
+          refalrts::splice_to_freelist(pSecond, arg_end);
+        } else {
+          refalrts::reinit_char(pFirst, '*');
+          pSecond->number_info = diff;
+          refalrts::splice_to_freelist(arg_begin, pFunc);
+          refalrts::splice_to_freelist(arg_end, arg_end);
+        }
+
+        return refalrts::cSuccess;
+%%
+      }
+    : {
+        s.LastDigit = <Sub-Nat-Nat (e.First) e.Second> s.LastDigit;
+
+        '*' s.LastDigit
+          = <Sub-Nat-Nat (<Sub-Nat-Nat (e.First) 1>) e.Second> s.LastDigit;
+      };
+
+  (e.First) /* empty */ = <Sub-Zeros e.First>;
+}
+
+Sub-Zeros {
+  0 e.Digits = <Sub-Zeros e.Digits>;
+  e.Digits = e.Digits;
 }
 
 
@@ -354,6 +595,74 @@ $ENTRY ExistFile {
 $ENTRY Explode_Ext {
 %%
   return explode(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  61. <Compare t.FirstNumber e.SecondNumber> == '-' | '0' | '+'
+*/
+$ENTRY Compare {
+  // optimization for two digits
+  s.First s.Second = <Compare-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Compare-Normed (e.First) e.Second>;
+}
+
+Compare-Normed {
+  ('+' e.First) '+' e.Second = <Compare-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = '+';
+  ('+' e.First) 0            = '+';
+  ('-' e.First) '+' e.Second = '-';
+  ('-' e.First) '-' e.Second = <Compare-Nat (e.Second) e.First>;
+  ('-' e.First) 0            = '-';
+  (0)           '+' e.Second = '-';
+  (0)           '-' e.Second = '+';
+  (0)           0            = '0';
+}
+
+Compare-Nat {
+  (e.First) e.Second = <Compare-Align (() e.First) () e.Second>;
+}
+
+Compare-Align {
+  ((e.First-L) s.First-Dig e.First-R) (e.Second-L) s.Second-Dig e.Second-R
+    = <Compare-Align
+        ((e.First-L s.First-Dig) e.First-R) (e.Second-L s.Second-Dig) e.Second-R
+      >;
+
+  ((e.First-L) s.First-Dig e.First-R) (e.Second-L) /* empty */ = '+';
+  ((e.First-L) /* empty */) (e.Second-L) s.Second-Dig e.Second-R = '-';
+
+  ((s.First-Dig e.First)) (s.Second-Dig e.Second)
+    = <Compare-ByDigits
+        <Compare-Digits s.First-Dig s.Second-Dig> (e.First) e.Second
+      >;
+}
+
+Compare-ByDigits {
+  '0' (s.First-Dig e.First) s.Second-Dig e.Second
+    = <Compare-ByDigits
+        <Compare-Digits s.First-Dig s.Second-Dig> (e.First) e.Second
+      >;
+
+  '0' (/* empty */) /* empty */ = '0';
+
+  s.Compare-Res (e.First) e.Second = s.Compare-Res;
+}
+
+Compare-Digits {
+%%
+  ARITHM_PRELUDE
+
+  char res = first < second ? '-' : first > second ? '+' : '0';
+
+  refalrts::reinit_char(arg_begin, res);
+  refalrts::splice_to_freelist(pFunc, arg_end);
+  return refalrts::cSuccess;
 %%
 }
 
@@ -529,18 +838,6 @@ $LABEL stdin, stdout, stderr, stout;
   }
 
 %%
-
-$ENTRY Add {
-%%
-  ARITHM(+, ARITHM_NO_CHECK);
-%%
-}
-
-$ENTRY Sub {
-%%
-  ARITHM(-, ARITHM_NO_CHECK);
-%%
-}
 
 $ENTRY Mul {
 %%
