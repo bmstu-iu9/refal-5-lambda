@@ -54,7 +54,7 @@ make_subdir() {
       SCRIPT_FLAGS=$DEFAULT_SCRIPT_FLAGS
     fi
 
-    source $PATH_TO_SREFC/bin/platform-specific.sh
+    source $PATH_TO_SREFC/scripts/platform-specific.sh
 
     mkdir -p $PATH_TO_SREFC/bin
     (

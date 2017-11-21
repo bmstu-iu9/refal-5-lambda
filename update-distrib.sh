@@ -16,7 +16,7 @@ mkdir srlib
 cp -R ../srlib/scratch srlib/scratch
 mkdir srlib/rich
 cp ../srlib/rich/*.{rasl,froms} srlib/rich
-cp -R ../srlib/common srlib/common
+cp -R ../srlib/common/* srlib/common
 mkdir doc
 cp -R ../doc/examples doc/examples
 cp ../doc/*.pdf doc
@@ -33,6 +33,6 @@ cp ../doc/historical/Дрогунов/*.pdf doc/historical/Дрогунов
 cp ../LICENSE .
 cp ../README.md .
 mkdir editors
-cp -R ../editors editors
+cp -R ../editors/* editors
 ./bootstrap.sh
 popd

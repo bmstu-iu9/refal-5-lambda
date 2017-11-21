@@ -5,8 +5,8 @@ if [ ! -e distrib/bootstrap.sh ]; then
   git submodule update
 fi
 
-echo prepare config...
-( source scripts/load-config.sh || : )
+echo Prepare config...
+( source scripts/load-config.sh . || : )
 
 echo Prepare stable version \(distrib\)...
 ( cd distrib && ./bootstrap.sh ) || exit 1

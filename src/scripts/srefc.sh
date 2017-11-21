@@ -9,7 +9,7 @@ DISTRDIR="$(dirname $BINDIR)"
 # Путь к папке srlib
 LIBDIR="$DISTRDIR/srlib"
 
-source "$DISTRDIR/platform-specific.sh"
+source "$DISTRDIR/scripts/platform-specific.sh"
 
 set_rich_flags() {
   D=(-d "$LIBDIR/rich")
