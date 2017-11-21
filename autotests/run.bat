@@ -4,7 +4,7 @@ goto :EOF
 
 :MAIN
 setlocal
-  call ..\c-plus-plus.conf.bat
+  call ..\scripts\load-config.bat || exit /b 1
   set RUNTIME=../src/srlib/refalrts.cpp ^
     ../src/srlib/platform-Windows/refalrts-platform-specific.cpp
   if {%1}=={} (

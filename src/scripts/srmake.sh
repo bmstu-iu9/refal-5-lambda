@@ -4,12 +4,12 @@
 BINDIR=$(dirname $0)
 
 # Получаем путь к дистрибутиву
-DISTRDIR=$(dirname $BINDIR)
+DISTRDIR="$(dirname $BINDIR)"
 
 # Путь к папке srlib
-LIBDIR=$DISTRDIR/srlib
+LIBDIR="$DISTRDIR/srlib"
 
-source "$BINDIR/platform-specific.sh"
+source "$DISTRDIR/platform-specific.sh"
 
 set_rich_flags() {
   D=(-d "$LIBDIR/rich")
@@ -50,7 +50,7 @@ set_default_flags() {
       ;;
   esac
 
-  source $DISTRDIR/c-plus-plus.conf.sh
+  source "$DISTRDIR/scripts/load-config.sh" "$DISTRDIR" || exit 1
   PATH=$BINDIR:$PATH
   srmake-core \
     -s "srefc-core" \

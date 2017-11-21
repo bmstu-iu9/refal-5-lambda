@@ -8,7 +8,7 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin compiler doc lexgen srlib srmake
+rd /q /s bin scripts compiler doc lexgen srlib srmake
 xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake
@@ -17,7 +17,8 @@ md bin
 copy ..\src\scripts\srefc.* bin
 copy ..\src\scripts\srmake.* bin
 ren bin\*.sh *.
-copy ..\src\scripts\platform-specific.sh bin
+md scripts
+copy ..\scripts\* scripts
 md srlib
 xcopy /e /i /y ..\srlib\scratch srlib\scratch
 md srlib\rich

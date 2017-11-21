@@ -2,7 +2,7 @@
 
 main() {
   OUTPUT_FILES="stdout.txt stderr.txt written_file.txt REFAL15.DAT"
-  lookup_compilers
+  lookup_compilers || return 1
   if [ -z "$REFC_EXIST$SREFC_EXIST$CREFAL_EXIST" ]; then
     echo NO REFAL COMPILERS FOUND, EXITING
   else
@@ -50,7 +50,7 @@ lookup_compilers() {
     REFAL_COMPILERS="srefc $REFAL_COMPILERS"
     SREFC_EXIST=1
     echo ... found srefc
-    source ../../c-plus-plus.conf.sh
+    source ../../scripts/load-config.sh ../.. || return 1
     source ../../src/scripts/platform-specific.sh
   fi
   echo

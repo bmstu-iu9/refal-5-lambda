@@ -4,11 +4,11 @@ goto :EOF
 
 :MAIN
 setlocal
-  call ..\..\c-plus-plus.conf.bat
+  call ..\..\scripts\load-config.bat || exit /b 1
   if {%1}=={} (
-    call :RUN_ALL_TESTS *.sref
+    call :RUN_ALL_TESTS *.sref || exit /b 1
   ) else (
-    call :RUN_ALL_TESTS %*
+    call :RUN_ALL_TESTS %* || exit /b 1
   )
 endlocal
 goto :EOF

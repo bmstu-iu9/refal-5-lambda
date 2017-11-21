@@ -1,5 +1,5 @@
 #!/bin/bash
-source ../../c-plus-plus.conf.sh
+source ../../scripts/load-config.sh ../.. || return 1
 source ../../src/scripts/platform-specific.sh
 
 LIBDIR=../../src/srlib

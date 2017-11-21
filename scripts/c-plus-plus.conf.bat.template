@@ -1,8 +1,5 @@
 @echo off
 
-rem Если переменная среды уже установлена явно, то содержимое файла игнорируется
-if not "%CPPLINEE%" == "" goto :EOF
-
 rem Раскомментируте групппу строчек ниже в зависимости от используемого
 rem компилятора C++
 
@@ -40,7 +37,3 @@ rem одинаковой.
 rem Если ваш компилятор C++ отсутствует в списке ниже, впишите его сами:
 :: set PATH=%PATH%;…
 :: set CPPLINEE=…
-
-if not "%CPPLINEE%" == "" goto :EOF
-echo C++ compiler is not selected, please edit file c-plus-plus.conf.bat
-exit 1

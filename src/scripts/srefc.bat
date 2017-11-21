@@ -41,7 +41,7 @@ setlocal
   goto END_SWITCH
 
 :END_SWITCH
-  call "%DISTRDIR%\c-plus-plus.conf.bat"
+  call "%DISTRDIR%\scripts\load-config.bat" || exit /b 1
   set PATH=%BINDIR%;%PATH%
   srefc-core ^
     %SREFC_FLAGS% ^

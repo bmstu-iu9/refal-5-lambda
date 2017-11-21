@@ -5,16 +5,16 @@ goto :EOF
 :MAIN
 setlocal
   set OUTPUT_FILES=stdout.txt stderr.txt written_file.txt REFAL15.DAT
-  call :LOOKUP_COMPILERS
+  call :LOOKUP_COMPILERS || exit /b 1
   if {%REFC_EXIST%%SREFC_EXIST%%CREFAL_EXIST%}=={} (
     echo NO REFAL COMPILERS FOUND, EXITING
     exit /b 1
   )
 
   if {%1}=={} (
-    call :RUN_ALL_TESTS *.ref
+    call :RUN_ALL_TESTS *.ref || exit /b 1
   ) else (
-    call :RUN_ALL_TESTS %*
+    call :RUN_ALL_TESTS %* || exit /b 1
   )
 endlocal
 goto :EOF
@@ -60,7 +60,7 @@ goto :EOF
     set REFAL_COMPILERS=srefc %REFAL_COMPILERS%
     set SREFC_EXIST=1
     echo ... found srefc
-    call ..\..\c-plus-plus.conf.bat
+    call ..\..\scripts\load-config.bat || exit /b 1
   )
   echo.
 goto :EOF
