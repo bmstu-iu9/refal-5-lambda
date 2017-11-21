@@ -564,92 +564,6 @@ $ENTRY Mod {
 %%
 namespace {
 
-refalrts::FnResult write_to_stream(
-  FILE *out, refalrts::Iter str_begin, refalrts::Iter str_end, unsigned flags
-) {
-  if (ferror(out)) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  int printf_res = 0;
-
-  for (
-    refalrts::Iter p = str_begin;
-    printf_res >= 0 && ! refalrts::empty_seq(p, str_end);
-    refalrts::move_left(p, str_end)
-  ) {
-    switch(p->tag) {
-      case refalrts::cDataChar:
-        printf_res = fprintf(out, "%c", p->char_info);
-        break;
-
-      case refalrts::cDataNumber:
-        printf_res = fprintf(out, "%u ", p->number_info);
-        break;
-
-      case refalrts::cDataFunction:
-        printf_res = fprintf(out, "%s ", p->function_info->name.name);
-        break;
-
-      case refalrts::cDataIdentifier:
-        printf_res = fprintf(out, "%s ", p->ident_info->name());
-        break;
-
-      case refalrts::cDataOpenADT:
-        printf_res = fprintf(out, "[");
-        break;
-
-      case refalrts::cDataCloseADT:
-        printf_res = fprintf(out, "]");
-        break;
-
-      case refalrts::cDataOpenBracket:
-        printf_res = fprintf(out, "(");
-        break;
-
-      case refalrts::cDataCloseBracket:
-        printf_res = fprintf(out, ")");
-        break;
-
-      case refalrts::cDataFile:
-        printf_res = fprintf(out, "*%p", p->file_info);
-        break;
-
-      case refalrts::cDataClosure:
-        printf_res = fprintf(out, "{ ");
-        p = refalrts::unwrap_closure(p);
-        break;
-
-      case refalrts::cDataClosureHead:
-        printf_res = fprintf(out, "[%u] ", p->number_info);
-        break;
-
-      case refalrts::cDataUnwrappedClosure:
-        printf_res = fprintf(out, "} ");
-        refalrts::wrap_closure(p);
-        break;
-
-      default:
-        refalrts_switch_default_violation(p->tag);
-        // break;
-    }
-  }
-
-  if (printf_res < 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  if (! (flags & cFlags_NoEOL)) {
-    printf_res = fprintf(out, "\n");
-  }
-  if (printf_res < 0) {
-    return refalrts::cRecognitionImpossible;
-  } else {
-    return refalrts::cSuccess;
-  }
-}
-
-
 enum { cMaxFileHandles = 40 };
 FILE *g_file_handles[cMaxFileHandles];
 
@@ -767,10 +681,84 @@ refalrts::FnResult fwrite_line(
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::FnResult fnres =
-    write_to_stream(handle, content_b, content_e, flags);
-  if (fnres != refalrts::cSuccess) {
-    return fnres;
+  if (ferror(handle)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  int printf_res = 0;
+
+  for (
+    refalrts::Iter p = content_b, end = content_e;
+    printf_res >= 0 && ! refalrts::empty_seq(p, end);
+    refalrts::move_left(p, end)
+  ) {
+    switch(p->tag) {
+      case refalrts::cDataChar:
+        printf_res = fprintf(handle, "%c", p->char_info);
+        break;
+
+      case refalrts::cDataNumber:
+        printf_res = fprintf(handle, "%u ", p->number_info);
+        break;
+
+      case refalrts::cDataFunction:
+        printf_res = fprintf(handle, "%s ", p->function_info->name.name);
+        break;
+
+      case refalrts::cDataIdentifier:
+        printf_res = fprintf(handle, "%s ", p->ident_info->name());
+        break;
+
+      case refalrts::cDataOpenADT:
+        printf_res = fprintf(handle, "[");
+        break;
+
+      case refalrts::cDataCloseADT:
+        printf_res = fprintf(handle, "]");
+        break;
+
+      case refalrts::cDataOpenBracket:
+        printf_res = fprintf(handle, "(");
+        break;
+
+      case refalrts::cDataCloseBracket:
+        printf_res = fprintf(handle, ")");
+        break;
+
+      case refalrts::cDataFile:
+        printf_res = fprintf(handle, "*%p", p->file_info);
+        break;
+
+      case refalrts::cDataClosure:
+        printf_res = fprintf(handle, "{ ");
+        p = refalrts::unwrap_closure(p);
+        break;
+
+      case refalrts::cDataClosureHead:
+        printf_res = fprintf(handle, "[%u] ", p->number_info);
+        break;
+
+      case refalrts::cDataUnwrappedClosure:
+        printf_res = fprintf(handle, "} ");
+        refalrts::wrap_closure(p);
+        break;
+
+      default:
+        refalrts_switch_default_violation(p->tag);
+        // break;
+    }
+  }
+
+  if (printf_res < 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (! (flags & cFlags_NoEOL)) {
+    printf_res = fprintf(handle, "\n");
+  }
+
+  if (printf_res < 0) {
+    return refalrts::cRecognitionImpossible;
   }
 
   refalrts::Iter res = arg_begin;
