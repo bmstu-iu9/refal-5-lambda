@@ -609,8 +609,8 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle, unsigned flags = 0) {
       char default_name[sizeof("REFAL4294967296.DAT")];
       sprintf(default_name, "REFAL%d.DAT", file_no);
 
-      bool default_read = (flags & cFlags_Read);
-      bool default_write = (flags & cFlags_Write);
+      bool default_read = (flags & cFlags_Read) != 0;
+      bool default_write = (flags & cFlags_Write) != 0;
       assert(default_read + default_write == 1);
 
       const char *default_mode = default_read ? "r" : default_write ? "w" : 0;

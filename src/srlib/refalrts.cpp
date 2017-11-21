@@ -4376,10 +4376,6 @@ bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
         write_byte(&from, &out, &str_p, '\v');
         continue;
 
-      case 'e':
-        write_byte(&from, &out, &str_p, '\e');
-        continue;
-
       case '"':
         write_byte(&from, &out, &str_p, '"');
         continue;
@@ -4388,7 +4384,7 @@ bool refalrts::debugger::RefalDebugger::quotation_mark_parse(
         {
           int hexval = parse2hex((unsigned char *)str_p + 2);
           if (hexval == cBadHexVal) {
-            return -1;
+            return false;
           }
           memmove(out, from, str_p - from);
           out += (str_p - from) + 1;
