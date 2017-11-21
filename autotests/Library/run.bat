@@ -22,7 +22,7 @@ setlocal
     -D../../src/srlib/platform-Windows ^
     -f-DSTEP_LIMIT=1000 ^
     -f-DMEMORY_LIMIT=1000 ^
-    -f-DDUMP_FILE="\\"__dump.txt\\"" ^
+    -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
     -f-DDONT_PRINT_STATISTICS ^
     refalrts ^
     refalrts-platform-specific
