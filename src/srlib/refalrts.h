@@ -490,7 +490,7 @@ extern Iter splice_stvar(Iter res, Iter var);
 extern Iter splice_evar(Iter res, Iter first, Iter last);
 extern void splice_to_freelist(Iter first, Iter last);
 extern void splice_to_freelist_open(Iter before_first, Iter after_last);
-extern void splice_from_freelist(Iter pos);
+extern Iter splice_from_freelist(Iter pos);
 
 extern RefalFunction *create_closure;
 Iter unwrap_closure(Iter closure); // Развернуть замыкание

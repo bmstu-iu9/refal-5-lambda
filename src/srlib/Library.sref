@@ -745,15 +745,10 @@ refalrts::FnResult fwrite_line(
 
       default:
         refalrts_switch_default_violation(p->tag);
-        // break;
     }
   }
 
-  if (printf_res < 0) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  if (! (flags & cFlags_NoEOL)) {
+  if (printf_res >= 0 && ! (flags & cFlags_NoEOL)) {
     printf_res = fprintf(handle, "\n");
   }
 
@@ -773,12 +768,6 @@ refalrts::FnResult fwrite_line(
   refalrts::splice_to_freelist(arg_begin, arg_end);
   return refalrts::cSuccess;
 }
-
-}  // unnamed namespace
-%%
-
-%%
-namespace {
 
 refalrts::FnResult fread_line(
   refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
@@ -804,38 +793,25 @@ refalrts::FnResult fread_line(
     return refalrts::cRecognitionImpossible;
   }
 
-  refalrts::Iter begin = 0;
-  refalrts::Iter end = 0;
-
+  refalrts::Iter dummy = 0;
   int cur_char;
   while ((cur_char = getc(handle)) != EOF && cur_char != '\n') {
     /*
       Пользуемся тем фактом, что в данной реализации размещёные в свободной
       памяти узлы располагаются в последовательных адресах.
     */
-    if (! refalrts::alloc_char(end, static_cast<char>(cur_char))) {
+    if (! refalrts::alloc_char(dummy, static_cast<char>(cur_char))) {
       return refalrts::cNoMemory;
-    }
-
-    if (begin == 0) {
-      begin = end;
     }
   }
 
   if (cur_char == EOF) {
-    if (! refalrts::alloc_number(end, 0UL)) {
+    if (! refalrts::alloc_number(dummy, 0UL)) {
       return refalrts::cNoMemory;
-    }
-
-    if (begin == 0) {
-      begin = end;
     }
   }
 
-  if (begin == 0) assert (end == 0);
-  if (begin != 0) assert (end != 0);
-
-  refalrts::Iter res = refalrts::splice_evar(arg_begin, begin, end);
+  refalrts::Iter res = refalrts::splice_from_freelist(arg_begin);
   if (flags & cFlags_ReturnHandle) {
     refalrts::splice_stvar(res, pfile_handle);
   }
