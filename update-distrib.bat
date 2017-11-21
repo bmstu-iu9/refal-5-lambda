@@ -8,7 +8,7 @@ endlocal
 popd
 
 pushd distrib
-rd /q /s bin scripts compiler doc lexgen srlib srmake
+rd /q /s bin scripts compiler doc lexgen srlib srmake editors
 xcopy /e /y /i ..\build\compiler compiler
 xcopy /e /y /i ..\build\lexgen lexgen
 xcopy /e /y /i ..\build\srmake srmake

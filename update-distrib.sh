@@ -3,7 +3,7 @@
 ( cd src && RELEASE=1 ./make.sh )
 
 pushd distrib
-rm -rf bin scripts compiler doc lexgen srlib srmake
+rm -rf bin scripts compiler doc lexgen srlib srmake editors
 cp -R ../build/{compiler,lexgen,srmake,srlib-rich-prefix} .
 mkdir bin
 cp ../src/scripts/srefc.bat bin
