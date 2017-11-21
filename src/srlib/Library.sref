@@ -780,14 +780,35 @@ refalrts::FnResult fwrite_line(
 %%
 namespace {
 
-refalrts::FnResult read_from_stream(
-  FILE *input, refalrts::Iter& begin, refalrts::Iter& end
+refalrts::FnResult fread_line(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
 ) {
-  begin = 0;
-  end = 0;
+  refalrts::Iter content_b = 0;
+  refalrts::Iter content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
+  refalrts::Iter pfile_handle = 0;
+
+  if (
+    (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e))
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+
+  FILE *handle = extract_file_handle(pfile_handle, flags);
+  if (! handle) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter begin = 0;
+  refalrts::Iter end = 0;
 
   int cur_char;
-  while ((cur_char = getc(input)) != EOF && cur_char != '\n') {
+  while ((cur_char = getc(handle)) != EOF && cur_char != '\n') {
     /*
       Пользуемся тем фактом, что в данной реализации размещёные в свободной
       памяти узлы располагаются в последовательных адресах.
@@ -814,40 +835,7 @@ refalrts::FnResult read_from_stream(
   if (begin == 0) assert (end == 0);
   if (begin != 0) assert (end != 0);
 
-  return refalrts::cSuccess;
-}
-
-refalrts::FnResult fread_line(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end, unsigned flags
-) {
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  bool handle_in_arg = (flags & cFlags_NoHandle) == 0;
-  refalrts::Iter pfile_handle = 0;
-
-  if (
-    (handle_in_arg && ! file_handle_left(pfile_handle, content_b, content_e))
-    || ! refalrts::empty_seq(content_b, content_e)
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::reset_allocator();
-
-  FILE *handle = extract_file_handle(pfile_handle, flags);
-  if (! handle) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::Iter str_begin, str_end;
-  refalrts::FnResult fn_result = read_from_stream(handle, str_begin, str_end);
-  if (fn_result != refalrts::cSuccess) {
-    return fn_result;
-  }
-
-  refalrts::Iter res = refalrts::splice_evar(arg_begin, str_begin, str_end);
+  refalrts::Iter res = refalrts::splice_evar(arg_begin, begin, end);
   if (flags & cFlags_ReturnHandle) {
     refalrts::splice_stvar(res, pfile_handle);
   }
