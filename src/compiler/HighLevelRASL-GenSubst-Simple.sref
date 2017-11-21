@@ -153,7 +153,7 @@ DoGenSubst {
       (#Junk e.Junk1 (#TkVariable 's' e.Index s.Num) e.Junk2)
       e.Substs-E
       (e.Vars ('s' (e.Index) s.Num))
-      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.ContextOffset))
+      (e.Commands (#CmdVar #AlgTerm s.Num 's' s.Num))
     >;
 
   // Распознавание S-подстановки
@@ -167,6 +167,7 @@ DoGenSubst {
       e.Substs-B (#Junk e.Junk1 (#TkChar s.Char) e.Junk2) e.Substs-E
       (e.Vars) (e.Commands (#CmdChar #AlgTerm s.Num s.Char))
     >;
+
   s.ContextOffset
   e.Substs-B
   (#Junk e.Junk1) (#S s.Num (#TkName e.Name)) (#Junk e.Junk2)
