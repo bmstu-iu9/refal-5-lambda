@@ -1,24 +1,13 @@
 $ENTRY Go {
-  = <Perform
-      TestAllSubstrings
-      TestAllSubstrings-Hard
-      TestDocument
-      TestSimpleCondition
-      TestSimpleRepeatedCondition
-      TestSimpleOneELoop
-      TestIntersect
-      TestDelim
-      TestDelim2
-    >;
-}
-
-Perform {
-  s.NextTest e.Tests
-    = /*<Prout '* Run test ' s.NextTest>*/
-      <Mu s.NextTest>
-      <Perform e.Tests>;
-
-  /* пусто */ = /* ничего не делаем */
+  = <TestAllSubstrings>
+    <TestAllSubstrings-Hard>
+    <TestDocument>
+    <TestSimpleCondition>
+    <TestSimpleRepeatedCondition>
+    <TestSimpleOneELoop>
+    <TestIntersect>
+    <TestDelim>
+    <TestDelim2>;
 }
 
 AssertEq {
