@@ -92,42 +92,31 @@ PrepareBracket {
 */
 
 ParseElements {
-  t.ErrorList (e.AST) (#TkEOF s.LnNum) =
-    t.ErrorList e.AST;
+  t.ErrorList (e.AST) (#TkEOF s.LnNum) = t.ErrorList e.AST;
 
-  t.ErrorList (e.AST) (#TkDirective s.LnNum s.Directive) e.Tail =
-    <Fetch
-      <ParseElement-SwDirective
-        t.ErrorList s.Directive e.Tail
-      >
-      {
-        (e.NewASTItems) t.ErrorList^ e.Tail^ =
-          <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
-      }
-    >;
+  t.ErrorList (e.AST) (#TkDirective s.LnNum s.Directive) e.Tail
+    = <ParseElement-SwDirective t.ErrorList s.Directive e.Tail>
+    : (e.NewASTItems) t.ErrorList^ e.Tail^
+    = <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
 
-  t.ErrorList (e.AST) (#TkNativeBlock t.SrcPos e.Block) e.Tail =
-    <ParseElements
-      t.ErrorList (e.AST (#NativeBlock t.SrcPos e.Block)) e.Tail
-    >;
+  t.ErrorList (e.AST) (#TkNativeBlock t.SrcPos e.Block) e.Tail
+    = <ParseElements
+        t.ErrorList (e.AST (#NativeBlock t.SrcPos e.Block)) e.Tail
+      >;
 
-  t.ErrorList (e.AST) (#TkName s.LnNum e.Name) e.Tail =
-    <Fetch
-      <ParseFunction #GN-Local (e.Name) t.ErrorList e.Tail>
-      {
-        (e.NewASTItems) t.ErrorList^ e.Tail^ =
-          <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
-      }
-    >;
+  t.ErrorList (e.AST) (#TkName s.LnNum e.Name) e.Tail
+    = <ParseFunction #GN-Local (e.Name) t.ErrorList e.Tail>
+    : (e.NewASTItems) t.ErrorList^ e.Tail^
+    = <ParseElements t.ErrorList (e.AST e.NewASTItems) e.Tail>;
 
-  t.ErrorList (e.AST) (#TkSemicolon s.LnNum) e.Tail =
-    <ParseElements t.ErrorList (e.AST) e.Tail>;
+  t.ErrorList (e.AST) (#TkSemicolon s.LnNum) e.Tail
+    = <ParseElements t.ErrorList (e.AST) e.Tail>;
 
-  t.ErrorList (e.AST) t.Unexpected e.Tail =
-    <ParseElements
-      <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
-      (e.AST) e.Tail
-    >;
+  t.ErrorList (e.AST) t.Unexpected e.Tail
+    = <ParseElements
+        <EL-AddUnexpected t.ErrorList t.Unexpected 'directive or name'>
+        (e.AST) e.Tail
+      >;
 }
 
 ASTItemFromDirective {
@@ -254,20 +243,16 @@ ParseNameList-Idents-Tail {
 */
 
 ParseFunction {
-  s.ScopeClass (e.Name) t.ErrorList (#TkOpenBlock s.LnNum) e.Tail =
-    <Fetch
-      <ParseBlock t.ErrorList e.Tail>
-      {
-        (e.Block) t.ErrorList^ e.Tail^ =
-          ((#Function s.LnNum s.ScopeClass (e.Name) e.Block))
-          t.ErrorList e.Tail;
-      }
-    >;
+  s.ScopeClass (e.Name) t.ErrorList (#TkOpenBlock s.LnNum) e.Tail
+    = <ParseBlock t.ErrorList e.Tail>
+    : (e.Block) t.ErrorList^ e.Tail^
+    = ((#Function s.LnNum s.ScopeClass (e.Name) e.Block))
+      t.ErrorList e.Tail;
 
-  s.ScopeClass (e.Name) t.ErrorList t.Unexpected e.Tail =
-    (/* ничего не сгенерировали */)
-    <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
-    t.Unexpected e.Tail;
+  s.ScopeClass (e.Name) t.ErrorList t.Unexpected e.Tail
+    = (/* ничего не сгенерировали */)
+      <EL-AddUnexpected t.ErrorList t.Unexpected 'open brace'>
+      t.Unexpected e.Tail;
 }
 
 /*
@@ -287,8 +272,8 @@ ParseBlock {
     = (#NativeBody t.SrcPos e.Block)
       <Expect #TkCloseBlock ('}') t.ErrorList e.Tokens>;
 
-  t.ErrorList e.Tokens =
-    <DoParseBlock t.ErrorList (/* sentences */) e.Tokens>;
+  t.ErrorList e.Tokens
+    = <DoParseBlock t.ErrorList (/* sentences */) e.Tokens>;
 }
 
 Expect {
@@ -301,15 +286,15 @@ Expect {
 }
 
 DoParseBlock {
-  t.ErrorList (e.Sentences) (#TkCloseBlock s.LnNumber) e.Tail =
-    (#Sentences e.Sentences) t.ErrorList e.Tail;
+  t.ErrorList (e.Sentences) (#TkCloseBlock s.LnNumber) e.Tail
+    = (#Sentences e.Sentences) t.ErrorList e.Tail;
 
-  t.ErrorList (e.Sentences) (#TkEOF s.LnNum) e.Tail =
-    (#Sentences e.Sentences)
-    <EL-AddErrorAt
-      t.ErrorList s.LnNum 'Unexpected EOF, expected "}"'
-    >
-    (#TkEOF s.LnNum) e.Tail;
+  t.ErrorList (e.Sentences) (#TkEOF s.LnNum) e.Tail
+    = (#Sentences e.Sentences)
+      <EL-AddErrorAt
+        t.ErrorList s.LnNum 'Unexpected EOF, expected "}"'
+      >
+      (#TkEOF s.LnNum) e.Tail;
 
   t.ErrorList (e.Sentences) e.Tokens
     = <ParseSentence t.ErrorList e.Tokens> : (e.Sentence) t.ErrorList^ e.Tail^
@@ -324,48 +309,55 @@ DoParseBlock {
 
 ParseSentence {
   t.ErrorList e.Tokens
+
     = <ParseSentencePart t.ErrorList e.Tokens>
     : ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList^ t.NextToken e.Tokens^
-    = <Fetch
-        t.NextToken
-        {
-          (#TkSemicolon t.SrcPos)
-            = ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 
-          (#TkColon t.SrcPos)
-            = <ParseSentence t.ErrorList e.Tokens>
-            : ((e.InnerPattern) e.Assignments (e.EndResult) (e.EndBlocks))
-              t.ErrorList^ e.Tokens^
-            = (#Assign (e.Result) (e.Blocks) (e.InnerPattern)) e.Assignments
-            : e.Assignments^
-            = ((e.StartPattern) e.Assignments (e.EndResult) (e.EndBlocks))
-              t.ErrorList e.Tokens;
+    = t.NextToken
+    : {
+        (#TkSemicolon t.SrcPos)
+          = ((e.StartPattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 
-          (#TkCloseBlock t.SrcPos)
-            = ((e.StartPattern) (e.Result) (e.Blocks))
-              <EL-AddErrorAt t.ErrorList t.SrcPos 'Missed semicolon'>
-              (#TkCloseBlock t.SrcPos) e.Tokens;
+        (#TkColon t.SrcPos)
 
-          (#TkEOF t.SrcPos)
-            = e.Tokens : /* пусто */
-            = ((e.StartPattern) (e.Result) (e.Blocks))
-              <EL-AddErrorAt t.ErrorList t.SrcPos 'Unexpected EOF in function'>
-              (#TkEOF t.SrcPos);
+          = <ParseSentence t.ErrorList e.Tokens>
+          : ((e.InnerPattern) e.Assignments (e.EndResult) (e.EndBlocks))
+            t.ErrorList^ e.Tokens^
 
-          t.Unexpected
-            = ((e.StartPattern) (e.Result) (e.Blocks))
-              <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
-              e.Tokens;
-        }
-      >;
+          = (#Assign (e.Result) (e.Blocks) (e.InnerPattern)) e.Assignments
+          : e.Assignments^
+
+          = ((e.StartPattern) e.Assignments (e.EndResult) (e.EndBlocks))
+            t.ErrorList e.Tokens;
+
+        (#TkCloseBlock t.SrcPos)
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddErrorAt t.ErrorList t.SrcPos 'Missed semicolon'>
+            (#TkCloseBlock t.SrcPos) e.Tokens;
+
+        (#TkEOF t.SrcPos)
+          = e.Tokens : /* пусто */
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddErrorAt t.ErrorList t.SrcPos 'Unexpected EOF in function'>
+            (#TkEOF t.SrcPos);
+
+        t.Unexpected
+          = ((e.StartPattern) (e.Result) (e.Blocks))
+            <EL-AddUnexpected t.ErrorList t.Unexpected 'semicolon'>
+            e.Tokens;
+      };
 }
 
 ParseSentencePart {
   t.ErrorList e.Tokens
+
     = <ParsePattern t.ErrorList e.Tokens> : t.ErrorList^ (e.Pattern) e.Tokens^
+
     = <Expect #TkReplace ('=') t.ErrorList e.Tokens> : t.ErrorList^ e.Tokens^
+
     = <ParseResult t.ErrorList e.Tokens>
     : t.ErrorList^ (e.Result) (e.Blocks) e.Tokens^
+
     = ((e.Pattern) (e.Result) (e.Blocks)) t.ErrorList e.Tokens;
 }
 
