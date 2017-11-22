@@ -144,6 +144,18 @@ run_all_tests() {
     cleanup Library-RemoveFile
   fi
 
+  if [ -e Library-symbolic-file-handles ]; then
+    echo Pass Library-symbolic-file-handles test...
+    ./Library-symbolic-file-handles < 2lines.txt > __out.txt 2>__err.txt
+    if [ $? -gt 0 ]; then
+      echo TEST FAILED, SEE __dump.txt
+      exit 1
+    fi
+    compare __out.txt 2lines.txt
+    compare __err.txt 2lines.txt
+    cleanup Library-symbolic-file-handles
+  fi
+
   rm Library.rasl Library.cpp Library.sref
 }
 
@@ -205,7 +217,7 @@ run_exe() {
 
 cleanup() {
   rm -f $1$(platform_exe_suffix) $1.rasl $1.cpp
-  rm -f __dump.txt __out.txt __written_file.txt
+  rm -f __dump.txt __out.txt __err.txt __written_file.txt
 }
 
 compare() {

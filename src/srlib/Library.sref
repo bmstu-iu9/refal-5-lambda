@@ -485,6 +485,7 @@ $LABEL False;
 $LABEL CURRENT;
 $LABEL BEGIN;
 $LABEL END;
+$LABEL stdin, stdout, stderr, stout;
 
 // Математические операции
 
@@ -571,7 +572,18 @@ bool file_handle_left(
   refalrts::Iter& pfile_handle, refalrts::Iter& first, refalrts::Iter& last
 ) {
   return refalrts::svar_left(pfile_handle, first, last)
-    && refalrts::cDataNumber == pfile_handle->tag;
+    && (
+      refalrts::cDataNumber == pfile_handle->tag
+      || (
+        refalrts::cDataIdentifier == pfile_handle->tag
+        && (
+          USE_IDENT(stdin) == pfile_handle->ident_info
+          || USE_IDENT(stdout) == pfile_handle->ident_info
+          || USE_IDENT(stderr) == pfile_handle->ident_info
+          || USE_IDENT(stout) == pfile_handle->ident_info
+        )
+      )
+    );
 }
 
 void close_all_files_at_exit(void *) {
@@ -595,29 +607,41 @@ FILE *extract_file_handle(refalrts::Iter pfile_handle, unsigned flags = 0) {
     assert(is_stdin + is_stdout + is_stderr == 1);
     return default_handle;
   } else {
-    assert(refalrts::cDataNumber == pfile_handle->tag);
+    assert(
+      refalrts::cDataNumber == pfile_handle->tag
+      || refalrts::cDataIdentifier == pfile_handle->tag
+    );
 
-    bool autoopen = flags & cFlags_Autoopen;
-    refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
+    if (refalrts::cDataNumber == pfile_handle->tag) {
+      bool autoopen = flags & cFlags_Autoopen;
+      refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
-    if (file_no == 0) {
-      assert(is_stdin + is_stdout + is_stderr <= 1);
-      return default_handle;
-    } else if (g_file_handles[file_no] == 0 && autoopen) {
-      refalrts::at_exit(close_all_files_at_exit, 0);
+      if (file_no == 0) {
+        assert(is_stdin + is_stdout + is_stderr <= 1);
+        return default_handle;
+      } else if (g_file_handles[file_no] == 0 && autoopen) {
+        refalrts::at_exit(close_all_files_at_exit, 0);
 
-      char default_name[sizeof("REFAL4294967296.DAT")];
-      sprintf(default_name, "REFAL%d.DAT", file_no);
+        char default_name[sizeof("REFAL4294967296.DAT")];
+        sprintf(default_name, "REFAL%d.DAT", file_no);
 
-      bool default_read = (flags & cFlags_Read) != 0;
-      bool default_write = (flags & cFlags_Write) != 0;
-      assert(default_read + default_write == 1);
+        bool default_read = (flags & cFlags_Read) != 0;
+        bool default_write = (flags & cFlags_Write) != 0;
+        assert(default_read + default_write == 1);
 
-      const char *default_mode = default_read ? "r" : default_write ? "w" : 0;
-      g_file_handles[file_no] = fopen(default_name, default_mode);
+        const char *default_mode = default_read ? "r" : default_write ? "w" : 0;
+        g_file_handles[file_no] = fopen(default_name, default_mode);
+      }
+
+      return g_file_handles[file_no];
+    } else if (refalrts::cDataIdentifier == pfile_handle->tag) {
+      return
+        USE_IDENT(stdin) == pfile_handle->ident_info ? stdin :
+        USE_IDENT(stdout) == pfile_handle->ident_info ? stdout :
+        USE_IDENT(stderr) == pfile_handle->ident_info ? stderr : stdout;
+    } else {
+      refalrts_switch_default_violation(pfile_handle->tag);
     }
-
-    return g_file_handles[file_no];
   }
 }
 
@@ -630,6 +654,10 @@ bool get_free_handle(refalrts::RefalNumber& free_file) {
 }
 
 bool release_file_handle(refalrts::Iter pfile_handle) {
+  if (refalrts::cDataIdentifier == pfile_handle->tag) {
+    return true;
+  }
+
   assert(refalrts::cDataNumber == pfile_handle->tag);
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
@@ -644,12 +672,18 @@ bool release_file_handle(refalrts::Iter pfile_handle) {
 bool reopen_handle(
   refalrts::Iter pfile_handle, const char *filename, const char *mode
 ) {
+  if (refalrts::cDataIdentifier == pfile_handle->tag) {
+    return false;
+  }
+
   assert(refalrts::cDataNumber == pfile_handle->tag);
 
   refalrts::RefalNumber file_no = pfile_handle->number_info % cMaxFileHandles;
 
   if (g_file_handles[file_no] != 0) {
-    release_file_handle(pfile_handle);
+    if (! release_file_handle(pfile_handle)) {
+      return false;
+    }
   }
 
   char default_name[sizeof("REFAL4294967296.DAT")];

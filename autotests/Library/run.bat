@@ -154,6 +154,18 @@ setlocal
     call :CLEANUP Library-RemoveFile
   )
 
+  if exist Library-symbolic-file-handles.exe (
+    echo Pass Library-symbolic-file-handles test...
+    Library-symbolic-file-handles.exe < 2lines.txt > __out.txt 2>__err.txt
+    if errorlevel 1 (
+      echo TEST FAILED, SEE __dump.txt
+      exit /b 1
+    )
+    call :COMPARE __out.txt 2lines.txt || exit /b 1
+    call :COMPARE __err.txt 2lines.txt || exit /b 1
+    call :CLEANUP Library-symbolic-file-handles
+  )
+
   erase Library.rasl Library.cpp Library.sref
 endlocal
 goto :EOF
@@ -235,6 +247,7 @@ goto :EOF
   if exist %1.cpp erase %1.cpp
   if exist __dump.txt erase __dump.txt
   if exist __out.txt erase __out.txt
+  if exist __err.txt erase __err.txt
   if exist __written_file.txt erase __written_file.txt
 goto :EOF
 
