@@ -31,6 +31,8 @@ run_all_tests() {
     Library-LongMath-Add-Sub-Compare-OK \
     Library-LongMath-Mul-OK \
     Library-LongMath-Divmod-OK \
+    Library-LongMath-Div-OK \
+    Library-LongMath-Mod-OK \
     Library-FOpen-FReadLine-FClose \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \

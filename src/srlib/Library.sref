@@ -251,6 +251,23 @@ $ENTRY Card {
 
 
 /**
+  10. <Div t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Div {
+  // optimization for two digits
+  s.First s.Second
+    = <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
+    = s.Div;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    = e.Div;
+}
+
+
+/**
   11. <Divmod (e.FirstNumber) e.SecondNumber> == (e.Quotient) e.Remainder
   e.Quotient, e.Remainder ::= e.NormedNumber
 */
@@ -564,6 +581,24 @@ $ENTRY Get {
   );
 %%
 }
+
+
+/**
+  19. <Mod t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Mod {
+  // optimization for two digits
+  s.First s.Second
+    = <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
+    = s.Mod;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
+    = e.Mod;
+}
+
 
 
 /**
@@ -1206,60 +1241,6 @@ $LABEL BEGIN;
 $LABEL END;
 $LABEL stdin, stdout, stderr, stout;
 
-// Математические операции
-
-%%
-#define BINARY(binary) \
-  refalrts::Iter pX = 0, pY = 0; \
-  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
-  \
-  if (pX->next != pY) { \
-    return refalrts::cRecognitionImpossible; \
-  } \
-  \
-  binary \
-  \
-  refalrts::splice_to_freelist(arg_begin, pFunc); \
-  refalrts::splice_to_freelist(pY, arg_end); \
-  return refalrts::cSuccess;
-
-#define ARITHM_BINARY(op, check) \
-  if ( \
-    refalrts::cDataNumber != pX->tag \
-    || refalrts::cDataNumber != pY->tag \
-  ) { \
-    return refalrts::cRecognitionImpossible; \
-  } \
-  \
-  check \
-  \
-  pX->number_info op##= pY->number_info; \
-
-#define ARITHM(op, check) \
-  BINARY(ARITHM_BINARY(op, check))
-
-#define ARITHM_NO_CHECK \
-  /* пусто */
-
-#define ARITHM_ZERODIV \
-  if (0 == pY->number_info) { \
-    /* деление на нуль */ \
-    return refalrts::cRecognitionImpossible; \
-  }
-
-%%
-
-$ENTRY Div {
-%%
-  ARITHM(/, ARITHM_ZERODIV);
-%%
-}
-
-$ENTRY Mod {
-%%
-  ARITHM(%, ARITHM_ZERODIV);
-%%
-}
 
 // Ввод-вывод
 
@@ -2189,6 +2170,20 @@ bool compare(refalrts::Iter left, refalrts::Iter right) {
 }
 
 } // unnamed namespace
+
+#define BINARY(binary) \
+  refalrts::Iter pX = 0, pY = 0; \
+  refalrts::Iter pFunc = refalrts::call_left(pX, pY, arg_begin, arg_end); \
+  \
+  if (pX->next != pY) { \
+    return refalrts::cRecognitionImpossible; \
+  } \
+  \
+  binary \
+  \
+  refalrts::splice_to_freelist(arg_begin, pFunc); \
+  refalrts::splice_to_freelist(pY, arg_end); \
+  return refalrts::cSuccess;
 
 #define COMPARE_BINARY \
   if (! compare(pX, pY)) { \

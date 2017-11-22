@@ -23,6 +23,12 @@ $EXTERN Arg;
 $EXTERN Card;
 
 
+// 10. Div
+
+//FROM Library
+$EXTERN Div;
+
+
 // 11. Divmod
 
 //FROM Library
@@ -39,6 +45,12 @@ $EXTERN Explode;
 
 //FROM Library
 $EXTERN Get;
+
+
+// 19. Mod
+
+//FROM Library
+$EXTERN Mod;
 
 
 // 20. Mul
@@ -128,7 +140,7 @@ $EXTERN Write;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Div, Mod, Chr, Ord,
+$EXTERN Chr, Ord,
   IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
