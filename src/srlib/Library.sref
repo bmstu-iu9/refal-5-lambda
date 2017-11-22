@@ -251,6 +251,300 @@ $ENTRY Card {
 
 
 /**
+  11. <Divmod (e.FirstNumber) e.SecondNumber> == (e.Quotient) e.Remainder
+  e.Quotient, e.Remainder ::= e.NormedNumber
+*/
+$ENTRY Divmod {
+  // optimization for two digits
+  s.First s.Second = <Divmod-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
+    = '+-' : e.Signs-B s.Sign e.Signs-E   // TODO: тут должно быть условие!!!
+    = <Divmod-Normed (e.First) s.Sign e.Second>;
+}
+
+Divmod-Digits {
+%%
+  ARITHM_PRELUDE
+
+  if (0 == second) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::Iter pleft_bracket = arg_begin;
+  refalrts::Iter pdiv = pFunc;
+  refalrts::Iter pright_bracket = pFirst;
+  refalrts::Iter pmod = pSecond;
+  refalrts::link_brackets(pleft_bracket, pright_bracket);
+
+  refalrts::reinit_open_bracket(pleft_bracket);
+  refalrts::reinit_number(pdiv, first / second);
+  refalrts::reinit_close_bracket(pright_bracket);
+  refalrts::update_number(pmod, first % second);
+  refalrts::splice_to_freelist(arg_end, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+Divmod-Normed {
+  ('+' e.First) '+' e.Second = <Divmod-Nat (e.First) e.Second (   ) (   )>;
+  ('+' e.First) '-' e.Second = <Divmod-Nat (e.First) e.Second ('-') (   )>;
+  ('-' e.First) '+' e.Second = <Divmod-Nat (e.First) e.Second ('-') ('-')>;
+  ('-' e.First) '-' e.Second = <Divmod-Nat (e.First) e.Second (   ) ('-')>;
+  (0)           e.AnySecond  = (0) 0;
+}
+
+Divmod-Nat {
+  (s.Numerator) s.Denominator (e.QuotSign) (e.RemSing)
+    = <Divmod-Digits s.Numerator s.Denominator> : (s.Quot) s.Rem
+    = (e.QuotSign s.Quot) e.RemSing s.Rem;
+
+  (e.Numerator) s.DenomFirst e.Denominator (e.QuotSign) (e.RemSing)
+    = s.DenomFirst
+    : {
+%%
+        refalrts::Iter pfunc = arg_begin->next;
+        assert(refalrts::cDataFunction == pfunc->tag);
+
+        refalrts::Iter pvalue = pfunc->next;
+        assert(refalrts::cDataNumber == pvalue->tag);
+
+        refalrts::RefalNumber value = pvalue->number_info;
+        assert(value != 0);
+
+        int shift = 0;
+        while ((value & (1 << 31)) == 0) {
+          ++shift;
+          value <<= 1;
+        }
+
+        refalrts::reinit_number(arg_begin, shift);
+        refalrts::reinit_number(pfunc, 32 - shift);
+        refalrts::splice_to_freelist(pvalue, arg_end);
+        return refalrts::cSuccess;
+%%
+      }
+    : s.NormShift s.RestoreShift
+    = <Divmod-Shl s.NormShift e.Numerator> : e.Numerator^
+    = <Divmod-Shl s.NormShift s.DenomFirst e.Denominator> : e.Denominator^
+    = <Divmod-Nat-Normed (e.Numerator) e.Denominator> : (e.Quot) e.Rem
+    = <Divmod-Shl s.RestoreShift e.Rem> : e.Rem^ 0
+    = (e.QuotSign e.Quot) e.RemSing e.Rem;
+}
+
+Divmod-Shl {
+%%
+  refalrts::Iter digits_b = 0, digits_e = 0;
+  refalrts::call_left(digits_b, digits_e, arg_begin, arg_end);
+
+  refalrts::Iter pshift;
+  if (
+    ! refalrts::svar_left(pshift, digits_b, digits_e)
+    && refalrts::cDataNumber != pshift->tag
+    && refalrts::empty_seq(digits_b, digits_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber shift = pshift->number_info;
+  if (shift > 32) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (0 == shift) {
+    refalrts::splice_to_freelist(arg_begin, pshift);
+    refalrts::splice_to_freelist(arg_end, arg_end);
+    return refalrts::cSuccess;
+  }
+
+  refalrts::Iter garbage_end = pshift;
+  refalrts::reinit_number(arg_end, 0);
+  if (shift < 32) {
+    refalrts::Iter current = digits_e;
+    while (current != pshift) {
+      current->next->number_info |= current->number_info << shift;
+      current->number_info >>= 32 - shift;
+      current = current->prev;
+    }
+
+    if (0 == digits_b->number_info) {
+      garbage_end = digits_b;
+    }
+  }
+
+  refalrts::splice_to_freelist(arg_begin, garbage_end);
+  return refalrts::cSuccess;
+%%
+}
+
+Divmod-Nat-Normed {
+  (e.Numerator) e.Denominator
+    = <Divmod-Align (0) (e.Numerator) () e.Denominator>;
+}
+
+Divmod-Align {
+  (e.Numerator) (s.N e.NumerRest) (e.Denominator) s.D e.DenominRest
+    = <Divmod-Align
+        (e.Numerator s.N) (e.NumerRest) (e.Denominator s.D) e.DenominRest
+      >;
+
+  (e.Numerator) (e.NumerRest) (e.Denominator) /* empty */
+    = <Divmod-CalcDigits (e.Numerator) (e.NumerRest) e.Denominator>
+    : e.Quot (e.Rest)
+    = (<LeadingZeros e.Quot>) e.Rest;
+
+  (0 e.Numerator) () (e.Denominator) e.DenominRest = (0) e.Numerator;
+}
+
+Divmod-CalcDigits {
+  (e.Numerator) (e.NumerRest) e.Denominator
+    = <Divmod-GetNextDigit (e.Numerator) e.Denominator> : s.QuotDigit e.Rem
+    = e.NumerRest
+    : {
+        s.NextDigit e.NumerRest^
+          = s.QuotDigit
+            <Divmod-CalcDigits
+              (e.Rem s.NextDigit) (e.NumerRest) e.Denominator
+            >;
+
+        /* empty */ = s.QuotDigit (e.Rem);
+      };
+}
+
+Divmod-GetNextDigit {
+  (s.N1 s.N2) s.D = <Divmod-GuessDigit s.N1 s.N2 s.D>;
+
+  (s.N1 s.N2 e.Numerator) s.D e.Denominator
+    = <Divmod-GuessDigit s.N1 s.N2 s.D> : s.QuotDigit s.RemDigit
+    = <Divmod-AdjustDigit
+        s.QuotDigit
+        <Sub-Normed
+          ('+' <LeadingZeros s.N1 s.N2 e.Numerator>)
+          '+' <Mul-Nat-Line s.D e.Denominator s.QuotDigit>
+        >
+        (s.D e.Denominator)
+      >;
+}
+
+Divmod-AdjustDigit {
+  s.QuotDigit '-' e.Rem (e.Denominator)
+    = <Divmod-AdjustDigit
+        <Sub-Digits s.QuotDigit 1> <Sub-Nat (e.Denominator) e.Rem>
+        (e.Denominator)
+      >;
+
+  s.QuotDigit e.Rem (e.Denominator) = s.QuotDigit e.Rem;
+}
+
+%%
+namespace {
+
+void long_mul(
+  refalrts::UInt32& res_high, refalrts::UInt32& res_low,
+  refalrts::UInt32 first, refalrts::UInt32 second
+);
+
+}  // unnamed namespace
+%%
+
+Divmod-GuessDigit {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  refalrts::Iter pN1 = 0, pN2 = 0, pD = 0;
+  if (
+    ! refalrts::svar_left(pN1, content_b, content_e)
+    || refalrts::cDataNumber != pN1->tag
+    || ! refalrts::svar_left(pN2, content_b, content_e)
+    || refalrts::cDataNumber != pN2->tag
+    || ! refalrts::svar_left(pD, content_b, content_e)
+    || refalrts::cDataNumber != pD->tag
+    || ! refalrts::empty_seq(content_b, content_e)
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+
+  using refalrts::UInt32;
+  UInt32 num_hi = pN1->number_info;
+  UInt32 num_lo = pN2->number_info;
+  UInt32 denom = pD->number_info;
+
+  if (num_hi >= denom) {
+    refalrts::reinit_number(arg_begin, 4294967295);
+    refalrts::reinit_char(pfunc, '*');
+    refalrts::splice_to_freelist(pN1, arg_end);
+    return refalrts::cSuccess;
+  }
+
+  if (num_hi >= denom || (denom & (1 << 31)) == 0) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  UInt32 denom_half_hi = denom >> 16;
+  UInt32 quot_hi = num_hi / denom_half_hi;
+  if (quot_hi >= 65536) {
+    quot_hi = 65535;
+  }
+
+  UInt32 subst_hi, subst_lo;
+  while (true) {
+    long_mul(subst_hi, subst_lo, quot_hi << 16, denom);
+
+    if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
+      break;
+    }
+    --quot_hi;
+  }
+
+  if (subst_lo > num_lo) {
+    --num_hi;
+  }
+  num_lo -= subst_lo;
+  num_hi -= subst_hi;
+
+  assert(num_hi < 65536);
+
+  UInt32 num_major = (num_hi << 16) | (num_lo >> 16);
+  assert(num_major < denom);
+  UInt32 quot_lo = (num_major) / denom_half_hi;
+
+  while (true) {
+    long_mul(subst_hi, subst_lo, quot_lo, denom);
+
+    if (subst_hi < num_hi || (subst_hi == num_hi && subst_lo <= num_lo)) {
+      break;
+    }
+    --quot_lo;
+  }
+
+  if (subst_lo > num_lo) {
+    --num_hi;
+  }
+  num_lo -= subst_lo;
+  num_hi -= subst_hi;
+
+  assert(num_hi == 0);
+
+  UInt32 quot = (quot_hi << 16) + quot_lo;
+  UInt32 rem = num_lo;
+
+  refalrts::reinit_number(arg_begin, quot);
+  refalrts::reinit_number(pfunc, rem);
+  refalrts::splice_to_freelist(pN1, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+
+
+/**
   12. <Explode s.COMPOUND> == s.CHAR*
 */
 $ENTRY Explode {
@@ -285,10 +579,13 @@ $ENTRY Mul {
     = <Mul-Normed (e.First) e.Second>;
 }
 
-Mul-Digits {
 %%
-  ARITHM_PRELUDE
+namespace {
 
+void long_mul(
+  refalrts::UInt32& res_high, refalrts::UInt32& res_low,
+  refalrts::UInt32 first, refalrts::UInt32 second
+) {
   /*
     Double-word multiplication scheme:
 
@@ -320,15 +617,26 @@ Mul-Digits {
   UInt32 Dd = i * e;
 
   UInt32 Zz = (Bb & 0xFFFFU) + (Dd >> 16) + (Cc & 0xFFFFU);
-  UInt32 zt = (Zz << 16) + (Dd & 0xFFFFU);
-  UInt32 xy = Aa + (Bb >> 16) + (Cc >> 16) + (Zz >> 16);
+  res_low = (Zz << 16) + (Dd & 0xFFFFU);
+  res_high = Aa + (Bb >> 16) + (Cc >> 16) + (Zz >> 16);
+}
 
-  if (xy > 0) {
-    refalrts::reinit_number(arg_begin, xy);
-    refalrts::reinit_number(pFunc, zt);
+}  // unnamed namespace
+%%
+
+Mul-Digits {
+%%
+  ARITHM_PRELUDE
+
+  refalrts::UInt32 res_high, res_low;
+  long_mul(res_high, res_low, first, second);
+
+  if (res_high > 0) {
+    refalrts::reinit_number(arg_begin, res_high);
+    refalrts::reinit_number(pFunc, res_low);
     refalrts::splice_to_freelist(pFirst, arg_end);
   } else {
-    refalrts::reinit_number(arg_begin, zt);
+    refalrts::reinit_number(arg_begin, res_low);
     refalrts::splice_to_freelist(pFunc, arg_end);
   }
 
@@ -492,6 +800,10 @@ Sub-Nat {
 }
 
 Sub-Nat-Nat {
+  (e.First) e.Second = <LeadingZeros <DoSub-Nat-Nat (e.First) e.Second>>;
+}
+
+DoSub-Nat-Nat {
   (e.First s.FirstLast) e.Second s.SecondLast
     = s.FirstLast s.SecondLast
     : {
@@ -515,17 +827,18 @@ Sub-Nat-Nat {
 %%
       }
     : {
-        s.LastDigit = <Sub-Nat-Nat (e.First) e.Second> s.LastDigit;
+        s.LastDigit = <DoSub-Nat-Nat (e.First) e.Second> s.LastDigit;
 
         '*' s.LastDigit
-          = <Sub-Nat-Nat (<Sub-Nat-Nat (e.First) 1>) e.Second> s.LastDigit;
+          = <DoSub-Nat-Nat (<Sub-Nat-Nat (e.First) 1>) e.Second> s.LastDigit;
       };
 
-  (e.First) /* empty */ = <Sub-Zeros e.First>;
+  (e.First) /* empty */ = e.First;
 }
 
-Sub-Zeros {
-  0 e.Digits = <Sub-Zeros e.Digits>;
+LeadingZeros {
+  0 = 0;
+  0 e.Digits = <LeadingZeros e.Digits>;
   e.Digits = e.Digits;
 }
 

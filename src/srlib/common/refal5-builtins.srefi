@@ -23,6 +23,12 @@ $EXTERN Arg;
 $EXTERN Card;
 
 
+// 11. Divmod
+
+//FROM Library
+$EXTERN Divmod;
+
+
 // 12. Explode
 
 //FROM Library
@@ -247,7 +253,6 @@ Implode_Ext {
 // Не реализованные пока функции
 $ENUM Cp;
 $ENUM Dgall;
-$ENUM Divmod;
 $ENUM Implode;
 $ENUM Last;
 $ENUM Lenw;
