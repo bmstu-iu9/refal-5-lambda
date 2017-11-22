@@ -273,6 +273,103 @@ $ENTRY Get {
 
 
 /**
+  20. <Mul t.FirstNumber e.SecondNumber> == e.NormedNumber
+*/
+$ENTRY Mul {
+  // optimization for two digits
+  s.First s.Second = <Mul-Digits s.First s.Second>;
+
+  // TODO: заменить на условия!!!
+  e.ArithmArg
+    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Mul-Normed (e.First) e.Second>;
+}
+
+Mul-Digits {
+%%
+  ARITHM_PRELUDE
+
+  /*
+    Double-word multiplication scheme:
+
+    (x,y,z,t) = (F,i)*(S,e)     -- first * second
+
+       S   e        (A,a) = F * S
+     ---------      (B,b) = i * S
+     |\ b|\ d|      (C,c) = F * e
+    i| \ | \ |t     (D,d) = i * e
+     |B \|D \|
+     ---------      t = d
+     |\ a|\ c|      (Z,z) = b + D + c
+    F| \ | \ |z     (Y,y) = B + a + C + Z
+     |A \|C \|      x = A + Y
+     ---------
+       x   y        (x,y) = (A, a) + B + C + Z
+  */
+
+  using refalrts::UInt32;
+
+  UInt32 F = first >> 16;
+  UInt32 i = first & 0xFFFFU;
+  UInt32 S = second >> 16;
+  UInt32 e = second & 0xFFFFU;
+
+  UInt32 Aa = F * S;
+  UInt32 Bb = i * S;
+  UInt32 Cc = F * e;
+  UInt32 Dd = i * e;
+
+  UInt32 Zz = (Bb & 0xFFFFU) + (Dd >> 16) + (Cc & 0xFFFFU);
+  UInt32 zt = (Zz << 16) + (Dd & 0xFFFFU);
+  UInt32 xy = Aa + (Bb >> 16) + (Cc >> 16) + (Zz >> 16);
+
+  if (xy > 0) {
+    refalrts::reinit_number(arg_begin, xy);
+    refalrts::reinit_number(pFunc, zt);
+    refalrts::splice_to_freelist(pFirst, arg_end);
+  } else {
+    refalrts::reinit_number(arg_begin, zt);
+    refalrts::splice_to_freelist(pFunc, arg_end);
+  }
+
+  return refalrts::cSuccess;
+%%
+}
+
+Mul-Normed {
+  ('+' e.First) '+' e.Second = <Mul-Nat (e.First) e.Second>;
+  ('+' e.First) '-' e.Second = '-' <Mul-Nat (e.First) e.Second>;
+  ('+' e.First) 0            = 0;
+  ('-' e.First) '+' e.Second = '-' <Mul-Nat (e.First) e.Second>;
+  ('-' e.First) '-' e.Second = <Mul-Nat (e.First) e.Second>;
+  ('-' e.First) 0            = 0;
+  (0)           e.AnySecond  = 0;
+}
+
+Mul-Nat {
+  (e.First) s.SecondLast = <Mul-Nat-Line e.First s.SecondLast>;
+
+  (e.First) e.Second s.SecondLast
+    = <Add-Nat
+        (<Mul-Nat (e.First) e.Second> 0) <Mul-Nat-Line e.First s.SecondLast>
+      >;
+}
+
+Mul-Nat-Line {
+  s.FirstLast s.Second = <Mul-Digits s.FirstLast s.Second>;
+
+  e.First s.FirstLast s.Second
+    = <Mul-Digits s.FirstLast s.Second>
+    : {
+        s.MulHigh s.MulLow
+          = <Add-Nat (<Mul-Nat-Line e.First s.Second>) s.MulHigh> s.MulLow;
+
+        s.MulLow = <Mul-Nat-Line e.First s.Second> s.MulLow;
+      };
+}
+
+
+/**
   22. <Open s.Mode s.FileNo e.FileName> == []
   s.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
 */
@@ -838,12 +935,6 @@ $LABEL stdin, stdout, stderr, stout;
   }
 
 %%
-
-$ENTRY Mul {
-%%
-  ARITHM(*, ARITHM_NO_CHECK);
-%%
-}
 
 $ENTRY Div {
 %%

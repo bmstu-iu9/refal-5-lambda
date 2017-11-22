@@ -32,7 +32,8 @@ setlocal
 
   call :SIMPLE_TESTS OK ^
     Library-Math-OK ^
-    Library-LongMath-OK ^
+    Library-LongMath-Add-Sub-Compare-OK ^
+    Library-LongMath-Mul-OK ^
     Library-FOpen-FReadLine-FClose ^
     Library-IntFromStr-StrFromInt-Chr-Ord ^
     Library-SymbCompare ^

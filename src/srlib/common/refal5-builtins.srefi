@@ -35,6 +35,12 @@ $EXTERN Explode;
 $EXTERN Get;
 
 
+// 20. Mul
+
+//FROM Library
+$EXTERN Mul;
+
+
 // 22. Open
 
 //FROM Library
@@ -116,7 +122,7 @@ $EXTERN Write;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Mul, Div, Mod, Chr, Ord,
+$EXTERN Div, Mod, Chr, Ord,
   IntFromStr, StrFromInt,
   SymbCompare, Implode;
 
