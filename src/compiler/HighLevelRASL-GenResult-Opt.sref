@@ -20,27 +20,20 @@ $EXTERN TextFromExpr, Inc2, CollectStrings;
   e.MarkedPattern — не используется
 */
 $ENTRY GenResult-Opt {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
-    <Fetch
-      <GST
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+
+    = <GST
         ((#LEFT-EDGE) e.MarkedPattern (#RIGHT-EDGE))
         ((#LEFT-EDGE) <FlatResult e.Result> (#RIGHT-EDGE))
       >
-      {
-        (e.Trash) (e.MarkedResult) =
-          <Fetch
-            <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
-            {
-              s.ContextOffset^ e.MarkedResult^ =
-                s.ContextOffset
-                (#CmdResetAllocator)
-                <GenResult-Aux
-                  (e.Trash) (e.MarkedResult)
-                >;
-            }
-          >;
-      }
-    >;
+    : (e.Trash) (e.MarkedResult)
+
+    = <AddOffsets s.ContextOffset (e.PatternVars) e.MarkedResult>
+    : s.ContextOffset^ e.MarkedResult^
+
+    = s.ContextOffset
+      (#CmdResetAllocator)
+      <GenResult-Aux (e.Trash) (e.MarkedResult)>;
 }
 
 FlatResult {
@@ -140,7 +133,7 @@ GenResult-Aux {
 
     //Генерируем команды связывания скобок
     <GenPushLink
-      <ModifyResult e.MarkedResult>
+      <FlatTilesInResult e.MarkedResult>
     >
 
     //Генерируем команды переноса из списка свободных узлов
@@ -161,9 +154,8 @@ CreateElemParam {
 }
 
 GenPushLink {
-  e.MarkedResult =
-    <Fetch
-      <MapReduce
+  e.MarkedResult
+    = <MapReduce
         {
           (e.Stack) (#TkOpenCall s.Offset) = (e.Stack s.Offset);
           (e.Stack) (#TkOpenADT s.Offset) = (e.Stack s.Offset);
@@ -181,10 +173,8 @@ GenPushLink {
         (/* стек */)
         e.MarkedResult
       >
-      {
-        () e.Commands = <Reverse e.Commands>;
-      }
-    >;
+    : () e.Commands
+    = <Reverse e.Commands>;
 }
 
 Reverse {
@@ -193,19 +183,26 @@ Reverse {
   /* empty */ = /* empty */;
 }
 
-ModifyResult {
-  (#Tile e.Tile) e.Result = <ModifyTile e.Tile> <ModifyResult e.Result> ;
-  (s.tag e.info) e.Result = (s.tag e.info) <ModifyResult e.Result> ;
-  /*пусто*/ = ;
-}
+FlatTilesInResult {
+  e.Result
+    = <Map
+        {
+          (#Tile e.Tile)
+            = <Map
+                {
+                  (#RIGHT-EDGE) = ;
+                  (#LEFT-EDGE) = ;
+                  (#AsIs t.Item) = t.Item;
+                  (#HalfReuse t.Item) = t.Item;
+                  (#Reuse t.Item) = t.Item;
+                }
+                e.Tile
+              >;
 
-ModifyTile {
-  (#RIGHT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#LEFT-EDGE) e.Range = <ModifyTile e.Range>;
-  (#AsIs t.Item) e.Range = t.Item <ModifyTile e.Range>;
-  (#HalfReuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  (#Reuse t.Item) e.Range  = t.Item <ModifyTile e.Range>;
-  /*пусто*/ = ;
+          (s.tag e.info) = (s.tag e.info);
+        }
+        e.Result
+      >;
 }
 
 GenSplices {

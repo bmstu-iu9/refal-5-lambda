@@ -16,23 +16,10 @@ $EXTERN CollectStrings, IncVarOffset, PrintVar;
   e.MarkedPattern — не используется
 */
 $ENTRY GenResult-Simple {
-  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result =
-    /* e.MarkedPattern не используется */
-    <Fetch
-      <DoGenResult
-        (
-          <Map
-            {
-              (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
-            }
-            e.PatternVars
-          >
-        )
-        (/* alloc commands */) (/* other commands */)
-        s.ContextOffset // счётчик новых элементов
-        <CollectStrings e.Result>
-      >
-      {
+  s.ContextOffset (e.PatternVars) (e.MarkedPattern) e.Result
+    = /* e.MarkedPattern не используется */
+      <GenResult s.ContextOffset (e.PatternVars) e.Result>
+    : {
         s.ContextOffset^ (e.CommonVars) /* нет команд генерации результата */ =
           s.ContextOffset
           <MakeVariableCommentTable e.CommonVars>
@@ -48,8 +35,24 @@ $ENTRY GenResult-Simple {
           (#CmdUseRes)
           (#CmdSpliceToFreeList)
           (#CmdNextStep);
-      }
-    >;
+      };
+}
+
+GenResult {
+  s.ContextOffset (e.PatternVars) e.Result
+    = <Map
+        {
+          (s.Mode (e.Index) e.Offsets) = (s.Mode (e.Index) () e.Offsets);
+        }
+        e.PatternVars
+      >
+    : e.PatternVars^
+    = <DoGenResult
+        (e.PatternVars)
+        (/* alloc commands */) (/* other commands */)
+        s.ContextOffset // счётчик новых элементов
+        <CollectStrings e.Result>
+      >;
 }
 
 DoGenResult {
