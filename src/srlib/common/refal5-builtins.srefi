@@ -152,8 +152,7 @@ $EXTERN Write;
 /******************************* NOT REFACTORED *******************************/
 
 //FROM Library
-$EXTERN Chr, Ord,
-  SymbCompare, Implode;
+$EXTERN Chr, Ord, Implode;
 
 First {
   s.N e.Expr = <__DoFirst s.N () e.Expr>;
@@ -267,7 +266,6 @@ Implode_Ext {
 // Не реализованные пока функции
 $ENUM Cp;
 $ENUM Dgall;
-$ENUM Implode;
 $ENUM Last;
 $ENUM Lenw;
 $ENUM Lower;
