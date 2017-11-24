@@ -1,5 +1,5 @@
 //FROM Library
-$EXTERN Divmod;
+$EXTERN Div;
 
 Eq { (e.X) e.X = (e.X); }
 

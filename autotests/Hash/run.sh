@@ -1,6 +1,6 @@
 #!/bin/bash
 source ../../scripts/load-config.sh ../.. || exit 1
-source ../../src/scripts/platform-specific.sh
+source ../../scripts/platform-specific.sh
 
 LIBDIR=../../src/srlib
 

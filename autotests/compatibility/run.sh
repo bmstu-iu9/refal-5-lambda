@@ -51,7 +51,7 @@ lookup_compilers() {
     SREFC_EXIST=1
     echo ... found srefc
     source ../../scripts/load-config.sh ../.. || return 1
-    source ../../src/scripts/platform-specific.sh
+    source ../../scripts/platform-specific.sh
   fi
   echo
 }
