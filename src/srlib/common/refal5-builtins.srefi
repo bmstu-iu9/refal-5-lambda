@@ -101,6 +101,12 @@ $EXTERN Putout;
 $EXTERN Sub;
 
 
+// 31. Symb
+
+//FROM Library
+$EXTERN Symb;
+
+
 // 33. Type
 
 //FROM Library
@@ -147,12 +153,7 @@ $EXTERN Write;
 
 //FROM Library
 $EXTERN Chr, Ord,
-  StrFromInt,
   SymbCompare, Implode;
-
-Symb {
-  s.Number = <StrFromInt s.Number>;
-}
 
 First {
   s.N e.Expr = <__DoFirst s.N () e.Expr>;

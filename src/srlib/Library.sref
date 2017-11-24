@@ -924,6 +924,32 @@ LeadingZeros {
   e.Digits = e.Digits;
 }
 
+/**
+  31. <Symb e.Sign s.NUMBER+> == e.Sign s.CHAR-DIGIT+
+  e.Sign ::= {'+'|'-'}?
+*/
+$ENTRY Symb {
+  s.First e.Tail
+    = <NormNumber s.First e.Tail> : s.NormedSign e.NormedNumber
+    = s.First s.NormedSign
+    : {
+        0 0 = '0';
+        s.Sign 0 = s.Sign '0';
+        s.Sign s.Sign = s.Sign <Symb-Nat e.NormedNumber>;
+        s.Digit '+' = <Symb-Nat e.NormedNumber>;
+      };
+}
+
+Symb-Nat {
+  s.Number = <StrFromInt s.Number>;
+
+  e.Number
+    = <Divmod (e.Number) 1000000000> : (e.Div) s.Mod
+    = '000000000' <StrFromInt s.Mod>
+    : e.Zeros s.1 s.2 s.3 s.4 s.5 s.6 s.7 s.8 s.9       // TODO: Last
+    = <Symb-Nat e.Div> s.1 s.2 s.3 s.4 s.5 s.6 s.7 s.8 s.9;
+}
+
 
 /**
   33. <Type e.Expr> == s.Type s.SubType e.Expr
