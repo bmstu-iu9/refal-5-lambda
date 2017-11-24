@@ -198,7 +198,7 @@ setlocal
     -D../../src/srlib/platform-Windows ^
     -D../../src/srlib/common ^
     --prelude=refal5-builtins.srefi ^
-    -f-DSTEP_LIMIT=1000 ^
+    -f-DSTEP_LIMIT=6000 ^
     -f-DMEMORY_LIMIT=1000 ^
     -f-DDUMP_FILE=%DEF_DUMP_FILE_NAME_HACK% ^
     -f-DDONT_PRINT_STATISTICS ^

@@ -1,0 +1,19 @@
+$ENTRY Go {
+  = <Eq ((5) 3) <Divmod 28 5>>
+*    <Eq (('-' 5) '-' 3) <Divmod ('-' 28) 5>>    /* BUG in Refal-5 */
+*    <Eq (('-' 5) 3) <Divmod 28 '-' 5>>          /* BUG in Refal-5 */
+    <Eq ((5) '-' 3) <Divmod ('-' 28) '-' 5>>
+    <Eq
+      (('15873015746') '24691248')
+      <Symb-Divmod
+        <Divmod (<Numb '12345678901234567890'>) <Numb '777777777'>>
+      >
+    >
+  ;
+}
+
+Symb-Divmod {
+  (e.Div) e.Mod = (<Symb e.Div>) <Symb e.Mod>;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }
