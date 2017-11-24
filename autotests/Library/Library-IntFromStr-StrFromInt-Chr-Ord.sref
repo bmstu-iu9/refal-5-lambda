@@ -4,6 +4,7 @@ $EXTERN IntFromStr, StrFromInt, Chr, Ord;
 $ENTRY Go {
   =
     <{ #Success 123 'abcd' = ; } <IntFromStr '123abcd'>>
+    <{ #Success 0 = ; } <IntFromStr '4294967296'>>
     <{ #Fails 'abcd' = ; } <IntFromStr 'abcd'>>
     <{ #Fails /* пусто */ = ; } <IntFromStr /* пусто */>>
     <{ '123' = ; } <StrFromInt 123>>

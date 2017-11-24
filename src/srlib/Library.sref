@@ -713,6 +713,53 @@ Mul-Nat-Line {
 
 
 /**
+  21. <Numb {'+'|'-'}? e.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
+*/
+$ENTRY Numb {
+  '-' e.String = <Neg <DoNumb Numb-Ok Numb-Fail () e.String>>;
+  '+' e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
+  e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
+}
+
+DoNumb {
+  s.Ok s.Fail (e.Digits) '0' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 0) e.Rest>;
+  s.Ok s.Fail (e.Digits) '1' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 1) e.Rest>;
+  s.Ok s.Fail (e.Digits) '2' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 2) e.Rest>;
+  s.Ok s.Fail (e.Digits) '3' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 3) e.Rest>;
+  s.Ok s.Fail (e.Digits) '4' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 4) e.Rest>;
+  s.Ok s.Fail (e.Digits) '5' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 5) e.Rest>;
+  s.Ok s.Fail (e.Digits) '6' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 6) e.Rest>;
+  s.Ok s.Fail (e.Digits) '7' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 7) e.Rest>;
+  s.Ok s.Fail (e.Digits) '8' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 8) e.Rest>;
+  s.Ok s.Fail (e.Digits) '9' e.Rest = <DoNumb s.Ok s.Fail (e.Digits 9) e.Rest>;
+
+  s.Ok s.Fail () e.Rest = <s.Fail e.Rest>;
+  s.Ok s.Fail (e.Digits) e.Rest = <s.Ok (<Numb-Wrap e.Digits>) e.Rest>;
+}
+
+Numb-Ok {
+  (e.Number) e.Rest = e.Number;
+}
+
+Numb-Fail {
+  e.Rest = 0;
+}
+
+Numb-Wrap {
+  e.Digits = <DoNumb-Wrap (0) e.Digits>;
+}
+
+DoNumb-Wrap {
+  (e.Result) s.NextDigit e.Digits
+    = <DoNumb-Wrap
+        (<Add-Nat (<Mul-Nat-Line e.Result 10>) s.NextDigit>) e.Digits
+      >;
+
+  (e.Result) = e.Result;
+}
+
+
+/**
   22. <Open s.Mode s.FileNo e.FileName> == []
   s.Mode ::= 'r' | 'w' | 'a' | s.COMPOUND | (s.CHAR*)
 */
@@ -1823,48 +1870,18 @@ $ENTRY System {
 // Работа с типами символов
 
 $ENTRY IntFromStr {
-%%
-  refalrts::Iter number_b = 0;
-  refalrts::Iter number_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(number_b, number_e, arg_begin, arg_end);
-
-  bool start_is_digit =
-    ! refalrts::empty_seq(number_b, number_e)
-    && refalrts::cDataChar == number_b->tag
-    && isdigit(number_b->char_info);
-
-    if (! start_is_digit) {
-      refalrts::Iter fail_pos = pfunc_name;
-      refalrts::reinit_ident(fail_pos, USE_IDENT(Fails));
-      refalrts::splice_to_freelist(arg_begin, arg_begin);
-      refalrts::splice_to_freelist(arg_end, arg_end);
-    } else {
-      refalrts::RefalNumber result = 0;
-      while (
-        ! refalrts::empty_seq(number_b, number_e)
-        && refalrts::cDataChar == number_b->tag
-        && isdigit(number_b->char_info)
-      ) {
-        result *= 10;
-        result += number_b->char_info - '0';
-
-        refalrts::move_left(number_b, number_e);
-      }
-
-      refalrts::Iter success_pos = arg_begin;
-      refalrts::reinit_ident(success_pos, USE_IDENT(Success));
-      refalrts::Iter number_pos = pfunc_name;
-      refalrts::reinit_number(number_pos, result);
-
-      refalrts::Iter res =
-        refalrts::splice_evar(arg_end->next, number_b, number_e);
-      refalrts::splice_to_freelist_open(number_pos, res);
-    }
-
-    return refalrts::cSuccess;
-%%
+  e.String
+    = <DoNumb
+          {
+            (e.MacroDigits s.LastDigit) e.Rest = #Success s.LastDigit e.Rest;
+          }
+          {
+            e.Rest = #Fails e.Rest;
+          }
+        () e.String
+      >;
 }
+
 
 $ENTRY StrFromInt {
 %%

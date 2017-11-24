@@ -10,7 +10,7 @@ run_all_tests() {
     --exesuffix=$(platform_exe_suffix)
     -D$LIBDIR
     -D$(platform_subdir_lookup $LIBDIR)
-    -f-DSTEP_LIMIT=1250
+    -f-DSTEP_LIMIT=1500
     -f-DMEMORY_LIMIT=1000
     -f-DIDENTS_LIMIT=25
     -f-DDUMP_FILE=\\\"__dump.txt\\\"
@@ -33,6 +33,7 @@ run_all_tests() {
     Library-LongMath-Divmod-OK \
     Library-LongMath-Div-OK \
     Library-LongMath-Mod-OK \
+    Library-LongMath-Numb-OK \
     Library-FOpen-FReadLine-FClose \
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \

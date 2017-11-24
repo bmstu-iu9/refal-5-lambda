@@ -59,6 +59,12 @@ $EXTERN Mod;
 $EXTERN Mul;
 
 
+// 21. Numb
+
+//FROM Library
+$EXTERN Numb;
+
+
 // 22. Open
 
 //FROM Library
@@ -141,16 +147,11 @@ $EXTERN Write;
 
 //FROM Library
 $EXTERN Chr, Ord,
-  IntFromStr, StrFromInt,
+  StrFromInt,
   SymbCompare, Implode;
 
 Symb {
   s.Number = <StrFromInt s.Number>;
-}
-
-Numb {
-  // Пока пускай фейлится
-  e.String = <IntFromStr e.String> : #Success s.Number = s.Number;
 }
 
 First {
