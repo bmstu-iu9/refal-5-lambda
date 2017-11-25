@@ -241,12 +241,62 @@ $ENTRY Arg {
 
 
 /**
+  4. <Br e.Key '=' e.Value> == []
+*/
+$ENTRY Br {
+  e.Key '=' e.Value = <Buried (e.Key '=' e.Value) <Buried>>;
+}
+
+$SWAP Buried;
+
+
+/**
   5. <Card> == s.CHAR* 0?
 */
 $ENTRY Card {
 %%
   return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
 %%
+}
+
+
+/**
+  7. <Cp e.Key> == e.Value | []
+*/
+$ENTRY Cp {
+  e.Key
+    = <Buried>
+    : {
+        e.Values-B (e.Key '=' e.Value) e.Values-E
+          = e.Value
+            <Buried e.Values-B (e.Key '=' e.Value) e.Values-E>;
+
+        e.Values = <Buried e.Values>;
+      };
+}
+
+
+/**
+  8. <Dg e.Key> == e.Value | []
+*/
+$ENTRY Dg {
+  e.Key
+    = <Buried>
+    : {
+        e.Values-B (e.Key '=' e.Value) e.Values-E
+          = e.Value
+            <Buried e.Values-B e.Values-E>;
+
+        e.Values = <Buried e.Values>;
+      };
+}
+
+
+/**
+  9. <Dgall> == (e.Key '=' e.Value)*
+*/
+$ENTRY Dgall {
+  = <Buried>;
 }
 
 
@@ -820,6 +870,21 @@ $ENTRY Putout {
     arg_begin, arg_end, cFlags_Autoopen | cFlags_Write | cFlags_StdErr
   );
 %%
+}
+
+
+/**
+  28. <Rp e.Key '=' e.Value> == []
+*/
+$ENTRY Rp {
+  e.Key '=' e.NewValue
+    = <Buried>
+    : {
+        e.Values-B (e.Key '=' e.OldValue) e.Values-E
+          = <Buried e.Values-B (e.Key '=' e.NewValue) e.Values-E>;
+
+        e.Values = <Buried (e.Key '=' e.NewValue) e.Values>;
+      };
 }
 
 

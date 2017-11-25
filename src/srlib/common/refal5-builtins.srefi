@@ -17,10 +17,34 @@ $EXTERN Add;
 $EXTERN Arg;
 
 
+// 4. Br
+
+//FROM Library
+$EXTERN Br;
+
+
 // 5. Card
 
 //FROM Library
 $EXTERN Card;
+
+
+// 7. Cp
+
+//FROM Library
+$EXTERN Cp;
+
+
+// 8. Dg
+
+//FROM Library
+$EXTERN Dg;
+
+
+// 9. Dgall
+
+//FROM Library
+$EXTERN Dgall;
 
 
 // 10. Div
@@ -93,6 +117,12 @@ $EXTERN Put;
 
 //FROM Library
 $EXTERN Putout;
+
+
+// 28. Rp
+
+//FROM Library
+$EXTERN Rp;
 
 
 // 30. Sub
@@ -242,34 +272,14 @@ __ListOfBuiltin_2 {
     (71 #GetPPID #regular);
 }
 
-$SWAP __store;
-
-Br {
-  e.Key '=' e.Value = <__store ((e.Key) e.Value) <__store>>;
-}
-
-Dg {
-  e.Key = <__Dg-SwExist (e.Key) <__store>>;
-}
-
-__Dg-SwExist {
-  (e.Key) e.Store-B ((e.Key) e.Value) e.Store-E
-    = e.Value <__store e.Store-B e.Store-E>;
-
-  (e.Key) e.Store = /* пусто */ <__store e.Store>;
-}
-
 Implode_Ext {
   e.String = <Implode e.String>;
 }
 
 // Не реализованные пока функции
-$ENUM Cp;
-$ENUM Dgall;
 $ENUM Last;
 $ENUM Lenw;
 $ENUM Lower;
-$ENUM Rp;
 $ENUM Step;
 $ENUM Time;
 $ENUM Upper;
