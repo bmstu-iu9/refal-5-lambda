@@ -209,12 +209,6 @@ $EXTERN Close;
 $EXTERN ExistFile;
 
 
-// 61. Compare
-
-//FROM Library
-$EXTERN Compare;
-
-
 // 58. Implode_Ext
 
 //FROM Library
@@ -225,6 +219,12 @@ $EXTERN Implode_Ext;
 
 //FROM Library
 $EXTERN Explode_Ext;
+
+
+// 61. Compare
+
+//FROM Library
+$EXTERN Compare;
 
 
 // 66. Write
