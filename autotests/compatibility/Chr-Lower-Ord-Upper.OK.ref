@@ -1,0 +1,35 @@
+$ENTRY Go {
+  = <Eq ('He' (('l') Abc 'lo')) <Chr 72 101 ((108) Abc 25600108 111)>>
+    <Eq (<LowerPrintableAscii>) <Lower <PrintableAscii>>>
+    <Eq
+      ('h' 10 'e' 20 'l' Abc ('l') 'o')
+      <Lower 'H' 10 'e' 20 'L' Abc ('L') 'o'>
+    >
+    <Eq (72 101 ((108) Abc 108 111)) <Ord 'He' (('l') Abc 'lo')>>
+    <Eq (<UpperPrintableAscii>) <Upper <PrintableAscii>>>
+    <Eq
+      ('H' 10 'E' 20 'L' Abc ('L') 'O')
+      <Upper 'h' 10 'E' 20 'l' Abc ('l') 'O'>
+    >
+    ;
+}
+
+PrintableAscii {
+  = ' !"#$%&\'()*+,-./0123456789:;<=>?'
+    '@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'
+    '`abcdefghijklmnopqrstuvwxyz{|}~';
+}
+
+LowerPrintableAscii {
+  = ' !"#$%&\'()*+,-./0123456789:;<=>?'
+    '@abcdefghijklmnopqrstuvwxyz[\\]^_'
+    '`abcdefghijklmnopqrstuvwxyz{|}~';
+}
+
+UpperPrintableAscii {
+  = ' !"#$%&\'()*+,-./0123456789:;<=>?'
+    '@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'
+    '`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~';
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

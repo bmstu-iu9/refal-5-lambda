@@ -28,10 +28,6 @@ namespace {
 
 extern refalrts::FnResult arg(refalrts::Iter arg_begin, refalrts::Iter arg_end);
 
-extern refalrts::FnResult explode(
-  refalrts::Iter arg_begin, refalrts::Iter arg_end
-);
-
 enum {
   cFlags_Autoopen       = 1 << 0,
   cFlags_Read           = 1 << 1,
@@ -73,6 +69,14 @@ extern refalrts::FnResult close(
 );
 
 extern refalrts::FnResult exist_file(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+extern refalrts::FnResult implode_ext(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+);
+
+extern refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end
 );
 
@@ -256,6 +260,60 @@ $SWAP Buried;
 $ENTRY Card {
 %%
   return fread_line(arg_begin, arg_end, cFlags_NoHandle | cFlags_StdIn);
+%%
+}
+
+
+/**
+  6. <Chr e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+template <typename Conv>
+refalrts::FnResult convert(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end, Conv conv
+) {
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  while (! refalrts::empty_seq(content_b, content_e)) {
+    if (conv.for_convert(content_b)) {
+      conv.convert(content_b);
+    }
+
+    if (content_b->tag != refalrts::cDataOpenADT) {
+      refalrts::move_left(content_b, content_e);
+    } else {
+      refalrts::Iter dummy;
+      refalrts::tvar_left(dummy, content_b, content_e);
+    }
+  }
+
+  refalrts::splice_to_freelist(arg_begin, pfunc);
+  refalrts::splice_to_freelist(arg_end, arg_end);
+
+  return refalrts::cSuccess;
+}
+
+struct ChrConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataNumber == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->tag = refalrts::cDataChar;
+    item->char_info = static_cast<char>(item->number_info);
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Chr {
+%%
+  return convert(arg_begin, arg_end, ChrConv());
 %%
 }
 
@@ -622,6 +680,25 @@ $ENTRY Explode {
 
 
 /**
+  13. <First s.N e.Prefix e.Suffix> == (e.Prefix) e.Suffix, |e.Prefix| == s.N
+      <First s.N e.Expr> == (e.Expr), |e.Expr| < s.N
+      s.N ::= s.NUMBER
+*/
+$ENTRY First {
+  s.N e.Expr = <DoFirst s.N () e.Expr>;
+}
+
+DoFirst {
+  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+
+  s.N (e.Prefix) /* empty */ = (e.Prefix) /* empty */;
+
+  s.N (e.Prefix) t.Next e.Suffix
+    = <DoFirst <Sub-Digits s.N 1> (e.Prefix t.Next) e.Suffix>;
+}
+
+
+/**
   14. <Get s.FileNo> == s.CHAR* 0?
 */
 $ENTRY Get {
@@ -629,6 +706,99 @@ $ENTRY Get {
   return fread_line(
     arg_begin, arg_end, cFlags_Autoopen | cFlags_Read | cFlags_StdIn
   );
+%%
+}
+
+
+/**
+  15. <Implode e.NameChars e.NotNameTerms> == s.COMPOUND e.NotNameTerms
+      <Implode e.NotNameTerms> == 0 e.NotNameTerms
+*/
+$ENTRY Implode {
+  // TODO: заменить на условия!!!
+  s.Init e.Tail
+    = <Type s.Init>
+    : {
+        'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail>;
+
+        s.Type s.SubType s.Init^ = 0 s.Init e.Tail;
+      };
+
+  e.InvalidExpr = 0 e.InvalidExpr;
+}
+
+DoImplode {
+  (e.Scanned) '-' e.Tail = <DoImplode (e.Scanned '-') e.Tail>;
+  (e.Scanned) '_' e.Tail = <DoImplode (e.Scanned '_') e.Tail>;
+  (e.Scanned) '$' e.Tail = <DoImplode (e.Scanned '$') e.Tail>;
+
+  // TODO: заменить на условия!!!
+  (e.Scanned) s.Next e.Tail
+    = <Type s.Next>
+    : {
+        'L' s.SubType s.Lettern = <DoImplode (e.Scanned s.Lettern) e.Tail>;
+        'D' s.SubType s.Digit = <DoImplode (e.Scanned s.Digit) e.Tail>;
+
+        s.Type s.SubType s.Other = <Implode_Ext e.Scanned> s.Other e.Tail;
+      };
+
+  (e.Scanned) e.Other = <Implode_Ext e.Scanned> e.Other;
+}
+
+
+/**
+  16. <Last s.N e.Prefix e.Suffix> == (e.Prefix) e.Suffix, |e.Suffix| == s.N
+      <Last s.N e.Expr> == () e.Expr, |e.Expr| < s.N
+*/
+$ENTRY Last {
+  s.N e.Expr = <DoLast s.N (e.Expr)>;
+}
+
+DoLast {
+  0 (e.Prefix) e.Suffix = (e.Prefix) e.Suffix;
+
+  s.N (/* empty */) e.Suffix = (/* empty */) e.Suffix;
+
+  s.N (e.Prefix t.Next) e.Suffix
+    = <DoLast <Sub-Digits s.N 1> (e.Prefix) t.Next e.Suffix>;
+}
+
+
+/**
+  17. <Lenw e.Expr> == s.N e.Expr, where s.N == |e.Expr|
+*/
+$ENTRY Lenw {
+  e.Expr = <DoLenw 0 e.Expr>;
+}
+
+DoLenw {
+  s.Len /* empty */ = s.Len;
+  s.Len e.Expr t.Term = <DoLenw <Add-Digits s.Len 1> e.Expr> t.Term;
+}
+
+
+/**
+  18. <Lower e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+struct LowerConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->char_info = static_cast<char>(tolower(item->char_info));
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Lower {
+%%
+  return convert(arg_begin, arg_end, LowerConv());
 %%
 }
 
@@ -816,6 +986,33 @@ DoNumb-Wrap {
 $ENTRY Open {
 %%
   return refal_open(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  23. <Ord e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+struct OrdConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->tag = refalrts::cDataNumber;
+    item->number_info = static_cast<unsigned char>(item->char_info);
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Ord {
+%%
+  return convert(arg_begin, arg_end, OrdConv());
 %%
 }
 
@@ -1010,9 +1207,8 @@ Symb-Nat {
 
   e.Number
     = <Divmod (e.Number) 1000000000> : (e.Div) s.Mod
-    = '000000000' <StrFromInt s.Mod>
-    : e.Zeros s.1 s.2 s.3 s.4 s.5 s.6 s.7 s.8 s.9       // TODO: Last
-    = <Symb-Nat e.Div> s.1 s.2 s.3 s.4 s.5 s.6 s.7 s.8 s.9;
+    = <Last 9 '000000000' <StrFromInt s.Mod>> : (e.Zeros) e.StrDigits
+    = <Symb-Nat e.Div> e.StrDigits;
 }
 
 
@@ -1140,6 +1336,32 @@ $ENTRY Type {
 
 
 /**
+  34. <Upper e.Expr> == e.Expr’
+*/
+%%
+namespace {
+
+struct UpperConv {
+  bool for_convert(refalrts::Iter item) {
+    return refalrts::cDataChar == item->tag;
+  }
+
+  void convert(refalrts::Iter item) {
+    item->char_info = static_cast<char>(toupper(item->char_info));
+  }
+};
+
+}  // unnamed namespace
+%%
+
+$ENTRY Upper {
+%%
+  return convert(arg_begin, arg_end, UpperConv());
+%%
+}
+
+
+/**
   51. <GetEnv e.EnvVar> == e.EnvValue
   e.EnvVar, e.EnvValue ::= s.CHAR*
 */
@@ -1168,6 +1390,16 @@ $ENTRY Close {
 $ENTRY ExistFile {
 %%
   return exist_file(arg_begin, arg_end);
+%%
+}
+
+
+/**
+  58. <Implode_Ext e.CHARS*> == s.COMPOUND
+*/
+$ENTRY Implode_Ext {
+%%
+  return implode_ext(arg_begin, arg_end);
 %%
 }
 
@@ -2030,56 +2262,6 @@ $ENTRY StrFromInt {
 %%
 }
 
-$ENTRY Chr {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter number = 0;
-  if (
-    ! refalrts::svar_left(number, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataNumber != number->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  char result = static_cast<char>(number->number_info);
-
-  refalrts::reinit_char(number, result);
-  refalrts::splice_to_freelist(arg_begin, pfunc_name);
-  refalrts::splice_to_freelist(arg_end, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
-$ENTRY Ord {
-%%
-  refalrts::Iter content_b = 0;
-  refalrts::Iter content_e = 0;
-  refalrts::Iter pfunc_name =
-    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
-
-  refalrts::Iter chr = 0;
-  if (
-    ! refalrts::svar_left(chr, content_b, content_e)
-    || ! refalrts::empty_seq(content_b, content_e)
-    || refalrts::cDataChar != chr->tag
-  ) {
-    return refalrts::cRecognitionImpossible;
-  }
-
-  refalrts::RefalNumber result = static_cast<unsigned char>(chr->char_info);
-
-  refalrts::reinit_number(chr, result);
-  refalrts::splice_to_freelist(arg_begin, pfunc_name);
-  refalrts::splice_to_freelist(arg_end, arg_end);
-  return refalrts::cSuccess;
-%%
-}
-
 %%
 namespace {
 
@@ -2305,8 +2487,12 @@ $ENTRY SymbCompare {
 %%
 }
 
-$ENTRY Implode {
 %%
+namespace {
+
+refalrts::FnResult implode_ext(
+  refalrts::Iter arg_begin, refalrts::Iter arg_end
+) {
   refalrts::Iter content_b = 0;
   refalrts::Iter content_e = 0;
   refalrts::Iter pfunc_name =
@@ -2329,11 +2515,8 @@ $ENTRY Implode {
   refalrts::splice_to_freelist(pfunc_name, arg_end);
 
   return refalrts::cSuccess;
-%%
 }
 
-%%
-namespace {
 
 refalrts::FnResult explode(
   refalrts::Iter arg_begin, refalrts::Iter arg_end

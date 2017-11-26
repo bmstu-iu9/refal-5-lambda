@@ -39,7 +39,7 @@ run_all_tests() {
     Library-IntFromStr-StrFromInt-Chr-Ord \
     Library-SymbCompare \
     Library-Type \
-    Library-Implode-Explode \
+    Library-Implode-Explode_Ext \
     Library-FReadBytes \
     Library-FTell \
     Library-FSeek

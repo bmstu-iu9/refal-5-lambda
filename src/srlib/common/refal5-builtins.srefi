@@ -29,6 +29,12 @@ $EXTERN Br;
 $EXTERN Card;
 
 
+// 6. Chr
+
+//FROM Library
+$EXTERN Chr;
+
+
 // 7. Cp
 
 //FROM Library
@@ -65,10 +71,40 @@ $EXTERN Divmod;
 $EXTERN Explode;
 
 
+// 13. First
+
+//FROM Library
+$EXTERN First;
+
+
 // 14. Get
 
 //FROM Library
 $EXTERN Get;
+
+
+// 15. Implode
+
+//FROM Library
+$EXTERN Implode;
+
+
+// 16. Last
+
+//FROM Library
+$EXTERN Last;
+
+
+// 17. Lenw
+
+//FROM Library
+$EXTERN Lenw;
+
+
+// 18. Lower
+
+//FROM Library
+$EXTERN Lower;
 
 
 // 19. Mod
@@ -93,6 +129,12 @@ $EXTERN Numb;
 
 //FROM Library
 $EXTERN Open;
+
+
+// 23. Ord
+
+//FROM Library
+$EXTERN Ord;
 
 
 // 24. Print
@@ -143,6 +185,12 @@ $EXTERN Symb;
 $EXTERN Type;
 
 
+// 34. Upper
+
+//FROM Library
+$EXTERN Upper;
+
+
 // 51. GetEnv
 
 //FROM Library
@@ -167,6 +215,12 @@ $EXTERN ExistFile;
 $EXTERN Compare;
 
 
+// 58. Implode_Ext
+
+//FROM Library
+$EXTERN Implode_Ext;
+
+
 // 59. Explode_Ext
 
 //FROM Library
@@ -180,21 +234,6 @@ $EXTERN Write;
 
 
 /******************************* NOT REFACTORED *******************************/
-
-//FROM Library
-$EXTERN Chr, Ord, Implode;
-
-First {
-  s.N e.Expr = <__DoFirst s.N () e.Expr>;
-}
-
-__DoFirst {
-  0 (e.Scanned) e.Expr = (e.Scanned) e.Expr;
-  s.N (e.Scanned) /* пусто */ = (e.Scanned) /* пусто */;
-
-  s.N (e.Scanned) t.Next e.Expr
-    = <__DoFirst <Sub s.N 1> (e.Scanned t.Next) e.Expr>;
-}
 
 // Функция слишком длинная для одного предложения
 ListOfBuiltin {
@@ -272,17 +311,9 @@ __ListOfBuiltin_2 {
     (71 #GetPPID #regular);
 }
 
-Implode_Ext {
-  e.String = <Implode e.String>;
-}
-
 // Не реализованные пока функции
-$ENUM Last;
-$ENUM Lenw;
-$ENUM Lower;
 $ENUM Step;
 $ENUM Time;
-$ENUM Upper;
 $ENUM Sysfun;
 $ENUM Freeze;
 $ENUM Freezer;

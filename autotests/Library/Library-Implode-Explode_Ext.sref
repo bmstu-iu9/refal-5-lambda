@@ -1,0 +1,14 @@
+//FROM Library
+$EXTERN Implode, Implode_Ext, Explode;
+
+EqS { s.X s.X = ; }
+EqE { (e.X) e.X = ; }
+
+$ENTRY Go {
+  =
+    <EqS #QuickBrownFox <Implode 'QuickBrownFox'>>
+    <EqS <Implode_Ext 'quick brown fox'> <Implode_Ext 'quick brown fox'>>
+    <EqS <Implode_Ext 'jumps over the lazy dog'> "jumps over the lazy dog">
+    <EqE ('ChungaChanga') <Explode #ChungaChanga>>
+    <EqE ('chunga changa') <Explode "chunga changa">>;
+}
