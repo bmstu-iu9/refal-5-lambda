@@ -84,6 +84,7 @@
         <word name="$EENUM"/>
         <word name="$EASTEREGG"/>
         <word name="$INCLUDE"/>
+        <word name="$SCOPEID"/>
       </keywords>
       <keywords region="simpleRefalSymbol">
         <symb name="="/>

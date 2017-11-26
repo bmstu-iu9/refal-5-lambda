@@ -39,6 +39,8 @@ $ENTRY SR-StrFromToken {
   #TkError e.Message = 'LEXER ERROR: ' e.Message;
   #TkIdentMarker = '"#"';
   #TkName e.Name = 'Name ' e.Name;
+  #TkNumber #Cookie1 = 'Number <Cookie1>';
+  #TkNumber #Cookie2 = 'Number <Cookie2>';
   #TkNumber s.Number = 'Number ' <StrFromInt s.Number>;
   #TkOpenADT = '"["';
   #TkOpenCall = '"<"';
@@ -114,6 +116,7 @@ ValidDirective {
   'LABEL' = (#TkDirective #Ident);
   'INCLUDE' = (#TkDirective #Include);
   'EASTEREGG' = <Map { s.Char = (#TkChar s.Char); } $EASTEREGG>;
+  'SCOPEID' = (#TkNumber #Cookie1) (#TkNumber #Cookie2);
   e.Other = (#TkError 'Unknown directive $' e.Other);
 }
 

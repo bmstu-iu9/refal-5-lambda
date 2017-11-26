@@ -45,7 +45,9 @@
   * `#Ident` — `$LABEL`.
 * `#TkIdentMarker` — знак решётки.
 * `#TkName e.Name` — идентификатор (имя функции или идентификатора после `#`).
-* `#TkNumber s.Number` — целое число.
+* `#TkNumber s.Number` — целое число. `s.Number` может быть как целым числом,
+  так и знаками #Cookie1 и #Cookie2 — на более поздних проходах становятся
+  первым и вторым хешами области видимости.
 * `#TkReplace` — знак равенства.
 * `#TkSemicolon` — точка с запятой.
 * `#TkVariable s.Mode e.Index` — переменная:
@@ -100,6 +102,8 @@
       | (#TkNewVariable t.SrcPos s.Mode e.Index)
       | (#Closure e.Sentences)
     e.ADTName ::= e.Name | #UnnamedADT
+
+    s.Number ::= s.NUMBER | #Cookie1 | #Cookie2
 
 * `t.ErrorList` — список ошибок, определён в `Error.sref`.
 * `e.Tokens` — последовательность токенов (см. выше).
@@ -315,6 +319,7 @@
     s.SaveOffset ::= s.Offset
     s.R-Offset ::= #ARG-BEGIN | s.Offset | #RIGHT-EDGE
     s.L-Offset ::= s.Offset | #LEFT-EDGE
+    s.Number ::= s.NUMBER | #Cookie1 | #Cookie2
 
 * `e.AST` — см. предыдущий раздел.
 * `e.RASLAST` — (сильно упрощая) синтаксическое дерево, в котором в функциях
@@ -517,7 +522,7 @@ e-переменные, распределяемые последователь�
     t.InterpretCommand ::=
         (#CmdFuncArray (e.Name)*)
       | (#CmdLabelArray (e.Name)*)
-      | (#CmdNumberArray s.Number*)
+      | (#CmdNumberArray s.NUMBER*)
       | (#CmdStringArray (e.String)*)
       | (#CmdInitRAA e.Name)
       | t.InterpretArrayLines
@@ -560,7 +565,7 @@ e-переменные, распределяемые последователь�
       | #CmdVar s.Mode s.VarOffset
       | #CmdName s.NameId
       | #CmdIdent s.NameId
-      | #CmdNum s.Number
+      | #CmdNum s.NUMBER
       | #CmdHugeNum s.NumberId
       | #CmdBracket s.NewRangeOffset
 
@@ -571,7 +576,7 @@ e-переменные, распределяемые последователь�
       | #CmdVarSave s.Mode s.VarOffset
       | #CmdNameSave s.SaveOffset s.NameId
       | #CmdIdentSave s.SaveOffset s.NameId
-      | #CmdNumSave s.SaveOffset s.Number
+      | #CmdNumSave s.SaveOffset s.NUMBER
       | #CmdHugeNumSave s.SaveOffset s.NumberId
       | #CmdBracketSave s.NewRangeOffset
 
@@ -580,7 +585,7 @@ e-переменные, распределяемые последователь�
       | #ElName s.NameId
       | #ElIdent s.NameId
       | #ElHugeNumber s.NumberId
-      | #ElNumber s.Number
+      | #ElNumber s.NUMBER
       | #ElString s.StringId
       | #ElOpenADT | #ElCloseADT
       | #ElOpenBracket | #ElCloseBracket
@@ -624,7 +629,7 @@ e-переменные, распределяемые последователь�
     командах используются индексы массивов. `s.LiteralArray t.LiteralItem`:
     * `#CmdFuncArray e.Name` — массив указателей на функции,
     * `#CmdLabelArray e.Name` — массив идентификаторов,
-    * `#CmdNumberArray s.Number` — массив больших (>255) чисел,
+    * `#CmdNumberArray s.NUMBER` — массив больших (>255) чисел,
     * `#CmdStringArray e.String` — массив строк.
   * `(#CmdInitRAA e.Name)` — заголовок массива интерпретируемых команд.
   * `t.InterpretArrayLines` — команды, генерирующие строчки массива.

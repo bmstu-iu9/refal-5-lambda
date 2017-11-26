@@ -2,7 +2,7 @@ syntax include @simpleRefalCpp $VIMRUNTIME/syntax/cpp.vim
 syntax case match
 syntax keyword simpleRefalKeyword $ENTRY $SWAP $ESWAP
 syntax keyword simpleRefalKeyword $EXTERN $FORWARD $LABEL $ENUM $EENUM
-syntax keyword simpleRefalKeyword $EASTEREGG $INCLUDE
+syntax keyword simpleRefalKeyword $EASTEREGG $INCLUDE $SCOPEID
 syntax match simpleRefalBrokenKeyword /\$\a*\>/
 syntax match simpleRefalIdentifier /\<[A-Za-z_][A-Za-z0-9_\-]*\>/
 syntax match simpleRefalVariable /\<[ste]\.[A-Za-z0-9_-]\+\>/

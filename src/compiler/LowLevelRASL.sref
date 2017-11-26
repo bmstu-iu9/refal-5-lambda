@@ -29,6 +29,8 @@ $ENTRY LowLevelRASL {
       >
     : (s.Hash1 s.Hash2) e.Items
 
+    = <Map (SetScopeIDs s.Hash1 s.Hash2) e.Items> : e.Items^
+
     = <Map (MarkFunctionGenMode s.GenMode) e.Items> : e.Items^
 
     = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
@@ -80,6 +82,62 @@ HashFuncName {
 CharFromScopeClass {
   #GN-Entry = 'E';
   #GN-Local = 'L';
+}
+
+SetScopeIDs {
+  s.Hash1 s.Hash2 (#Function s.ScopeClass (e.Name) e.Commands)
+    = (#Function
+        s.ScopeClass (e.Name)
+        <SetScopeIDs-Commands s.Hash1 s.Hash2 e.Commands>
+      );
+
+  s.Hash1 s.Hash2 t.OtherItem = t.OtherItem;
+}
+
+SetScopeIDs-Commands {
+  s.Hash1 s.Hash2 e.Commands
+    = <Map (SetScopeIDs-Command s.Hash1 s.Hash2) e.Commands>;
+}
+
+SetScopeIDs-Command {
+  s.Hash1 s.Hash2
+  (#CmdNumber s.Direction s.BracketNum s.Number)
+    = (#CmdNumber
+        s.Direction s.BracketNum
+        <SetScopeIDs-Patch s.Hash1 s.Hash2 s.Number>
+      );
+
+  s.Hash1 s.Hash2
+  (#CmdNumberSave s.Direction s.BracketNum s.SaveOffset s.Number)
+    = (#CmdNumberSave
+        s.Direction s.BracketNum s.SaveOffset
+        <SetScopeIDs-Patch s.Hash1 s.Hash2 s.Number>
+      );
+
+  s.Hash1 s.Hash2
+  (#CmdCreateElem s.CreateMode s.ElemNo #ElNumber s.Number)
+    = (#CmdCreateElem
+        s.CreateMode s.ElemNo
+        #ElNumber <SetScopeIDs-Patch s.Hash1 s.Hash2 s.Number>
+      );
+
+  s.Hash1 s.Hash2 (#CmdSentence e.SubCommands)
+    = (#CmdSentence <SetScopeIDs-Commands s.Hash1 s.Hash2 e.SubCommands>);
+
+  s.Hash1 s.Hash2
+  (#CmdOpenELoop #AlgLeft s.BracketNum s.VarNumber e.SubCommands)
+    = (#CmdOpenELoop
+        #AlgLeft s.BracketNum s.VarNumber
+        <SetScopeIDs-Commands s.Hash1 s.Hash2 e.SubCommands>
+      );
+
+  s.Hash1 s.Hash2 t.OtherCommand = t.OtherCommand;
+}
+
+SetScopeIDs-Patch {
+  s.Hash1 s.Hash2 #Cookie1 = s.Hash1;
+  s.Hash1 s.Hash2 #Cookie2 = s.Hash2;
+  s.Hash1 s.Hash2 s.Number = s.Number;
 }
 
 MarkFunctionGenMode {
