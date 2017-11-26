@@ -22,9 +22,6 @@ $EXTERN R5-Scan;
 //FROM R5-Parser
 $EXTERN R5-Parse;
 
-//FROM R5-MuGen
-$EXTERN R5-AddMu;
-
 //FROM SR-LoadSource
 $EXTERN SR-LoadSource;
 
@@ -132,7 +129,6 @@ LoadAST {
   t.Config #R5 e.SrcName
     = <R5-Scan e.SrcName> : e.Tokens
     = <R5-Parse-Wrapped (e.SrcName) e.Tokens> : t.ErrorList e.AST
-    = <R5-AddMu e.AST> : e.AST^
     = t.ErrorList <PreludeIncludeLine t.Config> e.AST;
 
   t.Config #SR e.SrcName
