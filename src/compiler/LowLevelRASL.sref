@@ -19,23 +19,20 @@ $EXTERN DisplayName;
   s.DebugInfo ::= #DebugInfo | #NoDebugInfo
 */
 $ENTRY LowLevelRASL {
-  s.GenMode s.DebugInfo (e.SrcName) e.ProgramElements =
-    <Fetch
-      e.ProgramElements
-      <Seq
-        (MapReduce
-          CalcDigest
-          // Числа выбраны случайно: hexdump /dev/urandom
-          (<HashLittle2-Chars 4001567069 291363191 <Canonize e.SrcName>>)
-        )
-        (Map (MarkFunctionGenMode s.GenMode))
-        {
-          (s.Hash1 s.Hash2) e.Items =
-            <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
-            <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>;
-        }
+  s.GenMode s.DebugInfo (e.SrcName) e.ProgramElements
+
+    = <MapReduce
+        CalcDigest
+        // Числа выбраны случайно: hexdump /dev/urandom
+        (<HashLittle2-Chars 4001567069 291363191 <Canonize e.SrcName>>)
+        e.ProgramElements
       >
-    >;
+    : (s.Hash1 s.Hash2) e.Items
+
+    = <Map (MarkFunctionGenMode s.GenMode) e.Items> : e.Items^
+
+    = <LowLevelRASL-RASL s.DebugInfo s.Hash1 s.Hash2 e.Items>
+      <LowLevelRASL-Native s.Hash1 s.Hash2 e.Items>;
 }
 
 Canonize {
@@ -96,25 +93,17 @@ MarkFunctionGenMode {
 }
 
 LowLevelRASL-RASL {
-  s.DebugInfo s.Hash1 s.Hash2 e.Items =
-    <Fetch
-      e.Items
-      <Seq
-        (MapReduce
-          (ClassifyItems-RASL s.DebugInfo)
-          (/* Области видимости функций */)
-        )
-        {
-          (e.FuncScopeClass) e.Definitions =
-            (
-              (#ModuleID s.Hash1 s.Hash2)
-              <PrepareRASL
-                (e.FuncScopeClass) e.Definitions
-              >
-            );
-        }
+  s.DebugInfo s.Hash1 s.Hash2 e.Items
+    = <MapReduce
+        (ClassifyItems-RASL s.DebugInfo)
+        (/* Области видимости функций */)
+        e.Items
       >
-    >;
+    : (e.FuncScopeClass) e.Definitions
+    = (
+        (#ModuleID s.Hash1 s.Hash2)
+        <PrepareRASL (e.FuncScopeClass) e.Definitions>
+      );
 }
 
 OverflowFailure {
@@ -718,23 +707,20 @@ PrepareOpenEStack {
 }
 
 LowLevelRASL-Native {
-  s.Hash1 s.Hash2 e.Items =
-    <Fetch
-      <Map (SetCookies s.Hash1 s.Hash2) e.Items>
-      <Seq
-        (MapReduce
-          ClassifyItems-Native
-          (/* объявления для генерации RASL’а */)
-        )
-        {
-          (e.Declarations) /* нет нативных определений */ =
-            /* нет нативного RASL’а */;
-
-          (e.Declarations) e.Definitions =
-            ((e.Declarations) (e.Definitions));
-        }
+  s.Hash1 s.Hash2 e.Items
+    = <Map (SetCookies s.Hash1 s.Hash2) e.Items> : e.Items^
+    = <MapReduce
+        ClassifyItems-Native
+        (/* объявления для генерации RASL’а */)
+        e.Items
       >
-    >;
+    : {
+        (e.Declarations) /* нет нативных определений */ =
+          /* нет нативного RASL’а */;
+
+        (e.Declarations) e.Definitions =
+          ((e.Declarations) (e.Definitions));
+      };
 }
 
 SetCookies {
