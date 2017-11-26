@@ -210,7 +210,8 @@ setlocal
   set SRC=%1
   set TARGET=%~n1.exe
 
-  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Library 2>__error.txt
+  ..\..\bin\srefc-core %SRC% -o %TARGET% %COMMON_SRFLAGS% Library external ^
+    2>__error.txt
   if errorlevel 100 (
     echo COMPILER FAILS ON %SRC%, SEE __error.txt
     exit /b 1
@@ -264,6 +265,7 @@ setlocal
   if exist "%~1.rasl" erase "%~1.rasl"
   if exist "%~1.exe" erase "%~1.exe"
   if exist "%~1.cpp" erase "%~1.cpp"
+  if exist external.rasl erase external.rasl
   erase Library.*
 endlocal
 goto :EOF
@@ -276,12 +278,17 @@ setlocal
     endlocal
     exit /b 1
   )
+  %CREFAL_CALL% external.ref external-crefal.rsl
+  if not exist external-crefal.rsl (
+    endlocal
+    exit /b 1
+  )
 endlocal
 goto :EOF
 
 :EXECUTE_OK.crefal
 setlocal
-  echo Y| refgo "%~n1"-crefal Hello "Hello, World" "" \ ^
+  echo Y| refgo "%~n1"-crefal+external-crefal Hello "Hello, World" "" \ ^
     >stdout.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
@@ -294,7 +301,7 @@ goto :EOF
 
 :EXECUTE_FAIL.crefal
 setlocal
-  echo Y| refgo "%~n1"-crefal >stdout.txt 2>__dump.txt
+  echo Y| refgo "%~n1"-crefal+external-crefal >stdout.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -309,6 +316,7 @@ setlocal
   call :CLEANUP_COMMON
   if exist "%~1-crefal.rsl" erase "%~1-crefal.rsl"
   if exist "%~1.lis" erase "%~1.lis"
+  if exist external-crefal.rsl erase external-crefal.rsl
 endlocal
 goto :EOF
 
@@ -320,12 +328,17 @@ setlocal
     endlocal
     exit /b 1
   )
+  refc external.ref
+  if not exist external.rsl (
+    endlocal
+    exit /b 1
+  )
 endlocal
 goto :EOF
 
 :EXECUTE_OK.refc
 setlocal
-  echo Y| refgo "%~n1" Hello "Hello, World" "" \ >stdout.txt 2>__dump.txt
+  echo Y| refgo "%~n1"+external Hello "Hello, World" "" \ >stdout.txt 2>__dump.txt
   if errorlevel 1 (
     echo TEST FAILED, SEE __dump.txt
     endlocal
@@ -337,7 +350,7 @@ goto :EOF
 
 :EXECUTE_FAIL.refc
 setlocal
-  echo Y| refgo "%~n1" >stdout.txt 2>__dump.txt
+  echo Y| refgo "%~n1"+external >stdout.txt 2>__dump.txt
   if not errorlevel 1 (
     echo THIS TEST MUST FAIL BUT DONT IT
     endlocal
@@ -352,5 +365,6 @@ setlocal
   call :CLEANUP_COMMON
   if exist "%~1.rsl" erase "%~1.rsl"
   if exist "%~1.lis" erase "%~1.lis"
+  if exist external.rsl erase external.rsl
 endlocal
 goto :EOF

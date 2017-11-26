@@ -88,7 +88,21 @@ extern refalrts::FnResult explode(
 // Встроенные функции Рефала-5λ
 //------------------------------------------------------------------------------
 
-// Detail of Mu implementation
+
+/*
+  <__FindMuPtr e.LocalScope e.FuncName> == s.FuncPtr | []
+*/
+$ENTRY __FindMuPtr {
+  s.Cookie1 s.Cookie2 e.FuncName
+    = <PtrFromName s.Cookie1 s.Cookie2 e.FuncName>
+      <PtrFromName 0 0 e.FuncName>
+    : {
+        s.FnPtr e.Rest = s.FnPtr;
+
+        /* empty */ = /* empty */;
+      };
+}
+
 
 /**
   <PtrFromName e.Scope e.FuncName> == s.FUNCTION | []

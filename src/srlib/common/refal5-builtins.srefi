@@ -5,11 +5,33 @@
 
 /********************************* REFACTORED *********************************/
 
-// 1. Mu
-
+/**
+  1. <Mu s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
+     <Mu (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
+  extension:
+     <Mu s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
+*/
 Mu {
-  e.X = <_Mu e.X>;
+  // TODO: заменить на условия!!!
+  t.Function e.Arg
+    = <__Mu-Aux t.Function> : s.Function-Ptr
+    = <s.Function-Ptr e.Arg>;
 }
+
+__Mu-Aux {
+  t.Function
+    = <Type t.Function>
+    : {
+        'F' s.SubType s.FnPtr = s.FnPtr;
+
+        'W' s.SubType s.FnName = <__FindMuPtr $SCOPEID s.FnName>;
+
+        'B' s.0 (e.FnName) = <__FindMuPtr $SCOPEID e.FnName>;
+      };
+}
+
+//FROM Library
+$EXTERN __FindMuPtr;
 
 
 // 2. Add
@@ -198,6 +220,20 @@ $EXTERN Type;
 $EXTERN Upper;
 
 
+/**
+  50. <Residue s.FuncName e.Arg> == <s.FuncName-Ptr e.Arg>
+      <Residue (e.FuncName) e.Arg> == <s.FuncName-Ptr e.Arg>
+  extension:
+      <Residue s.FuncPtr e.Arg> == <s.FuncPtr e.Arg>
+*/
+Residue {
+  // TODO: заменить на условия!!!
+  t.Function e.Arg
+    = <__Mu-Aux t.Function> : s.Function-Ptr
+    = <s.Function-Ptr e.Arg>;
+}
+
+
 // 51. GetEnv
 
 //FROM Library
@@ -327,7 +363,6 @@ $ENUM Freezer;
 $ENUM Dn;
 $ENUM Up;
 $ENUM Ev-met;
-$ENUM Residue;
 $ENUM System;
 $ENUM Exit;
 $ENUM GetCurrentDirectory;

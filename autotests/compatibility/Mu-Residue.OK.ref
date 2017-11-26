@@ -1,3 +1,6 @@
+*$FROM external
+$EXTERN External-1;
+
 $ENTRY Go {
   = <Eq (2) <Mu Test 1>>
     <Eq (World) <Mu Test Hello>>
@@ -6,7 +9,12 @@ $ENTRY Go {
     <Eq (145) <Mu Add 100 45>>
 *    <Eq (145) <Mu '+' 100 45>>   /* BUG in REFAL-5 */
 *    <Eq (145) <Mu "+" 100 45>>   /* BUG in REFAL-5 */
-    ;
+    <Eq (2443) <Mu External-1 24 43>>
+    <Eq ('cba') <Mu External-2 'abc'>>
+    <Eq (2) <Residue Test 1>>
+*    <Eq (2) <?Test 1>>                /* BUG in crefal */
+*    <Eq ('cba') <?External-2 'abc'>>  /* BUG in crefal */
+    <Eq ('cba') <Residue External-2 'abc'>>;
 }
 
 ADD { s.X s.Y = s.X; }

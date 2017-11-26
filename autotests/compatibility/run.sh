@@ -182,7 +182,7 @@ compile_srefc() {
   TARGET=${SRC%%.ref}$(platform_exe_suffix)
 
   ../../bin/srefc-core $SRC -o $TARGET "${COMMON_SRFLAGS[@]}" \
-    Library 2>__error.txt
+    Library external 2>__error.txt
   if [ $? -ge 100 ]; then
     echo COMPILER FAILS ON $SRC, SEE __error.txt
     exit 1
@@ -224,7 +224,7 @@ cleanup_srefc() {
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   CPP=${SRC%%.ref}.cpp
   rm -f "$RASL" "$EXE" "$CPP"
-  rm -f Library.*
+  rm -f Library.* external.rsl
 }
 
 compile_crefal() {
@@ -234,12 +234,18 @@ compile_crefal() {
   if [ ! -e "$RSL" ]; then
     return 1
   fi
+  $CREFAL_CALL external.ref external-crefal.rsl
+  if [ ! -e external-crefal.rsl ]; then
+    return 1
+  fi
 }
 
 execute_OK_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  echo Y | refgo "$RSL" Hello "Hello, World" "" / >stdout.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL"+external-crefal Hello "Hello, World" "" / \
+    >stdout.txt 2>__dump.txt || \
+  {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -249,7 +255,7 @@ execute_OK_crefal() {
 execute_FAIL_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
-  if echo Y | refgo "$RSL" >stdout.txt 2>__dump.txt; then
+  if echo Y | refgo "$RSL"+external-crefal >stdout.txt 2>__dump.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
@@ -262,7 +268,7 @@ cleanup_crefal() {
   SRC=$1
   RSL=${SRC%%.ref}-crefal.rsl
   LIS=${SRC%%.ref}.lis
-  rm -f "$RSL" "$LIS"
+  rm -f "$RSL" "$LIS" external-crefal.rsl
 }
 
 compile_refc() {
@@ -272,12 +278,18 @@ compile_refc() {
   if [ ! -e "$RSL" ]; then
     return 1
   fi
+  refc external.ref external.rsl
+  if [ ! -e external.rsl ]; then
+    return 1
+  fi
 }
 
 execute_OK_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  echo Y | refgo "$RSL" Hello "Hello, World" "" / >stdout.txt 2>__dump.txt || {
+  echo Y | refgo "$RSL"+external Hello "Hello, World" "" / \
+    >stdout.txt 2>__dump.txt || \
+  {
     echo TEST FAILED, SEE __dump.txt
     exit 1
   }
@@ -287,7 +299,7 @@ execute_OK_refc() {
 execute_FAIL_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
-  if echo Y | refgo "$RSL" >stdout.txt 2>__dump.txt; then
+  if echo Y | refgo "$RSL"+external >stdout.txt 2>__dump.txt; then
     echo THIS TEST MUST FAIL BUT DONT IT
     exit 1
   else
@@ -300,7 +312,7 @@ cleanup_refc() {
   SRC=$1
   RSL=${SRC%%.ref}.rsl
   LIS=${SRC%%.ref}.lis
-  rm -f "$RSL" "$LIS"
+  rm -f "$RSL" "$LIS" external.rsl
 }
 
 main "$@"
