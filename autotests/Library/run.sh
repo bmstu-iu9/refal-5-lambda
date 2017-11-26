@@ -42,7 +42,8 @@ run_all_tests() {
     Library-Implode-Explode_Ext \
     Library-FReadBytes \
     Library-FTell \
-    Library-FSeek
+    Library-FSeek \
+    Library-PtrFromName
 
   simple_tests fail \
     Library-Math-Fail \
@@ -53,7 +54,8 @@ run_all_tests() {
     Library-FClose-unopened-Fail \
     Library-FWrite-unopened-file-Fail \
     Library-SymbCompare-Fail \
-    Library-Implodes-Fail
+    Library-Implodes-Fail \
+    Library-PtrFromName-Fail
 
   if [ -e Library-WriteLine ]; then
     echo Pass Library-WriteLine test...

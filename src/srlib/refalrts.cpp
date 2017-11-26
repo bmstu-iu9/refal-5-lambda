@@ -2829,6 +2829,18 @@ void refalrts::RefalFunction::register_me() {
   node->function = this;
 }
 
+refalrts::RefalFunction *refalrts::RefalFunction::lookup(
+  const refalrts::RefalFuncName& name
+) {
+  dynamic::FuncHashNode *node = dynamic::funcs_table().lookup(name);
+
+  if (node) {
+    return node->function;
+  } else {
+    return 0;
+  }
+}
+
 refalrts::FunctionTable::FunctionTable(
   refalrts::UInt32 cookie1, refalrts::UInt32 cookie2,
   refalrts::FunctionTableItem items[]

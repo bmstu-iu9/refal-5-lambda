@@ -62,6 +62,14 @@ struct RefalFunction {
     register_me();
   }
 
+  static RefalFunction *lookup(const RefalFuncName& name);
+
+  static RefalFunction *lookup(
+    UInt32 cookie1, UInt32 cookie2, const char *name
+  ) {
+    return lookup(RefalFuncName(name, cookie1, cookie2));
+  }
+
 private:
   void register_me();
 };

@@ -1,0 +1,6 @@
+//FROM Library
+$EXTERN PtrFromName;
+
+$ENTRY Go {
+  = <PtrFromName 1 2 3>;
+}

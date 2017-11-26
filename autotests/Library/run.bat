@@ -47,6 +47,7 @@ setlocal
     Library-FReadBytes ^
     Library-FTell ^
     Library-FSeek ^
+    Library-PtrFromName ^
     || exit /b 1
 
   call :SIMPLE_TESTS FAIL ^
@@ -59,6 +60,7 @@ setlocal
     Library-FWrite-unopened-file-Fail ^
     Library-SymbCompare-Fail ^
     Library-Implodes-Fail ^
+    Library-PtrFromName-Fail ^
     || exit /b 1
 
   if exist Library-WriteLine.exe (

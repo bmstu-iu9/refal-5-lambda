@@ -88,6 +88,72 @@ extern refalrts::FnResult explode(
 // Встроенные функции Рефала-5λ
 //------------------------------------------------------------------------------
 
+// Detail of Mu implementation
+
+/**
+  <PtrFromName e.Scope e.FuncName> == s.FUNCTION | []
+
+  e.Scope ::= s.Cookie1 s.Cookie2
+  s.Cookie1, s.Cookie2 ::= s.NUMBER
+  e.FuncName ::= s.COMPOUND | s.CHAR*
+*/
+$ENTRY PtrFromName {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  const char *func_name = 0;
+
+  enum { cMaxFuncName = 2000 };
+  char func_name_buffer[cMaxFuncName + 1] = { 0 };
+  unsigned read;
+
+  refalrts::Iter pcookie1 = 0, pcookie2 = 0;
+  if (
+    ! refalrts::svar_left(pcookie1, content_b, content_e)
+    || refalrts::cDataNumber != pcookie1->tag
+    || ! refalrts::svar_left(pcookie2, content_b, content_e)
+    || refalrts::cDataNumber != pcookie2->tag
+  ) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  if (refalrts::cDataIdentifier == content_b->tag) {
+    func_name = content_b->ident_info->name();
+    move_left(content_b, content_e);
+  } else if (
+    (
+      read = refalrts::read_chars(
+        func_name_buffer, cMaxFuncName, content_b, content_e
+      )
+    ) != 0
+    && refalrts::empty_seq(content_b, content_e)
+  ) {
+    func_name_buffer[read] = '\0';
+    func_name = func_name_buffer;
+  }
+
+  if (0 == func_name) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalFunction *func_ptr =
+    refalrts::RefalFunction::lookup(
+      pcookie1->number_info, pcookie2->number_info, func_name
+    );
+
+  refalrts::Iter start_garbage = arg_begin;
+  if (func_ptr) {
+    refalrts::reinit_name(arg_begin, func_ptr);
+    start_garbage = pfunc;
+  }
+
+  refalrts::splice_to_freelist(start_garbage, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
 
 /**
   2. <Add t.FirstNumber e.SecondNumber> == e.NormedNumber
