@@ -1,14 +1,3 @@
-// Необходимы для автоматически генерируемой функции Mu
-$ENUM Add, Sub, Mul, Div, Mod, Arg, Card, Chr, Cp, Dgall, Divmod,
-  Explode, First, Get, Implode, Last, Lenw, Lower, Numb, Open, Ord, Print,
-  Prout, Put, Putout, Rp, Step, Symb, Time, Type, Upper, Sysfun, Freeze,
-  Freezer, Dn, Up, Ev-met, Residue, GetEnv, System, Exit, Close, ExistFile,
-  GetCurrentDirectory, RemoveFile, Implode_Ext, Explode_Ext, TimeElapsed,
-  Compare, DeSysfun, XMLParse, Random, RandomDigit, Write, ListOfBuiltin,
-  SizeOf, GetPID, int4fab_1, GetPPID;
-
-Mu { e.X = <_Mu e.X>; }
-
 $SWAP Store;
 
 Br {
