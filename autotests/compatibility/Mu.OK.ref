@@ -1,0 +1,19 @@
+$ENTRY Go {
+  = <Eq (2) <Mu Test 1>>
+    <Eq (World) <Mu Test Hello>>
+    <Eq (2) <Mu ('Test') 1>>
+    <Eq (World) <Mu Mu ('Mu') Mu ('Mu') Test Hello>>
+    <Eq (145) <Mu Add 100 45>>
+*    <Eq (145) <Mu '+' 100 45>>   /* BUG in REFAL-5 */
+*    <Eq (145) <Mu "+" 100 45>>   /* BUG in REFAL-5 */
+    ;
+}
+
+ADD { s.X s.Y = s.X; }
+
+Test {
+  1 = 2;
+  Hello = World;
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }
