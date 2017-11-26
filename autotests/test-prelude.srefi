@@ -7,6 +7,8 @@ $ENUM Add, Sub, Mul, Div, Mod, Arg, Card, Chr, Cp, Dgall, Divmod,
   Compare, DeSysfun, XMLParse, Random, RandomDigit, Write, ListOfBuiltin,
   SizeOf, GetPID, int4fab_1, GetPPID;
 
+Mu { e.X = <_Mu e.X>; }
+
 $SWAP Store;
 
 Br {

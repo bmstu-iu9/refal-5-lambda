@@ -3,7 +3,7 @@ $ENTRY R5-AddMu {
     , <Builtins> : e.Builtins
     , <DoAddMu-Names e.Builtins> : e.MuBuiltins
     , <DoAddMu-AST () e.AST> : (e.MuAST) e.AST
-    = (Function MuGen-NoPos GN-Local ('Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
+    = (Function MuGen-NoPos GN-Local ('_Mu') Sentences e.MuBuiltins e.MuAST) e.AST;
 }
 
 Builtins {
