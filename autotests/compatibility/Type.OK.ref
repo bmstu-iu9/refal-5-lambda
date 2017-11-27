@@ -10,7 +10,8 @@ $ENTRY Go {
 *   reproducing Ou in refgo is impossible
     <Eq ('Ol\n') <Type '\n'>>
     <Eq ('B0' ()) <Type ()>>
-    <Eq ('*0') <Type>>;
+    <Eq ('*0') <Type>>
+    <Eq (31) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

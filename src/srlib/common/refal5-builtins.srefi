@@ -14,8 +14,8 @@
 Mu {
   // TODO: заменить на условия!!!
   t.Function e.Arg
-    = <__Mu-Aux t.Function> : s.Function-Ptr
-    = <s.Function-Ptr e.Arg>;
+    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    = <__Step-End> <s.Function-Ptr e.Arg>;
 }
 
 __Mu-Aux {
@@ -34,7 +34,7 @@ __Mu-Aux {
 }
 
 //FROM Library
-$EXTERN __FindMuPtr;
+$EXTERN __FindMuPtr, __Step-Start, __Step-End;
 
 
 // 2. Add
@@ -199,6 +199,12 @@ $EXTERN Putout;
 $EXTERN Rp;
 
 
+// 29. Step
+
+//FROM Library
+$EXTERN Step;
+
+
 // 30. Sub
 
 //FROM Library
@@ -232,8 +238,8 @@ $EXTERN Upper;
 Residue {
   // TODO: заменить на условия!!!
   t.Function e.Arg
-    = <__Mu-Aux t.Function> : s.Function-Ptr
-    = <s.Function-Ptr e.Arg>;
+    = <__Step-Start> <__Mu-Aux t.Function> : s.Function-Ptr
+    = <__Step-End> <s.Function-Ptr e.Arg>;
 }
 
 
@@ -358,7 +364,6 @@ __ListOfBuiltin_2 {
 }
 
 // Не реализованные пока функции
-$ENUM Step;
 $ENUM Time;
 $ENUM Sysfun;
 $ENUM Freeze;

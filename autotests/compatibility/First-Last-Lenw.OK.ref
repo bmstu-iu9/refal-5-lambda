@@ -7,7 +7,8 @@ $ENTRY Go {
     <Eq ((() () ()) () ()) <Last 2 () () () () ()>>
     <Eq (13 'Hello, World!') <Lenw 'Hello, World!'>>
     <Eq (5 () () () () ()) <Lenw () () () () ()>>
-    <Eq (6 'Hello' ('World')) <Lenw 'Hello' ('World')>>;
+    <Eq (6 'Hello' ('World')) <Lenw 'Hello' ('World')>>
+    <Eq (28) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

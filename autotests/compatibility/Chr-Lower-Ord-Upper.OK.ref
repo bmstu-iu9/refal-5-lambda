@@ -11,7 +11,7 @@ $ENTRY Go {
       ('H' 10 'E' 20 'L' Abc ('L') 'O')
       <Upper 'h' 10 'E' 20 'l' Abc ('l') 'O'>
     >
-    ;
+    <Eq (23) <Step>>;
 }
 
 PrintableAscii {

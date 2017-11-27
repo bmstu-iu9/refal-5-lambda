@@ -4,5 +4,6 @@ $ENTRY Go {
     <Prout "Hello, World!">
     <Prout Hello World>
     <Prout ((() ()))>
-    <Prout (Hello 1 'Hello') ('World' 2 "$$123")>;
+    <Prout (Hello 1 'Hello') ('World' 2 "$$123")>
+    <Prout <Step>>;
 }

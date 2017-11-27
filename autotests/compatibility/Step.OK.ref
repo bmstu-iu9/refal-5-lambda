@@ -1,0 +1,11 @@
+$ENTRY Go {
+  = <Eq (1) <Step>>
+    <Eq (4 5 6) <Step> <Step> <Step>>
+    <Eq (9 12) <Step> <Function-With-Block> <Step>>;
+}
+
+Function-With-Block {
+  e.X, e.X : { e.Y = e.Y };
+}
+
+Eq { (e.X) e.X = <Prout e.X>; }

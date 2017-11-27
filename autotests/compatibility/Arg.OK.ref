@@ -1,7 +1,11 @@
 $ENTRY Go {
   = <Eq ('Hello') <Arg 1>>
+    <Eq (4) <Step>>
     <Eq ('Hello, World') <Arg 2>>
+    <Eq (10) <Step>>
     <Eq () <Arg 3>>
+    <Eq (16) <Step>>
+    /* step count depends from <Arg 0> different for various compilers */
     <Prefix-Arg <Arg 0> (<Arg 4>)>
     <Eq () <Arg 5>>;
 }

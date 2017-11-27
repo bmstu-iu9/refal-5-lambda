@@ -8,7 +8,8 @@ $ENTRY Go {
     <Eq ('C') <Dg 'A=B'>>
     <Eq () <Cp 'A'>>
     <Eq ('E=F') <Dg 'D'>>
-    <Eq () <Dgall>>;
+    <Eq () <Dgall>>
+    <Eq (31) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

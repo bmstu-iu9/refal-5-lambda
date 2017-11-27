@@ -14,7 +14,8 @@ $ENTRY Go {
     <Eq (2) <Residue Test 1>>
 *    <Eq (2) <?Test 1>>                /* BUG in crefal */
 *    <Eq ('cba') <?External-2 'abc'>>  /* BUG in crefal */
-    <Eq ('cba') <Residue External-2 'abc'>>;
+    <Eq ('cba') <Residue External-2 'abc'>>
+    <Eq (45) <Step>>;
 }
 
 ADD { s.X s.Y = s.X; }

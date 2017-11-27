@@ -4,9 +4,11 @@ $ENTRY Go {
     <Eq ("Abcdef" 10 20 30) <Implode 'Abcdef' 10 20 30>>
     <Eq ("Abcdef" ('ghijkl')) <Implode 'Abcdef' ('ghijkl')>>
     <Eq (0 ':abcdef:') <Implode ':abcdef:'>>
+    <Eq (16) <Step>>
     <Eq ("Abc$def-ghi_jkl") <Implode_Ext 'Abc$def-ghi_jkl'>>
     <Eq ("Abcdef, ghijkl") <Implode_Ext 'Abcdef, ghijkl'>>
-    <Eq (":abcdef:") <Implode_Ext ':abcdef:'>>;
+    <Eq (":abcdef:") <Implode_Ext ':abcdef:'>>
+    <Eq (28) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

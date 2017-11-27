@@ -178,12 +178,13 @@ $ENTRY PtrFromName {
 */
 $ENTRY Add {
   // optimization for two digits
-  s.First s.Second = <Add-Digits s.First s.Second>;
+  s.First s.Second
+    = <__Step-Start> <Add-Digits s.First s.Second> <__Step-End>;
 
   // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Add-Normed (e.First) e.Second>;
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Add-Normed (e.First) e.Second> <__Step-End>;
 }
 
 NormArithmArg {
@@ -328,7 +329,8 @@ $ENTRY Arg {
   4. <Br e.Key '=' e.Value> == []
 */
 $ENTRY Br {
-  e.Key '=' e.Value = <Buried (e.Key '=' e.Value) <Buried>>;
+  e.Key '=' e.Value
+    = <__Step-Start> <Buried (e.Key '=' e.Value) <Buried>> <__Step-End>;
 }
 
 $SWAP Buried;
@@ -403,13 +405,14 @@ $ENTRY Chr {
 */
 $ENTRY Cp {
   e.Key
-    = <Buried>
+    = <__Step-Start> <Buried>
     : {
         e.Values-B (e.Key '=' e.Value) e.Values-E
           = e.Value
-            <Buried e.Values-B (e.Key '=' e.Value) e.Values-E>;
+            <Buried e.Values-B (e.Key '=' e.Value) e.Values-E>
+            <__Step-End>;
 
-        e.Values = <Buried e.Values>;
+        e.Values = <Buried e.Values> <__Step-End>;
       };
 }
 
@@ -419,13 +422,14 @@ $ENTRY Cp {
 */
 $ENTRY Dg {
   e.Key
-    = <Buried>
+    = <__Step-Start> <Buried>
     : {
         e.Values-B (e.Key '=' e.Value) e.Values-E
           = e.Value
-            <Buried e.Values-B e.Values-E>;
+            <Buried e.Values-B e.Values-E>
+            <__Step-End>;
 
-        e.Values = <Buried e.Values>;
+        e.Values = <Buried e.Values> <__Step-End>;
       };
 }
 
@@ -434,7 +438,7 @@ $ENTRY Dg {
   9. <Dgall> == (e.Key '=' e.Value)*
 */
 $ENTRY Dgall {
-  = <Buried>;
+  = <__Step-Start> <Buried> <__Step-End>;
 }
 
 
@@ -444,14 +448,14 @@ $ENTRY Dgall {
 $ENTRY Div {
   // optimization for two digits
   s.First s.Second
-    = <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
-    = s.Div;
+    = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Rem
+    = s.Div <__Step-End>;
 
   // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
-    = e.Div;
+    = e.Div <__Step-End>;
 }
 
 
@@ -461,13 +465,14 @@ $ENTRY Div {
 */
 $ENTRY Divmod {
   // optimization for two digits
-  s.First s.Second = <Divmod-Digits s.First s.Second>;
+  s.First s.Second
+    = <__Step-Start> <Divmod-Digits s.First s.Second> <__Step-End>;
 
   // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) s.Sign e.Second
     = '+-' : e.Signs-B s.Sign e.Signs-E   // TODO: тут должно быть условие!!!
-    = <Divmod-Normed (e.First) s.Sign e.Second>;
+    = <Divmod-Normed (e.First) s.Sign e.Second> <__Step-End>;
 }
 
 Divmod-Digits {
@@ -765,7 +770,7 @@ $ENTRY Explode {
       s.N ::= s.NUMBER
 */
 $ENTRY First {
-  s.N e.Expr = <DoFirst s.N () e.Expr>;
+  s.N e.Expr = <__Step-Start> <DoFirst s.N () e.Expr> <__Step-End>;
 }
 
 DoFirst {
@@ -797,11 +802,11 @@ $ENTRY Get {
 $ENTRY Implode {
   // TODO: заменить на условия!!!
   s.Init e.Tail
-    = <Type s.Init>
+    = <__Step-Start> <Type s.Init>
     : {
-        'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail>;
+        'L' s.SubType s.Init^ = <DoImplode (s.Init) e.Tail> <__Step-End>;
 
-        s.Type s.SubType s.Init^ = 0 s.Init e.Tail;
+        s.Type s.SubType s.Init^ = 0 s.Init e.Tail <__Step-End>;
       };
 
   e.InvalidExpr = 0 e.InvalidExpr;
@@ -831,7 +836,7 @@ DoImplode {
       <Last s.N e.Expr> == () e.Expr, |e.Expr| < s.N
 */
 $ENTRY Last {
-  s.N e.Expr = <DoLast s.N (e.Expr)>;
+  s.N e.Expr = <__Step-Start> <DoLast s.N (e.Expr)> <__Step-End>;
 }
 
 DoLast {
@@ -848,7 +853,7 @@ DoLast {
   17. <Lenw e.Expr> == s.N e.Expr, where s.N == |e.Expr|
 */
 $ENTRY Lenw {
-  e.Expr = <DoLenw 0 e.Expr>;
+  e.Expr = <__Step-Start> <DoLenw 0 e.Expr> <__Step-End>;
 }
 
 DoLenw {
@@ -889,14 +894,14 @@ $ENTRY Lower {
 $ENTRY Mod {
   // optimization for two digits
   s.First s.Second
-    = <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
-    = s.Mod;
+    = <__Step-Start> <Divmod-Digits s.First s.Second> : (s.Div) s.Mod
+    = s.Mod <__Step-End>;
 
   // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
     = <Divmod-Normed (e.First) e.Second> : (e.Div) e.Mod
-    = e.Mod;
+    = e.Mod <__Step-End>;
 }
 
 
@@ -906,12 +911,12 @@ $ENTRY Mod {
 */
 $ENTRY Mul {
   // optimization for two digits
-  s.First s.Second = <Mul-Digits s.First s.Second>;
+  s.First s.Second = <__Step-Start> <Mul-Digits s.First s.Second> <__Step-End>;
 
   // TODO: заменить на условия!!!
   e.ArithmArg
-    = <NormArithmArg e.ArithmArg> : (e.First) e.Second
-    = <Mul-Normed (e.First) e.Second>;
+    = <__Step-Start> <NormArithmArg e.ArithmArg> : (e.First) e.Second
+    = <Mul-Normed (e.First) e.Second> <__Step-End>;
 }
 
 %%
@@ -1016,9 +1021,16 @@ Mul-Nat-Line {
   21. <Numb {'+'|'-'}? e.DIGIT-CHAR* e.NotDigitChars> == '-'? s.MACRODIGIT+
 */
 $ENTRY Numb {
-  '-' e.String = <Neg <DoNumb Numb-Ok Numb-Fail () e.String>>;
-  '+' e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
-  e.String = <DoNumb Numb-Ok Numb-Fail () e.String>;
+  '-' e.String
+    = <__Step-Start>
+      <Neg <DoNumb Numb-Ok Numb-Fail () e.String>>
+      <__Step-End>;
+
+  '+' e.String
+    = <__Step-Start> <DoNumb Numb-Ok Numb-Fail () e.String> <__Step-End>;
+
+  e.String
+    = <__Step-Start> <DoNumb Numb-Ok Numb-Fail () e.String> <__Step-End>;
 }
 
 DoNumb {
@@ -1155,13 +1167,97 @@ $ENTRY Putout {
 */
 $ENTRY Rp {
   e.Key '=' e.NewValue
-    = <Buried>
+    = <__Step-Start> <Buried>
     : {
         e.Values-B (e.Key '=' e.OldValue) e.Values-E
-          = <Buried e.Values-B (e.Key '=' e.NewValue) e.Values-E>;
+          = <Buried e.Values-B (e.Key '=' e.NewValue) e.Values-E>
+            <__Step-End>;
 
-        e.Values = <Buried (e.Key '=' e.NewValue) e.Values>;
+        e.Values
+          = <Buried (e.Key '=' e.NewValue) e.Values> <__Step-End>;
       };
+}
+
+
+/**
+  29. <Step> == s.NUMBER
+*/
+%%
+namespace {
+
+extern unsigned long raw_step();
+
+extern unsigned long g_correction;
+
+}  // unnamed namespace
+%%
+
+$ENTRY Step {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::Iter pfunc =
+    refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::RefalNumber step =
+    static_cast<refalrts::RefalNumber>(raw_step() - g_correction);
+
+  refalrts::reinit_number(arg_begin, step);
+  refalrts::splice_to_freelist(pfunc, arg_end);
+
+  return refalrts::cSuccess;
+%%
+}
+
+%%
+namespace {
+
+unsigned long raw_step() {
+  unsigned long perfomance_counters[
+    refalrts::cPerformanceCounter_COUNTERS_NUMBER
+  ];
+
+  refalrts::read_performance_counters(perfomance_counters);
+  return perfomance_counters[refalrts::cPerformanceCounter_TotalSteps];
+}
+
+unsigned long g_correction = 1;  // call of Go is not countered
+
+unsigned long g_start_step = 0;
+
+}  // unnamed namespace
+%%
+
+/*
+  <__Step-Start e.Any> == []
+  <__Step-End e.Any> == []
+*/
+$ENTRY __Step-Start {
+%%
+  if (0 != g_start_step) {
+    return refalrts::cRecognitionImpossible;
+  }
+  g_start_step = raw_step();
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
+}
+
+$ENTRY __Step-End {
+%%
+  if (0 == g_start_step) {
+    return refalrts::cRecognitionImpossible;
+  }
+  g_correction += (raw_step() - g_start_step) + 1;
+  g_start_step = 0;
+
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
 }
 
 
@@ -1272,13 +1368,14 @@ LeadingZeros {
 */
 $ENTRY Symb {
   s.First e.Tail
-    = <NormNumber s.First e.Tail> : s.NormedSign e.NormedNumber
+    = <__Step-Start> <NormNumber s.First e.Tail>
+    : s.NormedSign e.NormedNumber
     = s.First s.NormedSign
     : {
-        0 0 = '0';
-        s.Sign 0 = s.Sign '0';
-        s.Sign s.Sign = s.Sign <Symb-Nat e.NormedNumber>;
-        s.Digit '+' = <Symb-Nat e.NormedNumber>;
+        0 0 = '0' <__Step-End>;
+        s.Sign 0 = s.Sign '0' <__Step-End>;
+        s.Sign s.Sign = s.Sign <Symb-Nat e.NormedNumber> <__Step-End>;
+        s.Digit '+' = <Symb-Nat e.NormedNumber> <__Step-End>;
       };
 }
 
@@ -1286,8 +1383,8 @@ Symb-Nat {
   s.Number = <StrFromInt s.Number>;
 
   e.Number
-    = <Divmod (e.Number) 1000000000> : (e.Div) s.Mod
-    = <Last 9 '000000000' <StrFromInt s.Mod>> : (e.Zeros) e.StrDigits
+    = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
+    = <DoLast 9 ('000000000' <StrFromInt s.Mod>)> : (e.Zeros) e.StrDigits
     = <Symb-Nat e.Div> e.StrDigits;
 }
 

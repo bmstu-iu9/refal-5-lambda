@@ -6,7 +6,8 @@
 
 $ENTRY Go {
   = <Eq ('Y') <Get 0>>
-    <Eq (0) <Get 0>>;
+    <Eq (0) <Get 0>>
+    <Eq (7) <Step>>;
 }
 
 Eq { (e.X) e.X = <Prout e.X>; }

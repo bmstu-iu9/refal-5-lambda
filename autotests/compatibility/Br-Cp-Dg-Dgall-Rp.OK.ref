@@ -1,5 +1,8 @@
 $ENTRY Go {
-  = <Test1> <Test2>;
+  = <Test1>
+    <Eq (41) <Step>>
+    <Test2>
+    <Eq (75) <Step>>;
 }
 
 Test1 {
