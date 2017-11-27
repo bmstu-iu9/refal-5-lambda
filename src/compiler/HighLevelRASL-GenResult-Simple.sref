@@ -118,7 +118,7 @@ DoGenResult {
       (e.Vars)
       (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElOpenCall))
       ((#CmdInsertElem s.Counter) e.Commands)
-      <Inc s.Counter> e.InBrackets (#CloseCall s.Counter) e.Result
+      <Inc s.Counter> e.InBrackets (#TkCloseCall s.Counter) e.Result
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
@@ -162,7 +162,7 @@ DoGenResult {
     >;
 
   (e.Vars) (e.AllocCommands) (e.Commands)
-  s.Counter (#CloseCall s.OpenCounter) e.Result =
+  s.Counter (#TkCloseCall s.OpenCounter) e.Result =
     <DoGenResult
       (e.Vars)
       (e.AllocCommands (#CmdCreateElem #Allocate s.Counter #ElCloseCall))

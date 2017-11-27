@@ -33,34 +33,32 @@ $ENTRY GenResult-Opt {
 
     = s.ContextOffset
       (#CmdResetAllocator)
-      <GenResult-Aux (e.Trash) (e.MarkedResult)>;
+      <GenResult-Aux (e.Trash) (e.MarkedResult)>
+      (#CmdNextStep);
 }
 
 FlatResult {
-  e.Range-B (#CallBrackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenCall)
-    <FlatResult e.SubRange-E>
-    (#TkCloseCall)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#CallBrackets e.SubRange) e.Range-E
+    = <FlatResult e.Range-B>
+      (#TkOpenCall)
+      <FlatResult e.SubRange>
+      (#TkCloseCall)
+      <FlatResult e.Range-E>;
 
-  e.Range-B (#Brackets e.SubRange-E) e.Range-E =
-    <FlatResult e.Range-B>
-    (#TkOpenBracket)
-    <FlatResult e.SubRange-E>
-    (#TkCloseBracket)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#Brackets e.SubRange) e.Range-E
+    = <FlatResult e.Range-B>
+      (#TkOpenBracket)
+      <FlatResult e.SubRange>
+      (#TkCloseBracket)
+      <FlatResult e.Range-E>;
 
-  e.Range-B (#ADT-Brackets (e.Name) e.SubRange-E) e.Range-E =
-    e.Range-B
-    (#TkOpenADT)
-    (#TkName e.Name)
-    <FlatResult e.SubRange-E>
-    (#TkCloseADT)
-    <FlatResult e.Range-E>
-    ;
+  e.Range-B (#ADT-Brackets (e.Name) e.SubRange) e.Range-E
+    = e.Range-B
+      (#TkOpenADT)
+      (#TkName e.Name)
+      <FlatResult e.SubRange>
+      (#TkCloseADT)
+      <FlatResult e.Range-E>;
 
   e.Range = e.Range;
 }
@@ -80,11 +78,27 @@ FlatResult {
 */
 
 GenResult-Aux {
-  (e.Trash) (e.MarkedResult) =
-    (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
-    (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
+  (e.Trash) (e.MarkedResult)
+    = (#CmdComment 'TRASH:' <TextFromExpr e.Trash>)
+      (#CmdComment 'RESULT:' <TextFromExpr e.MarkedResult>)
 
-    //генерируем команды аллокаций
+      //генерируем команды аллокаций
+      <GenResult-Allocations e.MarkedResult>
+
+      //Генерируем команды reinit/update
+      <GenResult-ReinitUpdate e.MarkedResult>
+
+      //Генерируем команды связывания скобок
+      <GenPushLink
+        <FlatTilesInResult e.MarkedResult>
+      >
+
+      //Генерируем команды переноса из списка свободных узлов
+      <GenSplices (e.Trash) e.MarkedResult>;
+}
+
+GenResult-Allocations {
+  e.MarkedResult =
     <Map
       {
         (#Tile e.Tile) = ;
@@ -101,9 +115,11 @@ GenResult-Aux {
         (e.Elem) = (#CmdCreateElem #Allocate <CreateElemParam e.Elem>);
       }
       e.MarkedResult
-    >
+    >;
+}
 
-    //Генерируем команды reinit/update
+GenResult-ReinitUpdate {
+  e.MarkedResult =
     <Map
       {
         (#Tile e.Tile) =
@@ -129,15 +145,7 @@ GenResult-Aux {
         t.Other = /* пусто */;
       }
       e.MarkedResult
-    >
-
-    //Генерируем команды связывания скобок
-    <GenPushLink
-      <FlatTilesInResult e.MarkedResult>
-    >
-
-    //Генерируем команды переноса из списка свободных узлов
-    <GenSplices (e.Trash) e.MarkedResult>;
+    >;
 }
 
 CreateElemParam {
@@ -223,10 +231,9 @@ GenSplices {
       }
       <CollectTiles e.Result>
     >
-    <GenTrash (e.LeftTile) e.Trash>
-    (#CmdNextStep);
+    <GenTrash (e.LeftTile) e.Trash>;
 
-  (#RemovedTile) (#Tile e.OneTile) = (#CmdNextStep);
+  (#RemovedTile) (#Tile e.OneTile) = /* do nothing */;
 }
 
 CalcRes {
