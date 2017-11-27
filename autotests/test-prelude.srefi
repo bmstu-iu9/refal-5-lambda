@@ -16,3 +16,5 @@ Dg {
         <Store>
       >;
 }
+
+$ENUM Prout;
