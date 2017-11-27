@@ -232,7 +232,8 @@ setlocal
   set EXE=%~n1.exe
   echo Y| %EXE% Hello "Hello, World" "" \ > stdout.txt 2>stderr.txt
   if errorlevel 1 (
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    type __dump.txt
     endlocal
     exit /b 1
   )
@@ -291,7 +292,8 @@ setlocal
   echo Y| refgo "%~n1"-crefal+external-crefal Hello "Hello, World" "" \ ^
     >stdout.txt 2>__dump.txt
   if errorlevel 1 (
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    type __dump.txt
     endlocal
     exit /b 1
   )
@@ -340,7 +342,8 @@ goto :EOF
 setlocal
   echo Y| refgo "%~n1"+external Hello "Hello, World" "" \ >stdout.txt 2>__dump.txt
   if errorlevel 1 (
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    type __dump.txt
     endlocal
     exit /b 1
   )

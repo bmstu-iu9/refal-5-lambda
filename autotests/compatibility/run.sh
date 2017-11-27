@@ -197,7 +197,8 @@ execute_OK_srefc() {
   SRC=$1
   EXE=${SRC%%.ref}$(platform_exe_suffix)
   echo Y | ./$EXE Hello "Hello, World" "" / > stdout.txt 2>stderr.txt || {
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    cat __dump.txt
     exit 1
   }
 }
@@ -246,7 +247,8 @@ execute_OK_crefal() {
   echo Y | refgo "$RSL"+external-crefal Hello "Hello, World" "" / \
     >stdout.txt 2>__dump.txt || \
   {
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    cat __dump.txt
     exit 1
   }
   mv __dump.txt stderr.txt
@@ -290,7 +292,8 @@ execute_OK_refc() {
   echo Y | refgo "$RSL"+external Hello "Hello, World" "" / \
     >stdout.txt 2>__dump.txt || \
   {
-    echo TEST FAILED, SEE __dump.txt
+    echo TEST FAILED, SEE __dump.txt:
+    cat __dump.txt
     exit 1
   }
   mv __dump.txt stderr.txt
