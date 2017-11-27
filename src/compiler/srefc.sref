@@ -374,32 +374,30 @@ CompileFiles {
 
 Link {
   t.CommandLineSource t.Config e.Files
-    = <Fetch
-        <Config-GetTargetMode t.Config>
-        {
-          #EXE
-            = <Link-ExeLib
-                t.CommandLineSource t.Config
-                (<Config-GetCppCompiler t.Config #EXE>)
-                (<Config-GetPrefix t.Config>)
-                e.Files
-              >;
+    = <Config-GetTargetMode t.Config>
+    : {
+        #EXE
+          = <Link-ExeLib
+              t.CommandLineSource t.Config
+              (<Config-GetCppCompiler t.Config #EXE>)
+              (<Config-GetPrefix t.Config>)
+              e.Files
+            >;
 
-          #LIB
-            = <Link-ExeLib
-                t.CommandLineSource t.Config
-                (<Config-GetCppCompiler t.Config #LIB>)
-                (<Config-GetPrefix t.Config>)
-                e.Files
-              >;
+        #LIB
+          = <Link-ExeLib
+              t.CommandLineSource t.Config
+              (<Config-GetCppCompiler t.Config #LIB>)
+              (<Config-GetPrefix t.Config>)
+              e.Files
+            >;
 
-          #R
-            = <WriteLine 'R modules is not supported yet'>;
+        #R
+          = <WriteLine 'R modules is not supported yet'>;
 
-          #CompileOnly
-            = /* ничего не делаем */;
-        }
-      >;
+        #CompileOnly
+          = /* ничего не делаем */;
+      };
 }
 
 Link-ExeLib {
@@ -440,19 +438,17 @@ Link-ExeLib {
 
   t.CommandLineSource t.Config
   (e.AnyCommandLine) (e.Prefix) e.Files
-    = <Fetch
-        <FindPrefix t.Config e.Prefix>
-        {
-          #Success e.PrefixFileName
-            = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
+    = <FindPrefix t.Config e.Prefix>
+    : {
+        #Success e.PrefixFileName
+          = <Link-WithPrefix (e.PrefixFileName) t.Config e.Files>;
 
-          #Fails
-            = <ReportErrors
-                t.CommandLineSource t.Config
-                (1 'Can''t find prefix ' e.Prefix)
-              >;
-        }
-      >;
+        #Fails
+          = <ReportErrors
+              t.CommandLineSource t.Config
+              (1 'Can''t find prefix ' e.Prefix)
+            >;
+      };
 }
 
 Link-WithPrefix {
@@ -469,14 +465,13 @@ Link-WithPrefix {
 
 Chmod-X-Prefix {
   t.Config e.IntermediateName
-    = <Fetch
-        <Config-GetChmodXCommand t.Config>
-        {
-          /* пусто */ = /* ничего не делаем */;
-          e.ChmodXCommand
-            = <System e.ChmodXCommand ' "' e.IntermediateName '"'>;
-        }
-      >;
+    = <Config-GetChmodXCommand t.Config>
+    : {
+        /* пусто */ = /* ничего не делаем */;
+
+        e.ChmodXCommand
+          = <System e.ChmodXCommand ' "' e.IntermediateName '"'>;
+      };
 }
 
 Link-CppCompile {
@@ -520,36 +515,31 @@ PreLinkCleanupTemporary {
     <Fetch
       <ExistFile e.Temporary>
       {
-        #False =
-          /* ничего не делаем */;
+        #False = /* ничего не делаем */;
 
-        #True =
-          <Fetch
-            <RemoveFile e.Temporary>
-            {
-              #True =
-                <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
+        #True
+          = <RemoveFile e.Temporary>
+          : {
+              #True
+                = <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
 
-              #False =
-                <LinkError t.Config 'Can''t remove file ' e.Temporary>;
-            }
-          >;
+              #False
+                = <LinkError t.Config 'Can''t remove file ' e.Temporary>;
+            };
       }
     >;
 }
 
 CheckCppCompilationSuccessed {
-  t.Config e.TemporaryName =
-    <Fetch
-      <ExistFile e.TemporaryName>
-      {
+  t.Config e.TemporaryName
+    = <ExistFile e.TemporaryName>
+    : {
         #False =
           <LinkError t.Config 'C++ compilation is failed'>;
 
         #True =
           /* ничего не делаем */;
-      }
-    >;
+      };
 }
 
 EnsureAligned4096 {
@@ -560,24 +550,19 @@ EnsureAligned4096 {
 }
 
 AppendRASLToBinary {
-  (e.BinaryName) e.Files =
-    <Fetch
-      <FOpen ('ab') e.BinaryName>
-      {
-        s.FileHandle =
-          <Map
-            {
-              (#RASL e.OutputName) =
-                <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
+  (e.BinaryName) e.Files
+    = <FOpen ('ab') e.BinaryName> : s.FileHandle
+    = <Map
+        {
+          (#RASL e.OutputName) =
+            <FWriteBytes s.FileHandle <LoadBytes e.OutputName>>;
 
-              (#Native e.NativeName) =
-                /* ничего не делаем */;
-            }
-            e.Files
-          >
-          <FClose s.FileHandle>;
-      }
-    >;
+          (#Native e.NativeName) =
+            /* ничего не делаем */;
+        }
+        e.Files
+      >
+      <FClose s.FileHandle>;
 }
 
 AlignToPage {
@@ -600,20 +585,17 @@ PostLinkRename {
     <Fetch
       <ExistFile e.TargetFileName>
       {
-        #True =
-          <Fetch
-            <RemoveFile e.TargetFileName>
-            {
-              #True =
-                /* ничего не делаем */;
+        #True
+          = <RemoveFile e.TargetFileName>
+          : {
+              #True
+                = /* ничего не делаем */;
 
-              #False =
-                <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
-             }
-           >;
+              #False
+                = <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
+             };
 
-        #False =
-          /* ничего не делаем */;
+        #False = /* ничего не делаем */;
       }
     >
     <Fetch
