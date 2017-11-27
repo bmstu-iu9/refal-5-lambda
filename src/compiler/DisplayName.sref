@@ -10,7 +10,6 @@ $EXTERN Map, Fetch;
 $ENTRY DisplayName {
   e.Name #Hash s.Cookie1 s.Cookie2 =
     <DisplayName e.Name> '#' <StrFromInt s.Cookie1> ':' <StrFromInt s.Cookie2>;
-  #CreateClosure = '@create_closure@';
   #VAR s.Mode e.Index s.Depth = s.Mode '.' e.Index '#' <StrFromInt s.Depth> ':';
   e.Name #SUF e.Suffix = e.Name <DisplayNameSuf e.Suffix>;
   e.Name = e.Name;
@@ -28,7 +27,6 @@ $ENTRY DisplayCName {
 $ENTRY CName {
   e.Name #Hash s.Cookie1 s.Cookie2 =
     <CName e.Name> '_' <StrFromInt s.Cookie1> '_' <StrFromInt s.Cookie2>;
-  #CreateClosure = 'refalrts::create_closure';
   #VAR s.Mode e.Index s.Depth =
     'var_' s.Mode <CName e.Index> '_' <StrFromInt s.Depth>;
   e.Name #SUF e.Suffix = 'gen_' <CName e.Name> '_' <CNameSuf e.Suffix>;

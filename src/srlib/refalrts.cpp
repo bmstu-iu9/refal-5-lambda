@@ -1561,32 +1561,11 @@ refalrts::Iter refalrts::splice_from_freelist(refalrts::Iter pos) {
   return allocator::splice_from_freelist(pos);
 }
 
-namespace {
-
-const refalrts::RASLCommand rasl_create_closure[] = {
-  { refalrts::icIssueMemory, 5, 0, 0 },
-  { refalrts::icInitB0_Lite, 0, 0, 0 },
-  { refalrts::icCallSaveLeft, 0, 2, 0 },
-  { refalrts::icNotEmpty, 0, 0, 2 },
-#ifdef ENABLE_DEBUGGER
-  { refalrts::icResetAllocator, 0, 0, 0 },
-#endif // ifdef ENABLE_DEBUGGER
-  { refalrts::icReinitClosureHead, 0, 0, 4 },
-  { refalrts::icReinitUnwrappedClosure, 0, 4, 1 },
-  { refalrts::icWrapClosure, 0, 0, 1 },
-  { refalrts::icSetRes, 0, 0, 1 },
-  { refalrts::icTrashLeftEdge, 0, 0, 0 },
-  { refalrts::icNextStep, 0, 0, 0 },
-};
-
-}
-
-refalrts::RefalFunction *refalrts::create_closure = 0;
-
 /*
   Собственно замыкание (функция + контекст) определяется как
-  [next(head), prev(head)]. Т.к. замыкание создаётся только функцией
-  create_closure, которая гарантирует непустоту замыкания, то
+  [next(head), prev(head)]. Свёртка замыкания осуществляется первый
+  раз только в сгенерированном коде, развёртывается только ранее
+  созданное замыкание. Это позволяет гарантировать, что
   next(head) != head, prev(head) != head.
 */
 
@@ -5880,14 +5859,6 @@ int main(int argc, char **argv) {
 
   refalrts::FnResult res;
   try {
-    refalrts::create_closure =
-      refalrts::dynamic::malloc<refalrts::RefalFunction>();
-    // TODO: выдача сообщения об ошибке
-    assert(refalrts::create_closure != 0);
-    new (refalrts::create_closure) refalrts::RefalFunction(
-      rasl_create_closure, refalrts::RefalFuncName("@create_closure@", 0, 0)
-    );
-
     refalrts::dynamic::enumerate_blocks();
 
     unsigned unresolved = refalrts::dynamic::find_unresolved_externals();

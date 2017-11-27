@@ -419,9 +419,6 @@ PrepareRASL {
                           (e.FuncName) =
                             (e.Decls-B e.Decls-E)
                             (s.ScopeClass e.FuncName);
-
-                          (e.Decls) (#CreateClosure) =
-                            (e.Decls) (#GN-Entry #CreateClosure);
                         }
                         (e.FuncScopeClass)
                         e.Functions
