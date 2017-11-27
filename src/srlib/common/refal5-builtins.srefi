@@ -217,6 +217,12 @@ $EXTERN Sub;
 $EXTERN Symb;
 
 
+// 32. Time
+
+//FROM Library
+$EXTERN Time;
+
+
 // 33. Type
 
 //FROM Library
@@ -364,7 +370,6 @@ __ListOfBuiltin_2 {
 }
 
 // Не реализованные пока функции
-$ENUM Time;
 $ENUM Sysfun;
 $ENUM Freeze;
 $ENUM Freezer;

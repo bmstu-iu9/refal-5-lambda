@@ -4,8 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <vector>
 #include <string>
+#include <time.h>
+#include <vector>
 
 //FROM refalrts
 
@@ -1386,6 +1387,41 @@ Symb-Nat {
     = <Divmod-Nat (e.Number) 1000000000 () ()> : (e.Div) s.Mod
     = <DoLast 9 ('000000000' <StrFromInt s.Mod>)> : (e.Zeros) e.StrDigits
     = <Symb-Nat e.Div> e.StrDigits;
+}
+
+
+/**
+  32. <Time> == e.Time
+      e.Time ::= s.CHAR+  — represents time as ctime() format
+*/
+$ENTRY Time {
+%%
+  refalrts::Iter content_b = 0, content_e = 0;
+  refalrts::call_left(content_b, content_e, arg_begin, arg_end);
+
+  if (! refalrts::empty_seq(content_b, content_e)) {
+    return refalrts::cRecognitionImpossible;
+  }
+
+  refalrts::reset_allocator();
+
+  time_t timer;
+  time(&timer);
+  char *str_time = ctime(&timer);
+
+  char *newline = strchr(str_time, '\n');
+  if (newline) {
+    *newline = '\0';
+  }
+
+  if (! refalrts::alloc_string(content_b, content_e, str_time)) {
+    return refalrts::cNoMemory;
+  }
+
+  refalrts::splice_evar(arg_begin, content_b, content_e);
+  refalrts::splice_to_freelist(arg_begin, arg_end);
+  return refalrts::cSuccess;
+%%
 }
 
 
