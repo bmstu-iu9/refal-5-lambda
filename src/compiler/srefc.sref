@@ -470,7 +470,10 @@ Chmod-X-Prefix {
         /* пусто */ = /* ничего не делаем */;
 
         e.ChmodXCommand
-          = <System e.ChmodXCommand ' "' e.IntermediateName '"'>;
+          = <System e.ChmodXCommand ' "' e.IntermediateName '"'>
+            /* TODO: уточнить после обновления System в стабильной версии */
+          : e.RetCode
+          = /* пусто */;
       };
 }
 
@@ -491,7 +494,9 @@ Link-CppCompile {
                   e.Files
                 >
               >
-              <CheckCppCompilationSuccessed t.Config e.IntermediateName>
+              /* TODO: уточнить после обновления System в стабильной версии */
+            : e.RetCode
+            = <CheckCppCompilationSuccessed t.Config e.IntermediateName>
               <EnsureAligned4096 e.IntermediateName>;
         }
         t.Config e.Files
@@ -520,10 +525,11 @@ PreLinkCleanupTemporary {
         #True
           = <RemoveFile e.Temporary>
           : {
-              #True
+              /* TODO: уточнить после обновления RemoveFile в стабильной версии */
+              #True e.TrueTail /* () */
                 = <WriteLine 'Lost temporary file ' e.Temporary ' is removed'>;
 
-              #False
+              #False e.FalseTail /* (e.ErrorMessage) */
                 = <LinkError t.Config 'Can''t remove file ' e.Temporary>;
             };
       }
@@ -588,10 +594,11 @@ PostLinkRename {
         #True
           = <RemoveFile e.TargetFileName>
           : {
-              #True
+              /* TODO: уточнить после обновления RemoveFile в стабильной версии */
+              #True e.TrueTail /* () */
                 = /* ничего не делаем */;
 
-              #False
+              #False e.FalseTail /* (e.ErrorMessage) */
                 = <LinkError t.Config 'Can''t remove file ' e.TargetFileName>;
              };
 
